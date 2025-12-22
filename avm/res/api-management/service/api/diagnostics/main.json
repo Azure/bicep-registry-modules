@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "18295485777200437093"
+      "version": "0.39.26.7824",
+      "templateHash": "11918460798028606310"
     },
     "name": "API Management Service APIs Diagnostics.",
     "description": "This module deploys an API Management Service API Diagnostics."
@@ -15,7 +15,7 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "apiName": {
@@ -39,7 +39,7 @@
         "local"
       ],
       "metadata": {
-        "description": "Optional. Type of diagnostic resource."
+        "description": "Optional. Name of diagnostic resource."
       }
     },
     "alwaysLog": {
@@ -100,7 +100,7 @@
       "defaultValue": "Name",
       "allowedValues": [
         "Name",
-        "URI"
+        "Url"
       ],
       "metadata": {
         "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
@@ -110,7 +110,7 @@
       "type": "int",
       "defaultValue": 100,
       "metadata": {
-        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged."
       }
     },
     "verbosity": {

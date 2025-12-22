@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "8685064673241317149"
+      "templateHash": "11615305903211709445"
     },
     "name": "API Management Workspace APIs Policies",
     "description": "This module deploys an API Policy in an API Management Workspace."
@@ -14,19 +14,19 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Workspace."
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "apiName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API."
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
       }
     },
     "name": {

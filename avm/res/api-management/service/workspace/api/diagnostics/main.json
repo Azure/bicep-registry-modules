@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17726281198772286602"
+      "templateHash": "15670376638740090520"
     },
     "name": "API Management Workspace APIs Diagnostics",
     "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -15,19 +15,25 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent Workspace."
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "apiName": {
       "type": "string",
       "metadata": {
         "description": "Required. The name of the parent API."
+      }
+    },
+    "loggerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the logger."
       }
     },
     "name": {
@@ -40,12 +46,6 @@
       ],
       "metadata": {
         "description": "Optional. Name of diagnostic resource."
-      }
-    },
-    "loggerName": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the logger."
       }
     },
     "alwaysLog": {
@@ -106,7 +106,7 @@
       "defaultValue": "Name",
       "allowedValues": [
         "Name",
-        "URI"
+        "Url"
       ],
       "metadata": {
         "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."

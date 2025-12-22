@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "13725740350916592056"
+      "templateHash": "4545162831886606439"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
@@ -43,7 +43,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/authorizationMethods"
         },
-        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present."
       },
       "defaultValue": [
         "GET"
@@ -149,7 +149,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/tokenBodyParameters"
         },
-        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
+        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}."
       },
       "defaultValue": []
     },

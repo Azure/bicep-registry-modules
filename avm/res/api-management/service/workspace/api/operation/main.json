@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4342021851337199938"
+      "templateHash": "11157339376524309643"
     },
     "name": "API Management Workspace API Operations",
     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -29,8 +29,9 @@
             "xml",
             "xml-link"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Format of the policyContent."
+            "description": "Optional. Format of the policyContent."
           }
         },
         "value": {
@@ -50,19 +51,19 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Workspace."
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "apiName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API."
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
@@ -77,10 +78,20 @@
         "description": "Required. The display name of the operation."
       }
     },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/policyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The policies to apply to the operation."
+      }
+    },
     "method": {
       "type": "string",
       "metadata": {
-        "description": "Required. A Valid HTTP Operation Method."
+        "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
       }
     },
     "urlTemplate": {
@@ -96,7 +107,7 @@
       "nullable": true,
       "maxLength": 1000,
       "metadata": {
-        "description": "Optional. Description of the operation."
+        "description": "Optional. Description of the operation. May include HTML formatting tags."
       }
     },
     "request": {
@@ -128,16 +139,6 @@
         "description": "Optional. Collection of URL template parameters."
       },
       "nullable": true
-    },
-    "policies": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/policyType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The policies to apply to the operation."
-      }
     }
   },
   "resources": {
@@ -216,7 +217,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "8751048426992393895"
+              "templateHash": "16783497966740511218"
             },
             "name": "API Management Workspace API Operation Policies",
             "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -225,25 +226,25 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Workspace."
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "apiName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent API."
+                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
               }
             },
             "operationName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Operation."
+                "description": "Conditional. The name of the parent operation. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -278,8 +279,8 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}/{3}/{4}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
               "properties": {
-                "format": "[parameters('format')]",
-                "value": "[parameters('value')]"
+                "value": "[parameters('value')]",
+                "format": "[parameters('format')]"
               }
             }
           ],

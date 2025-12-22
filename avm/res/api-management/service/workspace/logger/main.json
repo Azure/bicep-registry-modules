@@ -1,0 +1,120 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "3983342881327906024"
+    },
+    "name": "API Management Workspace Loggers",
+    "description": "This module deploys a Logger in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Logger name."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Optional. Description of the logger."
+      }
+    },
+    "isBuffered": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Whether records are buffered in the logger before publishing."
+      }
+    },
+    "type": {
+      "type": "string",
+      "allowedValues": [
+        "applicationInsights",
+        "azureEventHub",
+        "azureMonitor"
+      ],
+      "metadata": {
+        "description": "Required. Logger type."
+      }
+    },
+    "targetResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+      }
+    },
+    "credentials": {
+      "type": "secureObject",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/loggers@2024-05-01#properties/properties/properties/credentials"
+        },
+        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor."
+      },
+      "nullable": true
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "logger": {
+      "type": "Microsoft.ApiManagement/service/workspaces/loggers",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'isBuffered', parameters('isBuffered'), 'loggerType', parameters('type'), 'resourceId', parameters('targetResourceId')), if(not(equals(parameters('type'), 'azureMonitor')), createObject('credentials', parameters('credentials')), createObject())))]"
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace logger."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/loggers', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace logger."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace logger was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

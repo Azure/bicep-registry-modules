@@ -1,4 +1,4 @@
-# API Management Service Products Policies `[Microsoft.ApiManagement/service/products/policies]`
+# API Management Service Product Policies `[Microsoft.ApiManagement/service/products/policies]`
 
 This module deploys an API Management Service Product Policy.
 
@@ -20,6 +20,7 @@ This module deploys an API Management Service Product Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The name of the policy. |
 | [`value`](#parameter-value) | string | Contents of the Policy as defined by the format. |
 
 **Conditional parameters**
@@ -34,7 +35,13 @@ This module deploys an API Management Service Product Policy.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-format) | string | Format of the policyContent. |
-| [`name`](#parameter-name) | string | The name of the policy. |
+
+### Parameter: `name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `value`
 
@@ -74,18 +81,10 @@ Format of the policyContent.
   ]
   ```
 
-### Parameter: `name`
-
-The name of the policy.
-
-- Required: No
-- Type: string
-- Default: `'policy'`
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the API policy. |
-| `resourceGroupName` | string | The resource group the API policy was deployed into. |
-| `resourceId` | string | The resource ID of the API policy. |
+| `name` | string | The name of the Product policy. |
+| `resourceGroupName` | string | The resource group the Product policy was deployed into. |
+| `resourceId` | string | The resource ID of the Product policy. |

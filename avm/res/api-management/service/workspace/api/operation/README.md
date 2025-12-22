@@ -22,7 +22,7 @@ This module deploys an API Operation under an API Management Workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | The display name of the operation. |
-| [`method`](#parameter-method) | string | A Valid HTTP Operation Method. |
+| [`method`](#parameter-method) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
 | [`name`](#parameter-name) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-urltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
@@ -30,15 +30,15 @@ This module deploys an API Operation under an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
-| [`apiName`](#parameter-apiname) | string | The name of the parent API. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`apiName`](#parameter-apiname) | string | The name of the parent API. Required if the template is used in a standalone deployment. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | Description of the operation. |
+| [`description`](#parameter-description) | string | Description of the operation. May include HTML formatting tags. |
 | [`policies`](#parameter-policies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-request) | object | An entity containing request details. |
 | [`responses`](#parameter-responses) | array | An entity containing request details. |
@@ -53,7 +53,7 @@ The display name of the operation.
 
 ### Parameter: `method`
 
-A Valid HTTP Operation Method.
+A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
 
 - Required: Yes
 - Type: string
@@ -74,28 +74,28 @@ Relative URL template identifying the target resource for this operation. May in
 
 ### Parameter: `apiManagementServiceName`
 
-The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `apiName`
 
-The name of the parent API.
+The name of the parent API. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `workspaceName`
 
-The name of the parent Workspace.
+The name of the parent Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `description`
 
-Description of the operation.
+Description of the operation. May include HTML formatting tags.
 
 - Required: No
 - Type: string
@@ -111,25 +111,14 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-policiesname) | string | The name of the policy. |
 | [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
 
-### Parameter: `policies.format`
+**Optional parameters**
 
-Format of the policyContent.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'rawxml'
-    'rawxml-link'
-    'xml'
-    'xml-link'
-  ]
-  ```
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
 
 ### Parameter: `policies.name`
 
@@ -144,6 +133,22 @@ Contents of the Policy as defined by the format.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
 
 ### Parameter: `request`
 

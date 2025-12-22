@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11473395075944648701"
+      "templateHash": "3933178486361355774"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -95,6 +95,8 @@
     "url": {
       "type": "string",
       "nullable": true,
+      "minLength": 1,
+      "maxLength": 2000,
       "metadata": {
         "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
       }

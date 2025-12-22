@@ -39,6 +39,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ApiManagement/service/authorizationServers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_authorizationservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/authorizationServers)</li></ul> |
 | `Microsoft.ApiManagement/service/backends` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_backends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/backends)</li></ul> |
 | `Microsoft.ApiManagement/service/caches` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_caches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/caches)</li></ul> |
+| `Microsoft.ApiManagement/service/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/diagnostics)</li></ul> |
 | `Microsoft.ApiManagement/service/identityProviders` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_identityproviders.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/identityProviders)</li></ul> |
 | `Microsoft.ApiManagement/service/loggers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/loggers)</li></ul> |
 | `Microsoft.ApiManagement/service/namedValues` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/namedValues)</li></ul> |
@@ -49,6 +50,23 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ApiManagement/service/products/groups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/groups)</li></ul> |
 | `Microsoft.ApiManagement/service/products/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/policies)</li></ul> |
 | `Microsoft.ApiManagement/service/subscriptions` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/subscriptions)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apis)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apis/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apis_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apis/diagnostics)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apis/operations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apis_operations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apis/operations)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apis/operations/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apis_operations_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apis/operations/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apis/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apis_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apis/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/apiVersionSets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_apiversionsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/apiVersionSets)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/backends` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_backends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/backends)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/diagnostics)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/loggers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_loggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/loggers)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/namedValues` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_namedvalues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/namedValues)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/products` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/products)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/products/apiLinks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_products_apilinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/products/apiLinks)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/products/groupLinks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_products_grouplinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/products/groupLinks)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/products/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_products_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/products/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/workspaces/subscriptions` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_workspaces_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/workspaces/subscriptions)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -362,7 +380,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         clientSecret: '<clientSecret>'
         displayName: 'AuthServer1'
         grantTypes: [
-          'authorizationCode'
+          'authorizationCodeWithPkce'
         ]
         name: 'AuthServer1'
         tokenEndpoint: '<tokenEndpoint>'
@@ -507,6 +525,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
+        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -543,6 +562,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'xml'
+            name: 'productPolicy1'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -569,6 +589,19 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    serviceDiagnostics: [
+      {
+        alwaysLog: 'allErrors'
+        httpCorrelationProtocol: 'W3C'
+        logClientIp: true
+        loggerId: '<loggerId>'
+        metrics: true
+        name: 'applicationinsights'
+        operationNameFormat: 'Url'
+        samplingPercentage: 100
+        verbosity: 'verbose'
+      }
+    ]
     subnetResourceId: '<subnetResourceId>'
     subscriptions: [
       {
@@ -583,6 +616,299 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkType: 'External'
+    workspaces: [
+      {
+        apis: [
+          {
+            apiRevision: '1'
+            apiRevisionDescription: 'Initial revision of workspace API'
+            apiType: 'http'
+            apiVersion: 'v1'
+            apiVersionDescription: 'Version 1 of workspace API'
+            description: 'Workspace Echo API for testing'
+            diagnostics: [
+              {
+                alwaysLog: 'allErrors'
+                httpCorrelationProtocol: 'W3C'
+                logClientIp: true
+                loggerName: 'workspace-logger'
+                metrics: true
+                name: 'applicationinsights'
+                operationNameFormat: 'Url'
+                samplingPercentage: 100
+                verbosity: 'verbose'
+              }
+            ]
+            displayName: 'Workspace Echo API'
+            format: 'openapi+json'
+            isCurrent: true
+            name: 'workspace-echo-api'
+            operations: [
+              {
+                description: 'Get resource operation'
+                displayName: 'Get Resource'
+                method: 'GET'
+                name: 'get-resource'
+                policies: [
+                  {
+                    format: 'xml'
+                    name: 'operationPolicy'
+                    value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+                  }
+                ]
+                urlTemplate: '/resource'
+              }
+            ]
+            path: 'workspace-echo'
+            policies: [
+              {
+                format: 'xml'
+                name: 'workspaceApiPolicy'
+                value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+              }
+            ]
+            protocols: [
+              'https'
+            ]
+            serviceUrl: 'http://echoapi.cloudapp.net/api'
+            subscriptionRequired: true
+            type: 'http'
+          }
+        ]
+        apiVersionSets: [
+          {
+            description: 'Version set for workspace APIs'
+            displayName: 'Workspace Version Set'
+            name: 'workspace-version-set'
+            versioningScheme: 'Segment'
+          }
+        ]
+        backends: [
+          {
+            credentials: {
+              authorization: {
+                parameter: 'd29ya3NwYWNlLWF1dGg='
+                scheme: 'Basic'
+              }
+              header: {
+                'x-workspace-header': [
+                  'workspace-value'
+                ]
+              }
+            }
+            description: 'Backend for workspace APIs'
+            name: 'workspace-backend'
+            protocol: 'http'
+            title: 'Workspace Backend'
+            tls: {
+              validateCertificateChain: true
+              validateCertificateName: true
+            }
+            type: 'Single'
+            url: 'https://workspace-backend.example.com'
+          }
+        ]
+        description: 'A comprehensive test workspace with all child modules'
+        diagnostics: [
+          {
+            alwaysLog: 'allErrors'
+            httpCorrelationProtocol: 'W3C'
+            logClientIp: true
+            loggerId: '<loggerId>'
+            metrics: true
+            name: 'applicationinsights'
+            operationNameFormat: 'Url'
+            samplingPercentage: 100
+            verbosity: 'verbose'
+          }
+        ]
+        displayName: 'Test Workspace 1'
+        loggers: [
+          {
+            credentials: {
+              instrumentationKey: '<instrumentationKey>'
+            }
+            description: 'Workspace Application Insights Logger'
+            isBuffered: false
+            name: 'workspace-logger'
+            targetResourceId: '<targetResourceId>'
+            type: 'applicationInsights'
+          }
+        ]
+        name: 'test-workspace-1'
+        namedValues: [
+          {
+            displayName: 'Workspace Named Value'
+            name: 'workspace-named-value'
+            secret: true
+            tags: [
+              'max-test'
+              'test'
+            ]
+            value: 'workspace-secret-value'
+          }
+        ]
+        policies: [
+          {
+            format: 'xml'
+            name: 'workspace-policy'
+            value: '<policies><inbound><rate-limit-by-key calls=\'100\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+          }
+        ]
+        products: [
+          {
+            apiLinks: [
+              {
+                apiId: '<apiId>'
+                name: 'workspace-api-link'
+              }
+            ]
+            approvalRequired: true
+            description: 'A test product in workspace with all features'
+            displayName: 'Workspace Product'
+            groupLinks: [
+              {
+                groupId: '<groupId>'
+                name: 'workspace-group-link'
+              }
+            ]
+            name: 'workspace-product'
+            policies: [
+              {
+                format: 'xml'
+                name: 'workspace-product-policy'
+                value: '<policies><inbound><quota-by-key calls=\'1000\' renewal-period=\'3600\' counter-key=\'@(context.Subscription.Id)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+              }
+            ]
+            state: 'published'
+            subscriptionRequired: true
+            subscriptionsLimit: 5
+            terms: 'Terms and conditions for workspace product'
+          }
+        ]
+        subscriptions: [
+          {
+            allowTracing: true
+            displayName: 'Workspace Test Subscription'
+            name: 'workspace-subscription'
+            scope: '<scope>'
+            state: 'active'
+          }
+        ]
+      }
+      {
+        apis: [
+          {
+            displayName: 'Workspace Simple API'
+            name: 'workspace-simple-api'
+            path: 'workspace-simple'
+            protocols: [
+              'http'
+              'https'
+            ]
+            serviceUrl: 'https://simple-backend.example.com/api'
+            subscriptionRequired: false
+            type: 'http'
+          }
+          {
+            apiType: 'graphql'
+            description: 'GraphQL API in workspace'
+            displayName: 'Workspace GraphQL API'
+            name: 'workspace-graphql-api'
+            path: 'workspace-graphql'
+            protocols: [
+              'https'
+            ]
+            type: 'graphql'
+          }
+        ]
+        apiVersionSets: [
+          {
+            displayName: 'Workspace Version Set 2'
+            name: 'workspace-version-set-2'
+            versionHeaderName: 'api-version'
+            versioningScheme: 'Header'
+          }
+        ]
+        backends: [
+          {
+            description: 'Second workspace backend with minimal config'
+            name: 'workspace-backend-2'
+            type: 'Single'
+            url: 'https://backend2.example.com'
+          }
+          {
+            description: 'Pool backend in workspace'
+            name: 'workspace-pool-backend'
+            pool: {
+              services: [
+                {
+                  id: '<id>'
+                }
+              ]
+            }
+            type: 'Pool'
+          }
+        ]
+        description: 'Second test workspace with minimal configuration'
+        diagnostics: [
+          {
+            loggerId: '<loggerId>'
+            metrics: true
+            name: 'applicationinsights'
+            operationNameFormat: 'Name'
+            samplingPercentage: 50
+          }
+        ]
+        displayName: 'Test Workspace 2'
+        loggers: [
+          {
+            description: 'Azure Monitor logger for workspace 2'
+            isBuffered: true
+            name: 'ws2-logger'
+            type: 'azureMonitor'
+          }
+        ]
+        name: 'test-workspace-2'
+        namedValues: [
+          {
+            displayName: 'Workspace 2 Config'
+            name: 'ws2-config-value'
+            value: 'workspace-2-config'
+          }
+        ]
+        policies: [
+          {
+            format: 'rawxml'
+            name: 'ws2-policy'
+            value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+          }
+        ]
+        products: [
+          {
+            apiLinks: [
+              {
+                apiId: '<apiId>'
+                name: 'ws2-api-link'
+              }
+            ]
+            displayName: 'Workspace 2 Product'
+            name: 'ws2-product'
+            state: 'notPublished'
+            subscriptionRequired: false
+          }
+        ]
+        subscriptions: [
+          {
+            allowTracing: false
+            displayName: 'Workspace 2 Subscription'
+            name: 'ws2-subscription'
+            scope: '/apis'
+            state: 'submitted'
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -669,7 +995,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "clientSecret": "<clientSecret>",
           "displayName": "AuthServer1",
           "grantTypes": [
-            "authorizationCode"
+            "authorizationCodeWithPkce"
           ],
           "name": "AuthServer1",
           "tokenEndpoint": "<tokenEndpoint>"
@@ -834,6 +1160,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
+          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -874,6 +1201,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "xml",
+              "name": "productPolicy1",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -905,6 +1233,21 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "serviceDiagnostics": {
+      "value": [
+        {
+          "alwaysLog": "allErrors",
+          "httpCorrelationProtocol": "W3C",
+          "logClientIp": true,
+          "loggerId": "<loggerId>",
+          "metrics": true,
+          "name": "applicationinsights",
+          "operationNameFormat": "Url",
+          "samplingPercentage": 100,
+          "verbosity": "verbose"
+        }
+      ]
+    },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
@@ -926,6 +1269,301 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "virtualNetworkType": {
       "value": "External"
+    },
+    "workspaces": {
+      "value": [
+        {
+          "apis": [
+            {
+              "apiRevision": "1",
+              "apiRevisionDescription": "Initial revision of workspace API",
+              "apiType": "http",
+              "apiVersion": "v1",
+              "apiVersionDescription": "Version 1 of workspace API",
+              "description": "Workspace Echo API for testing",
+              "diagnostics": [
+                {
+                  "alwaysLog": "allErrors",
+                  "httpCorrelationProtocol": "W3C",
+                  "logClientIp": true,
+                  "loggerName": "workspace-logger",
+                  "metrics": true,
+                  "name": "applicationinsights",
+                  "operationNameFormat": "Url",
+                  "samplingPercentage": 100,
+                  "verbosity": "verbose"
+                }
+              ],
+              "displayName": "Workspace Echo API",
+              "format": "openapi+json",
+              "isCurrent": true,
+              "name": "workspace-echo-api",
+              "operations": [
+                {
+                  "description": "Get resource operation",
+                  "displayName": "Get Resource",
+                  "method": "GET",
+                  "name": "get-resource",
+                  "policies": [
+                    {
+                      "format": "xml",
+                      "name": "operationPolicy",
+                      "value": "<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>"
+                    }
+                  ],
+                  "urlTemplate": "/resource"
+                }
+              ],
+              "path": "workspace-echo",
+              "policies": [
+                {
+                  "format": "xml",
+                  "name": "workspaceApiPolicy",
+                  "value": "<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>"
+                }
+              ],
+              "protocols": [
+                "https"
+              ],
+              "serviceUrl": "http://echoapi.cloudapp.net/api",
+              "subscriptionRequired": true,
+              "type": "http"
+            }
+          ],
+          "apiVersionSets": [
+            {
+              "description": "Version set for workspace APIs",
+              "displayName": "Workspace Version Set",
+              "name": "workspace-version-set",
+              "versioningScheme": "Segment"
+            }
+          ],
+          "backends": [
+            {
+              "credentials": {
+                "authorization": {
+                  "parameter": "d29ya3NwYWNlLWF1dGg=",
+                  "scheme": "Basic"
+                },
+                "header": {
+                  "x-workspace-header": [
+                    "workspace-value"
+                  ]
+                }
+              },
+              "description": "Backend for workspace APIs",
+              "name": "workspace-backend",
+              "protocol": "http",
+              "title": "Workspace Backend",
+              "tls": {
+                "validateCertificateChain": true,
+                "validateCertificateName": true
+              },
+              "type": "Single",
+              "url": "https://workspace-backend.example.com"
+            }
+          ],
+          "description": "A comprehensive test workspace with all child modules",
+          "diagnostics": [
+            {
+              "alwaysLog": "allErrors",
+              "httpCorrelationProtocol": "W3C",
+              "logClientIp": true,
+              "loggerId": "<loggerId>",
+              "metrics": true,
+              "name": "applicationinsights",
+              "operationNameFormat": "Url",
+              "samplingPercentage": 100,
+              "verbosity": "verbose"
+            }
+          ],
+          "displayName": "Test Workspace 1",
+          "loggers": [
+            {
+              "credentials": {
+                "instrumentationKey": "<instrumentationKey>"
+              },
+              "description": "Workspace Application Insights Logger",
+              "isBuffered": false,
+              "name": "workspace-logger",
+              "targetResourceId": "<targetResourceId>",
+              "type": "applicationInsights"
+            }
+          ],
+          "name": "test-workspace-1",
+          "namedValues": [
+            {
+              "displayName": "Workspace Named Value",
+              "name": "workspace-named-value",
+              "secret": true,
+              "tags": [
+                "max-test",
+                "test"
+              ],
+              "value": "workspace-secret-value"
+            }
+          ],
+          "policies": [
+            {
+              "format": "xml",
+              "name": "workspace-policy",
+              "value": "<policies><inbound><rate-limit-by-key calls=\"100\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
+            }
+          ],
+          "products": [
+            {
+              "apiLinks": [
+                {
+                  "apiId": "<apiId>",
+                  "name": "workspace-api-link"
+                }
+              ],
+              "approvalRequired": true,
+              "description": "A test product in workspace with all features",
+              "displayName": "Workspace Product",
+              "groupLinks": [
+                {
+                  "groupId": "<groupId>",
+                  "name": "workspace-group-link"
+                }
+              ],
+              "name": "workspace-product",
+              "policies": [
+                {
+                  "format": "xml",
+                  "name": "workspace-product-policy",
+                  "value": "<policies><inbound><quota-by-key calls=\"1000\" renewal-period=\"3600\" counter-key=\"@(context.Subscription.Id)\" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
+                }
+              ],
+              "state": "published",
+              "subscriptionRequired": true,
+              "subscriptionsLimit": 5,
+              "terms": "Terms and conditions for workspace product"
+            }
+          ],
+          "subscriptions": [
+            {
+              "allowTracing": true,
+              "displayName": "Workspace Test Subscription",
+              "name": "workspace-subscription",
+              "scope": "<scope>",
+              "state": "active"
+            }
+          ]
+        },
+        {
+          "apis": [
+            {
+              "displayName": "Workspace Simple API",
+              "name": "workspace-simple-api",
+              "path": "workspace-simple",
+              "protocols": [
+                "http",
+                "https"
+              ],
+              "serviceUrl": "https://simple-backend.example.com/api",
+              "subscriptionRequired": false,
+              "type": "http"
+            },
+            {
+              "apiType": "graphql",
+              "description": "GraphQL API in workspace",
+              "displayName": "Workspace GraphQL API",
+              "name": "workspace-graphql-api",
+              "path": "workspace-graphql",
+              "protocols": [
+                "https"
+              ],
+              "type": "graphql"
+            }
+          ],
+          "apiVersionSets": [
+            {
+              "displayName": "Workspace Version Set 2",
+              "name": "workspace-version-set-2",
+              "versionHeaderName": "api-version",
+              "versioningScheme": "Header"
+            }
+          ],
+          "backends": [
+            {
+              "description": "Second workspace backend with minimal config",
+              "name": "workspace-backend-2",
+              "type": "Single",
+              "url": "https://backend2.example.com"
+            },
+            {
+              "description": "Pool backend in workspace",
+              "name": "workspace-pool-backend",
+              "pool": {
+                "services": [
+                  {
+                    "id": "<id>"
+                  }
+                ]
+              },
+              "type": "Pool"
+            }
+          ],
+          "description": "Second test workspace with minimal configuration",
+          "diagnostics": [
+            {
+              "loggerId": "<loggerId>",
+              "metrics": true,
+              "name": "applicationinsights",
+              "operationNameFormat": "Name",
+              "samplingPercentage": 50
+            }
+          ],
+          "displayName": "Test Workspace 2",
+          "loggers": [
+            {
+              "description": "Azure Monitor logger for workspace 2",
+              "isBuffered": true,
+              "name": "ws2-logger",
+              "type": "azureMonitor"
+            }
+          ],
+          "name": "test-workspace-2",
+          "namedValues": [
+            {
+              "displayName": "Workspace 2 Config",
+              "name": "ws2-config-value",
+              "value": "workspace-2-config"
+            }
+          ],
+          "policies": [
+            {
+              "format": "rawxml",
+              "name": "ws2-policy",
+              "value": "<policies><inbound><set-header name=\"X-Workspace\" exists-action=\"override\"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
+            }
+          ],
+          "products": [
+            {
+              "apiLinks": [
+                {
+                  "apiId": "<apiId>",
+                  "name": "ws2-api-link"
+                }
+              ],
+              "displayName": "Workspace 2 Product",
+              "name": "ws2-product",
+              "state": "notPublished",
+              "subscriptionRequired": false
+            }
+          ],
+          "subscriptions": [
+            {
+              "allowTracing": false,
+              "displayName": "Workspace 2 Subscription",
+              "name": "ws2-subscription",
+              "scope": "/apis",
+              "state": "submitted"
+            }
+          ]
+        }
+      ]
     }
   }
 }
@@ -996,7 +1634,7 @@ param authorizationServers = [
     clientSecret: '<clientSecret>'
     displayName: 'AuthServer1'
     grantTypes: [
-      'authorizationCode'
+      'authorizationCodeWithPkce'
     ]
     name: 'AuthServer1'
     tokenEndpoint: '<tokenEndpoint>'
@@ -1141,6 +1779,7 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
+    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -1177,6 +1816,7 @@ param products = [
     policies: [
       {
         format: 'xml'
+        name: 'productPolicy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -1203,6 +1843,19 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param serviceDiagnostics = [
+  {
+    alwaysLog: 'allErrors'
+    httpCorrelationProtocol: 'W3C'
+    logClientIp: true
+    loggerId: '<loggerId>'
+    metrics: true
+    name: 'applicationinsights'
+    operationNameFormat: 'Url'
+    samplingPercentage: 100
+    verbosity: 'verbose'
+  }
+]
 param subnetResourceId = '<subnetResourceId>'
 param subscriptions = [
   {
@@ -1217,6 +1870,299 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkType = 'External'
+param workspaces = [
+  {
+    apis: [
+      {
+        apiRevision: '1'
+        apiRevisionDescription: 'Initial revision of workspace API'
+        apiType: 'http'
+        apiVersion: 'v1'
+        apiVersionDescription: 'Version 1 of workspace API'
+        description: 'Workspace Echo API for testing'
+        diagnostics: [
+          {
+            alwaysLog: 'allErrors'
+            httpCorrelationProtocol: 'W3C'
+            logClientIp: true
+            loggerName: 'workspace-logger'
+            metrics: true
+            name: 'applicationinsights'
+            operationNameFormat: 'Url'
+            samplingPercentage: 100
+            verbosity: 'verbose'
+          }
+        ]
+        displayName: 'Workspace Echo API'
+        format: 'openapi+json'
+        isCurrent: true
+        name: 'workspace-echo-api'
+        operations: [
+          {
+            description: 'Get resource operation'
+            displayName: 'Get Resource'
+            method: 'GET'
+            name: 'get-resource'
+            policies: [
+              {
+                format: 'xml'
+                name: 'operationPolicy'
+                value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+              }
+            ]
+            urlTemplate: '/resource'
+          }
+        ]
+        path: 'workspace-echo'
+        policies: [
+          {
+            format: 'xml'
+            name: 'workspaceApiPolicy'
+            value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
+          }
+        ]
+        protocols: [
+          'https'
+        ]
+        serviceUrl: 'http://echoapi.cloudapp.net/api'
+        subscriptionRequired: true
+        type: 'http'
+      }
+    ]
+    apiVersionSets: [
+      {
+        description: 'Version set for workspace APIs'
+        displayName: 'Workspace Version Set'
+        name: 'workspace-version-set'
+        versioningScheme: 'Segment'
+      }
+    ]
+    backends: [
+      {
+        credentials: {
+          authorization: {
+            parameter: 'd29ya3NwYWNlLWF1dGg='
+            scheme: 'Basic'
+          }
+          header: {
+            'x-workspace-header': [
+              'workspace-value'
+            ]
+          }
+        }
+        description: 'Backend for workspace APIs'
+        name: 'workspace-backend'
+        protocol: 'http'
+        title: 'Workspace Backend'
+        tls: {
+          validateCertificateChain: true
+          validateCertificateName: true
+        }
+        type: 'Single'
+        url: 'https://workspace-backend.example.com'
+      }
+    ]
+    description: 'A comprehensive test workspace with all child modules'
+    diagnostics: [
+      {
+        alwaysLog: 'allErrors'
+        httpCorrelationProtocol: 'W3C'
+        logClientIp: true
+        loggerId: '<loggerId>'
+        metrics: true
+        name: 'applicationinsights'
+        operationNameFormat: 'Url'
+        samplingPercentage: 100
+        verbosity: 'verbose'
+      }
+    ]
+    displayName: 'Test Workspace 1'
+    loggers: [
+      {
+        credentials: {
+          instrumentationKey: '<instrumentationKey>'
+        }
+        description: 'Workspace Application Insights Logger'
+        isBuffered: false
+        name: 'workspace-logger'
+        targetResourceId: '<targetResourceId>'
+        type: 'applicationInsights'
+      }
+    ]
+    name: 'test-workspace-1'
+    namedValues: [
+      {
+        displayName: 'Workspace Named Value'
+        name: 'workspace-named-value'
+        secret: true
+        tags: [
+          'max-test'
+          'test'
+        ]
+        value: 'workspace-secret-value'
+      }
+    ]
+    policies: [
+      {
+        format: 'xml'
+        name: 'workspace-policy'
+        value: '<policies><inbound><rate-limit-by-key calls=\'100\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+      }
+    ]
+    products: [
+      {
+        apiLinks: [
+          {
+            apiId: '<apiId>'
+            name: 'workspace-api-link'
+          }
+        ]
+        approvalRequired: true
+        description: 'A test product in workspace with all features'
+        displayName: 'Workspace Product'
+        groupLinks: [
+          {
+            groupId: '<groupId>'
+            name: 'workspace-group-link'
+          }
+        ]
+        name: 'workspace-product'
+        policies: [
+          {
+            format: 'xml'
+            name: 'workspace-product-policy'
+            value: '<policies><inbound><quota-by-key calls=\'1000\' renewal-period=\'3600\' counter-key=\'@(context.Subscription.Id)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+          }
+        ]
+        state: 'published'
+        subscriptionRequired: true
+        subscriptionsLimit: 5
+        terms: 'Terms and conditions for workspace product'
+      }
+    ]
+    subscriptions: [
+      {
+        allowTracing: true
+        displayName: 'Workspace Test Subscription'
+        name: 'workspace-subscription'
+        scope: '<scope>'
+        state: 'active'
+      }
+    ]
+  }
+  {
+    apis: [
+      {
+        displayName: 'Workspace Simple API'
+        name: 'workspace-simple-api'
+        path: 'workspace-simple'
+        protocols: [
+          'http'
+          'https'
+        ]
+        serviceUrl: 'https://simple-backend.example.com/api'
+        subscriptionRequired: false
+        type: 'http'
+      }
+      {
+        apiType: 'graphql'
+        description: 'GraphQL API in workspace'
+        displayName: 'Workspace GraphQL API'
+        name: 'workspace-graphql-api'
+        path: 'workspace-graphql'
+        protocols: [
+          'https'
+        ]
+        type: 'graphql'
+      }
+    ]
+    apiVersionSets: [
+      {
+        displayName: 'Workspace Version Set 2'
+        name: 'workspace-version-set-2'
+        versionHeaderName: 'api-version'
+        versioningScheme: 'Header'
+      }
+    ]
+    backends: [
+      {
+        description: 'Second workspace backend with minimal config'
+        name: 'workspace-backend-2'
+        type: 'Single'
+        url: 'https://backend2.example.com'
+      }
+      {
+        description: 'Pool backend in workspace'
+        name: 'workspace-pool-backend'
+        pool: {
+          services: [
+            {
+              id: '<id>'
+            }
+          ]
+        }
+        type: 'Pool'
+      }
+    ]
+    description: 'Second test workspace with minimal configuration'
+    diagnostics: [
+      {
+        loggerId: '<loggerId>'
+        metrics: true
+        name: 'applicationinsights'
+        operationNameFormat: 'Name'
+        samplingPercentage: 50
+      }
+    ]
+    displayName: 'Test Workspace 2'
+    loggers: [
+      {
+        description: 'Azure Monitor logger for workspace 2'
+        isBuffered: true
+        name: 'ws2-logger'
+        type: 'azureMonitor'
+      }
+    ]
+    name: 'test-workspace-2'
+    namedValues: [
+      {
+        displayName: 'Workspace 2 Config'
+        name: 'ws2-config-value'
+        value: 'workspace-2-config'
+      }
+    ]
+    policies: [
+      {
+        format: 'rawxml'
+        name: 'ws2-policy'
+        value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
+      }
+    ]
+    products: [
+      {
+        apiLinks: [
+          {
+            apiId: '<apiId>'
+            name: 'ws2-api-link'
+          }
+        ]
+        displayName: 'Workspace 2 Product'
+        name: 'ws2-product'
+        state: 'notPublished'
+        subscriptionRequired: false
+      }
+    ]
+    subscriptions: [
+      {
+        allowTracing: false
+        displayName: 'Workspace 2 Subscription'
+        name: 'ws2-subscription'
+        scope: '/apis'
+        state: 'submitted'
+      }
+    ]
+  }
+]
 ```
 
 </details>
@@ -1420,6 +2366,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
+        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -1437,6 +2384,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'xml'
+            name: 'productPolicy1'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -1711,6 +2659,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
+          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -1730,6 +2679,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "xml",
+              "name": "productPolicy1",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -1984,6 +2934,7 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
+    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -2001,6 +2952,7 @@ param products = [
     policies: [
       {
         format: 'xml'
+        name: 'productPolicy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -2279,6 +3231,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
+        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -2528,6 +3481,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
+          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -2759,6 +3713,7 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
+    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -2882,10 +3837,12 @@ param virtualNetworkType = 'None'
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`serviceDiagnostics`](#parameter-servicediagnostics) | array | API Management Service Diagnostics. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`workspaces`](#parameter-workspaces) | array | Workspaces. |
 
 ### Parameter: `name`
 
@@ -3148,7 +4105,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
 
@@ -3238,7 +4195,7 @@ APIs.
 | :-- | :-- | :-- |
 | [`apiRevision`](#parameter-apisapirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
 | [`apiRevisionDescription`](#parameter-apisapirevisiondescription) | string | Description of the API Revision. |
-| [`apiType`](#parameter-apisapitype) | string | Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API. |
+| [`apiType`](#parameter-apisapitype) | string | Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API. |
 | [`apiVersion`](#parameter-apisapiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
 | [`apiVersionDescription`](#parameter-apisapiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetName`](#parameter-apisapiversionsetname) | string | The name of the API version set to link. |
@@ -3249,13 +4206,14 @@ APIs.
 | [`isCurrent`](#parameter-apisiscurrent) | bool | Indicates if API revision is current API revision. |
 | [`operations`](#parameter-apisoperations) | array | The operations of the api. |
 | [`policies`](#parameter-apispolicies) | array | Array of Policies to apply to the Service API. |
-| [`protocols`](#parameter-apisprotocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
+| [`protocols`](#parameter-apisprotocols) | array | Describes on which protocols the operations in this API can be invoked. |
 | [`serviceUrl`](#parameter-apisserviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
 | [`sourceApiId`](#parameter-apissourceapiid) | string | API identifier of the source API. |
 | [`subscriptionKeyParameterNames`](#parameter-apissubscriptionkeyparameternames) | object | Protocols over which API is made available. |
 | [`subscriptionRequired`](#parameter-apissubscriptionrequired) | bool | Specifies whether an API or Product subscription is required for accessing the API. |
 | [`type`](#parameter-apistype) | string | Type of API. |
 | [`value`](#parameter-apisvalue) | string | Content value when Importing an API. |
+| [`wsdlSelector`](#parameter-apiswsdlselector) | object | Criteria to limit import of WSDL to a subset of the document. |
 
 ### Parameter: `apis.displayName`
 
@@ -3294,7 +4252,7 @@ Description of the API Revision.
 
 ### Parameter: `apis.apiType`
 
-Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.
+Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API.
 
 - Required: No
 - Type: string
@@ -3354,7 +4312,7 @@ Array of diagnostics to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerName`](#parameter-apisdiagnosticsloggername) | string | The name of the logger. |
+| [`loggerName`](#parameter-apisdiagnosticsloggername) | string | The name of the target logger. |
 
 **Conditional parameters**
 
@@ -3372,13 +4330,13 @@ Array of diagnostics to apply to the Service API.
 | [`backend`](#parameter-apisdiagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
 | [`frontend`](#parameter-apisdiagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-apisdiagnosticslogclientip) | bool | Log the ClientIP. |
-| [`name`](#parameter-apisdiagnosticsname) | string | Type of diagnostic resource. |
-| [`samplingPercentage`](#parameter-apisdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`name`](#parameter-apisdiagnosticsname) | string | The identifier of the Diagnostic. |
+| [`samplingPercentage`](#parameter-apisdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-apisdiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
 ### Parameter: `apis.diagnostics.loggerName`
 
-The name of the logger.
+The name of the target logger.
 
 - Required: Yes
 - Type: string
@@ -3415,7 +4373,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
 
@@ -3425,6 +4383,12 @@ Specifies for what type of messages sampling settings should not apply.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'allErrors'
+  ]
+  ```
 
 ### Parameter: `apis.diagnostics.backend`
 
@@ -3449,7 +4413,7 @@ Log the ClientIP.
 
 ### Parameter: `apis.diagnostics.name`
 
-Type of diagnostic resource.
+The identifier of the Diagnostic.
 
 - Required: No
 - Type: string
@@ -3464,10 +4428,12 @@ Type of diagnostic resource.
 
 ### Parameter: `apis.diagnostics.samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `apis.diagnostics.verbosity`
 
@@ -3493,6 +4459,11 @@ Format of the Content in which the API is getting imported.
 - Allowed:
   ```Bicep
   [
+    'graphql-link'
+    'grpc'
+    'grpc-link'
+    'odata'
+    'odata-link'
     'openapi'
     'openapi-link'
     'openapi+json'
@@ -3526,7 +4497,7 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-apisoperationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-apisoperationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
-| [`name`](#parameter-apisoperationsname) | string | The name of the policy. |
+| [`name`](#parameter-apisoperationsname) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-apisoperationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Optional parameters**
@@ -3536,7 +4507,7 @@ The operations of the api.
 | [`description`](#parameter-apisoperationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
 | [`policies`](#parameter-apisoperationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-apisoperationsrequest) | object | An entity containing request details. |
-| [`responses`](#parameter-apisoperationsresponses) | array | An entity containing request details. |
+| [`responses`](#parameter-apisoperationsresponses) | array | Array of Operation responses. |
 | [`templateParameters`](#parameter-apisoperationstemplateparameters) | array | Collection of URL template parameters. |
 
 ### Parameter: `apis.operations.displayName`
@@ -3555,7 +4526,7 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 
 ### Parameter: `apis.operations.name`
 
-The name of the policy.
+The name of the operation.
 
 - Required: Yes
 - Type: string
@@ -3585,25 +4556,14 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-apisoperationspoliciesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-apisoperationspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-apisoperationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
-### Parameter: `apis.operations.policies.format`
+**Optional parameters**
 
-Format of the policyContent.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'rawxml'
-    'rawxml-link'
-    'xml'
-    'xml-link'
-  ]
-  ```
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-apisoperationspoliciesformat) | string | Format of the policyContent. |
 
 ### Parameter: `apis.operations.policies.name`
 
@@ -3619,6 +4579,22 @@ Contents of the Policy as defined by the format.
 - Required: Yes
 - Type: string
 
+### Parameter: `apis.operations.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
 ### Parameter: `apis.operations.request`
 
 An entity containing request details.
@@ -3628,7 +4604,7 @@ An entity containing request details.
 
 ### Parameter: `apis.operations.responses`
 
-An entity containing request details.
+Array of Operation responses.
 
 - Required: No
 - Type: array
@@ -3651,6 +4627,7 @@ Array of Policies to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-apispoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-apispoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -3658,7 +4635,13 @@ Array of Policies to apply to the Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-apispoliciesformat) | string | Format of the policyContent. |
-| [`name`](#parameter-apispoliciesname) | string | The name of the policy. |
+
+### Parameter: `apis.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `apis.policies.value`
 
@@ -3683,19 +4666,21 @@ Format of the policyContent.
   ]
   ```
 
-### Parameter: `apis.policies.name`
-
-The name of the policy.
-
-- Required: No
-- Type: string
-
 ### Parameter: `apis.protocols`
 
-Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.
+Describes on which protocols the operations in this API can be invoked.
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'http'
+    'https'
+    'ws'
+    'wss'
+  ]
+  ```
 
 ### Parameter: `apis.serviceUrl`
 
@@ -3735,7 +4720,9 @@ Type of API.
   ```Bicep
   [
     'graphql'
+    'grpc'
     'http'
+    'odata'
     'soap'
     'websocket'
   ]
@@ -3747,6 +4734,13 @@ Content value when Importing an API.
 
 - Required: No
 - Type: string
+
+### Parameter: `apis.wsdlSelector`
+
+Criteria to limit import of WSDL to a subset of the document.
+
+- Required: No
+- Type: object
 
 ### Parameter: `apiVersionSets`
 
@@ -3843,7 +4837,7 @@ Authorization servers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationMethods`](#parameter-authorizationserversauthorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE. |
+| [`authorizationMethods`](#parameter-authorizationserversauthorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. |
 | [`bearerTokenSendingMethods`](#parameter-authorizationserversbearertokensendingmethods) | array | Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query. |
 | [`clientAuthenticationMethod`](#parameter-authorizationserversclientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
 | [`clientRegistrationEndpoint`](#parameter-authorizationserversclientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
@@ -3852,7 +4846,7 @@ Authorization servers.
 | [`resourceOwnerUsername`](#parameter-authorizationserversresourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
 | [`serverDescription`](#parameter-authorizationserversserverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
 | [`supportState`](#parameter-authorizationserverssupportstate) | bool | If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security. |
-| [`tokenBodyParameters`](#parameter-authorizationserverstokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object. |
+| [`tokenBodyParameters`](#parameter-authorizationserverstokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. |
 | [`tokenEndpoint`](#parameter-authorizationserverstokenendpoint) | string | OAuth token endpoint. Contains absolute URI to entity being referenced. |
 
 ### Parameter: `authorizationServers.authorizationEndpoint`
@@ -3909,7 +4903,7 @@ Identifier of the authorization server.
 
 ### Parameter: `authorizationServers.authorizationMethods`
 
-HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.
+HTTP verbs supported by the authorization endpoint. GET must be always present.
 
 - Required: No
 - Type: array
@@ -3972,7 +4966,7 @@ If true, authorization server will include state parameter from the authorizatio
 
 ### Parameter: `authorizationServers.tokenBodyParameters`
 
-Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.
+Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}.
 
 - Required: No
 - Type: array
@@ -4031,15 +5025,15 @@ Backends.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Properties. Not supported for Backend Pools. |
+| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Configuration. Not supported for Backend Pools. |
 | [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. Not supported for Backend Pools. |
 | [`description`](#parameter-backendsdescription) | string | Backend Description. |
-| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol, http or soap. Not supported for Backend Pools. |
+| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol. http or soap. Not supported for Backend Pools. |
 | [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
 | [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
 | [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
-| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. |
+| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
 | [`type`](#parameter-backendstype) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `backends.name`
@@ -4065,7 +5059,7 @@ Runtime URL of the Backend. Required if type is Single and not supported if type
 
 ### Parameter: `backends.circuitBreaker`
 
-Backend Circuit Breaker Properties. Not supported for Backend Pools.
+Backend Circuit Breaker Configuration. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -4086,7 +5080,7 @@ Backend Description.
 
 ### Parameter: `backends.protocol`
 
-Backend communication protocol, http or soap. Not supported for Backend Pools.
+Backend communication protocol. http or soap. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
@@ -4121,7 +5115,7 @@ Backend Title.
 
 ### Parameter: `backends.tls`
 
-Backend TLS Properties. Not supported for Backend Pools.
+Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.
 
 - Required: No
 - Type: object
@@ -4608,7 +5602,7 @@ Loggers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-loggersname) | string | Resource Name. |
+| [`name`](#parameter-loggersname) | string | Logger name. |
 | [`type`](#parameter-loggerstype) | string | Logger type. |
 
 **Conditional parameters**
@@ -4622,12 +5616,12 @@ Loggers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-loggersdescription) | string | Logger description. |
+| [`description`](#parameter-loggersdescription) | string | Description of the logger. |
 | [`isBuffered`](#parameter-loggersisbuffered) | bool | Whether records are buffered in the logger before publishing. |
 
 ### Parameter: `loggers.name`
 
-Resource Name.
+Logger name.
 
 - Required: Yes
 - Type: string
@@ -4663,7 +5657,7 @@ Azure Resource Id of a log target (either Azure Event Hub resource or Azure Appl
 
 ### Parameter: `loggers.description`
 
-Logger description.
+Description of the logger.
 
 - Required: No
 - Type: string
@@ -4729,8 +5723,8 @@ Named values.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVault`](#parameter-namedvalueskeyvault) | object | KeyVault location details of the namedValue. |
-| [`secret`](#parameter-namedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. Default value is false. |
-| [`tags`](#parameter-namedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. - string. |
+| [`secret`](#parameter-namedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
+| [`tags`](#parameter-namedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
 | [`value`](#parameter-namedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `namedValues.displayName`
@@ -4756,14 +5750,14 @@ KeyVault location details of the namedValue.
 
 ### Parameter: `namedValues.secret`
 
-Determines whether the value is a secret and should be encrypted or not. Default value is false.
+Determines whether the value is a secret and should be encrypted or not.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `namedValues.tags`
 
-Tags that when provided can be used to filter the NamedValue list. - string.
+Tags that when provided can be used to filter the NamedValue list.
 
 - Required: No
 - Type: array
@@ -4802,6 +5796,7 @@ Policies.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-policiesname) | string | The name of the policy. |
 | [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -4809,7 +5804,13 @@ Policies.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
-| [`name`](#parameter-policiesname) | string | The name of the policy. |
+
+### Parameter: `policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `policies.value`
 
@@ -4833,13 +5834,6 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
-
-### Parameter: `policies.name`
-
-The name of the policy.
-
-- Required: No
-- Type: string
 
 ### Parameter: `portalsettings`
 
@@ -5509,7 +6503,7 @@ Products.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-productsdisplayname) | string | API Management Service Products name. Must be 1 to 300 characters long. |
+| [`displayName`](#parameter-productsdisplayname) | string | Product display name. |
 | [`name`](#parameter-productsname) | string | Product Name. |
 
 **Optional parameters**
@@ -5517,18 +6511,18 @@ Products.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apis`](#parameter-productsapis) | array | Names of Product APIs. |
-| [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`description`](#parameter-productsdescription) | string | Product description. May include HTML formatting tags. |
 | [`groups`](#parameter-productsgroups) | array | Names of Product Groups. |
 | [`policies`](#parameter-productspolicies) | array | Array of Policies to apply to the Service Product. |
-| [`state`](#parameter-productsstate) | string | whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published. |
+| [`state`](#parameter-productsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. |
 | [`subscriptionRequired`](#parameter-productssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`terms`](#parameter-productsterms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
 
 ### Parameter: `products.displayName`
 
-API Management Service Products name. Must be 1 to 300 characters long.
+Product display name.
 
 - Required: Yes
 - Type: string
@@ -5549,7 +6543,7 @@ Names of Product APIs.
 
 ### Parameter: `products.approvalRequired`
 
-Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false.
+Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false.
 
 - Required: No
 - Type: bool
@@ -5579,6 +6573,7 @@ Array of Policies to apply to the Service Product.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-productspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -5586,7 +6581,13 @@ Array of Policies to apply to the Service Product.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-productspoliciesformat) | string | Format of the policyContent. |
-| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
+
+### Parameter: `products.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `products.policies.value`
 
@@ -5611,19 +6612,19 @@ Format of the policyContent.
   ]
   ```
 
-### Parameter: `products.policies.name`
-
-The name of the policy.
-
-- Required: No
-- Type: string
-
 ### Parameter: `products.state`
 
-whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published.
+Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'notPublished'
+    'published'
+  ]
+  ```
 
 ### Parameter: `products.subscriptionRequired`
 
@@ -5775,6 +6776,139 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `serviceDiagnostics`
+
+API Management Service Diagnostics.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerId`](#parameter-servicediagnosticsloggerid) | string | Logger resource ID. |
+| [`name`](#parameter-servicediagnosticsname) | string | Diagnostic Name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpCorrelationProtocol`](#parameter-servicediagnosticshttpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
+| [`metrics`](#parameter-servicediagnosticsmetrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alwaysLog`](#parameter-servicediagnosticsalwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
+| [`backend`](#parameter-servicediagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
+| [`frontend`](#parameter-servicediagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
+| [`logClientIp`](#parameter-servicediagnosticslogclientip) | bool | Log the ClientIP. |
+| [`operationNameFormat`](#parameter-servicediagnosticsoperationnameformat) | string | The format of the Operation Name for Application Insights telemetries. |
+| [`samplingPercentage`](#parameter-servicediagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
+| [`verbosity`](#parameter-servicediagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
+
+### Parameter: `serviceDiagnostics.loggerId`
+
+Logger resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceDiagnostics.name`
+
+Diagnostic Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceDiagnostics.httpCorrelationProtocol`
+
+Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'None'
+    'W3C'
+  ]
+  ```
+
+### Parameter: `serviceDiagnostics.metrics`
+
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
+
+- Required: No
+- Type: bool
+
+### Parameter: `serviceDiagnostics.alwaysLog`
+
+Specifies for what type of messages sampling settings should not apply.
+
+- Required: No
+- Type: string
+
+### Parameter: `serviceDiagnostics.backend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
+
+- Required: No
+- Type: object
+
+### Parameter: `serviceDiagnostics.frontend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
+
+- Required: No
+- Type: object
+
+### Parameter: `serviceDiagnostics.logClientIp`
+
+Log the ClientIP.
+
+- Required: No
+- Type: bool
+
+### Parameter: `serviceDiagnostics.operationNameFormat`
+
+The format of the Operation Name for Application Insights telemetries.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Name'
+    'Url'
+  ]
+  ```
+
+### Parameter: `serviceDiagnostics.samplingPercentage`
+
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
+
+- Required: No
+- Type: int
+
+### Parameter: `serviceDiagnostics.verbosity`
+
+The verbosity level applied to traces emitted by trace policies.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'error'
+    'information'
+    'verbose'
+  ]
+  ```
+
 ### Parameter: `sku`
 
 The pricing tier of this API Management service.
@@ -5814,7 +6948,7 @@ Subscriptions.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-subscriptionsdisplayname) | string | API Management Service Subscriptions name. Must be 1 to 100 characters long. |
+| [`displayName`](#parameter-subscriptionsdisplayname) | string | API Management Service Subscriptions name. |
 | [`name`](#parameter-subscriptionsname) | string | Subscription name. |
 
 **Optional parameters**
@@ -5824,13 +6958,13 @@ Subscriptions.
 | [`allowTracing`](#parameter-subscriptionsallowtracing) | bool | Determines whether tracing can be enabled. |
 | [`ownerId`](#parameter-subscriptionsownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
 | [`primaryKey`](#parameter-subscriptionsprimarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
-| [`scope`](#parameter-subscriptionsscope) | string | Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
+| [`scope`](#parameter-subscriptionsscope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
 | [`secondaryKey`](#parameter-subscriptionssecondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
-| [`state`](#parameter-subscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are "*" active "?" the subscription is active, "*" suspended "?" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled. |
+| [`state`](#parameter-subscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
 
 ### Parameter: `subscriptions.displayName`
 
-API Management Service Subscriptions name. Must be 1 to 100 characters long.
+API Management Service Subscriptions name.
 
 - Required: Yes
 - Type: string
@@ -5865,7 +6999,7 @@ Primary subscription key. If not specified during request key will be generated 
 
 ### Parameter: `subscriptions.scope`
 
-Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
+Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
 
 - Required: No
 - Type: string
@@ -5879,10 +7013,21 @@ Secondary subscription key. If not specified during request key will be generate
 
 ### Parameter: `subscriptions.state`
 
-Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are "*" active "?" the subscription is active, "*" suspended "?" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled.
+Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'active'
+    'cancelled'
+    'expired'
+    'rejected'
+    'submitted'
+    'suspended'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -5890,6 +7035,1436 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `workspaces`
+
+Workspaces.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesdisplayname) | string | Name of the workspace. |
+| [`name`](#parameter-workspacesname) | string | Workspace Name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`apis`](#parameter-workspacesapis) | array | APIs to deploy in this workspace. |
+| [`apiVersionSets`](#parameter-workspacesapiversionsets) | array | API Version Sets to deploy in this workspace. |
+| [`backends`](#parameter-workspacesbackends) | array | Backends to deploy in this workspace. |
+| [`description`](#parameter-workspacesdescription) | string | Description of the workspace. |
+| [`diagnostics`](#parameter-workspacesdiagnostics) | array | Diagnostics to deploy in this workspace. |
+| [`loggers`](#parameter-workspacesloggers) | array | Loggers to deploy in this workspace. |
+| [`namedValues`](#parameter-workspacesnamedvalues) | array | Named values to deploy in this workspace. |
+| [`policies`](#parameter-workspacespolicies) | array | Policies to deploy in this workspace. |
+| [`products`](#parameter-workspacesproducts) | array | Products to deploy in this workspace. |
+| [`subscriptions`](#parameter-workspacessubscriptions) | array | Subscriptions to deploy in this workspace. |
+
+### Parameter: `workspaces.displayName`
+
+Name of the workspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.name`
+
+Workspace Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis`
+
+APIs to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesapisdisplayname) | string | API display name. |
+| [`name`](#parameter-workspacesapisname) | string | API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number. |
+| [`path`](#parameter-workspacesapispath) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`apiRevision`](#parameter-workspacesapisapirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
+| [`apiRevisionDescription`](#parameter-workspacesapisapirevisiondescription) | string | Description of the API Revision. |
+| [`apiType`](#parameter-workspacesapisapitype) | string | Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API. |
+| [`apiVersion`](#parameter-workspacesapisapiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
+| [`apiVersionDescription`](#parameter-workspacesapisapiversiondescription) | string | Description of the API Version. |
+| [`apiVersionSetName`](#parameter-workspacesapisapiversionsetname) | string | The name of the API version set to link. |
+| [`authenticationSettings`](#parameter-workspacesapisauthenticationsettings) | object | Collection of authentication settings included into this API. |
+| [`description`](#parameter-workspacesapisdescription) | string | Description of the API. May include HTML formatting tags. |
+| [`diagnostics`](#parameter-workspacesapisdiagnostics) | array | Array of diagnostics to apply to the Service API. |
+| [`format`](#parameter-workspacesapisformat) | string | Format of the Content in which the API is getting imported. |
+| [`isCurrent`](#parameter-workspacesapisiscurrent) | bool | Indicates if API revision is current API revision. |
+| [`operations`](#parameter-workspacesapisoperations) | array | The operations of the api. |
+| [`policies`](#parameter-workspacesapispolicies) | array | Array of Policies to apply to the Service API. |
+| [`protocols`](#parameter-workspacesapisprotocols) | array | Describes on which protocols the operations in this API can be invoked. |
+| [`serviceUrl`](#parameter-workspacesapisserviceurl) | string | Absolute URL of the backend service implementing this API. |
+| [`sourceApiId`](#parameter-workspacesapissourceapiid) | string | API identifier of the source API. |
+| [`subscriptionKeyParameterNames`](#parameter-workspacesapissubscriptionkeyparameternames) | object | Protocols over which API is made available. |
+| [`subscriptionRequired`](#parameter-workspacesapissubscriptionrequired) | bool | Specifies whether an API or Product subscription is required for accessing the API. |
+| [`type`](#parameter-workspacesapistype) | string | Type of API. |
+| [`value`](#parameter-workspacesapisvalue) | string | Content value when Importing an API. |
+| [`wsdlSelector`](#parameter-workspacesapiswsdlselector) | object | Criteria to limit import of WSDL to a subset of the document. |
+
+### Parameter: `workspaces.apis.displayName`
+
+API display name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.name`
+
+API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.path`
+
+Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.apiRevision`
+
+Describes the Revision of the API. If no value is provided, default revision 1 is created.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.apiRevisionDescription`
+
+Description of the API Revision.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.apiType`
+
+Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql'
+    'http'
+    'soap'
+    'websocket'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.apiVersion`
+
+Indicates the Version identifier of the API if the API is versioned.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.apiVersionDescription`
+
+Description of the API Version.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.apiVersionSetName`
+
+The name of the API version set to link.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.authenticationSettings`
+
+Collection of authentication settings included into this API.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apis.description`
+
+Description of the API. May include HTML formatting tags.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.diagnostics`
+
+Array of diagnostics to apply to the Service API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerName`](#parameter-workspacesapisdiagnosticsloggername) | string | The name of the target logger. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpCorrelationProtocol`](#parameter-workspacesapisdiagnosticshttpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
+| [`metrics`](#parameter-workspacesapisdiagnosticsmetrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+| [`operationNameFormat`](#parameter-workspacesapisdiagnosticsoperationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alwaysLog`](#parameter-workspacesapisdiagnosticsalwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
+| [`backend`](#parameter-workspacesapisdiagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
+| [`frontend`](#parameter-workspacesapisdiagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
+| [`logClientIp`](#parameter-workspacesapisdiagnosticslogclientip) | bool | Log the ClientIP. |
+| [`name`](#parameter-workspacesapisdiagnosticsname) | string | The identifier of the Diagnostic. |
+| [`samplingPercentage`](#parameter-workspacesapisdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
+| [`verbosity`](#parameter-workspacesapisdiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
+
+### Parameter: `workspaces.apis.diagnostics.loggerName`
+
+The name of the target logger.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.diagnostics.httpCorrelationProtocol`
+
+Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'None'
+    'W3C'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.diagnostics.metrics`
+
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.apis.diagnostics.operationNameFormat`
+
+The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Name'
+    'Url'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.diagnostics.alwaysLog`
+
+Specifies for what type of messages sampling settings should not apply.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'allErrors'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.diagnostics.backend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apis.diagnostics.frontend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apis.diagnostics.logClientIp`
+
+Log the ClientIP.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.apis.diagnostics.name`
+
+The identifier of the Diagnostic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationinsights'
+    'azuremonitor'
+    'local'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.diagnostics.samplingPercentage`
+
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 100
+
+### Parameter: `workspaces.apis.diagnostics.verbosity`
+
+The verbosity level applied to traces emitted by trace policies.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'error'
+    'information'
+    'verbose'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.format`
+
+Format of the Content in which the API is getting imported.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql-link'
+    'grpc'
+    'grpc-link'
+    'odata'
+    'odata-link'
+    'openapi'
+    'openapi-link'
+    'openapi+json'
+    'openapi+json-link'
+    'swagger-json'
+    'swagger-link-json'
+    'wadl-link-json'
+    'wadl-xml'
+    'wsdl'
+    'wsdl-link'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.isCurrent`
+
+Indicates if API revision is current API revision.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.apis.operations`
+
+The operations of the api.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesapisoperationsdisplayname) | string | The display name of the operation. |
+| [`method`](#parameter-workspacesapisoperationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
+| [`name`](#parameter-workspacesapisoperationsname) | string | The name of the operation. |
+| [`urlTemplate`](#parameter-workspacesapisoperationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-workspacesapisoperationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
+| [`policies`](#parameter-workspacesapisoperationspolicies) | array | The policies to apply to the operation. |
+| [`request`](#parameter-workspacesapisoperationsrequest) | object | An entity containing request details. |
+| [`responses`](#parameter-workspacesapisoperationsresponses) | array | Array of Operation responses. |
+| [`templateParameters`](#parameter-workspacesapisoperationstemplateparameters) | array | Collection of URL template parameters. |
+
+### Parameter: `workspaces.apis.operations.displayName`
+
+The display name of the operation.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.method`
+
+A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.name`
+
+The name of the operation.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.urlTemplate`
+
+Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.description`
+
+Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.operations.policies`
+
+The policies to apply to the operation.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesapisoperationspoliciesname) | string | The name of the policy. |
+| [`value`](#parameter-workspacesapisoperationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-workspacesapisoperationspoliciesformat) | string | Format of the policyContent. |
+
+### Parameter: `workspaces.apis.operations.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.operations.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.operations.request`
+
+An entity containing request details.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apis.operations.responses`
+
+Array of Operation responses.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaces.apis.operations.templateParameters`
+
+Collection of URL template parameters.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaces.apis.policies`
+
+Array of Policies to apply to the Service API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesapispoliciesname) | string | The name of the policy. |
+| [`value`](#parameter-workspacesapispoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-workspacesapispoliciesformat) | string | Format of the policyContent. |
+
+### Parameter: `workspaces.apis.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apis.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.protocols`
+
+Describes on which protocols the operations in this API can be invoked.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaces.apis.serviceUrl`
+
+Absolute URL of the backend service implementing this API.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.sourceApiId`
+
+API identifier of the source API.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.subscriptionKeyParameterNames`
+
+Protocols over which API is made available.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apis.subscriptionRequired`
+
+Specifies whether an API or Product subscription is required for accessing the API.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.apis.type`
+
+Type of API.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql'
+    'grpc'
+    'http'
+    'odata'
+    'soap'
+    'websocket'
+  ]
+  ```
+
+### Parameter: `workspaces.apis.value`
+
+Content value when Importing an API.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apis.wsdlSelector`
+
+Criteria to limit import of WSDL to a subset of the document.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.apiVersionSets`
+
+API Version Sets to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesapiversionsetsdisplayname) | string | The display name of the API Version Set. |
+| [`name`](#parameter-workspacesapiversionsetsname) | string | API Version set name. |
+| [`versioningScheme`](#parameter-workspacesapiversionsetsversioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-workspacesapiversionsetsdescription) | string | Description of API Version Set. |
+| [`versionHeaderName`](#parameter-workspacesapiversionsetsversionheadername) | string | Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header. |
+| [`versionQueryName`](#parameter-workspacesapiversionsetsversionqueryname) | string | Name of query parameter that indicates the API Version if versioningScheme is set to query. |
+
+### Parameter: `workspaces.apiVersionSets.displayName`
+
+The display name of the API Version Set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apiVersionSets.name`
+
+API Version set name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.apiVersionSets.versioningScheme`
+
+An value that determines where the API Version identifier will be located in a HTTP request.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Header'
+    'Query'
+    'Segment'
+  ]
+  ```
+
+### Parameter: `workspaces.apiVersionSets.description`
+
+Description of API Version Set.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apiVersionSets.versionHeaderName`
+
+Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.apiVersionSets.versionQueryName`
+
+Name of query parameter that indicates the API Version if versioningScheme is set to query.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends`
+
+Backends to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesbackendsname) | string | Backend Name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pool`](#parameter-workspacesbackendspool) | object | Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single. |
+| [`url`](#parameter-workspacesbackendsurl) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`circuitBreaker`](#parameter-workspacesbackendscircuitbreaker) | object | Backend Circuit Breaker Configuration. Not supported for Backend Pools. |
+| [`credentials`](#parameter-workspacesbackendscredentials) | object | Backend Credentials Contract Properties. Not supported for Backend Pools. |
+| [`description`](#parameter-workspacesbackendsdescription) | string | Backend Description. |
+| [`protocol`](#parameter-workspacesbackendsprotocol) | string | Backend communication protocol. http or soap. Not supported for Backend Pools. |
+| [`proxy`](#parameter-workspacesbackendsproxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-workspacesbackendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`serviceFabricCluster`](#parameter-workspacesbackendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
+| [`title`](#parameter-workspacesbackendstitle) | string | Backend Title. |
+| [`tls`](#parameter-workspacesbackendstls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
+| [`type`](#parameter-workspacesbackendstype) | string | Type of the backend. A backend can be either Single or Pool. |
+
+### Parameter: `workspaces.backends.name`
+
+Backend Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.backends.pool`
+
+Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.url`
+
+Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends.circuitBreaker`
+
+Backend Circuit Breaker Configuration. Not supported for Backend Pools.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.credentials`
+
+Backend Credentials Contract Properties. Not supported for Backend Pools.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.description`
+
+Backend Description.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends.protocol`
+
+Backend communication protocol. http or soap. Not supported for Backend Pools.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends.proxy`
+
+Backend Proxy Contract Properties. Not supported for Backend Pools.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.resourceId`
+
+Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends.serviceFabricCluster`
+
+Backend Service Fabric Cluster Properties. Not supported for Backend Pools.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.title`
+
+Backend Title.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.backends.tls`
+
+Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.backends.type`
+
+Type of the backend. A backend can be either Single or Pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Pool'
+    'Single'
+  ]
+  ```
+
+### Parameter: `workspaces.description`
+
+Description of the workspace.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnostics`
+
+Diagnostics to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerId`](#parameter-workspacesdiagnosticsloggerid) | string | Logger resource ID. |
+| [`name`](#parameter-workspacesdiagnosticsname) | string | Diagnostic Name. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpCorrelationProtocol`](#parameter-workspacesdiagnosticshttpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
+| [`metrics`](#parameter-workspacesdiagnosticsmetrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alwaysLog`](#parameter-workspacesdiagnosticsalwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
+| [`backend`](#parameter-workspacesdiagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
+| [`frontend`](#parameter-workspacesdiagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
+| [`logClientIp`](#parameter-workspacesdiagnosticslogclientip) | bool | Log the ClientIP. |
+| [`operationNameFormat`](#parameter-workspacesdiagnosticsoperationnameformat) | string | The format of the Operation Name for Application Insights telemetries. |
+| [`samplingPercentage`](#parameter-workspacesdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
+| [`verbosity`](#parameter-workspacesdiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
+
+### Parameter: `workspaces.diagnostics.loggerId`
+
+Logger resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.diagnostics.name`
+
+Diagnostic Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.diagnostics.httpCorrelationProtocol`
+
+Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'None'
+    'W3C'
+  ]
+  ```
+
+### Parameter: `workspaces.diagnostics.metrics`
+
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.diagnostics.alwaysLog`
+
+Specifies for what type of messages sampling settings should not apply.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnostics.backend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.diagnostics.frontend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.diagnostics.logClientIp`
+
+Log the ClientIP.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.diagnostics.operationNameFormat`
+
+The format of the Operation Name for Application Insights telemetries.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Name'
+    'Url'
+  ]
+  ```
+
+### Parameter: `workspaces.diagnostics.samplingPercentage`
+
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
+
+- Required: No
+- Type: int
+
+### Parameter: `workspaces.diagnostics.verbosity`
+
+The verbosity level applied to traces emitted by trace policies.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'error'
+    'information'
+    'verbose'
+  ]
+  ```
+
+### Parameter: `workspaces.loggers`
+
+Loggers to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesloggersname) | string | Logger name. |
+| [`type`](#parameter-workspacesloggerstype) | string | Logger type. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentials`](#parameter-workspacesloggerscredentials) | object | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor. |
+| [`targetResourceId`](#parameter-workspacesloggerstargetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-workspacesloggersdescription) | string | Description of the logger. |
+| [`isBuffered`](#parameter-workspacesloggersisbuffered) | bool | Whether records are buffered in the logger before publishing. |
+
+### Parameter: `workspaces.loggers.name`
+
+Logger name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.loggers.type`
+
+Logger type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationInsights'
+    'azureEventHub'
+    'azureMonitor'
+  ]
+  ```
+
+### Parameter: `workspaces.loggers.credentials`
+
+The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.loggers.targetResourceId`
+
+Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.loggers.description`
+
+Description of the logger.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.loggers.isBuffered`
+
+Whether records are buffered in the logger before publishing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.namedValues`
+
+Named values to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesnamedvaluesdisplayname) | string | Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters. |
+| [`name`](#parameter-workspacesnamedvaluesname) | string | The name of the named value. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVault`](#parameter-workspacesnamedvalueskeyvault) | object | KeyVault location details of the namedValue. |
+| [`secret`](#parameter-workspacesnamedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
+| [`tags`](#parameter-workspacesnamedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
+| [`value`](#parameter-workspacesnamedvaluesvalue) | string | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+
+### Parameter: `workspaces.namedValues.displayName`
+
+Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.namedValues.name`
+
+The name of the named value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.namedValues.keyVault`
+
+KeyVault location details of the namedValue.
+
+- Required: No
+- Type: object
+
+### Parameter: `workspaces.namedValues.secret`
+
+Determines whether the value is a secret and should be encrypted or not.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.namedValues.tags`
+
+Tags that when provided can be used to filter the NamedValue list.
+
+- Required: No
+- Type: array
+
+### Parameter: `workspaces.namedValues.value`
+
+Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.policies`
+
+Policies to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacespoliciesname) | string | The name of the policy. |
+| [`value`](#parameter-workspacespoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-workspacespoliciesformat) | string | Format of the policyContent. |
+
+### Parameter: `workspaces.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `workspaces.products`
+
+Products to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacesproductsdisplayname) | string | Product display name. |
+| [`name`](#parameter-workspacesproductsname) | string | Product Name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`apiLinks`](#parameter-workspacesproductsapilinks) | array | Names of Product API Links. |
+| [`approvalRequired`](#parameter-workspacesproductsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`description`](#parameter-workspacesproductsdescription) | string | Product description. May include HTML formatting tags. |
+| [`groupLinks`](#parameter-workspacesproductsgrouplinks) | array | Names of Product Group Links. |
+| [`policies`](#parameter-workspacesproductspolicies) | array | Array of Policies to apply to the Product. |
+| [`state`](#parameter-workspacesproductsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. |
+| [`subscriptionRequired`](#parameter-workspacesproductssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
+| [`subscriptionsLimit`](#parameter-workspacesproductssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`terms`](#parameter-workspacesproductsterms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
+
+### Parameter: `workspaces.products.displayName`
+
+Product display name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.name`
+
+Product Name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.apiLinks`
+
+Names of Product API Links.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`apiId`](#parameter-workspacesproductsapilinksapiid) | string | Full resource Id of an API. |
+| [`name`](#parameter-workspacesproductsapilinksname) | string | The name of the API link. |
+
+### Parameter: `workspaces.products.apiLinks.apiId`
+
+Full resource Id of an API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.apiLinks.name`
+
+The name of the API link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.approvalRequired`
+
+Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.products.description`
+
+Product description. May include HTML formatting tags.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.products.groupLinks`
+
+Names of Product Group Links.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupId`](#parameter-workspacesproductsgrouplinksgroupid) | string | Full resource Id of a Group. |
+| [`name`](#parameter-workspacesproductsgrouplinksname) | string | The name of the Product Group link. |
+
+### Parameter: `workspaces.products.groupLinks.groupId`
+
+Full resource Id of a Group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.groupLinks.name`
+
+The name of the Product Group link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.policies`
+
+Array of Policies to apply to the Product.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesproductspoliciesname) | string | The name of the policy. |
+| [`value`](#parameter-workspacesproductspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-workspacesproductspoliciesformat) | string | Format of the policyContent. |
+
+### Parameter: `workspaces.products.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.products.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `workspaces.products.state`
+
+Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'notPublished'
+    'published'
+  ]
+  ```
+
+### Parameter: `workspaces.products.subscriptionRequired`
+
+Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.products.subscriptionsLimit`
+
+Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.
+
+- Required: No
+- Type: int
+
+### Parameter: `workspaces.products.terms`
+
+Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.subscriptions`
+
+Subscriptions to deploy in this workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-workspacessubscriptionsdisplayname) | string | API Management Service Subscriptions name. |
+| [`name`](#parameter-workspacessubscriptionsname) | string | Subscription name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowTracing`](#parameter-workspacessubscriptionsallowtracing) | bool | Determines whether tracing can be enabled. |
+| [`ownerId`](#parameter-workspacessubscriptionsownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
+| [`primaryKey`](#parameter-workspacessubscriptionsprimarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
+| [`scope`](#parameter-workspacessubscriptionsscope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
+| [`secondaryKey`](#parameter-workspacessubscriptionssecondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
+| [`state`](#parameter-workspacessubscriptionsstate) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
+
+### Parameter: `workspaces.subscriptions.displayName`
+
+API Management Service Subscriptions name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.subscriptions.name`
+
+Subscription name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.subscriptions.allowTracing`
+
+Determines whether tracing can be enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.subscriptions.ownerId`
+
+User (user ID path) for whom subscription is being created in form /users/{userId}.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.subscriptions.primaryKey`
+
+Primary subscription key. If not specified during request key will be generated automatically.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.subscriptions.scope`
+
+Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.subscriptions.secondaryKey`
+
+Secondary subscription key. If not specified during request key will be generated automatically.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.subscriptions.state`
+
+Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'active'
+    'cancelled'
+    'expired'
+    'rejected'
+    'submitted'
+    'suspended'
+  ]
+  ```
 
 ## Outputs
 

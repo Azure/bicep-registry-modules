@@ -6,15 +6,138 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17235898395615643560"
+      "templateHash": "16259167222978938720"
     },
     "name": "API Management Workspace APIs",
     "description": "This module deploys an API in an API Management Workspace."
   },
   "definitions": {
+    "operationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the operation."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The display name of the operation."
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.policyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The policies to apply to the operation."
+          }
+        },
+        "method": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
+          }
+        },
+        "urlTemplate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "metadata": {
+            "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 1000,
+          "metadata": {
+            "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
+          }
+        },
+        "request": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/request"
+            },
+            "description": "Optional. An entity containing request details."
+          },
+          "nullable": true
+        },
+        "responses": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/responses"
+            },
+            "description": "Optional. Array of Operation responses."
+          },
+          "nullable": true
+        },
+        "templateParameters": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
+            },
+            "description": "Optional. Collection of URL template parameters."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an operation."
+      }
+    },
+    "policyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a policy."
+      }
+    },
     "diagnosticType": {
       "type": "object",
       "properties": {
+        "loggerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the target logger."
+          }
+        },
         "name": {
           "type": "string",
           "allowedValues": [
@@ -24,13 +147,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. The identifier of the Diagnostic."
-          }
-        },
-        "loggerName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Resource Id of a target logger."
+            "description": "Optional. The identifier of the Diagnostic."
           }
         },
         "alwaysLog": {
@@ -38,6 +155,7 @@
           "allowedValues": [
             "allErrors"
           ],
+          "nullable": true,
           "metadata": {
             "description": "Optional. Specifies for what type of messages sampling settings should not apply."
           }
@@ -94,6 +212,7 @@
             "Name",
             "Url"
           ],
+          "nullable": true,
           "metadata": {
             "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
           }
@@ -122,93 +241,10 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type of a diagnostic."
+        "description": "The type of a diagnostic configuration."
       }
     },
-    "operationType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Operation Name."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The display name of the operation."
-          }
-        },
-        "method": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
-          }
-        },
-        "urlTemplate": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1000,
-          "metadata": {
-            "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 1000,
-          "metadata": {
-            "description": "Optional. Description of the operation."
-          }
-        },
-        "request": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/request"
-            },
-            "description": "Optional. An entity containing request details."
-          },
-          "nullable": true
-        },
-        "responses": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/responses"
-            },
-            "description": "Optional. Array of Operation responses."
-          },
-          "nullable": true
-        },
-        "templateParameters": {
-          "type": "array",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
-            },
-            "description": "Optional. Collection of URL template parameters."
-          },
-          "nullable": true
-        },
-        "policies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.policyType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Array of Policies to apply to the operation."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of an operation."
-      }
-    },
-    "policyType": {
+    "_1.policyType": {
       "type": "object",
       "properties": {
         "name": {
@@ -238,39 +274,6 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of a policy."
-      }
-    },
-    "_1.policyType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the policy."
-          }
-        },
-        "format": {
-          "type": "string",
-          "allowedValues": [
-            "rawxml",
-            "rawxml-link",
-            "xml",
-            "xml-link"
-          ],
-          "metadata": {
-            "description": "Required. Format of the policyContent."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Contents of the Policy as defined by the format."
-          }
-        }
-      },
-      "metadata": {
         "description": "The type of a policy.",
         "__bicep_imported_from!": {
           "sourceTemplate": "operation/main.bicep"
@@ -279,22 +282,24 @@
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. API revision identifier."
-      }
-    },
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Workspace."
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Required. API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number."
       }
     },
     "policies": {
@@ -330,13 +335,16 @@
     "apiRevision": {
       "type": "string",
       "nullable": true,
+      "minLength": 1,
+      "maxLength": 100,
       "metadata": {
-        "description": "Optional. Describes the Revision of the API."
+        "description": "Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created."
       }
     },
     "apiRevisionDescription": {
       "type": "string",
       "nullable": true,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Description of the API Revision."
       }
@@ -351,12 +359,13 @@
         "websocket"
       ],
       "metadata": {
-        "description": "Optional. Type of API to create."
+        "description": "Optional. Type of API to create.\n* `http` creates a REST API\n* `soap` creates a SOAP pass-through API\n* `websocket` creates websocket API\n* `graphql` creates GraphQL API."
       }
     },
     "apiVersion": {
       "type": "string",
       "nullable": true,
+      "maxLength": 100,
       "metadata": {
         "description": "Optional. Indicates the Version identifier of the API if the API is versioned."
       }
@@ -364,6 +373,7 @@
     "apiVersionDescription": {
       "type": "string",
       "nullable": true,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Description of the API Version."
       }
@@ -396,16 +406,21 @@
       "type": "string",
       "defaultValue": "openapi",
       "allowedValues": [
-        "wadl-xml",
-        "wadl-link-json",
-        "swagger-json",
-        "swagger-link-json",
-        "wsdl",
-        "wsdl-link",
+        "graphql-link",
+        "grpc",
+        "grpc-link",
+        "odata",
+        "odata-link",
         "openapi",
         "openapi+json",
+        "openapi+json-link",
         "openapi-link",
-        "openapi+json-link"
+        "swagger-json",
+        "swagger-link-json",
+        "wadl-link-json",
+        "wadl-xml",
+        "wsdl",
+        "wsdl-link"
       ],
       "metadata": {
         "description": "Optional. Format of the Content in which the API is getting imported."
@@ -420,8 +435,9 @@
     },
     "path": {
       "type": "string",
+      "maxLength": 400,
       "metadata": {
-        "description": "Required. Relative URL uniquely identifying this API."
+        "description": "Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API."
       }
     },
     "protocols": {
@@ -431,6 +447,12 @@
       },
       "defaultValue": [
         "https"
+      ],
+      "allowedValues": [
+        "http",
+        "https",
+        "ws",
+        "wss"
       ],
       "metadata": {
         "description": "Optional. Describes on which protocols the operations in this API can be invoked."
@@ -480,7 +502,9 @@
       "defaultValue": "http",
       "allowedValues": [
         "graphql",
+        "grpc",
         "http",
+        "odata",
         "soap",
         "websocket"
       ],
@@ -553,401 +577,6 @@
         "wsdlSelector": "[coalesce(parameters('wsdlSelector'), createObject())]"
       }
     },
-    "api_operations": {
-      "copy": {
-        "name": "api_operations",
-        "count": "[length(coalesce(parameters('operations'), createArray()))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-operation-{1}', deployment().name, copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "apiManagementServiceName": {
-            "value": "[parameters('apiManagementServiceName')]"
-          },
-          "workspaceName": {
-            "value": "[parameters('workspaceName')]"
-          },
-          "apiName": {
-            "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].name]"
-          },
-          "displayName": {
-            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].displayName]"
-          },
-          "method": {
-            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].method]"
-          },
-          "urlTemplate": {
-            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].urlTemplate]"
-          },
-          "description": {
-            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'description')]"
-          },
-          "policies": {
-            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'policies')]"
-          },
-          "request": {
-            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'request')]"
-          },
-          "responses": {
-            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'responses')]"
-          },
-          "templateParameters": {
-            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'templateParameters')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "4342021851337199938"
-            },
-            "name": "API Management Workspace API Operations",
-            "description": "This module deploys an API Operation under an API Management Workspace."
-          },
-          "definitions": {
-            "policyType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the policy."
-                  }
-                },
-                "format": {
-                  "type": "string",
-                  "allowedValues": [
-                    "rawxml",
-                    "rawxml-link",
-                    "xml",
-                    "xml-link"
-                  ],
-                  "metadata": {
-                    "description": "Required. Format of the policyContent."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Contents of the Policy as defined by the format."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type of a policy."
-              }
-            }
-          },
-          "parameters": {
-            "apiManagementServiceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent API Management service."
-              }
-            },
-            "workspaceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent Workspace."
-              }
-            },
-            "apiName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent API."
-              }
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the operation."
-              }
-            },
-            "displayName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The display name of the operation."
-              }
-            },
-            "method": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. A Valid HTTP Operation Method."
-              }
-            },
-            "urlTemplate": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 1000,
-              "metadata": {
-                "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
-              }
-            },
-            "description": {
-              "type": "string",
-              "nullable": true,
-              "maxLength": 1000,
-              "metadata": {
-                "description": "Optional. Description of the operation."
-              }
-            },
-            "request": {
-              "type": "object",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/request"
-                },
-                "description": "Optional. An entity containing request details."
-              },
-              "nullable": true
-            },
-            "responses": {
-              "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/responses"
-                },
-                "description": "Optional. An entity containing request details."
-              },
-              "nullable": true
-            },
-            "templateParameters": {
-              "type": "array",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
-                },
-                "description": "Optional. Collection of URL template parameters."
-              },
-              "nullable": true
-            },
-            "policies": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/policyType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The policies to apply to the operation."
-              }
-            }
-          },
-          "resources": {
-            "service::workspace::api": {
-              "existing": true,
-              "type": "Microsoft.ApiManagement/service/workspaces/apis",
-              "apiVersion": "2024-05-01",
-              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'))]"
-            },
-            "service::workspace": {
-              "existing": true,
-              "type": "Microsoft.ApiManagement/service/workspaces",
-              "apiVersion": "2024-05-01",
-              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
-            },
-            "service": {
-              "existing": true,
-              "type": "Microsoft.ApiManagement/service",
-              "apiVersion": "2024-05-01",
-              "name": "[parameters('apiManagementServiceName')]"
-            },
-            "operation": {
-              "type": "Microsoft.ApiManagement/service/workspaces/apis/operations",
-              "apiVersion": "2024-05-01",
-              "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
-              "properties": {
-                "displayName": "[parameters('displayName')]",
-                "method": "[parameters('method')]",
-                "urlTemplate": "[parameters('urlTemplate')]",
-                "description": "[parameters('description')]",
-                "request": "[parameters('request')]",
-                "responses": "[parameters('responses')]",
-                "templateParameters": "[parameters('templateParameters')]"
-              }
-            },
-            "operation_policies": {
-              "copy": {
-                "name": "operation_policies",
-                "count": "[length(coalesce(parameters('policies'), createArray()))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "apiManagementServiceName": {
-                    "value": "[parameters('apiManagementServiceName')]"
-                  },
-                  "workspaceName": {
-                    "value": "[parameters('workspaceName')]"
-                  },
-                  "apiName": {
-                    "value": "[parameters('apiName')]"
-                  },
-                  "operationName": {
-                    "value": "[parameters('name')]"
-                  },
-                  "name": {
-                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
-                  },
-                  "format": {
-                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
-                  },
-                  "value": {
-                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "8751048426992393895"
-                    },
-                    "name": "API Management Workspace API Operation Policies",
-                    "description": "This module deploys an API Operation Policy in an API Management Workspace."
-                  },
-                  "parameters": {
-                    "apiManagementServiceName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent API Management service."
-                      }
-                    },
-                    "workspaceName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Workspace."
-                      }
-                    },
-                    "apiName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent API."
-                      }
-                    },
-                    "operationName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Operation."
-                      }
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the policy."
-                      }
-                    },
-                    "format": {
-                      "type": "string",
-                      "defaultValue": "xml",
-                      "allowedValues": [
-                        "rawxml",
-                        "rawxml-link",
-                        "xml",
-                        "xml-link"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Format of the policyContent."
-                      }
-                    },
-                    "value": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Contents of the Policy as defined by the format."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.ApiManagement/service/workspaces/apis/operations/policies",
-                      "apiVersion": "2024-05-01",
-                      "name": "[format('{0}/{1}/{2}/{3}/{4}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
-                      "properties": {
-                        "format": "[parameters('format')]",
-                        "value": "[parameters('value')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the workspace API operation policy."
-                      },
-                      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/apis/operations/policies', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the workspace API operation policy."
-                      },
-                      "value": "[parameters('name')]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the workspace API operation policy was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "operation"
-              ]
-            }
-          },
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the operation."
-              },
-              "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/apis/operations', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the operation."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the operation was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "api"
-      ]
-    },
     "api_policies": {
       "copy": {
         "name": "api_policies",
@@ -962,6 +591,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+          },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"
           },
@@ -970,9 +602,6 @@
           },
           "apiName": {
             "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
           },
           "format": {
             "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
@@ -988,7 +617,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "8685064673241317149"
+              "templateHash": "11615305903211709445"
             },
             "name": "API Management Workspace APIs Policies",
             "description": "This module deploys an API Policy in an API Management Workspace."
@@ -997,19 +626,19 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Workspace."
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "apiName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent API."
+                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -1092,6 +721,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
+          },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"
           },
@@ -1100,9 +732,6 @@
           },
           "apiName": {
             "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'name')]"
           },
           "loggerName": {
             "value": "[coalesce(parameters('diagnostics'), createArray())[copyIndex()].loggerName]"
@@ -1143,7 +772,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "17726281198772286602"
+              "templateHash": "15670376638740090520"
             },
             "name": "API Management Workspace APIs Diagnostics",
             "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -1152,19 +781,25 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent Workspace."
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "apiName": {
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the parent API."
+              }
+            },
+            "loggerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the logger."
               }
             },
             "name": {
@@ -1177,12 +812,6 @@
               ],
               "metadata": {
                 "description": "Optional. Name of diagnostic resource."
-              }
-            },
-            "loggerName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the logger."
               }
             },
             "alwaysLog": {
@@ -1243,7 +872,7 @@
               "defaultValue": "Name",
               "allowedValues": [
                 "Name",
-                "URI"
+                "Url"
               ],
               "metadata": {
                 "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
@@ -1334,6 +963,402 @@
               "type": "string",
               "metadata": {
                 "description": "The resource group the workspace API diagnostic was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "api"
+      ]
+    },
+    "api_operations": {
+      "copy": {
+        "name": "api_operations",
+        "count": "[length(coalesce(parameters('operations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-api-operation-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].name]"
+          },
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "apiName": {
+            "value": "[parameters('name')]"
+          },
+          "displayName": {
+            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].displayName]"
+          },
+          "method": {
+            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].method]"
+          },
+          "urlTemplate": {
+            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].urlTemplate]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'description')]"
+          },
+          "policies": {
+            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'policies')]"
+          },
+          "request": {
+            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'request')]"
+          },
+          "responses": {
+            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'responses')]"
+          },
+          "templateParameters": {
+            "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'templateParameters')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "11157339376524309643"
+            },
+            "name": "API Management Workspace API Operations",
+            "description": "This module deploys an API Operation under an API Management Workspace."
+          },
+          "definitions": {
+            "policyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the policy."
+                  }
+                },
+                "format": {
+                  "type": "string",
+                  "allowedValues": [
+                    "rawxml",
+                    "rawxml-link",
+                    "xml",
+                    "xml-link"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Format of the policyContent."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Contents of the Policy as defined by the format."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a policy."
+              }
+            }
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "apiName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the operation."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The display name of the operation."
+              }
+            },
+            "policies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/policyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The policies to apply to the operation."
+              }
+            },
+            "method": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them."
+              }
+            },
+            "urlTemplate": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "metadata": {
+                "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 1000,
+              "metadata": {
+                "description": "Optional. Description of the operation. May include HTML formatting tags."
+              }
+            },
+            "request": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/request"
+                },
+                "description": "Optional. An entity containing request details."
+              },
+              "nullable": true
+            },
+            "responses": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/responses"
+                },
+                "description": "Optional. An entity containing request details."
+              },
+              "nullable": true
+            },
+            "templateParameters": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
+                },
+                "description": "Optional. Collection of URL template parameters."
+              },
+              "nullable": true
+            }
+          },
+          "resources": {
+            "service::workspace::api": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service/workspaces/apis",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'))]"
+            },
+            "service::workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service/workspaces",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+            },
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "operation": {
+              "type": "Microsoft.ApiManagement/service/workspaces/apis/operations",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
+              "properties": {
+                "displayName": "[parameters('displayName')]",
+                "method": "[parameters('method')]",
+                "urlTemplate": "[parameters('urlTemplate')]",
+                "description": "[parameters('description')]",
+                "request": "[parameters('request')]",
+                "responses": "[parameters('responses')]",
+                "templateParameters": "[parameters('templateParameters')]"
+              }
+            },
+            "operation_policies": {
+              "copy": {
+                "name": "operation_policies",
+                "count": "[length(coalesce(parameters('policies'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                  },
+                  "apiName": {
+                    "value": "[parameters('apiName')]"
+                  },
+                  "operationName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+                  },
+                  "format": {
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
+                  },
+                  "value": {
+                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.39.26.7824",
+                      "templateHash": "16783497966740511218"
+                    },
+                    "name": "API Management Workspace API Operation Policies",
+                    "description": "This module deploys an API Operation Policy in an API Management Workspace."
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "workspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "apiName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "operationName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent operation. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the policy."
+                      }
+                    },
+                    "format": {
+                      "type": "string",
+                      "defaultValue": "xml",
+                      "allowedValues": [
+                        "rawxml",
+                        "rawxml-link",
+                        "xml",
+                        "xml-link"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Format of the policyContent."
+                      }
+                    },
+                    "value": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Contents of the Policy as defined by the format."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ApiManagement/service/workspaces/apis/operations/policies",
+                      "apiVersion": "2024-05-01",
+                      "name": "[format('{0}/{1}/{2}/{3}/{4}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
+                      "properties": {
+                        "value": "[parameters('value')]",
+                        "format": "[parameters('format')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the workspace API operation policy."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/apis/operations/policies', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the workspace API operation policy."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the workspace API operation policy was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "operation"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the operation."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/apis/operations', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the operation."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the operation was deployed into."
               },
               "value": "[resourceGroup().name]"
             }

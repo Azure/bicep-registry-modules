@@ -25,23 +25,23 @@ This module deploys an API in an API Management Workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | API display name. |
-| [`name`](#parameter-name) | string | API revision identifier. |
-| [`path`](#parameter-path) | string | Relative URL uniquely identifying this API. |
+| [`name`](#parameter-name) | string | API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number. |
+| [`path`](#parameter-path) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiRevision`](#parameter-apirevision) | string | Describes the Revision of the API. |
+| [`apiRevision`](#parameter-apirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
 | [`apiRevisionDescription`](#parameter-apirevisiondescription) | string | Description of the API Revision. |
-| [`apiType`](#parameter-apitype) | string | Type of API to create. |
+| [`apiType`](#parameter-apitype) | string | Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API. |
 | [`apiVersion`](#parameter-apiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetName`](#parameter-apiversionsetname) | string | The name of the API version set to link. |
@@ -70,35 +70,35 @@ API display name.
 
 ### Parameter: `name`
 
-API revision identifier.
+API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `path`
 
-Relative URL uniquely identifying this API.
+Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `apiManagementServiceName`
 
-The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `workspaceName`
 
-The name of the parent Workspace.
+The name of the parent Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `apiRevision`
 
-Describes the Revision of the API.
+Describes the Revision of the API. If no value is provided, default revision 1 is created.
 
 - Required: No
 - Type: string
@@ -112,7 +112,7 @@ Description of the API Revision.
 
 ### Parameter: `apiType`
 
-Type of API to create.
+Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API.
 
 - Required: No
 - Type: string
@@ -173,8 +173,7 @@ Array of diagnostics to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerName`](#parameter-diagnosticsloggername) | string | Resource Id of a target logger. |
-| [`name`](#parameter-diagnosticsname) | string | The identifier of the Diagnostic. |
+| [`loggerName`](#parameter-diagnosticsloggername) | string | The name of the target logger. |
 
 **Conditional parameters**
 
@@ -192,30 +191,16 @@ Array of diagnostics to apply to the Service API.
 | [`backend`](#parameter-diagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
 | [`frontend`](#parameter-diagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-diagnosticslogclientip) | bool | Log the ClientIP. |
+| [`name`](#parameter-diagnosticsname) | string | The identifier of the Diagnostic. |
 | [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-diagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
 ### Parameter: `diagnostics.loggerName`
 
-Resource Id of a target logger.
+The name of the target logger.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `diagnostics.name`
-
-The identifier of the Diagnostic.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'applicationinsights'
-    'azuremonitor'
-    'local'
-  ]
-  ```
 
 ### Parameter: `diagnostics.httpCorrelationProtocol`
 
@@ -243,7 +228,7 @@ Emit custom metrics via emit-metric policy. Required if using Application Insigh
 
 The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -257,7 +242,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
 
 Specifies for what type of messages sampling settings should not apply.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -286,6 +271,21 @@ Log the ClientIP.
 
 - Required: No
 - Type: bool
+
+### Parameter: `diagnostics.name`
+
+The identifier of the Diagnostic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationinsights'
+    'azuremonitor'
+    'local'
+  ]
+  ```
 
 ### Parameter: `diagnostics.samplingPercentage`
 
@@ -321,6 +321,11 @@ Format of the Content in which the API is getting imported.
 - Allowed:
   ```Bicep
   [
+    'graphql-link'
+    'grpc'
+    'grpc-link'
+    'odata'
+    'odata-link'
     'openapi'
     'openapi-link'
     'openapi+json'
@@ -355,15 +360,15 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-operationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-operationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
-| [`name`](#parameter-operationsname) | string | Operation Name. |
+| [`name`](#parameter-operationsname) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-operationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-operationsdescription) | string | Description of the operation. |
-| [`policies`](#parameter-operationspolicies) | array | Array of Policies to apply to the operation. |
+| [`description`](#parameter-operationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
+| [`policies`](#parameter-operationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-operationsrequest) | object | An entity containing request details. |
 | [`responses`](#parameter-operationsresponses) | array | Array of Operation responses. |
 | [`templateParameters`](#parameter-operationstemplateparameters) | array | Collection of URL template parameters. |
@@ -384,7 +389,7 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 
 ### Parameter: `operations.name`
 
-Operation Name.
+The name of the operation.
 
 - Required: Yes
 - Type: string
@@ -398,14 +403,14 @@ Relative URL template identifying the target resource for this operation. May in
 
 ### Parameter: `operations.description`
 
-Description of the operation.
+Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.
 
 - Required: No
 - Type: string
 
 ### Parameter: `operations.policies`
 
-Array of Policies to apply to the operation.
+The policies to apply to the operation.
 
 - Required: No
 - Type: array
@@ -414,25 +419,14 @@ Array of Policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-operationspoliciesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-operationspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-operationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
-### Parameter: `operations.policies.format`
+**Optional parameters**
 
-Format of the policyContent.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'rawxml'
-    'rawxml-link'
-    'xml'
-    'xml-link'
-  ]
-  ```
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-operationspoliciesformat) | string | Format of the policyContent. |
 
 ### Parameter: `operations.policies.name`
 
@@ -447,6 +441,22 @@ Contents of the Policy as defined by the format.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `operations.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
 
 ### Parameter: `operations.request`
 
@@ -531,6 +541,15 @@ Describes on which protocols the operations in this API can be invoked.
     'https'
   ]
   ```
+- Allowed:
+  ```Bicep
+  [
+    'http'
+    'https'
+    'ws'
+    'wss'
+  ]
+  ```
 
 ### Parameter: `serviceUrl`
 
@@ -572,7 +591,9 @@ Type of API.
   ```Bicep
   [
     'graphql'
+    'grpc'
     'http'
+    'odata'
     'soap'
     'websocket'
   ]

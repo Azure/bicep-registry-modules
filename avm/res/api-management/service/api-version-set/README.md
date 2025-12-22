@@ -29,7 +29,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | The display name of the Name of API Version Set. |
+| [`displayName`](#parameter-displayname) | string | The display name of the API Version Set. |
+| [`name`](#parameter-name) | string | API Version set name. |
 | [`versioningScheme`](#parameter-versioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
 
 **Conditional parameters**
@@ -44,13 +45,19 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of API Version Set. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`name`](#parameter-name) | string | API Version set name. |
 | [`versionHeaderName`](#parameter-versionheadername) | string | Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header. |
 | [`versionQueryName`](#parameter-versionqueryname) | string | Name of query parameter that indicates the API Version if versioningScheme is set to query. |
 
 ### Parameter: `displayName`
 
-The display name of the Name of API Version Set.
+The display name of the API Version Set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+API Version set name.
 
 - Required: Yes
 - Type: string
@@ -91,14 +98,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `name`
-
-API Version set name.
-
-- Required: No
-- Type: string
-- Default: `'default'`
 
 ### Parameter: `versionHeaderName`
 

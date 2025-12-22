@@ -27,10 +27,10 @@ This module deploys an API Operation Policy in an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
-| [`apiName`](#parameter-apiname) | string | The name of the parent API. |
-| [`operationName`](#parameter-operationname) | string | The name of the parent Operation. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
+| [`apiName`](#parameter-apiname) | string | The name of the parent API. Required if the template is used in a standalone deployment. |
+| [`operationName`](#parameter-operationname) | string | The name of the parent operation. Required if the template is used in a standalone deployment. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -54,28 +54,28 @@ Contents of the Policy as defined by the format.
 
 ### Parameter: `apiManagementServiceName`
 
-The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `apiName`
 
-The name of the parent API.
+The name of the parent API. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `operationName`
 
-The name of the parent Operation.
+The name of the parent operation. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `workspaceName`
 
-The name of the parent Workspace.
+The name of the parent Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

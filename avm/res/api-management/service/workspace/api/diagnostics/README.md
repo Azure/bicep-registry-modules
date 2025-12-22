@@ -20,18 +20,18 @@ This module deploys an API Diagnostic in an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
 | [`apiName`](#parameter-apiname) | string | The name of the parent API. |
 | [`loggerName`](#parameter-loggername) | string | The name of the logger. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 | [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
 | [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
 | [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -44,13 +44,6 @@ This module deploys an API Diagnostic in an API Management Workspace.
 | [`name`](#parameter-name) | string | Name of diagnostic resource. |
 | [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. |
-
-### Parameter: `apiManagementServiceName`
-
-The name of the parent API Management service.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apiName`
 
@@ -66,9 +59,9 @@ The name of the logger.
 - Required: Yes
 - Type: string
 
-### Parameter: `workspaceName`
+### Parameter: `apiManagementServiceName`
 
-The name of the parent Workspace.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -108,9 +101,16 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
+
+### Parameter: `workspaceName`
+
+The name of the parent Workspace. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `alwaysLog`
 

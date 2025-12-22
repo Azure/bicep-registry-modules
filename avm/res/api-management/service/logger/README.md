@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Resource Name. |
+| [`name`](#parameter-name) | string | Logger name. |
 | [`type`](#parameter-type) | string | Logger type. |
 
 **Conditional parameters**
@@ -44,13 +44,13 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | Logger description. |
+| [`description`](#parameter-description) | string | Description of the logger. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isBuffered`](#parameter-isbuffered) | bool | Whether records are buffered in the logger before publishing. |
 
 ### Parameter: `name`
 
-Resource Name.
+Logger name.
 
 - Required: Yes
 - Type: string
@@ -93,11 +93,10 @@ Azure Resource Id of a log target (either Azure Event Hub resource or Azure Appl
 
 ### Parameter: `description`
 
-Logger description.
+Description of the logger.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -120,7 +119,7 @@ Whether records are buffered in the logger before publishing.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the logger. |
-| `resourceGroupName` | string | The resource group the named value was deployed into. |
+| `resourceGroupName` | string | The resource group the logger was deployed into. |
 | `resourceId` | string | The resource ID of the logger. |
 
 ## Data Collection
