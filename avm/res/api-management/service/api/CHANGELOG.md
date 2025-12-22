@@ -20,8 +20,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - The `policyType.name` field is now required (previously optional)
-- The `protocols` parameter now requires values from the allowed list: `http`, `https`, `ws`, `wss`
-- The `diagnosticType.alwaysLog` field now only accepts `'allErrors'` value, following API specification
 - The `diagnosticType.operationNameFormat` allowed value has been corrected from `URI` to `Url`
 
 ## 0.1.1

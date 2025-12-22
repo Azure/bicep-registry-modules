@@ -14,9 +14,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- The `displayName` parameter is now required separately from `name`.
-- The `description` parameter is now optional with no default value (was `''`).
-- The `state` parameter is now optional with no default value (was `'published'`).
+- The `state` parameter is now optional with no default value (was `'published'`), falling back to provider default value, which is `'notPublished'`.
 - The `productPolicyType.name` property is now required (was optional).
 
 ## 0.2.0
