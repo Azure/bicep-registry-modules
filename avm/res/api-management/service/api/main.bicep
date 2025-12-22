@@ -1,6 +1,11 @@
 metadata name = 'API Management Service APIs'
 metadata description = 'This module deploys an API Management Service API.'
 
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
+param apiManagementServiceName string
+
+@minLength(1)
+@maxLength(256)
 @sys.description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
 param name string
 
@@ -13,12 +18,12 @@ param diagnostics diagnosticType[]?
 @sys.description('Optional. The operations of the api.')
 param operations operationType[]?
 
-@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
-param apiManagementServiceName string
-
+@minLength(1)
+@maxLength(100)
 @sys.description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
 param apiRevision string?
 
+@maxLength(256)
 @sys.description('Optional. Description of the API Revision.')
 param apiRevisionDescription string?
 

@@ -13,14 +13,14 @@ param operationName string
 @description('Required. The name of the policy.')
 param name string
 
-@description('Required. Format of the policyContent.')
+@description('Optional. Format of the policyContent.')
 @allowed([
   'rawxml'
   'rawxml-link'
   'xml'
   'xml-link'
 ])
-param format string
+param format string = 'xml'
 
 @description('Required. Contents of the Policy as defined by the format.')
 param value string
