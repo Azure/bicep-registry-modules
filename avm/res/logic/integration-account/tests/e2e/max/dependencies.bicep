@@ -47,40 +47,14 @@ resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2024-11-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-${keyVault.name}-KeyVault-Crypto-User-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-KeyVault-Admin-RoleAssignment')
-  scope: keyVault
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-    ) // Key Vault Administrator
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource keyPermissions3 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-logicapps-KeyVault-Crypto-User-RoleAssignment')
+  name: guid('msi-logicapps-KeyVault-Certificate-Officer-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: '7cd684f4-8a78-49b0-91ec-6a35d38739ba' // Logic Apps Managed Identity
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
+      'a4417e6f-fecd-4de8-b567-7b0420556985'
+    ) // Key Vault Certificate Officer
     principalType: 'ServicePrincipal'
   }
 }
