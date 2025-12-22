@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for `authorizationCodeWithPkce` grant type
+- Updated descriptions of `authorizationMethods` and `tokenBodyParameters` parameters
 
 ### Breaking Changes
 

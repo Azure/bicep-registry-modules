@@ -2,6 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Added length constraints to the `name`, `displayName` and `description` parameters.
+- Updated descriptions of various parameters for clarity.
+- Changed `description` parameter to be nullable with no default value.
+- Added `@allowed` constraint to the `state` parameter (`'notPublished'` | `'published'`) and made it optional (no default).
+- Updated `productPolicyType` exported type: `name` is now required (was optional).
+
+### Breaking Changes
+
+- The `displayName` parameter is now required separately from `name`.
+- The `description` parameter is now optional with no default value (was `''`).
+- The `state` parameter is now optional with no default value (was `'published'`).
+- The `productPolicyType.name` property is now required (was optional).
+
 ## 0.2.0
 
 ### Changes
