@@ -1,10 +1,10 @@
 metadata name = 'API Management Workspace Backends'
 metadata description = 'This module deploys a Backend in an API Management Workspace.'
 
-@sys.description('Conditional. The name of the parent API Management service.')
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Conditional. The name of the parent Workspace.')
+@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
 @sys.description('Required. Backend Name.')

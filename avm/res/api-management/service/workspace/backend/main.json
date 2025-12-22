@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "18206827165467359487"
+      "templateHash": "16927512650051470600"
     },
     "name": "API Management Workspace Backends",
     "description": "This module deploys a Backend in an API Management Workspace."
@@ -15,13 +15,13 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Workspace."
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "name": {

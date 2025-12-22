@@ -26,10 +26,10 @@ This module deploys a Backend in an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 | [`pool`](#parameter-pool) | object | Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single. |
 | [`url`](#parameter-url) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -55,7 +55,7 @@ Backend Name.
 
 ### Parameter: `apiManagementServiceName`
 
-The name of the parent API Management service.
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -76,7 +76,7 @@ Runtime URL of the Backend. Required if type is Single and not supported if type
 
 ### Parameter: `workspaceName`
 
-The name of the parent Workspace.
+The name of the parent Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
