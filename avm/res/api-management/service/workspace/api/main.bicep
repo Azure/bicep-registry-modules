@@ -1,14 +1,16 @@
 metadata name = 'API Management Workspace APIs'
 metadata description = 'This module deploys an API in an API Management Workspace.'
 
-@sys.description('Required. API revision identifier.')
-param name string
-
-@sys.description('Conditional. The name of the parent API Management service.')
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Conditional. The name of the parent Workspace.')
+@sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
+
+@minLength(1)
+@maxLength(256)
+@sys.description('Required. API revision identifier. Must be unique in the current API Management workspace. Non-current revision has ;rev=n as a suffix where n is the revision number.')
+param name string
 
 @sys.description('Optional. Array of Policies to apply to the Service API.')
 param policies policyType[]?
@@ -19,19 +21,33 @@ param diagnostics diagnosticType[]?
 @sys.description('Optional. The operations of the api.')
 param operations operationType[]?
 
-@sys.description('Optional. Describes the Revision of the API.')
+@minLength(1)
+@maxLength(100)
+@sys.description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
 param apiRevision string?
 
+@maxLength(256)
 @sys.description('Optional. Description of the API Revision.')
 param apiRevisionDescription string?
 
-@sys.description('Optional. Type of API to create.')
-@allowed(['graphql', 'http', 'soap', 'websocket'])
+@sys.description('''Optional. Type of API to create.
+* `http` creates a REST API
+* `soap` creates a SOAP pass-through API
+* `websocket` creates websocket API
+* `graphql` creates GraphQL API.''')
+@allowed([
+  'graphql'
+  'http'
+  'soap'
+  'websocket'
+])
 param apiType string = 'http'
 
+@maxLength(100)
 @sys.description('Optional. Indicates the Version identifier of the API if the API is versioned.')
 param apiVersion string?
 
+@maxLength(256)
 @sys.description('Optional. Description of the API Version.')
 param apiVersionDescription string?
 
@@ -47,27 +63,41 @@ param displayName string
 
 @sys.description('Optional. Format of the Content in which the API is getting imported.')
 @allowed([
-  'wadl-xml'
-  'wadl-link-json'
-  'swagger-json'
-  'swagger-link-json'
-  'wsdl'
-  'wsdl-link'
+  'graphql-link'
+  'grpc'
+  'grpc-link'
+  'odata'
+  'odata-link'
   'openapi'
   'openapi+json'
-  'openapi-link'
   'openapi+json-link'
+  'openapi-link'
+  'swagger-json'
+  'swagger-link-json'
+  'wadl-link-json'
+  'wadl-xml'
+  'wsdl'
+  'wsdl-link'
 ])
 param format string = 'openapi'
 
 @sys.description('Optional. Indicates if API revision is current API revision.')
 param isCurrent bool = true
 
-@sys.description('Required. Relative URL uniquely identifying this API.')
+@maxLength(400)
+@sys.description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
 param path string
 
+@allowed([
+  'http'
+  'https'
+  'ws'
+  'wss'
+])
 @sys.description('Optional. Describes on which protocols the operations in this API can be invoked.')
-param protocols string[] = ['https']
+param protocols string[] = [
+  'https'
+]
 
 @sys.description('Optional. Absolute URL of the backend service implementing this API.')
 @maxLength(2000)
@@ -86,7 +116,14 @@ param subscriptionKeyParameterNames resourceInput<'Microsoft.ApiManagement/servi
 param subscriptionRequired bool = false
 
 @sys.description('Optional. Type of API.')
-@allowed(['graphql', 'http', 'soap', 'websocket'])
+@allowed([
+  'graphql'
+  'grpc'
+  'http'
+  'odata'
+  'soap'
+  'websocket'
+])
 param type string = 'http'
 
 @sys.description('Optional. Content value when Importing an API.')
@@ -134,34 +171,14 @@ resource api 'Microsoft.ApiManagement/service/workspaces/apis@2024-05-01' = {
   }
 }
 
-module api_operations 'operation/main.bicep' = [
-  for (operation, index) in (operations ?? []): {
-    name: '${deployment().name}-api-operation-${index}'
-    params: {
-      apiManagementServiceName: apiManagementServiceName
-      workspaceName: workspaceName
-      apiName: api.name
-      name: operation.name
-      displayName: operation.displayName
-      method: operation.method
-      urlTemplate: operation.urlTemplate
-      description: operation.?description
-      policies: operation.?policies
-      request: operation.?request
-      responses: operation.?responses
-      templateParameters: operation.?templateParameters
-    }
-  }
-]
-
 module api_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
     name: '${deployment().name}-api-policy-${index}'
     params: {
+      name: policy.name
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
       apiName: api.name
-      name: policy.name
       format: policy.?format
       value: policy.value
     }
@@ -172,10 +189,10 @@ module api_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (diagnostics ?? []): {
     name: '${deployment().name}-api-diagnostic-${index}'
     params: {
+      name: diagnostic.?name
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
       apiName: api.name
-      name: diagnostic.?name
       loggerName: diagnostic.loggerName
       alwaysLog: diagnostic.?alwaysLog
       backend: diagnostic.?backend
@@ -186,6 +203,26 @@ module api_diagnostics 'diagnostics/main.bicep' = [
       operationNameFormat: diagnostic.?operationNameFormat
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
+    }
+  }
+]
+
+module api_operations 'operation/main.bicep' = [
+  for (operation, index) in (operations ?? []): {
+    name: '${deployment().name}-api-operation-${index}'
+    params: {
+      name: operation.name
+      apiManagementServiceName: apiManagementServiceName
+      workspaceName: workspaceName
+      apiName: api.name
+      displayName: operation.displayName
+      method: operation.method
+      urlTemplate: operation.urlTemplate
+      description: operation.?description
+      policies: operation.?policies
+      request: operation.?request
+      responses: operation.?responses
+      templateParameters: operation.?templateParameters
     }
   }
 ]
@@ -203,55 +240,19 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-@export()
-@sys.description('The type of a diagnostic.')
-type diagnosticType = {
-  @sys.description('Required. The identifier of the Diagnostic.')
-  name: ('azuremonitor' | 'applicationinsights' | 'local')?
-
-  @sys.description('Required. Resource Id of a target logger.')
-  loggerName: string
-
-  @sys.description('Optional. Specifies for what type of messages sampling settings should not apply.')
-  alwaysLog: ('allErrors')
-
-  @sys.description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-  backend: resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01'>.properties.backend?
-
-  @sys.description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-  frontend: resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01'>.properties.frontend?
-
-  @sys.description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
-  httpCorrelationProtocol: ('None' | 'Legacy' | 'W3C')?
-
-  @sys.description('Optional. Log the ClientIP.')
-  logClientIp: bool?
-
-  @sys.description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
-  metrics: bool?
-
-  @sys.description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
-  operationNameFormat: ('Name' | 'Url')
-
-  @sys.description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
-  @minValue(0)
-  @maxValue(100)
-  samplingPercentage: int?
-
-  @sys.description('Optional. The verbosity level applied to traces emitted by trace policies.')
-  verbosity: ('verbose' | 'information' | 'error')?
-}
-
 import * as operationTypes from 'operation/main.bicep'
 
 @export()
 @sys.description('The type of an operation.')
 type operationType = {
-  @sys.description('Required. Operation Name.')
+  @sys.description('Required. The name of the operation.')
   name: string
 
   @sys.description('Required. The display name of the operation.')
   displayName: string
+
+  @sys.description('Optional. The policies to apply to the operation.')
+  policies: operationTypes.policyType[]?
 
   @sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
   method: string
@@ -262,7 +263,7 @@ type operationType = {
   urlTemplate: string
 
   @maxLength(1000)
-  @sys.description('Optional. Description of the operation.')
+  @sys.description('Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.')
   description: string?
 
   @sys.description('Optional. An entity containing request details.')
@@ -273,9 +274,6 @@ type operationType = {
 
   @sys.description('Optional. Collection of URL template parameters.')
   templateParameters: resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/operations@2024-05-01'>.properties.templateParameters?
-
-  @sys.description('Optional. Array of Policies to apply to the operation.')
-  policies: operationTypes.policyType[]?
 }
 
 @export()
@@ -289,4 +287,43 @@ type policyType = {
 
   @sys.description('Required. Contents of the Policy as defined by the format.')
   value: string
+}
+
+@export()
+@sys.description('The type of a diagnostic configuration.')
+type diagnosticType = {
+  @sys.description('Required. The name of the target logger.')
+  loggerName: string
+
+  @sys.description('Optional. The identifier of the Diagnostic.')
+  name: ('azuremonitor' | 'applicationinsights' | 'local')?
+
+  @sys.description('Optional. Specifies for what type of messages sampling settings should not apply.')
+  alwaysLog: ('allErrors')?
+
+  @sys.description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
+  backend: resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01'>.properties.backend?
+
+  @sys.description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
+  frontend: resourceInput<'Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01'>.properties.frontend?
+
+  @sys.description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
+  httpCorrelationProtocol: ('Legacy' | 'None' | 'W3C')?
+
+  @sys.description('Optional. Log the ClientIP.')
+  logClientIp: bool?
+
+  @sys.description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
+  metrics: bool?
+
+  @sys.description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
+  operationNameFormat: ('Name' | 'Url')?
+
+  @sys.description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
+  @minValue(0)
+  @maxValue(100)
+  samplingPercentage: int?
+
+  @sys.description('Optional. The verbosity level applied to traces emitted by trace policies.')
+  verbosity: ('error' | 'information' | 'verbose')?
 }
