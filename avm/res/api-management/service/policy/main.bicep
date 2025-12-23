@@ -4,8 +4,8 @@ metadata description = 'This module deploys an API Management Service Policy.'
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Required. The name of the policy.')
-param name string
+@description('Optional. The name of the policy.')
+param name string = 'policy'
 
 @description('Optional. Format of the policyContent.')
 @allowed([

@@ -192,7 +192,6 @@ module api_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
     name: '${deployment().name}-api-policy-${index}'
     params: {
-      name: policy.name
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
       format: policy.?format
@@ -295,8 +294,8 @@ type operationType = {
 @export()
 @sys.description('The type of a policy.')
 type policyType = {
-  @sys.description('Required. The name of the policy.')
-  name: string
+  @sys.description('Optional. The name of the policy.')
+  name: string?
 
   @sys.description('Optional. Format of the policyContent.')
   format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?

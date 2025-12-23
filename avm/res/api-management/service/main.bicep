@@ -519,7 +519,7 @@ module service_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Policy-${index}'
     params: {
-      name: policy.name
+      name: policy.?name
       apiManagementServiceName: service.name
       value: policy.value
       format: policy.?format
@@ -1216,8 +1216,8 @@ type namedValueType = {
 @export()
 @description('The type of a policy.')
 type policyType = {
-  @description('Required. The name of the policy.')
-  name: string
+  @description('Optional. The name of the policy.')
+  name: string?
 
   @description('Optional. Format of the policyContent.')
   format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?

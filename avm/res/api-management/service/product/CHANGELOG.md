@@ -6,16 +6,14 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added length constraints to the `name`, `displayName` and `description` parameters.
-- Updated descriptions of various parameters for clarity.
-- Changed `description` parameter to be nullable with no default value.
-- Added `@allowed` constraint to the `state` parameter (`'notPublished'` | `'published'`) and made it optional (no default).
-- Updated `productPolicyType` exported type: `name` is now required (was optional).
+- Added length constraints to the `name`, `displayName` and `description` parameters
+- Updated descriptions of various parameters for clarity
+- Changed `description` parameter to be nullable with no default value
+- Added `@allowed` constraint to the `state` parameter (`'notPublished'` | `'published'`) and made it optional (no default)
 
 ### Breaking Changes
 
-- The `state` parameter is now optional with no default value (was `'published'`), falling back to provider default value, which is `'notPublished'`.
-- The `productPolicyType.name` property is now required (was optional).
+- The `state` parameter is now optional with no default value (was `'published'`), falling back to provider default value, which is `'notPublished'`
 
 ## 0.2.0
 

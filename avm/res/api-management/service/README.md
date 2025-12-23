@@ -525,7 +525,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
-        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -562,7 +561,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'xml'
-            name: 'productPolicy1'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -663,7 +661,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             policies: [
               {
                 format: 'xml'
-                name: 'workspaceApiPolicy'
                 value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
               }
             ]
@@ -751,7 +748,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'xml'
-            name: 'workspace-policy'
             value: '<policies><inbound><rate-limit-by-key calls=\'100\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
           }
         ]
@@ -776,7 +772,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             policies: [
               {
                 format: 'xml'
-                name: 'workspace-product-policy'
                 value: '<policies><inbound><quota-by-key calls=\'1000\' renewal-period=\'3600\' counter-key=\'@(context.Subscription.Id)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
               }
             ]
@@ -880,7 +875,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'rawxml'
-            name: 'ws2-policy'
             value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
           }
         ]
@@ -1160,7 +1154,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
-          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -1201,7 +1194,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "xml",
-              "name": "productPolicy1",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -1318,7 +1310,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "policies": [
                 {
                   "format": "xml",
-                  "name": "workspaceApiPolicy",
                   "value": "<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>"
                 }
               ],
@@ -1406,7 +1397,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "xml",
-              "name": "workspace-policy",
               "value": "<policies><inbound><rate-limit-by-key calls=\"100\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
             }
           ],
@@ -1431,7 +1421,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "policies": [
                 {
                   "format": "xml",
-                  "name": "workspace-product-policy",
                   "value": "<policies><inbound><quota-by-key calls=\"1000\" renewal-period=\"3600\" counter-key=\"@(context.Subscription.Id)\" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
                 }
               ],
@@ -1535,7 +1524,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "rawxml",
-              "name": "ws2-policy",
               "value": "<policies><inbound><set-header name=\"X-Workspace\" exists-action=\"override\"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
             }
           ],
@@ -1779,7 +1767,6 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
-    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -1816,7 +1803,6 @@ param products = [
     policies: [
       {
         format: 'xml'
-        name: 'productPolicy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -1917,7 +1903,6 @@ param workspaces = [
         policies: [
           {
             format: 'xml'
-            name: 'workspaceApiPolicy'
             value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
           }
         ]
@@ -2005,7 +1990,6 @@ param workspaces = [
     policies: [
       {
         format: 'xml'
-        name: 'workspace-policy'
         value: '<policies><inbound><rate-limit-by-key calls=\'100\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
       }
     ]
@@ -2030,7 +2014,6 @@ param workspaces = [
         policies: [
           {
             format: 'xml'
-            name: 'workspace-product-policy'
             value: '<policies><inbound><quota-by-key calls=\'1000\' renewal-period=\'3600\' counter-key=\'@(context.Subscription.Id)\' /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
           }
         ]
@@ -2134,7 +2117,6 @@ param workspaces = [
     policies: [
       {
         format: 'rawxml'
-        name: 'ws2-policy'
         value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
       }
     ]
@@ -2366,7 +2348,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
-        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -2384,7 +2365,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         policies: [
           {
             format: 'xml'
-            name: 'productPolicy1'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -2659,7 +2639,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
-          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -2679,7 +2658,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "policies": [
             {
               "format": "xml",
-              "name": "productPolicy1",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -2934,7 +2912,6 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
-    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -2952,7 +2929,6 @@ param products = [
     policies: [
       {
         format: 'xml'
-        name: 'productPolicy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -3231,7 +3207,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     policies: [
       {
         format: 'xml'
-        name: 'policy1'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -3481,7 +3456,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "format": "xml",
-          "name": "policy1",
           "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
         }
       ]
@@ -3713,7 +3687,6 @@ param namedValues = [
 param policies = [
   {
     format: 'xml'
-    name: 'policy1'
     value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
   }
 ]
@@ -4627,7 +4600,6 @@ Array of Policies to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-apispoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-apispoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -4635,13 +4607,7 @@ Array of Policies to apply to the Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-apispoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `apis.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-apispoliciesname) | string | The name of the policy. |
 
 ### Parameter: `apis.policies.value`
 
@@ -4665,6 +4631,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `apis.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `apis.protocols`
 
@@ -5796,7 +5769,6 @@ Policies.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-policiesname) | string | The name of the policy. |
 | [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -5804,13 +5776,7 @@ Policies.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
-
-### Parameter: `policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-policiesname) | string | The name of the policy. |
 
 ### Parameter: `policies.value`
 
@@ -5834,6 +5800,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `portalsettings`
 
@@ -6573,7 +6546,6 @@ Array of Policies to apply to the Service Product.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-productspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -6581,13 +6553,7 @@ Array of Policies to apply to the Service Product.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-productspoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `products.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
 
 ### Parameter: `products.policies.value`
 
@@ -6611,6 +6577,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `products.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `products.state`
 
@@ -7532,7 +7505,6 @@ Array of Policies to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-workspacesapispoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-workspacesapispoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -7540,13 +7512,7 @@ Array of Policies to apply to the Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-workspacesapispoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `workspaces.apis.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-workspacesapispoliciesname) | string | The name of the policy. |
 
 ### Parameter: `workspaces.apis.policies.value`
 
@@ -7570,6 +7536,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `workspaces.apis.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `workspaces.apis.protocols`
 
@@ -8138,7 +8111,6 @@ Policies to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-workspacespoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-workspacespoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -8146,13 +8118,7 @@ Policies to deploy in this workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-workspacespoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `workspaces.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-workspacespoliciesname) | string | The name of the policy. |
 
 ### Parameter: `workspaces.policies.value`
 
@@ -8176,6 +8142,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `workspaces.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `workspaces.products`
 
@@ -8300,7 +8273,6 @@ Array of Policies to apply to the Product.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-workspacesproductspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-workspacesproductspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -8308,13 +8280,7 @@ Array of Policies to apply to the Product.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-workspacesproductspoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `workspaces.products.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-workspacesproductspoliciesname) | string | The name of the policy. |
 
 ### Parameter: `workspaces.products.policies.value`
 
@@ -8338,6 +8304,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `workspaces.products.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `workspaces.products.state`
 

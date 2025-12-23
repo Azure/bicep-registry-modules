@@ -11,7 +11,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added missing allowed values to `format` parameter and `type` parameter
 - Added allowed values to `protocols` parameter
 - Updated module deployment names for consistency
-- Changed `policyType.name` from optional to required
 - Aligned `operationType` definition with the `operation` child module specification
 - Aligned `diagnosticType` definition with the `diagnostic` child module specification
 - Changed `diagnosticType.alwaysLog` type to specific union `('allErrors')?`
@@ -19,7 +18,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- The `policyType.name` field is now required (previously optional)
 - The `diagnosticType.operationNameFormat` allowed value has been corrected from `URI` to `Url`
 
 ## 0.1.1

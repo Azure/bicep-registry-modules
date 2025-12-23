@@ -279,7 +279,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       policies: [
         {
-          name: 'policy1'
           format: 'xml'
           value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
         }
@@ -317,7 +316,6 @@ module testDeployment '../../../main.bicep' = [
           subscriptionRequired: false
           policies: [
             {
-              name: 'productPolicy1'
               format: 'xml'
               value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
             }
@@ -379,7 +377,6 @@ module testDeployment '../../../main.bicep' = [
               type: 'http'
               policies: [
                 {
-                  name: 'workspaceApiPolicy'
                   format: 'xml'
                   value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
                 }
@@ -487,7 +484,6 @@ module testDeployment '../../../main.bicep' = [
           ]
           policies: [
             {
-              name: 'workspace-policy'
               format: 'xml'
               value: '<policies><inbound><rate-limit-by-key calls="100" renewal-period="60" counter-key="@(context.Request.IpAddress)" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
             }
@@ -516,7 +512,6 @@ module testDeployment '../../../main.bicep' = [
               ]
               policies: [
                 {
-                  name: 'workspace-product-policy'
                   format: 'xml'
                   value: '<policies><inbound><quota-by-key calls="1000" renewal-period="3600" counter-key="@(context.Subscription.Id)" /></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
                 }
@@ -616,7 +611,6 @@ module testDeployment '../../../main.bicep' = [
           ]
           policies: [
             {
-              name: 'ws2-policy'
               format: 'rawxml'
               value: '<policies><inbound><set-header name="X-Workspace" exists-action="override"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
             }

@@ -29,7 +29,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the policy. |
 | [`value`](#parameter-value) | string | Contents of the Policy as defined by the format. |
 
 **Conditional parameters**
@@ -44,13 +43,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`format`](#parameter-format) | string | Format of the policyContent. |
-
-### Parameter: `name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-name) | string | The name of the policy. |
 
 ### Parameter: `value`
 
@@ -90,6 +83,14 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
+- Default: `'policy'`
 
 ## Outputs
 

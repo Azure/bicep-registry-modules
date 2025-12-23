@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5270727379722381490"
+      "templateHash": "13415428648671825913"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -100,8 +100,9 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the policy."
+            "description": "Optional. The name of the policy."
           }
         },
         "format": {
@@ -609,9 +610,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
-          },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"
           },
@@ -635,7 +633,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "16438673847595654796"
+              "templateHash": "14860819055801108886"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -655,8 +653,9 @@
             },
             "name": {
               "type": "string",
+              "defaultValue": "policy",
               "metadata": {
-                "description": "Required. The name of the policy."
+                "description": "Optional. The name of the policy."
               }
             },
             "format": {

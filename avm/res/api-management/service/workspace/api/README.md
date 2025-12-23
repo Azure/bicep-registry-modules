@@ -490,7 +490,6 @@ Array of Policies to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-policiesname) | string | The name of the policy. |
 | [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -498,13 +497,7 @@ Array of Policies to apply to the Service API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
-
-### Parameter: `policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-policiesname) | string | The name of the policy. |
 
 ### Parameter: `policies.value`
 
@@ -528,6 +521,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `protocols`
 

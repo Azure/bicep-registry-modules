@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11615305903211709445"
+      "templateHash": "7389406741103376997"
     },
     "name": "API Management Workspace APIs Policies",
     "description": "This module deploys an API Policy in an API Management Workspace."
@@ -31,8 +31,9 @@
     },
     "name": {
       "type": "string",
+      "defaultValue": "policy",
       "metadata": {
-        "description": "Required. The name of the policy."
+        "description": "Optional. The name of the policy."
       }
     },
     "format": {

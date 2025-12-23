@@ -104,7 +104,7 @@ module product_policies 'policy/main.bicep' = [
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
       productName: product.name
-      name: policy.name
+      name: policy.?name
       format: policy.?format
       value: policy.value
     }
@@ -127,8 +127,8 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @sys.description('The type of a product policy.')
 type productPolicyType = {
-  @sys.description('Required. The name of the policy.')
-  name: string
+  @sys.description('Optional. The name of the policy.')
+  name: string?
 
   @sys.description('Optional. Format of the policyContent.')
   format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?

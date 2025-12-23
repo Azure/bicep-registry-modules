@@ -10,8 +10,8 @@ param workspaceName string
 @description('Conditional. The name of the parent product. Required if the template is used in a standalone deployment.')
 param productName string
 
-@description('Required. The name of the policy.')
-param name string
+@description('Optional. The name of the policy.')
+param name string = 'policy'
 
 @description('Optional. Format of the policyContent.')
 @allowed([
