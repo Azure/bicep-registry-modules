@@ -59,40 +59,56 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       partners: [
         {
-          name: 'ContosoSupplier'
+          name: 'partner1'
           b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
-                value: 'CONTOSO-SUPPLIER-001'
+                value: '1234567890'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '0987654321'
               }
             ]
           }
           metadata: {
-            key1: 'Primary supplier partner'
-            key2: 'Primary buyer partner'
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
           }
         }
         {
-          name: 'FabrikamBuyer'
           b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
-                value: 'FABRIKAM-BUYER-001'
+                value: '0987654321'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '1122334455'
               }
             ]
           }
+          name: 'partner2'
           metadata: {
-            key1: 'Primary buyer partner'
-            key2: 'Fabrikam organization'
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
           }
         }
       ]
       schemas: [
         {
           name: 'PurchaseOrderSchema'
-          content: loadTextContent('../max/schema-content.xml')
+          content: loadTextContent('../files/schema-content.xml')
           schemaType: 'Xml'
           metadata: {
             description: 'Purchase order validation schema'
@@ -103,7 +119,7 @@ module testDeployment '../../../main.bicep' = [
       maps: [
         {
           name: 'PurchaseOrderTransform'
-          content: loadTextContent('../max/map-content.xslt')
+          content: loadTextContent('../files/map-content.xslt')
           mapType: 'Xslt'
           metadata: {
             description: 'Transform purchase order to internal format'

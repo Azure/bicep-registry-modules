@@ -1306,30 +1306,46 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           businessIdentities: [
             {
               qualifier: 'ZZ'
-              value: 'CONTOSO-SUPPLIER-001'
+              value: '1234567890'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '0987654321'
             }
           ]
         }
         metadata: {
-          key1: 'Primary supplier partner'
-          key2: 'Primary buyer partner'
+          key1: 'value1'
+          key2: 'value2'
         }
-        name: 'ContosoSupplier'
+        name: 'partner1'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
       }
       {
         b2b: {
           businessIdentities: [
             {
               qualifier: 'ZZ'
-              value: 'FABRIKAM-BUYER-001'
+              value: '0987654321'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '1122334455'
             }
           ]
         }
         metadata: {
-          key1: 'Primary buyer partner'
-          key2: 'Fabrikam organization'
+          key1: 'value1'
+          key2: 'value2'
         }
-        name: 'FabrikamBuyer'
+        name: 'partner2'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
       }
     ]
     schemas: [
@@ -1407,30 +1423,46 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
-                "value": "CONTOSO-SUPPLIER-001"
+                "value": "1234567890"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "0987654321"
               }
             ]
           },
           "metadata": {
-            "key1": "Primary supplier partner",
-            "key2": "Primary buyer partner"
+            "key1": "value1",
+            "key2": "value2"
           },
-          "name": "ContosoSupplier"
+          "name": "partner1",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
         },
         {
           "b2b": {
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
-                "value": "FABRIKAM-BUYER-001"
+                "value": "0987654321"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "1122334455"
               }
             ]
           },
           "metadata": {
-            "key1": "Primary buyer partner",
-            "key2": "Fabrikam organization"
+            "key1": "value1",
+            "key2": "value2"
           },
-          "name": "FabrikamBuyer"
+          "name": "partner2",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
         }
       ]
     },
@@ -1504,30 +1536,46 @@ param partners = [
       businessIdentities: [
         {
           qualifier: 'ZZ'
-          value: 'CONTOSO-SUPPLIER-001'
+          value: '1234567890'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '0987654321'
         }
       ]
     }
     metadata: {
-      key1: 'Primary supplier partner'
-      key2: 'Primary buyer partner'
+      key1: 'value1'
+      key2: 'value2'
     }
-    name: 'ContosoSupplier'
+    name: 'partner1'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
   }
   {
     b2b: {
       businessIdentities: [
         {
           qualifier: 'ZZ'
-          value: 'FABRIKAM-BUYER-001'
+          value: '0987654321'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '1122334455'
         }
       ]
     }
     metadata: {
-      key1: 'Primary buyer partner'
-      key2: 'Fabrikam organization'
+      key1: 'value1'
+      key2: 'value2'
     }
-    name: 'FabrikamBuyer'
+    name: 'partner2'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
   }
 ]
 param schemas = [
