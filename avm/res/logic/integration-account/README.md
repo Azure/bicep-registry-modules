@@ -1335,7 +1335,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           ]
         }
         metadata: {
-          description: 'Primary supplier partner'
+          key1: 'Primary supplier partner'
+          key2: 'Primary buyer partner'
         }
         name: 'ContosoSupplier'
       }
@@ -1349,7 +1350,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           ]
         }
         metadata: {
-          description: 'Primary buyer partner'
+          key1: 'Primary supplier partner'
+          key2: 'Primary buyer partner'
         }
         name: 'FabrikamBuyer'
       }
@@ -1434,7 +1436,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             ]
           },
           "metadata": {
-            "description": "Primary supplier partner"
+            "key1": "Primary supplier partner",
+            "key2": "Primary buyer partner"
           },
           "name": "ContosoSupplier"
         },
@@ -1448,7 +1451,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             ]
           },
           "metadata": {
-            "description": "Primary buyer partner"
+            "key1": "Primary supplier partner",
+            "key2": "Primary buyer partner"
           },
           "name": "FabrikamBuyer"
         }
@@ -1529,7 +1533,8 @@ param partners = [
       ]
     }
     metadata: {
-      description: 'Primary supplier partner'
+      key1: 'Primary supplier partner'
+      key2: 'Primary buyer partner'
     }
     name: 'ContosoSupplier'
   }
@@ -1543,7 +1548,8 @@ param partners = [
       ]
     }
     metadata: {
-      description: 'Primary buyer partner'
+      key1: 'Primary supplier partner'
+      key2: 'Primary buyer partner'
     }
     name: 'FabrikamBuyer'
   }

@@ -70,7 +70,8 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           metadata: {
-            description: 'Primary supplier partner'
+            key1: 'Primary supplier partner'
+            key2: 'Primary buyer partner'
           }
         }
         {
@@ -84,7 +85,8 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           metadata: {
-            description: 'Primary buyer partner'
+            key1: 'Primary supplier partner'
+            key2: 'Primary buyer partner'
           }
         }
       ]
