@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11466524671580181450"
+      "templateHash": "14449201062778254541"
     },
     "name": "Integration Account Assemblies",
     "description": "This module deploys an Integration Account Assembly."
@@ -51,11 +51,13 @@
       }
     },
     "metadata": {
-      "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/assemblies@2019-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The assembly metadata."
-      }
+      },
+      "nullable": true
     },
     "tags": {
       "type": "object",

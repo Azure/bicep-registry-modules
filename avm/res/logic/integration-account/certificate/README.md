@@ -34,7 +34,7 @@ This module deploys an Integration Account Certificate.
 | :-- | :-- | :-- |
 | [`key`](#parameter-key) | object | The key details in the key vault. |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) | object | The certificate metadata. |
+| [`metadata`](#parameter-metadata) |  | The certificate metadata. |
 | [`publicCertificate`](#parameter-publiccertificate) | string | The public certificate. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -59,53 +59,6 @@ The key details in the key vault.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-keykeyname) | string | The private key name in key vault. |
-| [`keyVault`](#parameter-keykeyvault) | object | The key vault reference. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-keykeyversion) | string | The private key version in key vault. |
-
-### Parameter: `key.keyName`
-
-The private key name in key vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `key.keyVault`
-
-The key vault reference.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-keykeyvaultid) | string | The resource id of the key vault. |
-
-### Parameter: `key.keyVault.id`
-
-The resource id of the key vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `key.keyVersion`
-
-The private key version in key vault.
-
-- Required: No
-- Type: string
-
 ### Parameter: `location`
 
 Resource location.
@@ -119,7 +72,7 @@ Resource location.
 The certificate metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `publicCertificate`
 

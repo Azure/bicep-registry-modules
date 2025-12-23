@@ -72,27 +72,6 @@ The business identity of the guest partner.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-guestidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-guestidentityvalue) | string | The user defined business identity value. |
-
-### Parameter: `guestIdentity.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `guestIdentity.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `guestPartner`
 
 The integration account partner that is set as guest partner for this agreement.
@@ -106,27 +85,6 @@ The business identity of the host partner.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-hostidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-hostidentityvalue) | string | The user defined business identity value. |
-
-### Parameter: `hostIdentity.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `hostIdentity.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `hostPartner`
 

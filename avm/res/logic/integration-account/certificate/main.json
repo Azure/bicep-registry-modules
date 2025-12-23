@@ -6,55 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15189593368602601688"
+      "templateHash": "7583592368174317358"
     },
     "name": "Integration Account Certificates",
     "description": "This module deploys an Integration Account Certificate."
-  },
-  "definitions": {
-    "keyVaultKeyReferenceType": {
-      "type": "object",
-      "properties": {
-        "keyName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The private key name in key vault."
-          }
-        },
-        "keyVault": {
-          "$ref": "#/definitions/keyVaultReferenceType",
-          "metadata": {
-            "description": "Required. The key vault reference."
-          }
-        },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The private key version in key vault."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for key vault key reference."
-      }
-    },
-    "keyVaultReferenceType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource id of the key vault."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for key vault reference."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -77,18 +32,23 @@
       }
     },
     "key": {
-      "$ref": "#/definitions/keyVaultKeyReferenceType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/certificates@2019-05-01#properties/properties/properties/key"
+        },
         "description": "Optional. The key details in the key vault."
-      }
+      },
+      "nullable": true
     },
     "metadata": {
-      "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/certificates@2019-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The certificate metadata."
-      }
+      },
+      "nullable": true
     },
     "publicCertificate": {
       "type": "string",

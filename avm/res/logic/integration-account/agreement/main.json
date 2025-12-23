@@ -6,33 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4028595586405226812"
+      "templateHash": "183758931750388915"
     },
     "name": "Integration Account Agreements",
     "description": "This module deploys an Integration Account Agreement."
-  },
-  "definitions": {
-    "businessIdentityType": {
-      "type": "object",
-      "properties": {
-        "qualifier": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The user defined business identity value."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a business identity."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -67,8 +44,11 @@
       }
     },
     "guestIdentity": {
-      "$ref": "#/definitions/businessIdentityType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/agreements@2019-05-01#properties/properties/properties/guestIdentity"
+        },
         "description": "Required. The business identity of the guest partner."
       }
     },
@@ -79,8 +59,11 @@
       }
     },
     "hostIdentity": {
-      "$ref": "#/definitions/businessIdentityType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/agreements@2019-05-01#properties/properties/properties/hostIdentity"
+        },
         "description": "Required. The business identity of the host partner."
       }
     },

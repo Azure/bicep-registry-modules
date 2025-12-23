@@ -34,7 +34,7 @@ This module deploys an Integration Account Partner.
 | :-- | :-- | :-- |
 | [`b2bPartnerContent`](#parameter-b2bpartnercontent) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) | object | The partner metadata. |
+| [`metadata`](#parameter-metadata) |  | The partner metadata. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -58,121 +58,6 @@ B2B partner content settings.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`businessIdentities`](#parameter-b2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`partnerClassification`](#parameter-b2bpartnercontentpartnerclassification) | string | The partner classification. |
-| [`partnerContact`](#parameter-b2bpartnercontentpartnercontact) | object | The RosettaNet partner properties. |
-
-### Parameter: `b2bPartnerContent.businessIdentities`
-
-The list of partner business identities.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-b2bpartnercontentbusinessidentitiesqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-b2bpartnercontentbusinessidentitiesvalue) | string | The user defined business identity value. |
-
-### Parameter: `b2bPartnerContent.businessIdentities.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `b2bPartnerContent.businessIdentities.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerClassification`
-
-The partner classification.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Carrier'
-    'Distributor'
-    'EndUser'
-    'EndUserGovernment'
-    'Financier'
-    'FreightForwarder'
-    'Manufacturer'
-    'MarketPlace'
-    'Retailer'
-    'Shopper'
-  ]
-  ```
-
-### Parameter: `b2bPartnerContent.partnerContact`
-
-The RosettaNet partner properties.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`emailAddress`](#parameter-b2bpartnercontentpartnercontactemailaddress) | string | The email address of the partner. |
-| [`faxNumber`](#parameter-b2bpartnercontentpartnercontactfaxnumber) | string | The fax number of the partner. |
-| [`name`](#parameter-b2bpartnercontentpartnercontactname) | string | The name of the contact person. |
-| [`supplyChainCode`](#parameter-b2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
-| [`telephoneNumber`](#parameter-b2bpartnercontentpartnercontacttelephonenumber) | string | The phone number of the partner. |
-
-### Parameter: `b2bPartnerContent.partnerContact.emailAddress`
-
-The email address of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerContact.faxNumber`
-
-The fax number of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerContact.name`
-
-The name of the contact person.
-
-- Required: No
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerContact.supplyChainCode`
-
-The supply chain code of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `b2bPartnerContent.partnerContact.telephoneNumber`
-
-The phone number of the partner.
-
-- Required: No
-- Type: string
-
 ### Parameter: `location`
 
 Resource location.
@@ -186,7 +71,7 @@ Resource location.
 The partner metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `tags`
 

@@ -36,7 +36,7 @@ This module deploys an Integration Account Assembly.
 | :-- | :-- | :-- |
 | [`contentType`](#parameter-contenttype) | string | The assembly content type. |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) | object | The assembly metadata. |
+| [`metadata`](#parameter-metadata) |  | The assembly metadata. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `assemblyName`
@@ -88,7 +88,7 @@ Resource location.
 The assembly metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `tags`
 

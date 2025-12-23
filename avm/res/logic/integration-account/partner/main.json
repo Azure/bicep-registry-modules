@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5957527494459764713"
+      "templateHash": "4964167180293604529"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys an Integration Account Partner."
@@ -141,18 +141,23 @@
       }
     },
     "b2bPartnerContent": {
-      "$ref": "#/definitions/b2bPartnerContentType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/content/properties/b2b"
+        },
         "description": "Optional. B2B partner content settings."
-      }
+      },
+      "nullable": true
     },
     "metadata": {
-      "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The partner metadata."
-      }
+      },
+      "nullable": true
     },
     "tags": {
       "type": "object",

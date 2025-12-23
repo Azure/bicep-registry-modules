@@ -60,10 +60,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module integrationAccount 'br/public:avm/res/logic/integration-account:<version>' = {
   params: {
-    // Required parameters
-    name: 'iamin001'
-    // Non-required parameters
-    location: '<location>'
+    name: 'liamin001'
   }
 }
 ```
@@ -80,13 +77,8 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
-      "value": "iamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+      "value": "liamin001"
     }
   }
 }
@@ -102,10 +94,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
 ```bicep-params
 using 'br/public:avm/res/logic/integration-account:<version>'
 
-// Required parameters
-param name = 'iamin001'
-// Non-required parameters
-param location = '<location>'
+param name = 'liamin001'
 ```
 
 </details>
@@ -1324,11 +1313,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     maps: [
       {
         content: '<content>'
@@ -1368,25 +1352,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           description: 'Primary buyer partner'
         }
         name: 'FabrikamBuyer'
-      }
-    ]
-    roleAssignments: [
-      {
-        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        name: '<name>'
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     schemas: [
@@ -1444,15 +1409,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "maps": {
       "value": [
         {
@@ -1495,27 +1451,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             "description": "Primary buyer partner"
           },
           "name": "FabrikamBuyer"
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "name": "<name>",
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1572,11 +1507,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param maps = [
   {
     content: '<content>'
@@ -1616,25 +1546,6 @@ param partners = [
       description: 'Primary buyer partner'
     }
     name: 'FabrikamBuyer'
-  }
-]
-param roleAssignments = [
-  {
-    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    name: '<name>'
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
 param schemas = [
@@ -1716,7 +1627,7 @@ All agreements to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-agreementslocation) | string | Resource location. |
-| [`metadata`](#parameter-agreementsmetadata) | object | The agreement metadata. |
+| [`metadata`](#parameter-agreementsmetadata) |  | The agreement metadata. |
 | [`tags`](#parameter-agreementstags) | object | Resource tags. |
 
 ### Parameter: `agreements.agreementType`
@@ -1749,27 +1660,6 @@ The guest identity for the agreement.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-agreementsguestidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-agreementsguestidentityvalue) | string | The user defined business identity value. |
-
-### Parameter: `agreements.guestIdentity.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `agreements.guestIdentity.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `agreements.guestPartner`
 
 The guest partner name for the agreement.
@@ -1783,27 +1673,6 @@ The host identity for the agreement.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-agreementshostidentityqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-agreementshostidentityvalue) | string | The user defined business identity value. |
-
-### Parameter: `agreements.hostIdentity.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `agreements.hostIdentity.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `agreements.hostPartner`
 
@@ -1831,7 +1700,7 @@ Resource location.
 The agreement metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `agreements.tags`
 
@@ -1861,7 +1730,7 @@ All assemblies to create.
 | :-- | :-- | :-- |
 | [`contentType`](#parameter-assembliescontenttype) | string | The assembly content type. |
 | [`location`](#parameter-assemblieslocation) | string | Resource location. |
-| [`metadata`](#parameter-assembliesmetadata) | object | The assembly metadata. |
+| [`metadata`](#parameter-assembliesmetadata) |  | The assembly metadata. |
 | [`tags`](#parameter-assembliestags) | object | Resource tags. |
 
 ### Parameter: `assemblies.assemblyName`
@@ -1904,7 +1773,7 @@ Resource location.
 The assembly metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `assemblies.tags`
 
@@ -1932,7 +1801,7 @@ All certificates to create.
 | :-- | :-- | :-- |
 | [`key`](#parameter-certificateskey) | object | The key details in the key vault. |
 | [`location`](#parameter-certificateslocation) | string | Resource location. |
-| [`metadata`](#parameter-certificatesmetadata) | object | The certificate metadata. |
+| [`metadata`](#parameter-certificatesmetadata) |  | The certificate metadata. |
 | [`publicCertificate`](#parameter-certificatespubliccertificate) | string | The public certificate. |
 | [`tags`](#parameter-certificatestags) | object | Resource tags. |
 
@@ -1950,53 +1819,6 @@ The key details in the key vault.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-certificateskeykeyname) | string | The private key name in key vault. |
-| [`keyVault`](#parameter-certificateskeykeyvault) | object | The key vault reference. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-certificateskeykeyversion) | string | The private key version in key vault. |
-
-### Parameter: `certificates.key.keyName`
-
-The private key name in key vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `certificates.key.keyVault`
-
-The key vault reference.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-certificateskeykeyvaultid) | string | The resource id of the key vault. |
-
-### Parameter: `certificates.key.keyVault.id`
-
-The resource id of the key vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `certificates.key.keyVersion`
-
-The private key version in key vault.
-
-- Required: No
-- Type: string
-
 ### Parameter: `certificates.location`
 
 Resource location.
@@ -2009,7 +1831,7 @@ Resource location.
 The certificate metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `certificates.publicCertificate`
 
@@ -2200,6 +2022,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2219,6 +2042,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2244,7 +2074,7 @@ All maps to create.
 | [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
 | [`location`](#parameter-mapslocation) | string | Resource location. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
-| [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
+| [`metadata`](#parameter-mapsmetadata) |  | The map metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-mapstags) | object | Resource tags. |
 
@@ -2298,7 +2128,7 @@ The map type. Default is "Xslt".
 The map metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `maps.parametersSchema`
 
@@ -2332,7 +2162,7 @@ All partners to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | object | The B2B partner content settings. |
-| [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
+| [`metadata`](#parameter-partnersmetadata) |  | The partner metadata. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
 ### Parameter: `partners.name`
@@ -2349,127 +2179,12 @@ The B2B partner content settings.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`businessIdentities`](#parameter-partnersb2bpartnercontentbusinessidentities) | array | The list of partner business identities. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`partnerClassification`](#parameter-partnersb2bpartnercontentpartnerclassification) | string | The partner classification. |
-| [`partnerContact`](#parameter-partnersb2bpartnercontentpartnercontact) | object | The RosettaNet partner properties. |
-
-### Parameter: `partners.b2bPartnerContent.businessIdentities`
-
-The list of partner business identities.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`qualifier`](#parameter-partnersb2bpartnercontentbusinessidentitiesqualifier) | string | The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32. |
-| [`value`](#parameter-partnersb2bpartnercontentbusinessidentitiesvalue) | string | The user defined business identity value. |
-
-### Parameter: `partners.b2bPartnerContent.businessIdentities.qualifier`
-
-The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.businessIdentities.value`
-
-The user defined business identity value.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerClassification`
-
-The partner classification.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Carrier'
-    'Distributor'
-    'EndUser'
-    'EndUserGovernment'
-    'Financier'
-    'FreightForwarder'
-    'Manufacturer'
-    'MarketPlace'
-    'Retailer'
-    'Shopper'
-  ]
-  ```
-
-### Parameter: `partners.b2bPartnerContent.partnerContact`
-
-The RosettaNet partner properties.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`emailAddress`](#parameter-partnersb2bpartnercontentpartnercontactemailaddress) | string | The email address of the partner. |
-| [`faxNumber`](#parameter-partnersb2bpartnercontentpartnercontactfaxnumber) | string | The fax number of the partner. |
-| [`name`](#parameter-partnersb2bpartnercontentpartnercontactname) | string | The name of the contact person. |
-| [`supplyChainCode`](#parameter-partnersb2bpartnercontentpartnercontactsupplychaincode) | string | The supply chain code of the partner. |
-| [`telephoneNumber`](#parameter-partnersb2bpartnercontentpartnercontacttelephonenumber) | string | The phone number of the partner. |
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.emailAddress`
-
-The email address of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.faxNumber`
-
-The fax number of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.name`
-
-The name of the contact person.
-
-- Required: No
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.supplyChainCode`
-
-The supply chain code of the partner.
-
-- Required: No
-- Type: string
-
-### Parameter: `partners.b2bPartnerContent.partnerContact.telephoneNumber`
-
-The phone number of the partner.
-
-- Required: No
-- Type: string
-
 ### Parameter: `partners.metadata`
 
 The partner metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `partners.tags`
 
@@ -2615,7 +2330,7 @@ All schemas to create.
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`location`](#parameter-schemaslocation) | string | Resource location. |
-| [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
+| [`metadata`](#parameter-schemasmetadata) |  | The schema metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
@@ -2660,7 +2375,7 @@ Resource location.
 The schema metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `schemas.schemaType`
 
@@ -2742,6 +2457,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

@@ -36,7 +36,7 @@ This module deploys an Integration Account Schema.
 | [`contentType`](#parameter-contenttype) | string | The schema content type. |
 | [`documentName`](#parameter-documentname) | string | The document name. |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) | object | The schema metadata. |
+| [`metadata`](#parameter-metadata) |  | The schema metadata. |
 | [`schemaType`](#parameter-schematype) | string | The schema type. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-targetnamespace) | string | The target namespace of the schema. |
@@ -90,7 +90,7 @@ Resource location.
 The schema metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `schemaType`
 
