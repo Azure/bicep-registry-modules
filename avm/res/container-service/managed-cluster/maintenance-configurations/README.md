@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenanc
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-01/managedClusters/maintenanceConfigurations)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-09-01/managedClusters/maintenanceConfigurations)</li></ul> |
 
 ## Parameters
 
@@ -33,6 +33,8 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenanc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the maintenance configuration. |
+| [`notAllowedTime`](#parameter-notallowedtime) | array | Time slots on which upgrade is not allowed. |
+| [`timeInWeek`](#parameter-timeinweek) | array | Time slots during the week when planned maintenance is allowed to proceed. |
 
 ### Parameter: `maintenanceWindow`
 
@@ -55,6 +57,20 @@ Name of the maintenance configuration.
 - Required: No
 - Type: string
 - Default: `'aksManagedAutoUpgradeSchedule'`
+
+### Parameter: `notAllowedTime`
+
+Time slots on which upgrade is not allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `timeInWeek`
+
+Time slots during the week when planned maintenance is allowed to proceed.
+
+- Required: No
+- Type: array
 
 ## Outputs
 

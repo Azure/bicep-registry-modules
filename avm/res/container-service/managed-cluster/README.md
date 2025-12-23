@@ -25,9 +25,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.ContainerService/managedClusters` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters)</li></ul> |
-| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters/agentPools)</li></ul> |
-| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-01/managedClusters/maintenanceConfigurations)</li></ul> |
+| `Microsoft.ContainerService/managedClusters` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-09-01/managedClusters)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-09-01/managedClusters/agentPools)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-09-01/managedClusters/maintenanceConfigurations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KubernetesConfiguration/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2024-11-01/extensions)</li></ul> |
 | `Microsoft.KubernetesConfiguration/fluxConfigurations` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_fluxconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2025-04-01/fluxConfigurations)</li></ul> |
@@ -1890,8 +1890,8 @@ param tags = {
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
 | [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
+| [`aiToolchainOperatorProfile`](#parameter-aitoolchainoperatorprofile) | object | AI toolchain operator settings that apply to the whole cluster. |
 | [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
-| [`appMonitoring`](#parameter-appmonitoring) | object | Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview. |
 | [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
 | [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
 | [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
@@ -1918,6 +1918,7 @@ param tags = {
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
+| [`bootstrapProfile`](#parameter-bootstrapprofile) | object | Profile of the cluster bootstrap configuration. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1949,6 +1950,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableWorkloadIdentity`](#parameter-enableworkloadidentity) | bool | Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled. |
 | [`fluxExtension`](#parameter-fluxextension) | object | Settings and configurations for the flux extension. |
+| [`fqdnSubdomain`](#parameter-fqdnsubdomain) | string | The FQDN subdomain of the private cluster with custom private dns zone. This cannot be updated once the Managed Cluster has been created. |
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
@@ -1993,7 +1995,6 @@ param tags = {
 | [`privateDNSZone`](#parameter-privatednszone) | string | Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securityGatingConfig`](#parameter-securitygatingconfig) | object | Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
 | [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
@@ -2001,8 +2002,10 @@ param tags = {
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`syslogPort`](#parameter-syslogport) | int | The syslog host port. If not specified, the default port is 28330. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`upgradeSettings`](#parameter-upgradesettings) | object | Settings for upgrading the cluster with override options. |
 | [`vpaAddon`](#parameter-vpaaddon) | bool | Whether to enable VPA add-on in cluster. Default value is false. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
+| [`windowsProfile`](#parameter-windowsprofile) | object | The Windows profile for Windows VMs in the Managed Cluster. |
 
 ### Parameter: `name`
 
@@ -2029,24 +2032,29 @@ Properties of the primary agent pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZones`](#parameter-primaryagentpoolprofilesavailabilityzones) | array | The availability zones of the agent pool. |
+| [`capacityReservationGroupResourceId`](#parameter-primaryagentpoolprofilescapacityreservationgroupresourceid) | string | AKS will associate the specified agent pool with the Capacity Reservation Group. |
 | [`count`](#parameter-primaryagentpoolprofilescount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`enableAutoScaling`](#parameter-primaryagentpoolprofilesenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
 | [`enableDefaultTelemetry`](#parameter-primaryagentpoolprofilesenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
 | [`enableEncryptionAtHost`](#parameter-primaryagentpoolprofilesenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-primaryagentpoolprofilesenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-primaryagentpoolprofilesenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
-| [`enableSecureBoot`](#parameter-primaryagentpoolprofilesenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-primaryagentpoolprofilesenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
-| [`enableVTPM`](#parameter-primaryagentpoolprofilesenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
+| [`gatewayProfile`](#parameter-primaryagentpoolprofilesgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`gpuProfile`](#parameter-primaryagentpoolprofilesgpuprofile) | object | GPU settings. |
+| [`hostGroupId`](#parameter-primaryagentpoolprofileshostgroupid) | string | Host group resource ID. |
+| [`kubeletConfig`](#parameter-primaryagentpoolprofileskubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`linuxOSConfig`](#parameter-primaryagentpoolprofileslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
+| [`localDNSProfile`](#parameter-primaryagentpoolprofileslocaldnsprofile) | object | Local DNS configuration. |
 | [`maxCount`](#parameter-primaryagentpoolprofilesmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`maxPods`](#parameter-primaryagentpoolprofilesmaxpods) | int | The maximum number of pods that can run on a node. |
-| [`maxSurge`](#parameter-primaryagentpoolprofilesmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`messageOfTheDay`](#parameter-primaryagentpoolprofilesmessageoftheday) | string | A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message. |
 | [`minCount`](#parameter-primaryagentpoolprofilesmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`minPods`](#parameter-primaryagentpoolprofilesminpods) | int | The minimum number of pods that can run on a node. |
 | [`mode`](#parameter-primaryagentpoolprofilesmode) | string | The mode of the agent pool. |
+| [`networkProfile`](#parameter-primaryagentpoolprofilesnetworkprofile) | object | Network profile to be used for agent pool nodes. |
 | [`nodeLabels`](#parameter-primaryagentpoolprofilesnodelabels) | object | The node labels of the agent pool. |
 | [`nodePublicIpPrefixResourceId`](#parameter-primaryagentpoolprofilesnodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
 | [`nodeTaints`](#parameter-primaryagentpoolprofilesnodetaints) | array | The node taints of the agent pool. |
@@ -2055,16 +2063,20 @@ Properties of the primary agent pool.
 | [`osDiskType`](#parameter-primaryagentpoolprofilesosdisktype) | string | The OS disk type of the agent pool. |
 | [`osSKU`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-primaryagentpoolprofilesostype) | string | The OS type of the agent pool. |
+| [`podIpAllocationMode`](#parameter-primaryagentpoolprofilespodipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-primaryagentpoolprofilespodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
+| [`powerState`](#parameter-primaryagentpoolprofilespowerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-primaryagentpoolprofilesproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
 | [`scaleDownMode`](#parameter-primaryagentpoolprofilesscaledownmode) | string | The scale down mode of the agent pool. |
 | [`scaleSetEvictionPolicy`](#parameter-primaryagentpoolprofilesscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
 | [`scaleSetPriority`](#parameter-primaryagentpoolprofilesscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`securityProfile`](#parameter-primaryagentpoolprofilessecurityprofile) | object | Security profile for the agent pool. |
 | [`sourceResourceId`](#parameter-primaryagentpoolprofilessourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-primaryagentpoolprofilesspotmaxprice) | int | The spot max price of the agent pool. |
-| [`sshAccess`](#parameter-primaryagentpoolprofilessshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-primaryagentpoolprofilestags) | object | The tags of the agent pool. |
 | [`type`](#parameter-primaryagentpoolprofilestype) | string | The type of the agent pool. |
+| [`upgradeSettings`](#parameter-primaryagentpoolprofilesupgradesettings) | object | Upgrade settings. |
+| [`virtualMachinesProfile`](#parameter-primaryagentpoolprofilesvirtualmachinesprofile) | object | Virtual Machines resource status. |
 | [`vmSize`](#parameter-primaryagentpoolprofilesvmsize) | string | The VM size of the agent pool. |
 | [`vnetSubnetResourceId`](#parameter-primaryagentpoolprofilesvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
 | [`windowsProfile`](#parameter-primaryagentpoolprofileswindowsprofile) | object | The Windows profile of the agent pool. |
@@ -2083,6 +2095,13 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
+
+### Parameter: `primaryAgentPoolProfiles.capacityReservationGroupResourceId`
+
+AKS will associate the specified agent pool with the Capacity Reservation Group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `primaryAgentPoolProfiles.count`
 
@@ -2126,13 +2145,6 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
-### Parameter: `primaryAgentPoolProfiles.enableSecureBoot`
-
-Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
@@ -2140,12 +2152,12 @@ Whether to enable Ultra SSD for the agent pool.
 - Required: No
 - Type: bool
 
-### Parameter: `primaryAgentPoolProfiles.enableVTPM`
+### Parameter: `primaryAgentPoolProfiles.gatewayProfile`
 
-vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
+Represents the Gateway node pool configuration.
 
 - Required: No
-- Type: bool
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.gpuInstanceProfile`
 
@@ -2164,16 +2176,51 @@ The GPU instance profile of the agent pool.
   ]
   ```
 
+### Parameter: `primaryAgentPoolProfiles.gpuProfile`
+
+GPU settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `primaryAgentPoolProfiles.hostGroupId`
+
+Host group resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `primaryAgentPoolProfiles.kubeletConfig`
+
+Kubelet configuration on agent pool nodes.
+
+- Required: No
+- Type: object
+
 ### Parameter: `primaryAgentPoolProfiles.kubeletDiskType`
 
 The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'OS'
+    'Temporary'
+  ]
+  ```
 
 ### Parameter: `primaryAgentPoolProfiles.linuxOSConfig`
 
 The Linux OS configuration of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `primaryAgentPoolProfiles.localDNSProfile`
+
+Local DNS configuration.
 
 - Required: No
 - Type: object
@@ -2192,9 +2239,9 @@ The maximum number of pods that can run on a node.
 - Required: No
 - Type: int
 
-### Parameter: `primaryAgentPoolProfiles.maxSurge`
+### Parameter: `primaryAgentPoolProfiles.messageOfTheDay`
 
-The maximum number of nodes that can be created during an upgrade.
+A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message.
 
 - Required: No
 - Type: string
@@ -2222,10 +2269,18 @@ The mode of the agent pool.
 - Allowed:
   ```Bicep
   [
+    'Gateway'
     'System'
     'User'
   ]
   ```
+
+### Parameter: `primaryAgentPoolProfiles.networkProfile`
+
+Network profile to be used for agent pool nodes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.nodeLabels`
 
@@ -2275,6 +2330,19 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureLinux'
+    'AzureLinux3'
+    'CBLMariner'
+    'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
+    'Windows2019'
+    'Windows2022'
+  ]
+  ```
 
 ### Parameter: `primaryAgentPoolProfiles.osType`
 
@@ -2290,12 +2358,34 @@ The OS type of the agent pool.
   ]
   ```
 
+### Parameter: `primaryAgentPoolProfiles.podIpAllocationMode`
+
+Pod IP allocation mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DynamicBlock'
+    'DynamicIndividual'
+    'StaticBlock'
+  ]
+  ```
+
 ### Parameter: `primaryAgentPoolProfiles.podSubnetResourceId`
 
 The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `primaryAgentPoolProfiles.powerState`
+
+Power State of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.proximityPlacementGroupResourceId`
 
@@ -2347,6 +2437,13 @@ The scale set priority of the agent pool.
   ]
   ```
 
+### Parameter: `primaryAgentPoolProfiles.securityProfile`
+
+Security profile for the agent pool.
+
+- Required: No
+- Type: object
+
 ### Parameter: `primaryAgentPoolProfiles.sourceResourceId`
 
 The source resource ID to create the agent pool from.
@@ -2360,20 +2457,6 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
-
-### Parameter: `primaryAgentPoolProfiles.sshAccess`
-
-SSH access method of an agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'LocalUser'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.tags`
 
@@ -2395,6 +2478,20 @@ The type of the agent pool.
     'VirtualMachineScaleSets'
   ]
   ```
+
+### Parameter: `primaryAgentPoolProfiles.upgradeSettings`
+
+Upgrade settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `primaryAgentPoolProfiles.virtualMachinesProfile`
+
+Virtual Machines resource status.
+
+- Required: No
+- Type: object
 
 ### Parameter: `primaryAgentPoolProfiles.vmSize`
 
@@ -2423,6 +2520,14 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'KataVmIsolation'
+    'OCIContainer'
+    'WasmWasi'
+  ]
+  ```
 
 ### Parameter: `aksServicePrincipalProfile`
 
@@ -2545,24 +2650,29 @@ Define one or more secondary/additional agent pools.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZones`](#parameter-agentpoolsavailabilityzones) | array | The availability zones of the agent pool. |
+| [`capacityReservationGroupResourceId`](#parameter-agentpoolscapacityreservationgroupresourceid) | string | AKS will associate the specified agent pool with the Capacity Reservation Group. |
 | [`count`](#parameter-agentpoolscount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`enableAutoScaling`](#parameter-agentpoolsenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
 | [`enableDefaultTelemetry`](#parameter-agentpoolsenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
 | [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
-| [`enableSecureBoot`](#parameter-agentpoolsenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
-| [`enableVTPM`](#parameter-agentpoolsenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
+| [`gatewayProfile`](#parameter-agentpoolsgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`gpuProfile`](#parameter-agentpoolsgpuprofile) | object | GPU settings. |
+| [`hostGroupId`](#parameter-agentpoolshostgroupid) | string | Host group resource ID. |
+| [`kubeletConfig`](#parameter-agentpoolskubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`linuxOSConfig`](#parameter-agentpoolslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
+| [`localDNSProfile`](#parameter-agentpoolslocaldnsprofile) | object | Local DNS configuration. |
 | [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`maxPods`](#parameter-agentpoolsmaxpods) | int | The maximum number of pods that can run on a node. |
-| [`maxSurge`](#parameter-agentpoolsmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`messageOfTheDay`](#parameter-agentpoolsmessageoftheday) | string | A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message. |
 | [`minCount`](#parameter-agentpoolsmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
 | [`minPods`](#parameter-agentpoolsminpods) | int | The minimum number of pods that can run on a node. |
 | [`mode`](#parameter-agentpoolsmode) | string | The mode of the agent pool. |
+| [`networkProfile`](#parameter-agentpoolsnetworkprofile) | object | Network profile to be used for agent pool nodes. |
 | [`nodeLabels`](#parameter-agentpoolsnodelabels) | object | The node labels of the agent pool. |
 | [`nodePublicIpPrefixResourceId`](#parameter-agentpoolsnodepublicipprefixresourceid) | string | The node public IP prefix ID of the agent pool. |
 | [`nodeTaints`](#parameter-agentpoolsnodetaints) | array | The node taints of the agent pool. |
@@ -2571,16 +2681,20 @@ Define one or more secondary/additional agent pools.
 | [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
 | [`osSKU`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
+| [`podIpAllocationMode`](#parameter-agentpoolspodipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-agentpoolspodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
+| [`powerState`](#parameter-agentpoolspowerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
 | [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | string | The scale down mode of the agent pool. |
 | [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
 | [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`securityProfile`](#parameter-agentpoolssecurityprofile) | object | Security profile for the agent pool. |
 | [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | int | The spot max price of the agent pool. |
-| [`sshAccess`](#parameter-agentpoolssshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
 | [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
+| [`upgradeSettings`](#parameter-agentpoolsupgradesettings) | object | Upgrade settings. |
+| [`virtualMachinesProfile`](#parameter-agentpoolsvirtualmachinesprofile) | object | Virtual Machines resource status. |
 | [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
 | [`vnetSubnetResourceId`](#parameter-agentpoolsvnetsubnetresourceid) | string | The VNet subnet ID of the agent pool. |
 | [`windowsProfile`](#parameter-agentpoolswindowsprofile) | object | The Windows profile of the agent pool. |
@@ -2599,6 +2713,13 @@ The availability zones of the agent pool.
 
 - Required: No
 - Type: array
+
+### Parameter: `agentPools.capacityReservationGroupResourceId`
+
+AKS will associate the specified agent pool with the Capacity Reservation Group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `agentPools.count`
 
@@ -2642,13 +2763,6 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
-### Parameter: `agentPools.enableSecureBoot`
-
-Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `agentPools.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
@@ -2656,12 +2770,12 @@ Whether to enable Ultra SSD for the agent pool.
 - Required: No
 - Type: bool
 
-### Parameter: `agentPools.enableVTPM`
+### Parameter: `agentPools.gatewayProfile`
 
-vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
+Represents the Gateway node pool configuration.
 
 - Required: No
-- Type: bool
+- Type: object
 
 ### Parameter: `agentPools.gpuInstanceProfile`
 
@@ -2680,16 +2794,51 @@ The GPU instance profile of the agent pool.
   ]
   ```
 
+### Parameter: `agentPools.gpuProfile`
+
+GPU settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPools.hostGroupId`
+
+Host group resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `agentPools.kubeletConfig`
+
+Kubelet configuration on agent pool nodes.
+
+- Required: No
+- Type: object
+
 ### Parameter: `agentPools.kubeletDiskType`
 
 The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'OS'
+    'Temporary'
+  ]
+  ```
 
 ### Parameter: `agentPools.linuxOSConfig`
 
 The Linux OS configuration of the agent pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPools.localDNSProfile`
+
+Local DNS configuration.
 
 - Required: No
 - Type: object
@@ -2708,9 +2857,9 @@ The maximum number of pods that can run on a node.
 - Required: No
 - Type: int
 
-### Parameter: `agentPools.maxSurge`
+### Parameter: `agentPools.messageOfTheDay`
 
-The maximum number of nodes that can be created during an upgrade.
+A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message.
 
 - Required: No
 - Type: string
@@ -2738,10 +2887,18 @@ The mode of the agent pool.
 - Allowed:
   ```Bicep
   [
+    'Gateway'
     'System'
     'User'
   ]
   ```
+
+### Parameter: `agentPools.networkProfile`
+
+Network profile to be used for agent pool nodes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools.nodeLabels`
 
@@ -2791,6 +2948,19 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureLinux'
+    'AzureLinux3'
+    'CBLMariner'
+    'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
+    'Windows2019'
+    'Windows2022'
+  ]
+  ```
 
 ### Parameter: `agentPools.osType`
 
@@ -2806,12 +2976,34 @@ The OS type of the agent pool.
   ]
   ```
 
+### Parameter: `agentPools.podIpAllocationMode`
+
+Pod IP allocation mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DynamicBlock'
+    'DynamicIndividual'
+    'StaticBlock'
+  ]
+  ```
+
 ### Parameter: `agentPools.podSubnetResourceId`
 
 The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `agentPools.powerState`
+
+Power State of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools.proximityPlacementGroupResourceId`
 
@@ -2863,6 +3055,13 @@ The scale set priority of the agent pool.
   ]
   ```
 
+### Parameter: `agentPools.securityProfile`
+
+Security profile for the agent pool.
+
+- Required: No
+- Type: object
+
 ### Parameter: `agentPools.sourceResourceId`
 
 The source resource ID to create the agent pool from.
@@ -2876,20 +3075,6 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
-
-### Parameter: `agentPools.sshAccess`
-
-SSH access method of an agent pool.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'LocalUser'
-  ]
-  ```
 
 ### Parameter: `agentPools.tags`
 
@@ -2911,6 +3096,20 @@ The type of the agent pool.
     'VirtualMachineScaleSets'
   ]
   ```
+
+### Parameter: `agentPools.upgradeSettings`
+
+Upgrade settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPools.virtualMachinesProfile`
+
+Virtual Machines resource status.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools.vmSize`
 
@@ -2939,6 +3138,21 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'KataVmIsolation'
+    'OCIContainer'
+    'WasmWasi'
+  ]
+  ```
+
+### Parameter: `aiToolchainOperatorProfile`
+
+AI toolchain operator settings that apply to the whole cluster.
+
+- Required: No
+- Type: object
 
 ### Parameter: `allocatedOutboundPorts`
 
@@ -2947,13 +3161,6 @@ The desired number of allocated SNAT ports per VM. Default is 0, which results i
 - Required: No
 - Type: int
 - Default: `0`
-
-### Parameter: `appMonitoring`
-
-Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.
-
-- Required: No
-- Type: object
 
 ### Parameter: `authorizedIPRanges`
 
@@ -3196,6 +3403,13 @@ The type of the managed inbound Load Balancer BackendPool.
     'NodeIPConfiguration'
   ]
   ```
+
+### Parameter: `bootstrapProfile`
+
+Profile of the cluster bootstrap configuration.
+
+- Required: No
+- Type: object
 
 ### Parameter: `costAnalysisEnabled`
 
@@ -3665,6 +3879,13 @@ Namespace where the extension will be created for an Namespace scoped extension.
 ### Parameter: `fluxExtension.version`
 
 The version of the extension.
+
+- Required: No
+- Type: string
+
+### Parameter: `fqdnSubdomain`
+
+The FQDN subdomain of the private cluster with custom private dns zone. This cannot be updated once the Managed Cluster has been created.
 
 - Required: No
 - Type: string
@@ -4300,13 +4521,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `securityGatingConfig`
-
-Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards.
-
-- Required: No
-- Type: object
-
 ### Parameter: `serviceCidr`
 
 A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges.
@@ -4382,6 +4596,13 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `upgradeSettings`
+
+Settings for upgrading the cluster with override options.
+
+- Required: No
+- Type: object
+
 ### Parameter: `vpaAddon`
 
 Whether to enable VPA add-on in cluster. Default value is false.
@@ -4397,6 +4618,13 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `windowsProfile`
+
+The Windows profile for Windows VMs in the Managed Cluster.
+
+- Required: No
+- Type: object
 
 ## Outputs
 
