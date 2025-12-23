@@ -14,7 +14,7 @@ param integrationAccountName string
 param key keyVaultKeyReferenceType?
 
 @description('Optional. The certificate metadata.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.properties.metadata?
 
 @description('Optional. The public certificate.')
 param publicCertificate string?
