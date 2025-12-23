@@ -343,17 +343,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       }
     ]
-    apiDiagnostics: [
-      {
-        apiName: 'echo-api'
-        loggerName: 'logger'
-        metrics: true
-        name: 'applicationinsights'
-      }
-    ]
     apis: [
       {
         apiVersionSetName: 'echo-version-set'
+        diagnostics: [
+          {
+            loggerName: 'logger'
+            metrics: true
+            name: 'applicationinsights'
+          }
+        ]
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
@@ -877,20 +876,17 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
-    "apiDiagnostics": {
-      "value": [
-        {
-          "apiName": "echo-api",
-          "loggerName": "logger",
-          "metrics": true,
-          "name": "applicationinsights"
-        }
-      ]
-    },
     "apis": {
       "value": [
         {
           "apiVersionSetName": "echo-version-set",
+          "diagnostics": [
+            {
+              "loggerName": "logger",
+              "metrics": true,
+              "name": "applicationinsights"
+            }
+          ],
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
@@ -1449,17 +1445,16 @@ param additionalLocations = [
     }
   }
 ]
-param apiDiagnostics = [
-  {
-    apiName: 'echo-api'
-    loggerName: 'logger'
-    metrics: true
-    name: 'applicationinsights'
-  }
-]
 param apis = [
   {
     apiVersionSetName: 'echo-version-set'
+    diagnostics: [
+      {
+        loggerName: 'logger'
+        metrics: true
+        name: 'applicationinsights'
+      }
+    ]
     displayName: 'Echo API'
     name: 'echo-api'
     path: 'echo'
@@ -1965,17 +1960,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    apiDiagnostics: [
-      {
-        apiName: 'echo-api'
-        loggerName: 'logger'
-        metrics: true
-        name: 'applicationinsights'
-      }
-    ]
     apis: [
       {
         apiVersionSetName: 'echo-version-set'
+        diagnostics: [
+          {
+            loggerName: 'logger'
+            metrics: true
+            name: 'applicationinsights'
+          }
+        ]
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
@@ -2229,20 +2223,17 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "apiDiagnostics": {
-      "value": [
-        {
-          "apiName": "echo-api",
-          "loggerName": "logger",
-          "metrics": true,
-          "name": "applicationinsights"
-        }
-      ]
-    },
     "apis": {
       "value": [
         {
           "apiVersionSetName": "echo-version-set",
+          "diagnostics": [
+            {
+              "loggerName": "logger",
+              "metrics": true,
+              "name": "applicationinsights"
+            }
+          ],
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
@@ -2529,17 +2520,16 @@ param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
-param apiDiagnostics = [
-  {
-    apiName: 'echo-api'
-    loggerName: 'logger'
-    metrics: true
-    name: 'applicationinsights'
-  }
-]
 param apis = [
   {
     apiVersionSetName: 'echo-version-set'
+    diagnostics: [
+      {
+        loggerName: 'logger'
+        metrics: true
+        name: 'applicationinsights'
+      }
+    ]
     displayName: 'Echo API'
     name: 'echo-api'
     path: 'echo'
@@ -3574,7 +3564,6 @@ param virtualNetworkType = 'None'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalLocations`](#parameter-additionallocations) | array | Additional datacenter locations of the API Management service. Not supported with V2 SKUs. |
-| [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
 | [`authorizationServers`](#parameter-authorizationservers) | array | Authorization servers. |
@@ -3793,155 +3782,6 @@ The full resource ID of a subnet in a virtual network to deploy the API Manageme
 
 - Required: Yes
 - Type: string
-
-### Parameter: `apiDiagnostics`
-
-API Diagnostics.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`apiName`](#parameter-apidiagnosticsapiname) | string | The name of the parent API. |
-| [`loggerName`](#parameter-apidiagnosticsloggername) | string | The name of the logger. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`httpCorrelationProtocol`](#parameter-apidiagnosticshttpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
-| [`metrics`](#parameter-apidiagnosticsmetrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
-| [`operationNameFormat`](#parameter-apidiagnosticsoperationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`alwaysLog`](#parameter-apidiagnosticsalwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
-| [`backend`](#parameter-apidiagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
-| [`frontend`](#parameter-apidiagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
-| [`logClientIp`](#parameter-apidiagnosticslogclientip) | bool | Log the ClientIP. |
-| [`name`](#parameter-apidiagnosticsname) | string | Type of diagnostic resource. |
-| [`samplingPercentage`](#parameter-apidiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
-| [`verbosity`](#parameter-apidiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
-
-### Parameter: `apiDiagnostics.apiName`
-
-The name of the parent API.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `apiDiagnostics.loggerName`
-
-The name of the logger.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `apiDiagnostics.httpCorrelationProtocol`
-
-Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Legacy'
-    'None'
-    'W3C'
-  ]
-  ```
-
-### Parameter: `apiDiagnostics.metrics`
-
-Emit custom metrics via emit-metric policy. Required if using Application Insights.
-
-- Required: No
-- Type: bool
-
-### Parameter: `apiDiagnostics.operationNameFormat`
-
-The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Name'
-    'Url'
-  ]
-  ```
-
-### Parameter: `apiDiagnostics.alwaysLog`
-
-Specifies for what type of messages sampling settings should not apply.
-
-- Required: No
-- Type: string
-
-### Parameter: `apiDiagnostics.backend`
-
-Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
-
-- Required: No
-- Type: object
-
-### Parameter: `apiDiagnostics.frontend`
-
-Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
-
-- Required: No
-- Type: object
-
-### Parameter: `apiDiagnostics.logClientIp`
-
-Log the ClientIP.
-
-- Required: No
-- Type: bool
-
-### Parameter: `apiDiagnostics.name`
-
-Type of diagnostic resource.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'applicationinsights'
-    'azuremonitor'
-    'local'
-  ]
-  ```
-
-### Parameter: `apiDiagnostics.samplingPercentage`
-
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
-
-- Required: No
-- Type: int
-
-### Parameter: `apiDiagnostics.verbosity`
-
-The verbosity level applied to traces emitted by trace policies.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'error'
-    'information'
-    'verbose'
-  ]
-  ```
 
 ### Parameter: `apis`
 

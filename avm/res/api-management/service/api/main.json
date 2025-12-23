@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "13415428648671825913"
+      "templateHash": "15588782662164585248"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -603,7 +603,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-policy-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -752,7 +752,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-diagnostic-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-Diag-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1033,7 +1033,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-operation-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-Opr-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
