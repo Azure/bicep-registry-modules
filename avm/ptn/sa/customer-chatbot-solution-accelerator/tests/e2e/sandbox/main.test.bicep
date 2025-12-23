@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
+metadata description = 'This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
 
 // ========== //
 // Parameters //
@@ -9,10 +9,10 @@ metadata description = 'This instance deploys the [Conversation Knowledge Mining
 
 @sys.description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sckmsb'
+param serviceShort string = 'sccsasb'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -42,7 +42,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
-      aiServiceLocation: enforcedLocation
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
     }
   }
 ]

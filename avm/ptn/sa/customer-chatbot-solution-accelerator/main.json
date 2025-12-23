@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4409798523061497961"
+      "templateHash": "9078189759672585400"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\r\n\r\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\r\n"
@@ -238,20 +238,6 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "existingLogAnalyticsWorkspaceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of an existing Log Analytics Workspace."
-      }
-    },
-    "existingAiFoundryAiProjectResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of an existing Ai Foundry AI Services resource."
-      }
-    },
     "createdBy": {
       "type": "string",
       "defaultValue": "[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]",
@@ -292,10 +278,6 @@
     "deployerPrincipalType": "[if(contains(deployer(), 'userPrincipalName'), 'User', 'ServicePrincipal')]",
     "deployerInfo": "[deployer()]",
     "deployingUserPrincipalId": "[variables('deployerInfo').objectId]",
-    "useExistingLogAnalytics": "[not(empty(parameters('existingLogAnalyticsWorkspaceId')))]",
-    "existingLawSubscription": "[if(variables('useExistingLogAnalytics'), split(parameters('existingLogAnalyticsWorkspaceId'), '/')[2], '')]",
-    "existingLawResourceGroup": "[if(variables('useExistingLogAnalytics'), split(parameters('existingLogAnalyticsWorkspaceId'), '/')[4], '')]",
-    "existingLawName": "[if(variables('useExistingLogAnalytics'), split(parameters('existingLogAnalyticsWorkspaceId'), '/')[8], '')]",
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
@@ -326,16 +308,8 @@
       "search": 5,
       "keyVault": 6
     },
-    "aiRelatedDnsZoneIndices": [
-      "[variables('dnsZoneIndex').cognitiveServices]",
-      "[variables('dnsZoneIndex').openAI]",
-      "[variables('dnsZoneIndex').aiServices]"
-    ],
-    "useExistingAiFoundryAiProject": "[not(empty(parameters('existingAiFoundryAiProjectResourceId')))]",
-    "aiFoundryAiServicesResourceGroupName": "[if(variables('useExistingAiFoundryAiProject'), split(parameters('existingAiFoundryAiProjectResourceId'), '/')[4], resourceGroup().name)]",
-    "aiFoundryAiServicesSubscriptionId": "[if(variables('useExistingAiFoundryAiProject'), split(parameters('existingAiFoundryAiProjectResourceId'), '/')[2], subscription().subscriptionId)]",
-    "aiFoundryAiServicesResourceName": "[if(variables('useExistingAiFoundryAiProject'), split(parameters('existingAiFoundryAiProjectResourceId'), '/')[8], format('aif-{0}', variables('solutionSuffix')))]",
-    "aiFoundryAiProjectResourceName": "[if(variables('useExistingAiFoundryAiProject'), split(parameters('existingAiFoundryAiProjectResourceId'), '/')[10], format('proj-{0}', variables('solutionSuffix')))]",
+    "aiFoundryAiServicesResourceName": "[format('aif-{0}', variables('solutionSuffix'))]",
+    "aiFoundryAiProjectResourceName": "[format('proj-{0}', variables('solutionSuffix'))]",
     "aiModelDeployments": [
       {
         "format": "OpenAI",
@@ -431,35 +405,7 @@
         }
       }
     },
-    "existingLogAnalyticsWorkspace": {
-      "condition": "[variables('useExistingLogAnalytics')]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2020-08-01",
-      "subscriptionId": "[variables('existingLawSubscription')]",
-      "resourceGroup": "[variables('existingLawResourceGroup')]",
-      "name": "[variables('existingLawName')]"
-    },
-    "existingAiFoundryAiServices": {
-      "condition": "[variables('useExistingAiFoundryAiProject')]",
-      "existing": true,
-      "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2025-06-01",
-      "subscriptionId": "[variables('aiFoundryAiServicesSubscriptionId')]",
-      "resourceGroup": "[variables('aiFoundryAiServicesResourceGroupName')]",
-      "name": "[variables('aiFoundryAiServicesResourceName')]"
-    },
-    "existingAiFoundryAiServicesProject": {
-      "condition": "[variables('useExistingAiFoundryAiProject')]",
-      "existing": true,
-      "type": "Microsoft.CognitiveServices/accounts/projects",
-      "apiVersion": "2025-06-01",
-      "subscriptionId": "[variables('aiFoundryAiServicesSubscriptionId')]",
-      "resourceGroup": "[variables('aiFoundryAiServicesResourceGroupName')]",
-      "name": "[format('{0}/{1}', variables('aiFoundryAiServicesResourceName'), variables('aiFoundryAiProjectResourceName'))]"
-    },
     "searchServiceToOpenAIRoleAssignment": {
-      "condition": "[not(variables('useExistingAiFoundryAiProject'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(variables('searchServiceName'), '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', variables('aiFoundryAiServicesResourceName'))]",
@@ -487,7 +433,7 @@
       ]
     },
     "logAnalyticsWorkspace": {
-      "condition": "[and(parameters('enableMonitoring'), not(variables('useExistingLogAnalytics')))]",
+      "condition": "[parameters('enableMonitoring')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)]",
@@ -3627,8 +3573,8 @@
           "flowType": {
             "value": "Bluefield"
           },
-          "workspaceResourceId": "[if(parameters('enableMonitoring'), if(variables('useExistingLogAnalytics'), createObject('value', parameters('existingLogAnalyticsWorkspaceId')), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value)), createObject('value', ''))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]"
+          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4833,7 +4779,9 @@
               "10.0.0.0/8"
             ]
           },
-          "logAnalyticsWorkspaceId": "[if(variables('useExistingLogAnalytics'), createObject('value', parameters('existingLogAnalyticsWorkspaceId')), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value))]",
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
+          },
           "resourceSuffix": {
             "value": "[variables('solutionSuffix')]"
           }
@@ -7669,7 +7617,7 @@
           "publicIPAddressObject": {
             "value": {
               "name": "[format('pip-bas{0}', variables('solutionSuffix'))]",
-              "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value))), null())]",
+              "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
               "tags": "[parameters('tags')]"
             }
           },
@@ -7688,7 +7636,7 @@
           "scaleUnits": {
             "value": 4
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]"
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -9387,7 +9335,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "location": "[if(variables('useExistingLogAnalytics'), createObject('value', reference('existingLogAnalyticsWorkspace', '2020-08-01', 'full').location), createObject('value', reference('logAnalyticsWorkspace').outputs.location.value))]",
+          "location": {
+            "value": "[reference('logAnalyticsWorkspace').outputs.location.value]"
+          },
           "dataCollectionRuleProperties": {
             "value": {
               "kind": "Windows",
@@ -9473,7 +9423,7 @@
               "destinations": {
                 "logAnalytics": [
                   {
-                    "workspaceResourceId": "[if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)]",
+                    "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]",
                     "name": "la--1264800308"
                   }
                 ]
@@ -10337,7 +10287,6 @@
         }
       },
       "dependsOn": [
-        "existingLogAnalyticsWorkspace",
         "logAnalyticsWorkspace"
       ]
     },
@@ -10783,12 +10732,12 @@
                 "name": "[format('nic-{0}', variables('virtualMachineResourceName'))]",
                 "tags": "[parameters('tags')]",
                 "deleteOption": "Delete",
-                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value))), null())]",
+                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]",
                 "ipConfigurations": [
                   {
                     "name": "[format('{0}-nic01-ipconfig01', variables('virtualMachineResourceName'))]",
                     "subnetResourceId": "[reference('virtualNetwork').outputs.administrationSubnetResourceId.value]",
-                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value))), null())]"
+                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value)), null())]"
                   }
                 ]
               }
@@ -10818,7 +10767,7 @@
               "tags": "[parameters('tags')]"
             }
           },
-          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', if(variables('useExistingLogAnalytics'), variables('existingLawName'), reference('logAnalyticsWorkspace').outputs.name.value)))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
+          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', reference('logAnalyticsWorkspace').outputs.name.value))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
           "extensionNetworkWatcherAgentConfig": {
             "value": {
               "enabled": true,
@@ -19124,7 +19073,7 @@
         "mode": "serial",
         "batchSize": 5
       },
-      "condition": "[and(parameters('enablePrivateNetworking'), or(not(variables('useExistingAiFoundryAiProject')), not(contains(variables('aiRelatedDnsZoneIndices'), copyIndex()))))]",
+      "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('avm.res.network.private-dns-zone.{0}', if(contains(variables('privateDnsZones')[copyIndex()], 'azurecontainerapps.io'), 'containerappenv', split(variables('privateDnsZones')[copyIndex()], '.')[1]))]",
@@ -22291,408 +22240,7 @@
         "virtualNetwork"
       ]
     },
-    "existingAiFoundryAiServicesDeployments": {
-      "condition": "[variables('useExistingAiFoundryAiProject')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('module.ai-services-model-deployments.{0}', variables('aiFoundryAiServicesResourceName')), 64)]",
-      "subscriptionId": "[variables('aiFoundryAiServicesSubscriptionId')]",
-      "resourceGroup": "[variables('aiFoundryAiServicesResourceGroupName')]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[variables('aiFoundryAiServicesResourceName')]"
-          },
-          "deployments": {
-            "value": [
-              {
-                "name": "[variables('aiModelDeployments')[0].name]",
-                "model": {
-                  "format": "[variables('aiModelDeployments')[0].format]",
-                  "name": "[variables('aiModelDeployments')[0].name]",
-                  "version": "[variables('aiModelDeployments')[0].version]"
-                },
-                "raiPolicyName": "[variables('aiModelDeployments')[0].raiPolicyName]",
-                "sku": {
-                  "name": "[variables('aiModelDeployments')[0].sku.name]",
-                  "capacity": "[variables('aiModelDeployments')[0].sku.capacity]"
-                }
-              },
-              {
-                "name": "[variables('aiModelDeployments')[1].name]",
-                "model": {
-                  "format": "[variables('aiModelDeployments')[1].format]",
-                  "name": "[variables('aiModelDeployments')[1].name]",
-                  "version": "[variables('aiModelDeployments')[1].version]"
-                },
-                "raiPolicyName": "[variables('aiModelDeployments')[1].raiPolicyName]",
-                "sku": {
-                  "name": "[variables('aiModelDeployments')[1].sku.name]",
-                  "capacity": "[variables('aiModelDeployments')[1].sku.capacity]"
-                }
-              }
-            ]
-          },
-          "roleAssignments": {
-            "value": [
-              {
-                "roleDefinitionIdOrName": "53ca6127-db72-4b80-b1b0-d745d6d5456d",
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "roleDefinitionIdOrName": "64702f94-c441-49e6-a78b-ef80e0188fee",
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
-                "principalType": "ServicePrincipal"
-              },
-              {
-                "roleDefinitionIdOrName": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd",
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
-                "principalType": "ServicePrincipal"
-              }
-            ]
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1082820832327327752"
-            }
-          },
-          "definitions": {
-            "deploymentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the name of cognitive service account deployment."
-                  }
-                },
-                "model": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of Cognitive Services account deployment model."
-                      }
-                    },
-                    "format": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The format of Cognitive Services account deployment model."
-                      }
-                    },
-                    "version": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The version of Cognitive Services account deployment model."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of Cognitive Services account deployment model."
-                  }
-                },
-                "sku": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the resource model definition representing SKU."
-                      }
-                    },
-                    "capacity": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The capacity of the resource model definition representing SKU."
-                      }
-                    },
-                    "tier": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The tier of the resource model definition representing SKU."
-                      }
-                    },
-                    "size": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The size of the resource model definition representing SKU."
-                      }
-                    },
-                    "family": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The family of the resource model definition representing SKU."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource model definition representing SKU."
-                  }
-                },
-                "raiPolicyName": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of RAI policy."
-                  }
-                },
-                "versionUpgradeOption": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The version upgrade option."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type for a cognitive services account deployment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2"
-                }
-              }
-            },
-            "roleAssignmentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                  }
-                },
-                "roleDefinitionIdOrName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                  }
-                },
-                "principalId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                  }
-                },
-                "principalType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Device",
-                    "ForeignGroup",
-                    "Group",
-                    "ServicePrincipal",
-                    "User"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The principal type of the assigned principal ID."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The description of the role assignment."
-                  }
-                },
-                "condition": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                  }
-                },
-                "conditionVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "2.0"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Version of the condition."
-                  }
-                },
-                "delegatedManagedIdentityResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of Cognitive Services account."
-              }
-            },
-            "sku": {
-              "type": "string",
-              "defaultValue": "S0",
-              "allowedValues": [
-                "C2",
-                "C3",
-                "C4",
-                "F0",
-                "F1",
-                "S",
-                "S0",
-                "S1",
-                "S10",
-                "S2",
-                "S3",
-                "S4",
-                "S5",
-                "S6",
-                "S7",
-                "S8",
-                "S9"
-              ],
-              "metadata": {
-                "description": "Optional. SKU of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
-              }
-            },
-            "deployments": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/deploymentType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Array of deployments about cognitive service accounts to create."
-              }
-            },
-            "roleAssignments": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/roleAssignmentType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Array of role assignments to create."
-              }
-            }
-          },
-          "variables": {
-            "copy": [
-              {
-                "name": "formattedRoleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-              }
-            ],
-            "builtInRoleNames": {
-              "Cognitive Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '25fbc0a9-bd7c-42a3-aa1a-3b75d497ee68')]",
-              "Cognitive Services Custom Vision Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c1ff6cc2-c111-46fe-8896-e0ef812ad9f3')]",
-              "Cognitive Services Custom Vision Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5c4089e1-6d96-4d2f-b296-c1bc7137275f')]",
-              "Cognitive Services Custom Vision Labeler": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '88424f51-ebe7-446f-bc41-7fa16989e96c')]",
-              "Cognitive Services Custom Vision Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '93586559-c37d-4a6b-ba08-b9f0940c2d73')]",
-              "Cognitive Services Custom Vision Trainer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a5ae4ab-0d65-4eeb-be61-29fc9b54394b')]",
-              "Cognitive Services Data Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b59867f0-fa02-499b-be73-45a86b5b3e1c')]",
-              "Cognitive Services Face Recognizer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9894cab4-e18a-44aa-828b-cb588cd6f2d7')]",
-              "Cognitive Services Immersive Reader User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b2de6794-95db-4659-8781-7e080d3f2b9d')]",
-              "Cognitive Services Language Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f07febfe-79bc-46b1-8b37-790e26e6e498')]",
-              "Cognitive Services Language Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7628b7b8-a8b2-4cdc-b46f-e9b35248918e')]",
-              "Cognitive Services Language Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f2310ca1-dc64-4889-bb49-c8e0fa3d47a8')]",
-              "Cognitive Services LUIS Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f72c8140-2111-481c-87ff-72b910f6e3f8')]",
-              "Cognitive Services LUIS Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18e81cdc-4e98-4e29-a639-e7d10c5a6226')]",
-              "Cognitive Services LUIS Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6322a993-d5c9-4bed-b113-e49bbea25b27')]",
-              "Cognitive Services Metrics Advisor Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cb43c632-a144-4ec5-977c-e80c4affc34a')]",
-              "Cognitive Services Metrics Advisor User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3b20f47b-3825-43cb-8114-4bd2201156a8')]",
-              "Cognitive Services OpenAI Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a001fd3d-188f-4b5d-821b-7da978bf7442')]",
-              "Cognitive Services OpenAI User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd')]",
-              "Cognitive Services QnA Maker Editor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f4cc2bf9-21be-47a1-bdf1-5c5804381025')]",
-              "Cognitive Services QnA Maker Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '466ccd10-b268-4a11-b098-b4849f024126')]",
-              "Cognitive Services Speech Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e75ca1e-0464-4b4d-8b93-68208a576181')]",
-              "Cognitive Services Speech User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f2dc8367-1007-4938-bd23-fe263f013447')]",
-              "Cognitive Services User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a97b65f3-24c7-4388-baec-2e87135dc908')]",
-              "Azure AI Developer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee')]",
-              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
-          },
-          "resources": {
-            "cognitiveService": {
-              "existing": true,
-              "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-06-01",
-              "name": "[parameters('name')]"
-            },
-            "cognitiveService_deployments": {
-              "copy": {
-                "name": "cognitiveService_deployments",
-                "count": "[length(coalesce(parameters('deployments'), createArray()))]",
-                "mode": "serial",
-                "batchSize": 1
-              },
-              "type": "Microsoft.CognitiveServices/accounts/deployments",
-              "apiVersion": "2024-10-01",
-              "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
-              "properties": {
-                "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
-                "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
-                "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
-              },
-              "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku'), 'capacity', tryGet(parameters('sku'), 'capacity'), 'tier', tryGet(parameters('sku'), 'tier'), 'size', tryGet(parameters('sku'), 'size'), 'family', tryGet(parameters('sku'), 'family')))]"
-            },
-            "cognitiveService_roleAssignments": {
-              "copy": {
-                "name": "cognitiveService_roleAssignments",
-                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-              },
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
-              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
-              "properties": {
-                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
-                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              }
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "userAssignedIdentity"
-      ]
-    },
     "aiFoundryAiServices": {
-      "condition": "[not(variables('useExistingAiFoundryAiProject'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('avm.res.cognitive-services.account.{0}', variables('aiFoundryAiServicesResourceName')), 64)]",
@@ -22802,7 +22350,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'ai-services-dns-zone-cognitiveservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-openai', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value), createObject('name', 'ai-services-dns-zone-aiservices', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]"
         },
@@ -25338,9 +24886,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -25408,12 +24956,12 @@
                 "principalType": "[variables('deployerPrincipalType')]"
               },
               {
-                "principalId": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject', '2025-06-01', 'full').identity.principalId, reference('aiFoundryAiServicesProject').outputs.principalId.value)]",
+                "principalId": "[reference('aiFoundryAiServicesProject').outputs.principalId.value]",
                 "roleDefinitionIdOrName": "Search Index Data Reader",
                 "principalType": "ServicePrincipal"
               },
               {
-                "principalId": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject', '2025-06-01', 'full').identity.principalId, reference('aiFoundryAiServicesProject').outputs.principalId.value)]",
+                "principalId": "[reference('aiFoundryAiServicesProject').outputs.principalId.value]",
                 "roleDefinitionIdOrName": "Search Service Contributor",
                 "principalType": "ServicePrincipal"
               }
@@ -27713,7 +27261,6 @@
       },
       "dependsOn": [
         "aiFoundryAiServicesProject",
-        "existingAiFoundryAiServicesProject",
         "userAssignedIdentity"
       ]
     },
@@ -27721,15 +27268,15 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('aifp-srch-connection.{0}', variables('solutionSuffix')), 64)]",
-      "subscriptionId": "[variables('aiFoundryAiServicesSubscriptionId')]",
-      "resourceGroup": "[variables('aiFoundryAiServicesResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "aiFoundryProjectName": "[if(variables('useExistingAiFoundryAiProject'), createObject('value', variables('aiFoundryAiProjectResourceName')), createObject('value', reference('aiFoundryAiServicesProject').outputs.name.value))]",
+          "aiFoundryProjectName": {
+            "value": "[variables('aiFoundryAiProjectResourceName')]"
+          },
           "aiFoundryName": {
             "value": "[variables('aiFoundryAiServicesResourceName')]"
           },
@@ -27806,12 +27353,10 @@
         }
       },
       "dependsOn": [
-        "aiFoundryAiServicesProject",
         "searchService"
       ]
     },
     "aiFoundryAiServicesProject": {
-      "condition": "[not(variables('useExistingAiFoundryAiProject'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('module.ai-project.{0}', variables('aiFoundryAiProjectResourceName')), 64)]",
@@ -27934,86 +27479,6 @@
         "aiFoundryAiServices"
       ]
     },
-    "searchServiceToOpenAIRoleAssignmentExisting": {
-      "condition": "[variables('useExistingAiFoundryAiProject')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "searchToExistingAiServices-roleAssignment",
-      "subscriptionId": "[variables('aiFoundryAiServicesSubscriptionId')]",
-      "resourceGroup": "[variables('aiFoundryAiServicesResourceGroupName')]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "principalId": {
-            "value": "[reference('searchService').outputs.systemAssignedMIPrincipalId.value]"
-          },
-          "roleDefinitionId": {
-            "value": "5e0bd9bd-7b93-4f28-af87-19fc36ad61bd"
-          },
-          "targetResourceName": {
-            "value": "[variables('aiFoundryAiServicesResourceName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1586050067356610851"
-            }
-          },
-          "parameters": {
-            "principalId": {
-              "type": "string"
-            },
-            "roleDefinitionId": {
-              "type": "string"
-            },
-            "targetResourceName": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string",
-              "defaultValue": "Role assignment created by Bicep"
-            }
-          },
-          "variables": {
-            "uniqueName": "[guid(subscription().subscriptionId, resourceGroup().name, parameters('targetResourceName'), parameters('principalId'), parameters('roleDefinitionId'))]"
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[variables('uniqueName')]",
-              "properties": {
-                "principalId": "[parameters('principalId')]",
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
-                "principalType": "ServicePrincipal",
-                "description": "[parameters('description')]"
-              }
-            }
-          ],
-          "outputs": {
-            "roleAssignmentId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Authorization/roleAssignments', variables('uniqueName'))]"
-            },
-            "roleAssignmentName": {
-              "type": "string",
-              "value": "[variables('uniqueName')]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "searchService"
-      ]
-    },
     "cosmosDb": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -28064,7 +27529,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "networkRestrictions": {
             "value": {
               "networkAclBypass": "None",
@@ -31876,7 +31341,7 @@
           "kind": {
             "value": "linux"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "skuName": "[if(or(parameters('enableScalability'), parameters('enableRedundancy')), createObject('value', 'P1v3'), createObject('value', 'B2'))]",
           "skuCapacity": "[if(parameters('enableScalability'), createObject('value', 3), createObject('value', 1))]",
           "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]"
@@ -32467,7 +31932,7 @@
                   "AZURE_OPENAI_ENDPOINT": "[format('https://{0}.openai.azure.com/', variables('aiFoundryAiServicesResourceName'))]",
                   "AZURE_OPENAI_API_VERSION": "[parameters('azureOpenAIApiVersion')]",
                   "AZURE_OPENAI_RESOURCE": "[variables('aiFoundryAiServicesResourceName')]",
-                  "AZURE_AI_AGENT_ENDPOINT": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject').endpoints['AI Foundry API'], reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value)]",
+                  "AZURE_AI_AGENT_ENDPOINT": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]",
                   "AZURE_AI_AGENT_API_VERSION": "[parameters('azureAiAgentApiVersion')]",
                   "AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME": "[parameters('gptModelName')]",
                   "USE_CHAT_HISTORY_ENABLED": "True",
@@ -32487,7 +31952,7 @@
                   "SOLUTION_NAME": "[variables('solutionSuffix')]",
                   "APP_ENV": "Prod",
                   "ALLOWED_ORIGINS_STR": "*",
-                  "AZURE_FOUNDRY_ENDPOINT": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject').endpoints['AI Foundry API'], reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value)]",
+                  "AZURE_FOUNDRY_ENDPOINT": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]",
                   "AZURE_SEARCH_ENDPOINT": "[reference('searchService').outputs.endpoint.value]",
                   "AZURE_SEARCH_INDEX": "policies",
                   "AZURE_SEARCH_PRODUCT_INDEX": "products",
@@ -32505,7 +31970,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "vnetRouteAllEnabled": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "vnetImagePullEnabled": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "virtualNetworkSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.webserverfarmSubnetResourceId.value), createObject('value', null()))]",
@@ -34496,7 +33961,6 @@
         "aiFoundryAiServicesProject",
         "applicationInsights",
         "cosmosDb",
-        "existingAiFoundryAiServicesProject",
         "logAnalyticsWorkspace",
         "searchService",
         "userAssignedIdentity",
@@ -34547,7 +34011,7 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(variables('useExistingLogAnalytics'), parameters('existingLogAnalyticsWorkspaceId'), reference('logAnalyticsWorkspace').outputs.resourceId.value)))), createObject('value', null()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', null()))]",
           "vnetRouteAllEnabled": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "vnetImagePullEnabled": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "virtualNetworkSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.webserverfarmSubnetResourceId.value), createObject('value', null()))]",
@@ -36565,7 +36029,7 @@
     },
     "AZURE_AI_PROJECT_CONN_STRING": {
       "type": "string",
-      "value": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject').endpoints['AI Foundry API'], reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value)]"
+      "value": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]"
     },
     "AZURE_AI_AGENT_API_VERSION": {
       "type": "string",
@@ -36573,7 +36037,7 @@
     },
     "AZURE_AI_PROJECT_NAME": {
       "type": "string",
-      "value": "[if(variables('useExistingAiFoundryAiProject'), variables('aiFoundryAiProjectResourceName'), reference('aiFoundryAiServicesProject').outputs.name.value)]"
+      "value": "[variables('aiFoundryAiProjectResourceName')]"
     },
     "AZURE_COSMOSDB_ACCOUNT": {
       "type": "string",
@@ -36649,7 +36113,7 @@
     },
     "AZURE_AI_AGENT_ENDPOINT": {
       "type": "string",
-      "value": "[if(variables('useExistingAiFoundryAiProject'), reference('existingAiFoundryAiServicesProject').endpoints['AI Foundry API'], reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value)]"
+      "value": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]"
     },
     "AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME": {
       "type": "string",
@@ -36697,7 +36161,7 @@
     },
     "AI_FOUNDRY_RESOURCE_ID": {
       "type": "string",
-      "value": "[if(variables('useExistingAiFoundryAiProject'), parameters('existingAiFoundryAiProjectResourceId'), reference('aiFoundryAiServices').outputs.resourceId.value)]"
+      "value": "[reference('aiFoundryAiServices').outputs.resourceId.value]"
     },
     "AI_SEARCH_SERVICE_RESOURCE_ID": {
       "type": "string",

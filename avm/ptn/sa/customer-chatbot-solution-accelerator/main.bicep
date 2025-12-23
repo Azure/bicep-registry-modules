@@ -123,12 +123,6 @@ param frontendContainerImageTag string = 'latest'
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Resource ID of an existing Log Analytics Workspace.')
-param existingLogAnalyticsWorkspaceId string = ''
-
-@description('Optional. Resource ID of an existing Ai Foundry AI Services resource.')
-param existingAiFoundryAiProjectResourceId string = ''
-
 // ============== //
 // Variables      //
 // ============== //
@@ -225,21 +219,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// Extracts subscription, resource group, and workspace name from the resource ID when using an existing Log Analytics workspace
-var useExistingLogAnalytics = !empty(existingLogAnalyticsWorkspaceId)
-
-var existingLawSubscription = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[2] : ''
-var existingLawResourceGroup = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[4] : ''
-var existingLawName = useExistingLogAnalytics ? split(existingLogAnalyticsWorkspaceId, '/')[8] : ''
-
-resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' existing = if (useExistingLogAnalytics) {
-  name: existingLawName
-  scope: resourceGroup(existingLawSubscription, existingLawResourceGroup)
-}
-
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring && !useExistingLogAnalytics) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -298,13 +280,9 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-// Log Analytics Name, workspace ID, customer ID, and shared key (existing or new) 
-var logAnalyticsWorkspaceName = useExistingLogAnalytics
-  ? existingLogAnalyticsWorkspace!.name
-  : logAnalyticsWorkspace!.outputs.name
-var logAnalyticsWorkspaceResourceId = useExistingLogAnalytics
-  ? existingLogAnalyticsWorkspaceId
-  : logAnalyticsWorkspace!.outputs.resourceId
+// Log Analytics workspace name and resource ID
+var logAnalyticsWorkspaceName = logAnalyticsWorkspace!.outputs.name
+var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
@@ -422,9 +400,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-var dataCollectionRulesLocation = useExistingLogAnalytics
-  ? existingLogAnalyticsWorkspace!.location
-  : logAnalyticsWorkspace!.outputs.location
+var dataCollectionRulesLocation = logAnalyticsWorkspace!.outputs.location
 module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.6.1' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
@@ -670,24 +646,12 @@ var dnsZoneIndex = {
   keyVault: 6
 }
 
-// List of DNS zone indices that correspond to AI-related services.
-var aiRelatedDnsZoneIndices = [
-  dnsZoneIndex.cognitiveServices
-  dnsZoneIndex.openAI
-  dnsZoneIndex.aiServices
-]
-
 // ===================================================
 // DEPLOY PRIVATE DNS ZONES
-// - Deploys all zones if no existing Foundry project is used
-// - Excludes AI-related zones when using with an existing Foundry project
 // ===================================================
 @batchSize(5)
 module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
-  for (zone, i) in privateDnsZones: if (enablePrivateNetworking && (!useExistingAiFoundryAiProject || !contains(
-    aiRelatedDnsZoneIndices,
-    i
-  ))) {
+  for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
       name: zone
@@ -704,19 +668,8 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
 ]
 
 // ==========AI Foundry and related resources ========== //
-var useExistingAiFoundryAiProject = !empty(existingAiFoundryAiProjectResourceId)
-var aiFoundryAiServicesResourceGroupName = useExistingAiFoundryAiProject
-  ? split(existingAiFoundryAiProjectResourceId, '/')[4]
-  : resourceGroup().name
-var aiFoundryAiServicesSubscriptionId = useExistingAiFoundryAiProject
-  ? split(existingAiFoundryAiProjectResourceId, '/')[2]
-  : subscription().subscriptionId
-var aiFoundryAiServicesResourceName = useExistingAiFoundryAiProject
-  ? split(existingAiFoundryAiProjectResourceId, '/')[8]
-  : 'aif-${solutionSuffix}'
-var aiFoundryAiProjectResourceName = useExistingAiFoundryAiProject
-  ? split(existingAiFoundryAiProjectResourceId, '/')[10]
-  : 'proj-${solutionSuffix}' // AI Project resource id: /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>/providers/Microsoft.CognitiveServices/accounts/<ai-services-name>/projects/<project-name>
+var aiFoundryAiServicesResourceName = 'aif-${solutionSuffix}'
+var aiFoundryAiProjectResourceName = 'proj-${solutionSuffix}'
 var aiModelDeployments = [
   {
     format: 'OpenAI'
@@ -743,66 +696,7 @@ var aiModelDeployments = [
 ]
 var aiFoundryAiProjectDescription = 'AI Foundry Project'
 
-resource existingAiFoundryAiServices 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = if (useExistingAiFoundryAiProject) {
-  name: aiFoundryAiServicesResourceName
-  scope: resourceGroup(aiFoundryAiServicesSubscriptionId, aiFoundryAiServicesResourceGroupName)
-}
-
-module existingAiFoundryAiServicesDeployments 'modules/ai-services-deployments.bicep' = if (useExistingAiFoundryAiProject) {
-  name: take('module.ai-services-model-deployments.${existingAiFoundryAiServices.name}', 64)
-  scope: resourceGroup(aiFoundryAiServicesSubscriptionId, aiFoundryAiServicesResourceGroupName)
-  params: {
-    name: existingAiFoundryAiServices.name
-    // Use individual deployment objects instead of loop to prevent ETag conflicts
-    deployments: [
-      {
-        name: aiModelDeployments[0].name
-        model: {
-          format: aiModelDeployments[0].format
-          name: aiModelDeployments[0].name
-          version: aiModelDeployments[0].version
-        }
-        raiPolicyName: aiModelDeployments[0].raiPolicyName
-        sku: {
-          name: aiModelDeployments[0].sku.name
-          capacity: aiModelDeployments[0].sku.capacity
-        }
-      }
-      {
-        name: aiModelDeployments[1].name
-        model: {
-          format: aiModelDeployments[1].format
-          name: aiModelDeployments[1].name
-          version: aiModelDeployments[1].version
-        }
-        raiPolicyName: aiModelDeployments[1].raiPolicyName
-        sku: {
-          name: aiModelDeployments[1].sku.name
-          capacity: aiModelDeployments[1].sku.capacity
-        }
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: '53ca6127-db72-4b80-b1b0-d745d6d5456d' // Azure AI User
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: '64702f94-c441-49e6-a78b-ef80e0188fee' // Azure AI Developer
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-  }
-}
-
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2' = if (!useExistingAiFoundryAiProject) {
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -964,9 +858,8 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
 var aiSearchConnectionName = 'aifp-srch-connection-${solutionSuffix}'
 module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
   name: take('aifp-srch-connection.${solutionSuffix}', 64)
-  scope: resourceGroup(aiFoundryAiServicesSubscriptionId, aiFoundryAiServicesResourceGroupName)
   params: {
-    aiFoundryProjectName: aiFoundryAiProjectName
+    aiFoundryProjectName: aiFoundryAiProjectResourceName
     aiFoundryName: aiFoundryAiServicesResourceName
     aifSearchConnectionName: aiSearchConnectionName
     searchServiceResourceId: searchService.outputs.resourceId
@@ -976,12 +869,7 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
   }
 }
 
-resource existingAiFoundryAiServicesProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = if (useExistingAiFoundryAiProject) {
-  name: aiFoundryAiProjectResourceName
-  parent: existingAiFoundryAiServices
-}
-
-module aiFoundryAiServicesProject 'modules/ai-project.bicep' = if (!useExistingAiFoundryAiProject) {
+module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
   name: take('module.ai-project.${aiFoundryAiProjectResourceName}', 64)
   params: {
     name: aiFoundryAiProjectResourceName
@@ -993,33 +881,16 @@ module aiFoundryAiServicesProject 'modules/ai-project.bicep' = if (!useExistingA
   }
 }
 
-var aiFoundryAiProjectName = useExistingAiFoundryAiProject
-  ? existingAiFoundryAiServicesProject.name
-  : aiFoundryAiServicesProject!.outputs.name
-var aiFoundryAiProjectEndpoint = useExistingAiFoundryAiProject
-  ? existingAiFoundryAiServicesProject!.properties.endpoints['AI Foundry API']
-  : aiFoundryAiServicesProject!.outputs.apiEndpoint
-var aiFoundryAiProjectPrincipalId = useExistingAiFoundryAiProject
-  ? existingAiFoundryAiServicesProject!.identity.principalId
-  : aiFoundryAiServicesProject!.outputs.principalId
+var aiFoundryAiProjectEndpoint = aiFoundryAiServicesProject!.outputs.apiEndpoint
+var aiFoundryAiProjectPrincipalId = aiFoundryAiServicesProject!.outputs.principalId
 
 // ========== Search Service to Azure OpenAI Role Assignment ========== //
-resource searchServiceToOpenAIRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!useExistingAiFoundryAiProject) {
+resource searchServiceToOpenAIRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(searchServiceName, '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', aiFoundryAiServicesResourceName)
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd') // Cognitive Services OpenAI User
     principalId: searchService.outputs.systemAssignedMIPrincipalId!
     principalType: 'ServicePrincipal'
-  }
-}
-
-module searchServiceToOpenAIRoleAssignmentExisting 'modules/role-assignment.bicep' = if (useExistingAiFoundryAiProject) {
-  name: 'searchToExistingAiServices-roleAssignment'
-  scope: resourceGroup(aiFoundryAiServicesSubscriptionId, aiFoundryAiServicesResourceGroupName)
-  params: {
-    principalId: searchService.outputs.systemAssignedMIPrincipalId!
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
-    targetResourceName: aiFoundryAiServicesResourceName
   }
 }
 
@@ -1290,7 +1161,7 @@ output RESOURCE_GROUP_LOCATION string = location
 output APPINSIGHTS_INSTRUMENTATIONKEY string = enableMonitoring ? applicationInsights!.outputs.instrumentationKey : ''
 output AZURE_AI_PROJECT_CONN_STRING string = aiFoundryAiProjectEndpoint
 output AZURE_AI_AGENT_API_VERSION string = azureAiAgentApiVersion
-output AZURE_AI_PROJECT_NAME string = aiFoundryAiProjectName
+output AZURE_AI_PROJECT_NAME string = aiFoundryAiProjectResourceName
 output AZURE_COSMOSDB_ACCOUNT string = cosmosDb.outputs.name
 output COSMOS_DB_ENDPOINT string = 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
 output COSMOS_DB_DATABASE_NAME string = cosmosDbDatabaseName
@@ -1327,6 +1198,6 @@ output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring ? applica
 output AGENT_ID_CHAT string = ''
 
 output MANAGED_IDENTITY_CLIENT_ID string = userAssignedIdentity.outputs.clientId
-output AI_FOUNDRY_RESOURCE_ID string = useExistingAiFoundryAiProject ? existingAiFoundryAiProjectResourceId : aiFoundryAiServices!.outputs.resourceId
+output AI_FOUNDRY_RESOURCE_ID string = aiFoundryAiServices!.outputs.resourceId
 output AI_SEARCH_SERVICE_RESOURCE_ID string = searchService.outputs.resourceId
 output APP_ENV string = 'Prod'
