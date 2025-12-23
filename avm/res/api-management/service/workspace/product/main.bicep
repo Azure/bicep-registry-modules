@@ -73,7 +73,7 @@ resource product 'Microsoft.ApiManagement/service/workspaces/products@2024-05-01
 
 module product_apiLinks 'api-link/main.bicep' = [
   for (apiLink, index) in apiLinks ?? []: {
-    name: '${deployment().name}-api-link-${index}'
+    name: '${deployment().name}-ws-prd-api-link-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
@@ -86,7 +86,7 @@ module product_apiLinks 'api-link/main.bicep' = [
 
 module product_groupLinks 'group-link/main.bicep' = [
   for (groupLink, index) in groupLinks ?? []: {
-    name: '${deployment().name}-group-link-${index}'
+    name: '${deployment().name}-ws-prd-group-link-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
@@ -99,7 +99,7 @@ module product_groupLinks 'group-link/main.bicep' = [
 
 module product_policies 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-policy-${index}'
+    name: '${deployment().name}-ws-prd-policy-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspaceName
