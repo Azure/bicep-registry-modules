@@ -39,7 +39,7 @@ This module deploys an Integration Account Agreement.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) | object | The agreement metadata. |
+| [`metadata`](#parameter-metadata) |  | The agreement metadata. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `agreementType`
@@ -120,7 +120,7 @@ Resource location.
 The agreement metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `tags`
 
