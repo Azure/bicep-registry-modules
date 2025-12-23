@@ -84,8 +84,8 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           metadata: {
-            key1: 'Primary supplier partner'
-            key2: 'Primary buyer partner'
+            key1: 'Primary buyer partner'
+            key2: 'Fabrikam organization'
           }
         }
       ]
