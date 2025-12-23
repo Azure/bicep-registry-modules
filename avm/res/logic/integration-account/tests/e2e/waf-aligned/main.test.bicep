@@ -10,7 +10,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-logic-integration-account-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -33,19 +33,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -56,90 +43,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
-      partners: [
-        {
-          name: 'partner1'
-          b2b: {
-            businessIdentities: [
-              {
-                qualifier: 'ZZ'
-                value: '1234567890'
-              }
-              {
-                qualifier: 'ZZZ'
-                value: '0987654321'
-              }
-            ]
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
-          }
-        }
-        {
-          name: 'partner2'
-          b2b: {
-            businessIdentities: [
-              {
-                qualifier: 'ZZ'
-                value: '0987654321'
-              }
-              {
-                qualifier: 'ZZZ'
-                value: '1122334455'
-              }
-            ]
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
-          }
-        }
-      ]
-      schemas: [
-        {
-          name: 'PurchaseOrderSchema'
-          content: loadTextContent('../files/schema-content.xml')
-          schemaType: 'Xml'
-          metadata: {
-            description: 'Purchase order validation schema'
-            version: '1.0'
-          }
-        }
-      ]
-      maps: [
-        {
-          name: 'PurchaseOrderTransform'
-          content: loadTextContent('../files/map-content.xslt')
-          mapType: 'Xslt'
-          metadata: {
-            description: 'Transform purchase order to internal format'
-            version: '1.0'
-          }
-        }
-      ]
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: []
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-              enabled: true
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
-      ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
+      location: resourceLocation
     }
   }
 ]
