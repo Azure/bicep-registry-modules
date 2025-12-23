@@ -41,20 +41,20 @@ param currentAppSettings {
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
-      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount!.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     }
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? {
           AzureWebJobsStorage__accountName: storageAccount.name
-          AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob
-          AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue
-          AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table
+          AzureWebJobsStorage__blobServiceUri: storageAccount!.properties.primaryEndpoints.blob
+          AzureWebJobsStorage__queueServiceUri: storageAccount!.properties.primaryEndpoints.queue
+          AzureWebJobsStorage__tableServiceUri: storageAccount!.properties.primaryEndpoints.table
         }
       : {}
 
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
-      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
     }
   : {}
 
