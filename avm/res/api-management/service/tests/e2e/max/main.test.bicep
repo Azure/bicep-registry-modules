@@ -75,6 +75,8 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 
 var apimName = '${namePrefix}${serviceShort}001'
 var backend1Name = 'backend1'
+var workspace1Name = 'test-workspace-1'
+var workspace1Backend1Name = 'workspace1-backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -353,7 +355,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       workspaces: [
         {
-          name: 'test-workspace-1'
+          name: workspace1Name
           displayName: 'Test Workspace 1'
           description: 'A comprehensive test workspace with all child modules'
           apis: [
@@ -370,6 +372,7 @@ module testDeployment '../../../main.bicep' = [
               description: 'Workspace Echo API for testing'
               format: 'openapi+json'
               isCurrent: true
+              apiVersionSetName: 'workspace1-version-set'
               protocols: [
                 'https'
               ]
@@ -414,41 +417,74 @@ module testDeployment '../../../main.bicep' = [
           ]
           apiVersionSets: [
             {
-              name: 'workspace-version-set'
-              displayName: 'Workspace Version Set'
-              description: 'Version set for workspace APIs'
+              name: 'workspace1-version-set'
+              displayName: 'workspace1-version-set'
+              description: 'Version set for workspace1 APIs'
               versioningScheme: 'Segment'
             }
           ]
           backends: [
             {
-              name: 'workspace-backend'
+              name: workspace1Backend1Name
               type: 'Single'
-              title: 'Workspace Backend'
-              description: 'Backend for workspace APIs'
-              url: 'https://workspace-backend.example.com'
-              protocol: 'http'
+              description: 'Test workspace backend with maximum properties'
               tls: {
-                validateCertificateChain: true
-                validateCertificateName: true
+                validateCertificateChain: false
+                validateCertificateName: false
+              }
+              url: 'http://workspace-echoapi.cloudapp.net/api'
+              circuitBreaker: {
+                rules: [
+                  {
+                    name: 'rule1'
+                    failureCondition: {
+                      count: 1
+                      interval: 'PT1H'
+                      statusCodeRanges: [
+                        { min: 400, max: 499 }
+                        { min: 500, max: 599 }
+                      ]
+                      errorReasons: ['OperationNotFound', 'ClientConnectionFailure']
+                    }
+                    acceptRetryAfter: false
+                    tripDuration: 'PT1H'
+                  }
+                ]
               }
               credentials: {
                 authorization: {
-                  parameter: 'd29ya3NwYWNlLWF1dGg=' // base64 encoded 'workspace-auth'
+                  parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=' // base64 encoded 'username:secretpassword'
                   scheme: 'Basic'
                 }
-                header: {
-                  'x-workspace-header': [
-                    'workspace-value'
+                query: {
+                  queryParam1: [
+                    'value1'
                   ]
                 }
+                header: {}
+              }
+              proxy: {
+                url: 'http://wks-myproxy:8888'
+                username: 'proxyUser'
+                password: 'proxyPassword'
+              }
+            }
+            {
+              name: 'workspace1-backend2'
+              type: 'Pool'
+              pool: {
+                services: [
+                  {
+                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/backends/${workspace1Backend1Name}'
+                  }
+                ]
               }
             }
           ]
           diagnostics: [
             {
               name: 'applicationinsights'
-              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/loggers/workspace-logger'
+              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/loggers/workspace-logger'
               alwaysLog: 'allErrors'
               httpCorrelationProtocol: 'W3C'
               logClientIp: true
@@ -501,7 +537,7 @@ module testDeployment '../../../main.bicep' = [
               apiLinks: [
                 {
                   name: 'workspace-api-link'
-                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace/apis/workspace-echo-api'
+                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/apis/workspace-echo-api'
                 }
               ]
               groupLinks: [
@@ -522,120 +558,9 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'workspace-subscription'
               displayName: 'Workspace Test Subscription'
-              scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-1/apis/workspace-echo-api'
+              scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/apis/workspace-echo-api'
               allowTracing: true
               state: 'active'
-            }
-          ]
-        }
-        {
-          name: 'test-workspace-2'
-          displayName: 'Test Workspace 2'
-          description: 'Second test workspace with minimal configuration'
-          apis: [
-            {
-              name: 'workspace-simple-api'
-              displayName: 'Workspace Simple API'
-              path: 'workspace-simple'
-              serviceUrl: 'https://simple-backend.example.com/api'
-              protocols: [
-                'https'
-                'http'
-              ]
-              subscriptionRequired: false
-              type: 'http'
-            }
-            {
-              name: 'workspace-graphql-api'
-              displayName: 'Workspace GraphQL API'
-              path: 'workspace-graphql'
-              apiType: 'graphql'
-              type: 'graphql'
-              description: 'GraphQL API in workspace'
-              protocols: [
-                'https'
-              ]
-            }
-          ]
-          apiVersionSets: [
-            {
-              name: 'workspace-version-set-2'
-              displayName: 'Workspace Version Set 2'
-              versioningScheme: 'Header'
-              versionHeaderName: 'api-version'
-            }
-          ]
-          backends: [
-            {
-              name: 'workspace-backend-2'
-              type: 'Single'
-              url: 'https://backend2.example.com'
-              description: 'Second workspace backend with minimal config'
-            }
-            {
-              name: 'workspace-pool-backend'
-              type: 'Pool'
-              description: 'Pool backend in workspace'
-              pool: {
-                services: [
-                  {
-                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/backends/workspace-backend-2'
-                  }
-                ]
-              }
-            }
-          ]
-          diagnostics: [
-            {
-              name: 'applicationinsights'
-              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/loggers/ws2-logger'
-              metrics: true
-              operationNameFormat: 'Name'
-              samplingPercentage: 50
-            }
-          ]
-          loggers: [
-            {
-              name: 'ws2-logger'
-              type: 'azureMonitor'
-              description: 'Azure Monitor logger for workspace 2'
-              isBuffered: true
-            }
-          ]
-          namedValues: [
-            {
-              name: 'ws2-config-value'
-              displayName: 'Workspace2Config'
-              value: 'workspace-2-config'
-            }
-          ]
-          policies: [
-            {
-              format: 'rawxml'
-              value: '<policies><inbound><set-header name="X-Workspace" exists-action="override"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
-            }
-          ]
-          products: [
-            {
-              name: 'ws2-product'
-              displayName: 'Workspace 2 Product'
-              subscriptionRequired: false
-              state: 'notPublished'
-              apiLinks: [
-                {
-                  name: 'ws2-api-link'
-                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/test-workspace-2/apis/workspace-simple-api'
-                }
-              ]
-            }
-          ]
-          subscriptions: [
-            {
-              name: 'ws2-subscription'
-              displayName: 'Workspace 2 Subscription'
-              scope: '/apis'
-              allowTracing: false
-              state: 'submitted'
             }
           ]
         }

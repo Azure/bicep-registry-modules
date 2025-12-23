@@ -623,6 +623,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             apiType: 'http'
             apiVersion: 'v1'
             apiVersionDescription: 'Version 1 of workspace API'
+            apiVersionSetName: 'workspace1-version-set'
             description: 'Workspace Echo API for testing'
             diagnostics: [
               {
@@ -674,35 +675,77 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         apiVersionSets: [
           {
-            description: 'Version set for workspace APIs'
-            displayName: 'Workspace Version Set'
-            name: 'workspace-version-set'
+            description: 'Version set for workspace1 APIs'
+            displayName: 'workspace1-version-set'
+            name: 'workspace1-version-set'
             versioningScheme: 'Segment'
           }
         ]
         backends: [
           {
+            circuitBreaker: {
+              rules: [
+                {
+                  acceptRetryAfter: false
+                  failureCondition: {
+                    count: 1
+                    errorReasons: [
+                      'ClientConnectionFailure'
+                      'OperationNotFound'
+                    ]
+                    interval: 'PT1H'
+                    statusCodeRanges: [
+                      {
+                        max: 499
+                        min: 400
+                      }
+                      {
+                        max: 599
+                        min: 500
+                      }
+                    ]
+                  }
+                  name: 'rule1'
+                  tripDuration: 'PT1H'
+                }
+              ]
+            }
             credentials: {
               authorization: {
-                parameter: 'd29ya3NwYWNlLWF1dGg='
+                parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
                 scheme: 'Basic'
               }
-              header: {
-                'x-workspace-header': [
-                  'workspace-value'
+              header: {}
+              query: {
+                queryParam1: [
+                  'value1'
                 ]
               }
             }
-            description: 'Backend for workspace APIs'
-            name: 'workspace-backend'
-            protocol: 'http'
-            title: 'Workspace Backend'
+            description: 'Test workspace backend with maximum properties'
+            name: '<name>'
+            proxy: {
+              password: 'proxyPassword'
+              url: 'http://wks-myproxy:8888'
+              username: 'proxyUser'
+            }
             tls: {
-              validateCertificateChain: true
-              validateCertificateName: true
+              validateCertificateChain: false
+              validateCertificateName: false
             }
             type: 'Single'
-            url: 'https://workspace-backend.example.com'
+            url: 'http://workspace-echoapi.cloudapp.net/api'
+          }
+          {
+            name: 'workspace1-backend2'
+            pool: {
+              services: [
+                {
+                  id: '<id>'
+                }
+              ]
+            }
+            type: 'Pool'
           }
         ]
         description: 'A comprehensive test workspace with all child modules'
@@ -732,7 +775,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             type: 'applicationInsights'
           }
         ]
-        name: 'test-workspace-1'
+        name: '<name>'
         namedValues: [
           {
             displayName: 'WorkspaceNamedValue'
@@ -788,117 +831,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             name: 'workspace-subscription'
             scope: '<scope>'
             state: 'active'
-          }
-        ]
-      }
-      {
-        apis: [
-          {
-            displayName: 'Workspace Simple API'
-            name: 'workspace-simple-api'
-            path: 'workspace-simple'
-            protocols: [
-              'http'
-              'https'
-            ]
-            serviceUrl: 'https://simple-backend.example.com/api'
-            subscriptionRequired: false
-            type: 'http'
-          }
-          {
-            apiType: 'graphql'
-            description: 'GraphQL API in workspace'
-            displayName: 'Workspace GraphQL API'
-            name: 'workspace-graphql-api'
-            path: 'workspace-graphql'
-            protocols: [
-              'https'
-            ]
-            type: 'graphql'
-          }
-        ]
-        apiVersionSets: [
-          {
-            displayName: 'Workspace Version Set 2'
-            name: 'workspace-version-set-2'
-            versionHeaderName: 'api-version'
-            versioningScheme: 'Header'
-          }
-        ]
-        backends: [
-          {
-            description: 'Second workspace backend with minimal config'
-            name: 'workspace-backend-2'
-            type: 'Single'
-            url: 'https://backend2.example.com'
-          }
-          {
-            description: 'Pool backend in workspace'
-            name: 'workspace-pool-backend'
-            pool: {
-              services: [
-                {
-                  id: '<id>'
-                }
-              ]
-            }
-            type: 'Pool'
-          }
-        ]
-        description: 'Second test workspace with minimal configuration'
-        diagnostics: [
-          {
-            loggerId: '<loggerId>'
-            metrics: true
-            name: 'applicationinsights'
-            operationNameFormat: 'Name'
-            samplingPercentage: 50
-          }
-        ]
-        displayName: 'Test Workspace 2'
-        loggers: [
-          {
-            description: 'Azure Monitor logger for workspace 2'
-            isBuffered: true
-            name: 'ws2-logger'
-            type: 'azureMonitor'
-          }
-        ]
-        name: 'test-workspace-2'
-        namedValues: [
-          {
-            displayName: 'Workspace2Config'
-            name: 'ws2-config-value'
-            value: 'workspace-2-config'
-          }
-        ]
-        policies: [
-          {
-            format: 'rawxml'
-            value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
-          }
-        ]
-        products: [
-          {
-            apiLinks: [
-              {
-                apiId: '<apiId>'
-                name: 'ws2-api-link'
-              }
-            ]
-            displayName: 'Workspace 2 Product'
-            name: 'ws2-product'
-            state: 'notPublished'
-            subscriptionRequired: false
-          }
-        ]
-        subscriptions: [
-          {
-            allowTracing: false
-            displayName: 'Workspace 2 Subscription'
-            name: 'ws2-subscription'
-            scope: '/apis'
-            state: 'submitted'
           }
         ]
       }
@@ -1272,6 +1204,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "apiType": "http",
               "apiVersion": "v1",
               "apiVersionDescription": "Version 1 of workspace API",
+              "apiVersionSetName": "workspace1-version-set",
               "description": "Workspace Echo API for testing",
               "diagnostics": [
                 {
@@ -1323,35 +1256,77 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "apiVersionSets": [
             {
-              "description": "Version set for workspace APIs",
-              "displayName": "Workspace Version Set",
-              "name": "workspace-version-set",
+              "description": "Version set for workspace1 APIs",
+              "displayName": "workspace1-version-set",
+              "name": "workspace1-version-set",
               "versioningScheme": "Segment"
             }
           ],
           "backends": [
             {
+              "circuitBreaker": {
+                "rules": [
+                  {
+                    "acceptRetryAfter": false,
+                    "failureCondition": {
+                      "count": 1,
+                      "errorReasons": [
+                        "ClientConnectionFailure",
+                        "OperationNotFound"
+                      ],
+                      "interval": "PT1H",
+                      "statusCodeRanges": [
+                        {
+                          "max": 499,
+                          "min": 400
+                        },
+                        {
+                          "max": 599,
+                          "min": 500
+                        }
+                      ]
+                    },
+                    "name": "rule1",
+                    "tripDuration": "PT1H"
+                  }
+                ]
+              },
               "credentials": {
                 "authorization": {
-                  "parameter": "d29ya3NwYWNlLWF1dGg=",
+                  "parameter": "dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=",
                   "scheme": "Basic"
                 },
-                "header": {
-                  "x-workspace-header": [
-                    "workspace-value"
+                "header": {},
+                "query": {
+                  "queryParam1": [
+                    "value1"
                   ]
                 }
               },
-              "description": "Backend for workspace APIs",
-              "name": "workspace-backend",
-              "protocol": "http",
-              "title": "Workspace Backend",
+              "description": "Test workspace backend with maximum properties",
+              "name": "<name>",
+              "proxy": {
+                "password": "proxyPassword",
+                "url": "http://wks-myproxy:8888",
+                "username": "proxyUser"
+              },
               "tls": {
-                "validateCertificateChain": true,
-                "validateCertificateName": true
+                "validateCertificateChain": false,
+                "validateCertificateName": false
               },
               "type": "Single",
-              "url": "https://workspace-backend.example.com"
+              "url": "http://workspace-echoapi.cloudapp.net/api"
+            },
+            {
+              "name": "workspace1-backend2",
+              "pool": {
+                "services": [
+                  {
+                    "id": "<id>"
+                  }
+                ]
+              },
+              "type": "Pool"
             }
           ],
           "description": "A comprehensive test workspace with all child modules",
@@ -1381,7 +1356,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "type": "applicationInsights"
             }
           ],
-          "name": "test-workspace-1",
+          "name": "<name>",
           "namedValues": [
             {
               "displayName": "WorkspaceNamedValue",
@@ -1437,117 +1412,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "name": "workspace-subscription",
               "scope": "<scope>",
               "state": "active"
-            }
-          ]
-        },
-        {
-          "apis": [
-            {
-              "displayName": "Workspace Simple API",
-              "name": "workspace-simple-api",
-              "path": "workspace-simple",
-              "protocols": [
-                "http",
-                "https"
-              ],
-              "serviceUrl": "https://simple-backend.example.com/api",
-              "subscriptionRequired": false,
-              "type": "http"
-            },
-            {
-              "apiType": "graphql",
-              "description": "GraphQL API in workspace",
-              "displayName": "Workspace GraphQL API",
-              "name": "workspace-graphql-api",
-              "path": "workspace-graphql",
-              "protocols": [
-                "https"
-              ],
-              "type": "graphql"
-            }
-          ],
-          "apiVersionSets": [
-            {
-              "displayName": "Workspace Version Set 2",
-              "name": "workspace-version-set-2",
-              "versionHeaderName": "api-version",
-              "versioningScheme": "Header"
-            }
-          ],
-          "backends": [
-            {
-              "description": "Second workspace backend with minimal config",
-              "name": "workspace-backend-2",
-              "type": "Single",
-              "url": "https://backend2.example.com"
-            },
-            {
-              "description": "Pool backend in workspace",
-              "name": "workspace-pool-backend",
-              "pool": {
-                "services": [
-                  {
-                    "id": "<id>"
-                  }
-                ]
-              },
-              "type": "Pool"
-            }
-          ],
-          "description": "Second test workspace with minimal configuration",
-          "diagnostics": [
-            {
-              "loggerId": "<loggerId>",
-              "metrics": true,
-              "name": "applicationinsights",
-              "operationNameFormat": "Name",
-              "samplingPercentage": 50
-            }
-          ],
-          "displayName": "Test Workspace 2",
-          "loggers": [
-            {
-              "description": "Azure Monitor logger for workspace 2",
-              "isBuffered": true,
-              "name": "ws2-logger",
-              "type": "azureMonitor"
-            }
-          ],
-          "name": "test-workspace-2",
-          "namedValues": [
-            {
-              "displayName": "Workspace2Config",
-              "name": "ws2-config-value",
-              "value": "workspace-2-config"
-            }
-          ],
-          "policies": [
-            {
-              "format": "rawxml",
-              "value": "<policies><inbound><set-header name=\"X-Workspace\" exists-action=\"override\"><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>"
-            }
-          ],
-          "products": [
-            {
-              "apiLinks": [
-                {
-                  "apiId": "<apiId>",
-                  "name": "ws2-api-link"
-                }
-              ],
-              "displayName": "Workspace 2 Product",
-              "name": "ws2-product",
-              "state": "notPublished",
-              "subscriptionRequired": false
-            }
-          ],
-          "subscriptions": [
-            {
-              "allowTracing": false,
-              "displayName": "Workspace 2 Subscription",
-              "name": "ws2-subscription",
-              "scope": "/apis",
-              "state": "submitted"
             }
           ]
         }
@@ -1865,6 +1729,7 @@ param workspaces = [
         apiType: 'http'
         apiVersion: 'v1'
         apiVersionDescription: 'Version 1 of workspace API'
+        apiVersionSetName: 'workspace1-version-set'
         description: 'Workspace Echo API for testing'
         diagnostics: [
           {
@@ -1916,35 +1781,77 @@ param workspaces = [
     ]
     apiVersionSets: [
       {
-        description: 'Version set for workspace APIs'
-        displayName: 'Workspace Version Set'
-        name: 'workspace-version-set'
+        description: 'Version set for workspace1 APIs'
+        displayName: 'workspace1-version-set'
+        name: 'workspace1-version-set'
         versioningScheme: 'Segment'
       }
     ]
     backends: [
       {
+        circuitBreaker: {
+          rules: [
+            {
+              acceptRetryAfter: false
+              failureCondition: {
+                count: 1
+                errorReasons: [
+                  'ClientConnectionFailure'
+                  'OperationNotFound'
+                ]
+                interval: 'PT1H'
+                statusCodeRanges: [
+                  {
+                    max: 499
+                    min: 400
+                  }
+                  {
+                    max: 599
+                    min: 500
+                  }
+                ]
+              }
+              name: 'rule1'
+              tripDuration: 'PT1H'
+            }
+          ]
+        }
         credentials: {
           authorization: {
-            parameter: 'd29ya3NwYWNlLWF1dGg='
+            parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
             scheme: 'Basic'
           }
-          header: {
-            'x-workspace-header': [
-              'workspace-value'
+          header: {}
+          query: {
+            queryParam1: [
+              'value1'
             ]
           }
         }
-        description: 'Backend for workspace APIs'
-        name: 'workspace-backend'
-        protocol: 'http'
-        title: 'Workspace Backend'
+        description: 'Test workspace backend with maximum properties'
+        name: '<name>'
+        proxy: {
+          password: 'proxyPassword'
+          url: 'http://wks-myproxy:8888'
+          username: 'proxyUser'
+        }
         tls: {
-          validateCertificateChain: true
-          validateCertificateName: true
+          validateCertificateChain: false
+          validateCertificateName: false
         }
         type: 'Single'
-        url: 'https://workspace-backend.example.com'
+        url: 'http://workspace-echoapi.cloudapp.net/api'
+      }
+      {
+        name: 'workspace1-backend2'
+        pool: {
+          services: [
+            {
+              id: '<id>'
+            }
+          ]
+        }
+        type: 'Pool'
       }
     ]
     description: 'A comprehensive test workspace with all child modules'
@@ -1974,7 +1881,7 @@ param workspaces = [
         type: 'applicationInsights'
       }
     ]
-    name: 'test-workspace-1'
+    name: '<name>'
     namedValues: [
       {
         displayName: 'WorkspaceNamedValue'
@@ -2030,117 +1937,6 @@ param workspaces = [
         name: 'workspace-subscription'
         scope: '<scope>'
         state: 'active'
-      }
-    ]
-  }
-  {
-    apis: [
-      {
-        displayName: 'Workspace Simple API'
-        name: 'workspace-simple-api'
-        path: 'workspace-simple'
-        protocols: [
-          'http'
-          'https'
-        ]
-        serviceUrl: 'https://simple-backend.example.com/api'
-        subscriptionRequired: false
-        type: 'http'
-      }
-      {
-        apiType: 'graphql'
-        description: 'GraphQL API in workspace'
-        displayName: 'Workspace GraphQL API'
-        name: 'workspace-graphql-api'
-        path: 'workspace-graphql'
-        protocols: [
-          'https'
-        ]
-        type: 'graphql'
-      }
-    ]
-    apiVersionSets: [
-      {
-        displayName: 'Workspace Version Set 2'
-        name: 'workspace-version-set-2'
-        versionHeaderName: 'api-version'
-        versioningScheme: 'Header'
-      }
-    ]
-    backends: [
-      {
-        description: 'Second workspace backend with minimal config'
-        name: 'workspace-backend-2'
-        type: 'Single'
-        url: 'https://backend2.example.com'
-      }
-      {
-        description: 'Pool backend in workspace'
-        name: 'workspace-pool-backend'
-        pool: {
-          services: [
-            {
-              id: '<id>'
-            }
-          ]
-        }
-        type: 'Pool'
-      }
-    ]
-    description: 'Second test workspace with minimal configuration'
-    diagnostics: [
-      {
-        loggerId: '<loggerId>'
-        metrics: true
-        name: 'applicationinsights'
-        operationNameFormat: 'Name'
-        samplingPercentage: 50
-      }
-    ]
-    displayName: 'Test Workspace 2'
-    loggers: [
-      {
-        description: 'Azure Monitor logger for workspace 2'
-        isBuffered: true
-        name: 'ws2-logger'
-        type: 'azureMonitor'
-      }
-    ]
-    name: 'test-workspace-2'
-    namedValues: [
-      {
-        displayName: 'Workspace2Config'
-        name: 'ws2-config-value'
-        value: 'workspace-2-config'
-      }
-    ]
-    policies: [
-      {
-        format: 'rawxml'
-        value: '<policies><inbound><set-header name=\'X-Workspace\' exists-action=\'override\'><value>workspace-2</value></set-header></inbound><backend><forward-request /></backend><outbound></outbound></policies>'
-      }
-    ]
-    products: [
-      {
-        apiLinks: [
-          {
-            apiId: '<apiId>'
-            name: 'ws2-api-link'
-          }
-        ]
-        displayName: 'Workspace 2 Product'
-        name: 'ws2-product'
-        state: 'notPublished'
-        subscriptionRequired: false
-      }
-    ]
-    subscriptions: [
-      {
-        allowTracing: false
-        displayName: 'Workspace 2 Subscription'
-        name: 'ws2-subscription'
-        scope: '/apis'
-        state: 'submitted'
       }
     ]
   }
