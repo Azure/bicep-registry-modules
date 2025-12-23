@@ -14,7 +14,7 @@ param integrationAccountName string
 param b2bPartnerContent b2bPartnerContentType?
 
 @description('Optional. The partner metadata.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
