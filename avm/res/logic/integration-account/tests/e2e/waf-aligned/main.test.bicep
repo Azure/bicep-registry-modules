@@ -72,16 +72,13 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
           tags: {
             tag1: 'value1'
             tag2: 'value2'
           }
         }
         {
+          name: 'partner2'
           b2b: {
             businessIdentities: [
               {
@@ -93,11 +90,6 @@ module testDeployment '../../../main.bicep' = [
                 value: '1122334455'
               }
             ]
-          }
-          name: 'partner2'
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
           }
           tags: {
             tag1: 'value1'

@@ -1314,10 +1314,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
             }
           ]
         }
-        metadata: {
-          key1: 'value1'
-          key2: 'value2'
-        }
         name: 'partner1'
         tags: {
           tag1: 'value1'
@@ -1336,10 +1332,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               value: '1122334455'
             }
           ]
-        }
-        metadata: {
-          key1: 'value1'
-          key2: 'value2'
         }
         name: 'partner2'
         tags: {
@@ -1431,10 +1423,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               }
             ]
           },
-          "metadata": {
-            "key1": "value1",
-            "key2": "value2"
-          },
           "name": "partner1",
           "tags": {
             "tag1": "value1",
@@ -1453,10 +1441,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 "value": "1122334455"
               }
             ]
-          },
-          "metadata": {
-            "key1": "value1",
-            "key2": "value2"
           },
           "name": "partner2",
           "tags": {
@@ -1544,10 +1528,6 @@ param partners = [
         }
       ]
     }
-    metadata: {
-      key1: 'value1'
-      key2: 'value2'
-    }
     name: 'partner1'
     tags: {
       tag1: 'value1'
@@ -1566,10 +1546,6 @@ param partners = [
           value: '1122334455'
         }
       ]
-    }
-    metadata: {
-      key1: 'value1'
-      key2: 'value2'
     }
     name: 'partner2'
     tags: {

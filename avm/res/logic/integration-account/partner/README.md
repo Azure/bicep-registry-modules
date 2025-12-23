@@ -70,7 +70,7 @@ Resource location.
 
 The partner metadata.
 
-- Required: Yes
+- Required: No
 - Type: 
 
 ### Parameter: `tags`

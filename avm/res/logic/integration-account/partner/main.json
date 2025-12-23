@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15060387279069399000"
+      "templateHash": "12339703965161257652"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys an Integration Account Partner."
@@ -47,7 +47,8 @@
           "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
         },
         "description": "Optional. The partner metadata."
-      }
+      },
+      "nullable": true
     },
     "tags": {
       "type": "object",
