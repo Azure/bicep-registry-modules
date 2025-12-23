@@ -473,7 +473,7 @@ module testDeployment '../../../main.bicep' = [
           namedValues: [
             {
               name: 'workspace-named-value'
-              displayName: 'Workspace Named Value'
+              displayName: 'WorkspaceNamedValue'
               value: 'workspace-secret-value'
               secret: true
               tags: [
@@ -605,7 +605,7 @@ module testDeployment '../../../main.bicep' = [
           namedValues: [
             {
               name: 'ws2-config-value'
-              displayName: 'Workspace 2 Config'
+              displayName: 'Workspace2Config'
               value: 'workspace-2-config'
             }
           ]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12069179089884645816"
+      "templateHash": "14150653542092969217"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -118,13 +118,13 @@
     },
     "state": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "published",
       "allowedValues": [
         "notPublished",
         "published"
       ],
       "metadata": {
-        "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished."
+        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
       }
     },
     "subscriptionRequired": {

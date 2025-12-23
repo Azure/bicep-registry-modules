@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12118498275037690512"
+      "templateHash": "17745538044523175756"
     },
     "name": "API Management Workspace Products",
     "description": "This module deploys a Product in an API Management Workspace."
@@ -166,13 +166,13 @@
     },
     "state": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "published",
       "allowedValues": [
         "notPublished",
         "published"
       ],
       "metadata": {
-        "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished."
+        "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
       }
     },
     "subscriptionRequired": {
@@ -231,7 +231,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-link-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-prd-api-link-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -344,7 +344,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-group-link-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-prd-group-link-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -457,7 +457,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-policy-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-prd-policy-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

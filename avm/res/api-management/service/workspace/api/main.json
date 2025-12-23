@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "9912445063433908463"
+      "templateHash": "7829036210102713000"
     },
     "name": "API Management Workspace APIs",
     "description": "This module deploys an API in an API Management Workspace."
@@ -585,7 +585,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-policy-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-api-policy-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -713,7 +713,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-diagnostic-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-api-diagnostic-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -979,7 +979,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-api-operation-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-ws-api-operation-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1031,7 +1031,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "11157339376524309643"
+              "templateHash": "2032808541258074906"
             },
             "name": "API Management Workspace API Operations",
             "description": "This module deploys an API Operation under an API Management Workspace."
@@ -1206,7 +1206,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+              "name": "[format('{0}-ws-api-opr-policy-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

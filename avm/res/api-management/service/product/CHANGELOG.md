@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/CHANGELOG.md).
 
-## 0.3.0
+## 0.2.1
 
 ### Changes
 
@@ -13,7 +13,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- The `state` parameter is now optional with no default value (was `'published'`), falling back to provider default value, which is `'notPublished'`
+- none
 
 ## 0.2.0
 

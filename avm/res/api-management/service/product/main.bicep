@@ -34,8 +34,8 @@ param policies productPolicyType[]?
   'notPublished'
   'published'
 ])
-@sys.description('Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished.')
-param state string?
+@sys.description('Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators.')
+param state string = 'published'
 
 @sys.description('Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it\'s value is assumed to be true.')
 param subscriptionRequired bool = false

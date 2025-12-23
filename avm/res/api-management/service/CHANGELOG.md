@@ -26,23 +26,18 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `workspace/product/group-link`
   - `workspace/product/policy`
   - `workspace/subscription`
-- Child module **api** (v0.2.0): Added length decorators and updated parameter descriptions; added missing allowed values; added allowed values to `protocols` parameter; changed `policyType.name` from optional to required; aligned `operationType` and `diagnosticType` definitions; fixed `diagnosticType.alwaysLog` type and corrected `diagnosticType.operationNameFormat` allowed value from `URI` to `Url`.
+- Child module **api** (v0.2.0): Added length decorators and updated parameter descriptions; added missing allowed values; added allowed values to `protocols` parameter; aligned `operationType` and `diagnosticType` definitions; fixed `diagnosticType.alwaysLog` type and corrected `diagnosticType.operationNameFormat` allowed value from `URI` to `Url`.
 - Child module **api-version-set** (v0.2.0): Changed `name` parameter to required (was optional with default `"default"`); updated `displayName` description.
 - Child module **backend** (v0.2.1): Added length validation to `url` parameter.
 - Child module **logger** (v0.2.1): Updated parameter descriptions; added length constraint to `description`; made `description` nullable; renamed internal resource symbol and aligned outputs.
 - Child module **named-value** (v0.1.2): Added length constraints to `displayName` and `value` parameters; updated parameter descriptions.
-- Child module **policy** (v0.2.0): Changed `name` parameter to required (removed default value `'policy'`).
-- Child module **product** (v0.3.0): Added length constraints to `name`, `displayName`, and `description`; updated descriptions; changed `description` to be nullable; added `@allowed` constraint to `state` parameter; updated `productPolicyType.name` to required; introduced `product/policy` child module.
+- Child module **product** (v0.3.0): Added length constraints to `name`, `displayName`, and `description`; updated descriptions; changed `description` to be nullable; added `@allowed` constraint to `state` parameter.
 - Child module **subscription** (v0.1.2): Updated parameter descriptions; added length constraints to `displayName`, `primaryKey`, and `secondaryKey`; added allowed values to `state`; simplified `scope` description; reordered resource properties.
 
 ### Breaking Changes
 
 - The `api.diagnostic.operationNameFormat` parameter - allowed value corrected from `URI` to `Url`.
-- The `api.policy.name` parameter is now required (was optional).
 - The `api-version-set.name` parameter is now required (was optional with default `"default"`).
-- The `policy.name` parameter is now required (was optional with default `'policy'`).
-- The `product.policy.name` parameter is now required (removed default value of `'policy'`).
-- The `product.state` parameter is now optional with no default value (was `'published'`), falling back to provider default value, which is `'notPublished'`.
 
 ## 0.13.0
 
