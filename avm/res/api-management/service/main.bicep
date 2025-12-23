@@ -338,7 +338,7 @@ module service_apis 'api/main.bicep' = [
 
 module service_apiVersionSets 'api-version-set/main.bicep' = [
   for (apiVersionSet, index) in (apiVersionSets ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-ApiVersionSet-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-ApiVerSet-${index}'
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
@@ -354,7 +354,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
 
 module service_authorizationServers 'authorization-server/main.bicep' = [
   for (authorizationServer, index) in (authorizationServers ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-AuthorizationServer-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-AuthSrv-${index}'
     params: {
       apiManagementServiceName: service.name
       name: authorizationServer.name
@@ -382,7 +382,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
 @batchSize(1)
 module service_backends 'backend/main.bicep' = [
   for (backend, index) in (backends ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Bcknd-${index}'
     params: {
       apiManagementServiceName: service.name
       url: backend.?url
@@ -420,7 +420,7 @@ module service_caches 'cache/main.bicep' = [
 
 module service_identityProviders 'identity-provider/main.bicep' = [
   for (identityProvider, index) in (identityProviders ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-IdProvdr-${index}'
     params: {
       apiManagementServiceName: service.name
       name: identityProvider.name
@@ -442,7 +442,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
 
 module service_loggers 'logger/main.bicep' = [
   for (logger, index) in (loggers ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Logg-${index}'
     params: {
       name: logger.name
       apiManagementServiceName: service.name
@@ -461,7 +461,7 @@ module service_loggers 'logger/main.bicep' = [
 
 module service_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in (namedValues ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-NamedValue-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-NamVal-${index}'
     params: {
       apiManagementServiceName: service.name
       displayName: namedValue.displayName
@@ -477,7 +477,7 @@ module service_namedValues 'named-value/main.bicep' = [
 
 module service_portalsettings 'portalsetting/main.bicep' = [
   for (portalsetting, index) in (portalsettings ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-PortalSetting-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-PrtSet-${index}'
     params: {
       apiManagementServiceName: service.name
       name: portalsetting.name
@@ -489,7 +489,7 @@ module service_portalsettings 'portalsetting/main.bicep' = [
 
 module service_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Policy-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Pol-${index}'
     params: {
       name: policy.?name
       apiManagementServiceName: service.name
@@ -502,7 +502,7 @@ module service_policies 'policy/main.bicep' = [
 
 module service_products 'product/main.bicep' = [
   for (product, index) in (products ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Prd-${index}'
     params: {
       displayName: product.displayName
       apiManagementServiceName: service.name
@@ -525,7 +525,7 @@ module service_products 'product/main.bicep' = [
 
 module service_subscriptions 'subscription/main.bicep' = [
   for (subscription, index) in (subscriptions ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Subscription-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Subscr-${index}'
     params: {
       apiManagementServiceName: service.name
       name: subscription.name
@@ -543,7 +543,7 @@ module service_subscriptions 'subscription/main.bicep' = [
 
 module service_diagnostics 'diagnostic/main.bicep' = [
   for (diagnostic, index) in (serviceDiagnostics ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-ServiceDiagnostic-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-SvcDiag-${index}'
     params: {
       apiManagementServiceName: service.name
       name: diagnostic.name
@@ -563,7 +563,7 @@ module service_diagnostics 'diagnostic/main.bicep' = [
 
 module service_workspaces 'workspace/main.bicep' = [
   for (workspace, index) in (workspaces ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Workspace-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Wksp-${index}'
     params: {
       apiManagementServiceName: service.name
       name: workspace.name

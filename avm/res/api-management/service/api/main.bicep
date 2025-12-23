@@ -190,7 +190,7 @@ resource api 'Microsoft.ApiManagement/service/apis@2024-05-01' = {
 
 module api_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
-    name: '${deployment().name}-api-policy-${index}'
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
@@ -203,7 +203,7 @@ module api_policies 'policy/main.bicep' = [
 
 module api_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (diagnostics ?? []): {
-    name: '${deployment().name}-api-diagnostic-${index}'
+    name: '${deployment().name}-Diag-${index}'
     params: {
       name: diagnostic.?name
       apiManagementServiceName: apiManagementServiceName
@@ -225,7 +225,7 @@ module api_diagnostics 'diagnostics/main.bicep' = [
 
 module api_operations 'operation/main.bicep' = [
   for (operation, index) in (operations ?? []): {
-    name: '${deployment().name}-operation-${index}'
+    name: '${deployment().name}-Opr-${index}'
     params: {
       name: operation.name
       apiManagementServiceName: apiManagementServiceName

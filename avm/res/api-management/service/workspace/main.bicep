@@ -59,7 +59,7 @@ resource workspace 'Microsoft.ApiManagement/service/workspaces@2024-05-01' = {
 
 module workspace_apis 'api/main.bicep' = [
   for (api, index) in (apis ?? []): {
-    name: '${deployment().name}-ws-api-${index}'
+    name: '${deployment().name}-Api-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -93,7 +93,7 @@ module workspace_apis 'api/main.bicep' = [
 
 module workspace_apiVersionSets 'api-version-set/main.bicep' = [
   for (apiVersionSet, index) in (apiVersionSets ?? []): {
-    name: '${deployment().name}-ws-apiversionset-${index}'
+    name: '${deployment().name}-ApiVerSet-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -109,7 +109,7 @@ module workspace_apiVersionSets 'api-version-set/main.bicep' = [
 
 module workspace_backends 'backend/main.bicep' = [
   for (backend, index) in (backends ?? []): {
-    name: '${deployment().name}-ws-backend-${index}'
+    name: '${deployment().name}-Bcknd-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -132,7 +132,7 @@ module workspace_backends 'backend/main.bicep' = [
 
 module workspace_diagnostics 'diagnostic/main.bicep' = [
   for (diagnostic, index) in (diagnostics ?? []): {
-    name: '${deployment().name}-ws-diagnostic-${index}'
+    name: '${deployment().name}-Diag-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -156,7 +156,7 @@ module workspace_diagnostics 'diagnostic/main.bicep' = [
 
 module workspace_loggers 'logger/main.bicep' = [
   for (logger, index) in (loggers ?? []): {
-    name: '${deployment().name}-ws-logger-${index}'
+    name: '${deployment().name}-Logg-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -175,7 +175,7 @@ module workspace_loggers 'logger/main.bicep' = [
 
 module workspace_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in (namedValues ?? []): {
-    name: '${deployment().name}-ws-namedvalue-${index}'
+    name: '${deployment().name}-NamVal-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -191,7 +191,7 @@ module workspace_namedValues 'named-value/main.bicep' = [
 
 module workspace_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
-    name: '${deployment().name}-ws-policy-${index}'
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -204,7 +204,7 @@ module workspace_policies 'policy/main.bicep' = [
 
 module workspace_products 'product/main.bicep' = [
   for (product, index) in (products ?? []): {
-    name: '${deployment().name}-ws-product-${index}'
+    name: '${deployment().name}-Prd-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
@@ -225,7 +225,7 @@ module workspace_products 'product/main.bicep' = [
 
 module workspace_subscriptions 'subscription/main.bicep' = [
   for (subscription, index) in (subscriptions ?? []): {
-    name: '${deployment().name}-ws-subscription-${index}'
+    name: '${deployment().name}-Sub-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name

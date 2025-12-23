@@ -102,7 +102,7 @@ module product_apis 'api/main.bicep' = [
 
 module product_groups 'group/main.bicep' = [
   for (group, index) in (groups ?? []): {
-    name: '${deployment().name}-Group-${index}'
+    name: '${deployment().name}-Grp-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       name: group
@@ -114,7 +114,7 @@ module product_groups 'group/main.bicep' = [
 
 module product_policies 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       productName: product.name
