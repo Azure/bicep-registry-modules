@@ -133,9 +133,6 @@ param backends backendType[]?
 @description('Optional. Caches.')
 param caches cacheType[]?
 
-@description('Optional. API Diagnostics.')
-param apiDiagnostics apiDiagnosticType[]?
-
 @description('Optional. API Management Service Diagnostics.')
 param serviceDiagnostics serviceDiagnosticType[]?
 
@@ -334,6 +331,7 @@ module service_apis 'api/main.bicep' = [
     }
     dependsOn: [
       service_apiVersionSets
+      service_loggers
     ]
   }
 ]
@@ -417,32 +415,6 @@ module service_caches 'cache/main.bicep' = [
       useFromLocation: cache.useFromLocation
       enableTelemetry: enableReferencedModulesTelemetry
     }
-  }
-]
-
-module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
-  for (apidiagnostic, index) in (apiDiagnostics ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
-    params: {
-      apiManagementServiceName: service.name
-      apiName: apidiagnostic.apiName
-      loggerName: apidiagnostic.?loggerName
-      name: apidiagnostic.?name
-      alwaysLog: apidiagnostic.?alwaysLog
-      backend: apidiagnostic.?backend
-      frontend: apidiagnostic.?frontend
-      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
-      logClientIp: apidiagnostic.?logClientIp
-      metrics: apidiagnostic.?metrics
-      operationNameFormat: apidiagnostic.?operationNameFormat
-      samplingPercentage: apidiagnostic.?samplingPercentage
-      verbosity: apidiagnostic.?verbosity
-      enableTelemetry: enableReferencedModulesTelemetry
-    }
-    dependsOn: [
-      service_apis
-      service_loggers
-    ]
   }
 ]
 
@@ -1079,46 +1051,6 @@ type cacheType = {
 
   @description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
   useFromLocation: string
-}
-
-@export()
-@description('The type of an API diagnostic setting.')
-type apiDiagnosticType = {
-  @description('Required. The name of the parent API.')
-  apiName: string
-
-  @description('Required. The name of the logger.')
-  loggerName: string
-
-  @description('Optional. Type of diagnostic resource.')
-  name: ('azuremonitor' | 'applicationinsights' | 'local')?
-
-  @description('Optional. Specifies for what type of messages sampling settings should not apply.')
-  alwaysLog: string?
-
-  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-  backend: resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.backend?
-
-  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-  frontend: resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.frontend?
-
-  @description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
-  httpCorrelationProtocol: ('Legacy' | 'None' | 'W3C')?
-
-  @description('Optional. Log the ClientIP.')
-  logClientIp: bool?
-
-  @description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
-  metrics: bool?
-
-  @description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
-  operationNameFormat: ('Name' | 'Url')?
-
-  @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
-  samplingPercentage: int?
-
-  @description('Optional. The verbosity level applied to traces emitted by trace policies.')
-  verbosity: ('error' | 'information' | 'verbose')?
 }
 
 @export()
