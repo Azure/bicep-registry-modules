@@ -5,176 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "17337433088192690119"
+      "version": "0.39.26.7824",
+      "templateHash": "3271245120536758923"
     },
     "name": "Container App Session Pool",
     "description": "This module deploys a Container App Session Pool."
   },
   "definitions": {
-    "sessionContainerType": {
-      "type": "object",
-      "properties": {
-        "args": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container start command arguments."
-          }
-        },
-        "command": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container start command."
-          }
-        },
-        "env": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/sessionContainerEnvType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Container environment variables."
-          }
-        },
-        "image": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Container image tag."
-          }
-        },
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Custom container name."
-          }
-        },
-        "resources": {
-          "$ref": "#/definitions/sessionContainerResourceType",
-          "metadata": {
-            "description": "Required. Container resource requirements."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Optional. Custom container definition."
-      }
-    },
-    "sessionContainerEnvType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Environment variable name."
-          }
-        },
-        "secretRef": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value."
-          }
-        },
-        "value": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Required if secretRef is not set. Non-secret environment variable value."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Optional. Environment variable definition for a container. Only used with custom containers."
-      }
-    },
-    "sessionContainerResourceType": {
-      "type": "object",
-      "properties": {
-        "cpu": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Required CPU in cores, e.g. 0.5."
-          }
-        },
-        "memory": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Required memory, e.g. \"1.25Gi\"."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Optional. Container resource requirements. Only used with custom containers."
-      }
-    },
-    "sessionRegistryCredentialsType": {
-      "type": "object",
-      "properties": {
-        "identity": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use \"system\"."
-          }
-        },
-        "passwordSecretRef": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the secret that contains the registry login password. Not used if identity is specified."
-          }
-        },
-        "server": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Container registry server."
-          }
-        },
-        "username": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Container registry username."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Optional. Container registry credentials. Only used with custom containers."
-      }
-    },
-    "managedIdentitySettingType": {
-      "type": "object",
-      "properties": {
-        "identity": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or \"system\" for system-assigned identity."
-          }
-        },
-        "lifecycle": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None\"."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Optional. Managed Identity settings for the session pool."
-      }
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -208,7 +45,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -236,7 +73,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -311,7 +148,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -340,60 +177,53 @@
         "description": "Required. The container type of the sessions."
       }
     },
-    "containers": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/sessionContainerType"
+    "customContainerTemplate": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/customContainerTemplate"
+        },
+        "description": "Optional. The custom container configuration if the containerType is CustomContainer. Only set if containerType is CustomContainer."
       },
-      "nullable": true,
+      "nullable": true
+    },
+    "dynamicPoolConfiguration": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. Custom container definitions. Only required if containerType is CustomContainer."
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/dynamicPoolConfiguration"
+        },
+        "description": "Optional. The pool configuration if the poolManagementType is dynamic."
+      },
+      "defaultValue": {
+        "lifecycleConfiguration": {
+          "cooldownPeriodInSeconds": 300,
+          "lifecycleType": "Timed"
+        }
       }
     },
-    "targetIngressPort": {
-      "type": "int",
-      "nullable": true,
+    "scaleConfiguration": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. Required if containerType == 'CustomContainer'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer."
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/scaleConfiguration"
+        },
+        "description": "Optional. The scale configuration of the session pool."
+      },
+      "defaultValue": {
+        "maxConcurrentSessions": 5
       }
     },
-    "registryCredentials": {
-      "$ref": "#/definitions/sessionRegistryCredentialsType",
-      "nullable": true,
+    "sessionNetworkConfiguration": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. Container registry credentials. Only required if containerType is CustomContainer and the container registry requires authentication."
-      }
-    },
-    "cooldownPeriodInSeconds": {
-      "type": "int",
-      "defaultValue": 300,
-      "metadata": {
-        "description": "Optional. The cooldown period of a session in seconds."
-      }
-    },
-    "maxConcurrentSessions": {
-      "type": "int",
-      "defaultValue": 5,
-      "metadata": {
-        "description": "Optional. The maximum count of sessions at the same time."
-      }
-    },
-    "readySessionInstances": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The minimum count of ready session instances."
-      }
-    },
-    "sessionNetworkStatus": {
-      "type": "string",
-      "defaultValue": "EgressDisabled",
-      "allowedValues": [
-        "EgressEnabled",
-        "EgressDisabled"
-      ],
-      "metadata": {
-        "description": "Optional. Network status for the sessions. Defaults to EgressDisabled."
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/sessionNetworkConfiguration"
+        },
+        "description": "Optional. The network configuration of the sessions in the session pool."
+      },
+      "defaultValue": {
+        "status": "EgressDisabled"
       }
     },
     "poolManagementType": {
@@ -433,13 +263,23 @@
     },
     "managedIdentitySettings": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/managedIdentitySettingType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/managedIdentitySettings"
+        },
         "description": "Optional. Settings for a Managed Identity that is assigned to the Session pool."
-      }
+      },
+      "nullable": true
+    },
+    "secrets": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/sessionPools@2025-07-01#properties/properties/properties/secrets"
+        },
+        "description": "Optional. The secrets of the session pool."
+      },
+      "nullable": true
     },
     "environmentResourceId": {
       "type": "string",
@@ -475,7 +315,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Azure ContainerApps Session Executor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0')]",
       "Container Apps SessionPools Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7669afb-68b2-44b4-9c5f-6d2a47fddda0')]",
@@ -510,26 +350,19 @@
     },
     "sessionPool": {
       "type": "Microsoft.App/sessionPools",
-      "apiVersion": "2024-10-02-preview",
+      "apiVersion": "2025-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "properties": {
         "containerType": "[parameters('containerType')]",
         "environmentId": "[parameters('environmentResourceId')]",
-        "customContainerTemplate": "[if(equals(parameters('containerType'), 'CustomContainer'), createObject('containers', parameters('containers'), 'ingress', createObject('targetPort', parameters('targetIngressPort')), 'registryCredentials', parameters('registryCredentials')), null())]",
-        "dynamicPoolConfiguration": {
-          "cooldownPeriodInSeconds": "[parameters('cooldownPeriodInSeconds')]",
-          "executionType": "Timed"
-        },
+        "customContainerTemplate": "[if(equals(parameters('containerType'), 'CustomContainer'), parameters('customContainerTemplate'), null())]",
+        "dynamicPoolConfiguration": "[if(equals(parameters('poolManagementType'), 'Dynamic'), parameters('dynamicPoolConfiguration'), null())]",
+        "secrets": "[parameters('secrets')]",
         "managedIdentitySettings": "[parameters('managedIdentitySettings')]",
-        "scaleConfiguration": {
-          "maxConcurrentSessions": "[parameters('maxConcurrentSessions')]",
-          "readySessionInstances": "[parameters('readySessionInstances')]"
-        },
-        "sessionNetworkConfiguration": {
-          "status": "[parameters('sessionNetworkStatus')]"
-        },
+        "scaleConfiguration": "[parameters('scaleConfiguration')]",
+        "sessionNetworkConfiguration": "[parameters('sessionNetworkConfiguration')]",
         "poolManagementType": "[parameters('poolManagementType')]"
       },
       "tags": "[parameters('tags')]"
@@ -602,10 +435,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('sessionPool', '2024-10-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('sessionPool', '2025-07-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
