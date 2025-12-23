@@ -2,7 +2,13 @@ metadata name = 'Azure Kubernetes Service (AKS) Managed Cluster Maintenance Conf
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.'
 
 @description('Required. Maintenance window for the maintenance configuration.')
-param maintenanceWindow object
+param maintenanceWindow resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.maintenanceWindow
+
+@description('Optional. Time slots on which upgrade is not allowed.')
+param notAllowedTime resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.notAllowedTime?
+
+@description('Optional. Time slots during the week when planned maintenance is allowed to proceed.')
+param timeInWeek resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.timeInWeek?
 
 @description('Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param managedClusterName string
@@ -10,15 +16,17 @@ param managedClusterName string
 @description('Optional. Name of the maintenance configuration.')
 param name string = 'aksManagedAutoUpgradeSchedule'
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-05-02-preview' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' existing = {
   name: managedClusterName
 }
 
-resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-05-01' = {
+resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01' = {
   name: name
   parent: managedCluster
   properties: {
     maintenanceWindow: maintenanceWindow
+    notAllowedTime: notAllowedTime
+    timeInWeek: timeInWeek
   }
 }
 
