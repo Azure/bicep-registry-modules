@@ -114,6 +114,13 @@ module testDeployment '../../../main.bicep' = [
             'http'
             'https'
           ]
+          diagnostics: [
+            {
+              loggerName: 'logger'
+              metrics: true
+              name: 'applicationinsights'
+            }
+          ]
         }
       ]
       apiVersionSets: [
@@ -201,14 +208,6 @@ module testDeployment '../../../main.bicep' = [
           connectionString: 'connectionstringtest'
           name: 'westeurope'
           useFromLocation: 'westeurope'
-        }
-      ]
-      apiDiagnostics: [
-        {
-          loggerName: 'logger'
-          apiName: 'echo-api'
-          metrics: true
-          name: 'applicationinsights'
         }
       ]
       serviceDiagnostics: [
