@@ -20,7 +20,7 @@ param contentType string?
 param mapType ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30') = 'Xslt'
 
 @description('Optional. The map metadata.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
 
 @description('Optional. The parameters schema of integration account map.')
 param parametersSchema object?
