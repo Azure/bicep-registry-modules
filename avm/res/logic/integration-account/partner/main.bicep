@@ -11,10 +11,10 @@ param location string = resourceGroup().location
 param integrationAccountName string
 
 @description('Optional. B2B partner content settings.')
-param b2bPartnerContent resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
+param b2b resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
 @description('Optional. The partner metadata.')
-param metadata resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
+param metadata resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
@@ -31,57 +31,10 @@ resource partner 'Microsoft.Logic/integrationAccounts/partners@2019-05-01' = {
     partnerType: 'B2B'
     metadata: metadata
     content: {
-      b2b: b2bPartnerContent
+      b2b: b2b
     }
   }
   tags: tags
-}
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a B2B partner content.')
-type b2bPartnerContentType = {
-  @description('Required. The list of partner business identities.')
-  businessIdentities: businessIdentityType[]
-  @description('Optional. The partner classification.')
-  partnerClassification: (
-    | 'Carrier'
-    | 'Distributor'
-    | 'EndUser'
-    | 'EndUserGovernment'
-    | 'Financier'
-    | 'Manufacturer'
-    | 'Retailer'
-    | 'Shopper'
-    | 'FreightForwarder'
-    | 'MarketPlace')?
-  @description('Optional. The RosettaNet partner properties.')
-  partnerContact: rosettaNetPartnerPropertiesType?
-}
-
-@description('The type for a business identity.')
-type businessIdentityType = {
-  @description('Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.')
-  qualifier: string
-  @description('Required. The user defined business identity value.')
-  value: string
-}
-
-@description('The type for RosettaNet partner properties.')
-type rosettaNetPartnerPropertiesType = {
-  @description('Optional. The name of the contact person.')
-  name: string?
-  @description('Optional. The email address of the partner.')
-  emailAddress: string?
-  @description('Optional. The phone number of the partner.')
-  telephoneNumber: string?
-  @description('Optional. The fax number of the partner.')
-  faxNumber: string?
-  @description('Optional. The supply chain code of the partner.')
-  supplyChainCode: string?
 }
 
 // ============ //

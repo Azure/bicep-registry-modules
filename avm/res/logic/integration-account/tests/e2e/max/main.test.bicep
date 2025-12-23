@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
       partners: [
         {
           name: 'partner1'
-          b2bPartnerContent: {
+          b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
@@ -94,14 +94,6 @@ module testDeployment '../../../main.bicep' = [
                 value: '0987654321'
               }
             ]
-            partnerClassification: 'Distributor'
-            partnerContact: {
-              name: 'John Doe'
-              emailAddress: 'john.doe@example.com'
-              telephoneNumber: '123-456-7890'
-              faxNumber: '123-456-7891'
-              supplyChainCode: 'SC123'
-            }
           }
           metadata: {
             key1: 'value1'
@@ -113,7 +105,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          b2bPartnerContent: {
+          b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'

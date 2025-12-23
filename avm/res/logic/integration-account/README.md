@@ -390,7 +390,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     partners: [
       {
-        b2bPartnerContent: {
+        b2b: {
           businessIdentities: [
             {
               qualifier: 'ZZ'
@@ -401,14 +401,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
               value: '0987654321'
             }
           ]
-          partnerClassification: 'Distributor'
-          partnerContact: {
-            emailAddress: 'john.doe@example.com'
-            faxNumber: '123-456-7891'
-            name: 'John Doe'
-            supplyChainCode: 'SC123'
-            telephoneNumber: '123-456-7890'
-          }
         }
         metadata: {
           key1: 'value1'
@@ -421,7 +413,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       }
       {
-        b2bPartnerContent: {
+        b2b: {
           businessIdentities: [
             {
               qualifier: 'ZZ'
@@ -792,7 +784,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "partners": {
       "value": [
         {
-          "b2bPartnerContent": {
+          "b2b": {
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
@@ -802,15 +794,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
                 "qualifier": "ZZZ",
                 "value": "0987654321"
               }
-            ],
-            "partnerClassification": "Distributor",
-            "partnerContact": {
-              "emailAddress": "john.doe@example.com",
-              "faxNumber": "123-456-7891",
-              "name": "John Doe",
-              "supplyChainCode": "SC123",
-              "telephoneNumber": "123-456-7890"
-            }
+            ]
           },
           "metadata": {
             "key1": "value1",
@@ -823,7 +807,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           }
         },
         {
-          "b2bPartnerContent": {
+          "b2b": {
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
@@ -1182,7 +1166,7 @@ param maps = [
 ]
 param partners = [
   {
-    b2bPartnerContent: {
+    b2b: {
       businessIdentities: [
         {
           qualifier: 'ZZ'
@@ -1193,14 +1177,6 @@ param partners = [
           value: '0987654321'
         }
       ]
-      partnerClassification: 'Distributor'
-      partnerContact: {
-        emailAddress: 'john.doe@example.com'
-        faxNumber: '123-456-7891'
-        name: 'John Doe'
-        supplyChainCode: 'SC123'
-        telephoneNumber: '123-456-7890'
-      }
     }
     metadata: {
       key1: 'value1'
@@ -1213,7 +1189,7 @@ param partners = [
     }
   }
   {
-    b2bPartnerContent: {
+    b2b: {
       businessIdentities: [
         {
           qualifier: 'ZZ'
@@ -1326,7 +1302,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     ]
     partners: [
       {
-        b2bPartnerContent: {
+        b2b: {
           businessIdentities: [
             {
               qualifier: 'ZZ'
@@ -1341,7 +1317,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         name: 'ContosoSupplier'
       }
       {
-        b2bPartnerContent: {
+        b2b: {
           businessIdentities: [
             {
               qualifier: 'ZZ'
@@ -1427,7 +1403,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     "partners": {
       "value": [
         {
-          "b2bPartnerContent": {
+          "b2b": {
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
@@ -1442,7 +1418,7 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
           "name": "ContosoSupplier"
         },
         {
-          "b2bPartnerContent": {
+          "b2b": {
             "businessIdentities": [
               {
                 "qualifier": "ZZ",
@@ -1524,7 +1500,7 @@ param maps = [
 ]
 param partners = [
   {
-    b2bPartnerContent: {
+    b2b: {
       businessIdentities: [
         {
           qualifier: 'ZZ'
@@ -1539,7 +1515,7 @@ param partners = [
     name: 'ContosoSupplier'
   }
   {
-    b2bPartnerContent: {
+    b2b: {
       businessIdentities: [
         {
           qualifier: 'ZZ'
@@ -2167,7 +2143,7 @@ All partners to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`b2bPartnerContent`](#parameter-partnersb2bpartnercontent) | object | The B2B partner content settings. |
+| [`b2b`](#parameter-partnersb2b) | object | The B2B partner content settings. |
 | [`metadata`](#parameter-partnersmetadata) |  | The partner metadata. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
@@ -2178,7 +2154,7 @@ The Name of the partner resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `partners.b2bPartnerContent`
+### Parameter: `partners.b2b`
 
 The B2B partner content settings.
 

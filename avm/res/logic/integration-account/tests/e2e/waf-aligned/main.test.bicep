@@ -57,11 +57,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      // Operational Excellence: Define trading partners for B2B integration
       partners: [
         {
           name: 'ContosoSupplier'
-          b2bPartnerContent: {
+          b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
@@ -76,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'FabrikamBuyer'
-          b2bPartnerContent: {
+          b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
@@ -101,7 +100,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // Operational Excellence: Standardized data transformation
       maps: [
         {
           name: 'PurchaseOrderTransform'
@@ -113,7 +111,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // Reliability: Comprehensive diagnostic logging
       diagnosticSettings: [
         {
           name: 'customSetting'

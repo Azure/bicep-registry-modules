@@ -222,7 +222,7 @@ module integrationAccount_partners 'partner/main.bicep' = [
       name: partner.name
       location: location
       integrationAccountName: integrationAccount.name
-      b2bPartnerContent: partner.?b2bPartnerContent
+      b2b: partner.?b2b
       metadata: partner.?metadata
       tags: partner.?tags ?? tags
     }
@@ -363,7 +363,7 @@ type integrationAccountPartnerType = {
   name: string
 
   @description('Optional. The B2B partner content settings.')
-  b2bPartnerContent: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
+  b2b: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
   @description('Optional. The partner metadata.')
   metadata: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?

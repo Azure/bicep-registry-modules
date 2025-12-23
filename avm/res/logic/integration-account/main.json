@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5990523598684758932"
+      "templateHash": "13115547083228779911"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -21,7 +21,7 @@
             "description": "Required. The Name of the partner resource."
           }
         },
-        "b2bPartnerContent": {
+        "b2b": {
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
@@ -952,8 +952,8 @@
           "integrationAccountName": {
             "value": "[parameters('name')]"
           },
-          "b2bPartnerContent": {
-            "value": "[tryGet(coalesce(parameters('partners'), createArray())[copyIndex()], 'b2bPartnerContent')]"
+          "b2b": {
+            "value": "[tryGet(coalesce(parameters('partners'), createArray())[copyIndex()], 'b2b')]"
           },
           "metadata": {
             "value": "[tryGet(coalesce(parameters('partners'), createArray())[copyIndex()], 'metadata')]"
@@ -970,119 +970,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "4964167180293604529"
+              "templateHash": "15060387279069399000"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
-          },
-          "definitions": {
-            "b2bPartnerContentType": {
-              "type": "object",
-              "properties": {
-                "businessIdentities": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/businessIdentityType"
-                  },
-                  "metadata": {
-                    "description": "Required. The list of partner business identities."
-                  }
-                },
-                "partnerClassification": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Carrier",
-                    "Distributor",
-                    "EndUser",
-                    "EndUserGovernment",
-                    "Financier",
-                    "FreightForwarder",
-                    "Manufacturer",
-                    "MarketPlace",
-                    "Retailer",
-                    "Shopper"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The partner classification."
-                  }
-                },
-                "partnerContact": {
-                  "$ref": "#/definitions/rosettaNetPartnerPropertiesType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The RosettaNet partner properties."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a B2B partner content."
-              }
-            },
-            "businessIdentityType": {
-              "type": "object",
-              "properties": {
-                "qualifier": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The user defined business identity value."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type for a business identity."
-              }
-            },
-            "rosettaNetPartnerPropertiesType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the contact person."
-                  }
-                },
-                "emailAddress": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The email address of the partner."
-                  }
-                },
-                "telephoneNumber": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The phone number of the partner."
-                  }
-                },
-                "faxNumber": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The fax number of the partner."
-                  }
-                },
-                "supplyChainCode": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The supply chain code of the partner."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type for RosettaNet partner properties."
-              }
-            }
           },
           "parameters": {
             "name": {
@@ -1104,7 +995,7 @@
                 "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
               }
             },
-            "b2bPartnerContent": {
+            "b2b": {
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
@@ -1120,8 +1011,7 @@
                   "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
                 },
                 "description": "Optional. The partner metadata."
-              },
-              "nullable": true
+              }
             },
             "tags": {
               "type": "object",
@@ -1150,7 +1040,7 @@
                 "partnerType": "B2B",
                 "metadata": "[parameters('metadata')]",
                 "content": {
-                  "b2b": "[parameters('b2bPartnerContent')]"
+                  "b2b": "[parameters('b2b')]"
                 }
               },
               "tags": "[parameters('tags')]"

@@ -32,7 +32,7 @@ This module deploys an Integration Account Partner.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`b2bPartnerContent`](#parameter-b2bpartnercontent) | object | B2B partner content settings. |
+| [`b2b`](#parameter-b2b) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`metadata`](#parameter-metadata) |  | The partner metadata. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
@@ -51,7 +51,7 @@ The name of the parent integration account. Required if the template is used in 
 - Required: Yes
 - Type: string
 
-### Parameter: `b2bPartnerContent`
+### Parameter: `b2b`
 
 B2B partner content settings.
 
@@ -70,7 +70,7 @@ Resource location.
 
 The partner metadata.
 
-- Required: No
+- Required: Yes
 - Type: 
 
 ### Parameter: `tags`
