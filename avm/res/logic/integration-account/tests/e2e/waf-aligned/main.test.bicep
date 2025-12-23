@@ -172,10 +172,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       roleAssignments: [
         {
           name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
