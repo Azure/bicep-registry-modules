@@ -21,7 +21,7 @@ param content string
 param contentType string = 'application/octet-stream'
 
 @description('Optional. The assembly metadata.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Logic/integrationAccounts/assemblies@2019-05-01'>.properties.metadata?
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/assemblies@2019-05-01'>.tags?
