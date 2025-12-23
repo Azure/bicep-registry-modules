@@ -61,7 +61,7 @@ resource operation 'Microsoft.ApiManagement/service/apis/operations@2024-05-01' 
 
 module operation_policies 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       apiName: apiName

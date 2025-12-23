@@ -88,6 +88,10 @@ module workspace_apis 'api/main.bicep' = [
       value: api.?value
       wsdlSelector: api.?wsdlSelector
     }
+    dependsOn: [
+      workspace_apiVersionSets
+      workspace_loggers
+    ]
   }
 ]
 
@@ -220,6 +224,9 @@ module workspace_products 'product/main.bicep' = [
       subscriptionsLimit: product.?subscriptionsLimit
       terms: product.?terms
     }
+    dependsOn: [
+      workspace_apis
+    ]
   }
 ]
 
@@ -238,6 +245,10 @@ module workspace_subscriptions 'subscription/main.bicep' = [
       secondaryKey: subscription.?secondaryKey
       state: subscription.?state
     }
+    dependsOn: [
+      workspace_apis
+      workspace_products
+    ]
   }
 ]
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5480361218780242356"
+      "templateHash": "4177828582219677402"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -4338,7 +4338,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "15588782662164585248"
+              "templateHash": "3418968745870039065"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -5414,7 +5414,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "1001415623217318847"
+                      "templateHash": "11101308358627408493"
                     },
                     "name": "API Management Service APIs Operations",
                     "description": "This module deploys an API Management Service API Operation."
@@ -5577,7 +5577,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+                      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -8499,7 +8499,9 @@
         }
       },
       "dependsOn": [
-        "service"
+        "service",
+        "service_apis",
+        "service_products"
       ]
     },
     "service_diagnostics": {
@@ -8723,7 +8725,8 @@
         }
       },
       "dependsOn": [
-        "service"
+        "service",
+        "service_loggers"
       ]
     },
     "service_workspaces": {
@@ -8788,7 +8791,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "5311548704775464049"
+              "templateHash": "16076152735562348173"
             },
             "name": "API Management Service Workspace",
             "description": "This module deploys an API Management Service Workspace."
@@ -10239,7 +10242,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "8944810201649633251"
+                      "templateHash": "6723031838226994136"
                     },
                     "name": "API Management Workspace APIs",
                     "description": "This module deploys an API in an API Management Workspace."
@@ -11264,7 +11267,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.39.26.7824",
-                              "templateHash": "11157339376524309643"
+                              "templateHash": "7616339632368053891"
                             },
                             "name": "API Management Workspace API Operations",
                             "description": "This module deploys an API Operation under an API Management Workspace."
@@ -11439,7 +11442,7 @@
                               },
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+                              "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
                               "properties": {
                                 "expressionEvaluationOptions": {
                                   "scope": "inner"
@@ -11628,7 +11631,9 @@
                 }
               },
               "dependsOn": [
-                "workspace"
+                "workspace",
+                "workspace_apiVersionSets",
+                "workspace_loggers"
               ]
             },
             "workspace_apiVersionSets": {
@@ -13413,7 +13418,8 @@
                 }
               },
               "dependsOn": [
-                "workspace"
+                "workspace",
+                "workspace_apis"
               ]
             },
             "workspace_subscriptions": {
@@ -13610,7 +13616,9 @@
                 }
               },
               "dependsOn": [
-                "workspace"
+                "workspace",
+                "workspace_apis",
+                "workspace_products"
               ]
             }
           },

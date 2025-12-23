@@ -538,6 +538,10 @@ module service_subscriptions 'subscription/main.bicep' = [
       state: subscription.?state
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      service_apis
+      service_products
+    ]
   }
 ]
 
@@ -558,6 +562,9 @@ module service_diagnostics 'diagnostic/main.bicep' = [
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
     }
+    dependsOn: [
+      service_loggers
+    ]
   }
 ]
 

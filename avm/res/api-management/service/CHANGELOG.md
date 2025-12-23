@@ -38,6 +38,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - The `api.diagnostic.operationNameFormat` parameter - allowed value corrected from `URI` to `Url`.
 - The `api-version-set.name` parameter is now required (was optional with default `"default"`).
+- Removed redundand (and conflicting) `apiDiagnostics` parameter from the service module; use `diagnostics` property within the `apis` parameter instead.
 
 ## 0.13.0
 
