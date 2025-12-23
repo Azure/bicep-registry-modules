@@ -650,16 +650,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
       securityProfile: {
-        enableSecureBoot: profile.?securityProfile.enableSecureBoot ?? false
-        enableVTPM: profile.?securityProfile.enableVTPM ?? false
+        enableSecureBoot: profile.?enableSecureBoot ?? false
+        enableVTPM: profile.?enableVTPM ?? false
         sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
       }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
-      upgradeSettings: {
-        maxSurge: profile.?upgradeSettings.?maxSurge
-      }
+      upgradeSettings: profile.?upgradeSettings
       virtualMachinesProfile: profile.?virtualMachinesProfile
       vmSize: profile.?vmSize ?? 'Standard_D2s_v3'
       vnetSubnetID: profile.?vnetSubnetResourceId
@@ -1024,7 +1022,9 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
       scaleSetPriority: agentPool.?scaleSetPriority
-      securityProfile: agentPool.?securityProfile
+      enableSecureBoot: agentPool.?enableSecureBoot
+      enableVTPM: agentPool.?enableVTPM
+      sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
       spotMaxPrice: agentPool.?spotMaxPrice
       tags: agentPool.?tags ?? tags
       type: agentPool.?type
@@ -1339,8 +1339,14 @@ type agentPoolType = {
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
 
-  @description('Optional. Security profile for the agent pool.')
-  securityProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile?
+  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+  enableSecureBoot: bool?
+
+  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+  enableVTPM: bool?
+
+  @description('Optional. SSH access method of an agent pool.')
+  sshAccess: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile.sshAccess?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?

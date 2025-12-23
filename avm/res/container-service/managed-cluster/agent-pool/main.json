@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4377641207598646404"
+      "templateHash": "616628885939541575"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -370,13 +370,27 @@
         "description": "Optional. The Virtual Machine Scale Set priority."
       }
     },
-    "securityProfile": {
-      "type": "object",
+    "enableSecureBoot": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch."
+      }
+    },
+    "enableVTPM": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
+      }
+    },
+    "sshAccess": {
+      "type": "string",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile"
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile/properties/sshAccess"
         },
-        "description": "Optional. Security profile for the agent pool."
+        "description": "Optional. SSH access method of an agent pool."
       },
       "nullable": true
     },
@@ -508,7 +522,11 @@
         "scaleDownMode": "[parameters('scaleDownMode')]",
         "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
         "scaleSetPriority": "[parameters('scaleSetPriority')]",
-        "securityProfile": "[parameters('securityProfile')]",
+        "securityProfile": {
+          "enableSecureBoot": "[parameters('enableSecureBoot')]",
+          "enableVTPM": "[parameters('enableVTPM')]",
+          "sshAccess": "[parameters('sshAccess')]"
+        },
         "spotMaxPrice": "[parameters('spotMaxPrice')]",
         "tags": "[parameters('tags')]",
         "type": "[parameters('type')]",

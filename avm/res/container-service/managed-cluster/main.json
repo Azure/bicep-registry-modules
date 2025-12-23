@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "129043639073047801"
+      "templateHash": "17477269220042744703"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -369,13 +369,27 @@
             "description": "Optional. The scale set priority of the agent pool."
           }
         },
-        "securityProfile": {
-          "type": "object",
+        "enableSecureBoot": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch."
+          }
+        },
+        "enableVTPM": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
+          }
+        },
+        "sshAccess": {
+          "type": "string",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile"
+              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile/properties/sshAccess"
             },
-            "description": "Optional. Security profile for the agent pool."
+            "description": "Optional. SSH access method of an agent pool."
           },
           "nullable": true
         },
@@ -2003,7 +2017,7 @@
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
-        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', coalesce(tryGet(lambdaVariables('profile'), 'count'), 1), 'availabilityZones', map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone')))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false()), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', tryGet(lambdaVariables('profile'), 'maxCount'), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', tryGet(lambdaVariables('profile'), 'minCount'), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIpAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', createObject('enableSecureBoot', coalesce(tryGet(lambdaVariables('profile'), 'securityProfile', 'enableSecureBoot'), false()), 'enableVTPM', coalesce(tryGet(lambdaVariables('profile'), 'securityProfile', 'enableVTPM'), false()), 'sshAccess', if(equals(parameters('skuName'), 'Automatic'), 'Disabled', 'LocalUser')), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', createObject('maxSurge', tryGet(tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'maxSurge')), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3'), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
+        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', coalesce(tryGet(lambdaVariables('profile'), 'count'), 1), 'availabilityZones', map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone')))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false()), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', tryGet(lambdaVariables('profile'), 'maxCount'), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', tryGet(lambdaVariables('profile'), 'minCount'), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIpAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', createObject('enableSecureBoot', coalesce(tryGet(lambdaVariables('profile'), 'enableSecureBoot'), false()), 'enableVTPM', coalesce(tryGet(lambdaVariables('profile'), 'enableVTPM'), false()), 'sshAccess', if(equals(parameters('skuName'), 'Automatic'), 'Disabled', 'LocalUser')), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3'), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
         "aiToolchainOperatorProfile": "[parameters('aiToolchainOperatorProfile')]",
         "bootstrapProfile": "[parameters('bootstrapProfile')]",
         "httpProxyConfig": "[parameters('httpProxyConfig')]",
@@ -2537,9 +2551,13 @@
           "scaleSetPriority": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleSetPriority')]"
           },
-          "securityProfile": {
-            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'securityProfile')]"
+          "enableSecureBoot": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableSecureBoot')]"
           },
+          "enableVTPM": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableVTPM')]"
+          },
+          "sshAccess": "[if(equals(parameters('skuName'), 'Automatic'), createObject('value', 'Disabled'), createObject('value', 'LocalUser'))]",
           "spotMaxPrice": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'spotMaxPrice')]"
           },
@@ -2576,7 +2594,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "4377641207598646404"
+              "templateHash": "616628885939541575"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2940,13 +2958,27 @@
                 "description": "Optional. The Virtual Machine Scale Set priority."
               }
             },
-            "securityProfile": {
-              "type": "object",
+            "enableSecureBoot": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch."
+              }
+            },
+            "enableVTPM": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
+              }
+            },
+            "sshAccess": {
+              "type": "string",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile"
+                  "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/securityProfile/properties/sshAccess"
                 },
-                "description": "Optional. Security profile for the agent pool."
+                "description": "Optional. SSH access method of an agent pool."
               },
               "nullable": true
             },
@@ -3078,7 +3110,11 @@
                 "scaleDownMode": "[parameters('scaleDownMode')]",
                 "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
                 "scaleSetPriority": "[parameters('scaleSetPriority')]",
-                "securityProfile": "[parameters('securityProfile')]",
+                "securityProfile": {
+                  "enableSecureBoot": "[parameters('enableSecureBoot')]",
+                  "enableVTPM": "[parameters('enableVTPM')]",
+                  "sshAccess": "[parameters('sshAccess')]"
+                },
                 "spotMaxPrice": "[parameters('spotMaxPrice')]",
                 "tags": "[parameters('tags')]",
                 "type": "[parameters('type')]",

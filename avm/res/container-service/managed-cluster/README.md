@@ -2039,7 +2039,9 @@ Properties of the primary agent pool.
 | [`enableEncryptionAtHost`](#parameter-primaryagentpoolprofilesenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-primaryagentpoolprofilesenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-primaryagentpoolprofilesenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-primaryagentpoolprofilesenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-primaryagentpoolprofilesenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-primaryagentpoolprofilesenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gatewayProfile`](#parameter-primaryagentpoolprofilesgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`gpuProfile`](#parameter-primaryagentpoolprofilesgpuprofile) | object | GPU settings. |
@@ -2070,9 +2072,9 @@ Properties of the primary agent pool.
 | [`scaleDownMode`](#parameter-primaryagentpoolprofilesscaledownmode) | string | The scale down mode of the agent pool. |
 | [`scaleSetEvictionPolicy`](#parameter-primaryagentpoolprofilesscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
 | [`scaleSetPriority`](#parameter-primaryagentpoolprofilesscalesetpriority) | string | The scale set priority of the agent pool. |
-| [`securityProfile`](#parameter-primaryagentpoolprofilessecurityprofile) | object | Security profile for the agent pool. |
 | [`sourceResourceId`](#parameter-primaryagentpoolprofilessourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-primaryagentpoolprofilesspotmaxprice) | int | The spot max price of the agent pool. |
+| [`sshAccess`](#parameter-primaryagentpoolprofilessshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-primaryagentpoolprofilestags) | object | The tags of the agent pool. |
 | [`type`](#parameter-primaryagentpoolprofilestype) | string | The type of the agent pool. |
 | [`upgradeSettings`](#parameter-primaryagentpoolprofilesupgradesettings) | object | Upgrade settings. |
@@ -2145,9 +2147,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `primaryAgentPoolProfiles.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -2437,13 +2453,6 @@ The scale set priority of the agent pool.
   ]
   ```
 
-### Parameter: `primaryAgentPoolProfiles.securityProfile`
-
-Security profile for the agent pool.
-
-- Required: No
-- Type: object
-
 ### Parameter: `primaryAgentPoolProfiles.sourceResourceId`
 
 The source resource ID to create the agent pool from.
@@ -2457,6 +2466,13 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
+
+### Parameter: `primaryAgentPoolProfiles.sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `primaryAgentPoolProfiles.tags`
 
@@ -2657,7 +2673,9 @@ Define one or more secondary/additional agent pools.
 | [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-agentpoolsenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-agentpoolsenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gatewayProfile`](#parameter-agentpoolsgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`gpuProfile`](#parameter-agentpoolsgpuprofile) | object | GPU settings. |
@@ -2688,9 +2706,9 @@ Define one or more secondary/additional agent pools.
 | [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | string | The scale down mode of the agent pool. |
 | [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
 | [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | string | The scale set priority of the agent pool. |
-| [`securityProfile`](#parameter-agentpoolssecurityprofile) | object | Security profile for the agent pool. |
 | [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | string | The source resource ID to create the agent pool from. |
 | [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | int | The spot max price of the agent pool. |
+| [`sshAccess`](#parameter-agentpoolssshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
 | [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
 | [`upgradeSettings`](#parameter-agentpoolsupgradesettings) | object | Upgrade settings. |
@@ -2763,9 +2781,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `agentPools.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `agentPools.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPools.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -3055,13 +3087,6 @@ The scale set priority of the agent pool.
   ]
   ```
 
-### Parameter: `agentPools.securityProfile`
-
-Security profile for the agent pool.
-
-- Required: No
-- Type: object
-
 ### Parameter: `agentPools.sourceResourceId`
 
 The source resource ID to create the agent pool from.
@@ -3075,6 +3100,13 @@ The spot max price of the agent pool.
 
 - Required: No
 - Type: int
+
+### Parameter: `agentPools.sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `agentPools.tags`
 

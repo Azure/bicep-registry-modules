@@ -39,7 +39,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableEncryptionAtHost`](#parameter-enableencryptionathost) | bool | This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled. |
 | [`enableFIPS`](#parameter-enablefips) | bool | See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview) for more details. |
 | [`enableNodePublicIP`](#parameter-enablenodepublicip) | bool | Some scenarios may require nodes in a node pool to receive their own dedicated public IP addresses. A common scenario is for gaming workloads, where a console needs to make a direct connection to a cloud virtual machine to minimize hops. For more information see assigning a public IP per node (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools). |
+| [`enableSecureBoot`](#parameter-enablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-enableultrassd) | bool | Whether to enable UltraSSD. |
+| [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gatewayProfile`](#parameter-gatewayprofile) | object | Profile specific to a managed agent pool in Gateway mode. Ignored if agent pool mode is not Gateway. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`gpuProfile`](#parameter-gpuprofile) | object | GPU settings. |
@@ -69,9 +71,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`scaleDownMode`](#parameter-scaledownmode) | string | Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing). |
 | [`scaleSetEvictionPolicy`](#parameter-scalesetevictionpolicy) | string | The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs. |
 | [`scaleSetPriority`](#parameter-scalesetpriority) | string | The Virtual Machine Scale Set priority. |
-| [`securityProfile`](#parameter-securityprofile) | object | Security profile for the agent pool. |
 | [`sourceResourceId`](#parameter-sourceresourceid) | string | This is the ARM ID of the source object to be used to create the target object. |
 | [`spotMaxPrice`](#parameter-spotmaxprice) | int | Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing). |
+| [`sshAccess`](#parameter-sshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`type`](#parameter-type) | string | The type of Agent Pool. |
 | [`upgradeSettings`](#parameter-upgradesettings) | object | Upgrade settings. |
@@ -159,9 +161,25 @@ Some scenarios may require nodes in a node pool to receive their own dedicated p
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableUltraSSD`
 
 Whether to enable UltraSSD.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -453,13 +471,6 @@ The Virtual Machine Scale Set priority.
   ]
   ```
 
-### Parameter: `securityProfile`
-
-Security profile for the agent pool.
-
-- Required: No
-- Type: object
-
 ### Parameter: `sourceResourceId`
 
 This is the ARM ID of the source object to be used to create the target object.
@@ -473,6 +484,13 @@ Possible values are any decimal value greater than zero or -1 which indicates th
 
 - Required: No
 - Type: int
+
+### Parameter: `sshAccess`
+
+SSH access method of an agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
