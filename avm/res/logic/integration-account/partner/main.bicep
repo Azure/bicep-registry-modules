@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param integrationAccountName string
 
 @description('Optional. B2B partner content settings.')
-param b2bPartnerContent resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.b2bPartnerContent?
+param b2bPartnerContent resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
 @description('Optional. The partner metadata.')
 param metadata resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?

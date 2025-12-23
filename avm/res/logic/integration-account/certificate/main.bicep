@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param integrationAccountName string
 
 @description('Optional. The key details in the key vault.')
-param key keyVaultKeyReferenceType?
+param key resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.properties.key?
 
 @description('Optional. The certificate metadata.')
 param metadata resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.properties.metadata?
@@ -36,28 +36,6 @@ resource certificate 'Microsoft.Logic/integrationAccounts/certificates@2019-05-0
     publicCertificate: publicCertificate
   }
   tags: tags
-}
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for key vault key reference.')
-type keyVaultKeyReferenceType = {
-  @description('Required. The private key name in key vault.')
-  keyName: string
-  @description('Required. The key vault reference.')
-  keyVault: keyVaultReferenceType
-  @description('Optional. The private key version in key vault.')
-  keyVersion: string?
-}
-
-@export()
-@description('The type for key vault reference.')
-type keyVaultReferenceType = {
-  @description('Required. The resource id of the key vault.')
-  id: string
 }
 
 // ============ //

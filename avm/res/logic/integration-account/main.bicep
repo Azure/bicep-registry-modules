@@ -357,23 +357,21 @@ output resourceGroupName string = resourceGroup().name
 // Definitions      //
 // ================ //
 
-import { b2bPartnerContentType } from 'partner/main.bicep'
 @description('The type for an integration account partner.')
 type integrationAccountPartnerType = {
   @description('Required. The Name of the partner resource.')
   name: string
 
   @description('Optional. The B2B partner content settings.')
-  b2bPartnerContent: b2bPartnerContentType?
+  b2bPartnerContent: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
   @description('Optional. The partner metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
 }
 
-import { keyVaultKeyReferenceType } from 'certificate/main.bicep'
 @description('The type for an integration account certificate.')
 type integrationAccountCertificateType = {
   @description('Required. The Name of the certificate resource.')
@@ -383,16 +381,16 @@ type integrationAccountCertificateType = {
   location: string?
 
   @description('Optional. The key details in the key vault.')
-  key: keyVaultKeyReferenceType?
+  key: resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.properties.key?
 
   @description('Optional. The certificate metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.properties.metadata?
 
   @description('Optional. The public certificate.')
   publicCertificate: string?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/certificates@2019-05-01'>.tags?
 }
 
 @description('The type for an integration account schema.')
@@ -413,7 +411,7 @@ type integrationAccountSchemaType = {
   documentName: string?
 
   @description('Optional. The schema metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
 
   @description('Optional. The schema type.')
   schemaType: string?
@@ -422,7 +420,7 @@ type integrationAccountSchemaType = {
   targetNamespace: string?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.tags?
 }
 
 @description('The type for an integration account map.')
@@ -446,10 +444,10 @@ type integrationAccountMapType = {
   parametersSchema: object?
 
   @description('Optional. The map metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?
 }
 
 @description('The type for an integration account assembly.')
@@ -470,13 +468,12 @@ type integrationAccountAssemblyType = {
   contentType: string?
 
   @description('Optional. The assembly metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/assemblies@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/assemblies@2019-05-01'>.tags?
 }
 
-import { businessIdentityType } from 'agreement/main.bicep'
 @description('The type for an integration account agreement.')
 type integrationAccountAgreementType = {
   @description('Required. The name of the agreement resource.')
@@ -489,13 +486,13 @@ type integrationAccountAgreementType = {
   agreementType: ('AS2' | 'Edifact' | 'NotSpecified' | 'X12')
 
   @description('Required. The guest identity for the agreement.')
-  guestIdentity: businessIdentityType
+  guestIdentity: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.guestIdentity
 
   @description('Required. The guest partner name for the agreement.')
   guestPartner: string
 
   @description('Required. The host identity for the agreement.')
-  hostIdentity: businessIdentityType
+  hostIdentity: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.hostIdentity
 
   @description('Required. The host partner name for the agreement.')
   hostPartner: string
@@ -504,8 +501,8 @@ type integrationAccountAgreementType = {
   content: object
 
   @description('Optional. The agreement metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.tags?
 }

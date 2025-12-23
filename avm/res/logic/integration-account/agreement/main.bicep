@@ -18,13 +18,13 @@ param integrationAccountName string
 param agreementType ('AS2' | 'Edifact' | 'NotSpecified' | 'X12')
 
 @description('Required. The business identity of the guest partner.')
-param guestIdentity businessIdentityType
+param guestIdentity resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.guestIdentity
 
 @description('Required. The integration account partner that is set as guest partner for this agreement.')
 param guestPartner string
 
 @description('Required. The business identity of the host partner.')
-param hostIdentity businessIdentityType
+param hostIdentity resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.hostIdentity
 
 @description('Required. The integration account partner that is set as host partner for this agreement.')
 param hostPartner string
@@ -56,19 +56,6 @@ resource agreement 'Microsoft.Logic/integrationAccounts/agreements@2019-05-01' =
     metadata: metadata
   }
   tags: tags
-}
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a business identity.')
-type businessIdentityType = {
-  @description('Required. The business identity qualifier e.g. as2identity, ZZ, ZZZ, 31, 32.')
-  qualifier: string
-  @description('Required. The user defined business identity value.')
-  value: string
 }
 
 // ============ //
