@@ -366,7 +366,7 @@ type integrationAccountPartnerType = {
   b2b: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
   @description('Optional. The partner metadata.')
-  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
+  metadata: object?
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
@@ -444,7 +444,7 @@ type integrationAccountMapType = {
   parametersSchema: object?
 
   @description('Optional. The map metadata.')
-  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
+  metadata: object?
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?

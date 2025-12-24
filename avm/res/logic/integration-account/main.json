@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2848281654170769188"
+      "templateHash": "14881261628716588083"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -32,13 +32,11 @@
           "nullable": true
         },
         "metadata": {
+          "type": "object",
+          "nullable": true,
           "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
-            },
             "description": "Optional. The partner metadata."
-          },
-          "nullable": true
+          }
         },
         "tags": {
           "type": "object",
@@ -235,13 +233,11 @@
           }
         },
         "metadata": {
+          "type": "object",
+          "nullable": true,
           "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/properties/properties/metadata"
-            },
             "description": "Optional. The map metadata."
-          },
-          "nullable": true
+          }
         },
         "tags": {
           "type": "object",
@@ -968,7 +964,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "12339703965161257652"
+              "templateHash": "2527692413968229730"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1004,13 +1000,11 @@
               "nullable": true
             },
             "metadata": {
+              "type": "object",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
-                },
                 "description": "Optional. The partner metadata."
-              },
-              "nullable": true
+              }
             },
             "tags": {
               "type": "object",
@@ -1310,7 +1304,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "10325375122376806289"
+              "templateHash": "7088342979363981821"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1363,13 +1357,11 @@
               }
             },
             "metadata": {
+              "type": "object",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/properties/properties/metadata"
-                },
                 "description": "Optional. The map metadata."
-              },
-              "nullable": true
+              }
             },
             "parametersSchema": {
               "type": "object",

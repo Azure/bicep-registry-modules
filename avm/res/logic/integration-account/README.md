@@ -1300,6 +1300,36 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         name: 'PurchaseOrderTransform'
       }
     ]
+    partners: [
+      {
+        b2b: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: 'CONTOSO-SUPPLIER-001'
+            }
+          ]
+        }
+        metadata: {
+          description: 'Primary supplier partner'
+        }
+        name: 'ContosoSupplier'
+      }
+      {
+        b2b: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: 'FABRIKAM-BUYER-001'
+            }
+          ]
+        }
+        metadata: {
+          description: 'Primary buyer partner'
+        }
+        name: 'FabrikamBuyer'
+      }
+    ]
     schemas: [
       {
         content: '<content>'
@@ -1368,6 +1398,38 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       ]
     },
+    "partners": {
+      "value": [
+        {
+          "b2b": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "CONTOSO-SUPPLIER-001"
+              }
+            ]
+          },
+          "metadata": {
+            "description": "Primary supplier partner"
+          },
+          "name": "ContosoSupplier"
+        },
+        {
+          "b2b": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "FABRIKAM-BUYER-001"
+              }
+            ]
+          },
+          "metadata": {
+            "description": "Primary buyer partner"
+          },
+          "name": "FabrikamBuyer"
+        }
+      ]
+    },
     "schemas": {
       "value": [
         {
@@ -1430,6 +1492,36 @@ param maps = [
       version: '1.0'
     }
     name: 'PurchaseOrderTransform'
+  }
+]
+param partners = [
+  {
+    b2b: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: 'CONTOSO-SUPPLIER-001'
+        }
+      ]
+    }
+    metadata: {
+      description: 'Primary supplier partner'
+    }
+    name: 'ContosoSupplier'
+  }
+  {
+    b2b: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: 'FABRIKAM-BUYER-001'
+        }
+      ]
+    }
+    metadata: {
+      description: 'Primary buyer partner'
+    }
+    name: 'FabrikamBuyer'
   }
 ]
 param schemas = [
@@ -1958,7 +2050,7 @@ All maps to create.
 | [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
 | [`location`](#parameter-mapslocation) | string | Resource location. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
-| [`metadata`](#parameter-mapsmetadata) |  | The map metadata. |
+| [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-mapstags) | object | Resource tags. |
 
@@ -2012,7 +2104,7 @@ The map type. Default is "Xslt".
 The map metadata.
 
 - Required: No
-- Type: 
+- Type: object
 
 ### Parameter: `maps.parametersSchema`
 
@@ -2046,7 +2138,7 @@ All partners to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`b2b`](#parameter-partnersb2b) | object | The B2B partner content settings. |
-| [`metadata`](#parameter-partnersmetadata) |  | The partner metadata. |
+| [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
 ### Parameter: `partners.name`
@@ -2068,7 +2160,7 @@ The B2B partner content settings.
 The partner metadata.
 
 - Required: No
-- Type: 
+- Type: object
 
 ### Parameter: `partners.tags`
 

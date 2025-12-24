@@ -23,42 +23,6 @@ param serviceShort string = 'liawaf'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
-// Variables    //
-// ============ //
-
-var schemaContent = '''<?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.contoso.com/purchaseorder"
-           xmlns="http://schemas.contoso.com/purchaseorder"
-           elementFormDefault="qualified">
-  <xs:element name="PurchaseOrder">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="OrderID" type="xs:string"/>
-        <xs:element name="OrderDate" type="xs:date"/>
-        <xs:element name="CustomerID" type="xs:string"/>
-        <xs:element name="TotalAmount" type="xs:decimal"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-</xs:schema>'''
-
-var mapContent = '''<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:po="http://schemas.contoso.com/purchaseorder">
-  <xsl:output method="xml" indent="yes"/>
-  <xsl:template match="/po:PurchaseOrder">
-    <Order>
-      <ID><xsl:value-of select="po:OrderID"/></ID>
-      <Date><xsl:value-of select="po:OrderDate"/></Date>
-      <Customer><xsl:value-of select="po:CustomerID"/></Customer>
-      <Total><xsl:value-of select="po:TotalAmount"/></Total>
-    </Order>
-  </xsl:template>
-</xsl:stylesheet>'''
-
-// ============ //
 // Dependencies //
 // ============ //
 
@@ -93,10 +57,40 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      partners: [
+        {
+          name: 'ContosoSupplier'
+          b2b: {
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: 'CONTOSO-SUPPLIER-001'
+              }
+            ]
+          }
+          metadata: {
+            description: 'Primary supplier partner'
+          }
+        }
+        {
+          name: 'FabrikamBuyer'
+          b2b: {
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: 'FABRIKAM-BUYER-001'
+              }
+            ]
+          }
+          metadata: {
+            description: 'Primary buyer partner'
+          }
+        }
+      ]
       schemas: [
         {
           name: 'PurchaseOrderSchema'
-          content: schemaContent
+          content: loadTextContent('schema-content.xml')
           schemaType: 'Xml'
           metadata: {
             description: 'Purchase order validation schema'
@@ -104,11 +98,10 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-
       maps: [
         {
           name: 'PurchaseOrderTransform'
-          content: mapContent
+          content: loadTextContent('map-content.xslt')
           mapType: 'Xslt'
           metadata: {
             description: 'Transform purchase order to internal format'
@@ -116,7 +109,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // Reliability: Comprehensive diagnostic logging
       diagnosticSettings: [
         {
           name: 'customSetting'
