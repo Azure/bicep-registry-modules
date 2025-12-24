@@ -128,8 +128,8 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -151,10 +151,10 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
-    // Non-required parameters
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -174,8 +174,8 @@ using 'br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -198,8 +198,8 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -221,10 +221,10 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
-    // Non-required parameters
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -244,8 +244,8 @@ using 'br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -268,13 +268,13 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    location: '<location>'
     solutionName: '<solutionName>'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
     virtualMachineAdminUsername: 'adminuser'
@@ -298,9 +298,6 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": true
@@ -316,6 +313,9 @@ module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot
     },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -342,13 +342,13 @@ using 'br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param location = '<location>'
 param solutionName = '<solutionName>'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
@@ -389,7 +389,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-07-18. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -592,23 +592,11 @@ Version of the GPT model to deploy. Defaults to 2024-07-18.
 
 ### Parameter: `location`
 
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified.
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
 
-- Required: Yes
+- Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `solutionName`
 

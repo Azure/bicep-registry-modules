@@ -819,7 +819,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
       bypass: 'AzureServices'
     }
     partitionCount: 1
-    replicaCount: enableScalability ? 3 : 2
+    replicaCount: 3
     sku: enableScalability ? 'standard' : 'basic'
     tags: tags
     roleAssignments: [
@@ -959,7 +959,9 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
             customNetworkInterfaceName: 'nic-${cosmosDbResourceName}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDb]!.outputs.resourceId }
+                {
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDb]!.outputs.resourceId
+                }
               ]
             }
             service: 'Sql'
