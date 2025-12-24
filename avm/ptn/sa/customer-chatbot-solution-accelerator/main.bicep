@@ -960,6 +960,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
+                  name: 'cosmosdb-dns-zone-config'
                   privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDb]!.outputs.resourceId
                 }
               ]
