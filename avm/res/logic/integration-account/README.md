@@ -1300,36 +1300,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         name: 'PurchaseOrderTransform'
       }
     ]
-    partners: [
-      {
-        b2b: {
-          businessIdentities: [
-            {
-              qualifier: 'ZZ'
-              value: 'CONTOSO-SUPPLIER-001'
-            }
-          ]
-        }
-        metadata: {
-          description: 'Primary supplier partner'
-        }
-        name: 'ContosoSupplier'
-      }
-      {
-        b2b: {
-          businessIdentities: [
-            {
-              qualifier: 'ZZ'
-              value: 'FABRIKAM-BUYER-001'
-            }
-          ]
-        }
-        metadata: {
-          description: 'Primary buyer partner'
-        }
-        name: 'FabrikamBuyer'
-      }
-    ]
     schemas: [
       {
         content: '<content>'
@@ -1398,38 +1368,6 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
         }
       ]
     },
-    "partners": {
-      "value": [
-        {
-          "b2b": {
-            "businessIdentities": [
-              {
-                "qualifier": "ZZ",
-                "value": "CONTOSO-SUPPLIER-001"
-              }
-            ]
-          },
-          "metadata": {
-            "description": "Primary supplier partner"
-          },
-          "name": "ContosoSupplier"
-        },
-        {
-          "b2b": {
-            "businessIdentities": [
-              {
-                "qualifier": "ZZ",
-                "value": "FABRIKAM-BUYER-001"
-              }
-            ]
-          },
-          "metadata": {
-            "description": "Primary buyer partner"
-          },
-          "name": "FabrikamBuyer"
-        }
-      ]
-    },
     "schemas": {
       "value": [
         {
@@ -1492,36 +1430,6 @@ param maps = [
       version: '1.0'
     }
     name: 'PurchaseOrderTransform'
-  }
-]
-param partners = [
-  {
-    b2b: {
-      businessIdentities: [
-        {
-          qualifier: 'ZZ'
-          value: 'CONTOSO-SUPPLIER-001'
-        }
-      ]
-    }
-    metadata: {
-      description: 'Primary supplier partner'
-    }
-    name: 'ContosoSupplier'
-  }
-  {
-    b2b: {
-      businessIdentities: [
-        {
-          qualifier: 'ZZ'
-          value: 'FABRIKAM-BUYER-001'
-        }
-      ]
-    }
-    metadata: {
-      description: 'Primary buyer partner'
-    }
-    name: 'FabrikamBuyer'
   }
 ]
 param schemas = [

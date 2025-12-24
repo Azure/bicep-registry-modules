@@ -93,37 +93,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      // Operational Excellence: Define trading partners for B2B integration
-      partners: [
-        {
-          name: 'ContosoSupplier'
-          b2b: {
-            businessIdentities: [
-              {
-                qualifier: 'ZZ'
-                value: 'CONTOSO-SUPPLIER-001'
-              }
-            ]
-          }
-          metadata: {
-            description: 'Primary supplier partner'
-          }
-        }
-        {
-          name: 'FabrikamBuyer'
-          b2b: {
-            businessIdentities: [
-              {
-                qualifier: 'ZZ'
-                value: 'FABRIKAM-BUYER-001'
-              }
-            ]
-          }
-          metadata: {
-            description: 'Primary buyer partner'
-          }
-        }
-      ]
       schemas: [
         {
           name: 'PurchaseOrderSchema'
