@@ -9,14 +9,12 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-logic-integration-account-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'liawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -33,6 +31,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -43,9 +54,106 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      schemas: [
+        {
+          name: 'schema1'
+          content: loadTextContent('schema-content.xml')
+          schemaType: 'Xml'
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
+      partners: [
+        {
+          name: 'partner1'
+          b2b: {
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: '1234567890'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '0987654321'
+              }
+            ]
+          }
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+        {
+          b2b: {
+            businessIdentities: [
+              {
+                qualifier: 'ZZ'
+                value: '0987654321'
+              }
+              {
+                qualifier: 'ZZZ'
+                value: '1122334455'
+              }
+            ]
+          }
+          name: 'partner2'
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
+      maps: [
+        {
+          name: 'map1'
+          content: loadTextContent('map-content.xslt')
+          metadata: {
+            key1: 'value1'
+            key2: 'value2'
+          }
+          tags: {
+            tag1: 'value1'
+            tag2: 'value2'
+          }
+        }
+      ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: []
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+              enabled: true
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]

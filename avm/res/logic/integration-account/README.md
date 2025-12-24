@@ -1273,7 +1273,105 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
     // Required parameters
     name: 'liawaf001'
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+        metricCategories: []
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
+    maps: [
+      {
+        content: '<content>'
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'map1'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
+    partners: [
+      {
+        b2b: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: '1234567890'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '0987654321'
+            }
+          ]
+        }
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'partner1'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+      {
+        b2b: {
+          businessIdentities: [
+            {
+              qualifier: 'ZZ'
+              value: '0987654321'
+            }
+            {
+              qualifier: 'ZZZ'
+              value: '1122334455'
+            }
+          ]
+        }
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'partner2'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
+    schemas: [
+      {
+        content: '<content>'
+        metadata: {
+          key1: 'value1'
+          key2: 'value2'
+        }
+        name: 'schema1'
+        schemaType: 'Xml'
+        tags: {
+          tag1: 'value1'
+          tag2: 'value2'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -1295,8 +1393,116 @@ module integrationAccount 'br/public:avm/res/logic/integration-account:<version>
       "value": "liawaf001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs",
+              "enabled": true
+            }
+          ],
+          "metricCategories": [],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "maps": {
+      "value": [
+        {
+          "content": "<content>",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "map1",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
+    "partners": {
+      "value": [
+        {
+          "b2b": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "1234567890"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "0987654321"
+              }
+            ]
+          },
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "partner1",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        },
+        {
+          "b2b": {
+            "businessIdentities": [
+              {
+                "qualifier": "ZZ",
+                "value": "0987654321"
+              },
+              {
+                "qualifier": "ZZZ",
+                "value": "1122334455"
+              }
+            ]
+          },
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "partner2",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
+    "schemas": {
+      "value": [
+        {
+          "content": "<content>",
+          "metadata": {
+            "key1": "value1",
+            "key2": "value2"
+          },
+          "name": "schema1",
+          "schemaType": "Xml",
+          "tags": {
+            "tag1": "value1",
+            "tag2": "value2"
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -1315,7 +1521,105 @@ using 'br/public:avm/res/logic/integration-account:<version>'
 // Required parameters
 param name = 'liawaf001'
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metricCategories: []
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
+param maps = [
+  {
+    content: '<content>'
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'map1'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
+param partners = [
+  {
+    b2b: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: '1234567890'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '0987654321'
+        }
+      ]
+    }
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'partner1'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+  {
+    b2b: {
+      businessIdentities: [
+        {
+          qualifier: 'ZZ'
+          value: '0987654321'
+        }
+        {
+          qualifier: 'ZZZ'
+          value: '1122334455'
+        }
+      ]
+    }
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'partner2'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
+param schemas = [
+  {
+    content: '<content>'
+    metadata: {
+      key1: 'value1'
+      key2: 'value2'
+    }
+    name: 'schema1'
+    schemaType: 'Xml'
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
