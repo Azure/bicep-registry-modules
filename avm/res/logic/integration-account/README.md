@@ -2138,7 +2138,7 @@ All partners to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`b2b`](#parameter-partnersb2b) | object | The B2B partner content settings. |
-| [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
+| [`metadata`](#parameter-partnersmetadata) |  | The partner metadata. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
 ### Parameter: `partners.name`
@@ -2160,7 +2160,7 @@ The B2B partner content settings.
 The partner metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `partners.tags`
 

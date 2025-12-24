@@ -366,7 +366,7 @@ type integrationAccountPartnerType = {
   b2b: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
   @description('Optional. The partner metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
