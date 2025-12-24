@@ -20,7 +20,7 @@ param contentType string = 'application/xml'
 param documentName string?
 
 @description('Optional. The schema metadata.')
-param metadata resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
+param metadata object?
 
 @description('Optional. The schema type.')
 param schemaType ('NotSpecified' | 'Xml') = 'Xml'

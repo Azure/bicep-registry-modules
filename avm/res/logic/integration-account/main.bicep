@@ -411,7 +411,7 @@ type integrationAccountSchemaType = {
   documentName: string?
 
   @description('Optional. The schema metadata.')
-  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
+  metadata: object?
 
   @description('Optional. The schema type.')
   schemaType: string?

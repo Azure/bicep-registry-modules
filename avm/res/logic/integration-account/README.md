@@ -2214,7 +2214,7 @@ All schemas to create.
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`location`](#parameter-schemaslocation) | string | Resource location. |
-| [`metadata`](#parameter-schemasmetadata) |  | The schema metadata. |
+| [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
@@ -2259,7 +2259,7 @@ Resource location.
 The schema metadata.
 
 - Required: No
-- Type: 
+- Type: object
 
 ### Parameter: `schemas.schemaType`
 

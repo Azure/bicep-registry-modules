@@ -104,7 +104,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // Operational Excellence: Standardized data transformation
+
       maps: [
         {
           name: 'PurchaseOrderTransform'
