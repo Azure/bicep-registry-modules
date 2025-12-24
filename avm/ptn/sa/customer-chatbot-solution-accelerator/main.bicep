@@ -17,18 +17,8 @@ param solutionName string = 'ccsa'
 param solutionUniqueText string = take(uniqueString(subscription().id, resourceGroup().name, solutionName), 5)
 
 @metadata({ azd: { type: 'location' } })
-@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified.')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+param location string = resourceGroup().location
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
@@ -829,7 +819,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
       bypass: 'AzureServices'
     }
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: enableScalability ? 3 : 2
     sku: enableScalability ? 'standard' : 'basic'
     tags: tags
     roleAssignments: [
@@ -1021,7 +1011,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
     // WAF aligned configuration for Scalability
     skuName: enableScalability || enableRedundancy ? 'P1v3' : 'B2'
-    skuCapacity: enableScalability ? 3 : 1
+    skuCapacity: enableScalability ? 3 : 2
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }
