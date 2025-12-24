@@ -916,7 +916,7 @@ var containers = [
     paths: ['/email']
   }
 ]
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -930,7 +930,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
         containers: containers
       }
     ]
-    dataPlaneRoleDefinitions: [
+    sqlRoleDefinitions: [
       {
         // Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
         roleName: 'Cosmos DB SQL Data Contributor'
@@ -972,7 +972,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
     capabilitiesToAdd: enableRedundancy ? null : ['EnableServerless']
-    automaticFailover: enableRedundancy ? true : false
+    enableAutomaticFailover: enableRedundancy ? true : false
     failoverLocations: enableRedundancy
       ? [
           {
