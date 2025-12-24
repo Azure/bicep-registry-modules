@@ -33,7 +33,7 @@ param location string
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
 @metadata({
-  azd:{
+  azd: {
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-4o-mini,150'
@@ -95,11 +95,11 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string?
+param virtualMachineAdminUsername string = ''
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string?
+param virtualMachineAdminPassword string = ''
 
 // These parameters are changed for testing - please reset as part of publication
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
@@ -174,8 +174,10 @@ var allTags = union(
   tags
 )
 @description('Tag, Created by user name')
-param createdBy string = contains(deployer(), 'userPrincipalName')? split(deployer().userPrincipalName, '@')[0]: deployer().objectId
-var deployerPrincipalType = contains(deployer(), 'userPrincipalName')? 'User' : 'ServicePrincipal'
+param createdBy string = contains(deployer(), 'userPrincipalName')
+  ? split(deployer().userPrincipalName, '@')[0]
+  : deployer().objectId
+var deployerPrincipalType = contains(deployer(), 'userPrincipalName') ? 'User' : 'ServicePrincipal'
 
 //Get the current deployer's information
 var deployerInfo = deployer()
@@ -345,7 +347,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (enablePr
     enableTelemetry: enableTelemetry
     tags: tags
     virtualNetworkResourceId: virtualNetwork!.?outputs.?resourceId
-    availabilityZones:[]
+    availabilityZones: []
     publicIPAddressObject: {
       name: 'pip-bas${solutionSuffix}'
       diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
@@ -849,10 +851,9 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    privateEndpoints:[]
+    privateEndpoints: []
   }
 }
-
 
 // ========== Search Service - AI Project Connection ========== //
 var aiSearchConnectionName = 'aifp-srch-connection-${solutionSuffix}'
@@ -888,7 +889,10 @@ var aiFoundryAiProjectPrincipalId = aiFoundryAiServicesProject!.outputs.principa
 resource searchServiceToOpenAIRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(searchServiceName, '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', aiFoundryAiServicesResourceName)
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd') // Cognitive Services OpenAI User
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
+    ) // Cognitive Services OpenAI User
     principalId: searchService.outputs.systemAssignedMIPrincipalId!
     principalType: 'ServicePrincipal'
   }
@@ -901,20 +905,20 @@ var containers = [
   {
     name: 'carts'
     paths: ['/user_id']
-  } 
+  }
   {
     name: 'chat_sessions'
     paths: ['/user_id']
   }
-    {
+  {
     name: 'products'
     paths: ['/productId']
   }
-    {
+  {
     name: 'transactions'
     paths: ['/user_id']
   }
-    {
+  {
     name: 'users'
     paths: ['/email']
   }
@@ -1021,7 +1025,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
 }
 
 // ========== Backend API Docker container ========== //
-var reactAppLayoutConfig ='''{
+var reactAppLayoutConfig = '''{
   "appConfig": {
       "CHAT_CHATHISTORY": {
         "CHAT": 70,
@@ -1066,7 +1070,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
           AZURE_COSMOSDB_ENABLE_FEEDBACK: '' //'True'
           REACT_APP_LAYOUT_CONFIG: reactAppLayoutConfig
-        
+
           API_UID: userAssignedIdentity.outputs.clientId
           AZURE_CLIENT_ID: userAssignedIdentity.outputs.clientId
           AZURE_AI_SEARCH_ENDPOINT: 'https://${searchServiceName}.search.windows.net'
@@ -1194,7 +1198,9 @@ output API_PID string = userAssignedIdentity.outputs.principalId
 
 output API_APP_URL string = 'https://api-${solutionSuffix}.azurewebsites.net'
 output WEB_APP_URL string = 'https://app-${solutionSuffix}.azurewebsites.net'
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring
+  ? applicationInsights!.outputs.connectionString
+  : ''
 output AGENT_ID_CHAT string = ''
 
 output MANAGED_IDENTITY_CLIENT_ID string = userAssignedIdentity.outputs.clientId

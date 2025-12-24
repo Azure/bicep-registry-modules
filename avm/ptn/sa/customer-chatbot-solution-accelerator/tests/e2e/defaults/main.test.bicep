@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -12,14 +12,10 @@ metadata description = 'This instance deploys the [Customer Chat bot Solution Ac
 param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sccsawaf'
+param serviceShort string = 'sccsamin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password used for VM authentication.')
-@secure()
-param virtualMachineAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -48,13 +44,6 @@ module testDeployment '../../../main.bicep' = [
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
-      enableScalability: true
-      enableTelemetry: true
-      enableMonitoring: true
-      enablePrivateNetworking: true
-      enableRedundancy: true
-      virtualMachineAdminUsername: 'adminuser'
-      virtualMachineAdminPassword: virtualMachineAdminPassword
     }
   }
 ]
