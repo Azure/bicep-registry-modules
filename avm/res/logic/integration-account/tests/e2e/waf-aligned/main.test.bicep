@@ -23,13 +23,6 @@ param serviceShort string = 'liawaf'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
-// Variables    //
-// ============ //
-
-var schemaContent = loadTextContent('schema-content.xml')
-var mapContent = loadTextContent('map-content.xslt')
-
-// ============ //
 // Dependencies //
 // ============ //
 
@@ -98,7 +91,7 @@ module testDeployment '../../../main.bicep' = [
       schemas: [
         {
           name: 'PurchaseOrderSchema'
-          content: schemaContent
+          content: loadTextContent('schema-content.xml')
           schemaType: 'Xml'
           metadata: {
             description: 'Purchase order validation schema'
@@ -110,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
       maps: [
         {
           name: 'PurchaseOrderTransform'
-          content: mapContent
+          content: loadTextContent('map-content.xslt')
           mapType: 'Xslt'
           metadata: {
             description: 'Transform purchase order to internal format'
