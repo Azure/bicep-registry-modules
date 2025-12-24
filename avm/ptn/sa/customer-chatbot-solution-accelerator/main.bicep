@@ -17,7 +17,7 @@ param solutionName string = 'ccsa'
 param solutionUniqueText string = take(uniqueString(subscription().id, resourceGroup().name, solutionName), 5)
 
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified.')
 @allowed([
   'australiaeast'
   'centralus'
@@ -44,7 +44,7 @@ param location string
 param azureAiServiceLocation string
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy:')
+@description('Optional. Name of the GPT model to deploy.')
 param gptModelName string = 'gpt-4o-mini'
 
 @description('Optional. Version of the GPT model to deploy. Defaults to 2024-07-18.')
@@ -68,14 +68,14 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelCapacity int = 10
 
 @minLength(1)
-@description('Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
   'text-embedding-ada-002'
 ])
 param embeddingModel string = 'text-embedding-ada-002'
 
 @minValue(10)
-@description('Capacity of the Embedding Model deployment')
+@description('Optional. Capacity of the Embedding Model deployment.')
 param embeddingDeploymentCapacity int = 10
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
@@ -122,6 +122,11 @@ param frontendContainerImageTag string = 'latest'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Tag, Created by user name.')
+param createdBy string = contains(deployer(), 'userPrincipalName')
+  ? split(deployer().userPrincipalName, '@')[0]
+  : deployer().objectId
 
 // ============== //
 // Variables      //
@@ -173,10 +178,6 @@ var allTags = union(
   },
   tags
 )
-@description('Tag, Created by user name')
-param createdBy string = contains(deployer(), 'userPrincipalName')
-  ? split(deployer().userPrincipalName, '@')[0]
-  : deployer().objectId
 var deployerPrincipalType = contains(deployer(), 'userPrincipalName') ? 'User' : 'ServicePrincipal'
 
 //Get the current deployer's information
@@ -706,6 +707,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
     tags: tags
     sku: 'S0'
     kind: 'AIServices'
+    enableTelemetry: enableTelemetry
     disableLocalAuth: true
     allowProjectManagement: true
     customSubDomainName: aiFoundryAiServicesResourceName
@@ -811,6 +813,7 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
   name: take('avm.res.search.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
@@ -1159,51 +1162,124 @@ module webSite 'modules/web-sites.bicep' = {
   }
 }
 
-output SOLUTION_NAME string = solutionSuffix
-output RESOURCE_GROUP_NAME string = resourceGroup().name
-output RESOURCE_GROUP_LOCATION string = location
-output APPINSIGHTS_INSTRUMENTATIONKEY string = enableMonitoring ? applicationInsights!.outputs.instrumentationKey : ''
-output AZURE_AI_PROJECT_CONN_STRING string = aiFoundryAiProjectEndpoint
-output AZURE_AI_AGENT_API_VERSION string = azureAiAgentApiVersion
-output AZURE_AI_PROJECT_NAME string = aiFoundryAiProjectResourceName
-output AZURE_COSMOSDB_ACCOUNT string = cosmosDb.outputs.name
-output COSMOS_DB_ENDPOINT string = 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
-output COSMOS_DB_DATABASE_NAME string = cosmosDbDatabaseName
-output AZURE_COSMOSDB_CONVERSATIONS_CONTAINER string = 'chat_sessions'
-output AZURE_COSMOSDB_DATABASE string = cosmosDbDatabaseName
-output AZURE_OPENAI_DEPLOYMENT_MODEL string = gptModelName
-output AZURE_OPENAI_EMBEDDING_MODEL string = embeddingModel
-output AZURE_OPENAI_EMBEDDING_MODEL_CAPACITY int = embeddingDeploymentCapacity
-output AZURE_OPENAI_ENDPOINT string = 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
-output AZURE_OPENAI_MODEL_DEPLOYMENT_TYPE string = gptModelDeploymentType
+@description('The name of the resource group the module was deployed into.')
+output resourceGroupName string = resourceGroup().name
 
-output AZURE_AI_SEARCH_ENDPOINT string = 'https://${searchServiceName}.search.windows.net'
+@description('The location the module was deployed into.')
+output location string = location
 
-output AZURE_OPENAI_API_VERSION string = azureOpenAIApiVersion
-output AZURE_OPENAI_RESOURCE string = aiFoundryAiServicesResourceName
-output REACT_APP_LAYOUT_CONFIG string = reactAppLayoutConfig
+@description('The solution name suffix used for resource naming.')
+output solutionName string = solutionSuffix
 
-output API_UID string = userAssignedIdentity.outputs.clientId
-output USE_AI_PROJECT_CLIENT string = 'False'
-output USE_CHAT_HISTORY_ENABLED string = 'True'
-output DISPLAY_CHART_DEFAULT string = 'False'
-output AZURE_AI_AGENT_ENDPOINT string = aiFoundryAiProjectEndpoint
-output AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME string = gptModelName
-output ACR_NAME string = split(backendContainerRegistryHostname, '.')[0]
-output AZURE_ENV_IMAGETAG string = backendContainerImageTag
+@description('The Application Insights instrumentation key.')
+output appInsightsInstrumentationKey string = enableMonitoring ? applicationInsights!.outputs.instrumentationKey : ''
 
-output AI_SERVICE_NAME string = aiFoundryAiServicesResourceName
-output API_APP_NAME string = backendWebSiteResourceName
-output API_PID string = userAssignedIdentity.outputs.principalId
+@description('The Azure AI Project connection string.')
+output azureAiProjectConnString string = aiFoundryAiProjectEndpoint
 
-output API_APP_URL string = 'https://api-${solutionSuffix}.azurewebsites.net'
-output WEB_APP_URL string = 'https://app-${solutionSuffix}.azurewebsites.net'
-output APPLICATIONINSIGHTS_CONNECTION_STRING string = enableMonitoring
+@description('The Azure AI Agent API version.')
+output azureAiAgentApiVersion string = azureAiAgentApiVersion
+
+@description('The Azure AI Project name.')
+output azureAiProjectName string = aiFoundryAiProjectResourceName
+
+@description('The Azure Cosmos DB account name.')
+output azureCosmosDbAccount string = cosmosDb.outputs.name
+
+@description('The Cosmos DB endpoint URL.')
+output cosmosDbEndpoint string = 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
+
+@description('The Cosmos DB database name.')
+output cosmosDbDatabaseName string = cosmosDbDatabaseName
+
+@description('The Azure Cosmos DB conversations container name.')
+output azureCosmosDbConversationsContainer string = 'chat_sessions'
+
+@description('The Azure Cosmos DB database name.')
+output azureCosmosDbDatabase string = cosmosDbDatabaseName
+
+@description('The Azure OpenAI deployment model name.')
+output azureOpenAiDeploymentModel string = gptModelName
+
+@description('The Azure OpenAI embedding model name.')
+output azureOpenAiEmbeddingModel string = embeddingModel
+
+@description('The Azure OpenAI embedding model capacity.')
+output azureOpenAiEmbeddingModelCapacity int = embeddingDeploymentCapacity
+
+@description('The Azure OpenAI endpoint URL.')
+output azureOpenAiEndpoint string = 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
+
+@description('The Azure OpenAI model deployment type.')
+output azureOpenAiModelDeploymentType string = gptModelDeploymentType
+
+@description('The Azure AI Search endpoint URL.')
+output azureAiSearchEndpoint string = 'https://${searchServiceName}.search.windows.net'
+
+@description('The Azure OpenAI API version.')
+output azureOpenAiApiVersion string = azureOpenAIApiVersion
+
+@description('The Azure OpenAI resource name.')
+output azureOpenAiResource string = aiFoundryAiServicesResourceName
+
+@description('The React app layout configuration.')
+output reactAppLayoutConfig string = reactAppLayoutConfig
+
+@description('The API user-assigned managed identity client ID.')
+output apiUid string = userAssignedIdentity.outputs.clientId
+
+@description('Whether to use AI Project client.')
+output useAiProjectClient string = 'False'
+
+@description('Whether chat history is enabled.')
+output useChatHistoryEnabled string = 'True'
+
+@description('Whether to display chart by default.')
+output displayChartDefault string = 'False'
+
+@description('The Azure AI Agent endpoint URL.')
+output azureAiAgentEndpoint string = aiFoundryAiProjectEndpoint
+
+@description('The Azure AI Agent model deployment name.')
+output azureAiAgentModelDeploymentName string = gptModelName
+
+@description('The Azure Container Registry name.')
+output acrName string = split(backendContainerRegistryHostname, '.')[0]
+
+@description('The Azure environment image tag.')
+output azureEnvImageTag string = backendContainerImageTag
+
+@description('The AI service name.')
+output aiServiceName string = aiFoundryAiServicesResourceName
+
+@description('The API app service name.')
+output apiAppName string = backendWebSiteResourceName
+
+@description('The API user-assigned managed identity principal ID.')
+output apiPid string = userAssignedIdentity.outputs.principalId
+
+@description('The backend API app URL.')
+output apiAppUrl string = 'https://api-${solutionSuffix}.azurewebsites.net'
+
+@description('The frontend web app URL.')
+output webAppUrl string = 'https://app-${solutionSuffix}.azurewebsites.net'
+
+@description('The Application Insights connection string.')
+output applicationInsightsConnectionString string = enableMonitoring
   ? applicationInsights!.outputs.connectionString
   : ''
-output AGENT_ID_CHAT string = ''
 
-output MANAGED_IDENTITY_CLIENT_ID string = userAssignedIdentity.outputs.clientId
-output AI_FOUNDRY_RESOURCE_ID string = aiFoundryAiServices!.outputs.resourceId
-output AI_SEARCH_SERVICE_RESOURCE_ID string = searchService.outputs.resourceId
-output APP_ENV string = 'Prod'
+@description('The agent ID for chat.')
+output agentIdChat string = ''
+
+@description('The managed identity client ID.')
+output managedIdentityClientId string = userAssignedIdentity.outputs.clientId
+
+@description('The AI Foundry resource ID.')
+output aiFoundryResourceId string = aiFoundryAiServices!.outputs.resourceId
+
+@description('The AI Search Service resource ID.')
+output aiSearchServiceResourceId string = searchService.outputs.resourceId
+
+@description('The application environment.')
+output appEnv string = 'Prod'

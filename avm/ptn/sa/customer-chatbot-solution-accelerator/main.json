@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5940204340902488358"
+      "templateHash": "8979226839247642061"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -45,7 +45,7 @@
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
+        "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified."
       }
     },
     "azureAiServiceLocation": {
@@ -75,7 +75,7 @@
       "defaultValue": "gpt-4o-mini",
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy:"
+        "description": "Optional. Name of the GPT model to deploy."
       }
     },
     "gptModelVersion": {
@@ -126,7 +126,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Name of the Text Embedding model to deploy:"
+        "description": "Optional. Name of the Text Embedding model to deploy."
       }
     },
     "embeddingDeploymentCapacity": {
@@ -134,7 +134,7 @@
       "defaultValue": 10,
       "minValue": 10,
       "metadata": {
-        "description": "Capacity of the Embedding Model deployment"
+        "description": "Optional. Capacity of the Embedding Model deployment."
       }
     },
     "tags": {
@@ -242,7 +242,7 @@
       "type": "string",
       "defaultValue": "[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]",
       "metadata": {
-        "description": "Tag, Created by user name"
+        "description": "Optional. Tag, Created by user name."
       }
     }
   },
@@ -22265,6 +22265,9 @@
           "kind": {
             "value": "AIServices"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "disableLocalAuth": {
             "value": true
           },
@@ -24906,6 +24909,9 @@
         "parameters": {
           "name": {
             "value": "[variables('searchServiceName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "authOptions": {
             "value": {
@@ -36011,164 +36017,284 @@
     }
   },
   "outputs": {
-    "SOLUTION_NAME": {
+    "resourceGroupName": {
       "type": "string",
-      "value": "[variables('solutionSuffix')]"
-    },
-    "RESOURCE_GROUP_NAME": {
-      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the module was deployed into."
+      },
       "value": "[resourceGroup().name]"
     },
-    "RESOURCE_GROUP_LOCATION": {
+    "location": {
       "type": "string",
+      "metadata": {
+        "description": "The location the module was deployed into."
+      },
       "value": "[parameters('location')]"
     },
-    "APPINSIGHTS_INSTRUMENTATIONKEY": {
+    "solutionName": {
       "type": "string",
+      "metadata": {
+        "description": "The solution name suffix used for resource naming."
+      },
+      "value": "[variables('solutionSuffix')]"
+    },
+    "appInsightsInstrumentationKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The Application Insights instrumentation key."
+      },
       "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.instrumentationKey.value, '')]"
     },
-    "AZURE_AI_PROJECT_CONN_STRING": {
+    "azureAiProjectConnString": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Project connection string."
+      },
       "value": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]"
     },
-    "AZURE_AI_AGENT_API_VERSION": {
+    "azureAiAgentApiVersion": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Agent API version."
+      },
       "value": "[parameters('azureAiAgentApiVersion')]"
     },
-    "AZURE_AI_PROJECT_NAME": {
+    "azureAiProjectName": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Project name."
+      },
       "value": "[variables('aiFoundryAiProjectResourceName')]"
     },
-    "AZURE_COSMOSDB_ACCOUNT": {
+    "azureCosmosDbAccount": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure Cosmos DB account name."
+      },
       "value": "[reference('cosmosDb').outputs.name.value]"
     },
-    "COSMOS_DB_ENDPOINT": {
+    "cosmosDbEndpoint": {
       "type": "string",
+      "metadata": {
+        "description": "The Cosmos DB endpoint URL."
+      },
       "value": "[format('https://{0}.documents.azure.com:443/', reference('cosmosDb').outputs.name.value)]"
     },
-    "COSMOS_DB_DATABASE_NAME": {
+    "cosmosDbDatabaseName": {
       "type": "string",
+      "metadata": {
+        "description": "The Cosmos DB database name."
+      },
       "value": "[variables('cosmosDbDatabaseName')]"
     },
-    "AZURE_COSMOSDB_CONVERSATIONS_CONTAINER": {
+    "azureCosmosDbConversationsContainer": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure Cosmos DB conversations container name."
+      },
       "value": "chat_sessions"
     },
-    "AZURE_COSMOSDB_DATABASE": {
+    "azureCosmosDbDatabase": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure Cosmos DB database name."
+      },
       "value": "[variables('cosmosDbDatabaseName')]"
     },
-    "AZURE_OPENAI_DEPLOYMENT_MODEL": {
+    "azureOpenAiDeploymentModel": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI deployment model name."
+      },
       "value": "[parameters('gptModelName')]"
     },
-    "AZURE_OPENAI_EMBEDDING_MODEL": {
+    "azureOpenAiEmbeddingModel": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI embedding model name."
+      },
       "value": "[parameters('embeddingModel')]"
     },
-    "AZURE_OPENAI_EMBEDDING_MODEL_CAPACITY": {
+    "azureOpenAiEmbeddingModelCapacity": {
       "type": "int",
+      "metadata": {
+        "description": "The Azure OpenAI embedding model capacity."
+      },
       "value": "[parameters('embeddingDeploymentCapacity')]"
     },
-    "AZURE_OPENAI_ENDPOINT": {
+    "azureOpenAiEndpoint": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI endpoint URL."
+      },
       "value": "[format('https://{0}.openai.azure.com/', variables('aiFoundryAiServicesResourceName'))]"
     },
-    "AZURE_OPENAI_MODEL_DEPLOYMENT_TYPE": {
+    "azureOpenAiModelDeploymentType": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI model deployment type."
+      },
       "value": "[parameters('gptModelDeploymentType')]"
     },
-    "AZURE_AI_SEARCH_ENDPOINT": {
+    "azureAiSearchEndpoint": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Search endpoint URL."
+      },
       "value": "[format('https://{0}.search.windows.net', variables('searchServiceName'))]"
     },
-    "AZURE_OPENAI_API_VERSION": {
+    "azureOpenAiApiVersion": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI API version."
+      },
       "value": "[parameters('azureOpenAIApiVersion')]"
     },
-    "AZURE_OPENAI_RESOURCE": {
+    "azureOpenAiResource": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure OpenAI resource name."
+      },
       "value": "[variables('aiFoundryAiServicesResourceName')]"
     },
-    "REACT_APP_LAYOUT_CONFIG": {
+    "reactAppLayoutConfig": {
       "type": "string",
+      "metadata": {
+        "description": "The React app layout configuration."
+      },
       "value": "[variables('reactAppLayoutConfig')]"
     },
-    "API_UID": {
+    "apiUid": {
       "type": "string",
+      "metadata": {
+        "description": "The API user-assigned managed identity client ID."
+      },
       "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
     },
-    "USE_AI_PROJECT_CLIENT": {
+    "useAiProjectClient": {
       "type": "string",
+      "metadata": {
+        "description": "Whether to use AI Project client."
+      },
       "value": "False"
     },
-    "USE_CHAT_HISTORY_ENABLED": {
+    "useChatHistoryEnabled": {
       "type": "string",
+      "metadata": {
+        "description": "Whether chat history is enabled."
+      },
       "value": "True"
     },
-    "DISPLAY_CHART_DEFAULT": {
+    "displayChartDefault": {
       "type": "string",
+      "metadata": {
+        "description": "Whether to display chart by default."
+      },
       "value": "False"
     },
-    "AZURE_AI_AGENT_ENDPOINT": {
+    "azureAiAgentEndpoint": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Agent endpoint URL."
+      },
       "value": "[reference('aiFoundryAiServicesProject').outputs.apiEndpoint.value]"
     },
-    "AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME": {
+    "azureAiAgentModelDeploymentName": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure AI Agent model deployment name."
+      },
       "value": "[parameters('gptModelName')]"
     },
-    "ACR_NAME": {
+    "acrName": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure Container Registry name."
+      },
       "value": "[split(parameters('backendContainerRegistryHostname'), '.')[0]]"
     },
-    "AZURE_ENV_IMAGETAG": {
+    "azureEnvImageTag": {
       "type": "string",
+      "metadata": {
+        "description": "The Azure environment image tag."
+      },
       "value": "[parameters('backendContainerImageTag')]"
     },
-    "AI_SERVICE_NAME": {
+    "aiServiceName": {
       "type": "string",
+      "metadata": {
+        "description": "The AI service name."
+      },
       "value": "[variables('aiFoundryAiServicesResourceName')]"
     },
-    "API_APP_NAME": {
+    "apiAppName": {
       "type": "string",
+      "metadata": {
+        "description": "The API app service name."
+      },
       "value": "[variables('backendWebSiteResourceName')]"
     },
-    "API_PID": {
+    "apiPid": {
       "type": "string",
+      "metadata": {
+        "description": "The API user-assigned managed identity principal ID."
+      },
       "value": "[reference('userAssignedIdentity').outputs.principalId.value]"
     },
-    "API_APP_URL": {
+    "apiAppUrl": {
       "type": "string",
+      "metadata": {
+        "description": "The backend API app URL."
+      },
       "value": "[format('https://api-{0}.azurewebsites.net', variables('solutionSuffix'))]"
     },
-    "WEB_APP_URL": {
+    "webAppUrl": {
       "type": "string",
+      "metadata": {
+        "description": "The frontend web app URL."
+      },
       "value": "[format('https://app-{0}.azurewebsites.net', variables('solutionSuffix'))]"
     },
-    "APPLICATIONINSIGHTS_CONNECTION_STRING": {
+    "applicationInsightsConnectionString": {
       "type": "string",
+      "metadata": {
+        "description": "The Application Insights connection string."
+      },
       "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]"
     },
-    "AGENT_ID_CHAT": {
+    "agentIdChat": {
       "type": "string",
+      "metadata": {
+        "description": "The agent ID for chat."
+      },
       "value": ""
     },
-    "MANAGED_IDENTITY_CLIENT_ID": {
+    "managedIdentityClientId": {
       "type": "string",
+      "metadata": {
+        "description": "The managed identity client ID."
+      },
       "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
     },
-    "AI_FOUNDRY_RESOURCE_ID": {
+    "aiFoundryResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The AI Foundry resource ID."
+      },
       "value": "[reference('aiFoundryAiServices').outputs.resourceId.value]"
     },
-    "AI_SEARCH_SERVICE_RESOURCE_ID": {
+    "aiSearchServiceResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The AI Search Service resource ID."
+      },
       "value": "[reference('searchService').outputs.resourceId.value]"
     },
-    "APP_ENV": {
+    "appEnv": {
       "type": "string",
+      "metadata": {
+        "description": "The application environment."
+      },
       "value": "Prod"
     }
   }

@@ -364,7 +364,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This should be one of the supported Azure AI Service locations. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 
 **Optional parameters**
 
@@ -375,9 +374,9 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
-| [`createdBy`](#parameter-createdby) | string | Tag, Created by user name |
-| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment |
-| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy: |
+| [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
+| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
+| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -388,8 +387,9 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 10 for optimal performance. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-07-18. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified. |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -413,26 +413,6 @@ Location for all AI service resources. This should be one of the supported Azure
     'swedencentral'
     'uksouth'
     'westus'
-  ]
-  ```
-
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
   ]
   ```
 
@@ -478,7 +458,7 @@ The Container Registry hostname where the docker images for the backend are loca
 
 ### Parameter: `createdBy`
 
-Tag, Created by user name
+Tag, Created by user name.
 
 - Required: No
 - Type: string
@@ -486,7 +466,7 @@ Tag, Created by user name
 
 ### Parameter: `embeddingDeploymentCapacity`
 
-Capacity of the Embedding Model deployment
+Capacity of the Embedding Model deployment.
 
 - Required: No
 - Type: int
@@ -495,7 +475,7 @@ Capacity of the Embedding Model deployment
 
 ### Parameter: `embeddingModel`
 
-Name of the Text Embedding model to deploy:
+Name of the Text Embedding model to deploy.
 
 - Required: No
 - Type: string
@@ -596,7 +576,7 @@ GPT model deployment type. Defaults to GlobalStandard.
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy:
+Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
@@ -609,6 +589,26 @@ Version of the GPT model to deploy. Defaults to 2024-07-18.
 - Required: No
 - Type: string
 - Default: `'2024-07-18'`
+
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). Defaults to the resource group location if not specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'australiaeast'
+    'centralus'
+    'eastasia'
+    'eastus2'
+    'japaneast'
+    'northeurope'
+    'southeastasia'
+    'uksouth'
+  ]
+  ```
 
 ### Parameter: `solutionName`
 
@@ -640,6 +640,7 @@ The password for the administrator account of the virtual machine. Allows to cus
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ### Parameter: `virtualMachineAdminUsername`
 
@@ -647,51 +648,52 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 - Required: No
 - Type: securestring
+- Default: `''`
 
 ## Outputs
 
-| Output | Type |
-| :-- | :-- |
-| `ACR_NAME` | string |
-| `AGENT_ID_CHAT` | string |
-| `AI_FOUNDRY_RESOURCE_ID` | string |
-| `AI_SEARCH_SERVICE_RESOURCE_ID` | string |
-| `AI_SERVICE_NAME` | string |
-| `API_APP_NAME` | string |
-| `API_APP_URL` | string |
-| `API_PID` | string |
-| `API_UID` | string |
-| `APP_ENV` | string |
-| `APPINSIGHTS_INSTRUMENTATIONKEY` | string |
-| `APPLICATIONINSIGHTS_CONNECTION_STRING` | string |
-| `AZURE_AI_AGENT_API_VERSION` | string |
-| `AZURE_AI_AGENT_ENDPOINT` | string |
-| `AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME` | string |
-| `AZURE_AI_PROJECT_CONN_STRING` | string |
-| `AZURE_AI_PROJECT_NAME` | string |
-| `AZURE_AI_SEARCH_ENDPOINT` | string |
-| `AZURE_COSMOSDB_ACCOUNT` | string |
-| `AZURE_COSMOSDB_CONVERSATIONS_CONTAINER` | string |
-| `AZURE_COSMOSDB_DATABASE` | string |
-| `AZURE_ENV_IMAGETAG` | string |
-| `AZURE_OPENAI_API_VERSION` | string |
-| `AZURE_OPENAI_DEPLOYMENT_MODEL` | string |
-| `AZURE_OPENAI_EMBEDDING_MODEL` | string |
-| `AZURE_OPENAI_EMBEDDING_MODEL_CAPACITY` | int |
-| `AZURE_OPENAI_ENDPOINT` | string |
-| `AZURE_OPENAI_MODEL_DEPLOYMENT_TYPE` | string |
-| `AZURE_OPENAI_RESOURCE` | string |
-| `COSMOS_DB_DATABASE_NAME` | string |
-| `COSMOS_DB_ENDPOINT` | string |
-| `DISPLAY_CHART_DEFAULT` | string |
-| `MANAGED_IDENTITY_CLIENT_ID` | string |
-| `REACT_APP_LAYOUT_CONFIG` | string |
-| `RESOURCE_GROUP_LOCATION` | string |
-| `RESOURCE_GROUP_NAME` | string |
-| `SOLUTION_NAME` | string |
-| `USE_AI_PROJECT_CLIENT` | string |
-| `USE_CHAT_HISTORY_ENABLED` | string |
-| `WEB_APP_URL` | string |
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `acrName` | string | The Azure Container Registry name. |
+| `agentIdChat` | string | The agent ID for chat. |
+| `aiFoundryResourceId` | string | The AI Foundry resource ID. |
+| `aiSearchServiceResourceId` | string | The AI Search Service resource ID. |
+| `aiServiceName` | string | The AI service name. |
+| `apiAppName` | string | The API app service name. |
+| `apiAppUrl` | string | The backend API app URL. |
+| `apiPid` | string | The API user-assigned managed identity principal ID. |
+| `apiUid` | string | The API user-assigned managed identity client ID. |
+| `appEnv` | string | The application environment. |
+| `appInsightsInstrumentationKey` | string | The Application Insights instrumentation key. |
+| `applicationInsightsConnectionString` | string | The Application Insights connection string. |
+| `azureAiAgentApiVersion` | string | The Azure AI Agent API version. |
+| `azureAiAgentEndpoint` | string | The Azure AI Agent endpoint URL. |
+| `azureAiAgentModelDeploymentName` | string | The Azure AI Agent model deployment name. |
+| `azureAiProjectConnString` | string | The Azure AI Project connection string. |
+| `azureAiProjectName` | string | The Azure AI Project name. |
+| `azureAiSearchEndpoint` | string | The Azure AI Search endpoint URL. |
+| `azureCosmosDbAccount` | string | The Azure Cosmos DB account name. |
+| `azureCosmosDbConversationsContainer` | string | The Azure Cosmos DB conversations container name. |
+| `azureCosmosDbDatabase` | string | The Azure Cosmos DB database name. |
+| `azureEnvImageTag` | string | The Azure environment image tag. |
+| `azureOpenAiApiVersion` | string | The Azure OpenAI API version. |
+| `azureOpenAiDeploymentModel` | string | The Azure OpenAI deployment model name. |
+| `azureOpenAiEmbeddingModel` | string | The Azure OpenAI embedding model name. |
+| `azureOpenAiEmbeddingModelCapacity` | int | The Azure OpenAI embedding model capacity. |
+| `azureOpenAiEndpoint` | string | The Azure OpenAI endpoint URL. |
+| `azureOpenAiModelDeploymentType` | string | The Azure OpenAI model deployment type. |
+| `azureOpenAiResource` | string | The Azure OpenAI resource name. |
+| `cosmosDbDatabaseName` | string | The Cosmos DB database name. |
+| `cosmosDbEndpoint` | string | The Cosmos DB endpoint URL. |
+| `displayChartDefault` | string | Whether to display chart by default. |
+| `location` | string | The location the module was deployed into. |
+| `managedIdentityClientId` | string | The managed identity client ID. |
+| `reactAppLayoutConfig` | string | The React app layout configuration. |
+| `resourceGroupName` | string | The name of the resource group the module was deployed into. |
+| `solutionName` | string | The solution name suffix used for resource naming. |
+| `useAiProjectClient` | string | Whether to use AI Project client. |
+| `useChatHistoryEnabled` | string | Whether chat history is enabled. |
+| `webAppUrl` | string | The frontend web app URL. |
 
 ## Cross-referenced modules
 
