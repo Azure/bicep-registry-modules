@@ -9,16 +9,25 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
+// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-logic-integration-account-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'liawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Variables    //
+// ============ //
+
+var schemaContent = loadTextContent('schema-content.xml')
+var mapContent = loadTextContent('map-content.xslt')
 
 // ============ //
 // Dependencies //
@@ -55,302 +64,61 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      schemas: [
-        {
-          name: 'schema1'
-          content: loadTextContent('schema-content.xml')
-          schemaType: 'Xml'
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
-          }
-        }
-      ]
+      // Operational Excellence: Define trading partners for B2B integration
       partners: [
         {
-          name: 'partner1'
+          name: 'ContosoSupplier'
           b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
-                value: '1234567890'
-              }
-              {
-                qualifier: 'ZZZ'
-                value: '0987654321'
+                value: 'CONTOSO-SUPPLIER-001'
               }
             ]
           }
           metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
+            description: 'Primary supplier partner'
           }
         }
         {
+          name: 'FabrikamBuyer'
           b2b: {
             businessIdentities: [
               {
                 qualifier: 'ZZ'
-                value: '0987654321'
-              }
-              {
-                qualifier: 'ZZZ'
-                value: '1122334455'
+                value: 'FABRIKAM-BUYER-001'
               }
             ]
           }
-          name: 'partner2'
           metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
+            description: 'Primary buyer partner'
           }
         }
       ]
+      schemas: [
+        {
+          name: 'PurchaseOrderSchema'
+          content: schemaContent
+          schemaType: 'Xml'
+          metadata: {
+            description: 'Purchase order validation schema'
+            version: '1.0'
+          }
+        }
+      ]
+      // Operational Excellence: Standardized data transformation
       maps: [
         {
-          name: 'map1'
-          content: loadTextContent('map-content.xslt')
+          name: 'PurchaseOrderTransform'
+          content: mapContent
+          mapType: 'Xslt'
           metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
+            description: 'Transform purchase order to internal format'
+            version: '1.0'
           }
         }
       ]
-      assemblies: [
-        {
-          name: 'assembly1'
-          assemblyName: 'name1'
-          content: loadTextContent('assembly-content.txt')
-        }
-      ]
-      agreements: [
-        {
-          name: 'agreement1'
-          agreementType: 'X12'
-          guestPartner: 'partner1'
-          hostPartner: 'partner2'
-          guestIdentity: {
-            qualifier: 'ZZ'
-            value: '1234567890'
-          }
-          hostIdentity: {
-            qualifier: 'ZZ'
-            value: '0987654321'
-          }
-          content: {
-            x12: {
-              receiveAgreement: {
-                protocolSettings: {
-                  acknowledgementSettings: {
-                    acknowledgementControlNumberLowerBound: 1
-                    acknowledgementControlNumberUpperBound: 999999999
-                    batchFunctionalAcknowledgements: true
-                    batchImplementationAcknowledgements: false
-                    batchTechnicalAcknowledgements: true
-                    needFunctionalAcknowledgement: false
-                    needImplementationAcknowledgement: false
-                    needLoopForValidMessages: false
-                    needTechnicalAcknowledgement: false
-                    rolloverAcknowledgementControlNumber: true
-                    sendSynchronousAcknowledgement: false
-                  }
-                  envelopeSettings: {
-                    controlStandardsId: 85
-                    controlVersionNumber: '00401'
-                    enableDefaultGroupHeaders: true
-                    groupControlNumberLowerBound: 1
-                    groupControlNumberUpperBound: 999999999
-                    groupHeaderAgencyCode: 'T'
-                    groupHeaderDateFormat: 'CCYYMMDD'
-                    groupHeaderTimeFormat: 'HHMM'
-                    groupHeaderVersion: '00401'
-                    interchangeControlNumberLowerBound: 1
-                    interchangeControlNumberUpperBound: 999999999
-                    overwriteExistingTransactionSetControlNumber: true
-                    receiverApplicationId: 'RECEIVER'
-                    rolloverGroupControlNumber: true
-                    rolloverInterchangeControlNumber: true
-                    rolloverTransactionSetControlNumber: true
-                    senderApplicationId: 'SENDER'
-                    transactionSetControlNumberLowerBound: 1
-                    transactionSetControlNumberUpperBound: 999999999
-                    usageIndicator: 'Test'
-                    useControlStandardsIdAsRepetitionCharacter: false
-                  }
-                  framingSettings: {
-                    characterSet: 'UTF8'
-                    componentSeparator: 58
-                    dataElementSeparator: 42
-                    replaceCharacter: 36
-                    replaceSeparatorsInPayload: false
-                    segmentTerminator: 126
-                    segmentTerminatorSuffix: 'None'
-                  }
-                  messageFilter: {
-                    messageFilterType: 'Include'
-                  }
-                  processingSettings: {
-                    convertImpliedDecimal: true
-                    createEmptyXmlTagsForTrailingSeparators: true
-                    maskSecurityInfo: true
-                    preserveInterchange: true
-                    suspendInterchangeOnError: true
-                    useDotAsDecimalSeparator: true
-                  }
-                  schemaReferences: [
-                    {
-                      messageId: '850'
-                      schemaName: 'schema1'
-                      schemaVersion: '00401'
-                    }
-                  ]
-                  securitySettings: {
-                    authorizationQualifier: '00'
-                    securityQualifier: '00'
-                  }
-                  validationSettings: {
-                    allowLeadingAndTrailingSpacesAndZeroes: false
-                    checkDuplicateGroupControlNumber: false
-                    checkDuplicateInterchangeControlNumber: false
-                    checkDuplicateTransactionSetControlNumber: false
-                    interchangeControlNumberValidityDays: 30
-                    trailingSeparatorPolicy: 'NotAllowed'
-                    trimLeadingAndTrailingSpacesAndZeroes: true
-                    validateCharacterSet: true
-                    validateEDITypes: true
-                    validateXSDTypes: false
-                  }
-                }
-                receiverBusinessIdentity: {
-                  qualifier: 'ZZ'
-                  value: '1234567890'
-                }
-                senderBusinessIdentity: {
-                  qualifier: 'ZZ'
-
-                  value: '0987654321'
-                }
-              }
-              sendAgreement: {
-                protocolSettings: {
-                  acknowledgementSettings: {
-                    acknowledgementControlNumberLowerBound: 1
-                    acknowledgementControlNumberUpperBound: 999999999
-                    batchFunctionalAcknowledgements: true
-                    batchImplementationAcknowledgements: false
-                    batchTechnicalAcknowledgements: true
-                    needFunctionalAcknowledgement: false
-                    needImplementationAcknowledgement: false
-                    needLoopForValidMessages: false
-                    needTechnicalAcknowledgement: false
-                    rolloverAcknowledgementControlNumber: true
-                    sendSynchronousAcknowledgement: false
-                  }
-                  envelopeSettings: {
-                    controlStandardsId: 85
-                    controlVersionNumber: '00401'
-                    enableDefaultGroupHeaders: true
-                    groupControlNumberLowerBound: 1
-                    groupControlNumberUpperBound: 999999999
-                    groupHeaderAgencyCode: 'T'
-                    groupHeaderDateFormat: 'CCYYMMDD'
-                    groupHeaderTimeFormat: 'HHMM'
-                    groupHeaderVersion: '00401'
-                    interchangeControlNumberLowerBound: 1
-                    interchangeControlNumberUpperBound: 999999999
-                    overwriteExistingTransactionSetControlNumber: true
-                    receiverApplicationId: 'RECEIVER'
-                    rolloverGroupControlNumber: true
-                    rolloverInterchangeControlNumber: true
-                    rolloverTransactionSetControlNumber: true
-                    senderApplicationId: 'SENDER'
-                    transactionSetControlNumberLowerBound: 1
-                    transactionSetControlNumberUpperBound: 999999999
-                    usageIndicator: 'Test'
-                    useControlStandardsIdAsRepetitionCharacter: false
-                  }
-                  framingSettings: {
-                    characterSet: 'UTF8'
-                    componentSeparator: 58
-                    dataElementSeparator: 42
-                    replaceCharacter: 36
-                    replaceSeparatorsInPayload: false
-                    segmentTerminator: 126
-                    segmentTerminatorSuffix: 'None'
-                  }
-                  messageFilter: {
-                    messageFilterType: 'Include'
-                  }
-                  processingSettings: {
-                    convertImpliedDecimal: true
-                    createEmptyXmlTagsForTrailingSeparators: true
-                    maskSecurityInfo: true
-                    preserveInterchange: true
-                    suspendInterchangeOnError: true
-                    useDotAsDecimalSeparator: true
-                  }
-                  schemaReferences: [
-                    {
-                      messageId: '850'
-                      schemaName: 'schema1'
-                      schemaVersion: '00401'
-                    }
-                  ]
-                  securitySettings: {
-                    authorizationQualifier: '00'
-                    securityQualifier: '00'
-                  }
-                  validationSettings: {
-                    allowLeadingAndTrailingSpacesAndZeroes: false
-                    checkDuplicateGroupControlNumber: false
-                    checkDuplicateInterchangeControlNumber: false
-                    checkDuplicateTransactionSetControlNumber: false
-                    interchangeControlNumberValidityDays: 30
-                    trailingSeparatorPolicy: 'NotAllowed'
-                    trimLeadingAndTrailingSpacesAndZeroes: true
-                    validateCharacterSet: true
-                    validateEDITypes: true
-                    validateXSDTypes: false
-                  }
-                }
-                receiverBusinessIdentity: {
-                  qualifier: 'ZZ'
-                  value: '1234567890'
-                }
-                senderBusinessIdentity: {
-                  qualifier: 'ZZ'
-                  value: '0987654321'
-                }
-              }
-            }
-          }
-          metadata: {
-            key1: 'value1'
-            key2: 'value2'
-          }
-          tags: {
-            tag1: 'value1'
-            tag2: 'value2'
-          }
-        }
-      ]
+      // Reliability: Comprehensive diagnostic logging
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -367,10 +135,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

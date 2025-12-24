@@ -21,6 +21,14 @@ param serviceShort string = 'iamax'
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
+// Variables    //
+// ============ //
+
+var schemaContent = loadTextContent('schema-content.xml')
+var mapContent = loadTextContent('map-content.xslt')
+var assemblyContent = loadTextContent('assembly-content.txt')
+
+// ============ //
 // Dependencies //
 // ============ //
 
@@ -68,7 +76,7 @@ module testDeployment '../../../main.bicep' = [
       schemas: [
         {
           name: 'schema1'
-          content: loadTextContent('schema-content.xml')
+          content: schemaContent
           schemaType: 'Xml'
           metadata: {
             key1: 'value1'
@@ -131,7 +139,7 @@ module testDeployment '../../../main.bicep' = [
       maps: [
         {
           name: 'map1'
-          content: loadTextContent('map-content.xslt')
+          content: mapContent
           metadata: {
             key1: 'value1'
             key2: 'value2'
@@ -146,7 +154,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'assembly1'
           assemblyName: 'name1'
-          content: loadTextContent('assembly-content.txt')
+          content: assemblyContent
         }
       ]
       agreements: [
