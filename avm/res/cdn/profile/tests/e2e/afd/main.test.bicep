@@ -139,5 +139,14 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
+module waitForDeployment '../../../../../../../utilities/e2e-template-assets/templates/waitForDeployment.bicep' = {
+  scope: resourceGroup
+  params: {
+    waitForResourceId: testDeployment[0].outputs.resourceId
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
+    deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+  }
+}
+
 output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
 output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames
