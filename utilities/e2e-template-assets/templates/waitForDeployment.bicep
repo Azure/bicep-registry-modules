@@ -46,7 +46,7 @@ resource waitForDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-
   }
   properties: {
     azPowerShellVersion: '11.0'
-    retentionInterval: 'P1H'
+    retentionInterval: 'PT1H'
     arguments: '-ResourceId "${waitForResourceId}" -MaxRetries "${maxRetries}" -WaitIntervalInSeconds "${waitIntervalInSeconds}"'
     scriptContent: loadTextContent('../scripts/Wait-ForResourceDeployment.ps1')
   }
