@@ -23,7 +23,7 @@ resource msi 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
 
 // Required role assignment to allow the deployment script to read resource status
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: '${managedIdentityName}-roleAssignment'
+  name: guid(resourceGroup().id, msi.id, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   properties: {
     principalId: msi.properties.principalId
     roleDefinitionId: subscriptionResourceId(
