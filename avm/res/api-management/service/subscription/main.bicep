@@ -20,6 +20,7 @@ param ownerId string?
 
 @minLength(1)
 @maxLength(256)
+@secure()
 @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
 param primaryKey string?
 
@@ -28,6 +29,7 @@ param scope string = '/apis'
 
 @minLength(1)
 @maxLength(256)
+@secure()
 @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
 param secondaryKey string?
 

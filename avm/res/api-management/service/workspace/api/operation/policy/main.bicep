@@ -13,8 +13,8 @@ param apiName string
 @description('Conditional. The name of the parent operation. Required if the template is used in a standalone deployment.')
 param operationName string
 
-@description('Required. The name of the policy.')
-param name string
+@description('Optional. The name of the policy.')
+param name string = 'policy'
 
 @description('Optional. Format of the policyContent.')
 @allowed(['rawxml', 'rawxml-link', 'xml', 'xml-link'])

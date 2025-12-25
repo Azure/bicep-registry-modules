@@ -36,9 +36,9 @@ This module deploys a Subscription in an API Management Workspace.
 | :-- | :-- | :-- |
 | [`allowTracing`](#parameter-allowtracing) | bool | Determines whether tracing can be enabled. |
 | [`ownerId`](#parameter-ownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
-| [`primaryKey`](#parameter-primarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
+| [`primaryKey`](#parameter-primarykey) | securestring | Primary subscription key. If not specified during request key will be generated automatically. |
 | [`scope`](#parameter-scope) | string | Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
-| [`secondaryKey`](#parameter-secondarykey) | string | Secondary subscription key. If not specified during request key will be generated automatically. |
+| [`secondaryKey`](#parameter-secondarykey) | securestring | Secondary subscription key. If not specified during request key will be generated automatically. |
 | [`state`](#parameter-state) | string | Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:<p>* active - the subscription is active<p>* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product<p>* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected<p>* rejected - the subscription request has been denied by an administrator<p>* cancelled - the subscription has been cancelled by the developer or administrator<p>* expired - the subscription reached its expiration date and was deactivated. |
 
 ### Parameter: `displayName`
@@ -89,7 +89,7 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 Primary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `scope`
 
@@ -104,7 +104,7 @@ Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".
 Secondary subscription key. If not specified during request key will be generated automatically.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `state`
 

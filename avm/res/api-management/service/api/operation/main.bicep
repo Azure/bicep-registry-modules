@@ -66,7 +66,7 @@ module operation_policies 'policy/main.bicep' = [
       apiManagementServiceName: apiManagementServiceName
       apiName: apiName
       operationName: operation.name
-      name: policy.name
+      name: policy.?name
       format: policy.?format
       value: policy.value
     }
@@ -89,8 +89,8 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @sys.description('The type of a policy.')
 type policyType = {
-  @sys.description('Required. The name of the policy.')
-  name: string
+  @sys.description('Optional. The name of the policy.')
+  name: string?
 
   @sys.description('Optional. Format of the policyContent.')
   format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?

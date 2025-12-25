@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "8613788061962246484"
+      "templateHash": "10226887119813429553"
     },
     "name": "API Management Workspace Subscriptions",
     "description": "This module deploys a Subscription in an API Management Workspace."
@@ -53,7 +53,7 @@
       }
     },
     "primaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "minLength": 1,
       "maxLength": 256,
@@ -69,7 +69,7 @@
       }
     },
     "secondaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "minLength": 1,
       "maxLength": 256,

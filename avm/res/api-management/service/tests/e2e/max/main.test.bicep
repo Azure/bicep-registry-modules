@@ -392,7 +392,7 @@ module testDeployment '../../../main.bicep' = [
                   description: 'Get resource operation'
                   policies: [
                     {
-                      name: 'operationPolicy'
+                      name: 'policy'
                       format: 'xml'
                       value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
                     }
@@ -474,7 +474,7 @@ module testDeployment '../../../main.bicep' = [
               pool: {
                 services: [
                   {
-                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/backends/${workspace1Backend1Name}'
+                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/workspaces-backends/${workspace1Backend1Name}'
                   }
                 ]
               }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7616339632368053891"
+      "templateHash": "8627306097038622921"
     },
     "name": "API Management Workspace API Operations",
     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -17,8 +17,9 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the policy."
+            "description": "Optional. The name of the policy."
           }
         },
         "format": {
@@ -201,7 +202,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
           },
           "format": {
             "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
@@ -217,7 +218,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "16783497966740511218"
+              "templateHash": "16589306317113419029"
             },
             "name": "API Management Workspace API Operation Policies",
             "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -249,8 +250,9 @@
             },
             "name": {
               "type": "string",
+              "defaultValue": "policy",
               "metadata": {
-                "description": "Required. The name of the policy."
+                "description": "Optional. The name of the policy."
               }
             },
             "format": {

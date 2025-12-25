@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12891377600937772995"
+      "templateHash": "14160282380562647316"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
@@ -47,7 +47,7 @@
       }
     },
     "primaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "minLength": 1,
       "maxLength": 256,
@@ -63,7 +63,7 @@
       }
     },
     "secondaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "minLength": 1,
       "maxLength": 256,
