@@ -15,6 +15,9 @@ param capacity int = 1
 ])
 param virtualNetworkType string = 'None'
 
+@description('Conditional. The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType.')
+param subnetResourceId string?
+
 @description('Required. The resource ID of the API Management workspace to connect to.')
 param workspaceResourceId string
 
@@ -26,7 +29,13 @@ resource gateway 'Microsoft.ApiManagement/gateways@2024-05-01' = {
     capacity: capacity
   }
   properties: {
-    backend: {}
+    backend: {
+      subnet: !empty(subnetResourceId)
+        ? {
+            id: subnetResourceId
+          }
+        : null
+    }
     virtualNetworkType: virtualNetworkType
   }
 }

@@ -88,6 +88,12 @@ Gateway to deploy for this workspace.
 | :-- | :-- | :-- |
 | [`name`](#parameter-gatewayname) | string | Gateway name. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-gatewaysubnetresourceid) | string | The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -101,6 +107,13 @@ Gateway to deploy for this workspace.
 Gateway name.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `gateway.subnetResourceId`
+
+The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType.
+
+- Required: No
 - Type: string
 
 ### Parameter: `gateway.capacity`

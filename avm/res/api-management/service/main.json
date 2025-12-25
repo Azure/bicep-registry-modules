@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15178954307161483278"
+      "templateHash": "3578858211355851295"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -2874,6 +2874,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Virtual Network Type of the gateway. Defaults to None."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType."
           }
         }
       },
@@ -8877,7 +8884,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "367397515384868979"
+              "templateHash": "6227816310488144681"
             },
             "name": "API Management Service Workspace",
             "description": "This module deploys an API Management Service Workspace."
@@ -9771,6 +9778,13 @@
                   "metadata": {
                     "description": "Optional. Virtual Network Type of the gateway. Defaults to None."
                   }
+                },
+                "subnetResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType."
+                  }
                 }
               },
               "metadata": {
@@ -10528,15 +10542,6 @@
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
-                  {
-                    "name": "metrics",
-                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
-                    "input": {
-                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
-                      "timeGrain": null
-                    }
-                  },
                   {
                     "name": "logs",
                     "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
@@ -14061,7 +14066,10 @@
                     "value": "[tryGet(parameters('gateway'), 'capacity')]"
                   },
                   "virtualNetworkType": {
-                    "value": "None"
+                    "value": "[tryGet(parameters('gateway'), 'virtualNetworkType')]"
+                  },
+                  "subnetResourceId": {
+                    "value": "[tryGet(parameters('gateway'), 'subnetResourceId')]"
                   },
                   "workspaceResourceId": {
                     "value": "[resourceId('Microsoft.ApiManagement/service/workspaces', parameters('apiManagementServiceName'), parameters('name'))]"
@@ -14069,12 +14077,13 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "9413872107199592542"
+                      "templateHash": "1435160831078296813"
                     }
                   },
                   "parameters": {
@@ -14110,6 +14119,13 @@
                         "description": "Optional. The virtual network type for the API Management Workspace Gateway."
                       }
                     },
+                    "subnetResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType."
+                      }
+                    },
                     "workspaceResourceId": {
                       "type": "string",
                       "metadata": {
@@ -14117,8 +14133,8 @@
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "gateway": {
                       "type": "Microsoft.ApiManagement/gateways",
                       "apiVersion": "2024-05-01",
                       "name": "[parameters('name')]",
@@ -14128,11 +14144,13 @@
                         "capacity": "[parameters('capacity')]"
                       },
                       "properties": {
-                        "backend": {},
+                        "backend": {
+                          "subnet": "[if(not(empty(parameters('subnetResourceId'))), createObject('id', parameters('subnetResourceId')), null())]"
+                        },
                         "virtualNetworkType": "[parameters('virtualNetworkType')]"
                       }
                     },
-                    {
+                    "configConnection": {
                       "type": "Microsoft.ApiManagement/gateways/configConnections",
                       "apiVersion": "2024-06-01-preview",
                       "name": "[format('{0}/{1}', parameters('name'), take(format('{0}-{1}', take(parameters('name'), 24), uniqueString(parameters('workspaceResourceId'))), 30))]",
@@ -14140,10 +14158,10 @@
                         "sourceId": "[parameters('workspaceResourceId')]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.ApiManagement/gateways', parameters('name'))]"
+                        "gateway"
                       ]
                     }
-                  ]
+                  }
                 }
               },
               "dependsOn": [

@@ -334,7 +334,8 @@ module workspace_gateway 'modules/gateway.bicep' = {
     name: gateway.name
     location: gateway.?location
     capacity: gateway.?capacity
-    virtualNetworkType: 'None' // gateway.?virtualNetworkType
+    virtualNetworkType: gateway.?virtualNetworkType
+    subnetResourceId: gateway.?subnetResourceId
     workspaceResourceId: workspace.id
   }
 }
@@ -363,13 +364,6 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
       workspaceId: diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
-      metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
-          category: group.category
-          enabled: group.?enabled ?? true
-          timeGrain: null
-        }
-      ]
       logs: [
         for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
           categoryGroup: group.?categoryGroup
@@ -775,4 +769,7 @@ type gatewayConfigType = {
 
   @sys.description('Optional. Virtual Network Type of the gateway. Defaults to None.')
   virtualNetworkType: ('External' | 'Internal' | 'None')?
+
+  @sys.description('Conditional. The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType.')
+  subnetResourceId: string?
 }

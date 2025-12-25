@@ -862,6 +862,17 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           }
         ]
       }
+      {
+        description: 'A test workspace with a gateway using External VNet'
+        displayName: 'Test Workspace 2'
+        gateway: {
+          capacity: 1
+          name: '<name>'
+          subnetResourceId: '<subnetResourceId>'
+          virtualNetworkType: 'External'
+        }
+        name: 'workspace2'
+      }
     ]
   }
 }
@@ -1466,6 +1477,17 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "state": "active"
             }
           ]
+        },
+        {
+          "description": "A test workspace with a gateway using External VNet",
+          "displayName": "Test Workspace 2",
+          "gateway": {
+            "capacity": 1,
+            "name": "<name>",
+            "subnetResourceId": "<subnetResourceId>",
+            "virtualNetworkType": "External"
+          },
+          "name": "workspace2"
         }
       ]
     }
@@ -2017,6 +2039,17 @@ param workspaces = [
         state: 'active'
       }
     ]
+  }
+  {
+    description: 'A test workspace with a gateway using External VNet'
+    displayName: 'Test Workspace 2'
+    gateway: {
+      capacity: 1
+      name: '<name>'
+      subnetResourceId: '<subnetResourceId>'
+      virtualNetworkType: 'External'
+    }
+    name: 'workspace2'
   }
 ]
 ```
@@ -6780,6 +6813,12 @@ Gateway configuration for this workspace.
 | :-- | :-- | :-- |
 | [`name`](#parameter-workspacesgatewayname) | string | Gateway name. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-workspacesgatewaysubnetresourceid) | string | The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -6793,6 +6832,13 @@ Gateway configuration for this workspace.
 Gateway name.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `workspaces.gateway.subnetResourceId`
+
+The resource ID of the subnet to associate with the gateway backend. Required if virtualNetworkType is External or Internal. The subnet must be in the same region and subscription as the APIM instance and must be delegated to the required service: `Microsoft.Web/serverFarms` for External virtualNetworkType, `Microsoft.Web/hostingEnvironments` for Internal virtualNetworkType.
+
+- Required: No
 - Type: string
 
 ### Parameter: `workspaces.gateway.capacity`
