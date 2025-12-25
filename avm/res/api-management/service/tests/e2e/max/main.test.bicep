@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
-@description('Optional. The location to deploy primary resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
 param locationRegion2 string = 'westus'
 
@@ -27,6 +24,10 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
+// Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -35,18 +36,18 @@ param customSecret string = newGuid()
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    locationRegion1: resourceLocation
+    locationRegion1: enforcedLocation
     locationRegion2: locationRegion2
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
-    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, resourceLocation)}'
+    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
     networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
     virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
     routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -59,13 +60,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -81,10 +82,10 @@ var workspace1Backend1Name = 'workspace1-backend1'
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: apimName
-      location: resourceLocation
+      location: enforcedLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
