@@ -157,7 +157,7 @@ param products productType[]?
 @description('Optional. Subscriptions.')
 param subscriptions subscriptionType[]?
 
-@description('Optional. Workspaces.')
+@description('Optional. Workspaces. Only supported with Premium and PremiumV2 SKUs.')
 param workspaces workspaceType[]?
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.')
@@ -569,7 +569,7 @@ module service_diagnostics 'diagnostic/main.bicep' = [
 ]
 
 module service_workspaces 'workspace/main.bicep' = [
-  for (workspace, index) in (workspaces ?? []): {
+  for (workspace, index) in (workspaces ?? []): if (contains(['Premium', 'PremiumV2'], sku)) {
     name: '${uniqueString(deployment().name, location)}-Apim-Wksp-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -585,6 +585,9 @@ module service_workspaces 'workspace/main.bicep' = [
       namedValues: workspace.?namedValues
       policies: workspace.?policies
       subscriptions: workspace.?subscriptions
+      gateway: workspace.gateway
+      diagnosticSettings: workspace.?diagnosticSettings
+      roleAssignments: workspace.?roleAssignments
     }
   }
 ]
@@ -1282,6 +1285,15 @@ type workspaceType = {
 
   @description('Optional. Subscriptions to deploy in this workspace.')
   subscriptions: workspaceTypes.subscriptionType[]?
+
+  @description('Required. Gateway configuration for this workspace.')
+  gateway: workspaceTypes.gatewayConfigType
+
+  @description('Optional. Diagnostic settings for the workspace.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Role assignments for the workspace.')
+  roleAssignments: roleAssignmentType[]?
 }
 
 import { productPolicyType } from 'product/main.bicep'

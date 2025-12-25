@@ -468,17 +468,6 @@ module testDeployment '../../../main.bicep' = [
                 password: 'proxyPassword'
               }
             }
-            {
-              name: 'workspace1-backend2'
-              type: 'Pool'
-              pool: {
-                services: [
-                  {
-                    id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/workspaces-backends/${workspace1Backend1Name}'
-                  }
-                ]
-              }
-            }
           ]
           diagnostics: [
             {
@@ -560,6 +549,47 @@ module testDeployment '../../../main.bicep' = [
               scope: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/apis/workspace-echo-api'
               allowTracing: true
               state: 'active'
+            }
+          ]
+          gateway: {
+            name: '${apimName}-${workspace1Name}-gw'
+            capacity: 1
+            virtualNetworkType: 'None'
+          }
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          roleAssignments: [
+            {
+              name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              name: guid('Custom seed ${namePrefix}${serviceShort}')
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
             }
           ]
         }

@@ -29,6 +29,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
+| `Microsoft.ApiManagement/gateways` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_gateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/gateways)</li></ul> |
+| `Microsoft.ApiManagement/gateways/configConnections` | 2024-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_gateways_configconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-06-01-preview/gateways/configConnections)</li></ul> |
 | `Microsoft.ApiManagement/service` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service)</li></ul> |
 | `Microsoft.ApiManagement/service/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis)</li></ul> |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics)</li></ul> |
@@ -650,7 +652,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
                 policies: [
                   {
                     format: 'xml'
-                    name: 'operationPolicy'
+                    name: 'policy'
                     value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
                   }
                 ]
@@ -735,17 +737,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             type: 'Single'
             url: 'http://workspace-echoapi.cloudapp.net/api'
           }
-          {
-            name: 'workspace1-backend2'
-            pool: {
-              services: [
-                {
-                  id: '<id>'
-                }
-              ]
-            }
-            type: 'Pool'
-          }
         ]
         description: 'A comprehensive test workspace with all child modules'
         diagnostics: [
@@ -761,7 +752,26 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             verbosity: 'verbose'
           }
         ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
         displayName: 'Test Workspace 1'
+        gateway: {
+          capacity: 1
+          name: '<name>'
+          virtualNetworkType: 'None'
+        }
         loggers: [
           {
             credentials: {
@@ -821,6 +831,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             subscriptionRequired: true
             subscriptionsLimit: 5
             terms: 'Terms and conditions for workspace product'
+          }
+        ]
+        roleAssignments: [
+          {
+            name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         subscriptions: [
@@ -1228,7 +1257,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
                   "policies": [
                     {
                       "format": "xml",
-                      "name": "operationPolicy",
+                      "name": "policy",
                       "value": "<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>"
                     }
                   ],
@@ -1312,17 +1341,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               },
               "type": "Single",
               "url": "http://workspace-echoapi.cloudapp.net/api"
-            },
-            {
-              "name": "workspace1-backend2",
-              "pool": {
-                "services": [
-                  {
-                    "id": "<id>"
-                  }
-                ]
-              },
-              "type": "Pool"
             }
           ],
           "description": "A comprehensive test workspace with all child modules",
@@ -1339,7 +1357,26 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "verbosity": "verbose"
             }
           ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
           "displayName": "Test Workspace 1",
+          "gateway": {
+            "capacity": 1,
+            "name": "<name>",
+            "virtualNetworkType": "None"
+          },
           "loggers": [
             {
               "credentials": {
@@ -1399,6 +1436,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "subscriptionRequired": true,
               "subscriptionsLimit": 5,
               "terms": "Terms and conditions for workspace product"
+            }
+          ],
+          "roleAssignments": [
+            {
+              "name": "832142e9-a3da-4881-9838-c2b8c73ad1e7",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "subscriptions": [
@@ -1752,7 +1808,7 @@ param workspaces = [
             policies: [
               {
                 format: 'xml'
-                name: 'operationPolicy'
+                name: 'policy'
                 value: '<policies><inbound><base /></inbound><backend><base /></backend><outbound><base /></outbound></policies>'
               }
             ]
@@ -1837,17 +1893,6 @@ param workspaces = [
         type: 'Single'
         url: 'http://workspace-echoapi.cloudapp.net/api'
       }
-      {
-        name: 'workspace1-backend2'
-        pool: {
-          services: [
-            {
-              id: '<id>'
-            }
-          ]
-        }
-        type: 'Pool'
-      }
     ]
     description: 'A comprehensive test workspace with all child modules'
     diagnostics: [
@@ -1863,7 +1908,26 @@ param workspaces = [
         verbosity: 'verbose'
       }
     ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     displayName: 'Test Workspace 1'
+    gateway: {
+      capacity: 1
+      name: '<name>'
+      virtualNetworkType: 'None'
+    }
     loggers: [
       {
         credentials: {
@@ -1923,6 +1987,25 @@ param workspaces = [
         subscriptionRequired: true
         subscriptionsLimit: 5
         terms: 'Terms and conditions for workspace product'
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '832142e9-a3da-4881-9838-c2b8c73ad1e7'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     subscriptions: [
@@ -3600,7 +3683,7 @@ param virtualNetworkType = 'None'
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`workspaces`](#parameter-workspaces) | array | Workspaces. |
+| [`workspaces`](#parameter-workspaces) | array | Workspaces. Only supported with Premium and PremiumV2 SKUs. |
 
 ### Parameter: `name`
 
@@ -4165,7 +4248,6 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-apisoperationspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-apisoperationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -4173,13 +4255,7 @@ The policies to apply to the operation.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-apisoperationspoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `apis.operations.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-apisoperationspoliciesname) | string | The name of the policy. |
 
 ### Parameter: `apis.operations.policies.value`
 
@@ -4203,6 +4279,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `apis.operations.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `apis.operations.request`
 
@@ -6647,7 +6730,7 @@ Tags of the resource.
 
 ### Parameter: `workspaces`
 
-Workspaces.
+Workspaces. Only supported with Premium and PremiumV2 SKUs.
 
 - Required: No
 - Type: array
@@ -6657,6 +6740,7 @@ Workspaces.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-workspacesdisplayname) | string | Name of the workspace. |
+| [`gateway`](#parameter-workspacesgateway) | object | Gateway configuration for this workspace. |
 | [`name`](#parameter-workspacesname) | string | Workspace Name. |
 
 **Optional parameters**
@@ -6668,10 +6752,12 @@ Workspaces.
 | [`backends`](#parameter-workspacesbackends) | array | Backends to deploy in this workspace. |
 | [`description`](#parameter-workspacesdescription) | string | Description of the workspace. |
 | [`diagnostics`](#parameter-workspacesdiagnostics) | array | Diagnostics to deploy in this workspace. |
+| [`diagnosticSettings`](#parameter-workspacesdiagnosticsettings) | array | Diagnostic settings for the workspace. |
 | [`loggers`](#parameter-workspacesloggers) | array | Loggers to deploy in this workspace. |
 | [`namedValues`](#parameter-workspacesnamedvalues) | array | Named values to deploy in this workspace. |
 | [`policies`](#parameter-workspacespolicies) | array | Policies to deploy in this workspace. |
 | [`products`](#parameter-workspacesproducts) | array | Products to deploy in this workspace. |
+| [`roleAssignments`](#parameter-workspacesroleassignments) | array | Role assignments for the workspace. |
 | [`subscriptions`](#parameter-workspacessubscriptions) | array | Subscriptions to deploy in this workspace. |
 
 ### Parameter: `workspaces.displayName`
@@ -6680,6 +6766,65 @@ Name of the workspace.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `workspaces.gateway`
+
+Gateway configuration for this workspace.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-workspacesgatewayname) | string | Gateway name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-workspacesgatewaycapacity) | int | Gateway SKU capacity. Defaults to 1. |
+| [`location`](#parameter-workspacesgatewaylocation) | string | Location where the gateway will be deployed. |
+| [`virtualNetworkType`](#parameter-workspacesgatewayvirtualnetworktype) | string | Virtual Network Type of the gateway. Defaults to None. |
+
+### Parameter: `workspaces.gateway.name`
+
+Gateway name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.gateway.capacity`
+
+Gateway SKU capacity. Defaults to 1.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 32
+
+### Parameter: `workspaces.gateway.location`
+
+Location where the gateway will be deployed.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.gateway.virtualNetworkType`
+
+Virtual Network Type of the gateway. Defaults to None.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `workspaces.name`
 
@@ -7070,7 +7215,6 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-workspacesapisoperationspoliciesname) | string | The name of the policy. |
 | [`value`](#parameter-workspacesapisoperationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
 
 **Optional parameters**
@@ -7078,13 +7222,7 @@ The policies to apply to the operation.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`format`](#parameter-workspacesapisoperationspoliciesformat) | string | Format of the policyContent. |
-
-### Parameter: `workspaces.apis.operations.policies.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-workspacesapisoperationspoliciesname) | string | The name of the policy. |
 
 ### Parameter: `workspaces.apis.operations.policies.value`
 
@@ -7108,6 +7246,13 @@ Format of the policyContent.
     'xml-link'
   ]
   ```
+
+### Parameter: `workspaces.apis.operations.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
 
 ### Parameter: `workspaces.apis.operations.request`
 
@@ -7593,6 +7738,152 @@ The verbosity level applied to traces emitted by trace policies.
   ]
   ```
 
+### Parameter: `workspaces.diagnosticSettings`
+
+Diagnostic settings for the workspace.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-workspacesdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-workspacesdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-workspacesdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-workspacesdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-workspacesdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-workspacesdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-workspacesdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-workspacesdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-workspacesdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `workspaces.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `workspaces.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-workspacesdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-workspacesdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-workspacesdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `workspaces.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-workspacesdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-workspacesdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `workspaces.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `workspaces.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
 ### Parameter: `workspaces.loggers`
 
 Loggers to deploy in this workspace.
@@ -7982,6 +8273,119 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 
 - Required: No
 - Type: string
+
+### Parameter: `workspaces.roleAssignments`
+
+Role assignments for the workspace.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
+  - `'API Management Developer Portal Content Editor'`
+  - `'API Management Service Contributor'`
+  - `'API Management Service Operator Role'`
+  - `'API Management Service Reader Role'`
+  - `'API Management Service Workspace API Developer'`
+  - `'API Management Service Workspace API Product Manager'`
+  - `'API Management Workspace API Developer'`
+  - `'API Management Workspace API Product Manager'`
+  - `'API Management Workspace Contributor'`
+  - `'API Management Workspace Reader'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-workspacesroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-workspacesroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-workspacesroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-workspacesroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-workspacesroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-workspacesroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-workspacesroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-workspacesroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `workspaces.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `workspaces.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `workspaces.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `workspaces.subscriptions`
 

@@ -40,6 +40,82 @@ param products productType[]?
 @sys.description('Optional. Subscriptions to deploy in this workspace.')
 param subscriptions subscriptionType[]?
 
+@sys.description('Required. Gateway to deploy for this workspace.')
+param gateway gatewayConfigType
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@sys.description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
+
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'API Management Developer Portal Content Editor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'c031e6a8-4391-4de0-8d69-4706a7ed3729'
+  )
+  'API Management Service Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '312a565d-c81f-4fd8-895a-4e21e48d571c'
+  )
+  'API Management Service Operator Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e022efe7-f5ba-4159-bbe4-b44f577e9b61'
+  )
+  'API Management Service Reader Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '71522526-b88f-4d52-b57f-d31fc3546d0d'
+  )
+  'API Management Service Workspace API Developer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '9565a273-41b9-4368-97d2-aeb0c976a9b3'
+  )
+  'API Management Service Workspace API Product Manager': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'd59a3e9c-6d52-4a5a-aeed-6bf3cf0e31da'
+  )
+  'API Management Workspace API Developer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '56328988-075d-4c6a-8766-d93edd6725b6'
+  )
+  'API Management Workspace API Product Manager': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '73c2c328-d004-4c5e-938c-35c6f5679a1f'
+  )
+  'API Management Workspace Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0c34c906-8d99-4cb7-8bb7-33f5b0a1a799'
+  )
+  'API Management Workspace Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ef1c2c96-4a77-49e8-b9a4-6179fe1d2fd2'
+  )
+}
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
 // ============== //
 // Resources      //
 // ============== //
@@ -249,6 +325,62 @@ module workspace_subscriptions 'subscription/main.bicep' = [
       workspace_apis
       workspace_products
     ]
+  }
+]
+
+module workspace_gateway 'modules/gateway.bicep' = {
+  name: '${deployment().name}-Gw'
+  params: {
+    name: gateway.name
+    location: gateway.?location
+    capacity: gateway.?capacity
+    virtualNetworkType: 'None' // gateway.?virtualNetworkType
+    workspaceResourceId: workspace.id
+  }
+}
+
+resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: workspace
+  }
+]
+
+resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: workspace
   }
 ]
 
@@ -625,4 +757,22 @@ type subscriptionType = {
 * cancelled - the subscription has been cancelled by the developer or administrator
 * expired - the subscription reached its expiration date and was deactivated.''')
   state: ('active' | 'cancelled' | 'expired' | 'rejected' | 'submitted' | 'suspended')?
+}
+
+@export()
+@sys.description('The type of an API Management workspace Gateway configuration.')
+type gatewayConfigType = {
+  @sys.description('Required. Gateway name.')
+  name: string
+
+  @sys.description('Optional. Location where the gateway will be deployed.')
+  location: string?
+
+  @sys.description('Optional. Gateway SKU capacity. Defaults to 1.')
+  @minValue(1)
+  @maxValue(32)
+  capacity: int?
+
+  @sys.description('Optional. Virtual Network Type of the gateway. Defaults to None.')
+  virtualNetworkType: ('External' | 'Internal' | 'None')?
 }
