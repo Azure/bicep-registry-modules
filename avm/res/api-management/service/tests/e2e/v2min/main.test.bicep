@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying an APIM v2 sku'
-metadata description = 'This instance deploys the module using a v2 SKU.'
+metadata name = 'Deploying an APIM BasicV2 SKU with minimal parameters'
+metadata description = 'This instance deploys the module using a BasicV2 SKU with minimal parameters.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apisv2s'
+param serviceShort string = 'apisv2min'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

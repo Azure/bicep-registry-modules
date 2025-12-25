@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "16927512650051470600"
+    },
+    "name": "API Management Workspace Backends",
+    "description": "This module deploys a Backend in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Backend Name."
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/credentials"
+        },
+        "description": "Optional. Backend Credentials Contract Properties. Not supported for Backend Pools."
+      },
+      "nullable": true
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Description."
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "defaultValue": "http",
+      "metadata": {
+        "description": "Optional. Backend communication protocol. http or soap. Not supported for Backend Pools."
+      }
+    },
+    "proxy": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/proxy"
+        },
+        "description": "Optional. Backend Proxy Contract Properties. Not supported for Backend Pools."
+      },
+      "nullable": true
+    },
+    "resourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
+      }
+    },
+    "serviceFabricCluster": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
+        },
+        "description": "Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools."
+      },
+      "nullable": true
+    },
+    "title": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Backend Title."
+      }
+    },
+    "tls": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/tls"
+        },
+        "description": "Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true."
+      },
+      "nullable": true
+    },
+    "url": {
+      "type": "string",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 2000,
+      "metadata": {
+        "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
+      }
+    },
+    "circuitBreaker": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+        },
+        "description": "Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools."
+      },
+      "nullable": true
+    },
+    "pool": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/backends@2024-05-01#properties/properties/properties/pool"
+        },
+        "description": "Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single."
+      },
+      "nullable": true
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "Single",
+      "allowedValues": [
+        "Single",
+        "Pool"
+      ],
+      "metadata": {
+        "description": "Optional. Type of the backend. A backend can be either Single or Pool."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "backend": {
+      "type": "Microsoft.ApiManagement/service/workspaces/backends",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId'), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'circuitBreaker', parameters('circuitBreaker'), 'protocol', parameters('protocol'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true())), 'url', parameters('url')), createObject('pool', parameters('pool')))))]"
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace backend."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/backends', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace backend."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace backend was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
