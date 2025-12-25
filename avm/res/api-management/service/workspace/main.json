@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14879496508495531621"
+      "templateHash": "367397515384868979"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -1266,14 +1266,14 @@
         }
       }
     },
-    "diagnosticSettingFullType": {
+    "diagnosticSettingLogsOnlyType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the diagnostic setting."
+            "description": "Optional. The name of diagnostic setting."
           }
         },
         "logCategoriesAndGroups": {
@@ -1307,31 +1307,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-          }
-        },
-        "metricCategories": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "category": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                }
-              },
-              "enabled": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
           }
         },
         "logAnalyticsDestinationType": {
@@ -1382,7 +1357,7 @@
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
@@ -1599,7 +1574,7 @@
     "diagnosticSettings": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/diagnosticSettingFullType"
+        "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
       },
       "nullable": true,
       "metadata": {
