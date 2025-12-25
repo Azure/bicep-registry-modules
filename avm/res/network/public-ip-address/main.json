@@ -6,105 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2127232527712631807"
+      "templateHash": "4769782033235146336"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
   },
   "definitions": {
-    "dnsSettingsType": {
-      "type": "object",
-      "properties": {
-        "domainNameLabel": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-          }
-        },
-        "domainNameLabelScope": {
-          "type": "string",
-          "allowedValues": [
-            "NoReuse",
-            "ResourceGroupReuse",
-            "SubscriptionReuse",
-            "TenantReuse"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
-          }
-        },
-        "fqdn": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-          }
-        },
-        "reverseFqdn": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "ddosSettingsType": {
-      "type": "object",
-      "properties": {
-        "ddosProtectionPlan": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The DDoS protection plan associated with the public IP address."
-          }
-        },
-        "protectionMode": {
-          "type": "string",
-          "allowedValues": [
-            "Enabled"
-          ],
-          "metadata": {
-            "description": "Required. The DDoS protection policy customizations."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "ipTagType": {
-      "type": "object",
-      "properties": {
-        "ipTagType": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The IP tag type."
-          }
-        },
-        "tag": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The IP tag."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -396,21 +303,24 @@
       }
     },
     "dnsSettings": {
-      "$ref": "#/definitions/dnsSettingsType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/dnsSettings"
+        },
         "description": "Optional. The DNS settings of the public IP address."
-      }
+      },
+      "nullable": true
     },
     "ipTags": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/ipTagType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ipTags"
+        },
         "description": "Optional. The list of tags associated with the public IP address."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -442,11 +352,14 @@
       }
     },
     "ddosSettings": {
-      "$ref": "#/definitions/ddosSettingsType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ddosSettings"
+        },
         "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
-      }
+      },
+      "nullable": true
     },
     "deleteOption": {
       "type": "string",
