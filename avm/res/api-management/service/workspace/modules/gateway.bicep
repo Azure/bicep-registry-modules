@@ -33,7 +33,7 @@ resource gateway 'Microsoft.ApiManagement/gateways@2024-05-01' = {
 
 resource configConnection 'Microsoft.ApiManagement/gateways/configConnections@2024-06-01-preview' = {
   parent: gateway
-  name: '${name}-${split(workspaceResourceId, '/')[8]}-${last(split(workspaceResourceId, '/'))}'
+  name: take('${take(name, 24)}-${uniqueString(workspaceResourceId)}', 30)
   properties: {
     sourceId: workspaceResourceId
   }

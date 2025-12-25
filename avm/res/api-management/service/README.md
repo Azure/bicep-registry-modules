@@ -756,11 +756,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
             eventHubName: '<eventHubName>'
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
             name: 'customSetting'
             storageAccountResourceId: '<storageAccountResourceId>'
             workspaceResourceId: '<workspaceResourceId>'
@@ -850,6 +845,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'API Management Workspace Contributor'
           }
         ]
         subscriptions: [
@@ -1361,11 +1361,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
               "eventHubName": "<eventHubName>",
-              "metricCategories": [
-                {
-                  "category": "AllMetrics"
-                }
-              ],
               "name": "customSetting",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "workspaceResourceId": "<workspaceResourceId>"
@@ -1455,6 +1450,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "API Management Workspace Contributor"
             }
           ],
           "subscriptions": [
@@ -1912,11 +1912,6 @@ param workspaces = [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
@@ -2006,6 +2001,11 @@ param workspaces = [
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'API Management Workspace Contributor'
       }
     ]
     subscriptions: [

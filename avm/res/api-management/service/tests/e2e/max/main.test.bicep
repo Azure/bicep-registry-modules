@@ -75,7 +75,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 
 var apimName = '${namePrefix}${serviceShort}001'
 var backend1Name = 'backend1'
-var workspace1Name = 'test-workspace-1'
+var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -559,11 +559,6 @@ module testDeployment '../../../main.bicep' = [
           diagnosticSettings: [
             {
               name: 'customSetting'
-              metricCategories: [
-                {
-                  category: 'AllMetrics'
-                }
-              ]
               eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
               eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
               storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -588,6 +583,11 @@ module testDeployment '../../../main.bicep' = [
                 'Microsoft.Authorization/roleDefinitions',
                 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
               )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'API Management Workspace Contributor'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }

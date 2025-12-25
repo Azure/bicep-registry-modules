@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "276239947545876617"
+      "templateHash": "14879496508495531621"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -5228,7 +5228,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "14830301823933412427"
+              "templateHash": "9413872107199592542"
             }
           },
           "parameters": {
@@ -5289,7 +5289,7 @@
             {
               "type": "Microsoft.ApiManagement/gateways/configConnections",
               "apiVersion": "2024-06-01-preview",
-              "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}-{2}', parameters('name'), split(parameters('workspaceResourceId'), '/')[8], last(split(parameters('workspaceResourceId'), '/'))))]",
+              "name": "[format('{0}/{1}', parameters('name'), take(format('{0}-{1}', take(parameters('name'), 24), uniqueString(parameters('workspaceResourceId'))), 30))]",
               "properties": {
                 "sourceId": "[parameters('workspaceResourceId')]"
               },
