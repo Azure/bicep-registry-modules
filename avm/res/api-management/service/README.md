@@ -7,6 +7,14 @@
 
 This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,7 @@ This module deploys an API Management Service. The default deployment is set to 
 | `Microsoft.ApiManagement/service/products` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products)</li></ul> |
 | `Microsoft.ApiManagement/service/products/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/apis)</li></ul> |
 | `Microsoft.ApiManagement/service/products/groups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/groups)</li></ul> |
+| `Microsoft.ApiManagement/service/products/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/policies)</li></ul> |
 | `Microsoft.ApiManagement/service/subscriptions` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/subscriptions)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
@@ -65,6 +74,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module using a Consumption SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/consumptionSku]
+
 
 <details>
 
@@ -72,7 +83,6 @@ This instance deploys the module using a Consumption SKU.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apiscon001'
@@ -139,6 +149,8 @@ param sku = 'Consumption'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -146,7 +158,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apismin001'
@@ -205,6 +216,8 @@ param publisherName = 'az-amorg-x-001'
 
 This instance deploys the module using a Developer SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/developerSku]
+
 
 <details>
 
@@ -212,7 +225,6 @@ This instance deploys the module using a Developer SKU.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apisdev001'
@@ -284,6 +296,8 @@ param sku = 'Developer'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -291,10 +305,9 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
-    name: 'apismax001'
+    name: '<name>'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
@@ -302,7 +315,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         disableGateway: false
         location: '<location>'
-        publicIpAddressResourceId: '<publicIpAddressResourceId>'
         sku: {
           capacity: 1
           name: 'Premium'
@@ -357,12 +369,69 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     backends: [
       {
-        name: 'backend'
+        circuitBreaker: {
+          rules: [
+            {
+              acceptRetryAfter: false
+              failureCondition: {
+                count: 1
+                errorReasons: [
+                  'ClientConnectionFailure'
+                  'OperationNotFound'
+                ]
+                interval: 'PT1H'
+                statusCodeRanges: [
+                  {
+                    max: 499
+                    min: 400
+                  }
+                  {
+                    max: 599
+                    min: 500
+                  }
+                ]
+              }
+              name: 'rule1'
+              tripDuration: 'PT1H'
+            }
+          ]
+        }
+        credentials: {
+          authorization: {
+            parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+            scheme: 'Basic'
+          }
+          header: {}
+          query: {
+            queryParam1: [
+              'value1'
+            ]
+          }
+        }
+        description: 'Test backend with maximum properties'
+        name: '<name>'
+        proxy: {
+          password: 'proxyPassword'
+          url: 'http://myproxy:8888'
+          username: 'proxyUser'
+        }
         tls: {
           validateCertificateChain: false
           validateCertificateName: false
         }
+        type: 'Single'
         url: 'http://echoapi.cloudapp.net/api'
+      }
+      {
+        name: 'backend2'
+        pool: {
+          services: [
+            {
+              id: '<id>'
+            }
+          ]
+        }
+        type: 'Pool'
       }
     ]
     caches: [
@@ -415,6 +484,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         targetResourceId: '<targetResourceId>'
         type: 'applicationInsights'
       }
+      {
+        isBuffered: true
+        name: 'azuremonitor'
+        type: 'azureMonitor'
+      }
     ]
     managedIdentities: {
       systemAssigned: true
@@ -447,8 +521,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         properties: {
           enabled: false
           termsOfService: {
-            consentRequired: false
-            enabled: false
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
           }
         }
       }
@@ -464,10 +539,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           'developers'
         ]
         name: 'Starter'
+        policies: [
+          {
+            format: 'xml'
+            value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+          }
+        ]
         subscriptionRequired: false
       }
     ]
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
@@ -501,7 +581,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkType: 'Internal'
+    virtualNetworkType: 'External'
   }
 }
 ```
@@ -520,7 +600,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apismax001"
+      "value": "<name>"
     },
     "publisherEmail": {
       "value": "apimgmt-noreply@mail.windowsazure.com"
@@ -534,7 +614,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "disableGateway": false,
           "location": "<location>",
-          "publicIpAddressResourceId": "<publicIpAddressResourceId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
@@ -599,12 +678,69 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "backends": {
       "value": [
         {
-          "name": "backend",
+          "circuitBreaker": {
+            "rules": [
+              {
+                "acceptRetryAfter": false,
+                "failureCondition": {
+                  "count": 1,
+                  "errorReasons": [
+                    "ClientConnectionFailure",
+                    "OperationNotFound"
+                  ],
+                  "interval": "PT1H",
+                  "statusCodeRanges": [
+                    {
+                      "max": 499,
+                      "min": 400
+                    },
+                    {
+                      "max": 599,
+                      "min": 500
+                    }
+                  ]
+                },
+                "name": "rule1",
+                "tripDuration": "PT1H"
+              }
+            ]
+          },
+          "credentials": {
+            "authorization": {
+              "parameter": "dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=",
+              "scheme": "Basic"
+            },
+            "header": {},
+            "query": {
+              "queryParam1": [
+                "value1"
+              ]
+            }
+          },
+          "description": "Test backend with maximum properties",
+          "name": "<name>",
+          "proxy": {
+            "password": "proxyPassword",
+            "url": "http://myproxy:8888",
+            "username": "proxyUser"
+          },
           "tls": {
             "validateCertificateChain": false,
             "validateCertificateName": false
           },
+          "type": "Single",
           "url": "http://echoapi.cloudapp.net/api"
+        },
+        {
+          "name": "backend2",
+          "pool": {
+            "services": [
+              {
+                "id": "<id>"
+              }
+            ]
+          },
+          "type": "Pool"
         }
       ]
     },
@@ -668,6 +804,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "name": "logger",
           "targetResourceId": "<targetResourceId>",
           "type": "applicationInsights"
+        },
+        {
+          "isBuffered": true,
+          "name": "azuremonitor",
+          "type": "azureMonitor"
         }
       ]
     },
@@ -709,8 +850,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "properties": {
             "enabled": false,
             "termsOfService": {
-              "consentRequired": false,
-              "enabled": false
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
             }
           }
         }
@@ -728,12 +870,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "developers"
           ],
           "name": "Starter",
+          "policies": [
+            {
+              "format": "xml",
+              "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
+            }
+          ],
           "subscriptionRequired": false
         }
       ]
-    },
-    "publicIpAddressResourceId": {
-      "value": "<publicIpAddressResourceId>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -779,7 +924,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     },
     "virtualNetworkType": {
-      "value": "Internal"
+      "value": "External"
     }
   }
 }
@@ -796,7 +941,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
 using 'br/public:avm/res/api-management/service:<version>'
 
 // Required parameters
-param name = 'apismax001'
+param name = '<name>'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
@@ -804,7 +949,6 @@ param additionalLocations = [
   {
     disableGateway: false
     location: '<location>'
-    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     sku: {
       capacity: 1
       name: 'Premium'
@@ -859,12 +1003,69 @@ param authorizationServers = [
 ]
 param backends = [
   {
-    name: 'backend'
+    circuitBreaker: {
+      rules: [
+        {
+          acceptRetryAfter: false
+          failureCondition: {
+            count: 1
+            errorReasons: [
+              'ClientConnectionFailure'
+              'OperationNotFound'
+            ]
+            interval: 'PT1H'
+            statusCodeRanges: [
+              {
+                max: 499
+                min: 400
+              }
+              {
+                max: 599
+                min: 500
+              }
+            ]
+          }
+          name: 'rule1'
+          tripDuration: 'PT1H'
+        }
+      ]
+    }
+    credentials: {
+      authorization: {
+        parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ='
+        scheme: 'Basic'
+      }
+      header: {}
+      query: {
+        queryParam1: [
+          'value1'
+        ]
+      }
+    }
+    description: 'Test backend with maximum properties'
+    name: '<name>'
+    proxy: {
+      password: 'proxyPassword'
+      url: 'http://myproxy:8888'
+      username: 'proxyUser'
+    }
     tls: {
       validateCertificateChain: false
       validateCertificateName: false
     }
+    type: 'Single'
     url: 'http://echoapi.cloudapp.net/api'
+  }
+  {
+    name: 'backend2'
+    pool: {
+      services: [
+        {
+          id: '<id>'
+        }
+      ]
+    }
+    type: 'Pool'
   }
 ]
 param caches = [
@@ -917,6 +1118,11 @@ param loggers = [
     targetResourceId: '<targetResourceId>'
     type: 'applicationInsights'
   }
+  {
+    isBuffered: true
+    name: 'azuremonitor'
+    type: 'azureMonitor'
+  }
 ]
 param managedIdentities = {
   systemAssigned: true
@@ -949,8 +1155,9 @@ param portalsettings = [
     properties: {
       enabled: false
       termsOfService: {
-        consentRequired: false
-        enabled: false
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
       }
     }
   }
@@ -966,10 +1173,15 @@ param products = [
       'developers'
     ]
     name: 'Starter'
+    policies: [
+      {
+        format: 'xml'
+        value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+      }
+    ]
     subscriptionRequired: false
   }
 ]
-param publicIpAddressResourceId = '<publicIpAddressResourceId>'
 param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
@@ -1003,7 +1215,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param virtualNetworkType = 'Internal'
+param virtualNetworkType = 'External'
 ```
 
 </details>
@@ -1013,6 +1225,8 @@ param virtualNetworkType = 'Internal'
 
 This instance deploys the module using a v2 SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2Sku]
+
 
 <details>
 
@@ -1020,7 +1234,6 @@ This instance deploys the module using a v2 SKU.
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apisv2s001'
@@ -1092,6 +1305,8 @@ param sku = 'BasicV2'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1099,7 +1314,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module service 'br/public:avm/res/api-management/service:<version>' = {
-  name: 'serviceDeployment'
   params: {
     // Required parameters
     name: 'apiswaf002'
@@ -1254,8 +1468,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         properties: {
           enabled: false
           termsOfService: {
-            consentRequired: false
-            enabled: false
+            consentRequired: true
+            enabled: true
+            text: 'Terms of service text'
           }
         }
       }
@@ -1301,6 +1516,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkType: 'None'
   }
 }
 ```
@@ -1503,8 +1719,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "properties": {
             "enabled": false,
             "termsOfService": {
-              "consentRequired": false,
-              "enabled": false
+              "consentRequired": true,
+              "enabled": true,
+              "text": "Terms of service text"
             }
           }
         }
@@ -1560,6 +1777,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkType": {
+      "value": "None"
     }
   }
 }
@@ -1728,8 +1948,9 @@ param portalsettings = [
     properties: {
       enabled: false
       termsOfService: {
-        consentRequired: false
-        enabled: false
+        consentRequired: true
+        enabled: true
+        text: 'Terms of service text'
       }
     }
   }
@@ -1775,6 +1996,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkType = 'None'
 ```
 
 </details>
@@ -1795,6 +2017,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
 
@@ -1829,15 +2052,14 @@ param tags = {
 | [`portalsettings`](#parameter-portalsettings) | array | Portal settings. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`products`](#parameter-products) | array | Products. |
-| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network. |
+| [`publicIpAddressResourceId`](#parameter-publicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public endpoint access is allowed for this API Management service. If set to 'Disabled', private endpoints are the exclusive access method. MUST be enabled during service creation. |
 | [`restore`](#parameter-restore) | bool | Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The pricing tier of this API Management service. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only. |
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
 
 ### Parameter: `name`
 
@@ -1867,6 +2089,22 @@ The scale units for this API Management service. Required if using Basic, Standa
 - Required: No
 - Type: int
 - Default: `3`
+
+### Parameter: `virtualNetworkType`
+
+The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `additionalLocations`
 
@@ -2953,20 +3191,28 @@ Backends.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-backendsname) | string | Backend Name. |
-| [`url`](#parameter-backendsurl) | string | Runtime URL of the Backend. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pool`](#parameter-backendspool) | object | Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single. |
+| [`url`](#parameter-backendsurl) | string | Runtime URL of the Backend. Required if type is Single and not supported if type is Pool. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. |
+| [`circuitBreaker`](#parameter-backendscircuitbreaker) | object | Backend Circuit Breaker Properties. Not supported for Backend Pools. |
+| [`credentials`](#parameter-backendscredentials) | object | Backend Credentials Contract Properties. Not supported for Backend Pools. |
 | [`description`](#parameter-backendsdescription) | string | Backend Description. |
-| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol. - http or soap. |
-| [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. |
-| [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
-| [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. |
+| [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol, http or soap. Not supported for Backend Pools. |
+| [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
-| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. |
+| [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. |
+| [`type`](#parameter-backendstype) | string | Type of the backend. A backend can be either Single or Pool. |
 
 ### Parameter: `backends.name`
 
@@ -2975,16 +3221,30 @@ Backend Name.
 - Required: Yes
 - Type: string
 
+### Parameter: `backends.pool`
+
+Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.
+
+- Required: No
+- Type: object
+
 ### Parameter: `backends.url`
 
-Runtime URL of the Backend.
+Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.
 
-- Required: Yes
+- Required: No
 - Type: string
+
+### Parameter: `backends.circuitBreaker`
+
+Backend Circuit Breaker Properties. Not supported for Backend Pools.
+
+- Required: No
+- Type: object
 
 ### Parameter: `backends.credentials`
 
-Backend Credentials Contract Properties.
+Backend Credentials Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -2998,28 +3258,28 @@ Backend Description.
 
 ### Parameter: `backends.protocol`
 
-Backend communication protocol. - http or soap.
+Backend communication protocol, http or soap. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
 
 ### Parameter: `backends.proxy`
 
-Backend Proxy Contract Properties.
+Backend Proxy Contract Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
 
 ### Parameter: `backends.resourceId`
 
-Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.
+Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
 
 ### Parameter: `backends.serviceFabricCluster`
 
-Backend Service Fabric Cluster Properties.
+Backend Service Fabric Cluster Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
@@ -3033,10 +3293,24 @@ Backend Title.
 
 ### Parameter: `backends.tls`
 
-Backend TLS Properties.
+Backend TLS Properties. Not supported for Backend Pools.
 
 - Required: No
 - Type: object
+
+### Parameter: `backends.type`
+
+Type of the backend. A backend can be either Single or Pool.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Pool'
+    'Single'
+  ]
+  ```
 
 ### Parameter: `caches`
 
@@ -4418,6 +4692,7 @@ Products.
 | [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`description`](#parameter-productsdescription) | string | Product description. May include HTML formatting tags. |
 | [`groups`](#parameter-productsgroups) | array | Names of Product Groups. |
+| [`policies`](#parameter-productspolicies) | array | Array of Policies to apply to the Service Product. |
 | [`state`](#parameter-productsstate) | string | whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published. |
 | [`subscriptionRequired`](#parameter-productssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
@@ -4465,6 +4740,56 @@ Names of Product Groups.
 - Required: No
 - Type: array
 
+### Parameter: `products.policies`
+
+Array of Policies to apply to the Service Product.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-productspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-productspoliciesformat) | string | Format of the policyContent. |
+| [`name`](#parameter-productspoliciesname) | string | The name of the policy. |
+
+### Parameter: `products.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `products.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `products.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
+
 ### Parameter: `products.state`
 
 whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published.
@@ -4495,7 +4820,7 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 
 ### Parameter: `publicIpAddressResourceId`
 
-Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.
 
 - Required: No
 - Type: string
@@ -4644,7 +4969,7 @@ The pricing tier of this API Management service.
 
 ### Parameter: `subnetResourceId`
 
-The full resource ID of a subnet in a virtual network to deploy the API Management service in.
+The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.
 
 - Required: No
 - Type: string
@@ -4737,22 +5062,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `virtualNetworkType`
-
-The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.
-
-- Required: No
-- Type: string
-- Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'External'
-    'Internal'
-    'None'
-  ]
-  ```
-
 ## Outputs
 
 | Output | Type | Description |
@@ -4810,4 +5119,4 @@ apiManagementServicePolicy: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

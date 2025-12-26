@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "17393300527260382729"
+      "version": "0.39.26.7824",
+      "templateHash": "378522260230630699"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group."
@@ -160,7 +160,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Resources/resourceGroups@2021-04-01#properties/tags"
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
         },
         "description": "Optional. Tags of the storage account resource."
       },
@@ -198,7 +198,7 @@
     },
     "resourceGroup": {
       "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2025-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -208,7 +208,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
       "resourceGroup": "[parameters('name')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -230,8 +230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "15152717549103930153"
+              "version": "0.39.26.7824",
+              "templateHash": "4527672396498924055"
             }
           },
           "definitions": {
@@ -297,7 +297,7 @@
       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
       "resourceGroup": "[parameters('name')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -316,8 +316,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "13403722769849471903"
+              "version": "0.39.26.7824",
+              "templateHash": "336316490653552562"
             }
           },
           "definitions": {
@@ -471,7 +471,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
     }
   }
 }

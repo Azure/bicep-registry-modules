@@ -36,11 +36,11 @@ This module deploys a Log Analytics Workspace Table.
 | :-- | :-- | :-- |
 | [`plan`](#parameter-plan) | string | Instruct the system how to handle and charge the logs ingested to this table. |
 | [`restoredLogs`](#parameter-restoredlogs) | object | Restore parameters. |
-| [`retentionInDays`](#parameter-retentionindays) | int | The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention. |
+| [`retentionInDays`](#parameter-retentionindays) | int | The table retention in days, between 4 and 730. Don't provide to use the default workspace retention. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schema`](#parameter-schema) | object | Table's schema. |
 | [`searchResults`](#parameter-searchresults) | object | Parameters of the search job that initiated this table. |
-| [`totalRetentionInDays`](#parameter-totalretentionindays) | int | The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention. |
+| [`totalRetentionInDays`](#parameter-totalretentionindays) | int | The table total retention in days, between 4 and 2555. Don't provide use the default table retention. |
 
 ### Parameter: `name`
 
@@ -109,12 +109,11 @@ The timestamp to start the restore from (UTC).
 
 ### Parameter: `retentionInDays`
 
-The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention.
+The table retention in days, between 4 and 730. Don't provide to use the default workspace retention.
 
 - Required: No
 - Type: int
-- Default: `-1`
-- MinValue: -1
+- MinValue: 4
 - MaxValue: 730
 
 ### Parameter: `roleAssignments`
@@ -404,12 +403,11 @@ The timestamp to start the search from (UTC).
 
 ### Parameter: `totalRetentionInDays`
 
-The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention.
+The table total retention in days, between 4 and 2555. Don't provide use the default table retention.
 
 - Required: No
 - Type: int
-- Default: `-1`
-- MinValue: -1
+- MinValue: 4
 - MaxValue: 2555
 
 ## Outputs

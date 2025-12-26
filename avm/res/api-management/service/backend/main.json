@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "702614170296865172"
+      "version": "0.39.26.7824",
+      "templateHash": "11473395075944648701"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -30,7 +30,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
         },
-        "description": "Optional. Backend Credentials Contract Properties."
+        "description": "Optional. Backend Credentials Contract Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -45,7 +45,7 @@
       "type": "string",
       "defaultValue": "http",
       "metadata": {
-        "description": "Optional. Backend communication protocol. - http or soap."
+        "description": "Optional. Backend communication protocol. http or soap. Not supported for Backend Pools."
       }
     },
     "proxy": {
@@ -54,7 +54,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
         },
-        "description": "Optional. Backend Proxy Contract Properties."
+        "description": "Optional. Backend Proxy Contract Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -62,7 +62,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
       }
     },
     "serviceFabricCluster": {
@@ -71,7 +71,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
         },
-        "description": "Optional. Backend Service Fabric Cluster Properties."
+        "description": "Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools."
       },
       "nullable": true
     },
@@ -88,17 +88,46 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
         },
-        "description": "Optional. Backend TLS Properties."
+        "description": "Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true."
       },
-      "defaultValue": {
-        "validateCertificateChain": false,
-        "validateCertificateName": false
-      }
+      "nullable": true
     },
     "url": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. Runtime URL of the Backend."
+        "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
+      }
+    },
+    "circuitBreaker": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+        },
+        "description": "Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools."
+      },
+      "nullable": true
+    },
+    "pool": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+        },
+        "description": "Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single."
+      },
+      "nullable": true
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "Single",
+      "allowedValues": [
+        "Single",
+        "Pool"
+      ],
+      "metadata": {
+        "description": "Optional. Type of the backend. A backend can be either Single or Pool."
       }
     },
     "enableTelemetry": {
@@ -140,19 +169,7 @@
       "type": "Microsoft.ApiManagement/service/backends",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": {
-        "title": "[parameters('title')]",
-        "description": "[parameters('description')]",
-        "resourceId": "[parameters('resourceId')]",
-        "properties": {
-          "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
-        },
-        "credentials": "[parameters('credentials')]",
-        "proxy": "[parameters('proxy')]",
-        "tls": "[parameters('tls')]",
-        "url": "[parameters('url')]",
-        "protocol": "[parameters('protocol')]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId'), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'circuitBreaker', parameters('circuitBreaker'), 'protocol', parameters('protocol'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true())), 'url', parameters('url')), createObject('pool', parameters('pool')))))]"
     }
   },
   "outputs": {

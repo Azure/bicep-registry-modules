@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14438394156998159960"
+      "version": "0.38.33.27573",
+      "templateHash": "12024590628726803043"
     },
     "name": "Service Bus Namespace Queue",
     "description": "This module deploys a Service Bus Namespace Queue."
@@ -313,12 +313,12 @@
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "queue": {
       "type": "Microsoft.ServiceBus/namespaces/queues",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "autoDeleteOnIdle": "[if(not(empty(parameters('autoDeleteOnIdle'))), parameters('autoDeleteOnIdle'), null())]",
@@ -332,7 +332,7 @@
         "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), null())]",
         "lockDuration": "[parameters('lockDuration')]",
         "maxDeliveryCount": "[parameters('maxDeliveryCount')]",
-        "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
+        "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
         "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
         "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
         "requiresSession": "[parameters('requiresSession')]",
@@ -384,7 +384,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -411,8 +411,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "7794650951361395393"
+              "version": "0.38.33.27573",
+              "templateHash": "11020612431315095786"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -452,7 +452,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('queueName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"

@@ -56,6 +56,8 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: vmAdminPassword
+      azureOpenAIModelCapacity: 10
+      azureOpenAIEmbeddingModelCapacity: 10
     }
   }
 ]

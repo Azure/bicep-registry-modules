@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8739659678401704297"
+      "version": "0.39.26.7824",
+      "templateHash": "16723116616667912196"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -127,7 +127,7 @@
     "storageAccount_sbdc_rbac": {
       "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('storageAccount_sbdc_rbac-{0}', uniqueString('storageAccount_sbdc_rbac', deployment().name))]",
       "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), resourceGroup().id), '/')[4]]",
@@ -148,8 +148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "4676262900408370911"
+              "version": "0.39.26.7824",
+              "templateHash": "623303847189521629"
             }
           },
           "parameters": {

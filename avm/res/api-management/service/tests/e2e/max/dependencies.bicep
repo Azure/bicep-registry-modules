@@ -35,7 +35,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: locationRegion1
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsWorkspaceName
   location: locationRegion1
   tags: {
@@ -62,7 +62,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource vnetRegion1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource vnetRegion1 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   name: '${virtualNetworkNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
@@ -99,7 +99,7 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource vnetRegion2 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   name: '${virtualNetworkNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
@@ -136,7 +136,7 @@ resource vnetRegion2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource routeTableRegion1 'Microsoft.Network/routeTables@2024-07-01' = {
+resource routeTableRegion1 'Microsoft.Network/routeTables@2025-01-01' = {
   name: '${routeTableNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
@@ -153,7 +153,7 @@ resource routeTableRegion1 'Microsoft.Network/routeTables@2024-07-01' = {
   }
 }
 
-resource routeTableRegion2 'Microsoft.Network/routeTables@2024-07-01' = {
+resource routeTableRegion2 'Microsoft.Network/routeTables@2025-01-01' = {
   name: '${routeTableNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
@@ -170,7 +170,7 @@ resource routeTableRegion2 'Microsoft.Network/routeTables@2024-07-01' = {
   }
 }
 
-resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
+resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
   name: '${networkSecurityGroupNamePrefix}-${locationRegion1}'
   location: locationRegion1
   properties: {
@@ -289,7 +289,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   }
 }
 
-resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
+resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2025-01-01' = {
   name: '${networkSecurityGroupNamePrefix}-${locationRegion2}'
   location: locationRegion2
   properties: {
@@ -408,7 +408,7 @@ resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   }
 }
 
-resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
+resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
   name: '${publicIPNamePrefix}-${locationRegion1}'
   location: locationRegion1
   sku: {
@@ -424,7 +424,7 @@ resource publicIpRegion1 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   }
 }
 
-resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
+resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
   name: '${publicIPNamePrefix}-${locationRegion2}'
   location: locationRegion2
   sku: {
@@ -436,6 +436,22 @@ resource publicIpRegion2 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
     publicIPAddressVersion: 'IPv4'
     dnsSettings: {
       domainNameLabel: publicIpDnsLabelPrefix
+    }
+  }
+}
+
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: 'privatelink.azure-api.net'
+  location: 'global'
+
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
+    name: '${vnetRegion1.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: vnetRegion1.id
+      }
+      registrationEnabled: false
     }
   }
 }
@@ -452,11 +468,11 @@ output appInsightsInstrumentationKey string = applicationInsights.properties.Ins
 @description('The Application Insights ResourceId')
 output appInsightsResourceId string = applicationInsights.id
 
-@description('The resource ID of the created Public IP for Region1.')
-output publicIPResourceIdRegion1 string = publicIpRegion1.id
+@description('The resource ID of the created virtual network subnet for a Private Endpoint.')
+output privateEndpointSubnetResourceId string = vnetRegion1.properties.subnets[0].id
 
-@description('The resource ID of the created Public IP for Region2.')
-output publicIPResourceIdRegion2 string = publicIpRegion2.id
+@description('The resource ID of the created Private DNS Zone.')
+output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Public IP for Region1.')
 output subnetResourceIdRegion1 string = vnetRegion1.properties.subnets[0].id

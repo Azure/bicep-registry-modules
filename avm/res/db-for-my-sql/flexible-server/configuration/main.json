@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "17826526974982250438"
+      "version": "0.38.33.27573",
+      "templateHash": "3649567738710959920"
     },
     "name": "DBforMySQL Flexible Server Configurations",
     "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -47,12 +47,12 @@
     "flexibleServer": {
       "existing": true,
       "type": "Microsoft.DBforMySQL/flexibleServers",
-      "apiVersion": "2024-12-01-preview",
+      "apiVersion": "2024-12-30",
       "name": "[parameters('flexibleServerName')]"
     },
     "configuration": {
       "type": "Microsoft.DBforMySQL/flexibleServers/configurations",
-      "apiVersion": "2024-12-01-preview",
+      "apiVersion": "2024-12-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "source": "[parameters('source')]",

@@ -31,7 +31,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -40,7 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     hostPoolName: 'dep${namePrefix}-hp-${serviceShort}01'
@@ -57,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
       name: take('h${namePrefix}${serviceShort}', 15)
       adminUsername: 'localAdminUser'
       managedIdentities: {
@@ -92,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       vmSize: 'Standard_D2s_v3'
       adminPassword: password
       extensionAadJoinConfig: {
-        enabled: true
+        enabled: false // Should be true but is disabled for the test environment to avoid domain conflicts
         settings: {
           mdmId: '' // '0000000a-0000-0000-c000-000000000000'
         }

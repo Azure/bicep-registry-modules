@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis with non-clustered policy (Preview)'
-metadata description = 'This instance deploys an Azure Managed Redis cache in non-clustered mode (Preview).'
+metadata name = 'Azure Managed Redis with non-clustered policy'
+metadata description = 'This instance deploys an Azure Managed Redis cache in non-clustered mode.'
 
 // ========== //
 // Parameters //

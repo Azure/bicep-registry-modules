@@ -10,7 +10,7 @@ param adName string = ''
 @description('Optional. Enable AES encryption on the SMB Server.')
 param aesEncryption bool = false
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -42,11 +42,11 @@ param smbServerNamePrefix string = ''
 @description('Optional. Capacity pools to create.')
 param capacityPools capacityPoolType[]?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityOnlyUserAssignedType?
+param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -62,7 +62,7 @@ param ldapSigning bool = false
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -108,10 +108,11 @@ var formattedUserAssignedIdentities = reduce(
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? 'SystemAssigned'
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -141,8 +142,30 @@ var formattedRoleAssignments = [
   })
 ]
 
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey!.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
+  )
+}
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -158,26 +181,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
       }
     }
   }
-}
-
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId!)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
-  }
-}
-
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-  scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
-  )
 }
 
 resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
@@ -197,8 +200,10 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             keyName: customerManagedKey!.keyName
-            keyVaultResourceId: cMKKeyVault.id
-            keyVaultUri: cMKKeyVault.properties.vaultUri
+            keyVaultResourceId: customerManagedKey!.keyVaultResourceId
+            keyVaultUri: !isHSMManagedCMK
+              ? cMKKeyVault!.properties.vaultUri
+              : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/'
           }
         }
       : null
@@ -320,6 +325,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = netAppAccount.location
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = netAppAccount.?identity.?principalId
 
 @description('The resource IDs of the created capacity pools & their volumes.')
 output capacityPoolResourceIds {

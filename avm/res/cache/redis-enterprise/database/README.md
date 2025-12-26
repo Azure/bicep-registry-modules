@@ -13,10 +13,9 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Cache/redisEnterprise/databases` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases)</li></ul> |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 
 ## Parameters
 
@@ -40,9 +39,8 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 | [`geoReplication`](#parameter-georeplication) | object | The active geo-replication settings of the service. All caches within a geo-replication group must have the same configuration. |
 | [`modules`](#parameter-modules) | array | Redis modules to enable. Restrictions may apply based on SKU and configuration. [Learn more](https://aka.ms/redis/enterprise/modules). |
 | [`name`](#parameter-name) | string | Name of the database. |
-| [`persistence`](#parameter-persistence) | object | The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION. |
+| [`persistence`](#parameter-persistence) | object | The persistence settings of the service. |
 | [`port`](#parameter-port) | int | TCP port of the database endpoint. |
-| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 
 ### Parameter: `redisClusterName`
 
@@ -392,7 +390,7 @@ Name of the database.
 
 ### Parameter: `persistence`
 
-The persistence settings of the service. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/how-to-persistence) FOR CLARIFICATION.
+The persistence settings of the service.
 
 - Required: No
 - Type: object
@@ -524,90 +522,22 @@ TCP port of the database endpoint.
 - MinValue: 10000
 - MaxValue: 10000
 
-### Parameter: `secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`primaryAccessKeyName`](#parameter-secretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
-| [`primaryConnectionStringName`](#parameter-secretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
-| [`primaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
-| [`secondaryAccessKeyName`](#parameter-secretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
-| [`secondaryConnectionStringName`](#parameter-secretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
-| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
-
-### Parameter: `secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryAccessKeyName`
-
-The primaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryConnectionStringName`
-
-The primaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
-
-The primaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
-
-The secondaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
-
-The secondaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
-
-The secondaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The Redis endpoint. |
-| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `hostname` | string | The Redis host name. |
 | `name` | string | The name of the Redis database. |
 | `port` | int | The Redis database port. |
+| `primaryAccessKey` | securestring | The primary access key. |
+| `primaryConnectionString` | securestring | The primary connection string. |
+| `primaryStackExchangeRedisConnectionString` | securestring | The primary StackExchange.Redis connection string. |
 | `resourceGroupName` | string | The name of the resource group the Redis resource was created in. |
 | `resourceId` | string | The resource ID of the database. |
+| `secondaryAccessKey` | securestring | The secondary access key. |
+| `secondaryConnectionString` | securestring | The secondary connection string. |
+| `secondaryStackExchangeRedisConnectionString` | securestring | The secondary StackExchange.Redis connection string. |
 
 ## Cross-referenced modules
 
@@ -615,5 +545,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

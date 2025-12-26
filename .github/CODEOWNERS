@@ -1,6 +1,6 @@
-* @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/.github/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
+* @Azure/avm-core-team-technical-bicep
+/.github/ @Azure/avm-core-team-technical-bicep
+/scripts/ @Azure/avm-core-team-technical-bicep
 /avm/ @Azure/avm-core-team-technical-bicep
 /utilities/ @Azure/avm-core-team-technical-bicep
 /avm/ptn/ai-ml/ai-foundry/ @Azure/avm-ptn-aiml-aifoundry-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -44,7 +44,6 @@
 /avm/ptn/sa/modernize-your-code/ @Azure/avm-ptn-sa-modernizeyourcode-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/multi-agent-custom-automation-engine/ @Azure/avm-ptn-sa-multiagentcustomautomationengine-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/chat-with-your-data/ @Azure/avm-ptn-sa-chatwithyourdata-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/sa/build-your-own-copilot/ @Azure/avm-ptn-sa-buildyourowncopilot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/document-knowledge-mining/ @Azure/avm-ptn-sa-documentknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/subscription/service-health-alerts/ @Azure/avm-ptn-subscription-servicehealthalerts-module-owners-bicep @Azure/avm-module-reviewers-bicep

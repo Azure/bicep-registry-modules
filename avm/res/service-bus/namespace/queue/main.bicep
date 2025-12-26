@@ -118,11 +118,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource queue 'Microsoft.ServiceBus/namespaces/queues@2022-10-01-preview' = {
+resource queue 'Microsoft.ServiceBus/namespaces/queues@2024-01-01' = {
   name: name
   parent: namespace
   properties: {

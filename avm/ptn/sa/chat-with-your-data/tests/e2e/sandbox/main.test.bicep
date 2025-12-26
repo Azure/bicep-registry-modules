@@ -43,6 +43,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
+      azureOpenAIModelCapacity: 10
+      azureOpenAIEmbeddingModelCapacity: 10
     }
   }
 ]

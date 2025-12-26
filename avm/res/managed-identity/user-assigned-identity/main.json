@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2375954184515731924"
+      "version": "0.39.26.7824",
+      "templateHash": "12911678071512934577"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -310,8 +310,8 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -340,8 +340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "3710909488485190272"
+              "version": "0.39.26.7824",
+              "templateHash": "1387931959101373036"
             },
             "name": "User Assigned Identity Federated Identity Credential",
             "description": "This module deploys a User Assigned Identity Federated Identity Credential."

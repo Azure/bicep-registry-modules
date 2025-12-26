@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "10194470716819672897"
+      "version": "0.38.33.27573",
+      "templateHash": "17722317559130689691"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -388,18 +388,18 @@
     "namespace::topic": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces/topics",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
     },
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "subscription": {
       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-      "apiVersion": "2021-11-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
       "properties": {
         "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
@@ -424,7 +424,7 @@
         "count": "[length(coalesce(parameters('rules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -464,8 +464,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "18396329421177385677"
+              "version": "0.38.33.27573",
+              "templateHash": "13550281176676896741"
             },
             "name": "Service Bus Namespace Topic Subscription Rule",
             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -722,24 +722,24 @@
             "namespace::topic::subscription": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
             },
             "namespace::topic": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces/topics",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
             },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "rule": {
               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
               "properties": {
                 "action": "[parameters('action')]",

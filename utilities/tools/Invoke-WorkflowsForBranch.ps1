@@ -196,6 +196,7 @@ function Invoke-WorkflowsForBranch {
 
     # Load helper functions
     . (Join-Path $repoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowList.ps1')
+    . (Join-Path $repoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
     $baseInputObject = @{
         RepositoryOwner = $RepositoryOwner
@@ -216,7 +217,9 @@ function Invoke-WorkflowsForBranch {
         . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
 
         # Get diff
-        $diff = git diff 'main' --name-only
+        $diff = Get-GitDiff -PathOnly | ForEach-Object {
+            ($_.FullName -split ('{0}[\/|\\]' -f [Regex]::Escape($RepoRoot)))[1]
+        }
 
         # Identify pipeline names
         $pipelineNames = [System.Collections.ArrayList]@()
