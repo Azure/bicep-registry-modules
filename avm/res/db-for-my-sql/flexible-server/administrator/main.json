@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7944828652001704644"
+      "version": "0.39.26.7824",
+      "templateHash": "172070420013682380"
     },
     "name": "DBforMySQL Flexible Server Administrators",
     "description": "This module deploys a DBforMySQL Flexible Server Administrator."
