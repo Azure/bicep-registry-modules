@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7706575185664059509"
+      "version": "0.39.26.7824",
+      "templateHash": "1019174495127705800"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -14,8 +15,31 @@
     "maintenanceWindow": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01#properties/properties/properties/maintenanceWindow"
+        },
         "description": "Required. Maintenance window for the maintenance configuration."
       }
+    },
+    "notAllowedTime": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01#properties/properties/properties/notAllowedTime"
+        },
+        "description": "Optional. Time slots on which upgrade is not allowed."
+      },
+      "nullable": true
+    },
+    "timeInWeek": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01#properties/properties/properties/timeInWeek"
+        },
+        "description": "Optional. Time slots during the week when planned maintenance is allowed to proceed."
+      },
+      "nullable": true
     },
     "managedClusterName": {
       "type": "string",
@@ -31,16 +55,24 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "managedCluster": {
+      "existing": true,
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2025-09-01",
+      "name": "[parameters('managedClusterName')]"
+    },
+    "aksManagedAutoUpgradeSchedule": {
       "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2025-09-01",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
-        "maintenanceWindow": "[parameters('maintenanceWindow')]"
+        "maintenanceWindow": "[parameters('maintenanceWindow')]",
+        "notAllowedTime": "[parameters('notAllowedTime')]",
+        "timeInWeek": "[parameters('timeInWeek')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

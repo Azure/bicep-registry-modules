@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-05-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-05-02-preview/managedClusters/agentPools)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-09-01/managedClusters/agentPools)</li></ul> |
 
 ## Parameters
 
@@ -33,6 +33,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is "VirtualMachineScaleSets". |
+| [`capacityReservationGroupResourceId`](#parameter-capacityreservationgroupresourceid) | string | AKS will associate the specified agent pool with the Capacity Reservation Group. |
 | [`count`](#parameter-count) | int | Desired Number of agents (VMs) specified to host docker containers. Allowed values must be in the range of 0 to 1000 (inclusive) for user pools and in the range of 1 to 1000 (inclusive) for system pools. The default value is 1. |
 | [`enableAutoScaling`](#parameter-enableautoscaling) | bool | Whether to enable auto-scaler. |
 | [`enableEncryptionAtHost`](#parameter-enableencryptionathost) | bool | This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled. |
@@ -41,14 +42,20 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableSecureBoot`](#parameter-enablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-enableultrassd) | bool | Whether to enable UltraSSD. |
 | [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
+| [`gatewayProfile`](#parameter-gatewayprofile) | object | Profile specific to a managed agent pool in Gateway mode. Ignored if agent pool mode is not Gateway. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
+| [`gpuProfile`](#parameter-gpuprofile) | object | GPU settings. |
+| [`hostGroupId`](#parameter-hostgroupid) | string | This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts). |
+| [`kubeletConfig`](#parameter-kubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
 | [`linuxOSConfig`](#parameter-linuxosconfig) | object | Linux OS configuration. |
+| [`localDNSProfile`](#parameter-localdnsprofile) | object | Local DNS configuration. |
 | [`maxCount`](#parameter-maxcount) | int | The maximum number of nodes for auto-scaling. |
 | [`maxPods`](#parameter-maxpods) | int | The maximum number of pods that can run on a node. |
-| [`maxSurge`](#parameter-maxsurge) | string | This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade. |
+| [`messageOfTheDay`](#parameter-messageoftheday) | string | A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message. You can use escape characters like \n for new line. |
 | [`minCount`](#parameter-mincount) | int | The minimum number of nodes for auto-scaling. |
 | [`mode`](#parameter-mode) | string | A cluster must have at least one "System" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools. |
+| [`networkProfile`](#parameter-networkprofile) | object | Network profile to be used for agent pool nodes. |
 | [`nodeLabels`](#parameter-nodelabels) | object | The node labels to be persisted across all nodes in agent pool. |
 | [`nodePublicIpPrefixResourceId`](#parameter-nodepublicipprefixresourceid) | string | ResourceId of the node PublicIPPrefix. |
 | [`nodeTaints`](#parameter-nodetaints) | array | The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule. |
@@ -57,7 +64,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`osDiskType`](#parameter-osdisktype) | string | The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os). |
 | [`osSKU`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
 | [`osType`](#parameter-ostype) | string | The operating system type. The default is Linux. |
+| [`podIpAllocationMode`](#parameter-podipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-podsubnetresourceid) | string | Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
+| [`powerState`](#parameter-powerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | The ID for the Proximity Placement Group. |
 | [`scaleDownMode`](#parameter-scaledownmode) | string | Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing). |
 | [`scaleSetEvictionPolicy`](#parameter-scalesetevictionpolicy) | string | The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs. |
@@ -67,6 +76,8 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`sshAccess`](#parameter-sshaccess) | string | SSH access method of an agent pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`type`](#parameter-type) | string | The type of Agent Pool. |
+| [`upgradeSettings`](#parameter-upgradesettings) | object | Upgrade settings. |
+| [`virtualMachinesProfile`](#parameter-virtualmachinesprofile) | object | Virtual Machines resource status. |
 | [`vmSize`](#parameter-vmsize) | string | VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions. |
 | [`vnetSubnetResourceId`](#parameter-vnetsubnetresourceid) | string | Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
 | [`windowsProfile`](#parameter-windowsprofile) | object | Windows OS configuration. |
@@ -100,6 +111,13 @@ The list of Availability zones to use for nodes. This can only be specified if t
     3
   ]
   ```
+
+### Parameter: `capacityReservationGroupResourceId`
+
+AKS will associate the specified agent pool with the Capacity Reservation Group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `count`
 
@@ -167,6 +185,13 @@ vTPM is a Trusted Launch feature for configuring a dedicated secure vault for ke
 - Type: bool
 - Default: `False`
 
+### Parameter: `gatewayProfile`
+
+Profile specific to a managed agent pool in Gateway mode. Ignored if agent pool mode is not Gateway.
+
+- Required: No
+- Type: object
+
 ### Parameter: `gpuInstanceProfile`
 
 GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU.
@@ -184,16 +209,51 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
   ]
   ```
 
+### Parameter: `gpuProfile`
+
+GPU settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `hostGroupId`
+
+This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts).
+
+- Required: No
+- Type: string
+
+### Parameter: `kubeletConfig`
+
+Kubelet configuration on agent pool nodes.
+
+- Required: No
+- Type: object
+
 ### Parameter: `kubeletDiskType`
 
 Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'OS'
+    'Temporary'
+  ]
+  ```
 
 ### Parameter: `linuxOSConfig`
 
 Linux OS configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `localDNSProfile`
+
+Local DNS configuration.
 
 - Required: No
 - Type: object
@@ -212,9 +272,9 @@ The maximum number of pods that can run on a node.
 - Required: No
 - Type: int
 
-### Parameter: `maxSurge`
+### Parameter: `messageOfTheDay`
 
-This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade.
+A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message. You can use escape characters like \n for new line.
 
 - Required: No
 - Type: string
@@ -232,6 +292,21 @@ A cluster must have at least one "System" Agent Pool at all times. For additiona
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Gateway'
+    'System'
+    'User'
+  ]
+  ```
+
+### Parameter: `networkProfile`
+
+Network profile to be used for agent pool nodes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `nodeLabels`
 
@@ -292,8 +367,11 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
   ```Bicep
   [
     'AzureLinux'
+    'AzureLinux3'
     'CBLMariner'
     'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
     'Windows2019'
     'Windows2022'
   ]
@@ -314,12 +392,33 @@ The operating system type. The default is Linux.
   ]
   ```
 
+### Parameter: `podIpAllocationMode`
+
+Pod IP allocation mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DynamicIndividual'
+    'StaticBlock'
+  ]
+  ```
+
 ### Parameter: `podSubnetResourceId`
 
 Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
 
 - Required: No
 - Type: string
+
+### Parameter: `powerState`
+
+Power State of the agent pool.
+
+- Required: No
+- Type: object
 
 ### Parameter: `proximityPlacementGroupResourceId`
 
@@ -392,13 +491,6 @@ SSH access method of an agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'LocalUser'
-  ]
-  ```
 
 ### Parameter: `tags`
 
@@ -413,6 +505,20 @@ The type of Agent Pool.
 
 - Required: No
 - Type: string
+
+### Parameter: `upgradeSettings`
+
+Upgrade settings.
+
+- Required: No
+- Type: object
+
+### Parameter: `virtualMachinesProfile`
+
+Virtual Machines resource status.
+
+- Required: No
+- Type: object
 
 ### Parameter: `vmSize`
 
@@ -442,6 +548,14 @@ Determines the type of workload a node can run.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'KataVmIsolation'
+    'OCIContainer'
+    'WasmWasi'
+  ]
+  ```
 
 ## Outputs
 
