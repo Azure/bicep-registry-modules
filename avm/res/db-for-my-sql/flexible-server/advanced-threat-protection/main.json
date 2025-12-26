@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "16225854850224564968"
+      "version": "0.39.26.7824",
+      "templateHash": "28279369225338798"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
