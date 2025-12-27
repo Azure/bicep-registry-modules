@@ -1,3 +1,14 @@
+// Example usage:
+//
+// module waitForDeployment '../../../../../../../utilities/e2e-template-assets/templates/waitForDeployment.bicep' = {
+//   scope: resourceGroup
+//   params: {
+//     waitForResourceId: testDeployment[0].outputs.resourceId
+//     managedIdentityName: '${namePrefix}-mi-${serviceShort}'
+//     deploymentScriptName: '${namePrefix}-ds-${serviceShort}'
+//   }
+// }
+
 @description('Required. The Resource ID of the resource to wait for deployment completion.')
 param waitForResourceId string
 
