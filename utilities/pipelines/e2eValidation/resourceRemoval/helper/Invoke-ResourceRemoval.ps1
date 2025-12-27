@@ -174,6 +174,32 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Cdn/profiles' {
+            # $retryCount = 1
+            # $waitIntervalInSeconds = 15
+            # $maxRetries = 240 # 1h
+
+            # do {
+            #     try {
+            #         $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+            #         Write-Verbose ('    [✔️] Resource removal succeeded.') -Verbose
+            #         break
+            #     } catch {
+            #         Write-Verbose ('    [⏱️] Waiting {0} seconds for resource removal to finish. [{1}/{2}]' -f $waitIntervalInSeconds, $retryCount, $maxRetries) -Verbose
+            #         Start-Sleep -Seconds $waitIntervalInSeconds
+            #         $retryCount++
+            #     }
+            # } while (-not $replicationFullyProvisioned -and $retryCount -lt $maxRetries)
+
+            # if ($retryCount -ge $maxRetries) {
+            #     throw ('    [!] Resource removal was not finished after {0} seconds.' -f ($retryCount * $WaitIntervalInSeconds))
+            # }
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            Write-Verbose "Removing CDN profile [$resourceName] and all its sub-resources" -Verbose
+            Remove-AzCdnProfile -ResourceGroupName $resourceGroupName -Name $resourceName
+            break
+        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
