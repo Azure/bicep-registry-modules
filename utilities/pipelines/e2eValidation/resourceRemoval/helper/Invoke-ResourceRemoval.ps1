@@ -175,10 +175,24 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.RecoveryServices/vaults' {
-            try {
-                $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
-            } catch {
-                $_
+            $retryCount = 1
+            $waitIntervalInSeconds = 15
+            $maxRetries = 240 # 1h
+
+            do {
+                try {
+                    $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+                    Write-Verbose ('    [✔️] Resource removal succeeded.') -Verbose
+                    break
+                } catch {
+                    Write-Verbose ('    [⏱️] Waiting {0} seconds for resource removal to finish. [{1}/{2}]' -f $waitIntervalInSeconds, $retryCount, $maxRetries) -Verbose
+                    Start-Sleep -Seconds $waitIntervalInSeconds
+                    $retryCount++
+                }
+            } while (-not $replicationFullyProvisioned -and $retryCount -lt $maxRetries)
+
+            if ($retryCount -ge $maxRetries) {
+                throw ('    [!] Resource removal was not finished after {0} seconds.' -f ($retryCount * $WaitIntervalInSeconds))
             }
             break
         }

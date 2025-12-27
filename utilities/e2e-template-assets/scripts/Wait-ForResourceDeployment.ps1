@@ -48,5 +48,5 @@ do {
 } while (-not $replicationFullyProvisioned -and $retryCount -lt $MaxRetries)
 
 if ($retryCount -ge $MaxRetries) {
-    Write-Warning ('    [!] Resource provisioning was not finished after {0} seconds. Continuing with resource removal.' -f ($retryCount * $WaitIntervalInSeconds))
+    Write-Warning ('    [!] Resource provisioning was not finished after {0} seconds.' -f ($retryCount * $WaitIntervalInSeconds))
 }
