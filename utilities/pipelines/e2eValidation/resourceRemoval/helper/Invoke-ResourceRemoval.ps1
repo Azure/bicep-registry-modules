@@ -174,7 +174,7 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        'Microsoft.RecoveryServices/vaults' {
+        'Microsoft.Cdn/profiles' {
             $retryCount = 1
             $waitIntervalInSeconds = 15
             $maxRetries = 240 # 1h
@@ -196,7 +196,7 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        'Microsoft.Cdn/profiles' {
+        'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
             # Remove protected VMs
