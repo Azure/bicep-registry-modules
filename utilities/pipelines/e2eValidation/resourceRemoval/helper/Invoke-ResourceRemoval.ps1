@@ -206,6 +206,38 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Cdn/profiles' {
+            # Pre-Removal
+            # -----------
+            # Remove protected VMs
+            if ((Get-AzRecoveryServicesVaultProperty -VaultId $ResourceId).SoftDeleteFeatureState -ne 'Disabled') {
+                if ($PSCmdlet.ShouldProcess(('Soft-delete on RSV [{0}]' -f $ResourceId), 'Set')) {
+                    $null = Set-AzRecoveryServicesVaultProperty -VaultId $ResourceId -SoftDeleteFeatureState 'Disable'
+                }
+            }
+
+            $backupItems = Get-AzRecoveryServicesBackupItem -BackupManagementType 'AzureVM' -WorkloadType 'AzureVM' -VaultId $ResourceId
+            foreach ($backupItem in $backupItems) {
+                Write-Verbose ('Removing Backup item [{0}] from RSV [{1}]' -f $backupItem.Name, $ResourceId) -Verbose
+
+                if ($backupItem.DeleteState -eq 'ToBeDeleted') {
+                    if ($PSCmdlet.ShouldProcess('Soft-deleted backup data removal', 'Undo')) {
+                        $null = Undo-AzRecoveryServicesBackupItemDeletion -Item $backupItem -VaultId $ResourceId -Force
+                    }
+                }
+
+                if ($PSCmdlet.ShouldProcess(('Backup item [{0}] from RSV [{1}]' -f $backupItem.Name, $ResourceId), 'Remove')) {
+                    $null = Disable-AzRecoveryServicesBackupProtection -Item $backupItem -VaultId $ResourceId -RemoveRecoveryPoints -Force
+                }
+            }
+
+            # Actual removal
+            # --------------
+            if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+            }
+            break
+        }
         'Microsoft.DataProtection/backupVaults' {
             # Note: This Resource Provider does not allow deleting the vault as long as it has nested resources
             # Pre-Removal
