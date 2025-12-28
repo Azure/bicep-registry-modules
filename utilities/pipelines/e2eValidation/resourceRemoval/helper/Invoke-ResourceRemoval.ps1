@@ -180,8 +180,9 @@ function Invoke-ResourceRemoval {
             $resourceName = Split-Path $ResourceId -Leaf
             $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
             if ($cdnProfile) {
-                Write-Verbose "Removing CDN profile [$resourceName] and all its sub-resources from resource group [$resourceGroupName]" -Verbose
-                az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+                if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                    az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+                }
             } else {
                 Write-Warning "Unable to find CDN profile [$resourceName] in resource group [$resourceGroupName]"
             }
