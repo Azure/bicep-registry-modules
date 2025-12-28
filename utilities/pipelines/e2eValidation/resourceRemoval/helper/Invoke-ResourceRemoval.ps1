@@ -196,8 +196,14 @@ function Invoke-ResourceRemoval {
             # }
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
-            Write-Verbose "Removing CDN profile [$resourceName] and all its sub-resources" -Verbose
-            Remove-AzCdnProfile -ResourceGroupName $resourceGroupName -Name $resourceName
+            # Remove-AzCdnProfile -ResourceGroupName $resourceGroupName -Name $resourceName
+            $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
+            if ($cdnProfile) {
+                Write-Verbose "Removing CDN profile [$resourceName] and all its sub-resources from resource group [$resourceGroupName]" -Verbose
+                az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+            } else {
+                Write-Warning "Unable to find CDN profile [$resourceName] in resource group [$resourceGroupName]"
+            }
             break
         }
         'Microsoft.RecoveryServices/vaults' {
