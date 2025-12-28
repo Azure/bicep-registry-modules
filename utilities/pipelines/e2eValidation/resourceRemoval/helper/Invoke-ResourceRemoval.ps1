@@ -175,28 +175,9 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.Cdn/profiles' {
-            # $retryCount = 1
-            # $waitIntervalInSeconds = 15
-            # $maxRetries = 240 # 1h
-
-            # do {
-            #     try {
-            #         $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
-            #         Write-Verbose ('    [✔️] Resource removal succeeded.') -Verbose
-            #         break
-            #     } catch {
-            #         Write-Verbose ('    [⏱️] Waiting {0} seconds for resource removal to finish. [{1}/{2}]' -f $waitIntervalInSeconds, $retryCount, $maxRetries) -Verbose
-            #         Start-Sleep -Seconds $waitIntervalInSeconds
-            #         $retryCount++
-            #     }
-            # } while (-not $replicationFullyProvisioned -and $retryCount -lt $maxRetries)
-
-            # if ($retryCount -ge $maxRetries) {
-            #     throw ('    [!] Resource removal was not finished after {0} seconds.' -f ($retryCount * $WaitIntervalInSeconds))
-            # }
+            # Removing custom removal logic as the default `Remove-AzResource` does not correctly handle the resource's inner workings
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
-            # Remove-AzCdnProfile -ResourceGroupName $resourceGroupName -Name $resourceName
             $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
             if ($cdnProfile) {
                 Write-Verbose "Removing CDN profile [$resourceName] and all its sub-resources from resource group [$resourceGroupName]" -Verbose
