@@ -1,4 +1,4 @@
-name: "avm.ptn.sa.customer-chatbot-solution-accelerator"
+name: "avm.ptn.sa.customer-chatbot"
 
 on:
   workflow_dispatch:
@@ -29,16 +29,16 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.sa.customer-chatbot-solution-accelerator.yml"
-      - "avm/ptn/sa/customer-chatbot-solution-accelerator/**"
+      - ".github/workflows/avm.ptn.sa.customer-chatbot.yml"
+      - "avm/ptn/sa/customer-chatbot/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/sa/customer-chatbot-solution-accelerator"
-  workflowPath: ".github/workflows/avm.ptn.sa.customer-chatbot-solution-accelerator.yml"
+  modulePath: "avm/ptn/sa/customer-chatbot"
+  workflowPath: ".github/workflows/avm.ptn.sa.customer-chatbot.yml"
 
 concurrency:
   group: ${{ github.workflow }}
