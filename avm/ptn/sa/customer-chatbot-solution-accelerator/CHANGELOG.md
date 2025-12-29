@@ -11,3 +11,5 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+<!-- Trigger workflow -->
