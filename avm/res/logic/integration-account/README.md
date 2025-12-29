@@ -2050,7 +2050,7 @@ All maps to create.
 | [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
 | [`location`](#parameter-mapslocation) | string | Resource location. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
-| [`metadata`](#parameter-mapsmetadata) | object | The map metadata. |
+| [`metadata`](#parameter-mapsmetadata) |  | The map metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-mapstags) | object | Resource tags. |
 
@@ -2104,7 +2104,7 @@ The map type. Default is "Xslt".
 The map metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `maps.parametersSchema`
 
@@ -2306,7 +2306,7 @@ All schemas to create.
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`location`](#parameter-schemaslocation) | string | Resource location. |
-| [`metadata`](#parameter-schemasmetadata) | object | The schema metadata. |
+| [`metadata`](#parameter-schemasmetadata) |  | The schema metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
@@ -2351,7 +2351,7 @@ Resource location.
 The schema metadata.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `schemas.schemaType`
 

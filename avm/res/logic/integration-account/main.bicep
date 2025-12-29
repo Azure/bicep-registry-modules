@@ -411,7 +411,7 @@ type integrationAccountSchemaType = {
   documentName: string?
 
   @description('Optional. The schema metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
 
   @description('Optional. The schema type.')
   schemaType: string?
@@ -441,10 +441,10 @@ type integrationAccountMapType = {
   mapType: ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30')?
 
   @description('Optional. The parameters schema of integration account map.')
-  parametersSchema: object?
+  parametersSchema: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.parametersSchema?
 
   @description('Optional. The map metadata.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?
@@ -498,7 +498,7 @@ type integrationAccountAgreementType = {
   hostPartner: string
 
   @description('Required. The agreement content settings.')
-  content: object
+  content: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.content
 
   @description('Optional. The agreement metadata.')
   metadata: resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.metadata?

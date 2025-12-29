@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "16467154498773806599"
+      "templateHash": "9376737816655308926"
     },
     "name": "Integration Account Agreements",
     "description": "This module deploys an Integration Account Agreement."
@@ -76,6 +76,9 @@
     "content": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/agreements@2019-05-01#properties/properties/properties/content"
+        },
         "description": "Required. The agreement content."
       }
     },

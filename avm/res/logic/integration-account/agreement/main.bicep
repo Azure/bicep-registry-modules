@@ -30,7 +30,7 @@ param hostIdentity resourceInput<'Microsoft.Logic/integrationAccounts/agreements
 param hostPartner string
 
 @description('Required. The agreement content.')
-param content object
+param content resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.content
 
 @description('Optional. The agreement metadata.')
 param metadata resourceInput<'Microsoft.Logic/integrationAccounts/agreements@2019-05-01'>.properties.metadata?
