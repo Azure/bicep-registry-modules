@@ -113,81 +113,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module customerChatbotSolutionAccelerator 'br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>' = {
-  params: {
-    // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
-    // Non-required parameters
-    location: '<location>'
-    solutionName: '<solutionName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "<solutionName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/customer-chatbot-solution-accelerator:<version>'
-
-// Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
-// Non-required parameters
-param location = '<location>'
-param solutionName = '<solutionName>'
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox configuration with default parameter values_
+### Example 1: _Sandbox configuration with default parameter values_
 
 This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
@@ -257,7 +186,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 3: _WAF-aligned configuration with default parameter values_
+### Example 2: _WAF-aligned configuration with default parameter values_
 
 This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.
 
