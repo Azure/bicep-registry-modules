@@ -13,8 +13,11 @@ param integrationAccountName string
 @description('Optional. B2B partner content settings.')
 param b2b resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
-@description('Optional. The partner metadata.')
-param metadata resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.metadata?
+@description('Optional. The metadata.')
+param metadata {
+  @description('Optional. A metadata key-value pair.')
+  *: string?
+}? // Resource-derived type fails PSRule
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?

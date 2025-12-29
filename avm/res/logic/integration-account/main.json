@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "9823167545051605539"
+      "templateHash": "7480755254962696816"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -33,9 +33,17 @@
         },
         "metadata": {
           "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A metadata key-value pair."
+            }
+          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The partner metadata."
+            "description": "Optional. The metadata."
           }
         },
         "tags": {
@@ -147,13 +155,19 @@
           }
         },
         "metadata": {
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Logic/integrationAccounts/schemas@2019-05-01#properties/properties/properties/metadata"
-            },
-            "description": "Optional. The schema metadata."
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A metadata key-value pair."
+            }
           },
-          "nullable": true
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The metadata."
+          }
         },
         "schemaType": {
           "type": "string",
@@ -238,13 +252,19 @@
           "nullable": true
         },
         "metadata": {
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/properties/properties/metadata"
-            },
-            "description": "Optional. The map metadata."
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A metadata key-value pair."
+            }
           },
-          "nullable": true
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The metadata."
+          }
         },
         "tags": {
           "type": "object",
@@ -974,7 +994,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "12339703965161257652"
+              "templateHash": "12600538169226085087"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1010,13 +1030,19 @@
               "nullable": true
             },
             "metadata": {
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Logic/integrationAccounts/partners@2019-05-01#properties/properties/properties/metadata"
-                },
-                "description": "Optional. The partner metadata."
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. A metadata key-value pair."
+                }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The metadata."
+              }
             },
             "tags": {
               "type": "object",
@@ -1133,7 +1159,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "7938792600836966580"
+              "templateHash": "12300610916812349141"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1179,13 +1205,19 @@
               }
             },
             "metadata": {
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Logic/integrationAccounts/schemas@2019-05-01#properties/properties/properties/metadata"
-                },
-                "description": "Optional. The schema metadata."
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. A metadata key-value pair."
+                }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The metadata."
+              }
             },
             "schemaType": {
               "type": "string",
@@ -1318,7 +1350,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "10325375122376806289"
+              "templateHash": "10079226815418839920"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1371,13 +1403,19 @@
               }
             },
             "metadata": {
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/properties/properties/metadata"
-                },
-                "description": "Optional. The map metadata."
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. A metadata key-value pair."
+                }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The metadata."
+              }
             },
             "parametersSchema": {
               "type": "object",

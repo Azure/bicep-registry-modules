@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7938792600836966580"
+      "templateHash": "12300610916812349141"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
@@ -52,13 +52,19 @@
       }
     },
     "metadata": {
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Logic/integrationAccounts/schemas@2019-05-01#properties/properties/properties/metadata"
-        },
-        "description": "Optional. The schema metadata."
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string",
+        "nullable": true,
+        "metadata": {
+          "description": "Optional. A metadata key-value pair."
+        }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The metadata."
+      }
     },
     "schemaType": {
       "type": "string",

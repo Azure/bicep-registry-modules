@@ -36,7 +36,7 @@ This module deploys an Integration Account Map.
 | [`contentType`](#parameter-contenttype) | string | The content type of the map. |
 | [`location`](#parameter-location) | string | Resource location. |
 | [`mapType`](#parameter-maptype) | string | The map type. |
-| [`metadata`](#parameter-metadata) |  | The map metadata. |
+| [`metadata`](#parameter-metadata) | object | The metadata. |
 | [`parametersSchema`](#parameter-parametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -96,10 +96,23 @@ The map type.
 
 ### Parameter: `metadata`
 
-The map metadata.
+The metadata.
 
 - Required: No
-- Type: 
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-metadata>any_other_property<) | string | A metadata key-value pair. |
+
+### Parameter: `metadata.>Any_other_property<`
+
+A metadata key-value pair.
+
+- Required: No
+- Type: string
 
 ### Parameter: `parametersSchema`
 

@@ -19,8 +19,11 @@ param contentType string = 'application/xml'
 @description('Optional. The document name.')
 param documentName string?
 
-@description('Optional. The schema metadata.')
-param metadata resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
+@description('Optional. The metadata.')
+param metadata {
+  @description('Optional. A metadata key-value pair.')
+  *: string?
+}? // Resource-derived type fails PSRule
 
 @description('Optional. The schema type.')
 param schemaType ('NotSpecified' | 'Xml') = 'Xml'

@@ -19,8 +19,11 @@ param contentType string?
 @description('Optional. The map type.')
 param mapType ('Liquid' | 'NotSpecified' | 'Xslt' | 'Xslt20' | 'Xslt30') = 'Xslt'
 
-@description('Optional. The map metadata.')
-param metadata resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
+@description('Optional. The metadata.')
+param metadata {
+  @description('Optional. A metadata key-value pair.')
+  *: string?
+}? // Resource-derived type fails PSRule
 
 @description('Optional. The parameters schema of integration account map.')
 param parametersSchema resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.parametersSchema?

@@ -34,7 +34,7 @@ This module deploys an Integration Account Partner.
 | :-- | :-- | :-- |
 | [`b2b`](#parameter-b2b) | object | B2B partner content settings. |
 | [`location`](#parameter-location) | string | Resource location. |
-| [`metadata`](#parameter-metadata) |  | The partner metadata. |
+| [`metadata`](#parameter-metadata) | object | The metadata. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -68,10 +68,23 @@ Resource location.
 
 ### Parameter: `metadata`
 
-The partner metadata.
+The metadata.
 
 - Required: No
-- Type: 
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-metadata>any_other_property<) | string | A metadata key-value pair. |
+
+### Parameter: `metadata.>Any_other_property<`
+
+A metadata key-value pair.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 

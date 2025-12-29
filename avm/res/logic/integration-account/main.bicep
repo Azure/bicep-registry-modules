@@ -365,8 +365,11 @@ type integrationAccountPartnerType = {
   @description('Optional. The B2B partner content settings.')
   b2b: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.properties.content.b2b?
 
-  @description('Optional. The partner metadata.')
-  metadata: object?
+  @description('Optional. The metadata.')
+  metadata: {
+    @description('Optional. A metadata key-value pair.')
+    *: string?
+  }? // Resource-derived type fails PSRule
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/partners@2019-05-01'>.tags?
@@ -410,8 +413,11 @@ type integrationAccountSchemaType = {
   @description('Optional. The document name.')
   documentName: string?
 
-  @description('Optional. The schema metadata.')
-  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/schemas@2019-05-01'>.properties.metadata?
+  @description('Optional. The metadata.')
+  metadata: {
+    @description('Optional. A metadata key-value pair.')
+    *: string?
+  }? // Resource-derived type fails PSRule
 
   @description('Optional. The schema type.')
   schemaType: string?
@@ -443,8 +449,11 @@ type integrationAccountMapType = {
   @description('Optional. The parameters schema of integration account map.')
   parametersSchema: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.parametersSchema?
 
-  @description('Optional. The map metadata.')
-  metadata: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.properties.metadata?
+  @description('Optional. The metadata.')
+  metadata: {
+    @description('Optional. A metadata key-value pair.')
+    *: string?
+  }? // Resource-derived type fails PSRule
 
   @description('Optional. Resource tags.')
   tags: resourceInput<'Microsoft.Logic/integrationAccounts/maps@2019-05-01'>.tags?

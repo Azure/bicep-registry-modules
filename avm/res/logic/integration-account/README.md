@@ -2050,7 +2050,7 @@ All maps to create.
 | [`contentType`](#parameter-mapscontenttype) | string | The content type of the map. |
 | [`location`](#parameter-mapslocation) | string | Resource location. |
 | [`mapType`](#parameter-mapsmaptype) | string | The map type. Default is "Xslt". |
-| [`metadata`](#parameter-mapsmetadata) |  | The map metadata. |
+| [`metadata`](#parameter-mapsmetadata) | object | The metadata. |
 | [`parametersSchema`](#parameter-mapsparametersschema) | object | The parameters schema of integration account map. |
 | [`tags`](#parameter-mapstags) | object | Resource tags. |
 
@@ -2101,10 +2101,23 @@ The map type. Default is "Xslt".
 
 ### Parameter: `maps.metadata`
 
-The map metadata.
+The metadata.
 
 - Required: No
-- Type: 
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-mapsmetadata>any_other_property<) | string | A metadata key-value pair. |
+
+### Parameter: `maps.metadata.>Any_other_property<`
+
+A metadata key-value pair.
+
+- Required: No
+- Type: string
 
 ### Parameter: `maps.parametersSchema`
 
@@ -2138,7 +2151,7 @@ All partners to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`b2b`](#parameter-partnersb2b) | object | The B2B partner content settings. |
-| [`metadata`](#parameter-partnersmetadata) | object | The partner metadata. |
+| [`metadata`](#parameter-partnersmetadata) | object | The metadata. |
 | [`tags`](#parameter-partnerstags) | object | Resource tags. |
 
 ### Parameter: `partners.name`
@@ -2157,10 +2170,23 @@ The B2B partner content settings.
 
 ### Parameter: `partners.metadata`
 
-The partner metadata.
+The metadata.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-partnersmetadata>any_other_property<) | string | A metadata key-value pair. |
+
+### Parameter: `partners.metadata.>Any_other_property<`
+
+A metadata key-value pair.
+
+- Required: No
+- Type: string
 
 ### Parameter: `partners.tags`
 
@@ -2306,7 +2332,7 @@ All schemas to create.
 | [`contentType`](#parameter-schemascontenttype) | string | The schema content type. |
 | [`documentName`](#parameter-schemasdocumentname) | string | The document name. |
 | [`location`](#parameter-schemaslocation) | string | Resource location. |
-| [`metadata`](#parameter-schemasmetadata) |  | The schema metadata. |
+| [`metadata`](#parameter-schemasmetadata) | object | The metadata. |
 | [`schemaType`](#parameter-schemasschematype) | string | The schema type. |
 | [`tags`](#parameter-schemastags) | object | Resource tags. |
 | [`targetNamespace`](#parameter-schemastargetnamespace) | string | The target namespace of the schema. |
@@ -2348,10 +2374,23 @@ Resource location.
 
 ### Parameter: `schemas.metadata`
 
-The schema metadata.
+The metadata.
 
 - Required: No
-- Type: 
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-schemasmetadata>any_other_property<) | string | A metadata key-value pair. |
+
+### Parameter: `schemas.metadata.>Any_other_property<`
+
+A metadata key-value pair.
+
+- Required: No
+- Type: string
 
 ### Parameter: `schemas.schemaType`
 
