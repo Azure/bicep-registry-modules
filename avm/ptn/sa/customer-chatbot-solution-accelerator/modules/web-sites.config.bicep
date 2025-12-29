@@ -1,6 +1,3 @@
-metadata name = 'Site App Settings'
-metadata description = 'This module deploys a Site App Setting.'
-
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
 
