@@ -10,6 +10,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated existing `Microsoft.Network/publicIPAddresses` API version to `2025-01-01`.
 - Updated referenced `br/public:avm/res/network/public-ip-address` module version to `0.10.0`.
 
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### Changes

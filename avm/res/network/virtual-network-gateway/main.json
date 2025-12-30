@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "16759099327394136250"
+      "templateHash": "5155951862724149493"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1127,7 +1127,7 @@
     },
     "virtualNetworkGateway": {
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2033,7 +2033,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "11264776653589839634"
+              "templateHash": "1238836689979940050"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -2129,12 +2129,12 @@
             "virtualNetworkGateway": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworkGateways",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('virtualNetworkGatewayName')]"
             },
             "natRule": {
               "type": "Microsoft.Network/virtualNetworkGateways/natRules",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
@@ -2209,7 +2209,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetworkGateway', '2024-05-01', 'full').location]"
+      "value": "[reference('virtualNetworkGateway', '2025-01-01', 'full').location]"
     },
     "asn": {
       "type": "int",

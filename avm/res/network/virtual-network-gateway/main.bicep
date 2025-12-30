@@ -554,7 +554,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = [
 
 // VNET Gateway
 // ============
-resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = {
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2025-01-01' = {
   name: name
   location: location
   tags: tags
