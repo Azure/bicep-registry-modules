@@ -2033,7 +2033,7 @@ function Initialize-ReadMe {
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
     $isOrphaned = Test-Path $orphanedReadMeFilePath
     if ($isOrphaned) {
-        $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_".Trim() }
+        $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
     # Moved readme existing?
