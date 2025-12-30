@@ -80,13 +80,13 @@ param sku string = 'Premium'
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 3
 
-@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
+@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.')
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ApiManagement/service@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
-@description('Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.')
+@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
 @allowed([
   'None'
   'External'
@@ -156,7 +156,7 @@ param products productType[]?
 @description('Optional. Subscriptions.')
 param subscriptions subscriptionType[]?
 
-@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
+@description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.')
 param publicIpAddressResourceId string?
 
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
@@ -374,12 +374,13 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module service_backends 'backend/main.bicep' = [
   for (backend, index) in (backends ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
     params: {
       apiManagementServiceName: service.name
-      url: backend.url
+      url: backend.?url
       description: backend.?description
       credentials: backend.?credentials
       name: backend.name
@@ -388,8 +389,11 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
+      tls: backend.?tls
       enableTelemetry: enableReferencedModulesTelemetry
+      circuitBreaker: backend.?circuitBreaker
+      pool: backend.?pool
+      type: backend.?type
     }
   }
 ]
@@ -935,32 +939,41 @@ type backendType = {
   @description('Required. Backend Name.')
   name: string
 
-  @description('Optional. Backend Credentials Contract Properties.')
+  @description('Optional. Backend Credentials Contract Properties. Not supported for Backend Pools.')
   credentials: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.credentials?
 
   @description('Optional. Backend Description.')
   description: string?
 
-  @description('Optional. Backend communication protocol. - http or soap.')
+  @description('Optional. Backend communication protocol, http or soap. Not supported for Backend Pools.')
   protocol: string?
 
-  @description('Optional. Backend Proxy Contract Properties.')
+  @description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
   proxy: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.proxy?
 
-  @description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.')
+  @description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
   resourceId: string?
 
-  @description('Optional. Backend Service Fabric Cluster Properties.')
+  @description('Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools.')
   serviceFabricCluster: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.properties.serviceFabricCluster?
 
   @description('Optional. Backend Title.')
   title: string?
 
-  @description('Optional. Backend TLS Properties.')
+  @description('Optional. Backend TLS Properties. Not supported for Backend Pools.')
   tls: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
-  @description('Required. Runtime URL of the Backend.')
-  url: string
+  @description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
+  url: string?
+
+  @description('Optional. Backend Circuit Breaker Properties. Not supported for Backend Pools.')
+  circuitBreaker: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
+
+  @description('Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.')
+  pool: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.pool?
+
+  @description('Optional. Type of the backend. A backend can be either Single or Pool.')
+  type: ('Single' | 'Pool')?
 }
 
 @export()
@@ -1153,6 +1166,8 @@ type subscriptionType = {
   name: string
 }
 
+import { productPolicyType } from 'product/main.bicep'
+
 @export()
 @description('The type of a product.')
 type productType = {
@@ -1171,6 +1186,9 @@ type productType = {
 
   @description('Optional. Names of Product Groups.')
   groups: string[]?
+
+  @description('Optional. Array of Policies to apply to the Service Product.')
+  policies: productPolicyType[]?
 
   @description('Required. Product Name.')
   name: string
