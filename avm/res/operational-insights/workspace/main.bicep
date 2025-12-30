@@ -257,7 +257,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
 
 module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.bicep' = [
   for (storageInsightsConfig, index) in storageInsightsConfigs ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-StorageInsightsConfig-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-StorageInsightsConfig-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       containers: storageInsightsConfig.?containers
@@ -269,7 +269,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
 
 module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
   for (linkedService, index) in linkedServices ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-LinkedService-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-LinkedService-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedService.name
@@ -281,7 +281,7 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
 
 module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.bicep' = [
   for (linkedStorageAccount, index) in linkedStorageAccounts ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-LinkedStorageAccount-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-LinkedStorageAccount-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
@@ -292,10 +292,10 @@ module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.
 
 module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
   for (savedSearch, index) in savedSearches ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-SavedSearch-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-SavedSearch-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
-      name: '${savedSearch.name}${uniqueString(deployment().name)}'
+      name: '${savedSearch.name}${uniqueString(subscription().id, resourceGroup().id)}'
       etag: savedSearch.?etag
       displayName: savedSearch.displayName
       category: savedSearch.category
@@ -313,7 +313,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
 
 module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
   for (dataExport, index) in dataExports ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-DataExport-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-DataExport-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
       name: dataExport.name
@@ -326,7 +326,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
 
 module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
   for (dataSource, index) in dataSources ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-DataSource-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-DataSource-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: dataSource.name
@@ -349,7 +349,7 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
 
 module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   for (table, index) in tables ?? []: {
-    name: '${uniqueString(deployment().name, location)}-LAW-Table-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-Table-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
       name: table.name
@@ -366,7 +366,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
 
 module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
-    name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location

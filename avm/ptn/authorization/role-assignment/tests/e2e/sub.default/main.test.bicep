@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'arasubmin'
+param serviceShort string = 'parasubmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: subscriptionResourceId(
+    roleDefinitionIdOrName: managementGroupResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'acdd72a7-3385-48ef-bd42-f606fba81ae7'
     )

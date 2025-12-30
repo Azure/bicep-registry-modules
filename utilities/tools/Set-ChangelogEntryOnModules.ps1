@@ -120,13 +120,14 @@ function Set-ChangelogEntryOnModules {
         # Load helper
         . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
         . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
+        . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
         $originalLocation = Get-Location
         Set-Location $RepoRoot
     }
 
     process {
-        $modifiedModules = Get-ModifiedFileList | Where-Object { $_ -match 'avm[\/|\\](res|ptn|utl)[\/|\\].*' } | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique
+        $modifiedModules = Get-GitDiff -PathOnly | Where-Object { $_ -match 'avm[\/|\\](res|ptn|utl)[\/|\\].*' } | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique
 
         foreach ($moduleFolderPath in $modifiedModules) {
             Set-ChangelogEntry -Changes $Changes -BreakingChanges $BreakingChanges -RepoRoot $RepoRoot -moduleFolderPath $moduleFolderPath

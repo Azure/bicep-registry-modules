@@ -1104,6 +1104,8 @@ param skuName = 'LACluster'
 
 This instance deploys the module with a default Data Collection Rule.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-dcr]
+
 
 <details>
 
@@ -1111,7 +1113,6 @@ This instance deploys the module with a default Data Collection Rule.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwdcr001'

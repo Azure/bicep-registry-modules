@@ -18,6 +18,9 @@ param solutionName string = 'kmgs'
 @description('Optional. Azure location for the solution. If not provided, it defaults to the resource group location.')
 param location string = resourceGroup().location
 
+@description('Optional. Secondary location for Cosmos DB redundancy. This location is used when enableRedundancy is set to true.')
+param cosmosReplicaLocation string = 'canadacentral'
+
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
 param solutionUniqueToken string = substring(uniqueString(subscription().id, resourceGroup().name, solutionName), 0, 5)
@@ -166,23 +169,6 @@ var regionAbbreviations = {
 }
 var replicaAbbreviation = regionAbbreviations[?replicaLocation] ?? 'rep'
 
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
-
 var gptModelDeployment = {
   modelName: gptModelName
   deploymentName: gptModelName
@@ -266,7 +252,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -372,7 +358,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -566,7 +552,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosReplicaLocation
           }
         ]
       : [
@@ -753,7 +739,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -876,7 +862,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' 
 
 // ========== Cognitive Services - OpenAI module ========== //
 var openAiAccountName = 'oai-${solutionSuffix}'
-module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.13.2' = {
+module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.0' = {
   name: take('avm.res.cognitiveservices.account.${openAiAccountName}', 64)
   params: {
     name: openAiAccountName
@@ -936,7 +922,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.13.2' = {
 
 // ========== Cognitive Services - Document Intellignece module ========== //
 var docIntelAccountName = 'di-${solutionSuffix}'
-module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2' = {
+module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.0' = {
   name: take('avm.res.cognitiveservices.account.${docIntelAccountName}', 64)
   params: {
     name: docIntelAccountName
@@ -988,7 +974,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.1' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
@@ -1122,7 +1108,7 @@ resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClus
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.7.0' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName

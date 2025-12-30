@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "829915755877399598"
+      "version": "0.39.26.7824",
+      "templateHash": "7454254615834503225"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -1098,7 +1098,7 @@
       "condition": "[and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Firewall-PIP', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-Firewall-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1834,7 +1834,7 @@
       "condition": "[and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Firewall-MIP', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-Firewall-MIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

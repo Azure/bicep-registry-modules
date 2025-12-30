@@ -1,0 +1,145 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "10079226815418839920"
+    },
+    "name": "Integration Account Maps",
+    "description": "This module deploys an Integration Account Map."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the map resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Resource location."
+      }
+    },
+    "integrationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent integration account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "content": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The content of the map."
+      }
+    },
+    "contentType": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The content type of the map."
+      }
+    },
+    "mapType": {
+      "type": "string",
+      "allowedValues": [
+        "Liquid",
+        "NotSpecified",
+        "Xslt",
+        "Xslt20",
+        "Xslt30"
+      ],
+      "defaultValue": "Xslt",
+      "metadata": {
+        "description": "Optional. The map type."
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string",
+        "nullable": true,
+        "metadata": {
+          "description": "Optional. A metadata key-value pair."
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The metadata."
+      }
+    },
+    "parametersSchema": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/properties/properties/parametersSchema"
+        },
+        "description": "Optional. The parameters schema of integration account map."
+      },
+      "nullable": true
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/integrationAccounts/maps@2019-05-01#properties/tags"
+        },
+        "description": "Optional. Resource tags."
+      },
+      "nullable": true
+    }
+  },
+  "variables": {
+    "defaultContentType": "[if(equals(parameters('mapType'), 'Liquid'), 'application/liquid', 'application/xml')]"
+  },
+  "resources": {
+    "integrationAccount": {
+      "existing": true,
+      "type": "Microsoft.Logic/integrationAccounts",
+      "apiVersion": "2019-05-01",
+      "name": "[parameters('integrationAccountName')]"
+    },
+    "map": {
+      "type": "Microsoft.Logic/integrationAccounts/maps",
+      "apiVersion": "2019-05-01",
+      "name": "[format('{0}/{1}', parameters('integrationAccountName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "content": "[parameters('content')]",
+        "contentType": "[coalesce(parameters('contentType'), variables('defaultContentType'))]",
+        "mapType": "[parameters('mapType')]",
+        "metadata": "[parameters('metadata')]",
+        "parametersSchema": "[parameters('parametersSchema')]"
+      },
+      "tags": "[parameters('tags')]"
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the integration account map."
+      },
+      "value": "[resourceId('Microsoft.Logic/integrationAccounts/maps', parameters('integrationAccountName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the integration account map."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the integration account map was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

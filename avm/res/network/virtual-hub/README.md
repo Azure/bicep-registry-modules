@@ -681,7 +681,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayResourceId`](#parameter-p2svpngatewayresourceid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
-| [`routeTableRoutes`](#parameter-routetableroutes) | array | VirtualHub route tables. |
+| [`routeTableRoutes`](#parameter-routetableroutes) | array | The VirtualHub route tables. |
 | [`routingIntent`](#parameter-routingintent) | object | The routing intent configuration to create for the virtual hub. |
 | [`securityPartnerProviderResourceId`](#parameter-securitypartnerproviderresourceid) | string | ID of the Security Partner Provider to link to. |
 | [`securityProviderName`](#parameter-securityprovidername) | string | The Security Provider name. |
@@ -966,7 +966,7 @@ The preferred routing gateway types.
 
 ### Parameter: `routeTableRoutes`
 
-VirtualHub route tables.
+The VirtualHub route tables.
 
 - Required: No
 - Type: array

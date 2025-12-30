@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "16696551315455925798"
+      "version": "0.39.26.7824",
+      "templateHash": "13434987165594337456"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix."
@@ -65,7 +65,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -140,7 +140,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -211,7 +211,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/publicIPPrefixes@2024-10-01#properties/tags"
+          "source": "Microsoft.Network/publicIPPrefixes@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -221,7 +221,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/publicIPPrefixes@2024-01-01#properties/properties/properties/customIPPrefix"
+          "source": "Microsoft.Network/publicIPPrefixes@2025-01-01#properties/properties/properties/customIPPrefix"
         },
         "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
       },
@@ -304,7 +304,7 @@
     },
     "publicIpPrefix": {
       "type": "Microsoft.Network/publicIPPrefixes",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -384,7 +384,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('publicIpPrefix', '2024-01-01', 'full').location]"
+      "value": "[reference('publicIpPrefix', '2025-01-01', 'full').location]"
     }
   }
 }

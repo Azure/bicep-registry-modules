@@ -96,7 +96,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
 @batchSize(1)
 module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCred-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserMSI-FederatedIdentityCred-${index}'
     params: {
       name: federatedIdentityCredential.name
       userAssignedIdentityName: userAssignedIdentity.name
