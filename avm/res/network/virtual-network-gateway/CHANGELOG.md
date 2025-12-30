@@ -7,6 +7,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Fixed hardcoded Public IP `dnsSettings.domainNameLabelScope` (preview feature) by making it optional/configurable to avoid deployment failures in regions where the feature isn't available.
+- Updated existing `Microsoft.Network/publicIPAddresses` API version to `2025-01-01`.
+- Updated referenced `br/public:avm/res/network/public-ip-address` module version to `0.10.0`.
 
 ## 0.10.0
 
