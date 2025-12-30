@@ -31,7 +31,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.2' = {
+module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.3' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-dep-waf-policy-${serviceShort}'
   params: {
@@ -50,20 +50,20 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-afd-${serviceShort}'
+      name: '${namePrefix}-test-afd-${serviceShort}'
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Premium_AzureFrontDoor'
       customDomains: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
-          hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
+          name: '${namePrefix}-test-${serviceShort}-custom-domain'
+          hostName: '${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
         }
       ]
       originGroups: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
+          name: '${namePrefix}-test-${serviceShort}-origin-group'
           loadBalancingSettings: {
             additionalLatencyInMilliseconds: 50
             sampleSize: 4
@@ -71,8 +71,8 @@ module testDeployment '../../../main.bicep' = [
           }
           origins: [
             {
-              name: 'dep-${namePrefix}-test-${serviceShort}-origin'
-              hostName: 'dep-${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
+              name: '${namePrefix}-test-${serviceShort}-origin'
+              hostName: '${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
             }
           ]
         }
@@ -102,12 +102,12 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: 'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
+          name: '${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
           routes: [
             {
-              name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
-              originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-              customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
+              name: '${namePrefix}-test-${serviceShort}-afd-route'
+              originGroupName: '${namePrefix}-test-${serviceShort}-origin-group'
+              customDomainNames: ['${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
                 'dep${namePrefix}test${serviceShort}ruleset'
               ]
@@ -126,8 +126,8 @@ module testDeployment '../../../main.bicep' = [
                     subscription().subscriptionId,
                     resourceGroup.name,
                     'Microsoft.Cdn/profiles/customDomains',
-                    'dep-${namePrefix}-test-afd-${serviceShort}',
-                    'dep-${namePrefix}-test-${serviceShort}-custom-domain'
+                    '${namePrefix}-test-afd-${serviceShort}',
+                    '${namePrefix}-test-${serviceShort}-custom-domain'
                   )
                 }
               ]
