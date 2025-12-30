@@ -73,7 +73,7 @@ function Get-SpecsAlignedResourceName {
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
 
-    $rawProviderNamespace, $rawResourceType = $reducedResourceIdentifier -Split '[\/|\\]', 2 # e.g. 'keyvault' & 'vaults/keys'
+    $rawProviderNamespace, $rawResourceType = $reducedResourceIdentifier -split '[\/|\\]', 2 # e.g. 'keyvault' & 'vaults/keys'
 
     # Find provider namespace
     $foundProviderNamespaceMatches = ($specs.Keys | Sort-Object -Culture 'en-US') | Where-Object { $_ -like "Microsoft.$rawProviderNamespace*" }
@@ -108,7 +108,11 @@ function Get-SpecsAlignedResourceName {
                 # Setting explicitly as both [service/apis/operations/policies] & [service/apis/operations/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
                 $resourceType = 'service/apis/operations/policies'
             }
-            Default {
+            'service/product/policy' {
+                # Setting explicitly as both [service/products/policies] & [service/products/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
+                $resourceType = 'service/products/policies'
+            }
+            default {
                 throw ('[{0}] Found ambiguous resource types [{1}] for identifier [{2}]' -f $MyInvocation.MyCommand.Name, ($resourceType -join ','), $rawResourceType)
             }
         }

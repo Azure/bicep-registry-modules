@@ -33,7 +33,7 @@ param customSecret string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -73,13 +73,15 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
+var apimName = '${namePrefix}${serviceShort}001'
+var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: apimName
       location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
@@ -91,15 +93,13 @@ module testDeployment '../../../main.bicep' = [
             capacity: 1
           }
           disableGateway: false
-          publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion2
           virtualNetworkConfiguration: {
             subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion2
           }
         }
       ]
-      virtualNetworkType: 'Internal'
+      virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
-      publicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceIdRegion1
       publicNetworkAccess: 'Enabled'
       apis: [
         {
@@ -138,12 +138,60 @@ module testDeployment '../../../main.bicep' = [
       ]
       backends: [
         {
-          name: 'backend'
+          name: backend1Name
+          type: 'Single'
+          description: 'Test backend with maximum properties'
           tls: {
             validateCertificateChain: false
             validateCertificateName: false
           }
           url: 'http://echoapi.cloudapp.net/api'
+          circuitBreaker: {
+            rules: [
+              {
+                name: 'rule1'
+                failureCondition: {
+                  count: 1
+                  interval: 'PT1H'
+                  statusCodeRanges: [
+                    { min: 400, max: 499 }
+                    { min: 500, max: 599 }
+                  ]
+                  errorReasons: ['OperationNotFound', 'ClientConnectionFailure']
+                }
+                acceptRetryAfter: false
+                tripDuration: 'PT1H'
+              }
+            ]
+          }
+          credentials: {
+            authorization: {
+              parameter: 'dXNlcm5hbWU6c2VjcmV0cGFzc3dvcmQ=' // base64 encoded 'username:secretpassword'
+              scheme: 'Basic'
+            }
+            query: {
+              queryParam1: [
+                'value1'
+              ]
+            }
+            header: {}
+          }
+          proxy: {
+            url: 'http://myproxy:8888'
+            username: 'proxyUser'
+            password: 'proxyPassword'
+          }
+        }
+        {
+          name: 'backend2'
+          type: 'Pool'
+          pool: {
+            services: [
+              {
+                id: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/backends/${backend1Name}'
+              }
+            ]
+          }
         }
       ]
       caches: [
@@ -199,6 +247,11 @@ module testDeployment '../../../main.bicep' = [
           }
           targetResourceId: nestedDependencies.outputs.appInsightsResourceId
         }
+        {
+          name: 'azuremonitor'
+          type: 'azureMonitor'
+          isBuffered: true
+        }
       ]
       lock: {
         kind: 'CanNotDelete'
@@ -229,8 +282,9 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             enabled: false
             termsOfService: {
-              consentRequired: false
-              enabled: false
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
             }
           }
         }
@@ -247,6 +301,12 @@ module testDeployment '../../../main.bicep' = [
           name: 'Starter'
           displayName: 'Starter'
           subscriptionRequired: false
+          policies: [
+            {
+              format: 'xml'
+              value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
+            }
+          ]
         }
       ]
       roleAssignments: [

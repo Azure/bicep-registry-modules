@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "6562391216093407918"
+      "version": "0.39.26.7824",
+      "templateHash": "142663650829722942"
     },
     "name": "Storage Account File Shares",
     "description": "This module deploys a Storage Account File Share."
@@ -111,7 +111,7 @@
     },
     "accessTier": {
       "type": "string",
-      "defaultValue": "TransactionOptimized",
+      "nullable": true,
       "allowedValues": [
         "Premium",
         "Hot",
@@ -119,7 +119,7 @@
         "TransactionOptimized"
       ],
       "metadata": {
-        "description": "Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool."
+        "description": "Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to \"Premium\"). GpV2 account can choose between TransactionOptimized, Hot, and Cool."
       }
     },
     "shareQuota": {
@@ -197,7 +197,7 @@
     "storageAccount::fileService": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
     },
     "avmTelemetry": {
@@ -223,12 +223,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "fileShare": {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name'))]",
       "properties": {
         "accessTier": "[parameters('accessTier')]",

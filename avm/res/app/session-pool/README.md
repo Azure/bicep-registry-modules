@@ -1,5 +1,10 @@
 # Container App Session Pool `[Microsoft.App/sessionPools]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Container App Session Pool.
 
 You can reference the module as follows:
@@ -23,7 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/sessionPools` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_sessionpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/sessionPools)</li></ul> |
+| `Microsoft.App/sessionPools` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_sessionpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-07-01/sessionPools)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
@@ -56,8 +61,6 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
     // Required parameters
     containerType: 'PythonLTS'
     name: 'aspmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -80,10 +83,6 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
     },
     "name": {
       "value": "aspmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -102,8 +101,6 @@ using 'br/public:avm/res/app/session-pool:<version>'
 // Required parameters
 param containerType = 'PythonLTS'
 param name = 'aspmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -127,7 +124,11 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
     containerType: 'PythonLTS'
     name: 'aspmax001'
     // Non-required parameters
-    cooldownPeriodInSeconds: 350
+    dynamicPoolConfiguration: {
+      lifecycleConfiguration: {
+        cooldownPeriodInSeconds: 350
+      }
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -139,9 +140,7 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
         lifecycle: 'Main'
       }
     ]
-    maxConcurrentSessions: 6
     poolManagementType: 'Dynamic'
-    readySessionInstances: 1
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -149,7 +148,13 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
         roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
       }
     ]
-    sessionNetworkStatus: 'EgressDisabled'
+    scaleConfiguration: {
+      maxConcurrentSessions: 6
+      readySessionInstances: 1
+    }
+    sessionNetworkConfiguration: {
+      status: 'EgressDisabled'
+    }
     tags: {
       resourceType: 'Session Pool'
     }
@@ -177,8 +182,12 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "aspmax001"
     },
     // Non-required parameters
-    "cooldownPeriodInSeconds": {
-      "value": 350
+    "dynamicPoolConfiguration": {
+      "value": {
+        "lifecycleConfiguration": {
+          "cooldownPeriodInSeconds": 350
+        }
+      }
     },
     "location": {
       "value": "<location>"
@@ -197,14 +206,8 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
         }
       ]
     },
-    "maxConcurrentSessions": {
-      "value": 6
-    },
     "poolManagementType": {
       "value": "Dynamic"
-    },
-    "readySessionInstances": {
-      "value": 1
     },
     "roleAssignments": {
       "value": [
@@ -215,8 +218,16 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
         }
       ]
     },
-    "sessionNetworkStatus": {
-      "value": "EgressDisabled"
+    "scaleConfiguration": {
+      "value": {
+        "maxConcurrentSessions": 6,
+        "readySessionInstances": 1
+      }
+    },
+    "sessionNetworkConfiguration": {
+      "value": {
+        "status": "EgressDisabled"
+      }
     },
     "tags": {
       "value": {
@@ -241,7 +252,11 @@ using 'br/public:avm/res/app/session-pool:<version>'
 param containerType = 'PythonLTS'
 param name = 'aspmax001'
 // Non-required parameters
-param cooldownPeriodInSeconds = 350
+param dynamicPoolConfiguration = {
+  lifecycleConfiguration: {
+    cooldownPeriodInSeconds: 350
+  }
+}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -253,9 +268,7 @@ param managedIdentitySettings = [
     lifecycle: 'Main'
   }
 ]
-param maxConcurrentSessions = 6
 param poolManagementType = 'Dynamic'
-param readySessionInstances = 1
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -263,7 +276,13 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'Azure ContainerApps Session Executor'
   }
 ]
-param sessionNetworkStatus = 'EgressDisabled'
+param scaleConfiguration = {
+  maxConcurrentSessions: 6
+  readySessionInstances: 1
+}
+param sessionNetworkConfiguration = {
+  status: 'EgressDisabled'
+}
 param tags = {
   resourceType: 'Session Pool'
 }
@@ -290,8 +309,6 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
     containerType: 'PythonLTS'
     name: 'aspwaf001'
     // Non-required parameters
-    location: '<location>'
-    sessionNetworkStatus: 'EgressDisabled'
     tags: {
       resourceType: 'Session Pool'
     }
@@ -319,12 +336,6 @@ module sessionPool 'br/public:avm/res/app/session-pool:<version>' = {
       "value": "aspwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "sessionNetworkStatus": {
-      "value": "EgressDisabled"
-    },
     "tags": {
       "value": {
         "resourceType": "Session Pool"
@@ -348,8 +359,6 @@ using 'br/public:avm/res/app/session-pool:<version>'
 param containerType = 'PythonLTS'
 param name = 'aspwaf001'
 // Non-required parameters
-param location = '<location>'
-param sessionNetworkStatus = 'EgressDisabled'
 param tags = {
   resourceType: 'Session Pool'
 }
@@ -371,22 +380,20 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containers`](#parameter-containers) | array | Custom container definitions. Only required if containerType is CustomContainer. |
-| [`cooldownPeriodInSeconds`](#parameter-cooldownperiodinseconds) | int | The cooldown period of a session in seconds. |
+| [`customContainerTemplate`](#parameter-customcontainertemplate) | object | The custom container configuration if the containerType is CustomContainer. Only set if containerType is CustomContainer. |
+| [`dynamicPoolConfiguration`](#parameter-dynamicpoolconfiguration) | object | The pool configuration if the poolManagementType is dynamic. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of the session pool's environment. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedIdentitySettings`](#parameter-managedidentitysettings) | array | Settings for a Managed Identity that is assigned to the Session pool. |
-| [`maxConcurrentSessions`](#parameter-maxconcurrentsessions) | int | The maximum count of sessions at the same time. |
 | [`poolManagementType`](#parameter-poolmanagementtype) | string | The pool management type of the session pool. Defaults to Dynamic. |
-| [`readySessionInstances`](#parameter-readysessioninstances) | int | The minimum count of ready session instances. |
-| [`registryCredentials`](#parameter-registrycredentials) | object | Container registry credentials. Only required if containerType is CustomContainer and the container registry requires authentication. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`sessionNetworkStatus`](#parameter-sessionnetworkstatus) | string | Network status for the sessions. Defaults to EgressDisabled. |
+| [`scaleConfiguration`](#parameter-scaleconfiguration) | object | The scale configuration of the session pool. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the session pool. |
+| [`sessionNetworkConfiguration`](#parameter-sessionnetworkconfiguration) | object | The network configuration of the sessions in the session pool. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
-| [`targetIngressPort`](#parameter-targetingressport) | int | Required if containerType == 'CustomContainer'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer. |
 
 ### Parameter: `containerType`
 
@@ -409,133 +416,28 @@ Name of the Container App Session Pool.
 - Required: Yes
 - Type: string
 
-### Parameter: `containers`
+### Parameter: `customContainerTemplate`
 
-Custom container definitions. Only required if containerType is CustomContainer.
+The custom container configuration if the containerType is CustomContainer. Only set if containerType is CustomContainer.
 
 - Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`image`](#parameter-containersimage) | string | Container image tag. |
-| [`name`](#parameter-containersname) | string | Custom container name. |
-| [`resources`](#parameter-containersresources) | object | Container resource requirements. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`args`](#parameter-containersargs) | array | Container start command arguments. |
-| [`command`](#parameter-containerscommand) | array | Container start command. |
-| [`env`](#parameter-containersenv) | array | Container environment variables. |
-
-### Parameter: `containers.image`
-
-Container image tag.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `containers.name`
-
-Custom container name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `containers.resources`
-
-Container resource requirements.
-
-- Required: Yes
 - Type: object
 
-**Required parameters**
+### Parameter: `dynamicPoolConfiguration`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cpu`](#parameter-containersresourcescpu) | string | Required CPU in cores, e.g. 0.5. |
-| [`memory`](#parameter-containersresourcesmemory) | string | Required memory, e.g. "1.25Gi". |
-
-### Parameter: `containers.resources.cpu`
-
-Required CPU in cores, e.g. 0.5.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `containers.resources.memory`
-
-Required memory, e.g. "1.25Gi".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `containers.args`
-
-Container start command arguments.
+The pool configuration if the poolManagementType is dynamic.
 
 - Required: No
-- Type: array
-
-### Parameter: `containers.command`
-
-Container start command.
-
-- Required: No
-- Type: array
-
-### Parameter: `containers.env`
-
-Container environment variables.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-containersenvname) | string | Environment variable name. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`secretRef`](#parameter-containersenvsecretref) | string | Required if value is not set. Name of the Container App secret from which to pull the environment variable value. |
-| [`value`](#parameter-containersenvvalue) | string | Required if secretRef is not set. Non-secret environment variable value. |
-
-### Parameter: `containers.env.name`
-
-Environment variable name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `containers.env.secretRef`
-
-Required if value is not set. Name of the Container App secret from which to pull the environment variable value.
-
-- Required: No
-- Type: string
-
-### Parameter: `containers.env.value`
-
-Required if secretRef is not set. Non-secret environment variable value.
-
-- Required: No
-- Type: string
-
-### Parameter: `cooldownPeriodInSeconds`
-
-The cooldown period of a session in seconds.
-
-- Required: No
-- Type: int
-- Default: `300`
+- Type: object
+- Default:
+  ```Bicep
+  {
+      lifecycleConfiguration: {
+        cooldownPeriodInSeconds: 300
+        lifecycleType: 'Timed'
+      }
+  }
+  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -639,35 +541,6 @@ Settings for a Managed Identity that is assigned to the Session pool.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`identity`](#parameter-managedidentitysettingsidentity) | string | The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity. |
-| [`lifecycle`](#parameter-managedidentitysettingslifecycle) | string | Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None". |
-
-### Parameter: `managedIdentitySettings.identity`
-
-The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `managedIdentitySettings.lifecycle`
-
-Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `maxConcurrentSessions`
-
-The maximum count of sessions at the same time.
-
-- Required: No
-- Type: int
-- Default: `5`
-
 ### Parameter: `poolManagementType`
 
 The pool management type of the session pool. Defaults to Dynamic.
@@ -682,62 +555,6 @@ The pool management type of the session pool. Defaults to Dynamic.
     'Manual'
   ]
   ```
-
-### Parameter: `readySessionInstances`
-
-The minimum count of ready session instances.
-
-- Required: No
-- Type: int
-
-### Parameter: `registryCredentials`
-
-Container registry credentials. Only required if containerType is CustomContainer and the container registry requires authentication.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`server`](#parameter-registrycredentialsserver) | string | Container registry server. |
-| [`username`](#parameter-registrycredentialsusername) | string | Container registry username. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`identity`](#parameter-registrycredentialsidentity) | string | A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system". |
-| [`passwordSecretRef`](#parameter-registrycredentialspasswordsecretref) | string | The name of the secret that contains the registry login password. Not used if identity is specified. |
-
-### Parameter: `registryCredentials.server`
-
-Container registry server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `registryCredentials.username`
-
-Container registry username.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `registryCredentials.identity`
-
-A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system".
-
-- Required: No
-- Type: string
-
-### Parameter: `registryCredentials.passwordSecretRef`
-
-The name of the secret that contains the registry login password. Not used if identity is specified.
-
-- Required: No
-- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -845,19 +662,37 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `sessionNetworkStatus`
+### Parameter: `scaleConfiguration`
 
-Network status for the sessions. Defaults to EgressDisabled.
+The scale configuration of the session pool.
 
 - Required: No
-- Type: string
-- Default: `'EgressDisabled'`
-- Allowed:
+- Type: object
+- Default:
   ```Bicep
-  [
-    'EgressDisabled'
-    'EgressEnabled'
-  ]
+  {
+      maxConcurrentSessions: 5
+  }
+  ```
+
+### Parameter: `secrets`
+
+The secrets of the session pool.
+
+- Required: No
+- Type: array
+
+### Parameter: `sessionNetworkConfiguration`
+
+The network configuration of the sessions in the session pool.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      status: 'EgressDisabled'
+  }
   ```
 
 ### Parameter: `tags`
@@ -866,13 +701,6 @@ Tags of the Automation Account resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `targetIngressPort`
-
-Required if containerType == 'CustomContainer'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer.
-
-- Required: No
-- Type: int
 
 ## Outputs
 
@@ -890,8 +718,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
