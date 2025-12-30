@@ -40,11 +40,11 @@ var networkRules = [
   }
 ]
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource networkRuleSet 'Microsoft.ServiceBus/namespaces/networkRuleSets@2022-10-01-preview' = {
+resource networkRuleSet 'Microsoft.ServiceBus/namespaces/networkRuleSets@2024-01-01' = {
   name: 'default'
   parent: namespace
   properties: {

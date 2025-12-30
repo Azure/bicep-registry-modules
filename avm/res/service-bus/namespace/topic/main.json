@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "9112614450599546803"
+      "version": "0.38.33.27573",
+      "templateHash": "4772960740722851772"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -645,14 +645,14 @@
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "topic": {
       "type": "Microsoft.ServiceBus/namespaces/topics",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
+      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
       "dependsOn": [
         "namespace"
       ]
@@ -699,7 +699,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -726,8 +726,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "11299480501104004717"
+              "version": "0.38.33.27573",
+              "templateHash": "1167899423117043460"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -767,7 +767,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
@@ -809,7 +809,7 @@
         "count": "[length(coalesce(parameters('subscriptions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-subscription-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -879,8 +879,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "11356879982775009479"
+              "version": "0.38.33.27573",
+              "templateHash": "17722317559130689691"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1262,18 +1262,18 @@
             "namespace::topic": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces/topics",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
             },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "subscription": {
               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
               "properties": {
                 "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
@@ -1298,7 +1298,7 @@
                 "count": "[length(coalesce(parameters('rules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1338,8 +1338,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "9713131709782171972"
+                      "version": "0.38.33.27573",
+                      "templateHash": "13550281176676896741"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -1596,24 +1596,24 @@
                     "namespace::topic::subscription": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-                      "apiVersion": "2021-11-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
                     },
                     "namespace::topic": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces/topics",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
                     },
                     "namespace": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[parameters('namespaceName')]"
                     },
                     "rule": {
                       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
                       "properties": {
                         "action": "[parameters('action')]",

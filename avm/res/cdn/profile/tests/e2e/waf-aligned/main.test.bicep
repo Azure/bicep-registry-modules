@@ -142,10 +142,32 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-waf-api-origin'
               hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              originHostHeader: 'www.bing.com' // Should be 'www.bing.com'
               httpPort: 80
               httpsPort: 443
               priority: 1
-              weight: 1000
+              weight: 100
+              enabledState: 'Enabled'
+              enforceCertificateNameCheck: true // WAF: Security - Certificate validation
+            }
+            {
+              name: 'dep-${namePrefix}-waf-api-origin-no-2'
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              originHostHeader: '' // Should have the RP calculate the name
+              httpPort: 80
+              httpsPort: 443
+              priority: 2
+              weight: 200
+              enabledState: 'Enabled'
+              enforceCertificateNameCheck: true // WAF: Security - Certificate validation
+            }
+            {
+              name: 'dep-${namePrefix}-waf-api-origin-no-3'
+              hostName: '${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}'
+              httpPort: 80
+              httpsPort: 443
+              priority: 3
+              weight: 300
               enabledState: 'Enabled'
               enforceCertificateNameCheck: true // WAF: Security - Certificate validation
             }
@@ -311,9 +333,7 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}wafsecurityrules${serviceShort}'
-                }
+                'dep${namePrefix}wafsecurityrules${serviceShort}'
               ]
             }
           ]
@@ -379,7 +399,13 @@ output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
 @description('The AFD endpoint host names.')
 output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames
 
-@description('The resource group name.')
+@description('The user\'s name prefix. Required for post-deployment tests.')
+output namePrefix string = namePrefix
+
+@description('The name of the resource. Required for post-deployment tests.')
+output name string = testDeployment[0].outputs.name
+
+@description('The resource group name. Required for post-deployment tests.')
 output resourceGroupName string = resourceGroup.name
 
 @description('WAF compliance summary.')

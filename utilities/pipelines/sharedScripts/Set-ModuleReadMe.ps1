@@ -1655,6 +1655,14 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # Adding folder reference
+
+        $relativeTestFilePath = '/tests/e2e/{0}' -f (Split-Path (Split-Path $testFilePath -Parent) -Leaf)
+        $testFilesContent += @(
+            "You can find the full example and the setup of its dependencies in the deployment test folder path [$relativeTestFilePath]"
+            ''
+        )
+
         # If the deployment of the test is skipped, add a note
         $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
         if (Test-Path $e2eIgnoreFilePath) {
@@ -1766,7 +1774,6 @@ function Set-UsageExamplesSection {
 
                 $formattedBicepExample = @(
                     "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
-                    "  name: '$($moduleNameCamelCase)Deployment'"
                     '  params: {'
                 ) + $bicepExample +
                 @( '  }',
@@ -1962,6 +1969,9 @@ Required. The path to the readme file to initialize.
 .PARAMETER FullModuleIdentifier
 Required. The full identifier of the module. For example: 'sql/managed-instance/administrator'
 
+.PARAMETER TemplateFilePath
+Required. The path to the module's file
+
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
 
@@ -1979,6 +1989,9 @@ function Initialize-ReadMe {
 
         [Parameter(Mandatory = $true)]
         [string] $FullModuleIdentifier,
+
+        [Parameter(Mandatory = $true)]
+        [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $true)]
         [hashtable] $TemplateFileContent
@@ -2011,33 +2024,69 @@ function Initialize-ReadMe {
 
     # Deprecation file existing?
     $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
-    if (Test-Path $deprecatedModuleFilePath) {
+    $isDeprecated = Test-Path $deprecatedModuleFilePath
+    if ($isDeprecated) {
         $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
-    if (Test-Path $orphanedReadMeFilePath) {
+    $isOrphaned = Test-Path $orphanedReadMeFilePath
+    if ($isOrphaned) {
         $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
     # Moved readme existing?
     $movedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md'
-    if (Test-Path $movedReadMeFilePath) {
+    $isMovedToAVM = Test-Path $movedReadMeFilePath
+    if ($isMovedToAVM) {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }
 
+    # Code reference block
+    $isVersioned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'version.json')
+    if ($isVersioned) {
+        $specialConversionHash = @{
+            'public-ip-addresses' = 'publicIPAddresses'
+            'public-ip-prefixes'  = 'publicIPPrefixes'
+        }
+        # Get technicalModuleName (e.g., vault) as $fullModuleIdentifier leaf
+        $technicalModuleName = $fullModuleIdentifier.Split('/')[1]
+        if ($specialConversionHash.ContainsKey($moduleName)) {
+            # Convert technicalModuleName using specialConversionHash
+            $moduleNameCamelCase = $specialConversionHash[$moduleName]
+        } else {
+            # Convert technicalModuleName from kebab-case to camelCase
+            $First, $Rest = $technicalModuleName -split '-', 2
+            $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
+        }
+        $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+        $targetVersion = '<version>'
+        $referenceBlock = @(
+            'You can reference the module as follows:',
+            '```bicep',
+            "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {",
+            '  params: { (...) }',
+            '}',
+            '```',
+            'For examples, please refer to the [Usage Examples](#usage-examples) section.'
+        )
+    }
+
+    # Build result
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
-        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
-        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
-        ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
-        ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
-        ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
-        ((Test-Path $movedReadMeFilePath) ? '' : $null),
+        ($isDeprecated ? $deprecatedModuleFileContent : $null),
+        ($isDeprecated ? '' : $null),
+        ($isOrphaned ? $orphanedReadMeContent : $null),
+        ($isOrphaned ? '' : $null),
+        ($isMovedToAVM ? $movedReadMeContent : $null),
+        ($isMovedToAVM ? '' : $null),
         $moduleDescription,
-        ''
+        '',
+        ($isVersioned ? $referenceBlock : $null),
+        ($isVersioned ? '' : $null)
     ) | Where-Object { $null -ne $_ } # Filter null values
     $readMeFileContent = $initialContent
 
@@ -2212,6 +2261,7 @@ function Set-ModuleReadMe {
         ReadMeFilePath       = $ReadMeFilePath
         FullModuleIdentifier = $FullModuleIdentifier
         TemplateFileContent  = $templateFileContent
+        TemplateFilePath     = $TemplateFilePath
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 

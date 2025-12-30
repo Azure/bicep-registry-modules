@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "7131404111198105616"
+      "templateHash": "2056189889222487244"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow)."
@@ -300,24 +300,33 @@
     },
     "actionsAccessControlConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/accessControl/properties/actions"
+        },
         "description": "Optional. The access control configuration for workflow actions."
-      }
+      },
+      "nullable": true
     },
     "connectorEndpointsConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/endpointsConfiguration/properties/connector"
+        },
         "description": "Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector."
-      }
+      },
+      "nullable": true
     },
     "contentsAccessControlConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/accessControl/properties/contents"
+        },
         "description": "Optional. The access control configuration for accessing workflow run contents."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -328,10 +337,13 @@
     },
     "definitionParameters": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/parameters"
+        },
         "description": "Optional. Parameters for the definition template."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -342,10 +354,13 @@
     },
     "integrationAccount": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/integrationAccount"
+        },
         "description": "Optional. The integration account."
-      }
+      },
+      "nullable": true
     },
     "integrationServiceEnvironment": {
       "$ref": "#/definitions/integrationServiceEnvironmentType",
@@ -405,17 +420,23 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "triggersAccessControlConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/accessControl/properties/triggers"
+        },
         "description": "Optional. The access control configuration for invoking workflow triggers."
-      }
+      },
+      "nullable": true
     },
     "workflowActions": {
       "type": "object",
@@ -426,17 +447,23 @@
     },
     "workflowEndpointsConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/endpointsConfiguration/properties/workflow"
+        },
         "description": "Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow."
-      }
+      },
+      "nullable": true
     },
     "workflowManagementAccessControlConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Logic/workflows@2019-05-01#properties/properties/properties/accessControl/properties/workflowManagement"
+        },
         "description": "Optional. The access control configuration for workflow management."
-      }
+      },
+      "nullable": true
     },
     "workflowOutputs": {
       "type": "object",

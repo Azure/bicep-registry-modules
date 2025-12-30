@@ -33,7 +33,7 @@ param aiSearchConnection azureConnectionType?
 @description('Optional. Storage Account connection for the project.')
 param storageAccountConnection azureConnectionType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -59,14 +59,11 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
 }
 
-var hasConnection = !empty(cosmosDbConnection) || !empty(aiSearchConnection) || !empty(storageAccountConnection)
-
 // only create capability hosts if all the connection info is provided
 var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-preview' = {
   name: name
   parent: foundryAccount
   location: location
@@ -80,32 +77,19 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   tags: tags
 }
 
-// NOTE: using a wait script to ensure the project is fully deployed before proceeding with role assignments and connections
-module waitForProjectScript 'waitDeploymentScript.bicep' = if (hasConnection) {
-  name: take('module.project.waitDeploymentScript.waitForProject.${name}', 64)
-  dependsOn: [project]
-  params: {
-    name: 'script-wait-proj-${name}'
-    location: location
-    seconds: 30
-  }
-}
-
 module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(cosmosDbConnection)) {
   name: take('module.project.role-assign.cosmosDb.${name}', 64)
   scope: resourceGroup(cosmosDbConnection!.subscriptionId, cosmosDbConnection!.resourceGroupName)
-  dependsOn: [waitForProjectScript]
   params: {
     cosmosDbName: cosmosDb.name
     projectIdentityPrincipalId: project.identity.principalId
   }
 }
 
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(cosmosDbConnection)) {
+resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(cosmosDbConnection)) {
   name: cosmosDb.name
   parent: project
-  dependsOn: [waitForProjectScript, cosmosDbRoleAssignments]
+  dependsOn: [cosmosDbRoleAssignments]
   properties: {
     category: 'CosmosDB'
     target: cosmosDb!.properties.documentEndpoint
@@ -121,18 +105,16 @@ resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projec
 module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = if (!empty(storageAccountConnection)) {
   name: take('module.project.role-assign.storageAccount.${name}', 64)
   scope: resourceGroup(storageAccountConnection!.subscriptionId, storageAccountConnection!.resourceGroupName)
-  dependsOn: [waitForProjectScript]
   params: {
     storageAccountName: storageAccount.name
     projectIdentityPrincipalId: project.identity.principalId
   }
 }
 
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(storageAccountConnection)) {
+resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(storageAccountConnection)) {
   name: storageAccount.name
   parent: project
-  dependsOn: [waitForProjectScript, storageAccountRoleAssignments, cosmosDbConnectionResource]
+  dependsOn: [storageAccountRoleAssignments, cosmosDbConnectionResource]
   properties: {
     category: 'AzureStorageAccount' // NOTE: The category 'AzureStorageAccount' works with the capability host but 'AzureBlob' does not seem to be supported.
     target: storageAccount!.properties.primaryEndpoints.blob
@@ -148,19 +130,16 @@ resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/
 module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(aiSearchConnection)) {
   name: take('module.project.role-assign.aiSearch.${name}', 64)
   scope: resourceGroup(aiSearchConnection!.subscriptionId, aiSearchConnection!.resourceGroupName)
-  dependsOn: [waitForProjectScript]
   params: {
     aiSearchName: aiSearch.name
     projectIdentityPrincipalId: project.identity.principalId
   }
 }
 
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (!empty(aiSearchConnection)) {
+resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(aiSearchConnection)) {
   name: aiSearch.name
   parent: project
   dependsOn: [
-    waitForProjectScript
     aiSearchRoleAssignments
     storageAccountConnectionResource
     cosmosDbConnectionResource
@@ -177,30 +156,11 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   }
 }
 
-// NOTE: using a wait script to ensure all connections are established before creating the capability host
-module waitForConnectionsScript 'waitDeploymentScript.bicep' = if (hasConnection && (createAccountCapabilityHostInternal || createProjectCapabilityHostInternal)) {
-  name: take('module.project.waitDeploymentScript.waitForConn.${name}', 64)
-  dependsOn: [
-    project
-    waitForProjectScript
-    cosmosDbConnectionResource
-    storageAccountConnectionResource
-    aiSearchConnectionResource
-  ]
-  params: {
-    name: 'script-wait-conns-${name}'
-    location: location
-    seconds: 60
-  }
-}
-
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (createAccountCapabilityHostInternal) {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-07-01-preview' = if (createAccountCapabilityHostInternal) {
   name: 'chagent${replace(accountName, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: foundryAccount
   dependsOn: [
     project
-    waitForConnectionsScript
     cosmosDbConnectionResource
     storageAccountConnectionResource
     aiSearchConnectionResource
@@ -211,13 +171,20 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-#disable-next-line use-recent-api-versions // NOTE: using preview API version due to reported issues with the latest version.
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (createProjectCapabilityHostInternal) {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-07-01-preview' = if (createProjectCapabilityHostInternal) {
   name: 'chagent${replace(name, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: project
+  // Using explicit dependsOn because of dynamic cap host creation
   dependsOn: [
     accountCapabilityHost
-    waitForConnectionsScript
+    #disable-next-line no-unnecessary-dependson
+    project
+    #disable-next-line no-unnecessary-dependson
+    cosmosDbConnectionResource
+    #disable-next-line no-unnecessary-dependson
+    storageAccountConnectionResource
+    #disable-next-line no-unnecessary-dependson
+    aiSearchConnectionResource
   ]
   properties: {
     capabilityHostKind: 'Agents'

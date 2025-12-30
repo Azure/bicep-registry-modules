@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "5762557473950803851"
+      "version": "0.38.33.27573",
+      "templateHash": "12190678860529527128"
     },
     "name": "Elastic SAN Volume Snapshots",
     "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -55,7 +55,7 @@
   "resources": [
     {
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups/snapshots",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
       "properties": {
         "creationData": {

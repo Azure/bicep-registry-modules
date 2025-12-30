@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/bastion-host/CHANGELOG.md).
 
+## 0.8.2
+
+### Changes
+
+- Updated cross-module reference to `public-ip-address` to the newest version `0.10.0`.
+- Updated Bastion API version to `2025-01-01`.
+
+### Breaking Changes
+
+- None
+
+## 0.8.1
+
+### Changes
+
+- Updated child module deployment names to use stable identifiers instead of `deployment().name` to prevent deployment history accumulation when using Azure Deployment Stacks.
+
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes

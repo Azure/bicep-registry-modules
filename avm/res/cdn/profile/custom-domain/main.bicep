@@ -14,7 +14,7 @@ param hostName string
 param azureDnsZoneResourceId string = ''
 
 @description('Optional. Key-Value pair representing migration properties for domains.')
-param extendedProperties object = {}
+param extendedProperties resourceInput<'Microsoft.Cdn/profiles/customDomains@2025-06-01'>.properties.extendedProperties?
 
 @description('Optional. Resource reference to the Azure resource where custom domain ownership was prevalidated.')
 param preValidatedCustomDomainResourceId string = ''
@@ -39,10 +39,10 @@ param minimumTlsVersion string = 'TLS12'
 param secretName string = ''
 
 @description('Optional. The cipher suite set type that will be used for Https.')
-param cipherSuiteSetType string = ''
+param cipherSuiteSetType string?
 
 @description('Optional. The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized.')
-param customizedCipherSuiteSet object = {}
+param customizedCipherSuiteSet resourceInput<'Microsoft.Cdn/profiles/customDomains@2025-06-01'>.properties.tlsSettings.customizedCipherSuiteSet?
 
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
@@ -61,7 +61,7 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
           id: azureDnsZoneResourceId
         }
       : null
-    extendedProperties: !empty(extendedProperties) ? extendedProperties : null
+    extendedProperties: extendedProperties
     hostName: hostName
     preValidatedCustomDomainResourceId: !empty(preValidatedCustomDomainResourceId)
       ? {
@@ -70,8 +70,8 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2025-06-01' = {
       : null
     tlsSettings: {
       certificateType: certificateType
-      cipherSuiteSetType: !empty(cipherSuiteSetType) ? cipherSuiteSetType : null
-      customizedCipherSuiteSet: !empty(customizedCipherSuiteSet) ? customizedCipherSuiteSet : null
+      cipherSuiteSetType: cipherSuiteSetType
+      customizedCipherSuiteSet: customizedCipherSuiteSet
       minimumTlsVersion: minimumTlsVersion
       secret: !(empty(secretName))
         ? {
@@ -103,40 +103,6 @@ output dnsValidation dnsValidationOutputType = {
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-@description('The type of the custom domain.')
-type customDomainType = {
-  @description('Required. The name of the custom domain.')
-  name: string
-
-  @description('Required. The host name of the custom domain.')
-  hostName: string
-
-  @description('Required. The type of the certificate.')
-  certificateType: 'AzureFirstPartyManagedCertificate' | 'CustomerCertificate' | 'ManagedCertificate'
-
-  @description('Optional. The resource ID of the Azure DNS zone.')
-  azureDnsZoneResourceId: string?
-
-  @description('Optional. The resource ID of the pre-validated custom domain.')
-  preValidatedCustomDomainResourceId: string?
-
-  @description('Optional. The name of the secret.')
-  secretName: string?
-
-  @description('Optional. The minimum TLS version.')
-  minimumTlsVersion: 'TLS10' | 'TLS12' | 'TLS13' | null
-
-  @description('Optional. Extended properties.')
-  extendedProperties: object?
-
-  @description('Optional. The cipher suite set type that will be used for Https.')
-  cipherSuiteSetType: string?
-
-  @description('Optional. The customized cipher suite set that will be used for Https.')
-  customizedCipherSuiteSet: object?
-}
 
 @export()
 @description('The type of the DNS validation.')

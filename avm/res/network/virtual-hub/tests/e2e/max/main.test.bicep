@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -98,10 +98,14 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      sku:'Standard'
+      sku: 'Standard'
       virtualRouterAutoScaleConfiguration: {
         minCount: 2
       }
+      preferredRoutingGateway: 'ExpressRoute'
+      hubRoutingPreference: 'ASPath'
+      virtualRouterAsn: 65515
+      routingIntent: {}
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

@@ -2,6 +2,40 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- All API versions have been updated to the latest supported versions.
+- New parameters `circuitBreaker`, `pool`, `type` added to backend child module.
+- New child module `product/policy` added.
+
+### Breaking Changes
+
+- Update default values for `url` and `tls` parameters in `backend` child module to align with new `type` parameter.
+- Property `credentials` of the `logger` child module is now conditionally required based on the `type` parameter.
+
+## 0.12.0
+
+### Changes
+
+- Added support for `privateEndpoints` parameter
+- Added  `privateEndpoints` output
+
+### Breaking Changes
+
+- `publicNetworkAccess` is set to `Disabled` if not specified and `privateEndpoints` are configured
+
+## 0.11.2
+
+### Changes
+
+- Added support for `publicNetworkAccess` parameter
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

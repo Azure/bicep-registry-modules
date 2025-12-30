@@ -14,12 +14,12 @@ param name string
 param analyticalStorageTtl int = 0
 
 @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
-param conflictResolutionPolicy object = {}
+param conflictResolutionPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.conflictResolutionPolicy?
 
 @maxValue(2147483647)
 @minValue(-1)
 @description('Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don\'t expire by default.')
-param defaultTtl int = -1
+param defaultTtl int?
 
 @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
 param throughput int = 400
@@ -29,7 +29,7 @@ param throughput int = 400
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL Database resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.tags?
 
 @maxLength(3)
 @minLength(1)
@@ -37,10 +37,10 @@ param tags object?
 param paths string[]
 
 @description('Optional. Indexing policy of the container.')
-param indexingPolicy object = {}
+param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.indexingPolicy?
 
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-param uniqueKeyPolicyKeys array = []
+param uniqueKeyPolicyKeys resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
@@ -48,50 +48,48 @@ param uniqueKeyPolicyKeys array = []
   'MultiHash'
 ])
 param kind string = 'Hash'
+
 @description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
 @allowed([1, 2])
 param version int = 1
 
 var partitionKeyPaths = [for path in paths: startsWith(path, '/') ? path : '/${path}']
 
-var containerResourceParams = union(
-  {
-    conflictResolutionPolicy: conflictResolutionPolicy
-    defaultTtl: defaultTtl
-    id: name
-    indexingPolicy: !empty(indexingPolicy) ? indexingPolicy : null
-    partitionKey: {
-      paths: partitionKeyPaths
-      kind: kind
-      version: kind == 'MultiHash' ? 2 : version
-    }
-    uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
-      ? {
-          uniqueKeys: uniqueKeyPolicyKeys
-        }
-      : null
-  },
-  analyticalStorageTtl != 0
-    ? {
-        analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
-      }
-    : {}
-)
-
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 
-  resource sqlDatabase 'sqlDatabases@2024-11-15' existing = {
+  resource sqlDatabase 'sqlDatabases@2025-04-15' existing = {
     name: sqlDatabaseName
   }
 }
 
-resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = {
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15' = {
   name: name
   parent: databaseAccount::sqlDatabase
   tags: tags
   properties: {
-    resource: containerResourceParams
+    resource: {
+      conflictResolutionPolicy: conflictResolutionPolicy
+      id: name
+      indexingPolicy: indexingPolicy
+      partitionKey: {
+        paths: partitionKeyPaths
+        kind: kind
+        version: kind == 'MultiHash' ? 2 : version
+      }
+      uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
+        ? {
+            uniqueKeys: uniqueKeyPolicyKeys
+          }
+        : null
+      ...(analyticalStorageTtl != 0
+        ? {
+            analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
+          }
+        : {})
+      ...(defaultTtl != null ? { defaultTtl: defaultTtl } : {}) // Not passing the value sets it to 'Off'. Setting it with any value sets it to 'On'
+    }
+
     options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
       ? null
       : {

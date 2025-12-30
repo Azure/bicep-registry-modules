@@ -8,10 +8,10 @@ param dnsZoneName string
 param name string
 
 @description('Optional. The metadata attached to the record set.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.metadata?
 
 @description('Optional. The list of CAA records in the record set.')
-param caaRecords array?
+param caaRecords resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.caaRecords?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "10709706716219857119"
+      "version": "0.38.5.1644",
+      "templateHash": "7427767884400428963"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -199,7 +199,7 @@
         "count": "[length(coalesce(parameters('databasePrincipalAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-KDB-PrincipalAssignment-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -230,8 +230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16605851677232955245"
+              "version": "0.38.5.1644",
+              "templateHash": "16788348045774314318"
             },
             "name": "Kusto Cluster Database Principal Assignments",
             "description": "This module deploys a Kusto Cluster Database Principal Assignment."

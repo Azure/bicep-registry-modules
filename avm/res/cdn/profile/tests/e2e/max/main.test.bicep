@@ -253,9 +253,7 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}test${serviceShort}ruleset1'
-                }
+                'dep${namePrefix}test${serviceShort}ruleset1'
               ]
             }
           ]
@@ -317,4 +315,4 @@ output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostN
 output resourceGroupName string = resourceGroup.name
 
 @description('The system-assigned managed identity principal ID.')
-output systemAssignedMIPrincipalId string = testDeployment[0].outputs.?systemAssignedMIPrincipalId
+output systemAssignedMIPrincipalId string? = testDeployment[0].outputs.?systemAssignedMIPrincipalId

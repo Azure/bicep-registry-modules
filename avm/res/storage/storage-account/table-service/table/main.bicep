@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Storage Account Table.'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -90,11 +90,11 @@ resource table_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-@description('The name of the deployed file share service.')
+@description('The name of the deployed table.')
 output name string = table.name
 
-@description('The resource ID of the deployed file share service.')
+@description('The resource ID of the deployed table.')
 output resourceId string = table.id
 
-@description('The resource group of the deployed file share service.')
+@description('The resource group of the deployed table.')
 output resourceGroupName string = resourceGroup().name

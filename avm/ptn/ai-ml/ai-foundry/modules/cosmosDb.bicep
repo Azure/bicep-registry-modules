@@ -14,7 +14,7 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. The resource ID of the private DNS zone for the Cosmos DB to establish private endpoints.')
 param privateDnsZoneResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the Cosmos DB.')
 param roleAssignments roleAssignmentType[]?
 
@@ -38,12 +38,12 @@ resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' exi
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.16.0' = if (empty(existingResourceId)) {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = if (empty(existingResourceId)) {
   name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name
     enableTelemetry: enableTelemetry
-    automaticFailover: true
+    enableAutomaticFailover: true
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
     location: location

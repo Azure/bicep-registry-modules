@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "4106638715372750974"
+      "templateHash": "15524913392225203553"
     },
     "name": "Application Security Groups (ASG)",
     "description": "This module deploys an Application Security Group (ASG)."
@@ -158,10 +158,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationSecurityGroups@2023-04-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

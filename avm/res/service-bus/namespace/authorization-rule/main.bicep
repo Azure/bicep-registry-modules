@@ -17,11 +17,11 @@ param name string
 ])
 param rights array = []
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource authorizationRule 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2022-10-01-preview' = {
+resource authorizationRule 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2024-01-01' = {
   name: name
   parent: namespace
   properties: {

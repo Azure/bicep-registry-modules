@@ -47,7 +47,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}002'
       kind: 'AIServices'
-      location: enforcedLocation
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {

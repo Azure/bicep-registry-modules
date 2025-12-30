@@ -7,12 +7,12 @@ param virtualWANName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource virtualWan 'Microsoft.Network/virtualWans@2023-04-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-10-01' = {
   name: virtualWANName
   location: location
 }

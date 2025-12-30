@@ -265,14 +265,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -285,14 +286,15 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
+var isGeoHSMManagedCMK = split(customerManagedKeyGeo.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
   name: last(split(customerManagedKeyGeo.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
     name: customerManagedKeyGeo.?keyName!
   }
 }
@@ -305,7 +307,7 @@ resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdent
   )
 }
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview' = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-30' = {
   name: name
   location: location
   tags: tags
@@ -327,14 +329,22 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview
       ? {
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
-            ? (!empty(customerManagedKeyGeo.?keyVersion ?? '')
-                ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.?keyVersion!}'
-                : cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion)
+            ? (!empty(customerManagedKeyGeo.?keyVersion)
+                ? (!isGeoHSMManagedCMK
+                    ? '${cMKGeoKeyVault::cMKKey!.properties.keyUri}/${customerManagedKeyGeo!.keyVersion!}'
+                    : 'https://${last(split((customerManagedKeyGeo!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKeyGeo!.keyName}/${customerManagedKeyGeo!.keyVersion!}')
+                : (!isGeoHSMManagedCMK
+                    ? cMKGeoKeyVault::cMKKey!.properties.keyUriWithVersion
+                    : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.')))
             : null
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
-          primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.?keyVersion!}'
-            : cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+          primaryKeyURI: !empty(customerManagedKey.?keyVersion)
+            ? (!isHSMManagedCMK
+                ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+            : (!isHSMManagedCMK
+                ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
       : null
@@ -481,7 +491,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
     scope: resourceGroup(

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "11217937818637058576"
+      "version": "0.39.26.7824",
+      "templateHash": "9460164543777252912"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -470,8 +470,8 @@
         "count": "[length(variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-pdns-zone-vnet-links-loop', uniqueString(deployment().name, variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName, parameters('location')))]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-pdns-zone-vnet-links-loop', uniqueString(subscription().id, resourceGroup().id, variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -495,8 +495,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "16009712215620397331"
+              "version": "0.39.26.7824",
+              "templateHash": "11254998906437335721"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

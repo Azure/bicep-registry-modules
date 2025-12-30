@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3558727736610302576"
+      "version": "0.38.5.1644",
+      "templateHash": "2960206334964151152"
     },
     "name": "Public DNS Zone MX record",
     "description": "This module deploys a Public DNS Zone MX record."
@@ -103,17 +103,23 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "mxRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/MX@2018-05-01#properties/properties/properties/MXRecords"
+        },
         "description": "Optional. The list of MX records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

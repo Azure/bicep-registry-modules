@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.10.0
+
+### Changes
+
+- Added support for managed HSM customer-managed key encryption
+- Updated all 'avm-common-types' references to version `0.6.1`
+- Updated `avm/res/network/private-endpoint` cross-referenced module to version `0.11.1`
+- Updated the API versions for all referenced resource types
+
+### Breaking Changes
+
+- None
+
 ## 0.9.1
 
 ### Changes

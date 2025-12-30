@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/express-route-gateway/CHANGELOG.md).
 
-## 0.7.1
+## 0.8.0
 
 ### Changes
 
@@ -14,7 +14,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Renamed parameter `virtualHubId` to `virtualHubResourceId`
 
 ## 0.7.0
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "5527919762019385119"
+      "version": "0.38.33.27573",
+      "templateHash": "2258825654267129128"
     },
     "name": "Elastic SAN Volumes",
     "description": "This module deploys an Elastic SAN Volume."
@@ -117,18 +117,18 @@
     "elasticSan::volumeGroup": {
       "existing": true,
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
     },
     "elasticSan": {
       "existing": true,
       "type": "Microsoft.ElasticSan/elasticSans",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('elasticSanName')]"
     },
     "volume": {
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups/volumes",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
       "properties": {
         "sizeGiB": "[parameters('sizeGiB')]"
@@ -140,7 +140,7 @@
         "count": "[length(coalesce(parameters('snapshots'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Volume-Snapshot-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -170,8 +170,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "5762557473950803851"
+              "version": "0.38.33.27573",
+              "templateHash": "12190678860529527128"
             },
             "name": "Elastic SAN Volume Snapshots",
             "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -221,7 +221,7 @@
           "resources": [
             {
               "type": "Microsoft.ElasticSan/elasticSans/volumegroups/snapshots",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
               "properties": {
                 "creationData": {

@@ -17,17 +17,17 @@ param type string = 'Standard'
 @description('Optional. True if branch to branch traffic is allowed.')
 param allowBranchToBranchTraffic bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualWans@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -79,13 +79,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-07-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2025-01-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    allowBranchToBranchTraffic: allowBranchToBranchTraffic
     type: type
+    allowBranchToBranchTraffic: allowBranchToBranchTraffic
   }
 }
 

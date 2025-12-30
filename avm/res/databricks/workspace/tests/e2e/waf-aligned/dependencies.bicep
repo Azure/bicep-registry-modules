@@ -39,12 +39,12 @@ param accessConnectorName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -62,7 +62,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -70,7 +70,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
-resource keyVaultDisk 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVaultDisk 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultDiskName
   location: location
   properties: {
@@ -88,7 +88,7 @@ resource keyVaultDisk 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKeyDisk'
     properties: {
       kty: 'RSA'
@@ -135,7 +135,7 @@ resource storagePermissionsUMAI 'Microsoft.Authorization/roleAssignments@2022-04
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -145,7 +145,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   properties: {}
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 }
@@ -160,7 +160,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2023-10-01' = {
+resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@2025-09-01' = {
   name: amlWorkspaceName
   location: location
   identity: {
@@ -177,7 +177,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-10-01' = {
   name: loadBalancerName
   location: location
   properties: {
@@ -199,7 +199,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-10-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
@@ -292,7 +292,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-0
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -346,11 +346,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azuredatabricks.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -362,11 +362,11 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource blobStoragePrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource blobStoragePrivateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.blob.${environment().suffixes.storage}'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {

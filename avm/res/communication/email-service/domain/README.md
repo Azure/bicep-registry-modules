@@ -296,9 +296,12 @@ Describes whether user engagement tracking is enabled or disabled.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `fromSenderDomain` | string | The from sender domain for the domain. |
+| `mailFromSenderDomain` | string | The mail from sender domain for the domain. |
 | `name` | string | The name of the domain. |
 | `resourceGroupName` | string | The name of the resource group the domain was created in. |
 | `resourceId` | string | The resource ID of the domain. |
+| `verificationRecords` | object | The verification records for the domain. |
 
 ## Cross-referenced modules
 
@@ -306,4 +309,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

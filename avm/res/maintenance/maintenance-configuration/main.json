@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "11674989812169572"
+      "templateHash": "13636087630366295121"
     },
     "name": "Maintenance Configurations",
     "description": "This module deploys a Maintenance Configuration."
@@ -141,10 +141,13 @@
     },
     "extensionProperties": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/extensionProperties"
+        },
         "description": "Optional. Gets or sets extensionProperties of the maintenanceConfiguration."
-      }
+      },
+      "defaultValue": {}
     },
     "location": {
       "type": "string",
@@ -177,10 +180,13 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/maintenanceWindow"
+        },
         "description": "Optional. Definition of a MaintenanceWindow."
-      }
+      },
+      "defaultValue": {}
     },
     "namespace": {
       "type": "string",
@@ -201,10 +207,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/tags"
+        },
         "description": "Optional. Gets or sets tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "visibility": {
       "type": "string",
@@ -220,10 +229,13 @@
     },
     "installPatches": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/installPatches"
+        },
         "description": "Optional. Configuration settings for VM guest patching with Azure Update Manager."
-      }
+      },
+      "defaultValue": {}
     }
   },
   "variables": {

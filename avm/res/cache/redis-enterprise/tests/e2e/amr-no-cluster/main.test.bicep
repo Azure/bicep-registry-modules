@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis with non-clustered policy (Preview)'
-metadata description = 'This instance deploys an Azure Managed Redis cache in non-clustered mode (Preview).'
+metadata name = 'Azure Managed Redis with non-clustered policy'
+metadata description = 'This instance deploys an Azure Managed Redis cache in non-clustered mode.'
 
 // ========== //
 // Parameters //
@@ -27,7 +27,7 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }

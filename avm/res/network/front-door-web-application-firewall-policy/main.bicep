@@ -17,7 +17,7 @@ param location string = 'global'
 param sku string = 'Standard_AzureFrontDoor'
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2025-03-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

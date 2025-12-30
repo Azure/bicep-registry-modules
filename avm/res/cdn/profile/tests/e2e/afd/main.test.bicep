@@ -129,9 +129,7 @@ module testDeployment '../../../main.bicep' = [
               originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
               customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}test${serviceShort}ruleset'
-                }
+                'dep${namePrefix}test${serviceShort}ruleset'
               ]
             }
           ]

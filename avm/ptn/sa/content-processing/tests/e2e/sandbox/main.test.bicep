@@ -14,14 +14,8 @@ param serviceShort string = 'scpmin'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Timestamp for environment name uniqueness.')
-param environmentTimestamp string = take(uniqueString(utcNow()), 5)
 
 // ============ //
 // Dependencies //
@@ -46,10 +40,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      environmentName: '${namePrefix}${serviceShort}'
+      solutionName: '${namePrefix}${serviceShort}'
+      aiServiceLocation: enforcedLocation
+      gptDeploymentCapacity: 10
       enablePrivateNetworking: false
-      contentUnderstandingLocation: enforcedLocation
-      gptDeploymentCapacity: 1
+      enableMonitoring: false
+      enableRedundancy: false
+      enableScalability: false
+      enableTelemetry: true
     }
   }
 ]

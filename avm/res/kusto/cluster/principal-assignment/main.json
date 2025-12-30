@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16949506945296697955"
+      "version": "0.38.5.1644",
+      "templateHash": "4785151175569757524"
     },
     "name": "Kusto Cluster Principal Assignments",
     "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -57,7 +57,7 @@
   "resources": [
     {
       "type": "Microsoft.Kusto/clusters/principalAssignments",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('principalId'))]",
       "properties": {
         "principalId": "[parameters('principalId')]",

@@ -33,12 +33,12 @@ resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = 
   }
 }
 
-@description('AI Project metadata including name, resource ID, and API endpoint.')
+@description('AI Project metadata including name, resource ID, and API endpoint, and SystemAssignedManagedIdentity Principal Id.')
 output aiProjectInfo aiProjectOutputType = {
   name: aiProject.name
   resourceId: aiProject.id
   apiEndpoint: aiProject!.properties.endpoints['AI Foundry API']
-  systemAssignedMIPrincipalId: aiProject!.identity.principalId
+  aiprojectSystemAssignedMIPrincipalId: aiProject!.identity.principalId
 }
 
 @export()
@@ -54,5 +54,5 @@ type aiProjectOutputType = {
   apiEndpoint: string
 
   @description('Required. System Assigned Managed Identity Principal Id of the AI project.')
-  systemAssignedMIPrincipalId: string
+  aiprojectSystemAssignedMIPrincipalId: string
 }

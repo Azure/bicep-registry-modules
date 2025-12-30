@@ -14,7 +14,7 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. The resource ID of the private DNS zone for the AI Search resource to establish private endpoints.')
 param privateDnsZoneResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the AI Search resource.')
 param roleAssignments roleAssignmentType[]?
 

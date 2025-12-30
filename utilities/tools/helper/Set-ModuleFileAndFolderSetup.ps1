@@ -91,19 +91,25 @@ function Set-ModuleFileAndFolderSetup {
         # ------------
         $versionFilePath = Join-Path $CurrentLevelFolderPath 'version.json'
         if (-not (Test-Path $versionFilePath)) {
-            if ($PSCmdlet.ShouldProcess("File [$versionFilePath]", 'Add')) {
-                $null = New-Item -Path $versionFilePath -ItemType 'File' -Force
-            }
-
             $versionSourceFilePath = Join-Path $PSScriptRoot 'src' 'src.version.json'
-            if (Test-Path $versionSourceFilePath) {
-                $versionSourceFileContent = Get-Content -Path $versionSourceFilePath
-                if ($PSCmdlet.ShouldProcess("content for file [$versionFilePath]", 'Set')) {
-                    $null = Set-Content -Path $versionFilePath -Value $versionSourceFileContent
-                }
+            if ($PSCmdlet.ShouldProcess("File [$versionFilePath]", 'Add')) {
+                $null = Copy-Item -Path $versionSourceFilePath -Destination $versionFilePath -Force
             }
             Write-Verbose "Added file [$versionFilePath]" -Verbose
         }
+
+        # Changelog file
+        # --------------
+        $changelogFilePath = Join-Path $CurrentLevelFolderPath 'CHANGELOG.md'
+        if (-not (Test-Path $changelogFilePath)) {
+            $changelogSourceFilePath = Join-Path $PSScriptRoot 'src' 'CHANGELOG.md'
+            if ($PSCmdlet.ShouldProcess("File [$changelogSourceFilePath]", 'Add')) {
+                $null = Copy-Item -Path $changelogSourceFilePath -Destination $changelogFilePath -Force
+            }
+            Write-Verbose "Added file [$changelogFilePath]" -Verbose
+        }
+        # Replace placeholder
+        $null = Set-Content -Path $changelogFilePath -Value ((Get-Content -Path $changelogFilePath) -replace '<modulePath>', ($resourceTypeIdentifier -replace '\\', '/'))
 
         # Defaults test file
         # -----------------
@@ -124,14 +130,15 @@ function Set-ModuleFileAndFolderSetup {
             if (Test-Path $defaultTestTemplateSourceFilePath) {
                 $defaultTestTemplateSourceFileContent = Get-Content -Path $defaultTestTemplateSourceFilePath
 
-                $suggestedServiceShort = '{0}def' -f (($resourceTypeIdentifier -split '[\/|\\|-]' | ForEach-Object { $_[0] }) -join '') # e.g., npemin
+                $suggestedServiceShort = '{0}min' -f (($resourceTypeIdentifier -split '[\/|\\|-]' | ForEach-Object { $_[0] }) -join '') # e.g., npemin
                 $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<serviceShort>', $suggestedServiceShort
 
                 $suggestedResourceGroupName = $resourceTypeIdentifier -replace '[\/|\\]', '.' -replace '-' # e.g., network.privateendpoints
                 $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
+                $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<TestName>', 'Using only defaults'
+                $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<TestDescription>', 'This instance deploys the module with the minimum set of required parameters.'
 
                 if ($PSCmdlet.ShouldProcess("content for file [$defaultTestFilePath]", 'Set')) {
-
                     $null = Set-Content -Path $defaultTestFilePath -Value $defaultTestTemplateSourceFileContent
                 }
             }
@@ -156,6 +163,8 @@ function Set-ModuleFileAndFolderSetup {
 
                 $suggestedResourceGroupName = $resourceTypeIdentifier -replace '[\/|\\]', '.' -replace '-' # e.g., network.privateendpoints
                 $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
+                $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<TestName>', 'WAF-aligned'
+                $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<TestDescription>', 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
                 if ($PSCmdlet.ShouldProcess("content for file [$wafTestFilePath]", 'Set')) {
                     $null = Set-Content -Path $wafTestFilePath -Value $wafTestTemplateSourceFileContent

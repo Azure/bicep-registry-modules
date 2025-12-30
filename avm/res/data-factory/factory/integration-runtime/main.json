@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "14842251872512097354"
+      "version": "0.38.33.27573",
+      "templateHash": "127419371745742377"
     },
     "name": "Data Factory Integration RunTimes",
     "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -55,18 +55,12 @@
       }
     }
   },
-  "variables": {
-    "managedVirtualNetworkVar": {
-      "referenceName": "[if(equals(parameters('type'), 'Managed'), parameters('managedVirtualNetworkName'), null())]",
-      "type": "[if(equals(parameters('type'), 'Managed'), 'ManagedVirtualNetworkReference', null())]"
-    }
-  },
   "resources": [
     {
       "type": "Microsoft.DataFactory/factories/integrationRuntimes",
       "apiVersion": "2018-06-01",
       "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
-      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+      "properties": "[shallowMerge(createArray(createObject('type', parameters('type')), if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'managedVirtualNetwork', createObject('referenceName', parameters('managedVirtualNetworkName'), 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject())))]"
     }
   ],
   "outputs": {

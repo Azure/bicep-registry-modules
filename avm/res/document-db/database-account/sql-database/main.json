@@ -5,11 +5,132 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7141543733238879531"
+      "version": "0.38.33.27573",
+      "templateHash": "1549250134356326406"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account."
+  },
+  "definitions": {
+    "containerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the container."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+          }
+        },
+        "conflictResolutionPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+            },
+            "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+          },
+          "nullable": true
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "minValue": -1,
+          "maxValue": 2147483647,
+          "metadata": {
+            "description": "Optional. Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items don't expire by default."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 1000000,
+          "metadata": {
+            "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the SQL Database resource."
+          },
+          "nullable": true
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minLength": 1,
+          "maxLength": 3,
+          "metadata": {
+            "description": "Required. List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1."
+          }
+        },
+        "indexingPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+            },
+            "description": "Optional. Indexing policy of the container."
+          },
+          "nullable": true
+        },
+        "uniqueKeyPolicyKeys": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+            },
+            "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+          },
+          "nullable": true
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Hash",
+            "MultiHash"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+          }
+        },
+        "version": {
+          "type": "int",
+          "allowedValues": [
+            1,
+            2
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a container."
+      }
+    }
   },
   "parameters": {
     "databaseAccountName": {
@@ -27,7 +148,7 @@
     "containers": {
       "type": "array",
       "items": {
-        "type": "object"
+        "$ref": "#/definitions/containerType"
       },
       "nullable": true,
       "metadata": {
@@ -50,22 +171,25 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15#properties/tags"
+        },
         "description": "Optional. Tags of the SQL database resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "sqlDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -84,7 +208,7 @@
         "count": "[length(coalesce(parameters('containers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('containers'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -137,8 +261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1789954443166349986"
+              "version": "0.38.33.27573",
+              "templateHash": "1005439058963058082"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -171,14 +295,17 @@
             },
             "conflictResolutionPolicy": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+                },
                 "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
-              }
+              },
+              "nullable": true
             },
             "defaultTtl": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "minValue": -1,
               "maxValue": 2147483647,
               "metadata": {
@@ -202,10 +329,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+                },
                 "description": "Optional. Tags of the SQL Database resource."
-              }
+              },
+              "nullable": true
             },
             "paths": {
               "type": "array",
@@ -220,17 +350,23 @@
             },
             "indexingPolicy": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                },
                 "description": "Optional. Indexing policy of the container."
-              }
+              },
+              "nullable": true
             },
             "uniqueKeyPolicyKeys": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+                },
                 "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
-              }
+              },
+              "nullable": true
             },
             "kind": {
               "type": "string",
@@ -262,29 +398,28 @@
                 "count": "[length(parameters('paths'))]",
                 "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
               }
-            ],
-            "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+            ]
           },
           "resources": {
             "databaseAccount::sqlDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "container": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "resource": "[variables('containerResourceParams')]",
+                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
                 "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [

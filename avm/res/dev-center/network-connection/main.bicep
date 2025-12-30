@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/networkConnections@2025-02-01'>.tags?
 
 @description('Optional. AAD Join type for the network connection.')
 @allowed([

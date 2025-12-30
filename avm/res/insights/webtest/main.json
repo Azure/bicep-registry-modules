@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "602868931339818480"
+      "templateHash": "15565135637090687473"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test."
@@ -146,14 +146,20 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/tags"
+        },
         "description": "Optional. Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResourceId' parameter will be automatically added to the tags defined here."
-      }
+      },
+      "nullable": true
     },
     "request": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Request"
+        },
         "description": "Required. The collection of request properties."
       }
     },
@@ -192,6 +198,12 @@
     },
     "locations": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Locations"
+        },
+        "description": "Optional. List of where to physically run the tests from to give global coverage for accessibility of your application."
+      },
       "defaultValue": [
         {
           "Id": "us-il-ch1-azr"
@@ -208,10 +220,7 @@
         {
           "Id": "emea-nl-ams-azr"
         }
-      ],
-      "metadata": {
-        "description": "Optional. List of where to physically run the tests from to give global coverage for accessibility of your application."
-      }
+      ]
     },
     "enabled": {
       "type": "bool",
@@ -243,17 +252,23 @@
     },
     "validationRules": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/ValidationRules"
+        },
         "description": "Optional. The collection of validation rule properties."
-      }
+      },
+      "defaultValue": {}
     },
     "configuration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Configuration"
+        },
         "description": "Optional. An XML configuration specification for a WebTest."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",

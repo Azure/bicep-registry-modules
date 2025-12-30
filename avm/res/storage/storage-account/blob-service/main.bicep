@@ -108,7 +108,8 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01
       allowPermanentDelete: deleteRetentionPolicyEnabled && deleteRetentionPolicyAllowPermanentDelete ? true : null
     }
     isVersioningEnabled: isVersioningEnabled
-    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage'
+    // lastAccessTimeTrackingPolicy not supported for old storage kinds or for extended zones
+    lastAccessTimeTrackingPolicy: storageAccount.kind != 'Storage' && empty(storageAccount.?extendedLocation)
       ? {
           enable: lastAccessTimeTrackingPolicyEnabled
           name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
