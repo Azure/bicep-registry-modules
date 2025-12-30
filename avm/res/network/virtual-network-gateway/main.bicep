@@ -98,6 +98,9 @@ param publicIpAvailabilityZones int[] = [
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
 
+@description('Optional. The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment.')
+param domainNameLabelScope ('NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse')?
+
 @description('Required. Specifies the gateway type. E.g. VPN, ExpressRoute.')
 @allowed([
   'Vpn'
@@ -471,7 +474,7 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(existingPrimaryPublicIPResourceId)) {
+resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01'existing = if (!empty(existingPrimaryPublicIPResourceId)) {
   name: last(split(existingPrimaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(existingPrimaryPublicIPResourceId, '/')[2],
@@ -479,7 +482,7 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existi
   )
 }
 
-resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingSecondaryPublicIPResourceId)) {
+resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' existing = if (!empty(clusterSettings.?existingSecondaryPublicIPResourceId)) {
   name: last(split(clusterSettings.?existingSecondaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(clusterSettings.?existingSecondaryPublicIPResourceId, '/')[2],
@@ -487,7 +490,7 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' exis
   )
 }
 
-resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingTertiaryPublicIPResourceId)) {
+resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' existing = if (!empty(clusterSettings.?existingTertiaryPublicIPResourceId)) {
   name: last(split(clusterSettings.?existingTertiaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(clusterSettings.?existingTertiaryPublicIPResourceId, '/')[2],
@@ -523,7 +526,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Public IPs
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = [
   for (virtualGatewayPublicIpName, index) in arrayPipNameVar: {
     name: virtualGatewayPublicIpName
     params: {
@@ -536,12 +539,14 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
       availabilityZones: contains(skuName, 'AZ') ? publicIpAvailabilityZones : []
-      dnsSettings: {
-        domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
-          ? domainNameLabel[index]
-          : virtualGatewayPublicIpName
-        domainNameLabelScope: 'TenantReuse'
-      }
+      dnsSettings: union(
+        {
+          domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
+            ? domainNameLabel[index]
+            : virtualGatewayPublicIpName
+        },
+        domainNameLabelScope != null ? { domainNameLabelScope: domainNameLabelScope } : {}
+      )
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
@@ -637,6 +642,7 @@ resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
   }
   scope: virtualNetworkGateway
 }
+
 
 resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

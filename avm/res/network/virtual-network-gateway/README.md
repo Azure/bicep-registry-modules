@@ -27,7 +27,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworkGateways` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworkgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways)</li></ul> |
 | `Microsoft.Network/virtualNetworkGateways/natRules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworkgateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways/natRules)</li></ul> |
 
@@ -1505,6 +1505,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     domainNameLabel: [
       'dm-nvgmax'
     ]
+    domainNameLabelScope: 'TenantReuse'
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
@@ -1646,6 +1647,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": [
         "dm-nvgmax"
       ]
+    },
+    "domainNameLabelScope": {
+      "value": "TenantReuse"
     },
     "enableBgpRouteTranslationForNat": {
       "value": true
@@ -1795,6 +1799,7 @@ param disableIPSecReplayProtection = true
 param domainNameLabel = [
   'dm-nvgmax'
 ]
+param domainNameLabelScope = 'TenantReuse'
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
@@ -2494,6 +2499,7 @@ param vpnType = 'RouteBased'
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
 | [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
+| [`domainNameLabelScope`](#parameter-domainnamelabelscope) | string | The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway. |
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
@@ -3082,6 +3088,22 @@ DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `domainNameLabelScope`
+
+The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
 
 ### Parameter: `enableBgpRouteTranslationForNat`
 
@@ -3844,7 +3866,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.10.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 

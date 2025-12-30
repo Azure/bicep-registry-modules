@@ -2,6 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Fixed hardcoded Public IP `dnsSettings.domainNameLabelScope` (preview feature) by making it optional/configurable to avoid deployment failures in regions where the feature isn't available.
+
 ## 0.10.0
 
 ### Changes
