@@ -80,6 +80,8 @@ function Build-ViaRPC {
     }
 
     try {
+        $completedBuildsCount = 0
+
         foreach ($file in $BicepFiles) {
             Write-Verbose ('Compiling [{0}]' -f ($file -replace [regex]::Escape('C:\dev\ip\bicep-registry-modules\Upstream-Azure\')))
 
@@ -93,10 +95,9 @@ function Build-ViaRPC {
                     $result[$file] = $response.contents
                 } else {
                     $fileName = Split-Path -Path $file -LeafBase
-                    $exportedTemplateFilePath = Join (Split-Path -Path $file) "$fileName.json"
+                    $exportedTemplateFilePath = Join-Path (Split-Path -Path $file) "$fileName.json"
                     $null = New-Item -Path $exportedTemplateFilePath -Value $response.contents -Force
                 }
-                Write-Host 'Build succeeded.' -ForegroundColor 'Green'
             } else {
                 Write-Host 'Build failed:' -ForegroundColor 'Red'
                 foreach ($diag in $response.diagnostics) {
@@ -104,6 +105,12 @@ function Build-ViaRPC {
                 }
             }
             $id++
+
+            # Update the progress display.
+            $completedBuildsCount++
+            [int] $percent = ($completedBuildsCount / $BicepFiles.Count) * 100
+            Write-Progress -Activity ("Processed [$completedBuildsCount/{0}] files" -f $BicepFiles.Count) -Status "$percent% complete" -PercentComplete $percent
+
         }
     } catch {
         throw $_
