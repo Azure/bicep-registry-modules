@@ -1,4 +1,31 @@
 ﻿#region helper functions
+<#
+.SYNOPSIS
+Send a message to a JSON-RPC server
+
+.DESCRIPTION
+Send a message to a JSON-RPC server.
+NOTE: This fuction does NOT return the response. Use Read-BicepJsonRpcResponse to read the response.
+
+.PARAMETER id
+A unique identifier for the request. Each message should have a different id (e.g., an incrementing integer).
+
+.PARAMETER method
+The method name to invoke on the server (e.g., 'bicep/compile' / 'bicep/version')
+
+.PARAMETER params
+The payload to send to the server (e.g., @{ path = 'C:\path\to\file.bicep' })
+
+.EXAMPLE
+Send-BicepJsonRpc -id 1 -method 'bicep/compile' -params @{ path = 'C:\path\to\file.bicep' }
+
+Compiles the specified Bicep file.
+
+.EXAMPLE
+Send-BicepJsonRpc -id 1 -method 'bicep/version' -params @{}
+
+Gets the version of the Bicep CLI.
+#>
 function Send-BicepJsonRpc {
     param (
         [int]$id,
@@ -18,13 +45,25 @@ function Send-BicepJsonRpc {
     $length = $json.Length
 
     # Frame the request
-    $message = "Content-Length: $length`r`n`r`n$json" #`r`n`r`n"
+    $message = "Content-Length: $length`r`n`r`n$json"
 
     # Send the request
     $proc.StandardInput.Write($message)
     $proc.StandardInput.Flush()
 }
 
+<#
+.SYNOPSIS
+Read the response from the JSON-PRC server
+
+.DESCRIPTION
+Read the response from the JSON-PRC server
+
+.EXAMPLE
+Read-BicepJsonRpcResponse
+
+Returns the response from the JSON-PRC server.
+#>
 function Read-BicepJsonRpcResponse {
     # Read headers first
     $headers = @{}
@@ -47,12 +86,35 @@ function Read-BicepJsonRpcResponse {
 }
 #endregion
 
+<#
+.SYNOPSIS
+Build a given template(s) via the Bicep JSON-RPC interface.
+
+.DESCRIPTION
+Build a given template(s) via the Bicep JSON-RPC interface. This is recommended if building many files at once, as it avoids the overhead of starting a new Bicep process for each file.
+
+.PARAMETER BicepFilePath
+The path(s) tof the Bicep file(s) to build.
+
+.PARAMETER PassThru
+Instead of compiling and writing the result to a JSON file in the same path as each Bicep file, return a hashtable with the Bicep file paths as keys and the compiled JSON content as values.
+
+.EXAMPLE
+Build-ViaRPC -BicepFilePath @('C:\path\to\file1.bicep', 'C:\path\to\file2.bicep')
+
+Compiles the specified Bicep files and writes the resulting JSON files to the same directories (i.e., 'C:\path\to\file1.json' and 'C:\path\to\file2.json').
+
+.EXAMPLE
+Build-ViaRPC -BicepFilePath @('C:\path\to\file1.bicep', 'C:\path\to\file2.bicep') -PassThru
+
+Compiles the specified Bicep files and returns a hashtable with the Bicep file paths as keys and the compiled JSON content as values, instead of writing to files.
+#>
 function Build-ViaRPC {
 
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string[]] $BicepFiles,
+        [string[]] $BicepFilePath,
 
         [Parameter()]
         [switch] $PassThru
@@ -82,20 +144,20 @@ function Build-ViaRPC {
     try {
         $completedBuildsCount = 0
 
-        foreach ($file in $BicepFiles) {
-            Write-Verbose ('Compiling [{0}]' -f ($file -replace [regex]::Escape('C:\dev\ip\bicep-registry-modules\Upstream-Azure\')))
+        foreach ($filePath in $BicepFilePath) {
+            Write-Verbose "Compiling [$filePath]"
 
             # Compile template
-            Send-BicepJsonRpc -id $id -method 'bicep/compile' -params @{ path = $file }
+            Send-BicepJsonRpc -id $id -method 'bicep/compile' -params @{ path = $filePath }
             $response = (Read-BicepJsonRpcResponse | ConvertFrom-Json).result
 
             # Interpret response
             if ($response.success) {
                 if ($PassThru) {
-                    $result[$file] = $response.contents
+                    $result[$filePath] = $response.contents
                 } else {
-                    $fileName = Split-Path -Path $file -LeafBase
-                    $exportedTemplateFilePath = Join-Path (Split-Path -Path $file) "$fileName.json"
+                    $filePathName = Split-Path -Path $filePath -LeafBase
+                    $exportedTemplateFilePath = Join-Path (Split-Path -Path $filePath) "$filePathName.json"
                     $null = New-Item -Path $exportedTemplateFilePath -Value $response.contents -Force
                 }
             } else {
@@ -108,8 +170,8 @@ function Build-ViaRPC {
 
             # Update the progress display.
             $completedBuildsCount++
-            [int] $percent = ($completedBuildsCount / $BicepFiles.Count) * 100
-            Write-Progress -Activity ("Processed [$completedBuildsCount/{0}] files" -f $BicepFiles.Count) -Status "$percent% complete" -PercentComplete $percent
+            [int] $percent = ($completedBuildsCount / $BicepFilePath.Count) * 100
+            Write-Progress -Activity ("Processed [$completedBuildsCount/{0}] files" -f $BicepFilePath.Count) -Status "$percent% complete" -PercentComplete $percent
 
         }
     } catch {
