@@ -103,6 +103,8 @@ function Set-AVMModule {
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Build-ViaRPC.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
     if ($InvokeForDiff) {
         $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
@@ -228,20 +230,65 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
         $TelemetryFileContent = $null
     }
 
+    if (-not $SkipBuild) {
+        if ($PSCmdlet.ShouldProcess(('Building of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Build-ViaRPC -BicepFilePath $relevantTemplatePaths
+        }
+    }
+
+    if (-not $SkipReadMe) {
+
+        # Collecting & compiling test file paths for usage examples
+        $testFilePaths = $relevantTemplatePaths | ForEach-Object {
+            if (Test-Path (Join-Path (Split-Path $_ -Parent) 'tests' 'e2e')) {
+                return (Get-ChildItem -Path (Split-Path $_ -Parent) -Recurse -File -Filter '*.test.bicep').FullName
+            }
+        }
+        $compiledTestFilePaths = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
+
+        foreach ($TemplateFilePath in $relevantTemplatePaths) {
+            $moduleRoot = Split-Path $TemplateFilePath -Parent
+
+            $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
+
+            $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+                $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+            }
+
+            $relevantTestFilesContent = @{}
+            foreach ($filePath in $compiledTestFilePaths.Keys) {
+                $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
+                if ($filePath -match $expectedTestFolderPath) {
+                    $relevantTestFilesContent[$filePath] = $compiledTestFilePaths[$filePath]
+                }
+            }
+
+            $readmeInputObject = @{
+                TemplateFilePath = $TemplateFilePath
+                PreLoadedContent = @{
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                    CompiledTestFiles         = $relevantTestFilesContent
+                } + (-not $SkipBuild ? @{
+                        # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                        TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+                    } : @{})
+            }
+            if ($PSCmdlet.ShouldProcess(('Generating of [{0}] module readmes in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+                Set-ModuleReadMe @readmeInputObject
+            }
+        }
+    }
+
+
+    return
+
     # Using threading to speed up the process
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                 $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
-
-                ###############
-                ##   Build   ##
-                ###############
-                if (-not $using:SkipBuild) {
-                    Write-Output "Building [$resourceTypeIdentifier]"
-                    bicep build $_
-                }
 
                 ################
                 ##   ReadMe   ##

@@ -1512,6 +1512,9 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $true)]
         [object[]] $ReadMeFileContent,
 
+        [Parameter(Mandatory = $false)]
+        [hashtable] $CompiledTestFiles,
+
         [Parameter(Mandatory = $true)]
         [bool] $IsMultiScopeParentModule,
 
@@ -1575,14 +1578,6 @@ function Set-UsageExamplesSection {
         $First, $Rest = $moduleName -split '-', 2
         $moduleNameCamelCase = $First.Tolower() + (Get-Culture).TextInfo.ToTitleCase($Rest) -replace '-'
     }
-    if ($isMultiScopeChildModule) {
-        $scopedModuleFolderName = Split-Path -Path $ModuleRoot -Leaf
-        $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
-            $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
-        }
-    } else {
-        $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
-    }
 
     if ($TemplateFileContent.parameters.Count -gt 0) {
         $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
@@ -1595,21 +1590,39 @@ function Set-UsageExamplesSection {
     ############################
     ##   Process test files   ##
     ############################
-
-    # Prepare data (using thread-safe multithreading) to consume later
-    $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-    $testFilePaths | ForEach-Object -Parallel {
-        $dict = $using:buildTestFileMap
-
-        $folderName = Split-Path (Split-Path -Path $_) -Leaf
-        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-
-        if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
+    if (-not $CompiledTestFiles) {
+        if ($isMultiScopeChildModule) {
+            $scopedModuleFolderName = Split-Path -Path $ModuleRoot -Leaf
+            $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+                $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+            }
+        } else {
+            $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
         }
-        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
 
-        $null = $dict.TryAdd($folderName, $templateHashTable)
+
+        # Prepare data (using thread-safe multithreading) to consume later
+        $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
+        $testFilePaths | ForEach-Object -Parallel {
+            $dict = $using:buildTestFileMap
+
+            $folderName = Split-Path (Split-Path -Path $_) -Leaf
+            $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
+
+            if ([String]::IsNullOrEmpty($builtTemplate)) {
+                throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
+            }
+            $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+
+            $null = $dict.TryAdd($folderName, $templateHashTable)
+        }
+    } else {
+        $testFilePaths = $CompiledTestFiles.Keys | Sort-Object -Culture 'en-US'
+        $buildTestFileMap = @{}
+        foreach ($path in $CompiledTestFiles.Keys) {
+            $folderName = Split-Path (Split-Path -Path $path) -Leaf
+            $buildTestFileMap[$folderName] = ConvertFrom-Json $CompiledTestFiles[$path] -AsHashtable
+        }
     }
 
     # Process data
@@ -2291,6 +2304,7 @@ function Set-ModuleReadMe {
             ModuleRoot               = $ModuleRoot
             FullModuleIdentifier     = $fullModuleIdentifier
             ReadMeFileContent        = $readMeFileContent
+            CompiledTestFiles        = $PreLoadedContent['CompiledTestFiles']
             TemplateFileContent      = $templateFileContent
             IsMultiScopeParentModule = $isMultiScopeParentModule
             IsMultiScopeChildModule  = $isMultiScopeChildModule
