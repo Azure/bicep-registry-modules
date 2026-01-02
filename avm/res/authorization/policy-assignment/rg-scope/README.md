@@ -2,6 +2,14 @@
 
 This module deploys a Policy Assignment at a Resource Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity.
 
+You can reference the module as follows:
+```bicep
+module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -33,6 +41,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.defaults]
+
 
 <details>
 
@@ -40,7 +50,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'rapargmin001'
@@ -108,6 +117,8 @@ param metadata = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.max]
+
 
 <details>
 
@@ -115,7 +126,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'rapargmax001'
@@ -407,6 +417,8 @@ param roleDefinitionIds = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.waf-aligned]
+
 
 <details>
 
@@ -414,7 +426,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module policyAssignment 'br/public:avm/res/authorization/policy-assignment/rg-scope:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'rapargwaf001'

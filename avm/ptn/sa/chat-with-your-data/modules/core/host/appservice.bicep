@@ -173,7 +173,7 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
   name: name
   location: location
   kind: kind
-  tags:tags
+  tags: tags
   identity: identity
   properties: {
     managedEnvironmentId: !empty(managedEnvironmentId) ? managedEnvironmentId : null
@@ -260,7 +260,7 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -306,7 +306,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' 
       lock: privateEndpoint.?lock ?? null
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
-  // Do not inherit azd-service-name onto private endpoints (see note above)
+      // Do not inherit azd-service-name onto private endpoints (see note above)
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations

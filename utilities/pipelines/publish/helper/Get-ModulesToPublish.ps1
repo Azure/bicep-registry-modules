@@ -1,69 +1,4 @@
 #region Helper functions
-
-<#
-.SYNOPSIS
-Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-
-.EXAMPLE
-Get-ModifiedFileList
-
-    Directory: .utilities\pipelines\publish
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-la---          08.12.2021    15:50           7133 Script.ps1
-
-Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-#>
-function Get-ModifiedFileList {
-
-    $currentBranch = Get-GitBranchName
-    $inUpstream = (git remote get-url origin) -match '\/Azure\/' # If in upstream the value would be [https://github.com/Azure/bicep-registry-modules.git]
-
-    # Note: Fetches only the name of the modified files
-    if ($inUpstream -and $currentBranch -eq 'main') {
-        Write-Verbose 'Currently in the upstream branch [main].' -Verbose
-
-        # Get the current and previous commit
-        $currentCommit, $previousCommit = ((git log -2 --format=%H).Substring(0, 7) -split '\n')
-
-        Write-Verbose ('Fetching changes of current commit [{0}] against the previous commit [{1}].' -f $currentCommit, $previousCommit) -Verbose
-        $stat = git diff --diff-filter=AM $previousCommit $currentCommit --stat
-        $diff = git diff --name-only --diff-filter=AM $previousCommit $currentCommit
-    } else {
-        Write-Verbose ("{0} branch [$currentBranch]" -f ($inUpstream ? 'Currently in the upstream' : 'Currently in the fork')) -Verbose
-
-        Write-Verbose 'Adding upstream repository reference' -Verbose
-        git remote add 'upstream' 'https://github.com/Azure/bicep-registry-modules.git' 2>$null # Add remote source if not already added
-        Write-Verbose 'Fetching latest changes from [upstream]' -Verbose
-        git fetch 'upstream' 'main' -q # Fetch the latest changes from upstream main
-        Start-Sleep 5 # Wait for git to finish adding the remote
-
-        $currentCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
-        $currentUpstreamCommit = git rev-parse --short=7 'upstream/main' # Get main's commit in upstream
-
-        Write-Verbose ('Fetching changes of current commit [{0}] against upstream [main] [{1}]' -f $currentCommit, $currentUpstreamCommit) -Verbose
-        $stat = git diff --diff-filter=AM $currentCommit $currentUpstreamCommit --stat
-        $diff = git diff --name-only --diff-filter=AM $currentCommit $currentUpstreamCommit
-    }
-
-    if ($stat.Count -gt 0) {
-        Write-Verbose ("[{0}] Plain diff files found `git diff`:`n[{1}]" -f $stat.Count, ($stat | ConvertTo-Json | Out-String)) -Verbose
-    } else {
-        Write-Verbose 'Plain diff files found via `git diff`.' -Verbose
-    }
-
-    $modifiedFiles = $diff | Get-Item -Force -ErrorAction 'SilentlyContinue' # Silently continue to ignore files that were removed
-
-    if ($modifiedFiles.Count -gt 0) {
-        Write-Verbose ("[{0}] Modified files found `git diff`:`n[{1}]" -f $modifiedFiles.Count, ($modifiedFiles.FullName | ConvertTo-Json | Out-String)) -Verbose
-    } else {
-        Write-Verbose 'No modified files found via `git diff`.' -Verbose
-    }
-
-    return $modifiedFiles
-}
-
 <#
 .SYNOPSIS
 Get the name of the current checked out branch.
@@ -107,6 +42,9 @@ Mandatory. Paths to include in the search for the closest main.json file.
 .PARAMETER SkipNotVersionedModules
 Optional. Specify if filtering the list by returning only versioned modified modules.
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
 
@@ -131,29 +69,32 @@ function Get-TemplateFileToPublish {
         ),
 
         [Parameter(Mandatory = $false)]
-        [switch] $SkipNotVersionedModules
+        [switch] $SkipNotVersionedModules,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.Parent.Parent.FullName
     )
 
-    $ModuleFolderPath = $ModuleFolderPath -replace '\\', '/'
-
-    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/')
-    $ModifiedFiles = Get-ModifiedFileList -Verbose
-    Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
     # Adding a `/` at the end of the path (if not present) to avoid that e.g. a filter like `cache/redis` also matches `cache/redis-enterprise`
     if ($ModuleFolderPath -notmatch '^.+\/$') {
         $ModuleFolderPath += '/'
     }
-    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { ($_ -replace '\\', '/') -like "*$ModuleFolderPath*" }
+    Write-Verbose "Looking for modified files under: [$ModuleFolderPath]" -Verbose
 
-    if ($modifiedModuleFiles.Count -gt 0) {
-        Write-Verbose ("[{0}] Path-filtered files found:`n[{1}]" -f $modifiedModuleFiles.Count, ($modifiedModuleFiles | ConvertTo-Json | Out-String)) -Verbose
-    } else {
-        Write-Verbose 'No path-filtered files found.' -Verbose
+    $modifiedModuleFiles = Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose
+    $modifiedModuleFilePaths = $modifiedModuleFiles ? $modifiedModuleFiles.FullName : @()
+
+    Write-Verbose ('[{0}] modified files identified in path [{1}]:' -f $modifiedModuleFilePaths.count, ($ModuleFolderPath -split ('{0}[\\|\/]' -f [regex]::Escape($RepoRoot)))[1]) -Verbose
+    $modifiedModuleFilePaths | ForEach-Object {
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+        Write-Verbose " - $RelPath" -Verbose
     }
 
+    # Only include `main.json' / 'version.json' files
     $relevantPaths = @()
-    foreach ($modifiedFile in $modifiedModuleFiles) {
+    foreach ($modifiedFile in $modifiedModuleFilePaths) {
 
         foreach ($path in  $PathsToInclude) {
             if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path) -ErrorAction 'SilentlyContinue')) {
@@ -162,25 +103,20 @@ function Get-TemplateFileToPublish {
         }
     }
 
-    if ($relevantPaths.Count -gt 0) {
-        Write-Verbose ("[{0}] File-type-filtered files found:`n[{1}]" -f $relevantPaths.Count, ($relevantPaths | ConvertTo-Json | Out-String)) -Verbose
-    } else {
-        Write-Verbose 'No file-type-filtered files found.' -Verbose
+    Write-Verbose ('[{0}] files identified that justify publishing:' -f $relevantPaths.count) -Verbose
+    $relevantPaths | ForEach-Object {
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
         Find-TemplateFile -Path $_ -Verbose
     } | Sort-Object -Culture 'en-US' -Unique -Descending
 
-    if ($TemplateFilesToPublish.Count -eq 0) {
-        Write-Verbose 'No template file found in the modified module.' -Verbose
-    }
-
-    Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    Write-Verbose ('[{0}] template(s) for modified modules found:' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        $RelPath = $RelPath.Split('/main.')[0]
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     if ($SkipNotVersionedModules) {
@@ -195,11 +131,10 @@ function Get-TemplateFileToPublish {
         }
     }
 
-    Write-Verbose ('Versioned modules to publish: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    Write-Verbose ('[{0}] versioned modules to publish' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        $RelPath = $RelPath.Split('/main.')[0]
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     return $TemplateFilesToPublish

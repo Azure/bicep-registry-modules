@@ -2,6 +2,14 @@
 
 This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Policy Exemption at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This module deploys a Policy Exemption at a Management Group scope using minimal
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -101,6 +110,8 @@ param policyAssignmentId = '<policyAssignmentId>'
 
 This module deploys a Policy Exemption at a Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -108,7 +119,6 @@ This module deploys a Policy Exemption at a Management Group scope using common 
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -273,6 +283,8 @@ param resourceSelectors = [
 
 This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.defaults]
+
 
 <details>
 
@@ -280,7 +292,6 @@ This module deploys a Policy Exemption at a Resource Group scope using minimal p
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -352,6 +363,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
+
 
 <details>
 
@@ -359,7 +372,6 @@ This module deploys a Policy Exemption at a Resource Group scope using common pa
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -529,6 +541,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.defaults]
+
 
 <details>
 
@@ -536,7 +550,6 @@ This module deploys a Policy Exemption at a Subscription scope using minimal par
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -603,6 +616,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
+
 
 <details>
 
@@ -610,7 +625,6 @@ This module deploys a Policy Exemption at a Subscription scope using common para
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'

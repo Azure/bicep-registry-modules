@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "3112728591047420285"
+      "version": "0.39.26.7824",
+      "templateHash": "2484451445381873117"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain"
@@ -73,7 +73,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -148,7 +148,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -342,8 +342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1385367565090764957"
+              "version": "0.39.26.7824",
+              "templateHash": "7017896381373476636"
             },
             "name": "Sender Usernames",
             "description": "This module deploys an Sender"
@@ -448,12 +448,26 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+          "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/properties/properties/verificationRecords",
           "output": true
         },
         "description": "The verification records for the domain."
       },
       "value": "[reference('domain').verificationRecords]"
+    },
+    "fromSenderDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "The from sender domain for the domain."
+      },
+      "value": "[reference('domain').fromSenderDomain]"
+    },
+    "mailFromSenderDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "The mail from sender domain for the domain."
+      },
+      "value": "[reference('domain').mailFromSenderDomain]"
     }
   }
 }

@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Authorization Server.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/authorization-server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

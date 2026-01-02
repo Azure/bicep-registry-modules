@@ -2,6 +2,14 @@
 
 This module deploys a Recovery Services Vault.
 
+You can reference the module as follows:
+```bicep
+module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -49,6 +57,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -60,7 +70,6 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvhsmu001'
@@ -146,6 +155,8 @@ param managedIdentities = {
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -153,7 +164,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvencr001'
@@ -242,6 +252,8 @@ param managedIdentities = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -249,7 +261,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     name: 'rsvmin001'
   }
@@ -295,6 +306,8 @@ param name = 'rsvmin001'
 
 This instance deploys the module with disaster recovery enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/dr]
+
 
 <details>
 
@@ -302,7 +315,6 @@ This instance deploys the module with disaster recovery enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -523,6 +535,8 @@ param replicationPolicies = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -530,7 +544,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvmax001'
@@ -1746,6 +1759,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1753,7 +1768,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'rsvwaf001'

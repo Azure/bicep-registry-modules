@@ -2,6 +2,14 @@
 
 This module deploys a Web or Function App Deployment Slot.
 
+You can reference the module as follows:
+```bicep
+module site 'br/public:avm/res/web/site/slot:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

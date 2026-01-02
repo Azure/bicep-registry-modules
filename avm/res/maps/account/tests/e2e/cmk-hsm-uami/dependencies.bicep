@@ -16,7 +16,7 @@ param deploymentMSIResourceId string
 param managedHSMResourceId string
 
 @description('Required. The name of the HSMKey Vault Encryption Key.')
-param keyName string
+param hSMKeyName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
@@ -29,8 +29,8 @@ module allowHsmAccess 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     name: deploymentScriptName
     kind: 'AzureCLI'
     azCliVersion: '2.67.0'
-    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${keyName}" "${managedIdentity.properties.principalId}"'
-    scriptContent: loadTextContent('Set-mHMSKeyConfig.sh')
+    arguments: '"${last(split(managedHSMResourceId, '/'))}" "${hSMKeyName}" "${managedIdentity.properties.principalId}"'
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-mHSMKeyConfig.sh')
     retentionInterval: 'P1D'
     managedIdentities: {
       userAssignedResourceIds: [

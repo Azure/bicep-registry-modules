@@ -2,6 +2,14 @@
 
 This module deploys a Service Bus Namespace.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -50,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -61,7 +71,6 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnhsmu001'
@@ -164,6 +173,8 @@ param skuObject = {
 
 This instance deploys the module with features enabled for CMK encryption.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -171,7 +182,6 @@ This instance deploys the module with features enabled for CMK encryption.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnencr001'
@@ -274,6 +284,8 @@ param skuObject = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -281,7 +293,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnmin001'
@@ -347,6 +358,8 @@ param skuObject = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -354,7 +367,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnmax001'
@@ -1261,6 +1273,8 @@ param topics = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1268,7 +1282,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnwaf001'

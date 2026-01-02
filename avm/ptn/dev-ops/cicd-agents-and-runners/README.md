@@ -2,6 +2,14 @@
 
 This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.
 
+You can reference the module as follows:
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -98,6 +106,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances and Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/aca-aci]
+
 
 <details>
 
@@ -105,7 +115,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -218,6 +227,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults.azuredevops.aci]
+
 
 <details>
 
@@ -225,7 +236,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -340,6 +350,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults.github.aca]
+
 
 <details>
 
@@ -347,7 +359,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -480,6 +491,8 @@ param privateNetworking = false
 
 This instance deploys the module with most of its features enabled for Azure DevOps self-hosted agents using Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max.azuredevops.aca]
+
 
 <details>
 
@@ -487,7 +500,6 @@ This instance deploys the module with most of its features enabled for Azure Dev
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -630,6 +642,8 @@ param privateNetworking = false
 
 This instance deploys the module with most of its features enabled for GitHub self-hosted runners using Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max.github.aci]
+
 
 <details>
 
@@ -637,7 +651,6 @@ This instance deploys the module with most of its features enabled for GitHub se
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -783,6 +796,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/org-scope-github-aca]
+
 
 <details>
 
@@ -790,7 +805,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -900,6 +914,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-devops-existing-vnet-aci]
+
 
 <details>
 
@@ -907,7 +923,6 @@ This instance deploys the module with the minimum set of required parameters Azu
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -1053,6 +1068,8 @@ param privateNetworking = true
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-github-existing-vnet-aca]
+
 
 <details>
 
@@ -1060,7 +1077,6 @@ This instance deploys the module with the minimum set of required parameters Git
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -1203,6 +1219,8 @@ param privateNetworking = true
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-github-new-vnet]
+
 
 <details>
 
@@ -1210,7 +1228,6 @@ This instance deploys the module with the minimum set of required parameters Git
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [

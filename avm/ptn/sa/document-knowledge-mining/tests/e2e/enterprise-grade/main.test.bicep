@@ -28,6 +28,9 @@ param vmAdminPassword string = newGuid()
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedLocation = 'australiaeast'
 
+#disable-next-line no-hardcoded-location
+var enforcedCosmosReplicaLocation = 'canadacentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -47,6 +50,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       aiDeploymentsLocation: enforcedLocation
+      cosmosReplicaLocation: enforcedCosmosReplicaLocation
       enablePrivateNetworking: true
       enableMonitoring: true
       enableRedundancy: true

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.3.11034",
-      "templateHash": "13458353143158166222"
+      "version": "0.39.26.7824",
+      "templateHash": "17587665558812711549"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -752,6 +752,17 @@
         "description": "Optional. Name of a load balancer SKU."
       }
     },
+    "skuTier": {
+      "type": "string",
+      "defaultValue": "Regional",
+      "allowedValues": [
+        "Regional",
+        "Global"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of a load balancer SKU."
+      }
+    },
     "frontendIPConfigurations": {
       "type": "array",
       "items": {
@@ -897,11 +908,13 @@
         "input": {
           "name": "[coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].name]",
           "properties": {
-            "protocol": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'protocol'), 'Tcp')]",
-            "requestPath": "[if(not(equals(toLower(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].protocol), 'tcp')), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].requestPath, null())]",
-            "port": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'port'), 80)]",
             "intervalInSeconds": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'intervalInSeconds'), 5)]",
-            "numberOfProbes": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'numberOfProbes'), 2)]"
+            "noHealthyBackendsBehavior": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'noHealthyBackendsBehavior'), 'AllProbedDown')]",
+            "numberOfProbes": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'numberOfProbes'), 2)]",
+            "port": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'port'), 80)]",
+            "probeThreshold": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'probeThreshold'), 1)]",
+            "protocol": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'protocol'), 'Tcp')]",
+            "requestPath": "[if(not(equals(toLower(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].protocol), 'tcp')), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].requestPath, null())]"
           }
         }
       },
@@ -956,7 +969,8 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "[parameters('skuName')]"
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
       },
       "properties": {
         "copy": [
@@ -1139,8 +1153,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7550528442771433353"
+              "version": "0.39.26.7824",
+              "templateHash": "16564959277054027786"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
@@ -1357,7 +1371,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1394,7 +1408,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1469,7 +1483,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1582,6 +1596,17 @@
                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
               }
             },
+            "deleteOption": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Delete",
+                "Detach"
+              ],
+              "metadata": {
+                "description": "Optional. The delete option for the public IP address."
+              }
+            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -1617,7 +1642,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -1660,7 +1685,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1678,7 +1703,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1694,7 +1719,8 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": "[parameters('ipTags')]"
+                "ipTags": "[parameters('ipTags')]",
+                "deleteOption": "[parameters('deleteOption')]"
               }
             },
             "publicIpAddress_lock": {
@@ -1809,7 +1835,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -1874,8 +1900,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "14373448508245329501"
+              "version": "0.39.26.7824",
+              "templateHash": "5666903960219064588"
             },
             "name": "Public IP Prefixes",
             "description": "This module deploys a Public IP Prefix."
@@ -1934,7 +1960,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -2009,7 +2035,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -2080,7 +2106,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/publicIPPrefixes@2024-10-01#properties/tags"
+                  "source": "Microsoft.Network/publicIPPrefixes@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -2090,7 +2116,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/publicIPPrefixes@2024-01-01#properties/properties/properties/customIPPrefix"
+                  "source": "Microsoft.Network/publicIPPrefixes@2025-01-01#properties/properties/properties/customIPPrefix"
                 },
                 "description": "Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range."
               },
@@ -2155,7 +2181,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipprefix.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipprefix.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2173,7 +2199,7 @@
             },
             "publicIpPrefix": {
               "type": "Microsoft.Network/publicIPPrefixes",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2253,7 +2279,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpPrefix', '2024-01-01', 'full').location]"
+              "value": "[reference('publicIpPrefix', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -2302,8 +2328,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "10670439602612325976"
+              "version": "0.39.26.7824",
+              "templateHash": "451166585622147891"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -2476,8 +2502,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.3.11034",
-              "templateHash": "8943275705446718462"
+              "version": "0.39.26.7824",
+              "templateHash": "14698387200466332797"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules."

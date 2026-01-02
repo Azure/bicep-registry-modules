@@ -2,6 +2,14 @@
 
 This module deploys a Finops hub from the Finops toolkit.
 
+You can reference the module as follows:
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -58,6 +66,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -65,7 +75,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  name: 'finopsHubDeployment'
   params: {
     // Required parameters
     hubName: 'finops-hub-finmin'

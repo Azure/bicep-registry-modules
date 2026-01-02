@@ -2,6 +2,14 @@
 
 This module deploys a Maintenance Configuration Assignment.
 
+You can reference the module as follows:
+```bicep
+module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -33,6 +41,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/filter.defaults]
+
 
 <details>
 
@@ -40,7 +50,6 @@ This instance deploys the module with the minimum set of required parameters. Th
 
 ```bicep
 module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
-  name: 'configurationAssignmentDeployment'
   params: {
     // Required parameters
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -126,6 +135,8 @@ param filter = {
 
 This instance deploys the module using filters with tags to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/filter.tags]
+
 
 <details>
 
@@ -133,7 +144,6 @@ This instance deploys the module using filters with tags to define a dynamic sco
 
 ```bicep
 module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
-  name: 'configurationAssignmentDeployment'
   params: {
     // Required parameters
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -252,6 +262,8 @@ param filter = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. This instance assigns an existing Linux virtual machine to the input maintenance configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linvm.waf-aligned]
+
 
 <details>
 
@@ -259,7 +271,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
-  name: 'configurationAssignmentDeployment'
   params: {
     // Required parameters
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -321,6 +332,8 @@ param resourceId = '<resourceId>'
 
 This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Windows virtual machine to the input maintenance configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/winvm.multirg]
+
 
 <details>
 
@@ -328,7 +341,6 @@ This instance deploys the module leveraging virtual machine and maintenance conf
 
 ```bicep
 module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
-  name: 'configurationAssignmentDeployment'
   params: {
     // Required parameters
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'

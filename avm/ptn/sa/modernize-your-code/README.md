@@ -5,6 +5,14 @@ This module contains the resources required to deploy the [Modernize Your Code S
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
+You can reference the module as follows:
+```bicep
+module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -108,6 +116,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using parameters that deploy the enterprise-grade configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
+
 
 <details>
 
@@ -115,7 +125,6 @@ This instance deploys the [Modernize Your Code Solution Accelerator](https://git
 
 ```bicep
 module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
-  name: 'modernizeYourCodeDeployment'
   params: {
     // Required parameters
     solutionName: 'samyceg001'
@@ -207,6 +216,8 @@ param vmAdminUsername = 'adminuser'
 
 This instance deploys the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-Your-Code-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
 
 <details>
 
@@ -214,7 +225,6 @@ This instance deploys the [Modernize Your Code Solution Accelerator](https://git
 
 ```bicep
 module modernizeYourCode 'br/public:avm/ptn/sa/modernize-your-code:<version>' = {
-  name: 'modernizeYourCodeDeployment'
   params: {
     // Required parameters
     solutionName: 'samycmin001'

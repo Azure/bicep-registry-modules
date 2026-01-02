@@ -2,6 +2,14 @@
 
 This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 
+You can reference the module as follows:
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -50,6 +58,8 @@ Register the NodeAutoProvisioningPreview feature flag using the az feature regis
 MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/automatic]
+
 
 <details>
 
@@ -57,7 +67,6 @@ MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](http
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csauto001'
@@ -293,6 +302,8 @@ param webApplicationRoutingEnabled = true
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -300,7 +311,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmin001'
@@ -403,6 +413,8 @@ param managedIdentities = {
 
 This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/des-cmk-uami]
+
 
 <details>
 
@@ -410,7 +422,6 @@ This instance deploys the module with encryption-at-rest using a Disk Encryption
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmscmk001'
@@ -518,6 +529,8 @@ param managedIdentities = {
 
 This instance deploys the module with Istio Service Mesh add-on and plug a Certificate Authority from Key Vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/istio]
+
 
 <details>
 
@@ -525,7 +538,6 @@ This instance deploys the module with Istio Service Mesh add-on and plug a Certi
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csist001'
@@ -687,6 +699,8 @@ param managedIdentities = {
 
 This instance deploys the module with Kubenet network plugin .
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kubenet]
+
 
 <details>
 
@@ -694,7 +708,6 @@ This instance deploys the module with Kubenet network plugin .
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmkube001'
@@ -1035,6 +1048,8 @@ param tags = {
 
 This instance deploys the module with a private cluster instance.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/priv]
+
 
 <details>
 
@@ -1042,7 +1057,6 @@ This instance deploys the module with a private cluster instance.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'csmpriv001'
@@ -1294,6 +1308,8 @@ param skuTier = 'Standard'
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1301,7 +1317,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: 'managedClusterDeployment'
   params: {
     // Required parameters
     name: 'cswaf001'

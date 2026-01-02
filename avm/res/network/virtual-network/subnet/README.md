@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Network Subnet.
 
+You can reference the module as follows:
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network/subnet:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

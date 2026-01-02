@@ -4,6 +4,14 @@ This module provides a secure and scalable environment for deploying AI applicat
 The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.
 
+You can reference the module as follows:
+```bicep
+module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -92,6 +100,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -99,7 +109,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -165,6 +174,8 @@ param virtualMachineConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -172,7 +183,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: 'aipbmax'
@@ -550,6 +560,8 @@ param workspaceConfiguration = {
 
 This instance deploys the module with a virtual network, but no virtual machine or Azure Bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/no-vm]
+
 
 <details>
 
@@ -557,7 +569,6 @@ This instance deploys the module with a virtual network, but no virtual machine 
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -631,6 +642,8 @@ param virtualMachineConfiguration = {
 
 This instance deploys the module without a virtual network, virtual machine or Azure Bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/no-vnet]
+
 
 <details>
 
@@ -638,7 +651,6 @@ This instance deploys the module without a virtual network, virtual machine or A
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -701,6 +713,8 @@ param virtualNetworkConfiguration = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -708,7 +722,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'

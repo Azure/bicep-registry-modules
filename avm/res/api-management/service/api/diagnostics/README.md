@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service API Diagnostics.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/api/diagnostics:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

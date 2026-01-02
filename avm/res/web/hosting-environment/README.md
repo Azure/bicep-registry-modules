@@ -2,6 +2,14 @@
 
 This module deploys an App Service Environment.
 
+You can reference the module as follows:
+```bicep
+module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with a base set of parameters. Note it does include the use of Availability zones by default.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemin001'
@@ -98,6 +107,8 @@ param subnetResourceId = '<subnetResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -105,7 +116,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemax001'
@@ -387,6 +397,8 @@ param zoneRedundant = true
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -394,7 +406,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whewaf001'

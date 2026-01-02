@@ -1,11 +1,19 @@
 # Security Insights Settings `[Microsoft.SecurityInsights/settings]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys a Security Insights Setting.
+
+You can reference the module as follows:
+```bicep
+module setting 'br/public:avm/res/security-insights/setting:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with minimal required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with minimal required parameters.
 
 ```bicep
 module setting 'br/public:avm/res/security-insights/setting:<version>' = {
-  name: 'settingDeployment'
   params: {
     // Required parameters
     name: 'Anomalies'
@@ -105,6 +114,8 @@ param workspaceResourceId = '<workspaceResourceId>'
 
 This instance deploys the module with all possible parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -112,7 +123,6 @@ This instance deploys the module with all possible parameters.
 
 ```bicep
 module setting 'br/public:avm/res/security-insights/setting:<version>' = {
-  name: 'settingDeployment'
   params: {
     // Required parameters
     name: 'Anomalies'
@@ -179,6 +189,8 @@ param properties = {}
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -186,7 +198,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module setting 'br/public:avm/res/security-insights/setting:<version>' = {
-  name: 'settingDeployment'
   params: {
     // Required parameters
     name: 'Anomalies'

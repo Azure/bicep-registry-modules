@@ -10,11 +10,11 @@ param logAnalyticsWorkspaceName string
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 
-  resource customTableBasic 'tables@2025-02-01' = {
+  resource customTableBasic 'tables@2025-07-01' = {
     name: 'CustomTableBasic_CL'
     properties: {
       schema: {
@@ -39,7 +39,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
-resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2023-03-11' = {
+resource dataCollectionEndpoint 'Microsoft.Insights/dataCollectionEndpoints@2024-03-11' = {
   kind: 'Windows'
   location: location
   name: dataCollectionEndpointName

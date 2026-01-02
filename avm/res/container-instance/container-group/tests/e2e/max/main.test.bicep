@@ -93,6 +93,11 @@ module testDeployment '../../../main.bicep' = [
               periodSeconds: 5
               failureThreshold: 3
             }
+            configMap: {
+              keyValuePairs: {
+                aKey: 'aValue'
+              }
+            }
             environmentVariables: [
               {
                 name: 'CLIENT_ID'
@@ -170,6 +175,15 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+      }
+      identityAcls: {
+        acls: [
+          {
+            access: 'All'
+            identity: nestedDependencies.outputs.managedIdentityResourceId
+          }
+        ]
+        defaultAccess: 'User'
       }
     }
   }

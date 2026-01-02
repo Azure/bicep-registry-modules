@@ -4,6 +4,14 @@ Creates an Application Insights instance based on an existing Log Analytics work
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
+You can reference the module as follows:
+```bicep
+module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,7 +56,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = {
-  name: 'insightsDashboardDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -108,6 +117,8 @@ param location = '<location>'
 
 This instance deploys the module using large parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -115,7 +126,6 @@ This instance deploys the module using large parameters.
 
 ```bicep
 module insightsDashboard 'br/public:avm/ptn/azd/insights-dashboard:<version>' = {
-  name: 'insightsDashboardDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'

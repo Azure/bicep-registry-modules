@@ -4,6 +4,14 @@ Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as we
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
 
+You can reference the module as follows:
+```bicep
+module aks 'br/public:avm/ptn/azd/aks:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -53,6 +61,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -60,7 +70,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module aks 'br/public:avm/ptn/azd/aks:<version>' = {
-  name: 'aksDeployment'
   params: {
     // Required parameters
     containerRegistryName: '<containerRegistryName>'
@@ -151,6 +160,8 @@ param principalType = 'ServicePrincipal'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -158,7 +169,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module aks 'br/public:avm/ptn/azd/aks:<version>' = {
-  name: 'aksDeployment'
   params: {
     // Required parameters
     containerRegistryName: '<containerRegistryName>'

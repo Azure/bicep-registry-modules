@@ -1,11 +1,19 @@
 # Azure Stack HCI Marketplace Gallery Image `[Microsoft.AzureStackHCI/marketplaceGalleryImages]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an Azure Stack HCI Marketplace Gallery Image.
+
+You can reference the module as follows:
+```bicep
+module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>' = {
-  name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
@@ -132,6 +141,8 @@ param version = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -139,7 +150,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module marketplaceGalleryImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:<version>' = {
-  name: 'marketplaceGalleryImageDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
