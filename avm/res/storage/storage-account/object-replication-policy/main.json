@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "7981342209922290627"
+      "version": "0.39.26.7824",
+      "templateHash": "3528396711847214833"
     },
     "name": "Storage Account Object Replication Policy",
     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -159,8 +159,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13231340475360081313"
+              "version": "0.39.26.7824",
+              "templateHash": "4325417308313318683"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -376,8 +376,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13231340475360081313"
+              "version": "0.39.26.7824",
+              "templateHash": "4325417308313318683"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."

@@ -25,7 +25,7 @@ param type string
 param targetResourceId string?
 
 @secure()
-@sys.description('Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub.')
+@sys.description('Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor.')
 param credentials resourceInput<'Microsoft.ApiManagement/service/loggers@2024-05-01'>.properties.credentials?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
@@ -58,11 +58,11 @@ resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
   name: name
   parent: service
   properties: {
-    credentials: credentials
     description: description
     isBuffered: isBuffered
     loggerType: type
     resourceId: targetResourceId
+    ...(type != 'azureMonitor' ? { credentials: credentials } : {})
   }
 }
 
