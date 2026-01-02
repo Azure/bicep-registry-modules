@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
-## 0.20.0
+## 0.21.0
 
 ### Changes
 
@@ -11,6 +11,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.20.0
+
+### Changes
+
+- Updated several API versions
+- Updated version of referenced private endpoint AVM res module to latest `0.11.1`
+
+### Breaking Changes
+
+- Added additional setting `ApplicationInsightsAgent_EXTENSION_VERSION` for configs of type `appsettings` that is automatically set if the parameter `applicationInsightResourceId` is provided and no custom `ApplicationInsightsAgent_EXTENSION_VERSION` is configured via the config's `properties` parameter. It automatically selects `~3` for Linux sites & `~2` for Windows. The same logic applies to slots.
 
 ## 0.19.4
 

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2250381768758142208"
+      "templateHash": "7311831232712089460"
     },
     "name": "Web Site Slot Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -51,7 +51,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -86,7 +86,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2024-04-01', 'full').location]"
+      "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2025-03-01', 'full').location]"
     }
   }
 }
