@@ -58,6 +58,24 @@ var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseI
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
       APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
+      ...(!contains(properties, 'ApplicationInsightsAgent_EXTENSION_VERSION')
+        ? {
+            ApplicationInsightsAgent_EXTENSION_VERSION: contains(
+                [
+                  'functionapp,linux' // function app linux os
+                  'functionapp,workflowapp,linux' // logic app docker container
+                  'functionapp,linux,container' // function app linux container
+                  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
+                  'app,linux' // linux web app
+                  'linux,api' // linux api app
+                  'app,linux,container' // linux container app
+                ],
+                app.kind
+              )
+              ? '~3'
+              : '~2'
+          }
+        : {})
     }
   : {}
 
@@ -92,7 +110,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   name: appName
 }
 

@@ -248,11 +248,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2024-11-01' existing = {
+resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   name: appName
 }
 
-resource slot 'Microsoft.Web/sites/slots@2024-11-01' = {
+resource slot 'Microsoft.Web/sites/slots@2025-03-01' = {
   name: name
   parent: app
   location: location
@@ -407,7 +407,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(
