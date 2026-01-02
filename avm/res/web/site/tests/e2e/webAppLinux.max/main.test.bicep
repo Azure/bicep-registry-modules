@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
   }
 }
 
@@ -164,6 +165,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'appsettings'
               storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
               storageAccountUseIdentityAuthentication: true
+              applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
             }
           ]
           hybridConnectionRelays: [
@@ -253,6 +255,10 @@ module testDeployment '../../../main.bicep' = [
           name: 'appsettings'
           storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
           storageAccountUseIdentityAuthentication: true
+          applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+          properties: {
+            ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+          }
         }
       ]
       managedIdentities: {
