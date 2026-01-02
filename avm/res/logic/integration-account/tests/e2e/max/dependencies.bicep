@@ -67,7 +67,7 @@ resource keyPermissions2 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   name: guid('msi-logicapps-KeyVault-Administrator-RoleAssignment')
   scope: keyVault
   properties: {
-    principalId: '0e747302-df25-4a8e-984b-a509eaefa88d' // Logic Apps Service Principal
+    principalId: logicAppsServiceEnterpriseApplicationObjectId // Logic Apps Service Principal
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'
