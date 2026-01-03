@@ -42,12 +42,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource parentManagementGroup 'Microsoft.Management/managementGroups@2021-04-01' existing = {
+resource parentManagementGroup 'Microsoft.Management/managementGroups@2023-04-01' existing = {
   name: parentId
   scope: tenant()
 }
 
-resource managementGroup 'Microsoft.Management/managementGroups@2021-04-01' = {
+resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   name: name
   scope: tenant()
   properties: {
