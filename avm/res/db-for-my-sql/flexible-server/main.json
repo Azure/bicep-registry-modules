@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "14757123298981101249"
+      "version": "0.39.26.7824",
+      "templateHash": "1406941492359230472"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -933,7 +933,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/properties/properties/maintenanceWindow"
         },
-        "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
+        "description": "Optional. Properties for the maintenance window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
       },
       "defaultValue": {}
     },
@@ -1044,7 +1044,9 @@
       "defaultValue": "8.0.21",
       "allowedValues": [
         "5.7",
-        "8.0.21"
+        "8.0.21",
+        "8.4",
+        "9.3"
       ],
       "metadata": {
         "description": "Optional. MySQL Server version."
@@ -1378,8 +1380,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10495770980913019819"
+              "version": "0.39.26.7824",
+              "templateHash": "2045090441650157593"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1485,8 +1487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13800907243219973298"
+              "version": "0.39.26.7824",
+              "templateHash": "2424910159634489398"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1593,8 +1595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "7944828652001704644"
+              "version": "0.39.26.7824",
+              "templateHash": "172070420013682380"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1709,8 +1711,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "3649567738710959920"
+              "version": "0.39.26.7824",
+              "templateHash": "6206870953885430720"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1816,8 +1818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16225854850224564968"
+              "version": "0.39.26.7824",
+              "templateHash": "28279369225338798"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
