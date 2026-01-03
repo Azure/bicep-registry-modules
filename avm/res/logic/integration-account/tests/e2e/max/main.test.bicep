@@ -20,6 +20,10 @@ param serviceShort string = 'iamax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Required. The object ID of the Logic Apps Service Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-logicAppsServiceEnterpriseApplicationObjectId\'.')
+@secure()
+param logicAppsServiceEnterpriseApplicationObjectId string = ''
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -37,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-01'
+    logicAppsServiceEnterpriseApplicationObjectId: logicAppsServiceEnterpriseApplicationObjectId
   }
 }
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7480755254962696816"
+      "templateHash": "7220077724468906217"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -779,7 +779,7 @@
         "Suspended"
       ],
       "metadata": {
-        "description": "Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended."
+        "description": "Optional. The state. Allowed values are Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended."
       }
     },
     "enableTelemetry": {
