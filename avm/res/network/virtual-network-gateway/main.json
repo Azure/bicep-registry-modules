@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5155951862724149493"
+      "templateHash": "15169409386496752827"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1288,7 +1288,7 @@
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
           "availabilityZones": "[if(contains(parameters('skuName'), 'AZ'), createObject('value', parameters('publicIpAvailabilityZones')), createObject('value', createArray()))]",
           "dnsSettings": {
-            "value": "[union(createObject('domainNameLabel', if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])), if(not(equals(parameters('domainNameLabelScope'), null())), createObject('domainNameLabelScope', parameters('domainNameLabelScope')), createObject()))]"
+            "value": "[shallowMerge(createArray(createObject('domainNameLabel', if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])), if(not(equals(parameters('domainNameLabelScope'), null())), createObject('domainNameLabelScope', parameters('domainNameLabelScope')), createObject())))]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"

@@ -539,14 +539,13 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = [
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
       availabilityZones: contains(skuName, 'AZ') ? publicIpAvailabilityZones : []
-      dnsSettings: union(
-        {
-          domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
-            ? domainNameLabel[index]
-            : virtualGatewayPublicIpName
-        },
-        domainNameLabelScope != null ? { domainNameLabelScope: domainNameLabelScope } : {}
-      )
+      dnsSettings: {
+        domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
+          ? domainNameLabel[index]
+          : virtualGatewayPublicIpName
+
+        ...(domainNameLabelScope != null ? { domainNameLabelScope: domainNameLabelScope } : {})
+      }
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
