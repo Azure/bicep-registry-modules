@@ -1569,7 +1569,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schemas`](#parameter-schemas) | array | All schemas to create. |
 | [`sku`](#parameter-sku) | string | Integration account sku name. |
-| [`state`](#parameter-state) | string | The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
+| [`state`](#parameter-state) | string | The state. Allowed values are Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -2432,7 +2432,7 @@ Integration account sku name.
 
 ### Parameter: `state`
 
-The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.
+The state. Allowed values are Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.
 
 - Required: No
 - Type: string
