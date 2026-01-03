@@ -89,6 +89,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
+| [`sshEnabled`](#parameter-sshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
@@ -5527,6 +5528,13 @@ The site config object.
       alwaysOn: true
   }
   ```
+
+### Parameter: `sshEnabled`
+
+Whether to enable SSH access.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `storageAccountRequired`
 
