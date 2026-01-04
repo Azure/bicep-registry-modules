@@ -11,7 +11,7 @@ param workspaceName string
 param name string
 
 @description('Required. Logger resource ID.')
-param loggerId string
+param loggerResourceId string
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
 param alwaysLog string = 'allErrors'
@@ -70,7 +70,7 @@ resource diagnostic 'Microsoft.ApiManagement/service/workspaces/diagnostics@2024
   name: name
   parent: service::workspace
   properties: {
-    loggerId: loggerId
+    loggerId: loggerResourceId
     alwaysLog: alwaysLog
     backend: backend
     frontend: frontend

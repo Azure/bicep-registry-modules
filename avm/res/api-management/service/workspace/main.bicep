@@ -217,7 +217,7 @@ module workspace_diagnostics 'diagnostic/main.bicep' = [
       apiManagementServiceName: apiManagementServiceName
       workspaceName: workspace.name
       name: diagnostic.name
-      loggerId: diagnostic.loggerId
+      loggerResourceId: diagnostic.loggerResourceId
       alwaysLog: diagnostic.?alwaysLog
       backend: diagnostic.?backend
       frontend: diagnostic.?frontend
@@ -578,7 +578,7 @@ type diagnosticType = {
   name: string
 
   @sys.description('Required. Logger resource ID.')
-  loggerId: string
+  loggerResourceId: string
 
   @sys.description('Optional. Specifies for what type of messages sampling settings should not apply.')
   alwaysLog: string?

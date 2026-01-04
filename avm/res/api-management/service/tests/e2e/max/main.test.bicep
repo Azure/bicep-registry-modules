@@ -214,7 +214,7 @@ module testDeployment '../../../main.bicep' = [
       serviceDiagnostics: [
         {
           name: 'applicationinsights'
-          loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/loggers/logger'
+          loggerResourceId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/loggers/logger'
           alwaysLog: 'allErrors'
           httpCorrelationProtocol: 'W3C'
           logClientIp: true
@@ -473,7 +473,7 @@ module testDeployment '../../../main.bicep' = [
           diagnostics: [
             {
               name: 'applicationinsights'
-              loggerId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/loggers/workspace-logger'
+              loggerResourceId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/loggers/workspace-logger'
               alwaysLog: 'allErrors'
               httpCorrelationProtocol: 'W3C'
               logClientIp: true

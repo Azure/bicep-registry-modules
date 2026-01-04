@@ -8,7 +8,7 @@ param apiManagementServiceName string
 param name string
 
 @description('Required. Logger resource ID.')
-param loggerId string
+param loggerResourceId string
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
 param alwaysLog string = 'allErrors'
@@ -63,7 +63,7 @@ resource diagnostic 'Microsoft.ApiManagement/service/diagnostics@2024-05-01' = {
   name: name
   parent: service
   properties: {
-    loggerId: loggerId
+    loggerId: loggerResourceId
     alwaysLog: alwaysLog
     backend: backend
     frontend: frontend

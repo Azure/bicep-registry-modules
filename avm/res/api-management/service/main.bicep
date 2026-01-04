@@ -551,7 +551,7 @@ module service_diagnostics 'diagnostic/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: diagnostic.name
-      loggerId: diagnostic.loggerId
+      loggerResourceId: diagnostic.loggerResourceId
       alwaysLog: diagnostic.?alwaysLog
       backend: diagnostic.?backend
       frontend: diagnostic.?frontend
@@ -1175,7 +1175,7 @@ type serviceDiagnosticType = {
   name: string
 
   @description('Required. Logger resource ID.')
-  loggerId: string
+  loggerResourceId: string
 
   @description('Optional. Specifies for what type of messages sampling settings should not apply.')
   alwaysLog: string?
