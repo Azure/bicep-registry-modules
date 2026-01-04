@@ -14,7 +14,7 @@ param productName string
 param name string
 
 @description('Required. Full resource Id of a Group.')
-param groupId string
+param groupResourceId string
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
@@ -32,7 +32,7 @@ resource groupLink 'Microsoft.ApiManagement/service/workspaces/products/groupLin
   name: name
   parent: service::workspace::product
   properties: {
-    groupId: groupId
+    groupId: groupResourceId
   }
 }
 

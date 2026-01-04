@@ -79,7 +79,7 @@ module product_apiLinks 'api-link/main.bicep' = [
       workspaceName: workspaceName
       productName: product.name
       name: apiLink.name
-      apiId: apiLink.apiId
+      apiResourceId: apiLink.apiResourceId
     }
   }
 ]
@@ -92,7 +92,7 @@ module product_groupLinks 'group-link/main.bicep' = [
       workspaceName: workspaceName
       productName: product.name
       name: groupLink.name
-      groupId: groupLink.groupId
+      groupResourceId: groupLink.groupResourceId
     }
   }
 ]
@@ -144,7 +144,7 @@ type apiLinkType = {
   name: string
 
   @sys.description('Required. Full resource Id of an API.')
-  apiId: string
+  apiResourceId: string
 }
 
 @export()
@@ -154,5 +154,5 @@ type groupLinkType = {
   name: string
 
   @sys.description('Required. Full resource Id of a Group.')
-  groupId: string
+  groupResourceId: string
 }

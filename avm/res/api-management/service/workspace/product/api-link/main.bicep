@@ -14,7 +14,7 @@ param productName string
 param name string
 
 @description('Required. Full resource Id of an API.')
-param apiId string
+param apiResourceId string
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
@@ -32,7 +32,7 @@ resource apiLink 'Microsoft.ApiManagement/service/workspaces/products/apiLinks@2
   name: name
   parent: service::workspace::product
   properties: {
-    apiId: apiId
+    apiId: apiResourceId
   }
 }
 

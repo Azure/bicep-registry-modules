@@ -526,13 +526,13 @@ module testDeployment '../../../main.bicep' = [
               apiLinks: [
                 {
                   name: 'workspace-api-link'
-                  apiId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/apis/workspace-echo-api'
+                  apiResourceId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/workspaces/${workspace1Name}/apis/workspace-echo-api'
                 }
               ]
               groupLinks: [
                 {
                   name: 'workspace-group-link'
-                  groupId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/groups/developers'
+                  groupResourceId: '${resourceGroup.id}/providers/Microsoft.ApiManagement/service/${apimName}/groups/developers'
                 }
               ]
               policies: [
