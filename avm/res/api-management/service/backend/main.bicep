@@ -31,6 +31,8 @@ param title string?
 @sys.description('Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.')
 param tls resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
+@minLength(1)
+@maxLength(2000)
 @sys.description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
 param url string?
 

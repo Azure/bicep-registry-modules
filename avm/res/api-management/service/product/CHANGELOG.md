@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/product/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Added length constraints to the `name`, `displayName` and `description` parameters
+- Updated descriptions of various parameters for clarity
+- Changed `description` parameter to be nullable with no default value
+- Added `@allowed` constraint to the `state` parameter (`'notPublished'` | `'published'`) and made it optional (no default)
+
+### Breaking Changes
+
+- none
+
 ## 0.2.0
 
 ### Changes

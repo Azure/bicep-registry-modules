@@ -95,6 +95,23 @@ resource vnetRegion1 'Microsoft.Network/virtualNetworks@2025-01-01' = {
           ]
         }
       }
+      {
+        name: 'workspace-gateway-subnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          networkSecurityGroup: {
+            id: nsgRegion1.id
+          }
+          delegations: [
+            {
+              name: 'Microsoft.Web/serverFarms'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
+        }
+      }
     ]
   }
 }
@@ -470,6 +487,9 @@ output appInsightsResourceId string = applicationInsights.id
 
 @description('The resource ID of the created virtual network subnet for a Private Endpoint.')
 output privateEndpointSubnetResourceId string = vnetRegion1.properties.subnets[0].id
+
+@description('The resource ID of the created virtual network subnet for a Workspace Gateway.')
+output workspaceGatewaySubnetResourceId string = vnetRegion1.properties.subnets[1].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
