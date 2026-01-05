@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5968614236295939809"
+      "templateHash": "3883954202547776808"
     },
     "name": "API Management Service Diagnostics",
     "description": "This module deploys an API Management Service Diagnostic."
@@ -24,7 +24,7 @@
         "description": "Required. Diagnostic Name."
       }
     },
-    "loggerId": {
+    "loggerResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Logger resource ID."
@@ -126,7 +126,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
-        "loggerId": "[parameters('loggerId')]",
+        "loggerId": "[parameters('loggerResourceId')]",
         "alwaysLog": "[parameters('alwaysLog')]",
         "backend": "[parameters('backend')]",
         "frontend": "[parameters('frontend')]",

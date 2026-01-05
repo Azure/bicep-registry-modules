@@ -944,7 +944,7 @@ Diagnostics to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerId`](#parameter-diagnosticsloggerid) | string | Logger resource ID. |
+| [`loggerResourceId`](#parameter-diagnosticsloggerresourceid) | string | Logger resource ID. |
 | [`name`](#parameter-diagnosticsname) | string | Diagnostic Name. |
 
 **Conditional parameters**
@@ -966,7 +966,7 @@ Diagnostics to deploy in this workspace.
 | [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-diagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
-### Parameter: `diagnostics.loggerId`
+### Parameter: `diagnostics.loggerResourceId`
 
 Logger resource ID.
 
@@ -1424,10 +1424,10 @@ Names of Product API Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiId`](#parameter-productsapilinksapiid) | string | Full resource Id of an API. |
+| [`apiResourceId`](#parameter-productsapilinksapiresourceid) | string | Full resource Id of an API. |
 | [`name`](#parameter-productsapilinksname) | string | The name of the API link. |
 
-### Parameter: `products.apiLinks.apiId`
+### Parameter: `products.apiLinks.apiResourceId`
 
 Full resource Id of an API.
 
@@ -1466,10 +1466,10 @@ Names of Product Group Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-productsgrouplinksgroupid) | string | Full resource Id of a Group. |
+| [`groupResourceId`](#parameter-productsgrouplinksgroupresourceid) | string | Full resource Id of a Group. |
 | [`name`](#parameter-productsgrouplinksname) | string | The name of the Product Group link. |
 
-### Parameter: `products.groupLinks.groupId`
+### Parameter: `products.groupLinks.groupResourceId`
 
 Full resource Id of a Group.
 
@@ -1578,7 +1578,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
   - `'API Management Developer Portal Content Editor'`
   - `'API Management Service Contributor'`

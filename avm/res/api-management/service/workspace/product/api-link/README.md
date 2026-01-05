@@ -20,7 +20,7 @@ This module deploys an Product API Link in an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiId`](#parameter-apiid) | string | Full resource Id of an API. |
+| [`apiResourceId`](#parameter-apiresourceid) | string | Full resource Id of an API. |
 | [`name`](#parameter-name) | string | The name of the Product API link. |
 
 **Conditional parameters**
@@ -31,7 +31,7 @@ This module deploys an Product API Link in an API Management Workspace.
 | [`productName`](#parameter-productname) | string | The name of the parent API. Required if the template is used in a standalone deployment. |
 | [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
-### Parameter: `apiId`
+### Parameter: `apiResourceId`
 
 Full resource Id of an API.
 

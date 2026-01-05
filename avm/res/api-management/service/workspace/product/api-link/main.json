@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1601894938298447549"
+      "templateHash": "10398416687685575846"
     },
     "name": "API Management Workspace Product API Links",
     "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -35,7 +35,7 @@
         "description": "Required. The name of the Product API link."
       }
     },
-    "apiId": {
+    "apiResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Full resource Id of an API."
@@ -48,7 +48,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
       "properties": {
-        "apiId": "[parameters('apiId')]"
+        "apiId": "[parameters('apiResourceId')]"
       }
     }
   ],

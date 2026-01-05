@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6432454897152110809"
+      "templateHash": "6466928030405979367"
     },
     "name": "API Management Workspace Diagnostics",
     "description": "This module deploys a Diagnostic at API Management Workspace scope."
@@ -30,7 +30,7 @@
         "description": "Required. Diagnostic Name."
       }
     },
-    "loggerId": {
+    "loggerResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Logger resource ID."
@@ -138,7 +138,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
       "properties": {
-        "loggerId": "[parameters('loggerId')]",
+        "loggerId": "[parameters('loggerResourceId')]",
         "alwaysLog": "[parameters('alwaysLog')]",
         "backend": "[parameters('backend')]",
         "frontend": "[parameters('frontend')]",

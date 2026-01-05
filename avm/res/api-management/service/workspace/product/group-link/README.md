@@ -20,7 +20,7 @@ This module deploys a Product Group Link in an API Management Workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-groupid) | string | Full resource Id of a Group. |
+| [`groupResourceId`](#parameter-groupresourceid) | string | Full resource Id of a Group. |
 | [`name`](#parameter-name) | string | The name of the Product Group link. |
 
 **Conditional parameters**
@@ -31,7 +31,7 @@ This module deploys a Product Group Link in an API Management Workspace.
 | [`productName`](#parameter-productname) | string | The name of the parent Product. Required if the template is used in a standalone deployment. |
 | [`workspaceName`](#parameter-workspacename) | string | The name of the parent Workspace. Required if the template is used in a standalone deployment. |
 
-### Parameter: `groupId`
+### Parameter: `groupResourceId`
 
 Full resource Id of a Group.
 

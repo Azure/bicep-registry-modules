@@ -86,10 +86,10 @@ Names of Product API Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiId`](#parameter-apilinksapiid) | string | Full resource Id of an API. |
+| [`apiResourceId`](#parameter-apilinksapiresourceid) | string | Full resource Id of an API. |
 | [`name`](#parameter-apilinksname) | string | The name of the API link. |
 
-### Parameter: `apiLinks.apiId`
+### Parameter: `apiLinks.apiResourceId`
 
 Full resource Id of an API.
 
@@ -130,10 +130,10 @@ Names of Product Group Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-grouplinksgroupid) | string | Full resource Id of a Group. |
+| [`groupResourceId`](#parameter-grouplinksgroupresourceid) | string | Full resource Id of a Group. |
 | [`name`](#parameter-grouplinksname) | string | The name of the Product Group link. |
 
-### Parameter: `groupLinks.groupId`
+### Parameter: `groupLinks.groupResourceId`
 
 Full resource Id of a Group.
 

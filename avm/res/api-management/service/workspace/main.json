@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6227816310488144681"
+      "templateHash": "4891575914914695678"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -439,7 +439,7 @@
             "description": "Required. Diagnostic Name."
           }
         },
-        "loggerId": {
+        "loggerResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. Logger resource ID."
@@ -1199,7 +1199,7 @@
             "description": "Required. The name of the API link."
           }
         },
-        "apiId": {
+        "apiResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. Full resource Id of an API."
@@ -1222,7 +1222,7 @@
             "description": "Required. The name of the Product Group link."
           }
         },
-        "groupId": {
+        "groupResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. Full resource Id of a Group."
@@ -1601,7 +1601,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "API Management Developer Portal Content Editor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c031e6a8-4391-4de0-8d69-4706a7ed3729')]",
       "API Management Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '312a565d-c81f-4fd8-895a-4e21e48d571c')]",
@@ -3230,7 +3230,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "4976792328172925614"
+              "templateHash": "15034813524419131585"
             },
             "name": "API Management Workspace API Version Sets",
             "description": "This module deploys an API Version Set in an API Management Workspace."
@@ -3250,8 +3250,9 @@
             },
             "name": {
               "type": "string",
+              "defaultValue": "default",
               "metadata": {
-                "description": "Required. API Version set name."
+                "description": "Optional. API Version set name."
               }
             },
             "displayName": {
@@ -3627,8 +3628,8 @@
           "name": {
             "value": "[coalesce(parameters('diagnostics'), createArray())[copyIndex()].name]"
           },
-          "loggerId": {
-            "value": "[coalesce(parameters('diagnostics'), createArray())[copyIndex()].loggerId]"
+          "loggerResourceId": {
+            "value": "[coalesce(parameters('diagnostics'), createArray())[copyIndex()].loggerResourceId]"
           },
           "alwaysLog": {
             "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'alwaysLog')]"
@@ -3666,7 +3667,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "6432454897152110809"
+              "templateHash": "6466928030405979367"
             },
             "name": "API Management Workspace Diagnostics",
             "description": "This module deploys a Diagnostic at API Management Workspace scope."
@@ -3690,7 +3691,7 @@
                 "description": "Required. Diagnostic Name."
               }
             },
-            "loggerId": {
+            "loggerResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Required. Logger resource ID."
@@ -3798,7 +3799,7 @@
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
               "properties": {
-                "loggerId": "[parameters('loggerId')]",
+                "loggerId": "[parameters('loggerResourceId')]",
                 "alwaysLog": "[parameters('alwaysLog')]",
                 "backend": "[parameters('backend')]",
                 "frontend": "[parameters('frontend')]",
@@ -4363,7 +4364,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "11001594247327735846"
+              "templateHash": "17739451536850644299"
             },
             "name": "API Management Workspace Products",
             "description": "This module deploys a Product in an API Management Workspace."
@@ -4413,7 +4414,7 @@
                     "description": "Required. The name of the API link."
                   }
                 },
-                "apiId": {
+                "apiResourceId": {
                   "type": "string",
                   "metadata": {
                     "description": "Required. Full resource Id of an API."
@@ -4434,7 +4435,7 @@
                     "description": "Required. The name of the Product Group link."
                   }
                 },
-                "groupId": {
+                "groupResourceId": {
                   "type": "string",
                   "metadata": {
                     "description": "Required. Full resource Id of a Group."
@@ -4607,8 +4608,8 @@
                   "name": {
                     "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].name]"
                   },
-                  "apiId": {
-                    "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].apiId]"
+                  "apiResourceId": {
+                    "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].apiResourceId]"
                   }
                 },
                 "template": {
@@ -4618,7 +4619,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "1601894938298447549"
+                      "templateHash": "10398416687685575846"
                     },
                     "name": "API Management Workspace Product API Links",
                     "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -4648,7 +4649,7 @@
                         "description": "Required. The name of the Product API link."
                       }
                     },
-                    "apiId": {
+                    "apiResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "Required. Full resource Id of an API."
@@ -4661,7 +4662,7 @@
                       "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
                       "properties": {
-                        "apiId": "[parameters('apiId')]"
+                        "apiId": "[parameters('apiResourceId')]"
                       }
                     }
                   ],
@@ -4720,8 +4721,8 @@
                   "name": {
                     "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].name]"
                   },
-                  "groupId": {
-                    "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].groupId]"
+                  "groupResourceId": {
+                    "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].groupResourceId]"
                   }
                 },
                 "template": {
@@ -4731,7 +4732,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "15660628999500851298"
+                      "templateHash": "9816498973930744055"
                     },
                     "name": "API Management Workspace Product Group Links",
                     "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -4761,7 +4762,7 @@
                         "description": "Required. The name of the Product Group link."
                       }
                     },
-                    "groupId": {
+                    "groupResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "Required. Full resource Id of a Group."
@@ -4774,7 +4775,7 @@
                       "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
                       "properties": {
-                        "groupId": "[parameters('groupId')]"
+                        "groupId": "[parameters('groupResourceId')]"
                       }
                     }
                   ],

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15660628999500851298"
+      "templateHash": "9816498973930744055"
     },
     "name": "API Management Workspace Product Group Links",
     "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -35,7 +35,7 @@
         "description": "Required. The name of the Product Group link."
       }
     },
-    "groupId": {
+    "groupResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Full resource Id of a Group."
@@ -48,7 +48,7 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
       "properties": {
-        "groupId": "[parameters('groupId')]"
+        "groupId": "[parameters('groupResourceId')]"
       }
     }
   ],

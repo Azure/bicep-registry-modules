@@ -20,7 +20,7 @@ This module deploys a Diagnostic at API Management Workspace scope.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerId`](#parameter-loggerid) | string | Logger resource ID. |
+| [`loggerResourceId`](#parameter-loggerresourceid) | string | Logger resource ID. |
 | [`name`](#parameter-name) | string | Diagnostic Name. |
 
 **Conditional parameters**
@@ -44,7 +44,7 @@ This module deploys a Diagnostic at API Management Workspace scope.
 | [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
-### Parameter: `loggerId`
+### Parameter: `loggerResourceId`
 
 Logger resource ID.
 
