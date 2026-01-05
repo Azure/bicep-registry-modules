@@ -593,7 +593,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         alwaysLog: 'allErrors'
         httpCorrelationProtocol: 'W3C'
         logClientIp: true
-        loggerId: '<loggerId>'
+        loggerResourceId: '<loggerResourceId>'
         metrics: true
         name: 'applicationinsights'
         operationNameFormat: 'Url'
@@ -744,7 +744,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             alwaysLog: 'allErrors'
             httpCorrelationProtocol: 'W3C'
             logClientIp: true
-            loggerId: '<loggerId>'
+            loggerResourceId: '<loggerResourceId>'
             metrics: true
             name: 'applicationinsights'
             operationNameFormat: 'Url'
@@ -802,7 +802,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           {
             apiLinks: [
               {
-                apiId: '<apiId>'
+                apiResourceId: '<apiResourceId>'
                 name: 'workspace-api-link'
               }
             ]
@@ -811,7 +811,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             displayName: 'Workspace Product'
             groupLinks: [
               {
-                groupId: '<groupId>'
+                groupResourceId: '<groupResourceId>'
                 name: 'workspace-group-link'
               }
             ]
@@ -1199,7 +1199,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "alwaysLog": "allErrors",
           "httpCorrelationProtocol": "W3C",
           "logClientIp": true,
-          "loggerId": "<loggerId>",
+          "loggerResourceId": "<loggerResourceId>",
           "metrics": true,
           "name": "applicationinsights",
           "operationNameFormat": "Url",
@@ -1360,7 +1360,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "alwaysLog": "allErrors",
               "httpCorrelationProtocol": "W3C",
               "logClientIp": true,
-              "loggerId": "<loggerId>",
+              "loggerResourceId": "<loggerResourceId>",
               "metrics": true,
               "name": "applicationinsights",
               "operationNameFormat": "Url",
@@ -1418,7 +1418,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             {
               "apiLinks": [
                 {
-                  "apiId": "<apiId>",
+                  "apiResourceId": "<apiResourceId>",
                   "name": "workspace-api-link"
                 }
               ],
@@ -1427,7 +1427,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "displayName": "Workspace Product",
               "groupLinks": [
                 {
-                  "groupId": "<groupId>",
+                  "groupResourceId": "<groupResourceId>",
                   "name": "workspace-group-link"
                 }
               ],
@@ -1771,7 +1771,7 @@ param serviceDiagnostics = [
     alwaysLog: 'allErrors'
     httpCorrelationProtocol: 'W3C'
     logClientIp: true
-    loggerId: '<loggerId>'
+    loggerResourceId: '<loggerResourceId>'
     metrics: true
     name: 'applicationinsights'
     operationNameFormat: 'Url'
@@ -1922,7 +1922,7 @@ param workspaces = [
         alwaysLog: 'allErrors'
         httpCorrelationProtocol: 'W3C'
         logClientIp: true
-        loggerId: '<loggerId>'
+        loggerResourceId: '<loggerResourceId>'
         metrics: true
         name: 'applicationinsights'
         operationNameFormat: 'Url'
@@ -1980,7 +1980,7 @@ param workspaces = [
       {
         apiLinks: [
           {
-            apiId: '<apiId>'
+            apiResourceId: '<apiResourceId>'
             name: 'workspace-api-link'
           }
         ]
@@ -1989,7 +1989,7 @@ param workspaces = [
         displayName: 'Workspace Product'
         groupLinks: [
           {
-            groupId: '<groupId>'
+            groupResourceId: '<groupResourceId>'
             name: 'workspace-group-link'
           }
         ]
@@ -6512,7 +6512,7 @@ API Management Service Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerId`](#parameter-servicediagnosticsloggerid) | string | Logger resource ID. |
+| [`loggerResourceId`](#parameter-servicediagnosticsloggerresourceid) | string | Logger resource ID. |
 | [`name`](#parameter-servicediagnosticsname) | string | Diagnostic Name. |
 
 **Conditional parameters**
@@ -6534,7 +6534,7 @@ API Management Service Diagnostics.
 | [`samplingPercentage`](#parameter-servicediagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-servicediagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
-### Parameter: `serviceDiagnostics.loggerId`
+### Parameter: `serviceDiagnostics.loggerResourceId`
 
 Logger resource ID.
 
@@ -7662,7 +7662,7 @@ Diagnostics to deploy in this workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerId`](#parameter-workspacesdiagnosticsloggerid) | string | Logger resource ID. |
+| [`loggerResourceId`](#parameter-workspacesdiagnosticsloggerresourceid) | string | Logger resource ID. |
 | [`name`](#parameter-workspacesdiagnosticsname) | string | Diagnostic Name. |
 
 **Conditional parameters**
@@ -7684,7 +7684,7 @@ Diagnostics to deploy in this workspace.
 | [`samplingPercentage`](#parameter-workspacesdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-workspacesdiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
-### Parameter: `workspaces.diagnostics.loggerId`
+### Parameter: `workspaces.diagnostics.loggerResourceId`
 
 Logger resource ID.
 
@@ -8176,10 +8176,10 @@ Names of Product API Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiId`](#parameter-workspacesproductsapilinksapiid) | string | Full resource Id of an API. |
+| [`apiResourceId`](#parameter-workspacesproductsapilinksapiresourceid) | string | Full resource Id of an API. |
 | [`name`](#parameter-workspacesproductsapilinksname) | string | The name of the API link. |
 
-### Parameter: `workspaces.products.apiLinks.apiId`
+### Parameter: `workspaces.products.apiLinks.apiResourceId`
 
 Full resource Id of an API.
 
@@ -8218,10 +8218,10 @@ Names of Product Group Links.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupId`](#parameter-workspacesproductsgrouplinksgroupid) | string | Full resource Id of a Group. |
+| [`groupResourceId`](#parameter-workspacesproductsgrouplinksgroupresourceid) | string | Full resource Id of a Group. |
 | [`name`](#parameter-workspacesproductsgrouplinksname) | string | The name of the Product Group link. |
 
-### Parameter: `workspaces.products.groupLinks.groupId`
+### Parameter: `workspaces.products.groupLinks.groupResourceId`
 
 Full resource Id of a Group.
 
@@ -8330,7 +8330,7 @@ Role assignments for the workspace.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
   - `'API Management Developer Portal Content Editor'`
   - `'API Management Service Contributor'`

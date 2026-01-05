@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the PremiumV2 SKU with most of its
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
-@description('Optional. Location to deploy secondary resources to for APIM additionalLocations.')
-param locationRegion2 string = 'germanywestcentral'
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'apisv2max'
 
@@ -24,9 +21,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
-// Enforcing location due to limited availability of the APIM PremiumV2 SKU in certain regions.
-#disable-next-line no-hardcoded-location
+// Enforcing test locations due to limited availability of the APIM PremiumV2 SKU in certain regions.
 var enforcedLocation = 'uksouth'
+var enforcedLocationRegion2 = 'germanywestcentral'
 
 // ============ //
 // Dependencies //
@@ -44,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     locationRegion1: enforcedLocation
-    locationRegion2: locationRegion2
+    locationRegion2: enforcedLocationRegion2
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
     publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
