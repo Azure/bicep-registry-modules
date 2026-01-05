@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "9404183689183350870"
+      "version": "0.39.26.7824",
+      "templateHash": "181594447493335746"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service"
@@ -129,7 +129,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -204,7 +204,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -319,7 +319,8 @@
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Communication and Email Service Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '09976791-48a7-449e-bb21-39d1a415f350')]"
     }
   },
   "resources": {
@@ -438,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "3112728591047420285"
+              "version": "0.39.26.7824",
+              "templateHash": "2484451445381873117"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain"
@@ -506,7 +507,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -581,7 +582,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -775,8 +776,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "1385367565090764957"
+                      "version": "0.39.26.7824",
+                      "templateHash": "7017896381373476636"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender"
@@ -881,12 +882,26 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+                  "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/properties/properties/verificationRecords",
                   "output": true
                 },
                 "description": "The verification records for the domain."
               },
               "value": "[reference('domain').verificationRecords]"
+            },
+            "fromSenderDomain": {
+              "type": "string",
+              "metadata": {
+                "description": "The from sender domain for the domain."
+              },
+              "value": "[reference('domain').fromSenderDomain]"
+            },
+            "mailFromSenderDomain": {
+              "type": "string",
+              "metadata": {
+                "description": "The mail from sender domain for the domain."
+              },
+              "value": "[reference('domain').mailFromSenderDomain]"
             }
           }
         }
@@ -957,7 +972,7 @@
         "type": "object",
         "metadata": {
           "__bicep_resource_derived_type!": {
-            "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+            "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/properties/properties/verificationRecords",
             "output": true
           }
         }
@@ -968,6 +983,32 @@
       "copy": {
         "count": "[length(coalesce(parameters('domains'), createArray()))]",
         "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.verificationRecords.value]"
+      }
+    },
+    "domainFromSenderDomains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The list of from sender domains for each domain."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.fromSenderDomain.value]"
+      }
+    },
+    "domainMailFromSenderDomains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The list of mail from sender domains for each domain."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.mailFromSenderDomain.value]"
       }
     }
   }

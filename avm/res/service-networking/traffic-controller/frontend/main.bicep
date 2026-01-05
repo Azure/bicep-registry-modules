@@ -14,11 +14,11 @@ param trafficControllerName string
 // Resources      //
 // ============== //
 
-resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-11-01' existing = {
+resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2025-01-01' existing = {
   name: trafficControllerName
 }
 
-resource frontend 'Microsoft.ServiceNetworking/trafficControllers/frontends@2023-11-01' = {
+resource frontend 'Microsoft.ServiceNetworking/trafficControllers/frontends@2025-01-01' = {
   name: name
   parent: trafficController
   location: location

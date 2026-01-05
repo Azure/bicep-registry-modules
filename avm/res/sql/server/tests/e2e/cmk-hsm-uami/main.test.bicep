@@ -12,10 +12,13 @@ metadata description = 'This instance deploys the module with Managed HSM-based 
 param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sshsm'
+param serviceShort string = 'sshsmu'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 @description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
 @secure()
@@ -38,36 +41,28 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
+module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
+  params: {
+    primaryHSMKeyName: '${namePrefix}-${serviceShort}-srv-key-${substring(uniqueString(baseTime), 0, 3)}'
+    secondaryHSMKeyName: '${namePrefix}-${serviceShort}-db-key-${substring(uniqueString(baseTime), 0, 3)}'
+    hsmKeySize: 3072
+    managedHSMName: last(split(managedHSMResourceId, '/'))
+  }
+  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
-  params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-srv-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-srv'
+    primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
+    secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
+    deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
     deploymentMSIResourceId: deploymentMSIResourceId
-    managedHSMName: last(split(managedHSMResourceId, '/'))
+    managedHSMResourceId: managedHSMResourceId
   }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
-}
-
-module nestedHsmDatabaseDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDatabaseDependencies'
-  params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    hsmKeyName: '${serviceShort}-db-${namePrefix}-key'
-    hsmDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-db'
-    deploymentMSIResourceId: deploymentMSIResourceId
-    managedHSMName: last(split(managedHSMResourceId, '/'))
-  }
-  scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
 }
 
 // ============== //
@@ -96,9 +91,9 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
+        keyName: nestedHsmDependencies.outputs.primaryKeyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
-        keyVersion: nestedHsmDependencies.outputs.keyVersion
+        keyVersion: nestedHsmDependencies.outputs.primaryKeyVersion
       }
       databases: [
         {
@@ -109,9 +104,9 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           customerManagedKey: {
-            keyVaultResourceId: nestedHsmDatabaseDependencies.outputs.keyVaultResourceId
-            keyName: nestedHsmDatabaseDependencies.outputs.keyName
-            keyVersion: nestedHsmDatabaseDependencies.outputs.keyVersion
+            keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
+            keyName: nestedHsmDependencies.outputs.secondaryKeyName!
+            keyVersion: nestedHsmDependencies.outputs.secondaryKeyVersion!
           }
           sku: {
             name: 'Basic'

@@ -39,7 +39,7 @@ param dnsSettings dnsSettingsType?
 @description('Optional. The list of tags associated with the public IP address.')
 param ipTags ipTagType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -60,10 +60,17 @@ param skuTier string = 'Regional'
 @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
 param ddosSettings ddosSettingsType?
 
+@description('Optional. The delete option for the public IP address.')
+@allowed([
+  'Delete'
+  'Detach'
+])
+param deleteOption string?
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -74,9 +81,9 @@ param enableTelemetry bool = true
 param idleTimeoutInMinutes int = 4
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/publicIPAddresses@2024-10-01'>.tags?
+param tags resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.tags?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -144,7 +151,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -165,6 +172,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: ipTags
+    deleteOption: deleteOption
   }
 }
 

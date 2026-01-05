@@ -327,7 +327,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   location: location
 }
 
-resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   name: dcrName
   location: location
   kind: 'Windows'

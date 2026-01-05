@@ -205,7 +205,7 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -222,7 +222,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2024-12-01-preview' = {
+  resource key 'keys@2025-05-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -336,7 +336,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-11-01' = {
   }
 }
 
-resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   name: dcrName
   location: location
   kind: 'Linux'

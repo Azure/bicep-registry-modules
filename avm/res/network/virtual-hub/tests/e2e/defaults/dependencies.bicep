@@ -4,7 +4,7 @@ param virtualWANName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-10-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2025-01-01' = {
   name: virtualWANName
   location: location
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "10507629033981271941"
+      "version": "0.39.26.7824",
+      "templateHash": "12339010709275563426"
     },
     "name": "Virtual WANs",
     "description": "This module deploys a Virtual WAN."
@@ -45,7 +45,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -120,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -171,7 +171,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualWans@2024-10-01#properties/tags"
+          "source": "Microsoft.Network/virtualWans@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -232,7 +232,7 @@
     },
     "virtualWan": {
       "type": "Microsoft.Network/virtualWans",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -305,7 +305,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualWan', '2024-10-01', 'full').location]"
+      "value": "[reference('virtualWan', '2025-01-01', 'full').location]"
     }
   }
 }

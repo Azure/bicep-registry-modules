@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Product.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/product:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -16,6 +24,7 @@ This module deploys an API Management Service Product.
 | `Microsoft.ApiManagement/service/products` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products)</li></ul> |
 | `Microsoft.ApiManagement/service/products/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/apis)</li></ul> |
 | `Microsoft.ApiManagement/service/products/groups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_groups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/groups)</li></ul> |
+| `Microsoft.ApiManagement/service/products/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_products_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/products/policies)</li></ul> |
 
 ## Parameters
 
@@ -41,6 +50,7 @@ This module deploys an API Management Service Product.
 | [`description`](#parameter-description) | string | Product description. May include HTML formatting tags. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`groups`](#parameter-groups) | array | Names of Product Groups. |
+| [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service Product. |
 | [`state`](#parameter-state) | string | whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published. |
 | [`subscriptionRequired`](#parameter-subscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-subscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
@@ -105,6 +115,56 @@ Names of Product Groups.
 - Required: No
 - Type: array
 
+### Parameter: `policies`
+
+Array of Policies to apply to the Service Product.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
+| [`name`](#parameter-policiesname) | string | The name of the policy. |
+
+### Parameter: `policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
+
 ### Parameter: `state`
 
 whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published.
@@ -144,9 +204,10 @@ Product terms of use. Developers trying to subscribe to the product will be pres
 | `apiResourceIds` | array | The Resources IDs of the API management service product APIs. |
 | `groupResourceIds` | array | The Resources IDs of the API management service product groups. |
 | `name` | string | The name of the API management service product. |
+| `policyResourceIds` | array | The Resources IDs of the API management service product policies. |
 | `resourceGroupName` | string | The resource group the API management service product was deployed into. |
 | `resourceId` | string | The resource ID of the API management service product. |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

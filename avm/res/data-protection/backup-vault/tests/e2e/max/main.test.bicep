@@ -26,12 +26,12 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
 
-resource resourceGroup_src 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup_src 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: '${take(resourceGroupName, 86)}-src' // Ensure the resource group name is within the 90 character limit
   location: resourceLocation
 }
@@ -44,7 +44,6 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
     diskOccurrences: 2
-    location: resourceLocation
   }
 }
 
@@ -61,7 +60,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: resourceLocation
     azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
     immutabilitySettingState: 'Unlocked'
     managedIdentities: {

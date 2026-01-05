@@ -1,6 +1,12 @@
 // ========== main.bicep ========== //
 metadata name = 'Document Knowledge Mining Solution'
-metadata description = '''This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-knowledge-mining-solution) for both Sandbox environments and enterprise-grade environments.'''
+metadata description = '''This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+'''
 
 targetScope = 'resourceGroup'
 
@@ -11,6 +17,9 @@ param solutionName string = 'kmgs'
 
 @description('Optional. Azure location for the solution. If not provided, it defaults to the resource group location.')
 param location string = resourceGroup().location
+
+@description('Optional. Secondary location for Cosmos DB redundancy. This location is used when enableRedundancy is set to true.')
+param cosmosReplicaLocation string = 'canadacentral'
 
 @maxLength(5)
 @description('Optional. A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.')
@@ -79,17 +88,20 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
-param enablePrivateNetworking bool
+@description('Optional. Enable private networking for applicable resources, aligned with the WAF recommendations. Defaults to false.')
+param enablePrivateNetworking bool = false
 
-@description('Required. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
-param enableMonitoring bool
+@description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
+param enableMonitoring bool = false
 
-@description('Required. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableRedundancy bool
+@description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+param enableRedundancy bool = false
 
-@description('Required. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableScalability bool
+@description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
+param enableScalability bool = false
+
+@description('Optional. Enable purge protection. Defaults to false.')
+param enablePurgeProtection bool = false
 
 @metadata({
   azd: {
@@ -109,14 +121,16 @@ param createdBy string = contains(deployer(), 'userPrincipalName')
   : deployer().objectId
 
 // ========== Resource Group Tag ========== //
-resource resourceGroupTags 'Microsoft.Resources/tags@2021-04-01' = {
+resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
     tags: {
       ...resourceGroup().tags
       ...tags
       TemplateName: 'DKM'
+      Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
+      DeploymentName: deployment().name
     }
   }
 }
@@ -154,23 +168,6 @@ var regionAbbreviations = {
   westus: 'wus'
 }
 var replicaAbbreviation = regionAbbreviations[?replicaLocation] ?? 'rep'
-
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[resourceGroup().location]
 
 var gptModelDeployment = {
   modelName: gptModelName
@@ -239,14 +236,14 @@ var dnsZoneIndex = {
   containerRegistry: 8
 }
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'dns-zone-${i}'
     params: {
       name: zone
       tags: tags
       enableTelemetry: enableTelemetry
-      virtualNetworkLinks: [{ virtualNetworkResourceId: network!.outputs.vnetResourceId }]
+      virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork!.outputs.resourceId }]
     }
   }
 ]
@@ -255,7 +252,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -317,24 +314,157 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
 
 // ========== Network Module ========== //
-module network 'modules/network.bicep' = if (enablePrivateNetworking) {
-  name: take('network-${solutionSuffix}-deployment', 64)
+// Virtual Network with NSGs and Subnets
+module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
+  name: take('module.virtualNetwork.${solutionSuffix}', 64)
   params: {
-    resourcesName: solutionSuffix
-    logAnalyticsWorkSpaceResourceId: logAnalyticsWorkspaceResourceId
-    vmAdminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
-    vmAdminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
-    vmSize: vmSize ?? 'Standard_DS2_v2' // Default VM size
+    name: 'vnet-${solutionSuffix}'
+    addressPrefixes: ['10.0.0.0/20'] // 4096 addresses (enough for 8 /23 subnets or 16 /24)
     location: solutionLocation
     tags: tags
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceResourceId
+    resourceSuffix: solutionSuffix
     enableTelemetry: enableTelemetry
+  }
+}
+// Azure Bastion Host
+var bastionHostName = 'bas-${solutionSuffix}'
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
+  params: {
+    name: bastionHostName
+    skuName: 'Standard'
+    location: solutionLocation
+    virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
+    diagnosticSettings: [
+      {
+        name: 'bastionDiagnostics'
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+      }
+    ]
+    tags: tags
+    enableTelemetry: enableTelemetry
+    publicIPAddressObject: {
+      name: 'pip-${bastionHostName}'
+    }
+  }
+}
+
+// Jumpbox Virtual Machine
+var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
+  params: {
+    name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
+    vmSize: vmSize ?? 'Standard_DS2_v2'
+    location: solutionLocation
+    adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
+    adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    tags: tags
+    availabilityZone: 1
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    osType: 'Windows'
+    osDisk: {
+      name: 'osdisk-${jumpboxVmName}'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    // Patch management configuration - required for maintenance configuration compatibility
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
+    encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
+    nicConfigurations: [
+      {
+        name: 'nic-${jumpboxVmName}'
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
+          }
+        ]
+        diagnosticSettings: [
+          {
+            name: 'jumpboxDiagnostics'
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+                enabled: true
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+                enabled: true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    enableTelemetry: enableTelemetry
+  }
+}
+
+// Create Maintenance Configuration for VM
+// Required for PSRule.Rules.Azure compliance: Azure.VM.MaintenanceConfig
+// using AVM Virtual Machine module
+// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
+
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
+  params: {
+    name: 'mc-${jumpboxVmName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
   }
 }
 
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -345,15 +475,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 }
 
 // ========== Container Registry ========== //
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
+module avmContainerRegistry './modules/container-registry.bicep' = {
   name: take('avm.res.container-registry.${solutionSuffix}', 64)
   params: {
-    name: 'cr${replace(solutionSuffix, '-', '')}'
+    acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
     acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
-    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId
@@ -366,7 +495,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
   name: take('avm.res.cosmos-${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -374,7 +503,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     mongodbDatabases: [
       {
         name: 'default'
-        tag: 'default database'
       }
     ]
     tags: tags
@@ -405,7 +533,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
               ]
             }
             service: 'MongoDB'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId // Use the backend subnet
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId // Use the private endpoints subnet
           }
         ]
       : []
@@ -414,7 +542,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     capabilitiesToAdd: [
       'EnableMongo'
     ]
-    automaticFailover: enableRedundancy ? true : false
     failoverLocations: enableRedundancy
       ? [
           {
@@ -425,7 +552,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosReplicaLocation
           }
         ]
       : [
@@ -448,6 +575,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
     enableTelemetry: enableTelemetry
+    enablePurgeProtection: enablePurgeProtection
     tags: tags
     disableLocalAuth: false
     replicaLocations: [
@@ -575,6 +703,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
     enableTelemetry: enableTelemetry
+    enablePurgeProtection: enablePurgeProtection
     tags: tags
     disableLocalAuth: true
     replicaLocations: [
@@ -598,7 +727,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
@@ -610,7 +739,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -650,7 +779,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = {
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'blob'
           }
           {
@@ -663,7 +792,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = {
                 }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'queue'
           }
         ]
@@ -724,7 +853,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' 
                 { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.search]!.outputs.resourceId }
               ]
             }
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
@@ -733,7 +862,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' 
 
 // ========== Cognitive Services - OpenAI module ========== //
 var openAiAccountName = 'oai-${solutionSuffix}'
-module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.13.2' = {
+module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.0' = {
   name: take('avm.res.cognitiveservices.account.${openAiAccountName}', 64)
   params: {
     name: openAiAccountName
@@ -758,7 +887,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.13.2' = {
       ? [
           {
             name: 'pep-openai-${solutionSuffix}'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'account'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -793,7 +922,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.13.2' = {
 
 // ========== Cognitive Services - Document Intellignece module ========== //
 var docIntelAccountName = 'di-${solutionSuffix}'
-module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2' = {
+module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.0' = {
   name: take('avm.res.cognitiveservices.account.${docIntelAccountName}', 64)
   params: {
     name: docIntelAccountName
@@ -819,7 +948,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2
       ? [
           {
             name: 'pep-docintel-${solutionSuffix}'
-            subnetResourceId: network!.outputs.subnetPrivateEndpointsResourceId
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             service: 'account'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
@@ -845,14 +974,14 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.13.2
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.1' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.1' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    kubernetesVersion: '1.30.4'
+    kubernetesVersion: '1.32.7'
     dnsPrefix: 'aks-${solutionSuffix}'
     enableRBAC: true
     aadProfile: {
@@ -883,7 +1012,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.10.
         enableAutoScaling: true
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
-        vnetSubnetResourceId: enablePrivateNetworking ? network!.outputs.subnetWebResourceId : null
+        vnetSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
       }
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
@@ -979,7 +1108,7 @@ resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClus
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "1072996738328652748"
+      "version": "0.39.26.7824",
+      "templateHash": "6855140238061765971"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -598,7 +598,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
             },
-            "description": "Optional. Backend Credentials Contract Properties."
+            "description": "Optional. Backend Credentials Contract Properties. Not supported for Backend Pools."
           },
           "nullable": true
         },
@@ -613,7 +613,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Backend communication protocol. - http or soap."
+            "description": "Optional. Backend communication protocol, http or soap. Not supported for Backend Pools."
           }
         },
         "proxy": {
@@ -622,7 +622,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
             },
-            "description": "Optional. Backend Proxy Contract Properties."
+            "description": "Optional. Backend Proxy Contract Properties. Not supported for Backend Pools."
           },
           "nullable": true
         },
@@ -630,7 +630,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+            "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
           }
         },
         "serviceFabricCluster": {
@@ -639,7 +639,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
             },
-            "description": "Optional. Backend Service Fabric Cluster Properties."
+            "description": "Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools."
           },
           "nullable": true
         },
@@ -656,14 +656,46 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
             },
-            "description": "Optional. Backend TLS Properties."
+            "description": "Optional. Backend TLS Properties. Not supported for Backend Pools."
           },
           "nullable": true
         },
         "url": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Runtime URL of the Backend."
+            "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
+          }
+        },
+        "circuitBreaker": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+            },
+            "description": "Optional. Backend Circuit Breaker Properties. Not supported for Backend Pools."
+          },
+          "nullable": true
+        },
+        "pool": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+            },
+            "description": "Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single."
+          },
+          "nullable": true
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Pool",
+            "Single"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Type of the backend. A backend can be either Single or Pool."
           }
         }
       },
@@ -995,12 +1027,6 @@
     "namedValueType": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the named value."
-          }
-        },
         "displayName": {
           "type": "string",
           "metadata": {
@@ -1016,6 +1042,12 @@
             "description": "Optional. KeyVault location details of the namedValue."
           },
           "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the named value."
+          }
         },
         "tags": {
           "type": "array",
@@ -1188,6 +1220,16 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Names of Product Groups."
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productPolicyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of Policies to apply to the Service Product."
           }
         },
         "name": {
@@ -2123,6 +2165,43 @@
         }
       }
     },
+    "productPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of a product policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "product/main.bicep"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -2368,14 +2447,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in."
+        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only."
       }
     },
     "tags": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ApiManagement/service@2025-05-01#properties/tags"
+          "source": "Microsoft.ApiManagement/service@2024-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -2390,7 +2469,7 @@
         "Internal"
       ],
       "metadata": {
-        "description": "Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only."
+        "description": "Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`."
       }
     },
     "diagnosticSettings": {
@@ -2573,7 +2652,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network."
+        "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network."
       }
     },
     "enableDeveloperPortal": {
@@ -2846,8 +2925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "2623235378768134723"
+              "version": "0.39.26.7824",
+              "templateHash": "10361824935513965626"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -3443,8 +3522,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "564087190067818909"
+                      "version": "0.39.26.7824",
+                      "templateHash": "14860819055801108886"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy."
@@ -3620,8 +3699,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "5554806910326294464"
+                      "version": "0.39.26.7824",
+                      "templateHash": "6312205475836630967"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics."
@@ -3892,8 +3971,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16910130262363182156"
+                      "version": "0.39.26.7824",
+                      "templateHash": "17233864803492403441"
                     },
                     "name": "API Management Service APIs Operations",
                     "description": "This module deploys an API Management Service API Operation."
@@ -4084,8 +4163,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "5236050172800488885"
+                              "version": "0.39.26.7824",
+                              "templateHash": "6946864695140214262"
                             },
                             "name": "API Management Service API Operation Policies",
                             "description": "This module deploys an API Management Service API Operation Policy."
@@ -4281,8 +4360,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9386717746629017522"
+              "version": "0.39.26.7824",
+              "templateHash": "10895147077603330650"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set."
@@ -4501,8 +4580,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "6909453157980881819"
+              "version": "0.39.26.7824",
+              "templateHash": "10777822680978117143"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server."
@@ -4752,7 +4831,9 @@
     "service_backends": {
       "copy": {
         "name": "service_backends",
-        "count": "[length(coalesce(parameters('backends'), createArray()))]"
+        "count": "[length(coalesce(parameters('backends'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -4767,7 +4848,7 @@
             "value": "[parameters('name')]"
           },
           "url": {
-            "value": "[coalesce(parameters('backends'), createArray())[copyIndex()].url]"
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'url')]"
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'description')]"
@@ -4794,10 +4875,19 @@
             "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'title')]"
           },
           "tls": {
-            "value": "[coalesce(tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))]"
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'tls')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "circuitBreaker": {
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'circuitBreaker')]"
+          },
+          "pool": {
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'pool')]"
+          },
+          "type": {
+            "value": "[tryGet(coalesce(parameters('backends'), createArray())[copyIndex()], 'type')]"
           }
         },
         "template": {
@@ -4807,8 +4897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10941349874015991272"
+              "version": "0.39.26.7824",
+              "templateHash": "11473395075944648701"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend."
@@ -4832,7 +4922,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/credentials"
                 },
-                "description": "Optional. Backend Credentials Contract Properties."
+                "description": "Optional. Backend Credentials Contract Properties. Not supported for Backend Pools."
               },
               "nullable": true
             },
@@ -4847,7 +4937,7 @@
               "type": "string",
               "defaultValue": "http",
               "metadata": {
-                "description": "Optional. Backend communication protocol. - http or soap."
+                "description": "Optional. Backend communication protocol. http or soap. Not supported for Backend Pools."
               }
             },
             "proxy": {
@@ -4856,7 +4946,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/proxy"
                 },
-                "description": "Optional. Backend Proxy Contract Properties."
+                "description": "Optional. Backend Proxy Contract Properties. Not supported for Backend Pools."
               },
               "nullable": true
             },
@@ -4864,7 +4954,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+                "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
               }
             },
             "serviceFabricCluster": {
@@ -4873,7 +4963,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/properties/properties/serviceFabricCluster"
                 },
-                "description": "Optional. Backend Service Fabric Cluster Properties."
+                "description": "Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools."
               },
               "nullable": true
             },
@@ -4890,17 +4980,46 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/tls"
                 },
-                "description": "Optional. Backend TLS Properties."
+                "description": "Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true."
               },
-              "defaultValue": {
-                "validateCertificateChain": false,
-                "validateCertificateName": false
-              }
+              "nullable": true
             },
             "url": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. Runtime URL of the Backend."
+                "description": "Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool."
+              }
+            },
+            "circuitBreaker": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/circuitBreaker"
+                },
+                "description": "Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools."
+              },
+              "nullable": true
+            },
+            "pool": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiManagement/service/backends@2024-05-01#properties/properties/properties/pool"
+                },
+                "description": "Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single."
+              },
+              "nullable": true
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "Single",
+              "allowedValues": [
+                "Single",
+                "Pool"
+              ],
+              "metadata": {
+                "description": "Optional. Type of the backend. A backend can be either Single or Pool."
               }
             },
             "enableTelemetry": {
@@ -4942,19 +5061,7 @@
               "type": "Microsoft.ApiManagement/service/backends",
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-              "properties": {
-                "title": "[parameters('title')]",
-                "description": "[parameters('description')]",
-                "resourceId": "[parameters('resourceId')]",
-                "properties": {
-                  "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
-                },
-                "credentials": "[parameters('credentials')]",
-                "proxy": "[parameters('proxy')]",
-                "tls": "[parameters('tls')]",
-                "url": "[parameters('url')]",
-                "protocol": "[parameters('protocol')]"
-              }
+              "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'title', parameters('title'), 'type', parameters('type')), if(equals(parameters('type'), 'Single'), createObject('resourceId', parameters('resourceId'), 'credentials', parameters('credentials'), 'proxy', parameters('proxy'), 'circuitBreaker', parameters('circuitBreaker'), 'protocol', parameters('protocol'), 'properties', createObject('serviceFabricCluster', parameters('serviceFabricCluster')), 'tls', coalesce(parameters('tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true())), 'url', parameters('url')), createObject('pool', parameters('pool')))))]"
             }
           },
           "outputs": {
@@ -5029,8 +5136,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16885247957185905746"
+              "version": "0.39.26.7824",
+              "templateHash": "12042606319919757291"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache."
@@ -5214,8 +5321,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5554806910326294464"
+              "version": "0.39.26.7824",
+              "templateHash": "6312205475836630967"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -5497,8 +5604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "6678229070440573363"
+              "version": "0.39.26.7824",
+              "templateHash": "14898150797437937079"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider."
@@ -5740,8 +5847,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16749168844612521666"
+              "version": "0.39.26.7824",
+              "templateHash": "12653943354268019102"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger."
@@ -5797,7 +5904,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/loggers@2024-05-01#properties/properties/properties/credentials"
                 },
-                "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
+                "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor."
               },
               "nullable": true
             },
@@ -5840,13 +5947,7 @@
               "type": "Microsoft.ApiManagement/service/loggers",
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-              "properties": {
-                "credentials": "[parameters('credentials')]",
-                "description": "[parameters('description')]",
-                "isBuffered": "[parameters('isBuffered')]",
-                "loggerType": "[parameters('type')]",
-                "resourceId": "[parameters('targetResourceId')]"
-              }
+              "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'isBuffered', parameters('isBuffered'), 'loggerType', parameters('type'), 'resourceId', parameters('targetResourceId')), if(not(equals(parameters('type'), 'azureMonitor')), createObject('credentials', parameters('credentials')), createObject())))]"
             }
           },
           "outputs": {
@@ -5925,8 +6026,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "11879365843187389745"
+              "version": "0.39.26.7824",
+              "templateHash": "9599477903696824761"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value."
@@ -6094,8 +6195,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12874552357445438330"
+              "version": "0.39.26.7824",
+              "templateHash": "15524333647731462763"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting."
@@ -6225,8 +6326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17795209216786328713"
+              "version": "0.39.26.7824",
+              "templateHash": "8180762891066633744"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy."
@@ -6390,11 +6491,48 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16511334214286635558"
+              "version": "0.39.26.7824",
+              "templateHash": "4782086184094554594"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
+          },
+          "definitions": {
+            "productPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the policy."
+                  }
+                },
+                "format": {
+                  "type": "string",
+                  "allowedValues": [
+                    "rawxml",
+                    "rawxml-link",
+                    "xml",
+                    "xml-link"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Format of the policyContent."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Contents of the Policy as defined by the format."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a product policy."
+              }
+            }
           },
           "parameters": {
             "apiManagementServiceName": {
@@ -6442,6 +6580,16 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Names of Product Groups."
+              }
+            },
+            "policies": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/productPolicyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of Policies to apply to the Service Product."
               }
             },
             "name": {
@@ -6563,8 +6711,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "8823922274640931436"
+                      "version": "0.39.26.7824",
+                      "templateHash": "13118216367966284643"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API."
@@ -6682,8 +6830,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "11439917552911166273"
+                      "version": "0.39.26.7824",
+                      "templateHash": "1904337369189182505"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group."
@@ -6767,6 +6915,125 @@
                   }
                 }
               }
+            },
+            "product_policies": {
+              "copy": {
+                "name": "product_policies",
+                "count": "[length(coalesce(parameters('policies'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "productName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "format": {
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
+                  },
+                  "value": {
+                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.39.26.7824",
+                      "templateHash": "11723183895091881679"
+                    },
+                    "name": "API Management Service Products Policies",
+                    "description": "This module deploys an API Management Service Product Policy."
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "productName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "policy",
+                      "metadata": {
+                        "description": "Optional. The name of the policy."
+                      }
+                    },
+                    "format": {
+                      "type": "string",
+                      "defaultValue": "xml",
+                      "allowedValues": [
+                        "rawxml",
+                        "rawxml-link",
+                        "xml",
+                        "xml-link"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Format of the policyContent."
+                      }
+                    },
+                    "value": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Contents of the Policy as defined by the format."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ApiManagement/service/products/policies",
+                      "apiVersion": "2024-05-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]",
+                      "properties": {
+                        "format": "[parameters('format')]",
+                        "value": "[parameters('value')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the API policy."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/products/policies', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the API policy."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the API policy was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              }
             }
           },
           "outputs": {
@@ -6809,6 +7076,19 @@
               "copy": {
                 "count": "[length(range(0, length(coalesce(parameters('groups'), createArray()))))]",
                 "input": "[reference(format('product_groups[{0}]', range(0, length(coalesce(parameters('groups'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+              }
+            },
+            "policyResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The Resources IDs of the API management service product policies."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('policies'), createArray()))))]",
+                "input": "[reference(format('product_policies[{0}]', range(0, length(coalesce(parameters('policies'), createArray())))[copyIndex()])).outputs.resourceId.value]"
               }
             }
           }
@@ -6871,8 +7151,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1654486196961904035"
+              "version": "0.39.26.7824",
+              "templateHash": "9575051164152869317"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription."

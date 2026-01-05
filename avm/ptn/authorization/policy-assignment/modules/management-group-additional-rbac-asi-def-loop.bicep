@@ -18,7 +18,7 @@ param policyAssignmentIdentityId string
 
 module additionalManagementGroupRoleAssignmentsPerMG 'management-group-additional-rbac-asi.bicep' = [
   for mg in managementGroupsIDsToAssignRbacTo: {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+    name: 'pol-asi-mg-rbac-mg-${uniqueString(managementGroup().name, mg, location, roleDefinitionId, name, policyAssignmentIdentityId)}'
     scope: managementGroup(mg)
     params: {
       name: name

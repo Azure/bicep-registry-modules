@@ -166,7 +166,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
 @batchSize(1)
 module virtualNetwork_subnets 'subnet/main.bicep' = [
   for (subnet, index) in (subnets ?? []): {
-    name: '${uniqueString(deployment().name, location)}-subnet-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-subnet-${index}'
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
@@ -193,7 +193,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
 // Local to Remote peering
 module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): {
-    name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-local-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-local-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [
@@ -215,7 +215,7 @@ module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
 // Remote to local peering (reverse)
 module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): if (peering.?remotePeeringEnabled ?? false) {
-    name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-remote-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-remote-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [

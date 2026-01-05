@@ -14,12 +14,7 @@ param vmSize string
 param encryptionAtHost bool = false
 
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
-@allowed([
-  ''
-  'ConfidentialVM'
-  'TrustedLaunch'
-])
-param securityType string = ''
+param securityType resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType?
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.')
 param secureBootEnabled bool = false
@@ -27,8 +22,8 @@ param secureBootEnabled bool = false
 @description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.')
 param vTpmEnabled bool = false
 
-@description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
-param imageReference imageReferenceType
+@description('Conditional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.')
+param imageReference imageReferenceType?
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
@@ -45,11 +40,11 @@ param ultraSSDEnabled bool = false
 @description('Optional. The flag that enables or disables hibernation capability on the VM.')
 param hibernationEnabled bool = false
 
-@description('Required. Administrator username.')
+@description('Conditional. Administrator username. Required if no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty).')
 @secure()
-param adminUsername string
+param adminUsername string?
 
-@description('Optional. When specifying a Windows Virtual Machine, this value should be passed.')
+@description('Optional. When specifying a Windows Virtual Machine, and no pre-existing OS-Disk is provided (osDisk.managedDisk.resourceId is not empty), this value should be passed.')
 @secure()
 param adminPassword string = ''
 
@@ -521,14 +516,14 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
       name: dataDisk.managedDisk.?storageAccountType
     }
     properties: {
-      diskSizeGB: dataDisk.diskSizeGB
+      diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
         createOption: dataDisk.?createoption ?? 'Empty'
       }
@@ -568,9 +563,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: osDisk.?name ?? '${name}-disk-os-01'
-        createOption: osDisk.?createOption ?? 'FromImage'
-        deleteOption: osDisk.?deleteOption ?? 'Delete'
+        name: !empty(osDisk.managedDisk.?resourceId)
+          ? last(split(osDisk.managedDisk.resourceId!, '/'))
+          : osDisk.?name ?? '${name}-disk-os-01'
+        createOption: !empty(osDisk.managedDisk.?resourceId) ? 'Attach' : osDisk.?createOption ?? 'FromImage'
+        osType: osType
+        deleteOption: !empty(osDisk.managedDisk.?resourceId) ? 'Detach' : osDisk.?deleteOption ?? 'Delete'
         diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
           ? null
           : {
@@ -578,30 +576,33 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               placement: osDisk.diffDiskSettings!.placement
             }
         diskSizeGB: osDisk.?diskSizeGB
-        caching: osDisk.?caching ?? 'ReadOnly'
+        caching: !empty(osDisk.managedDisk.?resourceId) ? 'None' : osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.?storageAccountType
-          diskEncryptionSet: {
-            id: osDisk.managedDisk.?diskEncryptionSetResourceId
-          }
+          diskEncryptionSet: !empty(osDisk.managedDisk.?diskEncryptionSetResourceId)
+            ? {
+                id: osDisk.managedDisk.?diskEncryptionSetResourceId
+              }
+            : null
+          id: osDisk.managedDisk.?resourceId
         }
       }
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
-          name: !empty(dataDisk.managedDisk.?id)
-            ? last(split(dataDisk.managedDisk.id ?? '', '/'))
+          name: !empty(dataDisk.managedDisk.?resourceId)
+            ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
             ? 'Attach'
             : dataDisk.?createoption ?? 'Empty'
-          deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
-          caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
+          deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
+          caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
-            id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
-            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+            diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
               ? {
-                  id: dataDisk.managedDisk.diskEncryptionSet.id
+                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
                 }
               : null
           }
@@ -612,16 +613,18 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       ultraSSDEnabled: ultraSSDEnabled
       hibernationEnabled: hibernationEnabled
     }
-    osProfile: {
-      computerName: computerName
-      adminUsername: adminUsername
-      adminPassword: adminPassword
-      customData: !empty(customData) ? base64(customData) : null
-      windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
-      linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
-      secrets: certificatesToBeInstalled
-      allowExtensionOperations: allowExtensionOperations
-    }
+    osProfile: empty(osDisk.managedDisk.?resourceId) // Not allowed
+      ? {
+          computerName: computerName
+          adminUsername: adminUsername
+          adminPassword: adminPassword
+          customData: !empty(customData) ? base64(customData) : null
+          windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
+          linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
+          secrets: certificatesToBeInstalled
+          allowExtensionOperations: allowExtensionOperations
+        }
+      : null
     networkProfile: {
       networkInterfaces: [
         for (nicConfiguration, index) in nicConfigurations: {
@@ -823,7 +826,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
-resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
     scope: vm
@@ -1178,6 +1181,9 @@ type osDiskType = {
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
+    resourceId: string?
   }
 }
 
@@ -1224,11 +1230,11 @@ type dataDiskType = {
     diskEncryptionSetResourceId: string?
 
     @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
-    id: string?
+    resourceId: string?
   }
 
   @description('Optional. The tags of the public IP address. Valid only when creating a new managed disk.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Compute/disks@2025-01-02'>.tags?
 }
 
 type publicKeyType = {

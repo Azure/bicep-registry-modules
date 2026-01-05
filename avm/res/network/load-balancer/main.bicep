@@ -18,6 +18,13 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
+@description('Optional. Tier of a load balancer SKU.')
+@allowed([
+  'Regional'
+  'Global'
+])
+param skuTier string = 'Regional'
+
 @description('Required. Array of objects containing all frontend IP configurations.')
 @minLength(1)
 param frontendIPConfigurations frontendIPConfigurationType[]
@@ -126,11 +133,13 @@ var probesVar = [
   for probe in (probes ?? []): {
     name: probe.name
     properties: {
+      intervalInSeconds: probe.?intervalInSeconds ?? 5
+      noHealthyBackendsBehavior: probe.?noHealthyBackendsBehavior ?? 'AllProbedDown'
+      numberOfProbes: probe.?numberOfProbes ?? 2
+      port: probe.?port ?? 80
+      probeThreshold: probe.?probeThreshold ?? 1
       protocol: probe.?protocol ?? 'Tcp'
       requestPath: toLower(probe.protocol) != 'tcp' ? probe.requestPath : null
-      port: probe.?port ?? 80
-      intervalInSeconds: probe.?intervalInSeconds ?? 5
-      numberOfProbes: probe.?numberOfProbes ?? 2
     }
   }
 ]
@@ -193,7 +202,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.1' = [
+module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.10.0' = [
   for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?publicIPAddressConfiguration) && empty(frontendIPConfiguration.?publicIPAddressResourceId)) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
@@ -218,7 +227,7 @@ module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-addre
   }
 ]
 
-module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.1' = [
+module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.2' = [
   for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?publicIPPrefixConfiguration) && empty(frontendIPConfiguration.?publicIPPrefixResourceId)) {
     name: '${uniqueString(deployment().name, location)}-LoadBalancer-PIPPrefix-${index}'
     params: {
@@ -244,6 +253,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   tags: tags
   sku: {
     name: skuName
+    tier: skuTier
   }
   properties: {
     frontendIPConfigurations: [

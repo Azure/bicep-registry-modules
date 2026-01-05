@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    wafPolicyName: 'dep-${namePrefix}-wafpol-${serviceShort}'
   }
 }
 
@@ -79,6 +80,12 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'association1'
           subnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
+        }
+      ]
+      securityPolicies: [
+        {
+          name: nestedDependencies.outputs.wafPolicyName
+          wafPolicyResourceId: nestedDependencies.outputs.wafPolicyResourceId
         }
       ]
       tags: {
