@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4976792328172925614"
+      "templateHash": "15034813524419131585"
     },
     "name": "API Management Workspace API Version Sets",
     "description": "This module deploys an API Version Set in an API Management Workspace."
@@ -26,8 +26,9 @@
     },
     "name": {
       "type": "string",
+      "defaultValue": "default",
       "metadata": {
-        "description": "Required. API Version set name."
+        "description": "Optional. API Version set name."
       }
     },
     "displayName": {

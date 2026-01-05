@@ -7,8 +7,8 @@ param apiManagementServiceName string
 @sys.description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@sys.description('Required. API Version set name.')
-param name string
+@sys.description('Optional. API Version set name.')
+param name string = 'default'
 
 @sys.description('Required. The display name of the API Version Set.')
 @minLength(1)

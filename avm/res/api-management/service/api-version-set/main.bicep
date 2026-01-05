@@ -4,8 +4,8 @@ metadata description = 'This module deploys an API Management Service API Versio
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Required. API Version set name.')
-param name string
+@sys.description('Optional. API Version set name.')
+param name string = 'default'
 
 @sys.description('Required. The display name of the API Version Set.')
 @minLength(1)
