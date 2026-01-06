@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4769782033235146336"
+      "templateHash": "4857898430973480137"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address."
@@ -263,14 +263,13 @@
     },
     "publicIPAllocationMethod": {
       "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAllocationMethod"
+        },
         "description": "Optional. The public IP address allocation method."
-      }
+      },
+      "defaultValue": "Static"
     },
     "availabilityZones": {
       "type": "array",
@@ -293,14 +292,13 @@
     },
     "publicIPAddressVersion": {
       "type": "string",
-      "defaultValue": "IPv4",
-      "allowedValues": [
-        "IPv4",
-        "IPv6"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAddressVersion"
+        },
         "description": "Optional. IP address version."
-      }
+      },
+      "defaultValue": "IPv4"
     },
     "dnsSettings": {
       "type": "object",
@@ -331,25 +329,23 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/name"
+        },
         "description": "Optional. Name of a public IP address SKU."
-      }
+      },
+      "defaultValue": "Standard"
     },
     "skuTier": {
       "type": "string",
-      "defaultValue": "Regional",
-      "allowedValues": [
-        "Global",
-        "Regional"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/tier"
+        },
         "description": "Optional. Tier of a public IP address SKU."
-      }
+      },
+      "defaultValue": "Regional"
     },
     "ddosSettings": {
       "type": "object",
@@ -363,14 +359,13 @@
     },
     "deleteOption": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "Delete",
-        "Detach"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/deleteOption"
+        },
         "description": "Optional. The delete option for the public IP address."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",

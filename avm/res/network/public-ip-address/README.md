@@ -54,10 +54,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   params: {
-    // Required parameters
     name: 'npiamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -74,13 +71,8 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "npiamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -96,10 +88,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
 ```bicep-params
 using 'br/public:avm/res/network/public-ip-address:<version>'
 
-// Required parameters
 param name = 'npiamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -400,31 +389,10 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     ]
     dnsSettings: '<dnsSettings>'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    skuName: 'Standard'
+    skuName: 'StandardV2'
     skuTier: 'Regional'
     tags: {
       Environment: 'Non-Prod'
@@ -479,12 +447,6 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIPAddressVersion": {
       "value": "IPv4"
     },
@@ -494,27 +456,8 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     "publicIpPrefixResourceId": {
       "value": "<publicIpPrefixResourceId>"
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "skuName": {
-      "value": "Standard"
+      "value": "StandardV2"
     },
     "skuTier": {
       "value": "Regional"
@@ -560,31 +503,10 @@ param diagnosticSettings = [
 ]
 param dnsSettings = '<dnsSettings>'
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param publicIPAddressVersion = 'IPv4'
 param publicIPAllocationMethod = 'Static'
 param publicIpPrefixResourceId = '<publicIpPrefixResourceId>'
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-  }
-]
-param skuName = 'Standard'
+param skuName = 'StandardV2'
 param skuTier = 'Regional'
 param tags = {
   Environment: 'Non-Prod'
@@ -669,13 +591,6 @@ The delete option for the public IP address.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Delete'
-    'Detach'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -912,13 +827,6 @@ IP address version.
 - Required: No
 - Type: string
 - Default: `'IPv4'`
-- Allowed:
-  ```Bicep
-  [
-    'IPv4'
-    'IPv6'
-  ]
-  ```
 
 ### Parameter: `publicIPAllocationMethod`
 
@@ -927,13 +835,6 @@ The public IP address allocation method.
 - Required: No
 - Type: string
 - Default: `'Static'`
-- Allowed:
-  ```Bicep
-  [
-    'Dynamic'
-    'Static'
-  ]
-  ```
 
 ### Parameter: `publicIpPrefixResourceId`
 
@@ -1057,13 +958,6 @@ Name of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Standard'
-  ]
-  ```
 
 ### Parameter: `skuTier`
 
@@ -1072,13 +966,6 @@ Tier of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Regional'`
-- Allowed:
-  ```Bicep
-  [
-    'Global'
-    'Regional'
-  ]
-  ```
 
 ### Parameter: `tags`
 
