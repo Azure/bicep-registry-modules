@@ -2,12 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/application-gateway/CHANGELOG.md).
 
-## 0.7.3
+## 0.8.0
 
 ### Changes
 
 - Updated API version to `2025-01-01`
-- Updated unit test templates for dependancy deployment to create virtual network subnets with delgiation for `Microsoft.Network/applicationGateways`
+- Updated avm modules to latest versions
 
 ### Breaking Changes
 
