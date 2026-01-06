@@ -38,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -355,7 +356,72 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2sku]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
+  params: {
+    // Required parameters
+    name: 'npiav2001'
+    // Non-required parameters
+    skuName: 'StandardV2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npiav2001"
+    },
+    // Non-required parameters
+    "skuName": {
+      "value": "StandardV2"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-address:<version>'
+
+// Required parameters
+param name = 'npiav2001'
+// Non-required parameters
+param skuName = 'StandardV2'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -392,7 +458,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
-    skuName: 'StandardV2'
+    skuName: 'Standard'
     skuTier: 'Regional'
     tags: {
       Environment: 'Non-Prod'
@@ -457,7 +523,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       "value": "<publicIpPrefixResourceId>"
     },
     "skuName": {
-      "value": "StandardV2"
+      "value": "Standard"
     },
     "skuTier": {
       "value": "Regional"
@@ -506,7 +572,7 @@ param location = '<location>'
 param publicIPAddressVersion = 'IPv4'
 param publicIPAllocationMethod = 'Static'
 param publicIpPrefixResourceId = '<publicIpPrefixResourceId>'
-param skuName = 'StandardV2'
+param skuName = 'Standard'
 param skuTier = 'Regional'
 param tags = {
   Environment: 'Non-Prod'

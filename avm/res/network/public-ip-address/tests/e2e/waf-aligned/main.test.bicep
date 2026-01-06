@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
       ddosSettings: null
       publicIPAllocationMethod: 'Static'
       publicIpPrefixResourceId: null
-      skuName: 'StandardV2'
+      skuName: 'Standard'
       skuTier: 'Regional'
       publicIPAddressVersion: 'IPv4'
       availabilityZones: [
