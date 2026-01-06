@@ -41,8 +41,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Standard](#example-4-standard)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using mTLS Passthrough](#example-4-using-mtls-passthrough)
+- [Standard](#example-5-standard)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -2033,7 +2034,719 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Standard_
+### Example 4: _Using mTLS Passthrough_
+
+This instance deploys the module using the Standard_v2 sku.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passthrough]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    backendAddressPools: [
+      {
+        name: 'appServiceBackendPool'
+        properties: {
+          backendAddresses: [
+            {
+              fqdn: 'aghapp.azurewebsites.net'
+            }
+          ]
+        }
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: 'appServiceBackendHttpsSetting'
+        properties: {
+          cookieBasedAffinity: 'Disabled'
+          pickHostNameFromBackendAddress: true
+          port: 443
+          protocol: 'Https'
+          requestTimeout: 30
+        }
+      }
+    ]
+    enableHttp2: true
+    enableTelemetry: '<enableTelemetry>'
+    frontendIPConfigurations: [
+      {
+        name: 'public'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    frontendPorts: [
+      {
+        name: 'port443'
+        properties: {
+          port: 443
+        }
+      }
+      {
+        name: 'port80'
+        properties: {
+          port: 80
+        }
+      }
+    ]
+    gatewayIPConfigurations: [
+      {
+        name: 'apw-ip-configuration'
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    httpListeners: [
+      {
+        name: 'public443'
+        properties: {
+          frontendIPConfiguration: {
+            id: '<id>'
+          }
+          frontendPort: {
+            id: '<id>'
+          }
+          hostNames: []
+          protocol: 'https'
+          requireServerNameIndication: false
+          sslCertificate: {
+            id: '<id>'
+          }
+          sslProfile: {
+            id: '<id>'
+          }
+        }
+      }
+      {
+        name: 'httpRedirect80'
+        properties: {
+          frontendIPConfiguration: {
+            id: '<id>'
+          }
+          frontendPort: {
+            id: '<id>'
+          }
+          hostNames: []
+          protocol: 'Http'
+          requireServerNameIndication: false
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    redirectConfigurations: [
+      {
+        name: 'httpRedirect80'
+        properties: {
+          includePath: true
+          includeQueryString: true
+          redirectType: 'Permanent'
+          requestRoutingRules: [
+            {
+              id: '<id>'
+            }
+          ]
+          targetListener: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    requestRoutingRules: [
+      {
+        name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+        properties: {
+          backendAddressPool: {
+            id: '<id>'
+          }
+          backendHttpSettings: {
+            id: '<id>'
+          }
+          httpListener: {
+            id: '<id>'
+          }
+          priority: 200
+          ruleType: 'Basic'
+        }
+      }
+      {
+        name: 'httpRedirect80-public443'
+        properties: {
+          httpListener: {
+            id: '<id>'
+          }
+          priority: 300
+          redirectConfiguration: {
+            id: '<id>'
+          }
+          ruleType: 'Basic'
+        }
+      }
+    ]
+    rewriteRuleSets: [
+      {
+        id: '<id>'
+        name: 'customRewrite'
+        properties: {
+          rewriteRules: [
+            {
+              actionSet: {
+                requestHeaderConfigurations: [
+                  {
+                    headerName: 'Content-Type'
+                    headerValue: 'JSON'
+                  }
+                  {
+                    headerName: 'someheader'
+                  }
+                ]
+                responseHeaderConfigurations: []
+              }
+              conditions: []
+              name: 'NewRewrite'
+              ruleSequence: 100
+            }
+          ]
+        }
+      }
+    ]
+    sku: 'Standard_v2'
+    sslCertificates: [
+      {
+        name: 'az-apgw-x-001-ssl-certificate'
+        properties: {
+          keyVaultSecretId: '<keyVaultSecretId>'
+        }
+      }
+    ]
+    sslProfiles: [
+      {
+        id: '<id>'
+        name: 'sslnotrustedcert'
+        properties: {
+          clientAuthConfiguration: {
+            VerifyClientAuthMode: 'Passthrough'
+            VerifyClientCertIssuerDN: false
+            VerifyClientRevocation: 'None'
+          }
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "backendAddressPools": {
+      "value": [
+        {
+          "name": "appServiceBackendPool",
+          "properties": {
+            "backendAddresses": [
+              {
+                "fqdn": "aghapp.azurewebsites.net"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "backendHttpSettingsCollection": {
+      "value": [
+        {
+          "name": "appServiceBackendHttpsSetting",
+          "properties": {
+            "cookieBasedAffinity": "Disabled",
+            "pickHostNameFromBackendAddress": true,
+            "port": 443,
+            "protocol": "Https",
+            "requestTimeout": 30
+          }
+        }
+      ]
+    },
+    "enableHttp2": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "public",
+          "properties": {
+            "privateIPAllocationMethod": "Dynamic",
+            "publicIPAddress": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
+    "frontendPorts": {
+      "value": [
+        {
+          "name": "port443",
+          "properties": {
+            "port": 443
+          }
+        },
+        {
+          "name": "port80",
+          "properties": {
+            "port": 80
+          }
+        }
+      ]
+    },
+    "gatewayIPConfigurations": {
+      "value": [
+        {
+          "name": "apw-ip-configuration",
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
+    "httpListeners": {
+      "value": [
+        {
+          "name": "public443",
+          "properties": {
+            "frontendIPConfiguration": {
+              "id": "<id>"
+            },
+            "frontendPort": {
+              "id": "<id>"
+            },
+            "hostNames": [],
+            "protocol": "https",
+            "requireServerNameIndication": false,
+            "sslCertificate": {
+              "id": "<id>"
+            },
+            "sslProfile": {
+              "id": "<id>"
+            }
+          }
+        },
+        {
+          "name": "httpRedirect80",
+          "properties": {
+            "frontendIPConfiguration": {
+              "id": "<id>"
+            },
+            "frontendPort": {
+              "id": "<id>"
+            },
+            "hostNames": [],
+            "protocol": "Http",
+            "requireServerNameIndication": false
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "redirectConfigurations": {
+      "value": [
+        {
+          "name": "httpRedirect80",
+          "properties": {
+            "includePath": true,
+            "includeQueryString": true,
+            "redirectType": "Permanent",
+            "requestRoutingRules": [
+              {
+                "id": "<id>"
+              }
+            ],
+            "targetListener": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
+    "requestRoutingRules": {
+      "value": [
+        {
+          "name": "public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting",
+          "properties": {
+            "backendAddressPool": {
+              "id": "<id>"
+            },
+            "backendHttpSettings": {
+              "id": "<id>"
+            },
+            "httpListener": {
+              "id": "<id>"
+            },
+            "priority": 200,
+            "ruleType": "Basic"
+          }
+        },
+        {
+          "name": "httpRedirect80-public443",
+          "properties": {
+            "httpListener": {
+              "id": "<id>"
+            },
+            "priority": 300,
+            "redirectConfiguration": {
+              "id": "<id>"
+            },
+            "ruleType": "Basic"
+          }
+        }
+      ]
+    },
+    "rewriteRuleSets": {
+      "value": [
+        {
+          "id": "<id>",
+          "name": "customRewrite",
+          "properties": {
+            "rewriteRules": [
+              {
+                "actionSet": {
+                  "requestHeaderConfigurations": [
+                    {
+                      "headerName": "Content-Type",
+                      "headerValue": "JSON"
+                    },
+                    {
+                      "headerName": "someheader"
+                    }
+                  ],
+                  "responseHeaderConfigurations": []
+                },
+                "conditions": [],
+                "name": "NewRewrite",
+                "ruleSequence": 100
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "sku": {
+      "value": "Standard_v2"
+    },
+    "sslCertificates": {
+      "value": [
+        {
+          "name": "az-apgw-x-001-ssl-certificate",
+          "properties": {
+            "keyVaultSecretId": "<keyVaultSecretId>"
+          }
+        }
+      ]
+    },
+    "sslProfiles": {
+      "value": [
+        {
+          "id": "<id>",
+          "name": "sslnotrustedcert",
+          "properties": {
+            "clientAuthConfiguration": {
+              "VerifyClientAuthMode": "Passthrough",
+              "VerifyClientCertIssuerDN": false,
+              "VerifyClientRevocation": "None"
+            }
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'appServiceBackendPool'
+    properties: {
+      backendAddresses: [
+        {
+          fqdn: 'aghapp.azurewebsites.net'
+        }
+      ]
+    }
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'appServiceBackendHttpsSetting'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      pickHostNameFromBackendAddress: true
+      port: 443
+      protocol: 'Https'
+      requestTimeout: 30
+    }
+  }
+]
+enableHttp2: true
+param enableTelemetry = '<enableTelemetry>'
+param frontendIPConfigurations = [
+  {
+    name: 'public'
+    properties: {
+      privateIPAllocationMethod: 'Dynamic'
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'port443'
+    properties: {
+      port: 443
+    }
+  }
+  {
+    name: 'port80'
+    properties: {
+      port: 80
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'apw-ip-configuration'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'public443'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'https'
+      requireServerNameIndication: false
+      sslCertificate: {
+        id: '<id>'
+      }
+      sslProfile: {
+        id: '<id>'
+      }
+    }
+  }
+  {
+    name: 'httpRedirect80'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostNames: []
+      protocol: 'Http'
+      requireServerNameIndication: false
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param redirectConfigurations = [
+  {
+    name: 'httpRedirect80'
+    properties: {
+      includePath: true
+      includeQueryString: true
+      redirectType: 'Permanent'
+      requestRoutingRules: [
+        {
+          id: '<id>'
+        }
+      ]
+      targetListener: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param requestRoutingRules = [
+  {
+    name: 'public443-appServiceBackendHttpsSetting-appServiceBackendHttpsSetting'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 200
+      ruleType: 'Basic'
+    }
+  }
+  {
+    name: 'httpRedirect80-public443'
+    properties: {
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 300
+      redirectConfiguration: {
+        id: '<id>'
+      }
+      ruleType: 'Basic'
+    }
+  }
+]
+param rewriteRuleSets = [
+  {
+    id: '<id>'
+    name: 'customRewrite'
+    properties: {
+      rewriteRules: [
+        {
+          actionSet: {
+            requestHeaderConfigurations: [
+              {
+                headerName: 'Content-Type'
+                headerValue: 'JSON'
+              }
+              {
+                headerName: 'someheader'
+              }
+            ]
+            responseHeaderConfigurations: []
+          }
+          conditions: []
+          name: 'NewRewrite'
+          ruleSequence: 100
+        }
+      ]
+    }
+  }
+]
+param sku = 'Standard_v2'
+param sslCertificates = [
+  {
+    name: 'az-apgw-x-001-ssl-certificate'
+    properties: {
+      keyVaultSecretId: '<keyVaultSecretId>'
+    }
+  }
+]
+param sslProfiles = [
+  {
+    id: '<id>'
+    name: 'sslnotrustedcert'
+    properties: {
+      clientAuthConfiguration: {
+        VerifyClientAuthMode: 'Passthrough'
+        VerifyClientCertIssuerDN: false
+        VerifyClientRevocation: 'None'
+      }
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Standard_
 
 This instance deploys the module using the Standard_v2 sku.
 
@@ -2695,7 +3408,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
