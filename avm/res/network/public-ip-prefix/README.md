@@ -398,7 +398,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
     name: 'npipv2001'
     prefixLength: 28
     // Non-required parameters
-    location: '<location>'
     skuName: 'StandardV2'
   }
 }
@@ -424,9 +423,6 @@ module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
       "value": 28
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "StandardV2"
     }
@@ -448,7 +444,6 @@ using 'br/public:avm/res/network/public-ip-prefix:<version>'
 param name = 'npipv2001'
 param prefixLength = 28
 // Non-required parameters
-param location = '<location>'
 param skuName = 'StandardV2'
 ```
 
