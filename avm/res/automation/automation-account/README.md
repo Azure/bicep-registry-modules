@@ -2,6 +2,14 @@
 
 This module deploys an Azure Automation Account.
 
+You can reference the module as follows:
+```bicep
+module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,26 +21,27 @@ This module deploys an Azure Automation Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automation/automationAccounts` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts) |
-| `Microsoft.Automation/automationAccounts/credentials` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials) |
-| `Microsoft.Automation/automationAccounts/jobSchedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/jobSchedules) |
-| `Microsoft.Automation/automationAccounts/modules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/modules) |
-| `Microsoft.Automation/automationAccounts/powerShell72Modules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules) |
-| `Microsoft.Automation/automationAccounts/python2Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages) |
-| `Microsoft.Automation/automationAccounts/python3Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages) |
-| `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
-| `Microsoft.Automation/automationAccounts/schedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/schedules) |
-| `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2019-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2019-06-01/automationAccounts/softwareUpdateConfigurations) |
-| `Microsoft.Automation/automationAccounts/variables` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
-| `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Automation/automationAccounts` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts)</li></ul> |
+| `Microsoft.Automation/automationAccounts/credentials` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/jobSchedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_jobschedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/jobSchedules)</li></ul> |
+| `Microsoft.Automation/automationAccounts/modules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/modules)</li></ul> |
+| `Microsoft.Automation/automationAccounts/powerShell72Modules` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_powershell72modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python2Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python3Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/runbooks` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks)</li></ul> |
+| `Microsoft.Automation/automationAccounts/schedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules)</li></ul> |
+| `Microsoft.Automation/automationAccounts/sourceControls` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_sourcecontrols.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/sourceControls)</li></ul> |
+| `Microsoft.Automation/automationAccounts/variables` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables)</li></ul> |
+| `Microsoft.Automation/automationAccounts/webhooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices)</li></ul> |
+| `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 
 ## Usage examples
 
@@ -51,6 +60,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -58,7 +69,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: 'automationAccountDeployment'
   params: {
     name: 'aamin001'
   }
@@ -104,6 +114,8 @@ param name = 'aamin001'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -111,7 +123,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: 'automationAccountDeployment'
   params: {
     // Required parameters
     name: 'aaencr001'
@@ -197,6 +208,8 @@ param managedIdentities = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -204,7 +217,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: 'automationAccountDeployment'
   params: {
     // Required parameters
     name: 'aamax001'
@@ -338,7 +350,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     ]
     roleAssignments: [
       {
-        name: 'de334944-f952-4273-8ab3-bd523380034c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -375,63 +387,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         timeZone: 'Europe/Berlin'
       }
     ]
-    softwareUpdateConfigurations: [
-      {
-        excludeUpdates: [
-          '123456'
-        ]
-        frequency: 'Month'
-        includeUpdates: [
-          '654321'
-        ]
-        interval: 1
-        maintenanceWindow: 'PT4H'
-        monthlyOccurrences: [
-          {
-            day: 'Friday'
-            occurrence: 3
-          }
-        ]
-        name: 'Windows_ZeroDay'
-        operatingSystem: 'Windows'
-        rebootSetting: 'IfRequired'
-        scopeByTags: {
-          Update: [
-            'Automatic-Wave1'
-          ]
-        }
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Definition'
-          'FeaturePack'
-          'Security'
-          'ServicePack'
-          'Tools'
-          'UpdateRollup'
-          'Updates'
-        ]
-      }
-      {
-        excludeUpdates: [
-          'icacls'
-        ]
-        frequency: 'OneTime'
-        includeUpdates: [
-          'kernel'
-        ]
-        maintenanceWindow: 'PT4H'
-        name: 'Linux_ZeroDay'
-        operatingSystem: 'Linux'
-        rebootSetting: 'IfRequired'
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Other'
-          'Security'
-        ]
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -463,6 +418,17 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         description: 'TestEncryptedDescription'
         name: 'TestEncryptedVariable'
         value: '\'TestEncryptedValue\''
+      }
+    ]
+    webhooks: [
+      {
+        expiryTime: '<expiryTime>'
+        name: 'TestWebhook'
+        parameters: {
+          param1: 'value1'
+          param2: 'value2'
+        }
+        runbookName: 'TestRunbook'
       }
     ]
   }
@@ -644,7 +610,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "roleAssignments": {
       "value": [
         {
-          "name": "de334944-f952-4273-8ab3-bd523380034c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -686,65 +652,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       ]
     },
-    "softwareUpdateConfigurations": {
-      "value": [
-        {
-          "excludeUpdates": [
-            "123456"
-          ],
-          "frequency": "Month",
-          "includeUpdates": [
-            "654321"
-          ],
-          "interval": 1,
-          "maintenanceWindow": "PT4H",
-          "monthlyOccurrences": [
-            {
-              "day": "Friday",
-              "occurrence": 3
-            }
-          ],
-          "name": "Windows_ZeroDay",
-          "operatingSystem": "Windows",
-          "rebootSetting": "IfRequired",
-          "scopeByTags": {
-            "Update": [
-              "Automatic-Wave1"
-            ]
-          },
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Definition",
-            "FeaturePack",
-            "Security",
-            "ServicePack",
-            "Tools",
-            "UpdateRollup",
-            "Updates"
-          ]
-        },
-        {
-          "excludeUpdates": [
-            "icacls"
-          ],
-          "frequency": "OneTime",
-          "includeUpdates": [
-            "kernel"
-          ],
-          "maintenanceWindow": "PT4H",
-          "name": "Linux_ZeroDay",
-          "operatingSystem": "Linux",
-          "rebootSetting": "IfRequired",
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Other",
-            "Security"
-          ]
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -779,6 +686,19 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           "description": "TestEncryptedDescription",
           "name": "TestEncryptedVariable",
           "value": "\"TestEncryptedValue\""
+        }
+      ]
+    },
+    "webhooks": {
+      "value": [
+        {
+          "expiryTime": "<expiryTime>",
+          "name": "TestWebhook",
+          "parameters": {
+            "param1": "value1",
+            "param2": "value2"
+          },
+          "runbookName": "TestRunbook"
         }
       ]
     }
@@ -928,7 +848,7 @@ python3Packages: [
 ]
 param roleAssignments = [
   {
-    name: 'de334944-f952-4273-8ab3-bd523380034c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -965,63 +885,6 @@ param schedules = [
     timeZone: 'Europe/Berlin'
   }
 ]
-param softwareUpdateConfigurations = [
-  {
-    excludeUpdates: [
-      '123456'
-    ]
-    frequency: 'Month'
-    includeUpdates: [
-      '654321'
-    ]
-    interval: 1
-    maintenanceWindow: 'PT4H'
-    monthlyOccurrences: [
-      {
-        day: 'Friday'
-        occurrence: 3
-      }
-    ]
-    name: 'Windows_ZeroDay'
-    operatingSystem: 'Windows'
-    rebootSetting: 'IfRequired'
-    scopeByTags: {
-      Update: [
-        'Automatic-Wave1'
-      ]
-    }
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Definition'
-      'FeaturePack'
-      'Security'
-      'ServicePack'
-      'Tools'
-      'UpdateRollup'
-      'Updates'
-    ]
-  }
-  {
-    excludeUpdates: [
-      'icacls'
-    ]
-    frequency: 'OneTime'
-    includeUpdates: [
-      'kernel'
-    ]
-    maintenanceWindow: 'PT4H'
-    name: 'Linux_ZeroDay'
-    operatingSystem: 'Linux'
-    rebootSetting: 'IfRequired'
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Other'
-      'Security'
-    ]
-  }
-]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1055,6 +918,17 @@ param variables = [
     value: '\'TestEncryptedValue\''
   }
 ]
+param webhooks = [
+  {
+    expiryTime: '<expiryTime>'
+    name: 'TestWebhook'
+    parameters: {
+      param1: 'value1'
+      param2: 'value2'
+    }
+    runbookName: 'TestRunbook'
+  }
+]
 ```
 
 </details>
@@ -1064,6 +938,8 @@ param variables = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1071,7 +947,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
-  name: 'automationAccountDeployment'
   params: {
     // Required parameters
     name: 'aawaf001'
@@ -1169,63 +1044,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         name: 'TestSchedule'
         startTime: ''
         timeZone: 'Europe/Berlin'
-      }
-    ]
-    softwareUpdateConfigurations: [
-      {
-        excludeUpdates: [
-          '123456'
-        ]
-        frequency: 'Month'
-        includeUpdates: [
-          '654321'
-        ]
-        interval: 1
-        maintenanceWindow: 'PT4H'
-        monthlyOccurrences: [
-          {
-            day: 'Friday'
-            occurrence: 3
-          }
-        ]
-        name: 'Windows_ZeroDay'
-        operatingSystem: 'Windows'
-        rebootSetting: 'IfRequired'
-        scopeByTags: {
-          Update: [
-            'Automatic-Wave1'
-          ]
-        }
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Definition'
-          'FeaturePack'
-          'Security'
-          'ServicePack'
-          'Tools'
-          'UpdateRollup'
-          'Updates'
-        ]
-      }
-      {
-        excludeUpdates: [
-          'icacls'
-        ]
-        frequency: 'OneTime'
-        includeUpdates: [
-          'kernel'
-        ]
-        maintenanceWindow: 'PT4H'
-        name: 'Linux_ZeroDay'
-        operatingSystem: 'Linux'
-        rebootSetting: 'IfRequired'
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Other'
-          'Security'
-        ]
       }
     ]
     tags: {
@@ -1398,65 +1216,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       ]
     },
-    "softwareUpdateConfigurations": {
-      "value": [
-        {
-          "excludeUpdates": [
-            "123456"
-          ],
-          "frequency": "Month",
-          "includeUpdates": [
-            "654321"
-          ],
-          "interval": 1,
-          "maintenanceWindow": "PT4H",
-          "monthlyOccurrences": [
-            {
-              "day": "Friday",
-              "occurrence": 3
-            }
-          ],
-          "name": "Windows_ZeroDay",
-          "operatingSystem": "Windows",
-          "rebootSetting": "IfRequired",
-          "scopeByTags": {
-            "Update": [
-              "Automatic-Wave1"
-            ]
-          },
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Definition",
-            "FeaturePack",
-            "Security",
-            "ServicePack",
-            "Tools",
-            "UpdateRollup",
-            "Updates"
-          ]
-        },
-        {
-          "excludeUpdates": [
-            "icacls"
-          ],
-          "frequency": "OneTime",
-          "includeUpdates": [
-            "kernel"
-          ],
-          "maintenanceWindow": "PT4H",
-          "name": "Linux_ZeroDay",
-          "operatingSystem": "Linux",
-          "rebootSetting": "IfRequired",
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Other",
-            "Security"
-          ]
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1605,63 +1364,6 @@ param schedules = [
     timeZone: 'Europe/Berlin'
   }
 ]
-param softwareUpdateConfigurations = [
-  {
-    excludeUpdates: [
-      '123456'
-    ]
-    frequency: 'Month'
-    includeUpdates: [
-      '654321'
-    ]
-    interval: 1
-    maintenanceWindow: 'PT4H'
-    monthlyOccurrences: [
-      {
-        day: 'Friday'
-        occurrence: 3
-      }
-    ]
-    name: 'Windows_ZeroDay'
-    operatingSystem: 'Windows'
-    rebootSetting: 'IfRequired'
-    scopeByTags: {
-      Update: [
-        'Automatic-Wave1'
-      ]
-    }
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Definition'
-      'FeaturePack'
-      'Security'
-      'ServicePack'
-      'Tools'
-      'UpdateRollup'
-      'Updates'
-    ]
-  }
-  {
-    excludeUpdates: [
-      'icacls'
-    ]
-    frequency: 'OneTime'
-    includeUpdates: [
-      'kernel'
-    ]
-    maintenanceWindow: 'PT4H'
-    name: 'Linux_ZeroDay'
-    operatingSystem: 'Linux'
-    rebootSetting: 'IfRequired'
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Other'
-      'Security'
-    ]
-  }
-]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1732,9 +1434,10 @@ param variables = [
 | [`runbooks`](#parameter-runbooks) | array | List of runbooks to be created in the automation account. |
 | [`schedules`](#parameter-schedules) | array | List of schedules to be created in the automation account. |
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
-| [`softwareUpdateConfigurations`](#parameter-softwareupdateconfigurations) | array | List of softwareUpdateConfigurations to be created in the automation account. |
+| [`sourceControlConfigurations`](#parameter-sourcecontrolconfigurations) | array | The source control configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
 | [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
+| [`webhooks`](#parameter-webhooks) | array | List of webhooks to be created in the automation account. |
 
 ### Parameter: `name`
 
@@ -2102,6 +1805,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2121,6 +1825,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2404,6 +2115,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2423,6 +2135,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2881,13 +2600,94 @@ SKU name of the account.
   ]
   ```
 
-### Parameter: `softwareUpdateConfigurations`
+### Parameter: `sourceControlConfigurations`
 
-List of softwareUpdateConfigurations to be created in the automation account.
+The source control configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`branch`](#parameter-sourcecontrolconfigurationsbranch) | string | The repo branch of the source control. Include branch as empty string for VsoTfvc. |
+| [`description`](#parameter-sourcecontrolconfigurationsdescription) | string | The user description of the source control. |
+| [`folderPath`](#parameter-sourcecontrolconfigurationsfolderpath) | string | The folder path of the source control. Path must be relative. |
+| [`repoUrl`](#parameter-sourcecontrolconfigurationsrepourl) | string | The repo url of the source control. |
+| [`sourceType`](#parameter-sourcecontrolconfigurationssourcetype) | string | Type of source control mechanism. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoSync`](#parameter-sourcecontrolconfigurationsautosync) | bool | Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`. |
+| [`publishRunbook`](#parameter-sourcecontrolconfigurationspublishrunbook) | bool | The auto publish of the source control. Defaults to `true`. |
+| [`securityToken`](#parameter-sourcecontrolconfigurationssecuritytoken) | object | The authorization token for the repo of the source control. |
+
+### Parameter: `sourceControlConfigurations.branch`
+
+The repo branch of the source control. Include branch as empty string for VsoTfvc.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sourceControlConfigurations.description`
+
+The user description of the source control.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sourceControlConfigurations.folderPath`
+
+The folder path of the source control. Path must be relative.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sourceControlConfigurations.repoUrl`
+
+The repo url of the source control.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sourceControlConfigurations.sourceType`
+
+Type of source control mechanism.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GitHub'
+    'VsoGit'
+    'VsoTfvc'
+  ]
+  ```
+
+### Parameter: `sourceControlConfigurations.autoSync`
+
+Setting that turns on or off automatic synchronization when a commit is made in the source control repository or GitHub repo. Defaults to `false`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sourceControlConfigurations.publishRunbook`
+
+The auto publish of the source control. Defaults to `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sourceControlConfigurations.securityToken`
+
+The authorization token for the repo of the source control.
+
+- Required: No
+- Type: object
 
 ### Parameter: `tags`
 
@@ -2899,6 +2699,14 @@ Tags of the Automation Account resource.
 ### Parameter: `variables`
 
 List of variables to be created in the automation account.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `webhooks`
+
+List of webhooks to be created in the automation account.
 
 - Required: No
 - Type: array
@@ -2921,11 +2729,13 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

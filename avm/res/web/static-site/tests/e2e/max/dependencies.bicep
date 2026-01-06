@@ -92,3 +92,6 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Function App.')
 output siteResourceId string = functionApp.id
+
+@description('The resource ID of the created Virtual Network.')
+output virtualNetworkResourceId string = virtualNetwork.id

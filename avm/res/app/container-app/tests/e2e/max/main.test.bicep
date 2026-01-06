@@ -30,7 +30,7 @@ param myCustomContainerAppSecret string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -62,6 +62,24 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
+      identitySettings: [
+        {
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+          lifecycle: 'None'
+        }
+      ]
+      initContainersTemplate: [
+        {
+          name: 'init-container'
+          image: 'mcr.microsoft.com/k8se/quickstart:latest'
+          resources: {
+            cpu: json('0.25')
+            memory: '0.5Gi'
+          }
+        }
+      ]
+
+      activeRevisionsMode: 'Single'
       roleAssignments: [
         {
           name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
@@ -106,10 +124,13 @@ module testDeployment '../../../main.bicep' = [
           identity: nestedDependencies.outputs.managedIdentityResourceId
         }
       ]
+      service:{
+        type: 'Web'
+      }
       containers: [
         {
           name: 'simple-hello-world-container'
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+          image: 'mcr.microsoft.com/k8se/quickstart:latest'
           resources: {
             // workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
             cpu: json('0.25')
@@ -145,15 +166,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       runtime: {
-        java: {
-          enableJavaAgent: true
-          enableMetrics: false
-          loggerSettings: [
-            {
-              level: 'info'
-              logger: 'test'
-            }
-          ]
+        java:{
+          enableMetrics: true
         }
       }
       scaleSettings: {
@@ -161,6 +175,17 @@ module testDeployment '../../../main.bicep' = [
         minReplicas: 4
         cooldownPeriod: 500
         pollingInterval: 45
+      }
+      authConfig: {
+        httpSettings: {
+          requireHttps: true
+        }
+        globalValidation: {
+          unauthenticatedClientAction: 'Return401'
+        }
+        platform: {
+          enabled: true
+        }
       }
     }
   }

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -43,21 +43,20 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}-${serviceShort}'
-    location: resourceLocation
-    administrators: {
-      azureADOnlyAuthentication: true
-      login: 'myspn'
-      sid: nestedDependencies.outputs.managedIdentityPrincipalId
-      principalType: 'Application'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}'
+      location: resourceLocation
+      administrators: {
+        azureADOnlyAuthentication: true
+        login: 'myspn'
+        sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'Application'
+      }
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}
+]

@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     //Configure Azure Defender for SQL agents on virtual machines
     policyDefinitionId: '/providers/Microsoft.Authorization/policySetDefinitions/39a366e6-fdde-4f41-bbf8-3757f46d1611'
+    definitionVersion: '1.*.*-preview'
     description: '[Description] Policy Assignment at the subscription scope'
     displayName: '[Display Name] Policy Assignment at the subscription scope'
     enforcementMode: 'DoNotEnforce'
@@ -81,6 +82,11 @@ module testDeployment '../../../main.bicep' = {
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
       }
+      effect: {
+        value: 'DeployIfNotExists'
+      }
+    }
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
       }

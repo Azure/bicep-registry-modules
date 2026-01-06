@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral'
+var enforcedLocation = 'westus3'
 
 // ============ //
 // Dependencies //
@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // General resources
 // ============== //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
     networkRestrictions: {
       publicNetworkAccess: 'Enabled'
       networkAclBypass: 'AzureServices'
@@ -67,5 +66,6 @@ module testDeployment '../../../main.bicep' = {
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }

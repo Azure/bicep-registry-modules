@@ -7,7 +7,7 @@ param storageAccountName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -23,7 +23,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -35,4 +35,7 @@ output storageAccountResourceId string = storageAccount.id
 output storageAccountName string = storageAccount.name
 
 @description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
+
+@description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

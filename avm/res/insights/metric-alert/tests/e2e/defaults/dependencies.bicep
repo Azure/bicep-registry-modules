@@ -69,7 +69,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.5.3' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2als_v6'
     adminPassword: password
   }
 }

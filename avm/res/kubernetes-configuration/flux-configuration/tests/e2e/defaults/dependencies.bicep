@@ -10,7 +10,7 @@ param clusterExtensionName string
 @description('Required. The name of the AKS cluster nodes resource group to create.')
 param clusterNodeResourceGroupName string
 
-resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
+resource cluster 'Microsoft.ContainerService/managedClusters@2025-04-01' = {
   name: clusterName
   location: location
   identity: {
@@ -31,7 +31,7 @@ resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
   }
 }
 
-resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
+resource extension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = {
   scope: cluster
   name: clusterExtensionName
   properties: {

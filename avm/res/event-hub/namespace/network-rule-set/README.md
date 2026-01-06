@@ -10,9 +10,9 @@ This module deploys an Event Hub Namespace Network Rule Set.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventHub/namespaces/networkRuleSets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_networkrulesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets)</li></ul> |
 
 ## Parameters
 
@@ -101,6 +101,27 @@ An array of subnet resource ID objects that this Event Hub Namespace is exposed 
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Value that indicates whether to ignore missing Vnet Service Endpoint. |
+| [`subnetResourceId`](#parameter-virtualnetworkrulessubnetresourceid) | string | The resource Id of a Virtual Network Subnet. |
+
+### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Value that indicates whether to ignore missing Vnet Service Endpoint.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkRules.subnetResourceId`
+
+The resource Id of a Virtual Network Subnet.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

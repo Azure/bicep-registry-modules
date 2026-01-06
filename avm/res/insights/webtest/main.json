@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "13066561667388649172"
+      "version": "0.37.4.10188",
+      "templateHash": "15565135637090687473"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -139,14 +146,20 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/tags"
+        },
         "description": "Optional. Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResourceId' parameter will be automatically added to the tags defined here."
-      }
+      },
+      "nullable": true
     },
     "request": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Request"
+        },
         "description": "Required. The collection of request properties."
       }
     },
@@ -185,6 +198,12 @@
     },
     "locations": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Locations"
+        },
+        "description": "Optional. List of where to physically run the tests from to give global coverage for accessibility of your application."
+      },
       "defaultValue": [
         {
           "Id": "us-il-ch1-azr"
@@ -201,10 +220,7 @@
         {
           "Id": "emea-nl-ams-azr"
         }
-      ],
-      "metadata": {
-        "description": "Optional. List of where to physically run the tests from to give global coverage for accessibility of your application."
-      }
+      ]
     },
     "enabled": {
       "type": "bool",
@@ -236,17 +252,23 @@
     },
     "validationRules": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/ValidationRules"
+        },
         "description": "Optional. The collection of validation rule properties."
-      }
+      },
+      "defaultValue": {}
     },
     "configuration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/webtests@2022-06-15#properties/properties/properties/Configuration"
+        },
         "description": "Optional. An XML configuration specification for a WebTest."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -342,7 +364,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "webtest"

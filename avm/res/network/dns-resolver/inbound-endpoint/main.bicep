@@ -9,7 +9,7 @@ param dnsResolverName string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01'>.tags?
 
 @description('Required. The subnet ID of the inbound endpoint.')
 param subnetResourceId string
@@ -23,11 +23,11 @@ param privateIpAllocationMethod string = 'Dynamic'
 @description('Required. The name of the inbound endpoint.')
 param name string
 
-resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' existing = {
+resource dnsResolver 'Microsoft.Network/dnsResolvers@2025-05-01' existing = {
   name: dnsResolverName
 }
 
-resource inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndpoints@2022-07-01' = {
+resource inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndpoints@2025-05-01' = {
   parent: dnsResolver
   name: name
   location: location

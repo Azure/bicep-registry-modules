@@ -16,11 +16,13 @@ param geoBackupManagedIdentityName string
 @description('Required. The location to deploy geo backup resources to.')
 param geoBackupLocation string
 
+#disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentityName
   location: location
 }
 
+#disable-next-line use-recent-api-versions
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
@@ -39,6 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
+  #disable-next-line use-recent-api-versions
   resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
@@ -47,6 +50,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
   scope: keyVault::key
@@ -60,11 +64,13 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: geoBackupManagedIdentityName
   location: geoBackupLocation
 }
 
+#disable-next-line use-recent-api-versions
 resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: geoBackupKeyVaultName
   location: geoBackupLocation
@@ -83,6 +89,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
+  #disable-next-line use-recent-api-versions
   resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {
@@ -91,6 +98,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource geoBackupKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${geoBackupKeyVault::key.id}-${geoBackupLocation}-${geoBackupManagedIdentity.id}-Key-Reader-RoleAssignment')
   scope: geoBackupKeyVault::key

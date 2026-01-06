@@ -2,6 +2,14 @@
 
 This module deploys a Container Instance Container Group.
 
+You can reference the module as follows:
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,10 +21,10 @@ This module deploys a Container Instance Container Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.ContainerInstance/containerGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2023-05-01/containerGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.ContainerInstance/containerGroups` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerinstance_containergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2025-09-01/containerGroups)</li></ul> |
 
 ## Usage examples
 
@@ -26,163 +34,20 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-instance/container-group:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using CMK ](#example-2-using-cmk)
+- [Using CMK ](#example-1-using-cmk)
+- [Using only defaults](#example-2-using-only-defaults)
 - [Using only defaults and low memory containers](#example-3-using-only-defaults-and-low-memory-containers)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [Using private network](#example-5-using-private-network)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Deploying with standby container group pool](#example-6-deploying-with-standby-container-group-pool)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
-  params: {
-    // Required parameters
-    containers: [
-      {
-        name: 'az-aci-x-001'
-        properties: {
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-          ports: [
-            {
-              port: 443
-              protocol: 'Tcp'
-            }
-          ]
-          resources: {
-            requests: {
-              cpu: 2
-              memoryInGB: '2'
-            }
-          }
-        }
-      }
-    ]
-    name: 'cicgmin001'
-    // Non-required parameters
-    ipAddressPorts: [
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "containers": {
-      "value": [
-        {
-          "name": "az-aci-x-001",
-          "properties": {
-            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
-            "ports": [
-              {
-                "port": 443,
-                "protocol": "Tcp"
-              }
-            ],
-            "resources": {
-              "requests": {
-                "cpu": 2,
-                "memoryInGB": "2"
-              }
-            }
-          }
-        }
-      ]
-    },
-    "name": {
-      "value": "cicgmin001"
-    },
-    // Non-required parameters
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/container-instance/container-group:<version>'
-
-// Required parameters
-param containers = [
-  {
-    name: 'az-aci-x-001'
-    properties: {
-      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
-      ports: [
-        {
-          port: 443
-          protocol: 'Tcp'
-        }
-      ]
-      resources: {
-        requests: {
-          cpu: 2
-          memoryInGB: '2'
-        }
-      }
-    }
-  }
-]
-param name = 'cicgmin001'
-// Non-required parameters
-param ipAddressPorts = [
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-]
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Using CMK _
+### Example 1: _Using CMK _
 
 This instance deploys the module with a customer-managed key (CMK).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -190,9 +55,9 @@ This instance deploys the module with a customer-managed key (CMK).
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -239,27 +104,24 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgencr001'
+    name: 'cicenc001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    ipAddressPorts: [
-      {
-        port: 80
-        protocol: 'Tcp'
-      }
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-    ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    ipAddress: {
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
     }
     managedIdentities: {
       systemAssigned: true
@@ -284,6 +146,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -333,7 +198,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgencr001"
+      "value": "cicenc001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -343,25 +208,18 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
+    "ipAddress": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "ports": [
+          {
+            "port": 80,
+            "protocol": "Tcp"
+          },
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
       }
     },
     "managedIdentities": {
@@ -387,6 +245,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -433,27 +292,24 @@ param containers = [
     }
   }
 ]
-param name = 'cicgencr001'
+param name = 'cicenc001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param ipAddressPorts = [
-  {
-    port: 80
-    protocol: 'Tcp'
-  }
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+param ipAddress = {
+  ports: [
+    {
+      port: 80
+      protocol: 'Tcp'
+    }
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
 }
 param managedIdentities = {
   systemAssigned: true
@@ -466,9 +322,11 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using only defaults and low memory containers_
+### Example 2: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters and with low memory.
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -477,9 +335,162 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+          ports: [
+            {
+              port: 443
+              protocol: 'Tcp'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: 2
+              memoryInGB: '2'
+            }
+          }
+        }
+      }
+    ]
+    name: 'cicgmin001'
+    // Non-required parameters
+    ipAddress: {
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "image": "mcr.microsoft.com/azuredocs/aci-helloworld",
+            "ports": [
+              {
+                "port": 443,
+                "protocol": "Tcp"
+              }
+            ],
+            "resources": {
+              "requests": {
+                "cpu": 2,
+                "memoryInGB": "2"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "cicgmin001"
+    },
+    // Non-required parameters
+    "ipAddress": {
+      "value": {
+        "ports": [
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+      resources: {
+        requests: {
+          cpu: 2
+          memoryInGB: '2'
+        }
+      }
+    }
+  }
+]
+param name = 'cicgmin001'
+// Non-required parameters
+param ipAddress = {
+  ports: [
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults and low memory containers_
+
+This instance deploys the module with the minimum set of required parameters and with low memory.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/low-memory]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -502,13 +513,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: 'ciclow001'
     // Non-required parameters
-    ipAddressPorts: [
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-    ]
-    location: '<location>'
+    ipAddress: {
+      ports: [
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+    }
   }
 }
 ```
@@ -526,6 +538,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -552,16 +567,15 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "ciclow001"
     },
     // Non-required parameters
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
+    "ipAddress": {
+      "value": {
+        "ports": [
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
+      }
     }
   }
 }
@@ -578,6 +592,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -600,13 +615,14 @@ param containers = [
 ]
 param name = 'ciclow001'
 // Non-required parameters
-param ipAddressPorts = [
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-]
-param location = '<location>'
+param ipAddress = {
+  ports: [
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
+}
 ```
 
 </details>
@@ -616,6 +632,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -623,14 +641,23 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: '<availabilityZone>'
     containers: [
       {
-        name: 'az-aci-x-001'
+        name: '<name>'
         properties: {
-          command: []
+          command: [
+            '-c'
+            '/bin/sh'
+            'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+          ]
+          configMap: {
+            keyValuePairs: {
+              aKey: 'aValue'
+            }
+          }
           environmentVariables: [
             {
               name: 'CLIENT_ID'
@@ -652,6 +679,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               protocol: 'Tcp'
             }
           ]
+          readinessProbe: {
+            exec: {
+              command: [
+                '/tmp/ready'
+                'cat'
+              ]
+            }
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          }
           resources: {
             limits: {
               cpu: 4
@@ -665,7 +703,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
       {
-        name: 'az-aci-x-002'
+        name: '<name>'
         properties: {
           command: []
           environmentVariables: []
@@ -685,22 +723,37 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgmax001'
+    name: '<name>'
     // Non-required parameters
-    ipAddressPorts: [
-      {
-        port: 80
-        protocol: 'Tcp'
-      }
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-    ]
+    identityAcls: {
+      acls: [
+        {
+          access: 'All'
+          identity: '<identity>'
+        }
+      ]
+      defaultAccess: 'User'
+    }
+    ipAddress: {
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    logAnalytics: {
+      logType: 'ContainerInstanceLogs'
+      workspaceResourceId: '<workspaceResourceId>'
     }
     managedIdentities: {
       systemAssigned: true
@@ -730,12 +783,24 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": "<availabilityZone>"
+    },
     "containers": {
       "value": [
         {
-          "name": "az-aci-x-001",
+          "name": "<name>",
           "properties": {
-            "command": [],
+            "command": [
+              "-c",
+              "/bin/sh",
+              "node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait"
+            ],
+            "configMap": {
+              "keyValuePairs": {
+                "aKey": "aValue"
+              }
+            },
             "environmentVariables": [
               {
                 "name": "CLIENT_ID",
@@ -757,6 +822,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
                 "protocol": "Tcp"
               }
             ],
+            "readinessProbe": {
+              "exec": {
+                "command": [
+                  "/tmp/ready",
+                  "cat"
+                ]
+              },
+              "failureThreshold": 3,
+              "initialDelaySeconds": 10,
+              "periodSeconds": 5
+            },
             "resources": {
               "limits": {
                 "cpu": 4,
@@ -770,7 +846,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
         },
         {
-          "name": "az-aci-x-002",
+          "name": "<name>",
           "properties": {
             "command": [],
             "environmentVariables": [],
@@ -792,20 +868,33 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgmax001"
+      "value": "<name>"
     },
     // Non-required parameters
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
+    "identityAcls": {
+      "value": {
+        "acls": [
+          {
+            "access": "All",
+            "identity": "<identity>"
+          }
+        ],
+        "defaultAccess": "User"
+      }
+    },
+    "ipAddress": {
+      "value": {
+        "ports": [
+          {
+            "port": 80,
+            "protocol": "Tcp"
+          },
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
+      }
     },
     "location": {
       "value": "<location>"
@@ -814,6 +903,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "logAnalytics": {
+      "value": {
+        "logType": "ContainerInstanceLogs",
+        "workspaceResourceId": "<workspaceResourceId>"
       }
     },
     "managedIdentities": {
@@ -846,11 +941,21 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = '<availabilityZone>'
 param containers = [
   {
-    name: 'az-aci-x-001'
+    name: '<name>'
     properties: {
-      command: []
+      command: [
+        '-c'
+        '/bin/sh'
+        'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+      ]
+      configMap: {
+        keyValuePairs: {
+          aKey: 'aValue'
+        }
+      }
       environmentVariables: [
         {
           name: 'CLIENT_ID'
@@ -872,6 +977,17 @@ param containers = [
           protocol: 'Tcp'
         }
       ]
+      readinessProbe: {
+        exec: {
+          command: [
+            '/tmp/ready'
+            'cat'
+          ]
+        }
+        failureThreshold: 3
+        initialDelaySeconds: 10
+        periodSeconds: 5
+      }
       resources: {
         limits: {
           cpu: 4
@@ -885,7 +1001,7 @@ param containers = [
     }
   }
   {
-    name: 'az-aci-x-002'
+    name: '<name>'
     properties: {
       command: []
       environmentVariables: []
@@ -905,22 +1021,37 @@ param containers = [
     }
   }
 ]
-param name = 'cicgmax001'
+param name = '<name>'
 // Non-required parameters
-param ipAddressPorts = [
-  {
-    port: 80
-    protocol: 'Tcp'
-  }
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-]
+param identityAcls = {
+  acls: [
+    {
+      access: 'All'
+      identity: '<identity>'
+    }
+  ]
+  defaultAccess: 'User'
+}
+param ipAddress = {
+  ports: [
+    {
+      port: 80
+      protocol: 'Tcp'
+    }
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
+}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param logAnalytics = {
+  logType: 'ContainerInstanceLogs'
+  workspaceResourceId: '<workspaceResourceId>'
 }
 param managedIdentities = {
   systemAssigned: true
@@ -942,6 +1073,8 @@ param tags = {
 
 This instance deploys the module within a virtual network.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
+
 
 <details>
 
@@ -949,9 +1082,9 @@ This instance deploys the module within a virtual network.
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -1000,27 +1133,37 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: 'cicgprivate001'
     // Non-required parameters
-    ipAddressPorts: [
+    extensions: [
       {
-        port: 80
-        protocol: 'Tcp'
-      }
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-      {
-        port: 8080
-        protocol: 'Tcp'
+        name: 'vk-realtime-metrics'
+        properties: {
+          extensionType: 'realtime-metrics'
+          version: '1.0'
+        }
       }
     ]
-    ipAddressType: 'Private'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    ipAddress: {
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+        {
+          port: 8080
+          protocol: 'Tcp'
+        }
+      ]
+      type: 'Private'
     }
-    subnetResourceId: '<subnetResourceId>'
+    subnets: [
+      {
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
   }
 }
 ```
@@ -1038,6 +1181,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -1090,36 +1236,42 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "cicgprivate001"
     },
     // Non-required parameters
-    "ipAddressPorts": {
+    "extensions": {
       "value": [
         {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 8080,
-          "protocol": "Tcp"
+          "name": "vk-realtime-metrics",
+          "properties": {
+            "extensionType": "realtime-metrics",
+            "version": "1.0"
+          }
         }
       ]
     },
-    "ipAddressType": {
-      "value": "Private"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
+    "ipAddress": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "ports": [
+          {
+            "port": 80,
+            "protocol": "Tcp"
+          },
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          },
+          {
+            "port": 8080,
+            "protocol": "Tcp"
+          }
+        ],
+        "type": "Private"
       }
     },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+    "subnets": {
+      "value": [
+        {
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
     }
   }
 }
@@ -1136,6 +1288,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -1184,35 +1337,47 @@ param containers = [
 ]
 param name = 'cicgprivate001'
 // Non-required parameters
-param ipAddressPorts = [
+param extensions = [
   {
-    port: 80
-    protocol: 'Tcp'
-  }
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-  {
-    port: 8080
-    protocol: 'Tcp'
+    name: 'vk-realtime-metrics'
+    properties: {
+      extensionType: 'realtime-metrics'
+      version: '1.0'
+    }
   }
 ]
-param ipAddressType = 'Private'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+param ipAddress = {
+  ports: [
+    {
+      port: 80
+      protocol: 'Tcp'
+    }
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+    {
+      port: 8080
+      protocol: 'Tcp'
+    }
+  ]
+  type: 'Private'
 }
-param subnetResourceId = '<subnetResourceId>'
+param subnets = [
+  {
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
 ```
 
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 6: _Deploying with standby container group pool_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module with the parameters required to have the container instance used a standby container pool.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standby]
 
 
 <details>
@@ -1221,9 +1386,140 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
-  name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
+    containers: [
+      {
+        name: 'az-aci-x-001'
+        properties: {
+          configMap: {
+            keyValuePairs: {
+              aKey: 'aValue'
+            }
+          }
+        }
+      }
+    ]
+    name: 'cicgsb001'
+    // Non-required parameters
+    containerGroupProfile: {
+      resourceId: '<resourceId>'
+      revision: 1
+    }
+    standbyPoolProfile: {
+      failContainerGroupCreateOnReuseFailure: false
+      resourceId: '<resourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "containers": {
+      "value": [
+        {
+          "name": "az-aci-x-001",
+          "properties": {
+            "configMap": {
+              "keyValuePairs": {
+                "aKey": "aValue"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "name": {
+      "value": "cicgsb001"
+    },
+    // Non-required parameters
+    "containerGroupProfile": {
+      "value": {
+        "resourceId": "<resourceId>",
+        "revision": 1
+      }
+    },
+    "standbyPoolProfile": {
+      "value": {
+        "failContainerGroupCreateOnReuseFailure": false,
+        "resourceId": "<resourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-instance/container-group:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param containers = [
+  {
+    name: 'az-aci-x-001'
+    properties: {
+      configMap: {
+        keyValuePairs: {
+          aKey: 'aValue'
+        }
+      }
+    }
+  }
+]
+param name = 'cicgsb001'
+// Non-required parameters
+param containerGroupProfile = {
+  resourceId: '<resourceId>'
+  revision: 1
+}
+param standbyPoolProfile = {
+  failContainerGroupCreateOnReuseFailure: false
+  resourceId: '<resourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerGroup 'br/public:avm/res/container-instance/container-group:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -1272,17 +1568,18 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     ]
     name: 'cicgwaf001'
     // Non-required parameters
-    ipAddressPorts: [
-      {
-        port: 80
-        protocol: 'Tcp'
-      }
-      {
-        port: 443
-        protocol: 'Tcp'
-      }
-    ]
-    location: '<location>'
+    ipAddress: {
+      ports: [
+        {
+          port: 80
+          protocol: 'Tcp'
+        }
+        {
+          port: 443
+          protocol: 'Tcp'
+        }
+      ]
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1305,6 +1602,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "containers": {
       "value": [
         {
@@ -1357,20 +1657,19 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       "value": "cicgwaf001"
     },
     // Non-required parameters
-    "ipAddressPorts": {
-      "value": [
-        {
-          "port": 80,
-          "protocol": "Tcp"
-        },
-        {
-          "port": 443,
-          "protocol": "Tcp"
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
+    "ipAddress": {
+      "value": {
+        "ports": [
+          {
+            "port": 80,
+            "protocol": "Tcp"
+          },
+          {
+            "port": 443,
+            "protocol": "Tcp"
+          }
+        ]
+      }
     },
     "tags": {
       "value": {
@@ -1394,6 +1693,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -1442,17 +1742,18 @@ param containers = [
 ]
 param name = 'cicgwaf001'
 // Non-required parameters
-param ipAddressPorts = [
-  {
-    port: 80
-    protocol: 'Tcp'
-  }
-  {
-    port: 443
-    protocol: 'Tcp'
-  }
-]
-param location = '<location>'
+param ipAddress = {
+  ports: [
+    {
+      port: 80
+      protocol: 'Tcp'
+    }
+    {
+      port: 443
+      protocol: 'Tcp'
+    }
+  ]
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1469,37 +1770,52 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`containers`](#parameter-containers) | array | The containers and their respective config within the container group. |
 | [`name`](#parameter-name) | string | Name for the container group. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipAddressPorts`](#parameter-ipaddressports) | array | Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | Specify level of protection of the domain name label. |
+| [`confidentialComputeProperties`](#parameter-confidentialcomputeproperties) | object | The properties for confidential container group. |
+| [`containerGroupProfile`](#parameter-containergroupprofile) | object | The reference container group profile properties. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`dnsNameLabel`](#parameter-dnsnamelabel) | string | The Dns name label for the resource. |
-| [`dnsNameServers`](#parameter-dnsnameservers) | array | List of dns servers used by the containers for lookups. |
-| [`dnsSearchDomains`](#parameter-dnssearchdomains) | string | DNS search domain which will be appended to each DNS lookup. |
+| [`dnsConfig`](#parameter-dnsconfig) | object | The DNS config information for a container group. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extensions`](#parameter-extensions) | array | The extensions used by virtual kubelet. |
+| [`identityAcls`](#parameter-identityacls) | object | The access control levels of the identities. |
 | [`imageRegistryCredentials`](#parameter-imageregistrycredentials) | array | The image registry credentials by which the container group is created from. |
 | [`initContainers`](#parameter-initcontainers) | array | A list of container definitions which will be executed before the application container starts. |
-| [`ipAddressType`](#parameter-ipaddresstype) | string | Specifies if the IP is exposed to the public internet or private VNET. - Public or Private. |
+| [`ipAddress`](#parameter-ipaddress) | object | The IP address type of the container group. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`logAnalytics`](#parameter-loganalytics) | object | The log analytics diagnostic information for a container group. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`osType`](#parameter-ostype) | string | The operating system type required by the containers in the container group. - Windows or Linux. |
+| [`priority`](#parameter-priority) | string | The priority of the container group. |
 | [`restartPolicy`](#parameter-restartpolicy) | string | Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never. |
 | [`sku`](#parameter-sku) | string | The container group SKU. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet. Only specify when ipAddressType is Private. |
+| [`standbyPoolProfile`](#parameter-standbypoolprofile) | object | The reference standby pool profile properties. |
+| [`subnets`](#parameter-subnets) | array | The subnets to use by the container group. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `containers`
 
@@ -1529,35 +1845,38 @@ The properties of the container instance.
 - Required: Yes
 - Type: object
 
-**Required parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. |
-| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance. |
+| [`image`](#parameter-containerspropertiesimage) | string | The name of the container source image. Required if no containerGroupProfile is provided. |
+| [`resources`](#parameter-containerspropertiesresources) | object | The resource requirements of the container instance. Required if no containerGroupProfile is provided. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`command`](#parameter-containerspropertiescommand) | array | The command to execute within the container instance. |
+| [`configMap`](#parameter-containerspropertiesconfigmap) | object | The config map. |
 | [`environmentVariables`](#parameter-containerspropertiesenvironmentvariables) | array | The environment variables to set in the container instance. |
 | [`livenessProbe`](#parameter-containerspropertieslivenessprobe) | object | The liveness probe. |
 | [`ports`](#parameter-containerspropertiesports) | array | The exposed ports on the container instance. |
+| [`readinessProbe`](#parameter-containerspropertiesreadinessprobe) | object | The readiness probe. |
+| [`securityContext`](#parameter-containerspropertiessecuritycontext) | object | The security context of the container instance. |
 | [`volumeMounts`](#parameter-containerspropertiesvolumemounts) | array | The volume mounts within the container instance. |
 
 ### Parameter: `containers.properties.image`
 
-The name of the container source image.
+The name of the container source image. Required if no containerGroupProfile is provided.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `containers.properties.resources`
 
-The resource requirements of the container instance.
+The resource requirements of the container instance. Required if no containerGroupProfile is provided.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -1571,7 +1890,6 @@ The resource requirements of the container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`limits`](#parameter-containerspropertiesresourceslimits) | object | The resource limits of this container instance. |
-| [`securityContext`](#parameter-containerspropertiesresourcessecuritycontext) | object | The security context of the container instance. |
 
 ### Parameter: `containers.properties.resources.requests`
 
@@ -1585,13 +1903,13 @@ The resource requests of this container instance.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cpu`](#parameter-containerspropertiesresourcesrequestscpu) | int | The CPU request of this container instance. |
+| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | string | The memory request in GB of this container instance. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`gpu`](#parameter-containerspropertiesresourcesrequestsgpu) | object | The GPU request of this container instance. |
-| [`memoryInGB`](#parameter-containerspropertiesresourcesrequestsmemoryingb) | string | The memory request in GB of this container instance. |
 
 ### Parameter: `containers.properties.resources.requests.cpu`
 
@@ -1599,6 +1917,13 @@ The CPU request of this container instance.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `containers.properties.resources.requests.memoryInGB`
+
+The memory request in GB of this container instance.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `containers.properties.resources.requests.gpu`
 
@@ -1635,13 +1960,6 @@ The SKU of the GPU resource.
     'V100'
   ]
   ```
-
-### Parameter: `containers.properties.resources.requests.memoryInGB`
-
-The memory request in GB of this container instance.
-
-- Required: No
-- Type: string
 
 ### Parameter: `containers.properties.resources.limits`
 
@@ -1713,93 +2031,19 @@ The memory limit in GB of this container instance.
 - Required: No
 - Type: string
 
-### Parameter: `containers.properties.resources.securityContext`
-
-The security context of the container instance.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`allowPrivilegeEscalation`](#parameter-containerspropertiesresourcessecuritycontextallowprivilegeescalation) | bool | Whether privilege escalation is allowed for the container. |
-| [`capabilities`](#parameter-containerspropertiesresourcessecuritycontextcapabilities) | object | The capabilities to add or drop for the container. |
-| [`privileged`](#parameter-containerspropertiesresourcessecuritycontextprivileged) | bool | Whether the container is run in privileged mode. |
-| [`runAsGroup`](#parameter-containerspropertiesresourcessecuritycontextrunasgroup) | int | The GID to run the container as. |
-| [`runAsUser`](#parameter-containerspropertiesresourcessecuritycontextrunasuser) | int | The UID to run the container as. |
-| [`seccompProfile`](#parameter-containerspropertiesresourcessecuritycontextseccompprofile) | string | The seccomp profile to use for the container. |
-
-### Parameter: `containers.properties.resources.securityContext.allowPrivilegeEscalation`
-
-Whether privilege escalation is allowed for the container.
-
-- Required: No
-- Type: bool
-
-### Parameter: `containers.properties.resources.securityContext.capabilities`
-
-The capabilities to add or drop for the container.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`add`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesadd) | array | The list of capabilities to add. |
-| [`drop`](#parameter-containerspropertiesresourcessecuritycontextcapabilitiesdrop) | array | The list of capabilities to drop. |
-
-### Parameter: `containers.properties.resources.securityContext.capabilities.add`
-
-The list of capabilities to add.
-
-- Required: No
-- Type: array
-
-### Parameter: `containers.properties.resources.securityContext.capabilities.drop`
-
-The list of capabilities to drop.
-
-- Required: No
-- Type: array
-
-### Parameter: `containers.properties.resources.securityContext.privileged`
-
-Whether the container is run in privileged mode.
-
-- Required: No
-- Type: bool
-
-### Parameter: `containers.properties.resources.securityContext.runAsGroup`
-
-The GID to run the container as.
-
-- Required: No
-- Type: int
-
-### Parameter: `containers.properties.resources.securityContext.runAsUser`
-
-The UID to run the container as.
-
-- Required: No
-- Type: int
-
-### Parameter: `containers.properties.resources.securityContext.seccompProfile`
-
-The seccomp profile to use for the container.
-
-- Required: No
-- Type: string
-
 ### Parameter: `containers.properties.command`
 
 The command to execute within the container instance.
 
 - Required: No
 - Type: array
+
+### Parameter: `containers.properties.configMap`
+
+The config map.
+
+- Required: No
+- Type: object
 
 ### Parameter: `containers.properties.environmentVariables`
 
@@ -1849,9 +2093,76 @@ The liveness probe.
 - Required: No
 - Type: object
 
-### Parameter: `containers.properties.ports`
+**Optional parameters**
 
-The exposed ports on the container instance.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exec`](#parameter-containerspropertieslivenessprobeexec) | object | The execution command to probe. |
+| [`failureThreshold`](#parameter-containerspropertieslivenessprobefailurethreshold) | int | The failure threshold. |
+| [`httpGet`](#parameter-containerspropertieslivenessprobehttpget) | object | The HTTP request to perform. |
+| [`initialDelaySeconds`](#parameter-containerspropertieslivenessprobeinitialdelayseconds) | int | The initial delay seconds. |
+| [`periodSeconds`](#parameter-containerspropertieslivenessprobeperiodseconds) | int | The period seconds. |
+| [`successThreshold`](#parameter-containerspropertieslivenessprobesuccessthreshold) | int | The success threshold. |
+| [`timeoutSeconds`](#parameter-containerspropertieslivenessprobetimeoutseconds) | int | The timeout seconds. |
+
+### Parameter: `containers.properties.livenessProbe.exec`
+
+The execution command to probe.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`command`](#parameter-containerspropertieslivenessprobeexeccommand) | array | The commands to execute within the container. |
+
+### Parameter: `containers.properties.livenessProbe.exec.command`
+
+The commands to execute within the container.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `containers.properties.livenessProbe.failureThreshold`
+
+The failure threshold.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.livenessProbe.httpGet`
+
+The HTTP request to perform.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containerspropertieslivenessprobehttpgetport) | int | The port number to probe. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpHeaders`](#parameter-containerspropertieslivenessprobehttpgethttpheaders) | array | The HTTP headers. |
+| [`path`](#parameter-containerspropertieslivenessprobehttpgetpath) | string | The path to probe. |
+| [`scheme`](#parameter-containerspropertieslivenessprobehttpgetscheme) | string | The scheme. |
+
+### Parameter: `containers.properties.livenessProbe.httpGet.port`
+
+The port number to probe.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `containers.properties.livenessProbe.httpGet.httpHeaders`
+
+The HTTP headers.
 
 - Required: No
 - Type: array
@@ -1860,21 +2171,309 @@ The exposed ports on the container instance.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`port`](#parameter-containerspropertiesportsport) | int | The port number exposed on the container instance. |
-| [`protocol`](#parameter-containerspropertiesportsprotocol) | string | The protocol associated with the port number. |
+| [`name`](#parameter-containerspropertieslivenessprobehttpgethttpheadersname) | string | The name of the header. |
+| [`value`](#parameter-containerspropertieslivenessprobehttpgethttpheadersvalue) | string | The value of the header. |
 
-### Parameter: `containers.properties.ports.port`
+### Parameter: `containers.properties.livenessProbe.httpGet.httpHeaders.name`
 
-The port number exposed on the container instance.
+The name of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.livenessProbe.httpGet.httpHeaders.value`
+
+The value of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.livenessProbe.httpGet.path`
+
+The path to probe.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.properties.livenessProbe.httpGet.scheme`
+
+The scheme.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
+
+### Parameter: `containers.properties.livenessProbe.initialDelaySeconds`
+
+The initial delay seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.livenessProbe.periodSeconds`
+
+The period seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.livenessProbe.successThreshold`
+
+The success threshold.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.livenessProbe.timeoutSeconds`
+
+The timeout seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.ports`
+
+The exposed ports on the container instance.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.readinessProbe`
+
+The readiness probe.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`exec`](#parameter-containerspropertiesreadinessprobeexec) | object | The execution command to probe. |
+| [`failureThreshold`](#parameter-containerspropertiesreadinessprobefailurethreshold) | int | The failure threshold. |
+| [`httpGet`](#parameter-containerspropertiesreadinessprobehttpget) | object | The HTTP request to perform. |
+| [`initialDelaySeconds`](#parameter-containerspropertiesreadinessprobeinitialdelayseconds) | int | The initial delay seconds. |
+| [`periodSeconds`](#parameter-containerspropertiesreadinessprobeperiodseconds) | int | The period seconds. |
+| [`successThreshold`](#parameter-containerspropertiesreadinessprobesuccessthreshold) | int | The success threshold. |
+| [`timeoutSeconds`](#parameter-containerspropertiesreadinessprobetimeoutseconds) | int | The timeout seconds. |
+
+### Parameter: `containers.properties.readinessProbe.exec`
+
+The execution command to probe.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`command`](#parameter-containerspropertiesreadinessprobeexeccommand) | array | The commands to execute within the container. |
+
+### Parameter: `containers.properties.readinessProbe.exec.command`
+
+The commands to execute within the container.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `containers.properties.readinessProbe.failureThreshold`
+
+The failure threshold.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.readinessProbe.httpGet`
+
+The HTTP request to perform.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-containerspropertiesreadinessprobehttpgetport) | int | The port number to probe. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpHeaders`](#parameter-containerspropertiesreadinessprobehttpgethttpheaders) | array | The HTTP headers. |
+| [`path`](#parameter-containerspropertiesreadinessprobehttpgetpath) | string | The path to probe. |
+| [`scheme`](#parameter-containerspropertiesreadinessprobehttpgetscheme) | string | The scheme. |
+
+### Parameter: `containers.properties.readinessProbe.httpGet.port`
+
+The port number to probe.
 
 - Required: Yes
 - Type: int
 
-### Parameter: `containers.properties.ports.protocol`
+### Parameter: `containers.properties.readinessProbe.httpGet.httpHeaders`
 
-The protocol associated with the port number.
+The HTTP headers.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containerspropertiesreadinessprobehttpgethttpheadersname) | string | The name of the header. |
+| [`value`](#parameter-containerspropertiesreadinessprobehttpgethttpheadersvalue) | string | The value of the header. |
+
+### Parameter: `containers.properties.readinessProbe.httpGet.httpHeaders.name`
+
+The name of the header.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.readinessProbe.httpGet.httpHeaders.value`
+
+The value of the header.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containers.properties.readinessProbe.httpGet.path`
+
+The path to probe.
+
+- Required: No
+- Type: string
+
+### Parameter: `containers.properties.readinessProbe.httpGet.scheme`
+
+The scheme.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'HTTP'
+    'HTTPS'
+  ]
+  ```
+
+### Parameter: `containers.properties.readinessProbe.initialDelaySeconds`
+
+The initial delay seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.readinessProbe.periodSeconds`
+
+The period seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.readinessProbe.successThreshold`
+
+The success threshold.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.readinessProbe.timeoutSeconds`
+
+The timeout seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.securityContext`
+
+The security context of the container instance.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowPrivilegeEscalation`](#parameter-containerspropertiessecuritycontextallowprivilegeescalation) | bool | Whether privilege escalation is allowed for the container. |
+| [`capabilities`](#parameter-containerspropertiessecuritycontextcapabilities) | object | The capabilities to add or drop for the container. |
+| [`privileged`](#parameter-containerspropertiessecuritycontextprivileged) | bool | Whether the container is run in privileged mode. |
+| [`runAsGroup`](#parameter-containerspropertiessecuritycontextrunasgroup) | int | The GID to run the container as. |
+| [`runAsUser`](#parameter-containerspropertiessecuritycontextrunasuser) | int | The UID to run the container as. |
+| [`seccompProfile`](#parameter-containerspropertiessecuritycontextseccompprofile) | string | The seccomp profile to use for the container. |
+
+### Parameter: `containers.properties.securityContext.allowPrivilegeEscalation`
+
+Whether privilege escalation is allowed for the container.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.securityContext.capabilities`
+
+The capabilities to add or drop for the container.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`add`](#parameter-containerspropertiessecuritycontextcapabilitiesadd) | array | The list of capabilities to add. |
+| [`drop`](#parameter-containerspropertiessecuritycontextcapabilitiesdrop) | array | The list of capabilities to drop. |
+
+### Parameter: `containers.properties.securityContext.capabilities.add`
+
+The list of capabilities to add.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.securityContext.capabilities.drop`
+
+The list of capabilities to drop.
+
+- Required: No
+- Type: array
+
+### Parameter: `containers.properties.securityContext.privileged`
+
+Whether the container is run in privileged mode.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containers.properties.securityContext.runAsGroup`
+
+The GID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.securityContext.runAsUser`
+
+The UID to run the container as.
+
+- Required: No
+- Type: int
+
+### Parameter: `containers.properties.securityContext.seccompProfile`
+
+The seccomp profile to use for the container.
+
+- Required: No
 - Type: string
 
 ### Parameter: `containers.properties.volumeMounts`
@@ -1925,51 +2524,40 @@ Name for the container group.
 - Required: Yes
 - Type: string
 
-### Parameter: `ipAddressPorts`
+### Parameter: `confidentialComputeProperties`
 
-Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`.
+The properties for confidential container group.
 
 - Required: No
-- Type: array
+- Type: object
+
+### Parameter: `containerGroupProfile`
+
+The reference container group profile properties.
+
+- Required: No
+- Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`port`](#parameter-ipaddressportsport) | int | The port number exposed on the container instance. |
-| [`protocol`](#parameter-ipaddressportsprotocol) | string | The protocol associated with the port number. |
+| [`resourceId`](#parameter-containergroupprofileresourceid) | string | The container group profile reference resourceid. |
+| [`revision`](#parameter-containergroupprofilerevision) | int | The container group profile reference revision. |
 
-### Parameter: `ipAddressPorts.port`
+### Parameter: `containerGroupProfile.resourceId`
 
-The port number exposed on the container instance.
+The container group profile reference resourceid.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerGroupProfile.revision`
+
+The container group profile reference revision.
 
 - Required: Yes
 - Type: int
-
-### Parameter: `ipAddressPorts.protocol`
-
-The protocol associated with the port number.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `autoGeneratedDomainNameLabelScope`
-
-Specify level of protection of the domain name label.
-
-- Required: No
-- Type: string
-- Default: `'TenantReuse'`
-- Allowed:
-  ```Bicep
-  [
-    'Noreuse'
-    'ResourceGroupReuse'
-    'SubscriptionReuse'
-    'TenantReuse'
-    'Unsecure'
-  ]
-  ```
 
 ### Parameter: `customerManagedKey`
 
@@ -2028,26 +2616,12 @@ User assigned identity to use when fetching the customer managed key. Required i
 - Required: No
 - Type: string
 
-### Parameter: `dnsNameLabel`
+### Parameter: `dnsConfig`
 
-The Dns name label for the resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `dnsNameServers`
-
-List of dns servers used by the containers for lookups.
+The DNS config information for a container group.
 
 - Required: No
-- Type: array
-
-### Parameter: `dnsSearchDomains`
-
-DNS search domain which will be appended to each DNS lookup.
-
-- Required: No
-- Type: string
+- Type: object
 
 ### Parameter: `enableTelemetry`
 
@@ -2056,6 +2630,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `extensions`
+
+The extensions used by virtual kubelet.
+
+- Required: No
+- Type: array
+
+### Parameter: `identityAcls`
+
+The access control levels of the identities.
+
+- Required: No
+- Type: object
 
 ### Parameter: `imageRegistryCredentials`
 
@@ -2121,13 +2709,93 @@ A list of container definitions which will be executed before the application co
 - Required: No
 - Type: array
 
-### Parameter: `ipAddressType`
+### Parameter: `ipAddress`
 
-Specifies if the IP is exposed to the public internet or private VNET. - Public or Private.
+The IP address type of the container group.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ports`](#parameter-ipaddressports) | array | The list of ports exposed on the container group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoGeneratedDomainNameLabelScope`](#parameter-ipaddressautogenerateddomainnamelabelscope) | string | The value representing the security enum. |
+| [`dnsNameLabel`](#parameter-ipaddressdnsnamelabel) | string | The Dns name label for the IP. |
+| [`ip`](#parameter-ipaddressip) | string | The IP exposed to the public internet. |
+| [`type`](#parameter-ipaddresstype) | string | Specifies if the IP is exposed to the public internet or private VNET. |
+
+### Parameter: `ipAddress.ports`
+
+The list of ports exposed on the container group.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`port`](#parameter-ipaddressportsport) | int | The port number exposed on the container instance. |
+| [`protocol`](#parameter-ipaddressportsprotocol) | string | The protocol associated with the port number. |
+
+### Parameter: `ipAddress.ports.port`
+
+The port number exposed on the container instance.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `ipAddress.ports.protocol`
+
+The protocol associated with the port number.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipAddress.autoGeneratedDomainNameLabelScope`
+
+The value representing the security enum.
 
 - Required: No
 - Type: string
-- Default: `'Public'`
+- Allowed:
+  ```Bicep
+  [
+    'Noreuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+    'Unsecure'
+  ]
+  ```
+
+### Parameter: `ipAddress.dnsNameLabel`
+
+The Dns name label for the IP.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipAddress.ip`
+
+The IP exposed to the public internet.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipAddress.type`
+
+Specifies if the IP is exposed to the public internet or private VNET.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -2157,6 +2825,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2179,6 +2848,61 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `logAnalytics`
+
+The log analytics diagnostic information for a container group.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logType`](#parameter-loganalyticslogtype) | string | The log type to be used. |
+| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource ID for log analytics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-loganalyticsmetadata) | object | Metadata for log analytics. |
+
+### Parameter: `logAnalytics.logType`
+
+The log type to be used.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ContainerInsights'
+    'ContainerInstanceLogs'
+  ]
+  ```
+
+### Parameter: `logAnalytics.workspaceResourceId`
+
+The workspace resource ID for log analytics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `logAnalytics.metadata`
+
+Metadata for log analytics.
+
+- Required: No
+- Type: object
 
 ### Parameter: `managedIdentities`
 
@@ -2216,6 +2940,21 @@ The operating system type required by the containers in the container group. - W
 - Type: string
 - Default: `'Linux'`
 
+### Parameter: `priority`
+
+The priority of the container group.
+
+- Required: No
+- Type: string
+- Default: `'Regular'`
+- Allowed:
+  ```Bicep
+  [
+    'Regular'
+    'Spot'
+  ]
+  ```
+
 ### Parameter: `restartPolicy`
 
 Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never.
@@ -2247,9 +2986,68 @@ The container group SKU.
   ]
   ```
 
-### Parameter: `subnetResourceId`
+### Parameter: `standbyPoolProfile`
 
-Resource ID of the subnet. Only specify when ipAddressType is Private.
+The reference standby pool profile properties.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-standbypoolprofileresourceid) | string | The standby pool profile reference resource id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failContainerGroupCreateOnReuseFailure`](#parameter-standbypoolprofilefailcontainergroupcreateonreusefailure) | bool | The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool. |
+
+### Parameter: `standbyPoolProfile.resourceId`
+
+The standby pool profile reference resource id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `standbyPoolProfile.failContainerGroupCreateOnReuseFailure`
+
+The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subnets`
+
+The subnets to use by the container group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-subnetssubnetresourceid) | string | Resource ID of virtual network and subnet. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsname) | string | Friendly name for the subnet. |
+
+### Parameter: `subnets.subnetResourceId`
+
+Resource ID of virtual network and subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.name`
+
+Friendly name for the subnet.
 
 - Required: No
 - Type: string
@@ -2285,8 +3083,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

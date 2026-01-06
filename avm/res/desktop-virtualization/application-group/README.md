@@ -1,6 +1,19 @@
 # Azure Virtual Desktop Application Group `[Microsoft.DesktopVirtualization/applicationGroups]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Virtual Desktop Application Group.
+
+You can reference the module as follows:
+```bicep
+module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -8,17 +21,18 @@ This module deploys an Azure Virtual Desktop Application Group.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/applicationGroups` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/applicationGroups) |
-| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/applicationGroups/applications) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DesktopVirtualization/applicationGroups` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.desktopvirtualization_applicationgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/applicationGroups)</li></ul> |
+| `Microsoft.DesktopVirtualization/applicationGroups/applications` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.desktopvirtualization_applicationgroups_applications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/applicationGroups/applications)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,14 +59,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: 'applicationGroupDeployment'
   params: {
     // Required parameters
     applicationGroupType: 'Desktop'
     hostpoolName: '<hostpoolName>'
     name: 'dvagmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -76,10 +89,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     },
     "name": {
       "value": "dvagmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -99,8 +108,6 @@ using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
 param applicationGroupType = 'Desktop'
 param hostpoolName = '<hostpoolName>'
 param name = 'dvagmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -110,6 +117,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -117,7 +126,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: 'applicationGroupDeployment'
   params: {
     // Required parameters
     applicationGroupType: 'RemoteApp'
@@ -379,6 +387,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -386,7 +396,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module applicationGroup 'br/public:avm/res/desktop-virtualization/application-group:<version>' = {
-  name: 'applicationGroupDeployment'
   params: {
     // Required parameters
     applicationGroupType: 'Desktop'
@@ -401,7 +410,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
@@ -443,9 +451,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -479,7 +484,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
@@ -511,6 +515,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`showInFeed`](#parameter-showinfeed) | bool | Boolean representing whether the applicationGroup is show in the feed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `applicationGroupType`
@@ -547,7 +552,127 @@ List of applications to be created in the Application Group.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`filePath`](#parameter-applicationsfilepath) | string | Specifies a path for the executable file for the Application. |
+| [`friendlyName`](#parameter-applicationsfriendlyname) | string | Friendly name of the Application. |
+| [`name`](#parameter-applicationsname) | string | Name of the Application to be created in the Application Group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationType`](#parameter-applicationsapplicationtype) | string | Resource Type of Application. |
+| [`commandLineArguments`](#parameter-applicationscommandlinearguments) | string | Command-Line Arguments for the Application. |
+| [`commandLineSetting`](#parameter-applicationscommandlinesetting) | string | Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all. |
+| [`description`](#parameter-applicationsdescription) | string | Description of the Application. |
+| [`iconIndex`](#parameter-applicationsiconindex) | int | Index of the icon. |
+| [`iconPath`](#parameter-applicationsiconpath) | string | Path to icon. |
+| [`msixPackageApplicationId`](#parameter-applicationsmsixpackageapplicationid) | string | Specifies the package application Id for MSIX applications. |
+| [`msixPackageFamilyName`](#parameter-applicationsmsixpackagefamilyname) | string | Specifies the package family name for MSIX applications. |
+| [`showInPortal`](#parameter-applicationsshowinportal) | bool | Specifies whether to show the RemoteApp program in the RD Web Access server. |
+
+### Parameter: `applications.filePath`
+
+Specifies a path for the executable file for the Application.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.friendlyName`
+
+Friendly name of the Application.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.name`
+
+Name of the Application to be created in the Application Group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.applicationType`
+
+Resource Type of Application.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'InBuilt'
+    'MsixApplication'
+  ]
+  ```
+
+### Parameter: `applications.commandLineArguments`
+
+Command-Line Arguments for the Application.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.commandLineSetting`
+
+Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'DoNotAllow'
+    'Require'
+  ]
+  ```
+
+### Parameter: `applications.description`
+
+Description of the Application.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.iconIndex`
+
+Index of the icon.
+
+- Required: No
+- Type: int
+
+### Parameter: `applications.iconPath`
+
+Path to icon.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.msixPackageApplicationId`
+
+Specifies the package application Id for MSIX applications.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.msixPackageFamilyName`
+
+Specifies the package family name for MSIX applications.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.showInPortal`
+
+Specifies whether to show the RemoteApp program in the RD Web Access server.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `description`
 
@@ -555,7 +680,6 @@ Description of the application group.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -617,7 +741,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
 | [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
@@ -629,7 +753,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
@@ -706,6 +830,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -725,6 +850,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -849,6 +981,14 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `showInFeed`
+
+Boolean representing whether the applicationGroup is show in the feed.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -865,6 +1005,14 @@ Tags of the resource.
 | `resourceGroupName` | string | The name of the resource group the scaling plan was created in. |
 | `resourceId` | string | The resource ID of the scaling plan. |
 
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -4,17 +4,14 @@ metadata description = 'This module deploys a Data Factory.'
 @description('Required. The name of the Azure Factory to create.')
 param name string
 
-@description('Optional. The name of the Managed Virtual Network.')
-param managedVirtualNetworkName string = ''
-
-@description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
-param managedPrivateEndpoints managedPrivateEndpointType[] = []
+@description('Optional. The Managed Virtual Network configuration.')
+param managedVirtualNetwork managedVirtualNetworkType?
 
 @description('Optional. An array of objects for the configuration of an Integration Runtime.')
-param integrationRuntimes integrationRuntimesType[] = []
+param integrationRuntimes integrationRuntimesType[]?
 
 @description('Optional. An array of objects for the configuration of Linked Services.')
-param linkedServices linkedServicesType[] = []
+param linkedServices linkedServicesType[]?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -61,34 +58,37 @@ param gitLastCommitId string = ''
 param gitTenantId string = ''
 
 @description('Optional. List of Global Parameters for the factory.')
-param globalParameters object = {}
+param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.globalParameters?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+@description('Optional. Purview Account resource identifier.')
+param purviewResourceId string?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -104,8 +104,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -139,19 +139,20 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -160,7 +161,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.datafactory-factory.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -205,7 +206,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
             : {}),
           {}
         )
-    globalParameters: !empty(globalParameters) ? globalParameters : null
+    globalParameters: globalParameters
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : null)
@@ -217,28 +218,37 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
               }
             : null
           keyName: customerManagedKey!.keyName
-          keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-            ? customerManagedKey!.keyVersion
+          keyVersion: !empty(customerManagedKey.?keyVersion)
+            ? customerManagedKey!.keyVersion!
             : (customerManagedKey.?autoRotationEnabled ?? true)
                 ? null
-                : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
-          vaultBaseUrl: cMKKeyVault.properties.vaultUri
+                : (!isHSMManagedCMK
+                    ? last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
+                    : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+          vaultBaseUrl: !isHSMManagedCMK
+            ? cMKKeyVault!.properties.vaultUri
+            : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
+        }
+      : null
+    purviewConfiguration: !empty(purviewResourceId)
+      ? {
+          purviewResourceId: purviewResourceId
         }
       : null
   }
 }
 
-module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = if (!empty(managedVirtualNetworkName)) {
+module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = if (!empty(managedVirtualNetwork)) {
   name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
   params: {
-    name: managedVirtualNetworkName
     dataFactoryName: dataFactory.name
-    managedPrivateEndpoints: managedPrivateEndpoints
+    name: managedVirtualNetwork!.name
+    managedPrivateEndpoints: managedVirtualNetwork!.?managedPrivateEndpoints
   }
 }
 
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
-  for (integrationRuntime, index) in integrationRuntimes: {
+  for (integrationRuntime, index) in (integrationRuntimes ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
     params: {
       dataFactoryName: dataFactory.name
@@ -255,7 +265,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
 ]
 
 module dataFactory_linkedServices 'linked-service/main.bicep' = [
-  for (linkedService, index) in linkedServices: {
+  for (linkedService, index) in (linkedServices ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
     params: {
       dataFactoryName: dataFactory.name
@@ -276,9 +286,9 @@ resource dataFactory_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empt
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: dataFactory
 }
@@ -328,10 +338,13 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -396,13 +409,13 @@ output systemAssignedMIPrincipalId string? = dataFactory.?identity.?principalId
 output location string = dataFactory.location
 
 @description('The private endpoints of the Data Factory.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: dataFactory_privateEndpoints[i].outputs.name
-    resourceId: dataFactory_privateEndpoints[i].outputs.resourceId
-    groupId: dataFactory_privateEndpoints[i].outputs.groupId
-    customDnsConfig: dataFactory_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: dataFactory_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: dataFactory_privateEndpoints[index].outputs.name
+    resourceId: dataFactory_privateEndpoints[index].outputs.resourceId
+    groupId: dataFactory_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: dataFactory_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: dataFactory_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -410,19 +423,15 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
+import { managedPrivateEndpointType } from 'managed-virtual-network/main.bicep'
 @export()
-type managedPrivateEndpointType = {
-  @description('Required. Specify the name of managed private endpoint.')
+@description('The type for a managed virtual network.')
+type managedVirtualNetworkType = {
+  @description('Required. The name of the Managed Virtual Network.')
   name: string
 
-  @description('Required. Specify the sub-resource of the managed private endpoint.')
-  groupId: string
-
-  @description('Required. Specify the resource ID to create the managed private endpoint for.')
-  privateLinkResourceId: string
-
-  @description('Optional. Specify the FQDNS of the linked resources to create private endpoints for, depending on the type of linked resource this is required.')
-  fqdns: string[]?
+  @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
+  managedPrivateEndpoints: managedPrivateEndpointType[]?
 }
 
 @export()
@@ -462,4 +471,28 @@ type linkedServicesType = {
 
   @description('Optional. The description of the Integration Runtime.')
   description: string?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
 }

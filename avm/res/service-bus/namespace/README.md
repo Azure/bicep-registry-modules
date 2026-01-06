@@ -2,6 +2,14 @@
 
 This module deploys a Service Bus Namespace.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,24 +21,24 @@ This module deploys a Service Bus Namespace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.ServiceBus/namespaces` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces) |
-| `Microsoft.ServiceBus/namespaces/AuthorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/AuthorizationRules) |
-| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/disasterRecoveryConfigs) |
-| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/migrationConfigurations) |
-| `Microsoft.ServiceBus/namespaces/networkRuleSets` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/networkRuleSets) |
-| `Microsoft.ServiceBus/namespaces/queues` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/queues) |
-| `Microsoft.ServiceBus/namespaces/queues/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/queues/authorizationRules) |
-| `Microsoft.ServiceBus/namespaces/topics` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics) |
-| `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/authorizationRules) |
-| `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
-| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/subscriptions/rules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.ServiceBus/namespaces` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/AuthorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/AuthorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_disasterrecoveryconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/disasterRecoveryConfigs)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_migrationconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/migrationConfigurations)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/networkRuleSets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_networkrulesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/networkRuleSets)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/queues)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/queues/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_queues_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/queues/authorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/authorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/subscriptions)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_subscriptions_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/subscriptions/rules)</li></ul> |
 
 ## Usage examples
 
@@ -40,15 +48,22 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-bus/namespace:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
 
 <details>
 
@@ -56,13 +71,23 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
-    name: 'sbnmin001'
+    name: 'sbnhsmu001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     skuObject: {
-      capacity: 2
+      capacity: 1
       name: 'Premium'
     }
   }
@@ -83,12 +108,27 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnmin001"
+      "value": "sbnhsmu001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "skuObject": {
       "value": {
-        "capacity": 2,
+        "capacity": 1,
         "name": "Premium"
       }
     }
@@ -107,10 +147,21 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnmin001'
+param name = 'sbnhsmu001'
 // Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param skuObject = {
-  capacity: 2
+  capacity: 1
   name: 'Premium'
 }
 ```
@@ -122,6 +173,8 @@ param skuObject = {
 
 This instance deploys the module with features enabled for CMK encryption.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -129,7 +182,6 @@ This instance deploys the module with features enabled for CMK encryption.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnencr001'
@@ -228,9 +280,11 @@ param skuObject = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using only defaults_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -239,7 +293,80 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'sbnmin001'
+    // Non-required parameters
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sbnmin001"
+    },
+    // Non-required parameters
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmin001'
+// Non-required parameters
+param skuObject = {
+  capacity: 2
+  name: 'Premium'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmax001'
@@ -281,7 +408,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     ]
     disableLocalAuth: true
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -470,14 +596,50 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         ]
         subscriptions: [
           {
-            name: 'subscription001'
+            name: 'subscriptionwithoutrules001'
+          }
+          {
+            name: 'subscriptionwithsqlfilterrule001'
             rules: [
               {
+                action: {
+                  compatibilityLevel: 20
+                  requiresPreprocessing: true
+                  sqlExpression: 'SET Foo = 1;'
+                }
                 filterType: 'SqlFilter'
-                name: 'test-filter'
+                name: 'test-sql-filter'
                 sqlFilter: {
                   sqlExpression: 'Test=1'
                 }
+              }
+            ]
+          }
+          {
+            name: 'subscriptionwithcorrelationfilterrule001'
+            rules: [
+              {
+                action: {
+                  compatibilityLevel: 20
+                  requiresPreprocessing: true
+                  sqlExpression: 'SET Foo = 1;'
+                }
+                correlationFilter: {
+                  contentType: 'application/json'
+                  correlationId: 'Test'
+                  label: 'Test'
+                  messageId: 'Test'
+                  properties: {
+                    barHeader: 'Bar'
+                    fooHeader: 'Foo'
+                  }
+                  replyTo: 'Test'
+                  replyToSessionId: 'Test'
+                  sessionId: 'Test'
+                  to: 'Test'
+                }
+                filterType: 'CorrelationFilter'
+                name: 'test-correlation-filter'
               }
             ]
           }
@@ -547,9 +709,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     },
     "disableLocalAuth": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -762,14 +921,50 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ],
           "subscriptions": [
             {
-              "name": "subscription001",
+              "name": "subscriptionwithoutrules001"
+            },
+            {
+              "name": "subscriptionwithsqlfilterrule001",
               "rules": [
                 {
+                  "action": {
+                    "compatibilityLevel": 20,
+                    "requiresPreprocessing": true,
+                    "sqlExpression": "SET Foo = 1;"
+                  },
                   "filterType": "SqlFilter",
-                  "name": "test-filter",
+                  "name": "test-sql-filter",
                   "sqlFilter": {
                     "sqlExpression": "Test=1"
                   }
+                }
+              ]
+            },
+            {
+              "name": "subscriptionwithcorrelationfilterrule001",
+              "rules": [
+                {
+                  "action": {
+                    "compatibilityLevel": 20,
+                    "requiresPreprocessing": true,
+                    "sqlExpression": "SET Foo = 1;"
+                  },
+                  "correlationFilter": {
+                    "contentType": "application/json",
+                    "correlationId": "Test",
+                    "label": "Test",
+                    "messageId": "Test",
+                    "properties": {
+                      "barHeader": "Bar",
+                      "fooHeader": "Foo"
+                    },
+                    "replyTo": "Test",
+                    "replyToSessionId": "Test",
+                    "sessionId": "Test",
+                    "to": "Test"
+                  },
+                  "filterType": "CorrelationFilter",
+                  "name": "test-correlation-filter"
                 }
               ]
             }
@@ -831,7 +1026,6 @@ param diagnosticSettings = [
   }
 ]
 param disableLocalAuth = true
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -1020,14 +1214,50 @@ param topics = [
     ]
     subscriptions: [
       {
-        name: 'subscription001'
+        name: 'subscriptionwithoutrules001'
+      }
+      {
+        name: 'subscriptionwithsqlfilterrule001'
         rules: [
           {
+            action: {
+              compatibilityLevel: 20
+              requiresPreprocessing: true
+              sqlExpression: 'SET Foo = 1;'
+            }
             filterType: 'SqlFilter'
-            name: 'test-filter'
+            name: 'test-sql-filter'
             sqlFilter: {
               sqlExpression: 'Test=1'
             }
+          }
+        ]
+      }
+      {
+        name: 'subscriptionwithcorrelationfilterrule001'
+        rules: [
+          {
+            action: {
+              compatibilityLevel: 20
+              requiresPreprocessing: true
+              sqlExpression: 'SET Foo = 1;'
+            }
+            correlationFilter: {
+              contentType: 'application/json'
+              correlationId: 'Test'
+              label: 'Test'
+              messageId: 'Test'
+              properties: {
+                barHeader: 'Bar'
+                fooHeader: 'Foo'
+              }
+              replyTo: 'Test'
+              replyToSessionId: 'Test'
+              sessionId: 'Test'
+              to: 'Test'
+            }
+            filterType: 'CorrelationFilter'
+            name: 'test-correlation-filter'
           }
         ]
       }
@@ -1039,9 +1269,11 @@ param topics = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1050,7 +1282,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnwaf001'
@@ -1118,7 +1349,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       }
     ]
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     queues: [
       {
         authorizationRules: [
@@ -1265,7 +1496,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       ]
     },
     "publicNetworkAccess": {
-      "value": "Enabled"
+      "value": "Disabled"
     },
     "queues": {
       "value": [
@@ -1406,7 +1637,7 @@ param privateEndpoints = [
     }
   }
 ]
-param publicNetworkAccess = 'Enabled'
+param publicNetworkAccess = 'Disabled'
 param queues = [
   {
     authorizationRules: [
@@ -1845,6 +2076,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1864,6 +2096,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2242,6 +2481,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2261,6 +2501,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2480,11 +2727,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
     'SecuredByPerimeter'
@@ -2652,6 +2897,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-queueslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-queueslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-queueslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `queues.lock.kind`
 
@@ -2671,6 +2917,13 @@ Specify the type of lock.
 ### Parameter: `queues.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `queues.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3149,6 +3402,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-topicslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-topicslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-topicslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `topics.lock.kind`
 
@@ -3168,6 +3422,13 @@ Specify the type of lock.
 ### Parameter: `topics.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3339,17 +3600,17 @@ The subscriptions of the topic.
 | :-- | :-- | :-- |
 | [`autoDeleteOnIdle`](#parameter-topicssubscriptionsautodeleteonidle) | string | ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes. |
 | [`clientAffineProperties`](#parameter-topicssubscriptionsclientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
-| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-topicssubscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-topicssubscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support on filter evaluation exceptions. |
 | [`deadLetteringOnMessageExpiration`](#parameter-topicssubscriptionsdeadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
-| [`defaultMessageTimeToLive`](#parameter-topicssubscriptionsdefaultmessagetimetolive) | string | ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes. |
+| [`defaultMessageTimeToLive`](#parameter-topicssubscriptionsdefaultmessagetimetolive) | string | ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-topicssubscriptionsduplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-topicssubscriptionsenablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
-| [`forwardDeadLetteredMessagesTo`](#parameter-topicssubscriptionsforwarddeadletteredmessagesto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`forwardTo`](#parameter-topicssubscriptionsforwardto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`isClientAffine`](#parameter-topicssubscriptionsisclientaffine) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`forwardDeadLetteredMessagesTo`](#parameter-topicssubscriptionsforwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter messages to. |
+| [`forwardTo`](#parameter-topicssubscriptionsforwardto) | string | Queue/Topic name to forward the messages to. |
+| [`isClientAffine`](#parameter-topicssubscriptionsisclientaffine) | bool | A value that indicates whether the subscription has an affinity to the client id. |
 | [`lockDuration`](#parameter-topicssubscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
-| [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of sessions. |
 | [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules. |
 | [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
@@ -3410,7 +3671,7 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 ### Parameter: `topics.subscriptions.deadLetteringOnFilterEvaluationExceptions`
 
-A value that indicates whether a subscription has dead letter support when a message expires.
+A value that indicates whether a subscription has dead letter support on filter evaluation exceptions.
 
 - Required: No
 - Type: bool
@@ -3424,7 +3685,7 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 ### Parameter: `topics.subscriptions.defaultMessageTimeToLive`
 
-ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.
+ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.
 
 - Required: No
 - Type: string
@@ -3445,21 +3706,21 @@ A value that indicates whether server-side batched operations are enabled.
 
 ### Parameter: `topics.subscriptions.forwardDeadLetteredMessagesTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the Dead Letter messages to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `topics.subscriptions.forwardTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the messages to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `topics.subscriptions.isClientAffine`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription has an affinity to the client id.
 
 - Required: No
 - Type: bool
@@ -3480,7 +3741,7 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 ### Parameter: `topics.subscriptions.requiresSession`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription supports the concept of sessions.
 
 - Required: No
 - Type: bool
@@ -3496,7 +3757,8 @@ The subscription rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the service bus namespace topic subscription rule. |
+| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the Service Bus Namespace Topic Subscription Rule. |
 
 **Optional parameters**
 
@@ -3504,12 +3766,25 @@ The subscription rules.
 | :-- | :-- | :-- |
 | [`action`](#parameter-topicssubscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-topicssubscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
-| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
 | [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
+
+### Parameter: `topics.subscriptions.rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
 
 ### Parameter: `topics.subscriptions.rules.name`
 
-The name of the service bus namespace topic subscription rule.
+The name of the Service Bus Namespace Topic Subscription Rule.
 
 - Required: Yes
 - Type: string
@@ -3557,12 +3832,6 @@ Properties of correlationFilter.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -3571,18 +3840,12 @@ Properties of correlationFilter.
 | [`correlationId`](#parameter-topicssubscriptionsrulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
 | [`label`](#parameter-topicssubscriptionsrulescorrelationfilterlabel) | string | Application specific label. |
 | [`messageId`](#parameter-topicssubscriptionsrulescorrelationfiltermessageid) | string | Identifier of the message. |
-| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters. |
+| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | object | Dictionary object for custom filters. |
 | [`replyTo`](#parameter-topicssubscriptionsrulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
 | [`replyToSessionId`](#parameter-topicssubscriptionsrulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
 | [`requiresPreprocessing`](#parameter-topicssubscriptionsrulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
 | [`sessionId`](#parameter-topicssubscriptionsrulescorrelationfiltersessionid) | string | Session identifier. |
-
-### Parameter: `topics.subscriptions.rules.correlationFilter.to`
-
-Address to send to.
-
-- Required: Yes
-- Type: string
+| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.contentType`
 
@@ -3614,16 +3877,10 @@ Identifier of the message.
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.properties`
 
-dictionary object for custom filters.
+Dictionary object for custom filters.
 
 - Required: No
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    {}
-  ]
-  ```
+- Type: object
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.replyTo`
 
@@ -3653,19 +3910,12 @@ Session identifier.
 - Required: No
 - Type: string
 
-### Parameter: `topics.subscriptions.rules.filterType`
+### Parameter: `topics.subscriptions.rules.correlationFilter.to`
 
-Filter type that is evaluated against a BrokeredMessage.
+Address to send to.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CorrelationFilter'
-    'SqlFilter'
-  ]
-  ```
 
 ### Parameter: `topics.subscriptions.rules.sqlFilter`
 
@@ -3674,13 +3924,25 @@ Properties of sqlFilter.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | The SQL expression. e.g. MyProperty='ABC'. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`compatibilityLevel`](#parameter-topicssubscriptionsrulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
 | [`requiresPreprocessing`](#parameter-topicssubscriptionsrulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
-| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
+
+The SQL expression. e.g. MyProperty='ABC'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `topics.subscriptions.rules.sqlFilter.compatibilityLevel`
 
@@ -3695,13 +3957,6 @@ Value that indicates whether the rule action requires preprocessing.
 
 - Required: No
 - Type: bool
-
-### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
-
-SQL expression. e.g. MyProperty='ABC'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `topics.subscriptions.status`
 
@@ -3745,9 +4000,13 @@ Enabled by default in order to align with resiliency best practices, thus requir
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed service bus namespace. |
+| `primaryConnectionString` | securestring | The primary connection string of the service bus namespace. |
+| `primaryKey` | securestring | The primary key of the service bus namespace. |
 | `privateEndpoints` | array | The private endpoints of the service bus namespace. |
 | `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
 | `resourceId` | string | The resource ID of the deployed service bus namespace. |
+| `secondaryConnectionString` | securestring | The secondary connection string of the service bus namespace. |
+| `secondaryKey` | securestring | The secondary key of the service bus namespace. |
 | `serviceBusEndpoint` | string | The endpoint of the deployed service bus namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
@@ -3757,9 +4016,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

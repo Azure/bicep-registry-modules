@@ -33,12 +33,12 @@ param supportedOSType string
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags for all resources.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/galleries/applications@2024-03-03'>.tags?
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
 param customActions customActionType[]?
@@ -125,6 +125,7 @@ output location string = application.location
 // =============== //
 
 @export()
+@sys.description('The type for a custom action.')
 type customActionType = {
   @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
   name: string

@@ -1,7 +1,7 @@
 @description('Required. The name of the Action Group to create.')
 param actionGroupName string
 
-resource actionGroup 'Microsoft.Insights/actionGroups@2022-06-01' = {
+resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   name: actionGroupName
   location: 'global'
   properties: {

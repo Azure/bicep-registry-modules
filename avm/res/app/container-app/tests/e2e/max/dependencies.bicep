@@ -17,7 +17,7 @@ param myCustomKeyVaultSecret string = newGuid()
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: managedEnvironmentName
   location: location
   properties: {
@@ -27,7 +27,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-previe
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -41,7 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
-resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2025-05-01' = {
   parent: keyVault
   name: keyVaultSecretName
   properties: {
@@ -49,7 +49,7 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }

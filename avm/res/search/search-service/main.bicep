@@ -9,13 +9,20 @@ metadata description = 'This module deploys a Search Service.'
 param name string
 
 @description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
-param authOptions authOptionsType?
+param authOptions resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.properties.authOptions?
 
 @description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
 param disableLocalAuth bool = true
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The compute type of the search service.')
+@allowed([
+  'Confidential'
+  'Default'
+])
+param computeType string = 'Default'
 
 @description('Optional. Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys.')
 @allowed([
@@ -25,29 +32,35 @@ param enableTelemetry bool = true
 ])
 param cmkEnforcement string = 'Unspecified'
 
+@description('Optional. A list of data exfiltration scenarios that are explicitly disallowed for the search service. Currently, the only supported value is \'All\' to disable all possible data export scenarios with more fine grained controls planned for the future.')
+@allowed([
+  'All'
+])
+param dataExfiltrationProtections string[]?
+
 @description('Optional. Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either \'default\' or \'highDensity\'. For all other SKUs, this value must be \'default\'.')
 @allowed([
-  'default'
-  'highDensity'
+  'Default'
+  'HighDensity'
 ])
-param hostingMode string = 'default'
+param hostingMode string = 'Default'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
 @description('Optional. Network specific rules that determine how the Azure Cognitive Search service may be reached.')
-param networkRuleSet networkRuleSetType?
+param networkRuleSet resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.properties.networkRuleSet?
 
 @description('Optional. The number of partitions in the search service; if specified, it can be 1, 2, 3, 4, 6, or 12. Values greater than 1 are only valid for standard SKUs. For \'standard3\' services with hostingMode set to \'highDensity\', the allowed values are between 1 and 3.')
 @minValue(1)
 @maxValue(12)
 param partitionCount int = 1
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -69,7 +82,7 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @maxValue(12)
 param replicaCount int = 3
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -93,16 +106,16 @@ param semanticSearch string?
 ])
 param sku string = 'standard'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Tags to help categorize the resource in the Azure portal.')
-param tags object?
+param tags resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.tags?
 
 // ============= //
 //   Variables   //
@@ -184,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
   location: location
   name: name
   sku: {
@@ -204,6 +217,8 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
     replicaCount: replicaCount
     publicNetworkAccess: toLower(publicNetworkAccess)
     semanticSearch: semanticSearch
+    computeType: computeType
+    dataExfiltrationProtections: dataExfiltrationProtections
   }
 }
 
@@ -240,9 +255,9 @@ resource searchService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: searchService
 }
@@ -263,10 +278,13 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -321,7 +339,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
 @batchSize(1)
 module searchService_sharedPrivateLinkResources 'shared-private-link-resource/main.bicep' = [
   for (sharedPrivateLinkResource, index) in sharedPrivateLinkResources: {
-    name: '${uniqueString(deployment().name, location)}-searchService-SharedPrivateLink-${index}'
+    name: '${uniqueString(deployment().name, location)}-searchService-SharedPrvLink-${index}'
     params: {
       name: sharedPrivateLinkResource.?name ?? 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
       searchServiceName: searchService.name
@@ -382,14 +400,60 @@ output systemAssignedMIPrincipalId string? = searchService.?identity.?principalI
 @description('The location the resource was deployed into.')
 output location string = searchService.location
 
+@description('The endpoint of the search service.')
+output endpoint string = searchService.properties.endpoint
+
+@description('The private endpoints of the search service.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: searchService_privateEndpoints[index].outputs.name
+    resourceId: searchService_privateEndpoints[index].outputs.resourceId
+    groupId: searchService_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: searchService_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: searchService_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
+
+@secure()
+@description('The primary admin API key of the search service.')
+output primaryKey string = searchService.listAdminKeys().primaryKey
+
+@secure()
+@description('The secondaryKey admin API key of the search service.')
+output secondaryKey string = searchService.listAdminKeys().secondaryKey
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 type secretsExportConfigurationType = {
   @description('Required. The key vault name where to store the API Admin keys generated by the modules.')
@@ -406,29 +470,4 @@ import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
-}
-
-@export()
-type authOptionsType = {
-  @description('Optional. Indicates that either the API key or an access token from a Microsoft Entra ID tenant can be used for authentication.')
-  aadOrApiKey: {
-    @description('Optional. Describes what response the data plane API of a search service would send for requests that failed authentication.')
-    aadAuthFailureMode: ('http401WithBearerChallenge' | 'http403')?
-  }?
-  @description('Optional. Indicates that only the API key can be used for authentication.')
-  apiKeyOnly: object?
-}
-
-@export()
-type networkRuleSetType = {
-  @description('Optional. Network specific rules that determine how the Azure AI Search service may be reached.')
-  bypass: ('AzurePortal' | 'None')?
-  @description('Optional. A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the \'publicNetworkAccess\' of the search service is \'enabled\'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method.')
-  ipRules: ipRuleType[]?
-}
-
-@export()
-type ipRuleType = {
-  @description('Required. Value corresponding to a single IPv4 address (eg., 123.1.2.3) or an IP range in CIDR format (eg., 123.1.2.3/24) to be allowed.')
-  value: string
 }

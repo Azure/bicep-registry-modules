@@ -5,11 +5,35 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "11380942489395706225"
+      "version": "0.36.1.42791",
+      "templateHash": "2314597227337579115"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a VPN Gateway NAT Rule."
+  },
+  "definitions": {
+    "vpnNatRuleMappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for VPN NAT rule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for VPN NAT rule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a VPN NAT rule mapping."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -26,6 +50,9 @@
     },
     "externalMappings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnNatRuleMappingType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
@@ -33,6 +60,9 @@
     },
     "internalMappings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/vpnNatRuleMappingType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
@@ -72,12 +102,12 @@
     "vpnGateway": {
       "existing": true,
       "type": "Microsoft.Network/vpnGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('vpnGatewayName')]"
     },
     "natRule": {
       "type": "Microsoft.Network/vpnGateways/natRules",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
       "properties": {
         "externalMappings": "[parameters('externalMappings')]",

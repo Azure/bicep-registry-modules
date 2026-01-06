@@ -25,7 +25,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       containerAppsEnvironmentName: '${namePrefix}${serviceShort}cae001'
       containerRegistryName: '${namePrefix}${serviceShort}cr001'
-      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
       location: resourceLocation
       acrSku: 'Standard'
       zoneRedundant: true

@@ -2,6 +2,14 @@
 
 This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -12,10 +20,10 @@ This module deploys a PIM Role Assignment at a Management Group, Subscription or
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignmentScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests) |
-| `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignmentScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignmentschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests)</li></ul> |
+| `Microsoft.Authorization/roleEligibilityScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleeligibilityschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests)</li></ul> |
 
 ## Usage examples
 
@@ -33,6 +41,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a PIM Eligible Role Assignment at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.eligible]
+
 
 <details>
 
@@ -40,7 +50,6 @@ This module deploys a PIM Eligible Role Assignment at a Management Group scope u
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {
@@ -138,6 +147,8 @@ param location = '<location>'
 
 This module deploys a PIM Active Role Assignment at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.active]
+
 
 <details>
 
@@ -145,7 +156,6 @@ This module deploys a PIM Active Role Assignment at a Resource Group scope using
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {
@@ -267,6 +277,8 @@ param ticketInfo = {
 
 This module deploys a PIM permanent Role Assignment at a Subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.active.permenant]
+
 
 <details>
 
@@ -274,7 +286,6 @@ This module deploys a PIM permanent Role Assignment at a Subscription scope usin
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {
@@ -403,11 +414,11 @@ The type of the PIM role assignment whether its active or eligible.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Active`](#variant-pimroleassignmenttyperoleassignmenttype-active) |  |
-| [`Eligible`](#variant-pimroleassignmenttyperoleassignmenttype-eligible) |  |
+| [`Active`](#variant-pimroleassignmenttyperoleassignmenttype-active) | The type for an active PIM role assignment. |
+| [`Eligible`](#variant-pimroleassignmenttyperoleassignmenttype-eligible) | The type for a PIM-eligible role assignment. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active`
-
+The type for an active PIM role assignment.
 
 To use this variant, set the property `roleAssignmentType` to `Active`.
 
@@ -451,12 +462,12 @@ The schedule information for the role assignment.
 
 | Variant | Description |
 | :-- | :-- |
-| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpiration) |  |
-| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterduration) |  |
-| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetime) |  |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpiration) | The type for a permanent role assignment schedule. |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterduration) | The type for a time-bound role assignment schedule. |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetime) | The type for a date-bound role assignment schedule. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-NoExpiration`
-
+The type for a permanent role assignment schedule.
 
 To use this variant, set the property `durationType` to `NoExpiration`.
 
@@ -480,7 +491,7 @@ The type of the duration.
   ```
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration`
-
+The type for a time-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDuration`.
 
@@ -520,7 +531,7 @@ The start time for the role assignment.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime`
-
+The type for a date-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDateTime`.
 
@@ -581,7 +592,7 @@ The role assignment schedule instance id being updated.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible`
-
+The type for a PIM-eligible role assignment.
 
 To use this variant, set the property `roleAssignmentType` to `Eligible`.
 
@@ -624,12 +635,12 @@ The schedule information for the role assignment.
 
 | Variant | Description |
 | :-- | :-- |
-| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpiration) |  |
-| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterduration) |  |
-| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetime) |  |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpiration) | The type for a permanent role assignment schedule. |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterduration) | The type for a time-bound role assignment schedule. |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetime) | The type for a date-bound role assignment schedule. |
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-NoExpiration`
-
+The type for a permanent role assignment schedule.
 
 To use this variant, set the property `durationType` to `NoExpiration`.
 
@@ -653,7 +664,7 @@ The type of the duration.
   ```
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration`
-
+The type for a time-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDuration`.
 
@@ -693,7 +704,7 @@ The start time for the role assignment.
 - Type: string
 
 ### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime`
-
+The type for a date-bound role assignment schedule.
 
 To use this variant, set the property `durationType` to `AfterDateTime`.
 
@@ -921,4 +932,4 @@ The ticket system name for the role eligibility assignment.
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

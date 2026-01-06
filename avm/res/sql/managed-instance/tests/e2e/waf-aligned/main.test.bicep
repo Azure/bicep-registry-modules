@@ -115,7 +115,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       dnsZonePartnerResourceId: ''
-      encryptionProtectorObj: {
+      encryptionProtector: {
         serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
       }
@@ -131,10 +131,15 @@ module testDeployment '../../../main.bicep' = [
       primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       proxyOverride: 'Proxy'
       publicDataEndpointEnabled: false
-      securityAlertPoliciesObj: {
+      securityAlertPolicy: {
         emailAccountAdmins: true
         name: 'default'
         state: 'Enabled'
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
       }
       servicePrincipal: 'SystemAssigned'
       skuName: 'GP_Gen5'
@@ -149,20 +154,17 @@ module testDeployment '../../../main.bicep' = [
       maintenanceWindow: 'Custom2'
       timezoneId: 'UTC'
       vCores: 4
-      vulnerabilityAssessmentsObj: {
-        emailSubscriptionAdmins: true
+      vulnerabilityAssessment: {
         name: 'default'
-        recurringScansEmails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
-        recurringScansIsEnabled: true
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        recurringScans: {
+          isEnabled: true
+          emailSubscriptionAdmins: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
         }
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
       }
     }
   }

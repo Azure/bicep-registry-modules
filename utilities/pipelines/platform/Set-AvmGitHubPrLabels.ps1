@@ -54,9 +54,13 @@ function Set-AvmGitHubPrLabels {
                 gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
             } else {
                 gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
+                # add team members as reviewers
+                $teamMembers | ForEach-Object {
+                    gh pr edit $pr.url --add-reviewer $_ --repo $Repo
+                }
             }
 
-            # check for orphanded module
+            # check for orphaned module
             $moduleName = $teamNames[0]
             $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : ($moduleName.StartsWith('avm-ptn') ? 'Bicep-Pattern' : 'Bicep-Utility')
             # get CSV data
@@ -64,8 +68,8 @@ function Set-AvmGitHubPrLabels {
 
             foreach ($module in $modules) {
                 if ($module.ModuleName.Replace('-', '').Replace('/', '-') -eq $moduleName) {
-                    if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
-                        gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
+                    if ($module.ModuleStatus -eq 'Orphaned') {
+                        gh pr edit $pr.url --add-label 'Status: Module Orphaned :yellow_circle:' --repo $Repo
                         break;
                     }
                 }

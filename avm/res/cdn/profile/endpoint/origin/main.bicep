@@ -40,16 +40,16 @@ param originHostHeader string?
 @description('Optional. The name of the CDN profile. Default to "default".')
 param profileName string = 'default'
 
-resource profile 'Microsoft.Cdn/profiles@2021-06-01' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource endpoint 'Microsoft.Cdn/profiles/endpoints@2021-06-01' existing = {
+resource endpoint 'Microsoft.Cdn/profiles/endpoints@2025-04-15' existing = {
   parent: profile
   name: endpointName
 }
 
-resource origin 'Microsoft.Cdn/profiles/endpoints/origins@2021-06-01' = {
+resource origin 'Microsoft.Cdn/profiles/endpoints/origins@2025-04-15' = {
   parent: endpoint
   name: name
   properties: union(

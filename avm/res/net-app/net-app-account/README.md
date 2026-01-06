@@ -1,6 +1,14 @@
 # Azure NetApp Files `[Microsoft.NetApp/netAppAccounts]`
 
-This module deploys an Azure NetApp File.
+This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.
+
+You can reference the module as follows:
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -13,17 +21,17 @@ This module deploys an Azure NetApp File.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/snapshotPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupPolicies)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backupvaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_backupvaults_backups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults/backups)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_capacitypools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_capacitypools_volumes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes)</li></ul> |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.netapp_netappaccounts_snapshotpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/snapshotPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -33,15 +41,23 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/net-app/net-app-account:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using nfs31 parameter set](#example-3-using-nfs31-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Using nfs31 parameter set](#example-5-using-nfs31-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
 
 <details>
 
@@ -49,12 +65,20 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
-    name: 'nanaamin001'
+    name: 'nanaahsmu001'
     // Non-required parameters
-    location: '<location>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -73,11 +97,22 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nanaamin001"
+      "value": "nanaahsmu001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
@@ -94,17 +129,28 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 using 'br/public:avm/res/net-app/net-app-account:<version>'
 
 // Required parameters
-param name = 'nanaamin001'
+param name = 'nanaahsmu001'
 // Non-required parameters
-param location = '<location>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
 
 
 <details>
@@ -113,7 +159,154 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'nanaacmk001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nanaacmk001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaacmk001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  params: {
+    name: 'nanaamin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "nanaamin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+param name = 'nanaamin001'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   params: {
     // Required parameters
     name: 'nanaamax001'
@@ -148,6 +341,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             dataProtection: {
               backup: {
                 backupPolicyName: 'myBackupPolicy'
@@ -191,9 +385,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -224,7 +418,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -242,7 +435,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         volumes: []
       }
     ]
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -342,6 +534,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "dataProtection": {
                 "backup": {
                   "backupPolicyName": "myBackupPolicy",
@@ -384,10 +577,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -417,8 +610,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "smbEncryption": false,
               "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -436,9 +628,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "volumes": []
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -538,6 +727,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         dataProtection: {
           backup: {
             backupPolicyName: 'myBackupPolicy'
@@ -581,9 +771,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -614,7 +804,6 @@ param capacityPools = [
         smbNonBrowsable: 'Disabled'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -632,7 +821,6 @@ param capacityPools = [
     volumes: []
   }
 ]
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -681,9 +869,11 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using nfs31 parameter set_
+### Example 5: _Using nfs31 parameter set_
 
 This instance deploys the module with nfs31.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nfs3]
 
 
 <details>
@@ -692,7 +882,6 @@ This instance deploys the module with nfs31.
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaanfs3001'
@@ -711,6 +900,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 1
         volumes: [
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -744,9 +934,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
           {
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
@@ -755,7 +945,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zone: 1
           }
         ]
       }
@@ -773,7 +962,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         volumes: []
       }
     ]
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -840,6 +1028,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 1,
           "volumes": [
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -872,10 +1061,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             },
             {
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
@@ -883,8 +1072,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zone": 1
+              "usageThreshold": 107374182400
             }
           ]
         },
@@ -902,9 +1090,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "volumes": []
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -973,6 +1158,7 @@ param capacityPools = [
     size: 1
     volumes: [
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -1006,9 +1192,9 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
       {
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         name: 'nanaanfs3-vol-002'
         networkFeatures: 'Standard'
@@ -1017,7 +1203,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zone: 1
       }
     ]
   }
@@ -1035,7 +1220,6 @@ param capacityPools = [
     volumes: []
   }
 ]
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -1071,9 +1255,11 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1082,12 +1268,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: 'netAppAccountDeployment'
   params: {
     // Required parameters
     name: 'nanaawaf001'
     // Non-required parameters
-    location: '<location>'
     tags: {
       service: 'netapp'
     }
@@ -1112,9 +1296,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       "value": "nanaawaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "service": "netapp"
@@ -1137,7 +1318,6 @@ using 'br/public:avm/res/net-app/net-app-account:<version>'
 // Required parameters
 param name = 'nanaawaf001'
 // Non-required parameters
-param location = '<location>'
 param tags = {
   service: 'netapp'
 }
@@ -1226,16 +1406,16 @@ The backup policies to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. |
+| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`enabled`](#parameter-backuppoliciesenabled) | bool | Indicates whether the backup policy is enabled. |
 | [`location`](#parameter-backuppolicieslocation) | string | The location of the backup policy. |
-| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. |
+| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`name`](#parameter-backuppoliciesname) | string | The name of the backup policy. |
-| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. |
+| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 
 ### Parameter: `backupPolicies.dailyBackupsToKeep`
 
-The daily backups to keep.
+The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
@@ -1258,10 +1438,12 @@ The location of the backup policy.
 
 ### Parameter: `backupPolicies.monthlyBackupsToKeep`
 
-The monthly backups to keep.
+The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.name`
 
@@ -1272,10 +1454,12 @@ The name of the backup policy.
 
 ### Parameter: `backupPolicies.weeklyBackupsToKeep`
 
-The weekly backups to keep.
+The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 1019
 
 ### Parameter: `backupVault`
 
@@ -1585,10 +1769,10 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-capacitypoolsvolumesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
-| [`zone`](#parameter-capacitypoolsvolumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -1611,7 +1795,15 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
+
+### Parameter: `capacityPools.volumes.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `capacityPools.volumes.name`
 
@@ -1630,13 +1822,6 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 ### Parameter: `capacityPools.volumes.usageThreshold`
 
 Maximum storage quota allowed for a file system in bytes.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `capacityPools.volumes.zone`
-
-The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
 - Required: Yes
 - Type: int
@@ -1732,7 +1917,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -1741,6 +1925,7 @@ Replication properties.
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1753,21 +1938,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -1820,6 +1990,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
@@ -2204,6 +2389,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
   ]
   ```
 
+### Parameter: `capacityPools.volumes.throughputMibps`
+
+The throughput in MiBps for the NetApp account.
+
+- Required: No
+- Type: int
+
 ### Parameter: `capacityPools.volumes.volumeType`
 
 The type of the volume. DataProtection volumes are used for replication.
@@ -2361,6 +2553,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2384,6 +2577,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
@@ -2395,7 +2595,15 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -2814,6 +3022,7 @@ Tags for all resources.
 | `name` | string | The name of the NetApp account. |
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
@@ -2821,8 +3030,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

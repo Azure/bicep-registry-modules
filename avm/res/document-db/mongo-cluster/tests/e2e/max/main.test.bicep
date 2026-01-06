@@ -52,7 +52,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: resourceLocation
       administratorLogin: 'Admin003'
       administratorLoginPassword: password
@@ -89,20 +89,19 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      highAvailabilityMode: false
+      highAvailabilityMode: 'Disabled'
       networkAcls: {
         customRules: [
           {
-            firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-            endIpAddress: '5.6.7.8'
-            startIpAddress: '1.2.3.4'
+            firewallRuleName: 'allow-192_168_1_0-to-192_168_2_0'
+            startIpAddress: '192.168.1.0'
+            endIpAddress: '192.168.2.0'
           }
         ]
         allowAzureIPs: true
         allowAllIPs: true
       }
       nodeCount: 2
-      nodeType: 'Shard'
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -154,10 +153,14 @@ module testDeployment '../../../main.bicep' = [
       ]
       sku: 'M30'
       storage: 256
+      enableMicrosoftEntraAuth: false
+      entraAuthIdentities: []
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
+
+@secure()
+output obscuredConnectionString string = testDeployment[0].outputs.obscuredConnectionString
+
+@secure()
+output connectionString string = testDeployment[1].outputs.connectionString

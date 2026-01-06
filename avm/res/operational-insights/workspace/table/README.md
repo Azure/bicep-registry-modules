@@ -11,10 +11,10 @@ This module deploys a Log Analytics Workspace Table.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables)</li></ul> |
 
 ## Parameters
 
@@ -36,11 +36,11 @@ This module deploys a Log Analytics Workspace Table.
 | :-- | :-- | :-- |
 | [`plan`](#parameter-plan) | string | Instruct the system how to handle and charge the logs ingested to this table. |
 | [`restoredLogs`](#parameter-restoredlogs) | object | Restore parameters. |
-| [`retentionInDays`](#parameter-retentionindays) | int | The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention. |
+| [`retentionInDays`](#parameter-retentionindays) | int | The table retention in days, between 4 and 730. Don't provide to use the default workspace retention. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schema`](#parameter-schema) | object | Table's schema. |
 | [`searchResults`](#parameter-searchresults) | object | Parameters of the search job that initiated this table. |
-| [`totalRetentionInDays`](#parameter-totalretentionindays) | int | The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention. |
+| [`totalRetentionInDays`](#parameter-totalretentionindays) | int | The table total retention in days, between 4 and 2555. Don't provide use the default table retention. |
 
 ### Parameter: `name`
 
@@ -109,12 +109,11 @@ The timestamp to start the restore from (UTC).
 
 ### Parameter: `retentionInDays`
 
-The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention.
+The table retention in days, between 4 and 730. Don't provide to use the default workspace retention.
 
 - Required: No
 - Type: int
-- Default: `-1`
-- MinValue: -1
+- MinValue: 4
 - MaxValue: 730
 
 ### Parameter: `roleAssignments`
@@ -404,12 +403,11 @@ The timestamp to start the search from (UTC).
 
 ### Parameter: `totalRetentionInDays`
 
-The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention.
+The table total retention in days, between 4 and 2555. Don't provide use the default table retention.
 
 - Required: No
 - Type: int
-- Default: `-1`
-- MinValue: -1
+- MinValue: 4
 - MaxValue: 2555
 
 ## Outputs
@@ -426,4 +424,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

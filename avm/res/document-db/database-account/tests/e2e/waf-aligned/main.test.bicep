@@ -19,7 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral'
+var enforcedLocation = 'australiaeast'
+#disable-next-line no-hardcoded-location
+var enforcedSecondLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -37,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // General resources
 // ============== //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -53,7 +55,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -66,13 +67,28 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
-
-    disableLocalAuth: true
-    automaticFailover: true
-    minimumTlsVersion: 'Tls12'
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: enforcedLocation
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: enforcedSecondLocation
+      }
+    ]
+    zoneRedundant: true
+    disableLocalAuthentication: true
     disableKeyBasedMetadataWriteAccess: true
-
+    enableAutomaticFailover: true
+    minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: 'Disabled'

@@ -11,6 +11,9 @@ Required. The name of the Resource Group containing the image template
 .PARAMETER ImageTemplateName
 Required. The name of the image template to query to build status for. E.g. 'lin_it-2022-02-20-16-17-38'
 
+.PARAMETER SubscriptionId
+Optional. The subscription ID to set the context to before uploading the files. This can be useful if the principal used to run this script has access multiple subscriptions and you want to ensure the context is set to the correct subscription.
+
 .EXAMPLE
 . 'Wait-ForImageBuild.ps1' -ResourceGroupName' 'myRG' -ImageTemplateName 'lin_it-2022-02-20-16-17-38'
 
@@ -22,18 +25,24 @@ param(
     [string] $ResourceGroupName,
 
     [Parameter(Mandatory)]
-    [string] $ImageTemplateName
+    [string] $ImageTemplateName,
+
+    [Parameter(Mandatory = $false)]
+    [string] $SubscriptionId = (Get-AzContext).Subscription.Id
 )
 
 begin {
     Write-Debug ('[{0} entered]' -f $MyInvocation.MyCommand)
+
+    if (-not [String]::IsNullOrEmpty($SubscriptionId)) {
+        Write-Verbose ('Setting subscription context to [{0}]' -f $SubscriptionId) -Verbose
+        $null = Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction 'Stop'
+    }
 }
 
 process {
     # Logic
     # -----
-    $context = Get-AzContext
-    $subscriptionId = $context.Subscription.Id
     $currentRetry = 1
     $maximumRetries = 720
     $timeToWait = 15
@@ -72,7 +81,7 @@ process {
             throw $failedMessage
         }
 
-        if ($latestStatus.runState.ToLower() -notIn @('running', 'new')) {
+        if ($latestStatus.runState.ToLower() -notin @('running', 'new')) {
             break
         }
 

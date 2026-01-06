@@ -1,6 +1,14 @@
 # Virtual Machine Image Templates `[Microsoft.VirtualMachineImages/imageTemplates]`
 
-This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).
+This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB).
+
+You can reference the module as follows:
+```bicep
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -14,11 +22,11 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.VirtualMachineImages/imageTemplates` | 2024-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.virtualmachineimages_imagetemplates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     distributions: [
@@ -65,8 +74,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       ]
     }
     name: 'vmiitmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -110,10 +117,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     },
     "name": {
       "value": "vmiitmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -149,8 +152,6 @@ param managedIdentities = {
   ]
 }
 param name = 'vmiitmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -160,6 +161,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -167,7 +170,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     distributions: [
@@ -257,7 +259,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       }
     ]
     stagingResourceGroupResourceId: '<stagingResourceGroupResourceId>'
-    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -280,6 +281,10 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     vmUserAssignedIdentities: [
       '<managedIdentityResourceId>'
     ]
+    vnetConfig: {
+      proxyVmSize: 'Standard_A1_v2'
+      subnetResourceId: '<subnetResourceId>'
+    }
   }
 }
 ```
@@ -416,9 +421,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "stagingResourceGroupResourceId": {
       "value": "<stagingResourceGroupResourceId>"
     },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -448,6 +450,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": [
         "<managedIdentityResourceId>"
       ]
+    },
+    "vnetConfig": {
+      "value": {
+        "proxyVmSize": "Standard_A1_v2",
+        "subnetResourceId": "<subnetResourceId>"
+      }
     }
   }
 }
@@ -551,7 +559,6 @@ param roleAssignments = [
   }
 ]
 param stagingResourceGroupResourceId = '<stagingResourceGroupResourceId>'
-param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -574,6 +581,10 @@ param vmSize = 'Standard_D2s_v3'
 param vmUserAssignedIdentities = [
   '<managedIdentityResourceId>'
 ]
+param vnetConfig = {
+  proxyVmSize: 'Standard_A1_v2'
+  subnetResourceId: '<subnetResourceId>'
+}
 ```
 
 </details>
@@ -583,6 +594,8 @@ param vmUserAssignedIdentities = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -590,7 +603,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<version>' = {
-  name: 'imageTemplateDeployment'
   params: {
     // Required parameters
     distributions: [
@@ -619,12 +631,14 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'WindowsRestart'
       }
     ]
-    location: '<location>'
-    subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    vnetConfig: {
+      containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
+      subnetResourceId: '<subnetResourceId>'
     }
   }
 }
@@ -679,17 +693,17 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "vnetConfig": {
+      "value": {
+        "containerInstanceSubnetResourceId": "<containerInstanceSubnetResourceId>",
+        "subnetResourceId": "<subnetResourceId>"
       }
     }
   }
@@ -733,12 +747,14 @@ param customizationSteps = [
     type: 'WindowsRestart'
   }
 ]
-param location = '<location>'
-param subnetResourceId = '<subnetResourceId>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+}
+param vnetConfig = {
+  containerInstanceSubnetResourceId: '<containerInstanceSubnetResourceId>'
+  subnetResourceId: '<subnetResourceId>'
 }
 ```
 
@@ -773,11 +789,11 @@ param tags = {
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`stagingResourceGroupResourceId`](#parameter-stagingresourcegroupresourceid) | string | Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`validationProcess`](#parameter-validationprocess) | object | Configuration options and list of validations to be performed on the resulting image. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size for the VM. |
 | [`vmUserAssignedIdentities`](#parameter-vmuserassignedidentities) | array | List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the 'managedIdentities' parameter must have the 'Managed Identity Operator' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM. |
+| [`vnetConfig`](#parameter-vnetconfig) | object | Optional configuration of the virtual network to use to deploy the build VM and validation VM in. Omit if no specific virtual network needs to be used. |
 
 **Generated parameters**
 
@@ -797,12 +813,12 @@ The distribution targets where the image output needs to go to.
 
 | Variant | Description |
 | :-- | :-- |
-| [`SharedImage`](#variant-distributionstype-sharedimage) |  |
-| [`ManagedImage`](#variant-distributionstype-managedimage) |  |
-| [`VHD`](#variant-distributionstype-vhd) |  |
+| [`SharedImage`](#variant-distributionstype-sharedimage) | The type for a shared image distribution. |
+| [`ManagedImage`](#variant-distributionstype-managedimage) | The type for a managed image distribution. |
+| [`VHD`](#variant-distributionstype-vhd) | The type for an unmanaged distribution. |
 
 ### Variant: `distributions.type-SharedImage`
-
+The type for a shared image distribution.
 
 To use this variant, set the property `type` to `SharedImage`.
 
@@ -894,7 +910,7 @@ The storage account type of the image. Defaults to [Standard_LRS].
   ```
 
 ### Variant: `distributions.type-ManagedImage`
-
+The type for a managed image distribution.
 
 To use this variant, set the property `type` to `ManagedImage`.
 
@@ -902,28 +918,23 @@ To use this variant, set the property `type` to `ManagedImage`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
-| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`imageName`](#parameter-distributionstype-managedimageimagename) | string | Name of the managed or unmanaged image that will be created. |
+| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`artifactTags`](#parameter-distributionstype-managedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
 | [`location`](#parameter-distributionstype-managedimagelocation) | string | Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter. |
 | [`runOutputName`](#parameter-distributionstype-managedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
 
-### Parameter: `distributions.type-ManagedImage.imageResourceId`
+### Parameter: `distributions.type-ManagedImage.imageName`
 
-The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+Name of the managed or unmanaged image that will be created.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `distributions.type-ManagedImage.type`
@@ -939,19 +950,19 @@ The type of distribution.
   ]
   ```
 
-### Parameter: `distributions.type-ManagedImage.imageName`
-
-Name of the managed or unmanaged image that will be created.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `distributions.type-ManagedImage.artifactTags`
 
 Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
 
 - Required: No
 - Type: object
+
+### Parameter: `distributions.type-ManagedImage.imageResourceId`
+
+The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `distributions.type-ManagedImage.location`
 
@@ -968,7 +979,7 @@ The name to be used for the associated RunOutput. If not provided, a name will b
 - Type: string
 
 ### Variant: `distributions.type-VHD`
-
+The type for an unmanaged distribution.
 
 To use this variant, set the property `type` to `VHD`.
 
@@ -976,13 +987,8 @@ To use this variant, set the property `type` to `VHD`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`imageName`](#parameter-distributionstype-vhdimagename) | string | Name of the managed or unmanaged image that will be created. |
+| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
 
 **Optional parameters**
 
@@ -990,6 +996,13 @@ To use this variant, set the property `type` to `VHD`.
 | :-- | :-- | :-- |
 | [`artifactTags`](#parameter-distributionstype-vhdartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
 | [`runOutputName`](#parameter-distributionstype-vhdrunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-VHD.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `distributions.type-VHD.type`
 
@@ -1003,13 +1016,6 @@ The type of distribution.
     'VHD'
   ]
   ```
-
-### Parameter: `distributions.type-VHD.imageName`
-
-Name of the managed or unmanaged image that will be created.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `distributions.type-VHD.artifactTags`
 
@@ -1150,6 +1156,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1169,6 +1176,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1308,13 +1322,6 @@ The principal type of the assigned principal ID.
 ### Parameter: `stagingResourceGroupResourceId`
 
 Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn't exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn't exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.
-
-- Required: No
-- Type: string
-
-### Parameter: `subnetResourceId`
-
-Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.</p>If no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.
 
 - Required: No
 - Type: string
@@ -1476,6 +1483,42 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 - Type: array
 - Default: `[]`
 
+### Parameter: `vnetConfig`
+
+Optional configuration of the virtual network to use to deploy the build VM and validation VM in. Omit if no specific virtual network needs to be used.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerInstanceSubnetResourceId`](#parameter-vnetconfigcontainerinstancesubnetresourceid) | string | Resource id of a pre-existing subnet on which Azure Container Instance will be deployed for Isolated Builds. This field may be specified only if subnetResourceId is also specified and must be on the same Virtual Network as the subnet specified in subnetResourceId. |
+| [`proxyVmSize`](#parameter-vnetconfigproxyvmsize) | string | Size of the proxy virtual machine used to pass traffic to the build VM and validation VM. This must not be specified if containerInstanceSubnetResourceId is specified because no proxy virtual machine is deployed in that case. Omit or specify empty string to use the default (Standard_A1_v2). |
+| [`subnetResourceId`](#parameter-vnetconfigsubnetresourceid) | string | Resource id of a pre-existing subnet on which the build VM and validation VM will be deployed. |
+
+### Parameter: `vnetConfig.containerInstanceSubnetResourceId`
+
+Resource id of a pre-existing subnet on which Azure Container Instance will be deployed for Isolated Builds. This field may be specified only if subnetResourceId is also specified and must be on the same Virtual Network as the subnet specified in subnetResourceId.
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetConfig.proxyVmSize`
+
+Size of the proxy virtual machine used to pass traffic to the build VM and validation VM. This must not be specified if containerInstanceSubnetResourceId is specified because no proxy virtual machine is deployed in that case. Omit or specify empty string to use the default (Standard_A1_v2).
+
+- Required: No
+- Type: string
+
+### Parameter: `vnetConfig.subnetResourceId`
+
+Resource id of a pre-existing subnet on which the build VM and validation VM will be deployed.
+
+- Required: No
+- Type: string
+
 ### Parameter: `baseTime`
 
 Do not provide a value! This date is used to generate a unique image template name.
@@ -1502,6 +1545,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 
@@ -1604,4 +1648,4 @@ source: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

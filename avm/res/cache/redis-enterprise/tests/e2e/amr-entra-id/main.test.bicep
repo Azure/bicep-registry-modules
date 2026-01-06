@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis (Preview) with Entra ID authentication'
-metadata description = 'This instance deploys an Azure Managed Redis (Preview) cache with Entra ID authentication.'
+metadata name = 'Azure Managed Redis with Entra ID authentication'
+metadata description = 'This instance deploys an Azure Managed Redis cache with Entra ID authentication.'
 
 // ========== //
 // Parameters //
@@ -27,7 +27,7 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
@@ -52,8 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
-      skuName: 'Balanced_B10'
       database: {
         accessKeysAuthentication: 'Disabled'
         accessPolicyAssignments: [

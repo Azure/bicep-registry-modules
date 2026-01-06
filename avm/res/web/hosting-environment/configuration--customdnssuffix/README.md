@@ -10,9 +10,9 @@ This module deploys a Hosting Environment Custom DNS Suffix Configuration.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Web/hostingEnvironments/configurations` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments/configurations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Web/hostingEnvironments/configurations` | 2023-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_hostingenvironments_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments/configurations)</li></ul> |
 
 ## Parameters
 

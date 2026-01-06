@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2855794615987868353"
+      "version": "0.35.1.17967",
+      "templateHash": "15100144726254601129"
     },
     "name": "Azure Stack HCI Network Interface",
     "description": "This module deploys an Azure Stack HCI network interface."

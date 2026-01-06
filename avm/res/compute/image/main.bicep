@@ -49,10 +49,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Compute/images@2024-07-01'>.tags?
 
 @description('Optional. The extended location of the Image.')
-param extendedLocation object?
+param extendedLocation resourceInput<'Microsoft.Compute/images@2024-07-01'>.extendedLocation?
 
 @description('Optional. The source virtual machine from which Image is created.')
 param sourceVirtualMachineResourceId string?
@@ -77,7 +77,7 @@ param osState string = 'Generalized'
 param snapshotResourceId string?
 
 @description('Optional. Specifies the parameters that are used to add a data disk to a virtual machine.')
-param dataDisks array = []
+param dataDisks resourceInput<'Microsoft.Compute/images@2024-07-01'>.properties.storageProfile.dataDisks = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

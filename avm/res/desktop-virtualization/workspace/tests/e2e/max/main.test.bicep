@@ -33,8 +33,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    applicationGroupName: 'dep-${namePrefix}-appg-${serviceShort}'
+    hostPoolName: 'dep-${namePrefix}-hp-${serviceShort}'
   }
 }
 
@@ -49,7 +50,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
   }
 }
 
@@ -65,7 +65,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      applicationGroupReferences: []
+      applicationGroupReferences: [
+        nestedDependencies.outputs.applicationGroupResourceId
+      ]
       friendlyName: 'AVD Workspace'
       publicNetworkAccess: 'Disabled'
       diagnosticSettings: [

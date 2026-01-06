@@ -35,7 +35,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    virtualNetwork1Name: 'dep-${namePrefix}-vnet1-${serviceShort}'
+    virtualNetwork2Name: 'dep-${namePrefix}-vnet2-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -52,11 +53,33 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       privateLinkPrivateDnsZones: [
-        'testpdnszone1.int'
-        'testpdnszone2.local'
+        'privatelink.api.azureml.ms'
+        'privatelink.notebooks.azure.net'
+        'privatelink.{regionCode}.backup.windowsazure.com'
+        'privatelink.{regionName}.azmk8s.io'
+      ]
+      privateLinkPrivateDnsZonesToExclude: [
+        'privatelink.api.azureml.ms'
+        'privatelink.{regionCode}.backup.windowsazure.com'
+      ]
+      additionalPrivateLinkPrivateDnsZonesToInclude: [
+        'privatelink.3.azurestaticapps.net'
       ]
       virtualNetworkResourceIdsToLinkTo: [
-        nestedDependencies.outputs.vnetResourceId
+        nestedDependencies.outputs.vnet1ResourceId
+      ]
+      virtualNetworkLinks: [
+        {
+          name: 'vnet2-link-custom-name'
+          virtualNetworkResourceId: nestedDependencies.outputs.vnet2ResourceId
+          resolutionPolicy: 'NxDomainRedirect'
+          registrationEnabled: false
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Example'
+            Role: 'DeploymentValidation'
+          }
+        }
       ]
       lock: {
         kind: 'CanNotDelete'

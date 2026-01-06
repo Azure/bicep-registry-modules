@@ -7,14 +7,16 @@
         "cschleiden.vscode-github-actions",
         "esbenp.prettier-vscode",
         "GitHub.copilot",
-        "github.vscode-pull-request-github",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
         "microsoft-dciborow.align-bicep",
         "ms-azuretools.vscode-bicep",
         "ms-vsliveshare.vsliveshare",
         "ms-azuretools.vscode-azureresourcegroups",
         "ms-vscode-remote.remote-containers",
         "zokugun.explicit-folding",
-        "GitHub.copilot-labs"
+        "ms-azuretools.vscode-azure-github-copilot"
       ]
     }
   },
@@ -33,10 +35,10 @@
     "ghcr.io/devcontainers/features/powershell:1": {
       "modules": ["Az.Accounts", "Az.Resources", "Az.KeyVault", "Pester"]
     },
-    "ghcr.io/devcontainers-contrib/features/prettier:1": {},
+    "ghcr.io/devcontainers-extra/features/prettier:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     // act to run github actions locally
-    "ghcr.io/devcontainers-contrib/features/act-asdf:2": {},
+    "ghcr.io/devcontainers-extra/features/act-asdf:2": {},
     // for act
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   }

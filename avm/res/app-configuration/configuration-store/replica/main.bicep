@@ -1,8 +1,8 @@
 metadata name = 'App Configuration Replicas'
 metadata description = 'This module deploys an App Configuration Replica.'
 
-@description('Required. Name of the replica.')
-param name string
+@description('Optional. Name of the replica.')
+param name string = '${replicaLocation}replica'
 
 @description('Conditional. The name of the parent app configuration store. Required if the template is used in a standalone deployment.')
 param appConfigurationName string
@@ -10,11 +10,11 @@ param appConfigurationName string
 @description('Required. Location of the replica.')
 param replicaLocation string
 
-resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2024-05-01' existing = {
+resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2025-02-01-preview' existing = {
   name: appConfigurationName
 }
 
-resource replica 'Microsoft.AppConfiguration/configurationStores/replicas@2024-05-01' = {
+resource replica 'Microsoft.AppConfiguration/configurationStores/replicas@2025-02-01-preview' = {
   name: name
   parent: appConfiguration
   location: replicaLocation

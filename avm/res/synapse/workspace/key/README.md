@@ -10,9 +10,9 @@ This module deploys a Synapse Workspaces Key.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Synapse/workspaces/keys` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys)</li></ul> |
 
 ## Parameters
 

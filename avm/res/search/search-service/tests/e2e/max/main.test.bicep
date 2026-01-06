@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -50,7 +49,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
   }
 }
 
@@ -74,7 +72,11 @@ module testDeployment '../../../main.bicep' = [
           aadAuthFailureMode: 'http401WithBearerChallenge'
         }
       }
-      hostingMode: 'highDensity'
+      hostingMode: 'HighDensity'
+      computeType: 'Default'
+      dataExfiltrationProtections: [
+        'All'
+      ]
       partitionCount: 2
       replicaCount: 3
       semanticSearch: 'standard'
@@ -111,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       networkRuleSet: {
-        bypass: 'AzurePortal'
+        bypass: 'AzureServices'
         ipRules: [
           {
             value: '40.74.28.0/23'
@@ -141,9 +143,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

@@ -1,6 +1,19 @@
 # Data Protection Backup Vaults `[Microsoft.DataProtection/backupVaults]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Data Protection Backup Vault.
+
+You can reference the module as follows:
+```bicep
+module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -14,12 +27,13 @@ This module deploys a Data Protection Backup Vault.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DataProtection/backupVaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2024-04-01/backupVaults) |
-| `Microsoft.DataProtection/backupVaults/backupPolicies` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2023-05-01/backupVaults/backupPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DataProtection/backupVaults` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dataprotection_backupvaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2024-04-01/backupVaults)</li></ul> |
+| `Microsoft.DataProtection/backupVaults/backupInstances` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dataprotection_backupvaults_backupinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2024-04-01/backupVaults/backupInstances)</li></ul> |
+| `Microsoft.DataProtection/backupVaults/backupPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dataprotection_backupvaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2024-04-01/backupVaults/backupPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -30,13 +44,127 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-protection/backup-vault:<version>`.
 
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-1-using-customer-managed-keys-with-user-assigned-identity)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret. Please note that enabling CMK with User-Assigned Managed Identity in currently in preview.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpbvhsmu001'
+    // Non-required parameters
+    azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    infrastructureEncryption: 'Enabled'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpbvhsmu001"
+    },
+    // Non-required parameters
+    "azureMonitorAlertSettingsAlertsForAllJobFailures": {
+      "value": "Disabled"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "infrastructureEncryption": {
+      "value": "Enabled"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-protection/backup-vault:<version>'
+
+// Required parameters
+param name = 'dpbvhsmu001'
+// Non-required parameters
+param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param infrastructureEncryption = 'Enabled'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret. Please note that enabling CMK with User-Assigned Managed Identity in currently in preview.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
 
 
 <details>
@@ -45,91 +173,22 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvcmk001'
     // Non-required parameters
     azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-    backupPolicies: [
-      {
-        name: 'DefaultPolicy'
-        properties: {
-          datasourceTypes: [
-            'Microsoft.Compute/disks'
-          ]
-          objectType: 'BackupPolicy'
-          policyRules: [
-            {
-              backupParameters: {
-                backupType: 'Incremental'
-                objectType: 'AzureBackupParams'
-              }
-              dataStore: {
-                dataStoreType: 'OperationalStore'
-                objectType: 'DataStoreInfoBase'
-              }
-              name: 'BackupDaily'
-              objectType: 'AzureBackupRule'
-              trigger: {
-                objectType: 'ScheduleBasedTriggerContext'
-                schedule: {
-                  repeatingTimeIntervals: [
-                    'R/2022-05-31T23:30:00+01:00/P1D'
-                  ]
-                  timeZone: 'W. Europe Standard Time'
-                }
-                taggingCriteria: [
-                  {
-                    isDefault: true
-                    taggingPriority: 99
-                    tagInfo: {
-                      id: 'Default_'
-                      tagName: 'Default'
-                    }
-                  }
-                ]
-              }
-            }
-            {
-              isDefault: true
-              lifecycles: [
-                {
-                  deleteAfter: {
-                    duration: 'P7D'
-                    objectType: 'AbsoluteDeleteOption'
-                  }
-                  sourceDataStore: {
-                    dataStoreType: 'OperationalStore'
-                    objectType: 'DataStoreInfoBase'
-                  }
-                  targetDataStoreCopySettings: []
-                }
-              ]
-              name: 'Default'
-              objectType: 'AzureRetentionRule'
-            }
-          ]
-        }
-      }
-    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    immutabilitySettingState: 'Locked'
     infrastructureEncryption: 'Enabled'
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    softDeleteSettings: {
-      retentionDurationInDays: 14
-      state: 'On'
     }
   }
 }
@@ -155,70 +214,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     "azureMonitorAlertSettingsAlertsForAllJobFailures": {
       "value": "Disabled"
     },
-    "backupPolicies": {
-      "value": [
-        {
-          "name": "DefaultPolicy",
-          "properties": {
-            "datasourceTypes": [
-              "Microsoft.Compute/disks"
-            ],
-            "objectType": "BackupPolicy",
-            "policyRules": [
-              {
-                "backupParameters": {
-                  "backupType": "Incremental",
-                  "objectType": "AzureBackupParams"
-                },
-                "dataStore": {
-                  "dataStoreType": "OperationalStore",
-                  "objectType": "DataStoreInfoBase"
-                },
-                "name": "BackupDaily",
-                "objectType": "AzureBackupRule",
-                "trigger": {
-                  "objectType": "ScheduleBasedTriggerContext",
-                  "schedule": {
-                    "repeatingTimeIntervals": [
-                      "R/2022-05-31T23:30:00+01:00/P1D"
-                    ],
-                    "timeZone": "W. Europe Standard Time"
-                  },
-                  "taggingCriteria": [
-                    {
-                      "isDefault": true,
-                      "taggingPriority": 99,
-                      "tagInfo": {
-                        "id": "Default_",
-                        "tagName": "Default"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "isDefault": true,
-                "lifecycles": [
-                  {
-                    "deleteAfter": {
-                      "duration": "P7D",
-                      "objectType": "AbsoluteDeleteOption"
-                    },
-                    "sourceDataStore": {
-                      "dataStoreType": "OperationalStore",
-                      "objectType": "DataStoreInfoBase"
-                    },
-                    "targetDataStoreCopySettings": []
-                  }
-                ],
-                "name": "Default",
-                "objectType": "AzureRetentionRule"
-              }
-            ]
-          }
-        }
-      ]
-    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -226,14 +221,8 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "immutabilitySettingState": {
-      "value": "Locked"
-    },
     "infrastructureEncryption": {
       "value": "Enabled"
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -241,12 +230,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "softDeleteSettings": {
-      "value": {
-        "retentionDurationInDays": 14,
-        "state": "On"
       }
     }
   }
@@ -267,94 +250,28 @@ using 'br/public:avm/res/data-protection/backup-vault:<version>'
 param name = 'dpbvcmk001'
 // Non-required parameters
 param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
-param backupPolicies = [
-  {
-    name: 'DefaultPolicy'
-    properties: {
-      datasourceTypes: [
-        'Microsoft.Compute/disks'
-      ]
-      objectType: 'BackupPolicy'
-      policyRules: [
-        {
-          backupParameters: {
-            backupType: 'Incremental'
-            objectType: 'AzureBackupParams'
-          }
-          dataStore: {
-            dataStoreType: 'OperationalStore'
-            objectType: 'DataStoreInfoBase'
-          }
-          name: 'BackupDaily'
-          objectType: 'AzureBackupRule'
-          trigger: {
-            objectType: 'ScheduleBasedTriggerContext'
-            schedule: {
-              repeatingTimeIntervals: [
-                'R/2022-05-31T23:30:00+01:00/P1D'
-              ]
-              timeZone: 'W. Europe Standard Time'
-            }
-            taggingCriteria: [
-              {
-                isDefault: true
-                taggingPriority: 99
-                tagInfo: {
-                  id: 'Default_'
-                  tagName: 'Default'
-                }
-              }
-            ]
-          }
-        }
-        {
-          isDefault: true
-          lifecycles: [
-            {
-              deleteAfter: {
-                duration: 'P7D'
-                objectType: 'AbsoluteDeleteOption'
-              }
-              sourceDataStore: {
-                dataStoreType: 'OperationalStore'
-                objectType: 'DataStoreInfoBase'
-              }
-              targetDataStoreCopySettings: []
-            }
-          ]
-          name: 'Default'
-          objectType: 'AzureRetentionRule'
-        }
-      ]
-    }
-  }
-]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param immutabilitySettingState = 'Locked'
 param infrastructureEncryption = 'Enabled'
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param softDeleteSettings = {
-  retentionDurationInDays: 14
-  state: 'On'
-}
 ```
 
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -363,12 +280,8 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: 'backupVaultDeployment'
   params: {
-    // Required parameters
     name: 'dpbvmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -385,13 +298,8 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dpbvmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -407,18 +315,17 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
 ```bicep-params
 using 'br/public:avm/res/data-protection/backup-vault:<version>'
 
-// Required parameters
 param name = 'dpbvmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -427,15 +334,84 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvmax001'
     // Non-required parameters
     azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
+    backupInstances: [
+      {
+        dataSourceInfo: {
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: '<resourceUri>'
+        }
+        name: '<name>'
+        policyInfo: {
+          policyName: '<policyName>'
+          policyParameters: {
+            backupDatasourceParametersList: [
+              {
+                containersList: '<containersList>'
+                objectType: 'BlobBackupDatasourceParameters'
+              }
+            ]
+          }
+        }
+      }
+      {
+        dataSourceInfo: {
+          datasourceType: 'Microsoft.Compute/disks'
+          resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: '<resourceUri>'
+        }
+        name: '<name>'
+        policyInfo: {
+          policyName: '<policyName>'
+          policyParameters: {
+            dataStoreParametersList: [
+              {
+                dataStoreType: 'OperationalStore'
+                objectType: 'AzureOperationalStoreParameters'
+                resourceGroupId: '<resourceGroupId>'
+              }
+            ]
+          }
+        }
+      }
+      {
+        dataSourceInfo: {
+          datasourceType: 'Microsoft.Compute/disks'
+          resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: '<resourceUri>'
+        }
+        name: '<name>'
+        policyInfo: {
+          policyName: '<policyName>'
+          policyParameters: {
+            dataStoreParametersList: [
+              {
+                dataStoreType: 'OperationalStore'
+                objectType: 'AzureOperationalStoreParameters'
+                resourceGroupId: '<resourceGroupId>'
+              }
+            ]
+          }
+        }
+      }
+    ]
     backupPolicies: [
       {
-        name: 'DefaultPolicy'
+        name: '<name>'
         properties: {
           datasourceTypes: [
             'Microsoft.Compute/disks'
@@ -457,9 +433,9 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
                 objectType: 'ScheduleBasedTriggerContext'
                 schedule: {
                   repeatingTimeIntervals: [
-                    'R/2022-05-31T23:30:00+01:00/P1D'
+                    'R/2025-03-31T00:00:00+04:00/P1D'
                   ]
-                  timeZone: 'W. Europe Standard Time'
+                  timeZone: 'Arabian Standard Time'
                 }
                 taggingCriteria: [
                   {
@@ -494,8 +470,86 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
           ]
         }
       }
+      {
+        name: '<name>'
+        properties: {
+          datasourceTypes: [
+            'Microsoft.Storage/storageAccounts/blobServices'
+          ]
+          objectType: 'BackupPolicy'
+          policyRules: [
+            {
+              isDefault: true
+              lifecycles: [
+                {
+                  deleteAfter: {
+                    duration: 'P30D'
+                    objectType: 'AbsoluteDeleteOption'
+                  }
+                  sourceDataStore: {
+                    dataStoreType: 'OperationalStore'
+                    objectType: 'DataStoreInfoBase'
+                  }
+                  targetDataStoreCopySettings: []
+                }
+              ]
+              name: 'Default'
+              objectType: 'AzureRetentionRule'
+            }
+            {
+              isDefault: true
+              lifecycles: [
+                {
+                  deleteAfter: {
+                    duration: 'P90D'
+                    objectType: 'AbsoluteDeleteOption'
+                  }
+                  sourceDataStore: {
+                    dataStoreType: 'VaultStore'
+                    objectType: 'DataStoreInfoBase'
+                  }
+                  targetDataStoreCopySettings: []
+                }
+              ]
+              name: 'Default'
+              objectType: 'AzureRetentionRule'
+            }
+            {
+              backupParameters: {
+                backupType: 'Discrete'
+                objectType: 'AzureBackupParams'
+              }
+              dataStore: {
+                dataStoreType: 'VaultStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              name: 'BackupDaily'
+              objectType: 'AzureBackupRule'
+              trigger: {
+                objectType: 'ScheduleBasedTriggerContext'
+                schedule: {
+                  repeatingTimeIntervals: [
+                    'R/2025-03-31T00:00:00+04:00/P1D'
+                  ]
+                  timeZone: 'Arabian Standard Time'
+                }
+                taggingCriteria: [
+                  {
+                    isDefault: true
+                    taggingPriority: 99
+                    tagInfo: {
+                      id: 'Default_'
+                      tagName: 'Default'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     ]
-    location: '<location>'
+    immutabilitySettingState: 'Unlocked'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -551,10 +605,82 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     "azureMonitorAlertSettingsAlertsForAllJobFailures": {
       "value": "Disabled"
     },
+    "backupInstances": {
+      "value": [
+        {
+          "dataSourceInfo": {
+            "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "resourceUri": "<resourceUri>"
+          },
+          "name": "<name>",
+          "policyInfo": {
+            "policyName": "<policyName>",
+            "policyParameters": {
+              "backupDatasourceParametersList": [
+                {
+                  "containersList": "<containersList>",
+                  "objectType": "BlobBackupDatasourceParameters"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "dataSourceInfo": {
+            "datasourceType": "Microsoft.Compute/disks",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Compute/disks",
+            "resourceUri": "<resourceUri>"
+          },
+          "name": "<name>",
+          "policyInfo": {
+            "policyName": "<policyName>",
+            "policyParameters": {
+              "dataStoreParametersList": [
+                {
+                  "dataStoreType": "OperationalStore",
+                  "objectType": "AzureOperationalStoreParameters",
+                  "resourceGroupId": "<resourceGroupId>"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "dataSourceInfo": {
+            "datasourceType": "Microsoft.Compute/disks",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Compute/disks",
+            "resourceUri": "<resourceUri>"
+          },
+          "name": "<name>",
+          "policyInfo": {
+            "policyName": "<policyName>",
+            "policyParameters": {
+              "dataStoreParametersList": [
+                {
+                  "dataStoreType": "OperationalStore",
+                  "objectType": "AzureOperationalStoreParameters",
+                  "resourceGroupId": "<resourceGroupId>"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
     "backupPolicies": {
       "value": [
         {
-          "name": "DefaultPolicy",
+          "name": "<name>",
           "properties": {
             "datasourceTypes": [
               "Microsoft.Compute/disks"
@@ -576,9 +702,9 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
                   "objectType": "ScheduleBasedTriggerContext",
                   "schedule": {
                     "repeatingTimeIntervals": [
-                      "R/2022-05-31T23:30:00+01:00/P1D"
+                      "R/2025-03-31T00:00:00+04:00/P1D"
                     ],
-                    "timeZone": "W. Europe Standard Time"
+                    "timeZone": "Arabian Standard Time"
                   },
                   "taggingCriteria": [
                     {
@@ -612,11 +738,89 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
               }
             ]
           }
+        },
+        {
+          "name": "<name>",
+          "properties": {
+            "datasourceTypes": [
+              "Microsoft.Storage/storageAccounts/blobServices"
+            ],
+            "objectType": "BackupPolicy",
+            "policyRules": [
+              {
+                "isDefault": true,
+                "lifecycles": [
+                  {
+                    "deleteAfter": {
+                      "duration": "P30D",
+                      "objectType": "AbsoluteDeleteOption"
+                    },
+                    "sourceDataStore": {
+                      "dataStoreType": "OperationalStore",
+                      "objectType": "DataStoreInfoBase"
+                    },
+                    "targetDataStoreCopySettings": []
+                  }
+                ],
+                "name": "Default",
+                "objectType": "AzureRetentionRule"
+              },
+              {
+                "isDefault": true,
+                "lifecycles": [
+                  {
+                    "deleteAfter": {
+                      "duration": "P90D",
+                      "objectType": "AbsoluteDeleteOption"
+                    },
+                    "sourceDataStore": {
+                      "dataStoreType": "VaultStore",
+                      "objectType": "DataStoreInfoBase"
+                    },
+                    "targetDataStoreCopySettings": []
+                  }
+                ],
+                "name": "Default",
+                "objectType": "AzureRetentionRule"
+              },
+              {
+                "backupParameters": {
+                  "backupType": "Discrete",
+                  "objectType": "AzureBackupParams"
+                },
+                "dataStore": {
+                  "dataStoreType": "VaultStore",
+                  "objectType": "DataStoreInfoBase"
+                },
+                "name": "BackupDaily",
+                "objectType": "AzureBackupRule",
+                "trigger": {
+                  "objectType": "ScheduleBasedTriggerContext",
+                  "schedule": {
+                    "repeatingTimeIntervals": [
+                      "R/2025-03-31T00:00:00+04:00/P1D"
+                    ],
+                    "timeZone": "Arabian Standard Time"
+                  },
+                  "taggingCriteria": [
+                    {
+                      "isDefault": true,
+                      "taggingPriority": 99,
+                      "tagInfo": {
+                        "id": "Default_",
+                        "tagName": "Default"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
-    "location": {
-      "value": "<location>"
+    "immutabilitySettingState": {
+      "value": "Unlocked"
     },
     "lock": {
       "value": {
@@ -675,9 +879,79 @@ using 'br/public:avm/res/data-protection/backup-vault:<version>'
 param name = 'dpbvmax001'
 // Non-required parameters
 param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
+param backupInstances = [
+  {
+    dataSourceInfo: {
+      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+      resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Storage/storageAccounts'
+      resourceUri: '<resourceUri>'
+    }
+    name: '<name>'
+    policyInfo: {
+      policyName: '<policyName>'
+      policyParameters: {
+        backupDatasourceParametersList: [
+          {
+            containersList: '<containersList>'
+            objectType: 'BlobBackupDatasourceParameters'
+          }
+        ]
+      }
+    }
+  }
+  {
+    dataSourceInfo: {
+      datasourceType: 'Microsoft.Compute/disks'
+      resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Compute/disks'
+      resourceUri: '<resourceUri>'
+    }
+    name: '<name>'
+    policyInfo: {
+      policyName: '<policyName>'
+      policyParameters: {
+        dataStoreParametersList: [
+          {
+            dataStoreType: 'OperationalStore'
+            objectType: 'AzureOperationalStoreParameters'
+            resourceGroupId: '<resourceGroupId>'
+          }
+        ]
+      }
+    }
+  }
+  {
+    dataSourceInfo: {
+      datasourceType: 'Microsoft.Compute/disks'
+      resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Compute/disks'
+      resourceUri: '<resourceUri>'
+    }
+    name: '<name>'
+    policyInfo: {
+      policyName: '<policyName>'
+      policyParameters: {
+        dataStoreParametersList: [
+          {
+            dataStoreType: 'OperationalStore'
+            objectType: 'AzureOperationalStoreParameters'
+            resourceGroupId: '<resourceGroupId>'
+          }
+        ]
+      }
+    }
+  }
+]
 param backupPolicies = [
   {
-    name: 'DefaultPolicy'
+    name: '<name>'
     properties: {
       datasourceTypes: [
         'Microsoft.Compute/disks'
@@ -699,9 +973,9 @@ param backupPolicies = [
             objectType: 'ScheduleBasedTriggerContext'
             schedule: {
               repeatingTimeIntervals: [
-                'R/2022-05-31T23:30:00+01:00/P1D'
+                'R/2025-03-31T00:00:00+04:00/P1D'
               ]
-              timeZone: 'W. Europe Standard Time'
+              timeZone: 'Arabian Standard Time'
             }
             taggingCriteria: [
               {
@@ -736,8 +1010,86 @@ param backupPolicies = [
       ]
     }
   }
+  {
+    name: '<name>'
+    properties: {
+      datasourceTypes: [
+        'Microsoft.Storage/storageAccounts/blobServices'
+      ]
+      objectType: 'BackupPolicy'
+      policyRules: [
+        {
+          isDefault: true
+          lifecycles: [
+            {
+              deleteAfter: {
+                duration: 'P30D'
+                objectType: 'AbsoluteDeleteOption'
+              }
+              sourceDataStore: {
+                dataStoreType: 'OperationalStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              targetDataStoreCopySettings: []
+            }
+          ]
+          name: 'Default'
+          objectType: 'AzureRetentionRule'
+        }
+        {
+          isDefault: true
+          lifecycles: [
+            {
+              deleteAfter: {
+                duration: 'P90D'
+                objectType: 'AbsoluteDeleteOption'
+              }
+              sourceDataStore: {
+                dataStoreType: 'VaultStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              targetDataStoreCopySettings: []
+            }
+          ]
+          name: 'Default'
+          objectType: 'AzureRetentionRule'
+        }
+        {
+          backupParameters: {
+            backupType: 'Discrete'
+            objectType: 'AzureBackupParams'
+          }
+          dataStore: {
+            dataStoreType: 'VaultStore'
+            objectType: 'DataStoreInfoBase'
+          }
+          name: 'BackupDaily'
+          objectType: 'AzureBackupRule'
+          trigger: {
+            objectType: 'ScheduleBasedTriggerContext'
+            schedule: {
+              repeatingTimeIntervals: [
+                'R/2025-03-31T00:00:00+04:00/P1D'
+              ]
+              timeZone: 'Arabian Standard Time'
+            }
+            taggingCriteria: [
+              {
+                isDefault: true
+                taggingPriority: 99
+                tagInfo: {
+                  id: 'Default_'
+                  tagName: 'Default'
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
 ]
-param location = '<location>'
+param immutabilitySettingState = 'Unlocked'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -774,9 +1126,11 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -785,7 +1139,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: 'backupVaultDeployment'
   params: {
     // Required parameters
     name: 'dpbvwaf001'
@@ -854,7 +1207,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       }
     ]
     immutabilitySettingState: 'Locked'
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -956,9 +1308,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     "immutabilitySettingState": {
       "value": "Locked"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -1054,7 +1403,6 @@ param backupPolicies = [
   }
 ]
 param immutabilitySettingState = 'Locked'
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -1083,6 +1431,7 @@ param softDeleteSettings = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureMonitorAlertSettingsAlertsForAllJobFailures`](#parameter-azuremonitoralertsettingsalertsforalljobfailures) | string | Settings for Azure Monitor based alerts for job failures. |
+| [`backupInstances`](#parameter-backupinstances) | array | List of all backup instances. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION. |
 | [`dataStoreType`](#parameter-datastoretype) | string | The datastore type to use. ArchiveStore does not support ZoneRedundancy. |
@@ -1119,6 +1468,129 @@ Settings for Azure Monitor based alerts for job failures.
     'Enabled'
   ]
   ```
+
+### Parameter: `backupInstances`
+
+List of all backup instances.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataSourceInfo`](#parameter-backupinstancesdatasourceinfo) | object | The data source info for the backup instance. |
+| [`name`](#parameter-backupinstancesname) | string | The name of the backup instance. |
+| [`policyInfo`](#parameter-backupinstancespolicyinfo) | object | The policy info for the backup instance. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`friendlyName`](#parameter-backupinstancesfriendlyname) | string | The friendly name of the backup instance. |
+
+### Parameter: `backupInstances.dataSourceInfo`
+
+The data source info for the backup instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`datasourceType`](#parameter-backupinstancesdatasourceinfodatasourcetype) | string | The data source type of the resource. |
+| [`resourceID`](#parameter-backupinstancesdatasourceinforesourceid) | string | The resource ID of the resource. |
+| [`resourceLocation`](#parameter-backupinstancesdatasourceinforesourcelocation) | string | The location of the data source. |
+| [`resourceName`](#parameter-backupinstancesdatasourceinforesourcename) | string | Unique identifier of the resource in the context of parent. |
+| [`resourceType`](#parameter-backupinstancesdatasourceinforesourcetype) | string | The resource type of the data source. |
+| [`resourceUri`](#parameter-backupinstancesdatasourceinforesourceuri) | string | The Uri of the resource. |
+
+### Parameter: `backupInstances.dataSourceInfo.datasourceType`
+
+The data source type of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceInfo.resourceID`
+
+The resource ID of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceInfo.resourceLocation`
+
+The location of the data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceInfo.resourceName`
+
+Unique identifier of the resource in the context of parent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceInfo.resourceType`
+
+The resource type of the data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceInfo.resourceUri`
+
+The Uri of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.name`
+
+The name of the backup instance.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.policyInfo`
+
+The policy info for the backup instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`policyName`](#parameter-backupinstancespolicyinfopolicyname) | string | The name of the backup instance policy. |
+| [`policyParameters`](#parameter-backupinstancespolicyinfopolicyparameters) | object | Policy parameters for the backup instance. |
+
+### Parameter: `backupInstances.policyInfo.policyName`
+
+The name of the backup instance policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.policyInfo.policyParameters`
+
+Policy parameters for the backup instance.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `backupInstances.friendlyName`
+
+The friendly name of the backup instance.
+
+- Required: No
+- Type: string
 
 ### Parameter: `backupPolicies`
 
@@ -1266,6 +1738,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1285,6 +1758,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1498,7 +1978,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -1651,4 +2131,4 @@ backupPolicies: [
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

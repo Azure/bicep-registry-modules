@@ -19,11 +19,33 @@ param resourceId string?
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
 param useFromLocation string
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource cache 'Microsoft.ApiManagement/service/caches@2022-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-cache.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource cache 'Microsoft.ApiManagement/service/caches@2024-05-01' = {
   name: name
   parent: service
   properties: {

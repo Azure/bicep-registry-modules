@@ -2,6 +2,14 @@
 
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
+You can reference the module as follows:
+```bicep
+module gallery 'br/public:avm/res/compute/gallery:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,13 +22,13 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Compute/galleries` | 2024-03-03 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_galleries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries)</li></ul> |
+| `Microsoft.Compute/galleries/applications` | 2024-03-03 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_galleries_applications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications)</li></ul> |
+| `Microsoft.Compute/galleries/images` | 2024-03-03 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_galleries_images.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images)</li></ul> |
 
 ## Usage examples
 
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,12 +55,8 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: 'galleryDeployment'
   params: {
-    // Required parameters
     name: 'cgmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -67,13 +73,8 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "cgmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -89,10 +90,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/compute/gallery:<version>'
 
-// Required parameters
 param name = 'cgmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -102,6 +100,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -109,7 +109,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: 'galleryDeployment'
   params: {
     // Required parameters
     name: 'cgmax001'
@@ -808,6 +807,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -815,7 +816,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module gallery 'br/public:avm/res/compute/gallery:<version>' = {
-  name: 'galleryDeployment'
   params: {
     // Required parameters
     name: 'cgwaf001'
@@ -838,7 +838,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         osType: 'Windows'
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -887,9 +886,6 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -932,7 +928,6 @@ param images = [
     osType: 'Windows'
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -956,7 +951,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applications`](#parameter-applications) | array | Applications to create. |
-| [`description`](#parameter-description) | string | Description of the Azure Shared Image Gallery. |
+| [`description`](#parameter-description) | string | Description of the Azure Compute Gallery. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`images`](#parameter-images) | array | Images to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1276,7 +1271,7 @@ Tags for all resources.
 
 ### Parameter: `description`
 
-Description of the Azure Shared Image Gallery.
+Description of the Azure Compute Gallery.
 
 - Required: No
 - Type: string
@@ -1323,7 +1318,8 @@ Images to create.
 | [`privacyStatementUri`](#parameter-imagesprivacystatementuri) | string | The privacy statement uri. |
 | [`purchasePlan`](#parameter-imagespurchaseplan) | object | Describes the gallery image definition purchase plan. This is used by marketplace images. |
 | [`releaseNoteUri`](#parameter-imagesreleasenoteuri) | string | The release note uri. Has to be a valid URL. |
-| [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`. |
+| [`securityType`](#parameter-imagessecuritytype) | string | The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required. |
+| [`tags`](#parameter-imagestags) | object | Tags for all the image. |
 | [`vCPUs`](#parameter-imagesvcpus) | object | Describes the resource range (1-128 CPU cores). Defaults to min=1, max=4. |
 
 ### Parameter: `images.identifier`
@@ -1570,7 +1566,7 @@ The release note uri. Has to be a valid URL.
 
 ### Parameter: `images.securityType`
 
-The security type of the image. Requires a hyperVGeneration V2. Defaults to `Standard`.
+The security type of the image. Requires a hyperVGeneration V2. Note, if storing images for e.g., DevBoxes, 'TrustedLaunch' is required.
 
 - Required: No
 - Type: string
@@ -1585,6 +1581,13 @@ The security type of the image. Requires a hyperVGeneration V2. Defaults to `Sta
     'TrustedLaunchSupported'
   ]
   ```
+
+### Parameter: `images.tags`
+
+Tags for all the image.
+
+- Required: No
+- Type: object
 
 ### Parameter: `images.vCPUs`
 
@@ -1636,6 +1639,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1655,6 +1659,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1807,7 +1818,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 
@@ -1827,4 +1839,4 @@ Once this bug has been resolved, the max test will be updated to deploy an image
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

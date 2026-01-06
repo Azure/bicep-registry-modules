@@ -28,5 +28,10 @@ function Get-GithubTeamMembersLogin {
 
     $teamMembers = (gh api -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' /orgs/$OrgName/teams/$TeamName/members) | ConvertFrom-Json -Depth 100
 
+    if ($teamMembers.message -eq 'Not Found') {
+        Write-Warning "Team [$TeamName] not found in organization [$OrgName]"
+        return @()
+    }
+
     return $teamMembers | Select-Object -ExpandProperty login
 }

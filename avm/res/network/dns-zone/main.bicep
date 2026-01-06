@@ -7,46 +7,48 @@ metadata description = 'This module deploys a Public DNS zone.'
 param name string
 
 @description('Optional. Array of A records.')
-param a aType
+param a aType[]?
 
 @description('Optional. Array of AAAA records.')
-param aaaa aaaaType
+param aaaa aaaaType[]?
 
 @description('Optional. Array of CNAME records.')
-param cname cnameType
+param cname cnameType[]?
 
 @description('Optional. Array of CAA records.')
-param caa caaType
+param caa caaType[]?
 
 @description('Optional. Array of MX records.')
-param mx mxType
+param mx mxType[]?
 
 @description('Optional. Array of NS records.')
-param ns nsType
+param ns nsType[]?
 
 @description('Optional. Array of PTR records.')
-param ptr ptrType
+param ptr ptrType[]?
 
 @description('Optional. Array of SOA records.')
-param soa soaType
+param soa soaType[]?
 
 @description('Optional. Array of SRV records.')
-param srv srvType
+param srv srvType[]?
 
 @description('Optional. Array of TXT records.')
-param txt txtType
+param txt txtType[]?
 
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/dnsZones@2018-05-01'>.tags?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -275,9 +277,9 @@ resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: dnsZone
 }
@@ -317,283 +319,201 @@ output nameServers array = dnsZone.properties.nameServers
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
+@export()
+@description('Type definition for an A record.')
 type aType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/A@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
 
   @description('Optional. The list of A records in the record set.')
-  aRecords: {
-    @description('Required. The IPv4 address of this A record.')
-    ipv4Address: string
-  }[]?
-}[]?
+  aRecords: resourceInput<'Microsoft.Network/dnsZones/A@2018-05-01'>.properties.ARecords?
+}
 
+@export()
+@description('Type definition for an AAAA record.')
 type aaaaType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/AAAA@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
 
   @description('Optional. The list of AAAA records in the record set.')
-  aaaaRecords: {
-    @description('Required. The IPv6 address of this AAAA record.')
-    ipv6Address: string
-  }[]?
-}[]?
+  aaaaRecords: resourceInput<'Microsoft.Network/dnsZones/AAAA@2018-05-01'>.properties.AAAARecords?
+}
 
+@export()
+@description('Type definition for a CNAME record.')
 type cnameType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/CNAME@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
   targetResourceId: string?
 
   @description('Optional. The CNAME record in the record set.')
-  cnameRecord: {
-    @description('Required. The canonical name of the CNAME record.')
-    cname: string
-  }?
-}[]?
+  cnameRecord: resourceInput<'Microsoft.Network/dnsZones/CNAME@2018-05-01'>.properties.CNAMERecord?
+}
 
+@export()
+@description('Type definition for a CAA record.')
 type caaType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of CAA records in the record set.')
-  caaRecords: {
-    @description('Required. The flags for this CAA record as an integer between 0 and 255.')
-    @minValue(0)
-    @maxValue(255)
-    flags: int
+  caaRecords: resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.caaRecords?
+}
 
-    @description('Required. The tag for this CAA record..')
-    tag: string
-
-    @description('Required. The value for this CAA record.')
-    value: string
-  }[]?
-}[]?
-
+@export()
+@description('Type definition for an MX record.')
 type mxType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/MX@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of MX records in the record set.')
-  mxRecords: {
-    @description('Required. The domain name of the mail host for this MX record.')
-    exchange: string
+  mxRecords: resourceInput<'Microsoft.Network/dnsZones/MX@2018-05-01'>.properties.MXRecords?
+}
 
-    @description('Required. The preference value for this MX record.')
-    preference: int
-  }[]?
-}[]?
-
+@export()
+@description('Type definition for an NS record.')
 type nsType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/NS@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of NS records in the record set.')
-  nsRecords: {
-    @description('Required. The name server name for this NS record.')
-    nsdname: string
-  }[]?
-}[]?
+  nsRecords: resourceInput<'Microsoft.Network/dnsZones/NS@2018-05-01'>.properties.NSRecords?
+}
 
+@export()
+@description('Type definition for a PTR record.')
 type ptrType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/PTR@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of PTR records in the record set.')
-  ptrRecords: {
-    @description('Required. The PTR target domain name for this PTR record.')
-    ptrdname: string
-  }[]?
-}[]?
+  ptrRecords: resourceInput<'Microsoft.Network/dnsZones/PTR@2018-05-01'>.properties.PTRRecords?
+}
 
+@export()
+@description('Type definition for an SOA record.')
 type soaType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/SOA@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The SOA record in the record set.')
-  soaRecord: {
-    @description('Required. The email contact for this SOA record.')
-    email: string
+  soaRecord: resourceInput<'Microsoft.Network/dnsZones/SOA@2018-05-01'>.properties.SOARecord?
+}
 
-    @description('Required. The expire time for this SOA record.')
-    expireTime: int
-
-    @description('Required. The domain name of the authoritative name server for this SOA record.')
-    host: string
-
-    @description('Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration.')
-    minimumTtl: int
-
-    @description('Required. The refresh value for this SOA record.')
-    refreshTime: int
-
-    @description('Required. The retry time for this SOA record.')
-    retryTime: int
-
-    @description('Required. The serial number for this SOA record.')
-    serialNumber: int
-  }?
-}[]?
-
+@export()
+@description('Type definition for an SRV record.')
 type srvType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/SRV@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of SRV records in the record set.')
-  srvRecords: {
-    @description('Required. The priority value for this SRV record.')
-    priority: int
+  srvRecords: resourceInput<'Microsoft.Network/dnsZones/SRV@2018-05-01'>.properties.SRVRecords?
+}
 
-    @description('Required. The weight value for this SRV record.')
-    weight: int
-
-    @description('Required. The port value for this SRV record.')
-    port: int
-
-    @description('Required. The target domain name for this SRV record.')
-    target: string
-  }[]?
-}[]?
-
+@export()
+@description('Type definition for a TXT record.')
 type txtType = {
   @description('Required. The name of the record.')
   name: string
 
   @description('Optional. The metadata of the record.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.Network/dnsZones/TXT@2018-05-01'>.properties.metadata?
 
   @description('Optional. The TTL of the record.')
   ttl: int?
 
   @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. The list of TXT records in the record set.')
-  txtRecords: {
-    @description('Required. The text value of this TXT record.')
-    value: string[]
-  }[]?
-}[]?
+  txtRecords: resourceInput<'Microsoft.Network/dnsZones/TXT@2018-05-01'>.properties.TXTRecords?
+}

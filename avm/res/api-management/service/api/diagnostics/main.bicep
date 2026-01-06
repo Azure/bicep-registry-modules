@@ -22,10 +22,10 @@ param name string = 'local'
 param alwaysLog string = 'allErrors'
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-param backend object = {}
+param backend resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.backend?
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-param frontend object = {}
+param frontend resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.frontend?
 
 @allowed([
   'Legacy'
@@ -59,19 +59,41 @@ param samplingPercentage int = 100
 @description('Optional. The verbosity level applied to traces emitted by trace policies.')
 param verbosity string = 'error'
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource api 'apis@2021-08-01' existing = {
+  resource api 'apis@2024-05-01' existing = {
     name: apiName
   }
 
-  resource logger 'loggers@2021-08-01' existing = {
+  resource logger 'loggers@2024-05-01' existing = {
     name: loggerName
   }
 }
 
-resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2022-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgm-apidiagnostics.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource diagnostic 'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01' = {
   name: name
   parent: service::api
   properties: {

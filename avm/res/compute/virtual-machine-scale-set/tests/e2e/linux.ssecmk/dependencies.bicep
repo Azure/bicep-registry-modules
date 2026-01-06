@@ -21,7 +21,7 @@ param location string = resourceGroup().location
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -41,7 +41,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -59,7 +59,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2024-11-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -67,7 +67,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2021-04-01' = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   name: diskEncryptionSetName
   location: location
   identity: {
@@ -97,7 +97,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -115,7 +115,7 @@ resource msiRGContrRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-
   }
 }
 
-resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: sshDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -126,7 +126,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
     }
   }
   properties: {
-    azPowerShellVersion: '9.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
@@ -136,7 +136,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
   ]
 }
 
-resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
+resource sshKey 'Microsoft.Compute/sshPublicKeys@2024-11-01' = {
   name: sshKeyName
   location: location
   properties: {

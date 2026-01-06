@@ -15,6 +15,9 @@ param location string = resourceGroup().location
 ])
 param applicationGroupType string
 
+@sys.description('Optional. Boolean representing whether the applicationGroup is show in the feed.')
+param showInFeed bool = true
+
 @sys.description('Required. Name of the Host Pool to be linked to this Application Group.')
 param hostpoolName string
 
@@ -22,49 +25,109 @@ param hostpoolName string
 param friendlyName string = name
 
 @sys.description('Optional. Description of the application group.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
-param applications array = []
+param applications applicationType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03'>.tags?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var builtInRoleNames = {
-  Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-  Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-  Reader: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-  'Role Based Access Control Administrator': '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  'User Access Administrator': '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  'Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/ca6382a4-1721-4bcf-a114-ff0c70227b6b'
-  'Desktop Virtualization Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/86240b0e-9422-4c43-887b-b61143f32ba8'
-  'Desktop Virtualization Application Group Reader': '/providers/Microsoft.Authorization/roleDefinitions/aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
-  'Desktop Virtualization Contributor': '/providers/Microsoft.Authorization/roleDefinitions/082f0a83-3be5-4ba1-904c-961cca79b387'
-  'Desktop Virtualization Host Pool Contributor': '/providers/Microsoft.Authorization/roleDefinitions/e307426c-f9b6-4e81-87de-d99efb3c32bc'
-  'Desktop Virtualization Host Pool Reader': '/providers/Microsoft.Authorization/roleDefinitions/ceadfde2-b300-400a-ab7b-6143895aa822'
-  'Desktop Virtualization Power On Off Contributor': '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e'
-  'Desktop Virtualization Reader': '/providers/Microsoft.Authorization/roleDefinitions/49a72310-ab8d-41df-bbb0-79b649203868'
-  'Desktop Virtualization Session Host Operator': '/providers/Microsoft.Authorization/roleDefinitions/2ad6aaab-ead9-4eaa-8ac5-da422f562408'
-  'Desktop Virtualization User': '/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
-  'Desktop Virtualization User Session Operator': '/providers/Microsoft.Authorization/roleDefinitions/ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
-  'Desktop Virtualization Virtual Machine Contributor': '/providers/Microsoft.Authorization/roleDefinitions/a959dbd1-f747-45e3-8ba6-dd80f235f97c'
-  'Desktop Virtualization Workspace Contributor': '/providers/Microsoft.Authorization/roleDefinitions/21efdde3-836f-432b-bf3d-3e8e734d4b2b'
-  'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
-  'Managed Application Contributor Role': '/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e'
-  'Managed Application Operator Role': '/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae'
-  'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Application Group Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ca6382a4-1721-4bcf-a114-ff0c70227b6b'
+  )
+  'Desktop Virtualization Application Group Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '86240b0e-9422-4c43-887b-b61143f32ba8'
+  )
+  'Desktop Virtualization Application Group Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
+  )
+  'Desktop Virtualization Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '082f0a83-3be5-4ba1-904c-961cca79b387'
+  )
+  'Desktop Virtualization Host Pool Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e307426c-f9b6-4e81-87de-d99efb3c32bc'
+  )
+  'Desktop Virtualization Host Pool Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ceadfde2-b300-400a-ab7b-6143895aa822'
+  )
+  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '40c5ff49-9181-41f8-ae61-143b0e78555e'
+  )
+  'Desktop Virtualization Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '49a72310-ab8d-41df-bbb0-79b649203868'
+  )
+  'Desktop Virtualization Session Host Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2ad6aaab-ead9-4eaa-8ac5-da422f562408'
+  )
+  'Desktop Virtualization User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
+  )
+  'Desktop Virtualization User Session Operator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
+  )
+  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+  )
+  'Desktop Virtualization Workspace Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '21efdde3-836f-432b-bf3d-3e8e734d4b2b'
+  )
+  'Desktop Virtualization Workspace Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
+  )
+  'Managed Application Contributor Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '641177b8-a67a-45b9-a033-47bc880bb21e'
+  )
+  'Managed Application Operator Role': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'c7393b34-138c-406f-901b-d8cf2b17e6ae'
+  )
+  'Managed Applications Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b9331d33-8a36-4f8c-b097-4f54124fdb44'
+  )
 }
 
 var formattedRoleAssignments = [
@@ -97,36 +160,40 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-03-01-preview' = {
   name: name
   location: location
   tags: tags
   properties: {
-    hostPoolArmPath: appGroup_hostpool.id
+    hostPoolArmPath: hostpool.id
     friendlyName: friendlyName
     description: description
     applicationGroupType: applicationGroupType
+    showInFeed: showInFeed
   }
 }
 
 module appGroup_applications 'application/main.bicep' = [
-  for (application, index) in applications: {
+  for (application, index) in applications ?? []: {
     name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
     params: {
       name: application.name
       applicationGroupName: appGroup.name
-      description: contains(application, 'description') ? application.description : ''
-      friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
+      description: application.?description
+      friendlyName: application.?friendlyName ?? appGroup.name
       filePath: application.filePath
-      commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-      commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-      showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-      iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-      iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+      commandLineSetting: application.?commandLineSetting
+      commandLineArguments: application.?commandLineArguments
+      showInPortal: application.?showInPortal
+      iconPath: application.?iconPath ?? application.filePath
+      iconIndex: application.?iconIndex
+      applicationType: application.?applicationType
+      msixPackageApplicationId: application.?msixPackageApplicationId
+      msixPackageFamilyName: application.?msixPackageFamilyName
     }
   }
 ]
@@ -135,9 +202,9 @@ resource appGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: appGroup
 }
@@ -192,75 +259,46 @@ output name string = appGroup.name
 @sys.description('The location of the scaling plan.')
 output location string = appGroup.location
 
-// ================ //
-// Definitions      //
-// ================ //
+// =============== //
+//   Definitions   //
+// =============== //
 
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+@sys.description('The type of an application.')
+type applicationType = {
+  @sys.description('Required. Name of the Application to be created in the Application Group.')
+  name: string
 
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
+  @sys.description('Optional. Description of the Application.')
   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @sys.description('Required. Friendly name of the Application.')
+  friendlyName: string
 
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @sys.description('Required. Specifies a path for the executable file for the Application.')
+  filePath: string
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @sys.description('Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.')
+  commandLineSetting: ('Allow' | 'DoNotAllow' | 'Require')?
 
-type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
-  name: string?
+  @sys.description('Optional. Command-Line Arguments for the Application.')
+  commandLineArguments: string?
 
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
+  showInPortal: bool?
 
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.')
-    categoryGroup: string?
+  @sys.description('Optional. Path to icon.')
+  iconPath: string?
 
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
+  @sys.description('Optional. Index of the icon.')
+  iconIndex: int?
 
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
+  @sys.description('Optional. Resource Type of Application.')
+  applicationType: ('InBuilt' | 'MsixApplication')?
 
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
+  @sys.description('Optional. Specifies the package application Id for MSIX applications.')
+  msixPackageApplicationId: string?
 
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+  @sys.description('Optional. Specifies the package family name for MSIX applications.')
+  msixPackageFamilyName: string?
+}

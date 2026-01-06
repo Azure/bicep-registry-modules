@@ -1,0 +1,150 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "17945301790696727841"
+    },
+    "name": "Event Grid Domain Event Subscriptions",
+    "description": "This module deploys an Event Grid Domain Event Subscription."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Event Subscription."
+      }
+    },
+    "domainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent event grid domain. Required if the template is used in a standalone deployment."
+      }
+    },
+    "deadLetterDestination": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Dead Letter Destination. See DeadLetterDestination objects for full shape."
+      }
+    },
+    "deadLetterWithResourceIdentity": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Dead Letter with Resource Identity Configuration. See DeadLetterWithResourceIdentity objects for full shape."
+      }
+    },
+    "deliveryWithResourceIdentity": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Delivery with Resource Identity Configuration. See DeliveryWithResourceIdentity objects for full shape."
+      }
+    },
+    "destination": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The destination for the event subscription. See EventSubscriptionDestination objects for full shape."
+      }
+    },
+    "eventDeliverySchema": {
+      "type": "string",
+      "defaultValue": "EventGridSchema",
+      "allowedValues": [
+        "CloudEventSchemaV1_0",
+        "CustomInputSchema",
+        "EventGridSchema",
+        "EventGridEvent"
+      ],
+      "metadata": {
+        "description": "Optional. The event delivery schema for the event subscription."
+      }
+    },
+    "expirationTimeUtc": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
+      }
+    },
+    "filter": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The filter for the event subscription. See EventSubscriptionFilter objects for full shape."
+      }
+    },
+    "labels": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of user defined labels."
+      }
+    },
+    "retryPolicy": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The retry policy for events. See RetryPolicy objects for full shape."
+      }
+    }
+  },
+  "resources": {
+    "domain": {
+      "existing": true,
+      "type": "Microsoft.EventGrid/domains",
+      "apiVersion": "2025-02-15",
+      "name": "[parameters('domainName')]"
+    },
+    "eventSubscription": {
+      "type": "Microsoft.EventGrid/domains/eventSubscriptions",
+      "apiVersion": "2025-02-15",
+      "name": "[format('{0}/{1}', parameters('domainName'), parameters('name'))]",
+      "properties": {
+        "deadLetterDestination": "[parameters('deadLetterDestination')]",
+        "deadLetterWithResourceIdentity": "[parameters('deadLetterWithResourceIdentity')]",
+        "deliveryWithResourceIdentity": "[parameters('deliveryWithResourceIdentity')]",
+        "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
+        "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
+        "expirationTimeUtc": "[coalesce(parameters('expirationTimeUtc'), '')]",
+        "filter": "[coalesce(parameters('filter'), createObject('advancedFilters', createArray(), 'enableAdvancedFilteringOnArrays', false(), 'includedEventTypes', createArray(), 'isSubjectCaseSensitive', false(), 'subjectBeginsWith', '', 'subjectEndsWith', ''))]",
+        "labels": "[coalesce(parameters('labels'), createArray())]",
+        "retryPolicy": "[parameters('retryPolicy')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the event subscription."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the event subscription."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/domains/eventSubscriptions', parameters('domainName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the event subscription was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('domain', '2025-02-15', 'full').location]"
+    }
+  }
+}

@@ -121,6 +121,7 @@ var resourceNames = {
     naming.resourceTypeAbbreviations.eventGridSubscription
   )
   workloadCertificate: '${workloadName}-cert'
+  acrDeploymentPoolNsg: '${naming.resourceTypeAbbreviations.networkSecurityGroup}-${replace(namingBase, resourceTypeToken, 'deploymentpool')}'
 }
 
 output resourcesNames object = resourceNames

@@ -2,21 +2,30 @@
 
 This module deploys a Local Network Gateway.
 
+You can reference the module as follows:
+```bicep
+module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/localNetworkGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/localNetworkGateways) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Network/localNetworkGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_localnetworkgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/localNetworkGateways)</li></ul> |
 
 ## Usage examples
 
@@ -34,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -41,16 +52,15 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: 'localNetworkGatewayDeployment'
   params: {
     // Required parameters
-    localAddressPrefixes: [
-      '192.168.1.0/24'
-    ]
     localGatewayPublicIpAddress: '8.8.8.8'
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '192.168.1.0/24'
+      ]
+    }
     name: 'nlngmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -68,20 +78,18 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "localAddressPrefixes": {
-      "value": [
-        "192.168.1.0/24"
-      ]
-    },
     "localGatewayPublicIpAddress": {
       "value": "8.8.8.8"
     },
+    "localNetworkAddressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "192.168.1.0/24"
+        ]
+      }
+    },
     "name": {
       "value": "nlngmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -98,13 +106,13 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 using 'br/public:avm/res/network/local-network-gateway:<version>'
 
 // Required parameters
-param localAddressPrefixes = [
-  '192.168.1.0/24'
-]
 param localGatewayPublicIpAddress = '8.8.8.8'
+param localNetworkAddressSpace = {
+  addressPrefixes: [
+    '192.168.1.0/24'
+  ]
+}
 param name = 'nlngmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -114,6 +122,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -121,17 +131,20 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: 'localNetworkGatewayDeployment'
   params: {
     // Required parameters
-    localAddressPrefixes: [
-      '192.168.1.0/24'
-    ]
     localGatewayPublicIpAddress: '8.8.8.8'
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '192.168.1.0/24'
+      ]
+    }
     name: 'nlngmax001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -178,23 +191,25 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "localAddressPrefixes": {
-      "value": [
-        "192.168.1.0/24"
-      ]
-    },
     "localGatewayPublicIpAddress": {
       "value": "8.8.8.8"
+    },
+    "localNetworkAddressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "192.168.1.0/24"
+        ]
+      }
     },
     "name": {
       "value": "nlngmax001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
+    "bgpSettings": {
+      "value": {
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
+      }
     },
     "location": {
       "value": "<location>"
@@ -248,14 +263,18 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 using 'br/public:avm/res/network/local-network-gateway:<version>'
 
 // Required parameters
-param localAddressPrefixes = [
-  '192.168.1.0/24'
-]
 param localGatewayPublicIpAddress = '8.8.8.8'
+param localNetworkAddressSpace = {
+  addressPrefixes: [
+    '192.168.1.0/24'
+  ]
+}
 param name = 'nlngmax001'
 // Non-required parameters
-param localAsn = '65123'
-param localBgpPeeringAddress = '192.168.1.5'
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
+}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -294,6 +313,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -301,21 +322,19 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<version>' = {
-  name: 'localNetworkGatewayDeployment'
   params: {
     // Required parameters
-    localAddressPrefixes: [
-      '192.168.1.0/24'
-    ]
     localGatewayPublicIpAddress: '8.8.8.8'
+    localNetworkAddressSpace: {
+      addressPrefixes: [
+        '192.168.1.0/24'
+      ]
+    }
     name: 'nlngwaf001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -339,31 +358,24 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "localAddressPrefixes": {
-      "value": [
-        "192.168.1.0/24"
-      ]
-    },
     "localGatewayPublicIpAddress": {
       "value": "8.8.8.8"
+    },
+    "localNetworkAddressSpace": {
+      "value": {
+        "addressPrefixes": [
+          "192.168.1.0/24"
+        ]
+      }
     },
     "name": {
       "value": "nlngwaf001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
+    "bgpSettings": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
       }
     },
     "tags": {
@@ -388,18 +400,17 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 using 'br/public:avm/res/network/local-network-gateway:<version>'
 
 // Required parameters
-param localAddressPrefixes = [
-  '192.168.1.0/24'
-]
 param localGatewayPublicIpAddress = '8.8.8.8'
+param localNetworkAddressSpace = {
+  addressPrefixes: [
+    '192.168.1.0/24'
+  ]
+}
 param name = 'nlngwaf001'
 // Non-required parameters
-param localAsn = '65123'
-param localBgpPeeringAddress = '192.168.1.5'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -417,30 +428,21 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`localAddressPrefixes`](#parameter-localaddressprefixes) | array | List of the local (on-premises) IP address ranges. |
 | [`localGatewayPublicIpAddress`](#parameter-localgatewaypublicipaddress) | string | Public IP of the local gateway. |
+| [`localNetworkAddressSpace`](#parameter-localnetworkaddressspace) | object | Local network site address space configuration. |
 | [`name`](#parameter-name) | string | Name of the Local Network Gateway. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bgpSettings`](#parameter-bgpsettings) | object | Local network gateway's BGP speaker settings. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fqdn`](#parameter-fqdn) | string | FQDN of local network gateway. |
-| [`localAsn`](#parameter-localasn) | string | The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localBgpPeeringAddress`](#parameter-localbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localPeerWeight`](#parameter-localpeerweight) | string | The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-### Parameter: `localAddressPrefixes`
-
-List of the local (on-premises) IP address ranges.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `localGatewayPublicIpAddress`
 
@@ -449,12 +451,70 @@ Public IP of the local gateway.
 - Required: Yes
 - Type: string
 
+### Parameter: `localNetworkAddressSpace`
+
+Local network site address space configuration.
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `name`
 
 Name of the Local Network Gateway.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `bgpSettings`
+
+Local network gateway's BGP speaker settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`localAsn`](#parameter-bgpsettingslocalasn) | int | The BGP speaker's ASN. |
+| [`localBgpPeeringAddress`](#parameter-bgpsettingslocalbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering address with IP configuration ID for virtual network gateway. |
+| [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
+
+### Parameter: `bgpSettings.localAsn`
+
+The BGP speaker's ASN.
+
+- Required: Yes
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `bgpSettings.localBgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bgpSettings.bgpPeeringAddresses`
+
+BGP peering address with IP configuration ID for virtual network gateway.
+
+- Required: No
+- Type: array
+
+### Parameter: `bgpSettings.peerWeight`
+
+The weight added to routes learned from this BGP speaker.
+
+- Required: No
+- Type: int
 
 ### Parameter: `enableTelemetry`
 
@@ -470,31 +530,6 @@ FQDN of local network gateway.
 
 - Required: No
 - Type: string
-- Default: `''`
-
-### Parameter: `localAsn`
-
-The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localBgpPeeringAddress`
-
-The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localPeerWeight`
-
-The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -517,6 +552,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -536,6 +572,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -660,6 +703,14 @@ Tags of the resource.
 | `resourceGroupName` | string | The resource group the local network gateway was deployed into. |
 | `resourceId` | string | The resource ID of the local network gateway. |
 
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

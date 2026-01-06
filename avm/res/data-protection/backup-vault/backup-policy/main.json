@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2595831843524944301"
+      "version": "0.38.33.27573",
+      "templateHash": "7553706802510399581"
     },
     "name": "Data Protection Backup Vault Backup Policies",
     "description": "This module deploys a Data Protection Backup Vault Backup Policy."
@@ -35,7 +35,7 @@
   "resources": [
     {
       "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
       "properties": "[parameters('properties')]"
     }

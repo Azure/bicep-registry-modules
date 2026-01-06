@@ -11,10 +11,10 @@ param appInsightResourceId string
 param webTestName string
 
 @sys.description('Optional. Resource tags. Note: a mandatory tag \'hidden-link\' based on the \'appInsightResourceId\' parameter will be automatically added to the tags defined here.')
-param tags object?
+param tags resourceInput<'Microsoft.Insights/webtests@2022-06-15'>.tags?
 
 @sys.description('Required. The collection of request properties.')
-param request object
+param request resourceInput<'Microsoft.Insights/webtests@2022-06-15'>.properties.Request
 
 @sys.description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -34,7 +34,7 @@ param syntheticMonitorId string = name
 param kind string = 'standard'
 
 @sys.description('Optional. List of where to physically run the tests from to give global coverage for accessibility of your application.')
-param locations array = [
+param locations resourceInput<'Microsoft.Insights/webtests@2022-06-15'>.properties.Locations = [
   {
     Id: 'us-il-ch1-azr'
   }
@@ -65,12 +65,12 @@ param timeout int = 30
 param retryEnabled bool = true
 
 @sys.description('Optional. The collection of validation rule properties.')
-param validationRules object = {}
+param validationRules resourceInput<'Microsoft.Insights/webtests@2022-06-15'>.properties.ValidationRules = {}
 
 @sys.description('Optional. An XML configuration specification for a WebTest.')
-param configuration object?
+param configuration resourceInput<'Microsoft.Insights/webtests@2022-06-15'>.properties.Configuration?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -153,9 +153,9 @@ resource webtest_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: webtest
 }

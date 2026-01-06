@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4329017759962267155"
+      "version": "0.39.26.7824",
+      "templateHash": "13928174215528939368"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table."
@@ -252,7 +252,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -290,11 +290,11 @@
     },
     "retentionInDays": {
       "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "nullable": true,
+      "minValue": 4,
       "maxValue": 730,
       "metadata": {
-        "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
+        "description": "Optional. The table retention in days, between 4 and 730. Don't provide to use the default workspace retention."
       }
     },
     "schema": {
@@ -313,11 +313,11 @@
     },
     "totalRetentionInDays": {
       "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "nullable": true,
+      "minValue": 4,
       "maxValue": 2555,
       "metadata": {
-        "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
+        "description": "Optional. The table total retention in days, between 4 and 2555. Don't provide use the default table retention."
       }
     },
     "roleAssignments": {
@@ -355,20 +355,20 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('workspaceName')]"
     },
     "table": {
       "type": "Microsoft.OperationalInsights/workspaces/tables",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "plan": "[parameters('plan')]",
         "restoredLogs": "[parameters('restoredLogs')]",
-        "retentionInDays": "[parameters('retentionInDays')]",
+        "retentionInDays": "[coalesce(parameters('retentionInDays'), -1)]",
         "schema": "[parameters('schema')]",
         "searchResults": "[parameters('searchResults')]",
-        "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
+        "totalRetentionInDays": "[coalesce(parameters('totalRetentionInDays'), -1)]"
       }
     },
     "table_roleAssignments": {

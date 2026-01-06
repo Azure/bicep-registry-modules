@@ -44,6 +44,8 @@ runs:
           @{
             path = $_
             name = Split-Path (Split-Path $_) -Leaf
+            # if an .e2eignore file exists, the testcase will not be deployed
+            e2eIgnore = Test-Path (Join-Path $moduleFolderPath $_).Replace('main.test.bicep', '.e2eignore')
           }
         } | ConvertTo-Json -Compress
 

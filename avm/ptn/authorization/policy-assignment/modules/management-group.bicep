@@ -68,6 +68,9 @@ param overrides array = []
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array = []
 
+@sys.description('Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.')
+param definitionVersion string?
+
 var identityVar = identity == 'SystemAssigned'
   ? {
       type: identity
@@ -85,7 +88,7 @@ var finalArrayOfManagementGroupsToAssignRbacTo = identity == 'SystemAssigned'
   ? union(additionalManagementGroupsIDsToAssignRbacTo, [managementGroup().name])
   : []
 
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-01-01' = {
   name: name
   location: location
   properties: {
@@ -99,13 +102,14 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01'
     notScopes: !empty(notScopes) ? notScopes : []
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    definitionVersion: definitionVersion
   }
   identity: identityVar
 }
 
 module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-loop.bicep' = [
-  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalManagementGroupsIDsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC'
+  for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(finalArrayOfManagementGroupsToAssignRbacTo) && identity == 'SystemAssigned') {
+    name: 'pol-asi-mg-rbac-mgs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
@@ -117,7 +121,7 @@ module managementGroupRoleAssignments 'management-group-additional-rbac-asi-def-
 
 module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalSubscriptionIDsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-Subs'
+    name: 'pol-asi-mg-rbac-subs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId
@@ -129,7 +133,7 @@ module additionalSubscriptionRoleAssignments 'subscription-additional-rbac-asi-d
 
 module additionalResourceGroupRoleAssignments 'resource-group-additional-rbac-asi-def-loop.bicep' = [
   for roleDefinitionId in roleDefinitionIds: if (!empty(roleDefinitionIds) && !empty(additionalResourceGroupResourceIDsToAssignRbacTo) && identity == 'SystemAssigned') {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-Additional-RBAC-RGs'
+    name: 'pol-asi-mg-rbac-rgs-loop-${uniqueString(managementGroup().name, location, roleDefinitionId, name)}'
     params: {
       name: name
       policyAssignmentIdentityId: policyAssignment.identity.principalId

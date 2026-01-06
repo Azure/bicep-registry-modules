@@ -2,6 +2,14 @@
 
 This module deploys an Activity Log Alert.
 
+You can reference the module as follows:
+```bicep
+module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,10 +21,11 @@ This module deploys an Activity Log Alert.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/activityLogAlerts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-10-01/activityLogAlerts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/activityLogAlerts` | 2020-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_activitylogalerts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-10-01/activityLogAlerts)</li></ul> |
 
 ## Usage examples
 
@@ -34,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -41,7 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: 'activityLogAlertDeployment'
   params: {
     // Required parameters
     conditions: [
@@ -190,6 +200,8 @@ param location = 'global'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -197,7 +209,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: 'activityLogAlertDeployment'
   params: {
     // Required parameters
     conditions: [
@@ -240,6 +251,10 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
       }
     ]
     location: 'global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     roleAssignments: [
       {
         name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
@@ -332,6 +347,12 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
     "location": {
       "value": "global"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -420,6 +441,10 @@ param actions = [
   }
 ]
 param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param roleAssignments = [
   {
     name: 'be96d7a9-6596-40c7-9acd-db6acd5cd41b'
@@ -456,6 +481,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -463,7 +490,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
-  name: 'activityLogAlertDeployment'
   params: {
     // Required parameters
     conditions: [
@@ -505,7 +531,6 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         actionGroupId: '<actionGroupId>'
       }
     ]
-    location: 'global'
     scopes: [
       '<id>'
     ]
@@ -576,9 +601,6 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         }
       ]
     },
-    "location": {
-      "value": "global"
-    },
     "scopes": {
       "value": [
         "<id>"
@@ -645,7 +667,6 @@ param actions = [
     actionGroupId: '<actionGroupId>'
   }
 ]
-param location = 'global'
 param scopes = [
   '<id>'
 ]
@@ -677,6 +698,7 @@ param tags = {
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopes`](#parameter-scopes) | array | The list of resource IDs that this Activity Log Alert is scoped to. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -734,6 +756,50 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `'global'`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
@@ -874,7 +940,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

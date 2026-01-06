@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4731007417584724942"
+      "version": "0.38.33.27573",
+      "templateHash": "12303664773309996921"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -597,7 +597,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -639,7 +639,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -680,7 +680,133 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_2.actionType": {
+      "type": "object",
+      "properties": {
+        "compatibilityLevel": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sqlExpression": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "topic/subscription/rule/main.bicep"
+        }
+      }
+    },
+    "_2.correlationFilterType": {
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Content type of the message."
+          }
+        },
+        "correlationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identifier of the correlation."
+          }
+        },
+        "label": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application specific label."
+          }
+        },
+        "messageId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identifier of the message."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dictionary object for custom filters."
+          }
+        },
+        "replyTo": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Address of the queue to reply to."
+          }
+        },
+        "replyToSessionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Session identifier to reply to."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sessionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Session identifier."
+          }
+        },
+        "to": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Address to send to."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "topic/subscription/rule/main.bicep"
+        }
+      }
+    },
+    "_2.filterTypeType": {
+      "type": "string",
+      "allowedValues": [
+        "CorrelationFilter",
+        "SqlFilter"
+      ],
+      "metadata": {
+        "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "topic/subscription/rule/main.bicep"
         }
       }
     },
@@ -690,156 +816,31 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the service bus namespace topic subscription rule."
+            "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
           }
         },
         "action": {
-          "type": "object",
-          "properties": {
-            "compatibilityLevel": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-              }
-            },
-            "requiresPreprocessing": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-              }
-            },
-            "sqlExpression": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-              }
-            }
-          },
+          "$ref": "#/definitions/_2.actionType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
           }
         },
         "correlationFilter": {
-          "type": "object",
-          "properties": {
-            "contentType": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Content type of the message."
-              }
-            },
-            "correlationId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Identifier of the correlation."
-              }
-            },
-            "label": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Application specific label."
-              }
-            },
-            "messageId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Identifier of the message."
-              }
-            },
-            "properties": {
-              "type": "array",
-              "allowedValues": [
-                {}
-              ],
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. dictionary object for custom filters."
-              }
-            },
-            "replyTo": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Address of the queue to reply to."
-              }
-            },
-            "replyToSessionId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Session identifier to reply to."
-              }
-            },
-            "requiresPreprocessing": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-              }
-            },
-            "sessionId": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Session identifier."
-              }
-            },
-            "to": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Address to send to."
-              }
-            }
-          },
+          "$ref": "#/definitions/_2.correlationFilterType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Properties of correlationFilter."
           }
         },
         "filterType": {
-          "type": "string",
-          "allowedValues": [
-            "CorrelationFilter",
-            "SqlFilter"
-          ],
-          "nullable": true,
+          "$ref": "#/definitions/_2.filterTypeType",
           "metadata": {
-            "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+            "description": "Required. Filter type that is evaluated against a BrokeredMessage."
           }
         },
         "sqlFilter": {
-          "type": "object",
-          "properties": {
-            "compatibilityLevel": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-              }
-            },
-            "requiresPreprocessing": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-              }
-            },
-            "sqlExpression": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-              }
-            }
-          },
+          "$ref": "#/definitions/_2.sqlFilterType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Properties of sqlFilter."
@@ -847,9 +848,40 @@
         }
       },
       "metadata": {
-        "description": "Optional. The type for rules.",
+        "description": "A type for a Service Bus Namespace Topic Subscription Rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "topic/subscription/main.bicep"
+          "sourceTemplate": "topic/subscription/rule/main.bicep"
+        }
+      }
+    },
+    "_2.sqlFilterType": {
+      "type": "object",
+      "properties": {
+        "compatibilityLevel": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sqlExpression": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "topic/subscription/rule/main.bicep"
         }
       }
     },
@@ -1015,7 +1047,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1040,12 +1072,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1073,7 +1112,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1201,6 +1240,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -1215,7 +1257,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1290,7 +1332,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1350,14 +1392,14 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+            "description": "Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions."
           }
         },
         "defaultMessageTimeToLive": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+            "description": "Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
           }
         },
         "duplicateDetectionHistoryTimeWindow": {
@@ -1378,21 +1420,21 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+            "description": "Optional. Queue/Topic name to forward the Dead Letter messages to."
           }
         },
         "forwardTo": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+            "description": "Optional. Queue/Topic name to forward the messages to."
           }
         },
         "isClientAffine": {
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+            "description": "Optional. A value that indicates whether the subscription has an affinity to the client id."
           }
         },
         "lockDuration": {
@@ -1413,7 +1455,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+            "description": "Optional. A value that indicates whether the subscription supports the concept of sessions."
           }
         },
         "rules": {
@@ -1580,9 +1622,8 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Disabled",
         "Enabled",
         "SecuredByPerimeter"
@@ -1617,10 +1658,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ServiceBus/namespaces@2024-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1684,14 +1728,15 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2025-05-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1717,10 +1762,10 @@
       }
     },
     "cMKKeyVault": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2025-05-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1729,14 +1774,14 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "serviceBusNamespace": {
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1752,11 +1797,11 @@
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "premiumMessagingPartitions": "[if(equals(parameters('skuObject').name, 'Premium'), parameters('premiumMessagingPartitions'), 0)]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')))), 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "serviceBusNamespace_lock": {
@@ -1767,7 +1812,7 @@
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "serviceBusNamespace"
@@ -1842,7 +1887,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthorizationRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1866,8 +1911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17477673416429447540"
+              "version": "0.38.33.27573",
+              "templateHash": "9802623335395286897"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -1903,7 +1948,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
@@ -1942,7 +1987,7 @@
     "serviceBusNamespace_disasterRecoveryConfig": {
       "condition": "[not(empty(parameters('disasterRecoveryConfig')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-DisasterRecoveryConfig', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1969,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2655313592794830711"
+              "version": "0.38.33.27573",
+              "templateHash": "12684500962727878582"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -2009,7 +2054,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": {
                 "alternateName": "[parameters('alternateName')]",
@@ -2049,7 +2094,7 @@
     "serviceBusNamespace_migrationConfiguration": {
       "condition": "[not(empty(coalesce(parameters('migrationConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-MigrationConfigurations', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2073,8 +2118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8888372741848926270"
+              "version": "0.38.33.27573",
+              "templateHash": "4516324711962540493"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -2104,7 +2149,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/migrationConfigurations",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), '$default')]",
               "properties": {
                 "targetNamespace": "[parameters('targetNamespaceResourceId')]",
@@ -2144,7 +2189,7 @@
     "serviceBusNamespace_networkRuleSet": {
       "condition": "[or(not(empty(parameters('networkRuleSets'))), not(empty(parameters('privateEndpoints'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-NetworkRuleSet', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2177,8 +2222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8455455085685736737"
+              "version": "0.38.33.27573",
+              "templateHash": "4837497362195219145"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -2251,7 +2296,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/networkRuleSets",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), 'default')]",
               "properties": {
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -2297,7 +2342,7 @@
         "count": "[length(coalesce(parameters('queues'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Queue-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2376,8 +2421,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17714956813335477440"
+              "version": "0.38.33.27573",
+              "templateHash": "12024590628726803043"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue."
@@ -2404,12 +2449,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -2677,12 +2729,12 @@
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "queue": {
               "type": "Microsoft.ServiceBus/namespaces/queues",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": {
                 "autoDeleteOnIdle": "[if(not(empty(parameters('autoDeleteOnIdle'))), parameters('autoDeleteOnIdle'), null())]",
@@ -2696,7 +2748,7 @@
                 "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), null())]",
                 "lockDuration": "[parameters('lockDuration')]",
                 "maxDeliveryCount": "[parameters('maxDeliveryCount')]",
-                "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
+                "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
                 "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
                 "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
                 "requiresSession": "[parameters('requiresSession')]",
@@ -2714,7 +2766,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "queue"
@@ -2748,7 +2800,7 @@
                 "count": "[length(parameters('authorizationRules'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2775,8 +2827,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17543469200710595087"
+                      "version": "0.38.33.27573",
+                      "templateHash": "11020612431315095786"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -2816,7 +2868,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('queueName'), parameters('name'))]",
                       "properties": {
                         "rights": "[parameters('rights')]"
@@ -2888,7 +2940,7 @@
         "count": "[length(coalesce(parameters('topics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Topic-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2955,8 +3007,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3613850961357682472"
+              "version": "0.38.33.27573",
+              "templateHash": "4772960740722851772"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -3018,14 +3070,14 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                    "description": "Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions."
                   }
                 },
                 "defaultMessageTimeToLive": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+                    "description": "Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
                   }
                 },
                 "duplicateDetectionHistoryTimeWindow": {
@@ -3046,21 +3098,21 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                    "description": "Optional. Queue/Topic name to forward the Dead Letter messages to."
                   }
                 },
                 "forwardTo": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                    "description": "Optional. Queue/Topic name to forward the messages to."
                   }
                 },
                 "isClientAffine": {
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                    "description": "Optional. A value that indicates whether the subscription has an affinity to the client id."
                   }
                 },
                 "lockDuration": {
@@ -3081,7 +3133,7 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                    "description": "Optional. A value that indicates whether the subscription supports the concept of sessions."
                   }
                 },
                 "rules": {
@@ -3118,6 +3170,163 @@
                 "description": "The type for a subscription."
               }
             },
+            "_1.actionType": {
+              "type": "object",
+              "properties": {
+                "compatibilityLevel": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sqlExpression": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "subscription/rule/main.bicep"
+                }
+              }
+            },
+            "_1.correlationFilterType": {
+              "type": "object",
+              "properties": {
+                "contentType": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Content type of the message."
+                  }
+                },
+                "correlationId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Identifier of the correlation."
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Application specific label."
+                  }
+                },
+                "messageId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Identifier of the message."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dictionary object for custom filters."
+                  }
+                },
+                "replyTo": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Address of the queue to reply to."
+                  }
+                },
+                "replyToSessionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Session identifier to reply to."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sessionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Session identifier."
+                  }
+                },
+                "to": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Address to send to."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "subscription/rule/main.bicep"
+                }
+              }
+            },
+            "_1.filterTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "CorrelationFilter",
+                "SqlFilter"
+              ],
+              "metadata": {
+                "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "subscription/rule/main.bicep"
+                }
+              }
+            },
+            "_1.sqlFilterType": {
+              "type": "object",
+              "properties": {
+                "compatibilityLevel": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sqlExpression": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "subscription/rule/main.bicep"
+                }
+              }
+            },
             "lockType": {
               "type": "object",
               "properties": {
@@ -3139,12 +3348,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -3229,156 +3445,31 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "Required. The name of the service bus namespace topic subscription rule."
+                    "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
                   }
                 },
                 "action": {
-                  "type": "object",
-                  "properties": {
-                    "compatibilityLevel": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-                      }
-                    },
-                    "requiresPreprocessing": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                      }
-                    },
-                    "sqlExpression": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-                      }
-                    }
-                  },
+                  "$ref": "#/definitions/_1.actionType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                   }
                 },
                 "correlationFilter": {
-                  "type": "object",
-                  "properties": {
-                    "contentType": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Content type of the message."
-                      }
-                    },
-                    "correlationId": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Identifier of the correlation."
-                      }
-                    },
-                    "label": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Application specific label."
-                      }
-                    },
-                    "messageId": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Identifier of the message."
-                      }
-                    },
-                    "properties": {
-                      "type": "array",
-                      "allowedValues": [
-                        {}
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. dictionary object for custom filters."
-                      }
-                    },
-                    "replyTo": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Address of the queue to reply to."
-                      }
-                    },
-                    "replyToSessionId": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Session identifier to reply to."
-                      }
-                    },
-                    "requiresPreprocessing": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                      }
-                    },
-                    "sessionId": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Session identifier."
-                      }
-                    },
-                    "to": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Address to send to."
-                      }
-                    }
-                  },
+                  "$ref": "#/definitions/_1.correlationFilterType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Properties of correlationFilter."
                   }
                 },
                 "filterType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "CorrelationFilter",
-                    "SqlFilter"
-                  ],
-                  "nullable": true,
+                  "$ref": "#/definitions/_1.filterTypeType",
                   "metadata": {
-                    "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+                    "description": "Required. Filter type that is evaluated against a BrokeredMessage."
                   }
                 },
                 "sqlFilter": {
-                  "type": "object",
-                  "properties": {
-                    "compatibilityLevel": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-                      }
-                    },
-                    "requiresPreprocessing": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                      }
-                    },
-                    "sqlExpression": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-                      }
-                    }
-                  },
+                  "$ref": "#/definitions/_1.sqlFilterType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Properties of sqlFilter."
@@ -3386,9 +3477,9 @@
                 }
               },
               "metadata": {
-                "description": "Optional. The type for rules.",
+                "description": "A type for a Service Bus Namespace Topic Subscription Rule.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "subscription/main.bicep"
+                  "sourceTemplate": "subscription/rule/main.bicep"
                 }
               }
             }
@@ -3556,14 +3647,14 @@
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "topic": {
               "type": "Microsoft.ServiceBus/namespaces/topics",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-              "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
+              "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
               "dependsOn": [
                 "namespace"
               ]
@@ -3576,7 +3667,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "topic"
@@ -3610,7 +3701,7 @@
                 "count": "[length(parameters('authorizationRules'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3637,8 +3728,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13311724266758161854"
+                      "version": "0.38.33.27573",
+                      "templateHash": "1167899423117043460"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -3678,7 +3769,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
                       "properties": {
                         "rights": "[parameters('rights')]"
@@ -3720,7 +3811,7 @@
                 "count": "[length(coalesce(parameters('subscriptions'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-subscription-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3790,169 +3881,230 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "18327636281337895707"
+                      "version": "0.38.33.27573",
+                      "templateHash": "17722317559130689691"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription."
                   },
                   "definitions": {
+                    "clientAffinePropertiesType": {
+                      "type": "object",
+                      "properties": {
+                        "clientId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
+                          }
+                        },
+                        "isDurable": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true."
+                          }
+                        },
+                        "isShared": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Properties specific to client affine subscriptions."
+                      }
+                    },
+                    "_1.actionType": {
+                      "type": "object",
+                      "properties": {
+                        "compatibilityLevel": {
+                          "type": "int",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                          }
+                        },
+                        "requiresPreprocessing": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                          }
+                        },
+                        "sqlExpression": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    },
+                    "_1.correlationFilterType": {
+                      "type": "object",
+                      "properties": {
+                        "contentType": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Content type of the message."
+                          }
+                        },
+                        "correlationId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Identifier of the correlation."
+                          }
+                        },
+                        "label": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Application specific label."
+                          }
+                        },
+                        "messageId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Identifier of the message."
+                          }
+                        },
+                        "properties": {
+                          "type": "object",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Dictionary object for custom filters."
+                          }
+                        },
+                        "replyTo": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Address of the queue to reply to."
+                          }
+                        },
+                        "replyToSessionId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Session identifier to reply to."
+                          }
+                        },
+                        "requiresPreprocessing": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                          }
+                        },
+                        "sessionId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Session identifier."
+                          }
+                        },
+                        "to": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Address to send to."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    },
+                    "_1.filterTypeType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "CorrelationFilter",
+                        "SqlFilter"
+                      ],
+                      "metadata": {
+                        "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    },
+                    "_1.sqlFilterType": {
+                      "type": "object",
+                      "properties": {
+                        "compatibilityLevel": {
+                          "type": "int",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                          }
+                        },
+                        "requiresPreprocessing": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                          }
+                        },
+                        "sqlExpression": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
+                      }
+                    },
                     "ruleType": {
                       "type": "object",
                       "properties": {
                         "name": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required. The name of the service bus namespace topic subscription rule."
+                            "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
                           }
                         },
                         "action": {
-                          "type": "object",
-                          "properties": {
-                            "compatibilityLevel": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-                              }
-                            },
-                            "requiresPreprocessing": {
-                              "type": "bool",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                              }
-                            },
-                            "sqlExpression": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-                              }
-                            }
-                          },
+                          "$ref": "#/definitions/_1.actionType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                           }
                         },
                         "correlationFilter": {
-                          "type": "object",
-                          "properties": {
-                            "contentType": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Content type of the message."
-                              }
-                            },
-                            "correlationId": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Identifier of the correlation."
-                              }
-                            },
-                            "label": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Application specific label."
-                              }
-                            },
-                            "messageId": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Identifier of the message."
-                              }
-                            },
-                            "properties": {
-                              "type": "array",
-                              "allowedValues": [
-                                {}
-                              ],
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. dictionary object for custom filters."
-                              }
-                            },
-                            "replyTo": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Address of the queue to reply to."
-                              }
-                            },
-                            "replyToSessionId": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Session identifier to reply to."
-                              }
-                            },
-                            "requiresPreprocessing": {
-                              "type": "bool",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                              }
-                            },
-                            "sessionId": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Session identifier."
-                              }
-                            },
-                            "to": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Address to send to."
-                              }
-                            }
-                          },
+                          "$ref": "#/definitions/_1.correlationFilterType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Properties of correlationFilter."
                           }
                         },
                         "filterType": {
-                          "type": "string",
-                          "allowedValues": [
-                            "CorrelationFilter",
-                            "SqlFilter"
-                          ],
-                          "nullable": true,
+                          "$ref": "#/definitions/_1.filterTypeType",
                           "metadata": {
-                            "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+                            "description": "Required. Filter type that is evaluated against a BrokeredMessage."
                           }
                         },
                         "sqlFilter": {
-                          "type": "object",
-                          "properties": {
-                            "compatibilityLevel": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
-                              }
-                            },
-                            "requiresPreprocessing": {
-                              "type": "bool",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Value that indicates whether the rule action requires preprocessing."
-                              }
-                            },
-                            "sqlExpression": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
-                              }
-                            }
-                          },
+                          "$ref": "#/definitions/_1.sqlFilterType",
                           "nullable": true,
                           "metadata": {
                             "description": "Optional. Properties of sqlFilter."
@@ -3960,14 +4112,18 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true,
-                        "description": "Optional. The type for rules."
+                        "description": "A type for a Service Bus Namespace Topic Subscription Rule.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "rule/main.bicep"
+                        }
                       }
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string",
+                      "minLength": 1,
+                      "maxLength": 50,
                       "metadata": {
                         "description": "Required. The name of the service bus namespace topic subscription."
                       }
@@ -3992,17 +4148,17 @@
                       }
                     },
                     "clientAffineProperties": {
-                      "type": "object",
-                      "defaultValue": {},
+                      "$ref": "#/definitions/clientAffinePropertiesType",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Optional. The properties that are associated with a subscription that is client-affine."
+                        "description": "Conditional. The properties that are associated with a subscription that is client-affine. Required if 'isClientAffine' is set to true."
                       }
                     },
                     "deadLetteringOnFilterEvaluationExceptions": {
                       "type": "bool",
                       "defaultValue": false,
                       "metadata": {
-                        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                        "description": "Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions."
                       }
                     },
                     "deadLetteringOnMessageExpiration": {
@@ -4016,7 +4172,7 @@
                       "type": "string",
                       "defaultValue": "P10675199DT2H48M5.4775807S",
                       "metadata": {
-                        "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+                        "description": "Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
                       }
                     },
                     "duplicateDetectionHistoryTimeWindow": {
@@ -4037,28 +4193,28 @@
                       "type": "string",
                       "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                        "description": "Optional. Queue/Topic name to forward the Dead Letter messages to."
                       }
                     },
                     "forwardTo": {
                       "type": "string",
                       "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                        "description": "Optional. Queue/Topic name to forward the messages to."
                       }
                     },
                     "isClientAffine": {
                       "type": "bool",
                       "defaultValue": false,
                       "metadata": {
-                        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                        "description": "Optional. A value that indicates whether the subscription has an affinity to the client id."
                       }
                     },
                     "lockDuration": {
                       "type": "string",
                       "defaultValue": "PT1M",
                       "metadata": {
-                        "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+                        "description": "Optional. ISO 8061 lock duration timespan for the subscription. The default value is 1 minute."
                       }
                     },
                     "maxDeliveryCount": {
@@ -4072,7 +4228,7 @@
                       "type": "bool",
                       "defaultValue": false,
                       "metadata": {
-                        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                        "description": "Optional. A value that indicates whether the subscription supports the concept of sessions."
                       }
                     },
                     "rules": {
@@ -4108,22 +4264,22 @@
                     "namespace::topic": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces/topics",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
                     },
                     "namespace": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[parameters('namespaceName')]"
                     },
                     "subscription": {
                       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-                      "apiVersion": "2021-11-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
                       "properties": {
                         "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
-                        "clientAffineProperties": "[parameters('clientAffineProperties')]",
+                        "clientAffineProperties": "[if(not(empty(parameters('clientAffineProperties'))), createObject('clientId', tryGet(parameters('clientAffineProperties'), 'clientId'), 'isDurable', coalesce(tryGet(parameters('clientAffineProperties'), 'isDurable'), true()), 'isShared', coalesce(tryGet(parameters('clientAffineProperties'), 'isShared'), false())), null())]",
                         "deadLetteringOnFilterEvaluationExceptions": "[parameters('deadLetteringOnFilterEvaluationExceptions')]",
                         "deadLetteringOnMessageExpiration": "[parameters('deadLetteringOnMessageExpiration')]",
                         "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
@@ -4144,7 +4300,7 @@
                         "count": "[length(coalesce(parameters('rules'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4171,7 +4327,7 @@
                             "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'correlationFilter')]"
                           },
                           "filterType": {
-                            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'filterType')]"
+                            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].filterType]"
                           },
                           "sqlFilter": {
                             "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sqlFilter')]"
@@ -4184,15 +4340,210 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "15176672876775916889"
+                              "version": "0.38.33.27573",
+                              "templateHash": "13550281176676896741"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
                           },
+                          "definitions": {
+                            "ruleType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
+                                  }
+                                },
+                                "action": {
+                                  "$ref": "#/definitions/actionType",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+                                  }
+                                },
+                                "correlationFilter": {
+                                  "$ref": "#/definitions/correlationFilterType",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Properties of correlationFilter."
+                                  }
+                                },
+                                "filterType": {
+                                  "$ref": "#/definitions/filterTypeType",
+                                  "metadata": {
+                                    "description": "Required. Filter type that is evaluated against a BrokeredMessage."
+                                  }
+                                },
+                                "sqlFilter": {
+                                  "$ref": "#/definitions/sqlFilterType",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Properties of sqlFilter."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "A type for a Service Bus Namespace Topic Subscription Rule."
+                              }
+                            },
+                            "actionType": {
+                              "type": "object",
+                              "properties": {
+                                "compatibilityLevel": {
+                                  "type": "int",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                                  }
+                                },
+                                "requiresPreprocessing": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                                  }
+                                },
+                                "sqlExpression": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule."
+                              }
+                            },
+                            "correlationFilterType": {
+                              "type": "object",
+                              "properties": {
+                                "contentType": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Content type of the message."
+                                  }
+                                },
+                                "correlationId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Identifier of the correlation."
+                                  }
+                                },
+                                "label": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Application specific label."
+                                  }
+                                },
+                                "messageId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Identifier of the message."
+                                  }
+                                },
+                                "properties": {
+                                  "type": "object",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Dictionary object for custom filters."
+                                  }
+                                },
+                                "replyTo": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Address of the queue to reply to."
+                                  }
+                                },
+                                "replyToSessionId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Session identifier to reply to."
+                                  }
+                                },
+                                "requiresPreprocessing": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                                  }
+                                },
+                                "sessionId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Session identifier."
+                                  }
+                                },
+                                "to": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Address to send to."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule."
+                              }
+                            },
+                            "filterTypeType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "CorrelationFilter",
+                                "SqlFilter"
+                              ],
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule."
+                              }
+                            },
+                            "sqlFilterType": {
+                              "type": "object",
+                              "properties": {
+                                "compatibilityLevel": {
+                                  "type": "int",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                                  }
+                                },
+                                "requiresPreprocessing": {
+                                  "type": "bool",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                                  }
+                                },
+                                "sqlExpression": {
+                                  "type": "string",
+                                  "metadata": {
+                                    "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "__bicep_export!": true,
+                                "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule."
+                              }
+                            }
+                          },
                           "parameters": {
                             "name": {
                               "type": "string",
+                              "minLength": 1,
+                              "maxLength": 50,
                               "metadata": {
                                 "description": "Required. The name of the service bus namespace topic subscription rule."
                               }
@@ -4212,39 +4563,34 @@
                             "subscriptionName": {
                               "type": "string",
                               "metadata": {
-                                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+                                "description": "Conditional. The name of the parent Service Bus Namespace Topic Subscription. Required if the template is used in a standalone deployment."
                               }
                             },
                             "action": {
-                              "type": "object",
-                              "defaultValue": {},
+                              "$ref": "#/definitions/actionType",
+                              "nullable": true,
                               "metadata": {
-                                "description": "Opional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+                                "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
                               }
                             },
                             "correlationFilter": {
-                              "type": "object",
-                              "defaultValue": {},
+                              "$ref": "#/definitions/correlationFilterType",
+                              "nullable": true,
                               "metadata": {
-                                "description": "Opional. Properties of a correlation filter."
+                                "description": "Conditional. Properties of a correlation filter. Required if 'filterType' is set to 'CorrelationFilter'."
                               }
                             },
                             "filterType": {
-                              "type": "string",
-                              "nullable": true,
-                              "allowedValues": [
-                                "CorrelationFilter",
-                                "SqlFilter"
-                              ],
+                              "$ref": "#/definitions/filterTypeType",
                               "metadata": {
-                                "description": "Optional. Filter type that is evaluated against a BrokeredMessage."
+                                "description": "Required. Filter type that is evaluated against a BrokeredMessage."
                               }
                             },
                             "sqlFilter": {
-                              "type": "object",
-                              "defaultValue": {},
+                              "$ref": "#/definitions/sqlFilterType",
+                              "nullable": true,
                               "metadata": {
-                                "description": "Opional. The properties of an SQL filter."
+                                "description": "Conditional. Properties of a SQL filter. Required if 'filterType' is set to 'SqlFilter'."
                               }
                             }
                           },
@@ -4252,30 +4598,30 @@
                             "namespace::topic::subscription": {
                               "existing": true,
                               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-                              "apiVersion": "2021-11-01",
+                              "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
                             },
                             "namespace::topic": {
                               "existing": true,
                               "type": "Microsoft.ServiceBus/namespaces/topics",
-                              "apiVersion": "2022-10-01-preview",
+                              "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
                             },
                             "namespace": {
                               "existing": true,
                               "type": "Microsoft.ServiceBus/namespaces",
-                              "apiVersion": "2022-10-01-preview",
+                              "apiVersion": "2024-01-01",
                               "name": "[parameters('namespaceName')]"
                             },
                             "rule": {
                               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
-                              "apiVersion": "2022-10-01-preview",
+                              "apiVersion": "2024-01-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
                               "properties": {
                                 "action": "[parameters('action')]",
                                 "correlationFilter": "[parameters('correlationFilter')]",
                                 "filterType": "[parameters('filterType')]",
-                                "sqlFilter": "[parameters('sqlFilter')]"
+                                "sqlFilter": "[if(not(empty(parameters('sqlFilter'))), createObject('compatibilityLevel', coalesce(tryGet(parameters('sqlFilter'), 'compatibilityLevel'), 20), 'requiresPreprocessing', tryGet(parameters('sqlFilter'), 'requiresPreprocessing'), 'sqlExpression', tryGet(parameters('sqlFilter'), 'sqlExpression')), null())]"
                               }
                             }
                           },
@@ -4374,8 +4720,8 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-serviceBusNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-serviceBusNamespace-PEP-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
@@ -4430,8 +4776,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.38.5.1644",
+              "templateHash": "16604612898799598358"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -4458,115 +4804,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -4590,12 +4829,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -4617,6 +4863,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -4693,7 +4940,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -4730,13 +4977,13 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -4771,40 +5018,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -4839,8 +5089,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4858,7 +5108,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -4890,7 +5140,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -4921,7 +5171,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4946,8 +5196,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.38.5.1644",
+                      "templateHash": "24141742673128945"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -4971,7 +5221,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -5001,33 +5252,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -5088,14 +5336,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -5154,14 +5403,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('serviceBusNamespace', '2022-10-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('serviceBusNamespace', '2024-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('serviceBusNamespace', '2022-10-01-preview', 'full').location]"
+      "value": "[reference('serviceBusNamespace', '2024-01-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
@@ -5188,6 +5437,34 @@
         "description": "The endpoint of the deployed service bus namespace."
       },
       "value": "[reference('serviceBusNamespace').serviceBusEndpoint]"
+    },
+    "primaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary connection string of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString]"
+    },
+    "secondaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary connection string of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString]"
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary key of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').primaryKey]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary key of the service bus namespace."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))), '2024-01-01').secondaryKey]"
     }
   }
 }

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     trafficManagerProfileName: 'dep-${namePrefix}-tmp-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -245,7 +244,7 @@ module testDeployment '../../../main.bicep' = [
             email: 'azuredns-hostmaster.microsoft.com'
             expireTime: 2419200
             host: 'ns1-04.azure-dns.com.'
-            minimumTtl: 300
+            minimumTTL: 300
             refreshTime: 3600
             retryTime: 300
             serialNumber: 1

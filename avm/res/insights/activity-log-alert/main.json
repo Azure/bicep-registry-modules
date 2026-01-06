@@ -5,13 +5,50 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3537417410371628791"
+      "version": "0.38.33.27573",
+      "templateHash": "12694510204136877403"
     },
     "name": "Activity Log Alerts",
     "description": "This module deploys an Activity Log Alert."
   },
   "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -118,6 +155,9 @@
     },
     "scopes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "[subscription().id]"
       ],
@@ -135,7 +175,17 @@
     "conditions": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/activityLogAlerts@2020-10-01#properties/properties/properties/condition/properties/allOf"
+        },
         "description": "Required. An Array of objects containing conditions that will cause this alert to activate. Conditions can also be combined with logical operators `allOf` and `anyOf`. Each condition can specify only one field between `equals` and `containsAny`. An alert rule condition must have exactly one category (Administrative, ServiceHealth, ResourceHealth, Alert, Autoscale, Recommendation, Security, or Policy)."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -150,10 +200,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/activityLogAlerts@2020-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -165,14 +218,6 @@
   },
   "variables": {
     "copy": [
-      {
-        "name": "actionGroups",
-        "count": "[length(parameters('actions'))]",
-        "input": {
-          "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
-          "webhookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webhookProperties')]"
-        }
-      },
       {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
@@ -220,11 +265,34 @@
           "allOf": "[parameters('conditions')]"
         },
         "actions": {
-          "actionGroups": "[variables('actionGroups')]"
+          "copy": [
+            {
+              "name": "actionGroups",
+              "count": "[length(parameters('actions'))]",
+              "input": {
+                "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
+                "webhookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webhookProperties')]"
+              }
+            }
+          ]
         },
         "enabled": "[parameters('enabled')]",
         "description": "[parameters('alertDescription')]"
       }
+    },
+    "activityLogAlert_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/activityLogAlerts/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "activityLogAlert"
+      ]
     },
     "activityLogAlert_roleAssignments": {
       "copy": {

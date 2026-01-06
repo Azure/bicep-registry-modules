@@ -53,13 +53,21 @@ param skuName string = 'GP_Gen5'
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource instancePool 'Microsoft.Sql/instancePools@2023-05-01-preview' = {
+@description('Optional. Capacity of the particular SKU.')
+param capacity int?
+
+@description('Optional. Size of the particular SKU.')
+param size string?
+
+resource instancePool 'Microsoft.Sql/instancePools@2024-05-01-preview' = {
   name: name
   location: location
   tags: tags
   sku: {
+    capacity: capacity
     family: skuFamily
     name: skuName
+    size: size
     tier: tier
   }
   properties: {

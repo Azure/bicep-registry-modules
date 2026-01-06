@@ -109,16 +109,35 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      connections: [
+      // Currently unable to create both a connection and a private endpoint in the same deployment.
+      // connections: [
+      //   {
+      //     name: 'connection'
+      //     category: 'ApiKey'
+      //     target: 'https://example.com'
+      //     connectionProperties: {
+      //       authType: 'ApiKey'
+      //       credentials: {
+      //         key: 'key'
+      //       }
+      //     }
+      //   }
+      // ]
+      datastores: [
         {
-          name: 'connection'
-          category: 'ApiKey'
-          target: 'https://example.com'
-          connectionProperties: {
-            authType: 'ApiKey'
+          name: 'datastore'
+          properties: {
             credentials: {
-              key: 'key'
+              credentialsType: 'None'
             }
+            subscriptionId: subscription().subscriptionId
+            resourceGroup: resourceGroupName
+            datastoreType: 'AzureBlob'
+            accountName: 'myaccount'
+            containerName: 'my-container'
+            endpoint: environment().suffixes.storage
+            protocol: 'https'
+            serviceDataAccessAuthIdentity: 'None'
           }
         }
       ]

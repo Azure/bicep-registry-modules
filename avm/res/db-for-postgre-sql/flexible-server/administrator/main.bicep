@@ -22,11 +22,11 @@ param principalType string
 @description('Optional. The tenantId of the Active Directory administrator.')
 param tenantId string = tenant().tenantId
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' existing = {
   name: flexibleServerName
 }
 
-resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2024-08-01' = {
+resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2025-06-01-preview' = {
   name: objectId
   parent: flexibleServer
   properties: {

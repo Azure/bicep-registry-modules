@@ -1,6 +1,19 @@
 # Scheduled Query Rules `[Microsoft.Insights/scheduledQueryRules]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Scheduled Query Rule.
+
+You can reference the module as follows:
+```bicep
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -8,14 +21,16 @@ This module deploys a Scheduled Query Rule.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/scheduledQueryRules` | 2025-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_scheduledqueryrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2025-01-01-preview/scheduledQueryRules)</li></ul> |
 
 ## Usage examples
 
@@ -33,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -40,7 +57,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
@@ -76,7 +92,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     evaluationFrequency: 'PT5M'
-    location: '<location>'
     windowSize: 'PT5M'
   }
 }
@@ -136,9 +151,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "location": {
-      "value": "<location>"
-    },
     "windowSize": {
       "value": "PT5M"
     }
@@ -190,7 +202,6 @@ param scopes = [
 ]
 // Non-required parameters
 param evaluationFrequency = 'PT5M'
-param location = '<location>'
 param windowSize = 'PT5M'
 ```
 
@@ -201,6 +212,8 @@ param windowSize = 'PT5M'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -208,7 +221,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
@@ -243,11 +255,30 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       '<logAnalyticsWorkspaceResourceId>'
     ]
     // Non-required parameters
+    actions: {
+      actionGroupResourceIds: [
+        '<actionGroupResourceId>'
+      ]
+      customProperties: {
+        'Additional Details': 'Evaluation windowStartTime: \${data.alertContext.condition.windowStartTime}. windowEndTime: \${data.alertContext.condition.windowEndTime}'
+        'Alert \${data.essentials.monitorCondition} reason': '\${data.alertContext.condition.allOf[0].metricName} \${data.alertContext.condition.allOf[0].operator} \${data.alertContext.condition.allOf[0].threshold} \${data.essentials.monitorCondition}. The value is \${data.alertContext.condition.allOf[0].metricValue}'
+      }
+    }
     alertDescription: 'My sample Alert'
     alertDisplayName: '<alertDisplayName>'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
@@ -334,6 +365,17 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       ]
     },
     // Non-required parameters
+    "actions": {
+      "value": {
+        "actionGroupResourceIds": [
+          "<actionGroupResourceId>"
+        ],
+        "customProperties": {
+          "Additional Details": "Evaluation windowStartTime: \\${data.alertContext.condition.windowStartTime}. windowEndTime: \\${data.alertContext.condition.windowEndTime}",
+          "Alert \\${data.essentials.monitorCondition} reason": "\\${data.alertContext.condition.allOf[0].metricName} \\${data.alertContext.condition.allOf[0].operator} \\${data.alertContext.condition.allOf[0].threshold} \\${data.essentials.monitorCondition}. The value is \\${data.alertContext.condition.allOf[0].metricValue}"
+        }
+      }
+    },
     "alertDescription": {
       "value": "My sample Alert"
     },
@@ -348,6 +390,20 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "queryTimeRange": {
       "value": "PT5M"
@@ -439,11 +495,30 @@ param scopes = [
   '<logAnalyticsWorkspaceResourceId>'
 ]
 // Non-required parameters
+param actions = {
+  actionGroupResourceIds: [
+    '<actionGroupResourceId>'
+  ]
+  customProperties: {
+    'Additional Details': 'Evaluation windowStartTime: \${data.alertContext.condition.windowStartTime}. windowEndTime: \${data.alertContext.condition.windowEndTime}'
+    'Alert \${data.essentials.monitorCondition} reason': '\${data.alertContext.condition.allOf[0].metricName} \${data.alertContext.condition.allOf[0].operator} \${data.alertContext.condition.allOf[0].threshold} \${data.essentials.monitorCondition}. The value is \${data.alertContext.condition.allOf[0].metricValue}'
+  }
+}
 param alertDescription = 'My sample Alert'
 param alertDisplayName = '<alertDisplayName>'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param queryTimeRange = 'PT5M'
 param roleAssignments = [
   {
@@ -484,6 +559,8 @@ param windowSize = 'PT5M'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -491,7 +568,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
-  name: 'scheduledQueryRuleDeployment'
   params: {
     // Required parameters
     criterias: {
@@ -529,7 +605,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     alertDescription: 'My sample Alert'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
-    location: '<location>'
     queryTimeRange: 'PT5M'
     suppressForMinutes: 'PT5M'
     tags: {
@@ -602,9 +677,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "location": {
-      "value": "<location>"
-    },
     "queryTimeRange": {
       "value": "PT5M"
     },
@@ -671,7 +743,6 @@ param scopes = [
 param alertDescription = 'My sample Alert'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
-param location = '<location>'
 param queryTimeRange = 'PT5M'
 param suppressForMinutes = 'PT5M'
 param tags = {
@@ -705,21 +776,23 @@ param windowSize = 'PT5M'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`actions`](#parameter-actions) | array | Actions to invoke when the alert fires. |
+| [`actions`](#parameter-actions) | object | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
 | [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
-| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
+| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert. |
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
-| [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
+| [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceTypes`](#parameter-targetresourcetypes) | array | List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert. |
 
@@ -750,15 +823,68 @@ The period of time (in ISO 8601 duration format) on which the Alert query will b
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `actions`
 
 Actions to invoke when the alert fires.
 
 - Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actionGroupResourceIds`](#parameter-actionsactiongroupresourceids) | array | Action Group resource Ids to invoke when the alert fires. |
+| [`actionProperties`](#parameter-actionsactionproperties) | object | The properties of an action properties. |
+| [`customProperties`](#parameter-actionscustomproperties) | object | The properties of an alert payload. |
+
+### Parameter: `actions.actionGroupResourceIds`
+
+Action Group resource Ids to invoke when the alert fires.
+
+- Required: No
 - Type: array
-- Default: `[]`
+
+### Parameter: `actions.actionProperties`
+
+The properties of an action properties.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-actionsactionproperties>any_other_property<) | string | A property of an action payload. |
+
+### Parameter: `actions.actionProperties.>Any_other_property<`
+
+A property of an action payload.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `actions.customProperties`
+
+The properties of an alert payload.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-actionscustomproperties>any_other_property<) | string | A custom property of an action payload. |
+
+### Parameter: `actions.customProperties.>Any_other_property<`
+
+A custom property of an action payload.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `alertDescription`
 
@@ -777,7 +903,7 @@ The display name of the scheduled query rule.
 
 ### Parameter: `autoMitigate`
 
-The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert.
+The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: bool
@@ -805,7 +931,6 @@ How often the scheduled query rule is evaluated represented in ISO 8601 duration
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `kind`
 
@@ -830,13 +955,84 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `queryTimeRange`
 
 If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -943,7 +1139,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `ruleResolveConfiguration`
 
-Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: object
@@ -976,11 +1172,10 @@ The flag which indicates whether the provided query should be validated or not. 
 
 ### Parameter: `suppressForMinutes`
 
-Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert.
+Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -995,7 +1190,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 
@@ -1005,7 +1199,16 @@ List of resource type of the target resource(s) on which the alert is created/up
 | `name` | string | The Name of the created scheduled query rule. |
 | `resourceGroupName` | string | The Resource Group of the created scheduled query rule. |
 | `resourceId` | string | The resource ID of the created scheduled query rule. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

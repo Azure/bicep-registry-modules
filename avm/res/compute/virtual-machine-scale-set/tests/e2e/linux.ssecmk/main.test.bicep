@@ -34,7 +34,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -43,7 +43,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
@@ -67,7 +66,6 @@ module testDeployment '../../../main.bicep' = [
         enabled: true
         autoUpgradeMinorVersion: true
       }
-      location: enforcedLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'scaleSetAdmin'
       adminPassword: password
@@ -97,7 +95,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       osDisk: {
         createOption: 'fromImage'
-        diskSizeGB: '128'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
           diskEncryptionSet: {
@@ -107,9 +105,10 @@ module testDeployment '../../../main.bicep' = [
       }
       dataDisks: [
         {
+          lun: 1
           caching: 'ReadOnly'
           createOption: 'Empty'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
             diskEncryptionSet: {

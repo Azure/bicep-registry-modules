@@ -23,18 +23,18 @@ param containerAppName string
 @description('Required. The name of the Container Registry.')
 param containerRegistryName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: managedEnvironmentName
   location: location
   properties: {}
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -48,7 +48,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   }
 }
 
-resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
   parent: keyVault
   name: keyVaultSecretName
   properties: {
@@ -72,7 +72,7 @@ resource roleAssignmentKeyVault 'Microsoft.Authorization/roleAssignments@2022-04
   }
 }
 
-module containerApp 'br/public:avm/res/app/container-app:0.9.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.18.1' = {
   name: containerAppName
   params: {
     name: containerAppName
@@ -91,10 +91,11 @@ module containerApp 'br/public:avm/res/app/container-app:0.9.0' = {
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: containerRegistryName
   params: {
     name: containerRegistryName
+    exportPolicyStatus: 'enabled'
   }
 }
 

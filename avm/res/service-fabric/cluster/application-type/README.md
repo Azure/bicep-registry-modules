@@ -10,9 +10,9 @@ This module deploys a Service Fabric Cluster Application Type.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ServiceFabric/clusters/applicationTypes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceFabric/2021-06-01/clusters/applicationTypes) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ServiceFabric/clusters/applicationTypes` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicefabric_clusters_applicationtypes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceFabric/2021-06-01/clusters/applicationTypes)</li></ul> |
 
 ## Parameters
 

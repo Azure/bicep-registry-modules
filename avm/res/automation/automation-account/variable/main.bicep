@@ -17,11 +17,11 @@ param description string = ''
 @sys.description('Optional. If the variable should be encrypted. For security reasons encryption of variables should be enabled.')
 param isEncrypted bool = true
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 
-resource variable 'Microsoft.Automation/automationAccounts/variables@2022-08-08' = {
+resource variable 'Microsoft.Automation/automationAccounts/variables@2024-10-23' = {
   name: name
   parent: automationAccount
   properties: {

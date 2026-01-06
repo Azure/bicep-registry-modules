@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -104,11 +104,12 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Standard'
       skuTier: 'Regional'
       publicIPAddressVersion: 'IPv4'
-      zones: [
+      availabilityZones: [
         1
         2
         3
       ]
+      deleteOption: 'Detach'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

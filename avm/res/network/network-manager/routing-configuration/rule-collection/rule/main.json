@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "11763316582891802886"
+      "version": "0.34.44.8038",
+      "templateHash": "6901970573709708349"
     },
     "name": "Network Manager Routing configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."

@@ -3,7 +3,7 @@ param workspaceIndentityPrincipalId string
 param usesRbacAuthorization bool = false
 
 // Workspace encryption - Assign Workspace System Identity Keyvault Crypto Reader at Encryption Keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: keyvaultName
 }
 
@@ -22,7 +22,7 @@ resource workspace_cmk_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01'
 }
 
 // Assign Access Policy for Keys
-resource workspace_cmk_accessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = if (!usesRbacAuthorization) {
+resource workspace_cmk_accessPolicy 'Microsoft.KeyVault/vaults/accessPolicies@2024-11-01' = if (!usesRbacAuthorization) {
   name: 'add'
   parent: keyVault
   properties: {

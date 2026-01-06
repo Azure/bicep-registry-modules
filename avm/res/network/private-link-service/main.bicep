@@ -7,12 +7,12 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/privateLinkServices@2024-10-01'>.tags?
 
 @description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
 param ipConfigurations array
@@ -94,7 +94,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-04-01' = {
+resource privateLinkService 'Microsoft.Network/privateLinkServices@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -113,9 +113,9 @@ resource privateLinkService_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: privateLinkService
 }

@@ -1,0 +1,1137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "11222933398241906970"
+    },
+    "name": "avm/ptn/alz/ama",
+    "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy resources to."
+      }
+    },
+    "lockConfig": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings for all resources in the solution."
+      }
+    },
+    "userAssignedIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the User Assigned Identity utilized for Azure Monitoring Agent."
+      }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the Log Analytics Workspace."
+      }
+    },
+    "dataCollectionRuleVMInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the data collection rule for VM Insights."
+      }
+    },
+    "dataCollectionRuleVMInsightsExperience": {
+      "type": "string",
+      "defaultValue": "PerfAndMap",
+      "allowedValues": [
+        "PerfAndMap",
+        "PerfOnly"
+      ],
+      "metadata": {
+        "description": "Optional. The experience for the VM Insights data collection rule."
+      }
+    },
+    "dataCollectionRuleChangeTrackingName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the data collection rule for Change Tracking."
+      }
+    },
+    "dataCollectionRuleMDFCSQLName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the data collection rule for Microsoft Defender for SQL."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags for all Resources in the solution."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "dataCollectionRuleVMInsightsPerfAndMap": {
+      "condition": "[equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('dataCollectionRuleVMInsightsName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Data collection rule for VM Insights",
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "name": "VMInsightsPerfCounters",
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ],
+              "counterSpecifiers": [
+                "\\VMInsights\\DetailedMetrics"
+              ],
+              "samplingFrequencyInSeconds": 60
+            }
+          ],
+          "extensions": [
+            {
+              "streams": [
+                "Microsoft-ServiceMap"
+              ],
+              "extensionName": "DependencyAgent",
+              "extensionSettings": {},
+              "name": "DependencyAgentDataSource"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+              "name": "VMInsightsPerf-Logs-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-InsightsMetrics"
+            ],
+            "destinations": [
+              "VMInsightsPerf-Logs-Dest"
+            ]
+          },
+          {
+            "streams": [
+              "Microsoft-ServiceMap"
+            ],
+            "destinations": [
+              "VMInsightsPerf-Logs-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    "dataCollectionRuleVMInsightsPerfOnly": {
+      "condition": "[equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly')]",
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('dataCollectionRuleVMInsightsName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Data collection rule for VM Insights",
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "name": "VMInsightsPerfCounters",
+              "streams": [
+                "Microsoft-InsightsMetrics"
+              ],
+              "counterSpecifiers": [
+                "\\VmInsights\\DetailedMetrics"
+              ],
+              "samplingFrequencyInSeconds": 60
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+              "name": "VMInsightsPerf-Logs-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-InsightsMetrics"
+            ],
+            "destinations": [
+              "VMInsightsPerf-Logs-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    "dataCollectionRuleVMInsightsPerfandMapLock": {
+      "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap'))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
+      "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleVMInsightsName')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
+      },
+      "dependsOn": [
+        "dataCollectionRuleVMInsightsPerfAndMap"
+      ]
+    },
+    "dataCollectionRuleVMInsightsPerfOnlyLock": {
+      "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly'))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
+      "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleVMInsightsName')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
+      },
+      "dependsOn": [
+        "dataCollectionRuleVMInsightsPerfOnly"
+      ]
+    },
+    "dataCollectionRuleChangeTracking": {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('dataCollectionRuleChangeTrackingName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Data collection rule for CT.",
+        "dataSources": {
+          "extensions": [
+            {
+              "streams": [
+                "Microsoft-ConfigurationChange",
+                "Microsoft-ConfigurationChangeV2",
+                "Microsoft-ConfigurationData"
+              ],
+              "extensionName": "ChangeTracking-Windows",
+              "extensionSettings": {
+                "enableFiles": true,
+                "enableSoftware": true,
+                "enableRegistry": true,
+                "enableServices": true,
+                "enableInventory": true,
+                "registrySettings": {
+                  "registryCollectionFrequency": 3000,
+                  "registryInfo": [
+                    {
+                      "name": "Registry_1",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Group Policy\\Scripts\\Startup",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_2",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Group Policy\\Scripts\\Shutdown",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_3",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_4",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Active Setup\\Installed Components",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_5",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Classes\\Directory\\ShellEx\\ContextMenuHandlers",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_6",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Classes\\Directory\\Background\\ShellEx\\ContextMenuHandlers",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_7",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Classes\\Directory\\Shellex\\CopyHookHandlers",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_8",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellIconOverlayIdentifiers",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_9",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellIconOverlayIdentifiers",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_10",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_11",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_12",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Internet Explorer\\Extensions",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_13",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Internet Explorer\\Extensions",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_14",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Drivers32",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_15",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Drivers32",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_16",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Session Manager\\KnownDlls",
+                      "valueName": ""
+                    },
+                    {
+                      "name": "Registry_17",
+                      "groupTag": "Recommended",
+                      "enabled": false,
+                      "recurse": true,
+                      "description": "",
+                      "keyName": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify",
+                      "valueName": ""
+                    }
+                  ]
+                },
+                "fileSettings": {
+                  "fileCollectionFrequency": 2700
+                },
+                "softwareSettings": {
+                  "softwareCollectionFrequency": 1800
+                },
+                "inventorySettings": {
+                  "inventoryCollectionFrequency": 36000
+                },
+                "serviceSettings": {
+                  "serviceCollectionFrequency": 1800
+                }
+              },
+              "name": "CTDataSource-Windows"
+            },
+            {
+              "streams": [
+                "Microsoft-ConfigurationChange",
+                "Microsoft-ConfigurationChangeV2",
+                "Microsoft-ConfigurationData"
+              ],
+              "extensionName": "ChangeTracking-Linux",
+              "extensionSettings": {
+                "enableFiles": true,
+                "enableSoftware": true,
+                "enableRegistry": false,
+                "enableServices": true,
+                "enableInventory": true,
+                "fileSettings": {
+                  "fileCollectionFrequency": 900,
+                  "fileInfo": [
+                    {
+                      "name": "ChangeTrackingLinuxPath_default",
+                      "enabled": true,
+                      "destinationPath": "/etc/.*.conf",
+                      "useSudo": true,
+                      "recurse": true,
+                      "maxContentsReturnable": 5000000,
+                      "pathType": "File",
+                      "type": "File",
+                      "links": "Follow",
+                      "maxOutputSize": 500000,
+                      "groupTag": "Recommended"
+                    }
+                  ]
+                },
+                "softwareSettings": {
+                  "softwareCollectionFrequency": 300
+                },
+                "inventorySettings": {
+                  "inventoryCollectionFrequency": 36000
+                },
+                "serviceSettings": {
+                  "serviceCollectionFrequency": 300
+                }
+              },
+              "name": "CTDataSource-Linux"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+              "name": "Microsoft-CT-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-ConfigurationChange",
+              "Microsoft-ConfigurationChangeV2",
+              "Microsoft-ConfigurationData"
+            ],
+            "destinations": [
+              "Microsoft-CT-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    "dataCollectionRuleChangeTrackingLock": {
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleChangeTrackingName'))]",
+      "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleChangeTrackingName')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
+      },
+      "dependsOn": [
+        "dataCollectionRuleChangeTracking"
+      ]
+    },
+    "resDataCollectionRuleMDFCSQL": {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('dataCollectionRuleMDFCSQLName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Data collection rule for Defender for SQL.",
+        "dataSources": {
+          "extensions": [
+            {
+              "extensionName": "MicrosoftDefenderForSQL",
+              "name": "MicrosoftDefenderForSQL",
+              "streams": [
+                "Microsoft-DefenderForSqlAlerts",
+                "Microsoft-DefenderForSqlLogins",
+                "Microsoft-DefenderForSqlTelemetry",
+                "Microsoft-DefenderForSqlScanEvents",
+                "Microsoft-DefenderForSqlScanResults"
+              ],
+              "extensionSettings": {
+                "enableCollectionOfSqlQueriesForSecurityResearch": true
+              }
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+              "name": "Microsoft-DefenderForSQL-Dest"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-DefenderForSqlAlerts",
+              "Microsoft-DefenderForSqlLogins",
+              "Microsoft-DefenderForSqlTelemetry",
+              "Microsoft-DefenderForSqlScanEvents",
+              "Microsoft-DefenderForSqlScanResults"
+            ],
+            "destinations": [
+              "Microsoft-DefenderForSQL-Dest"
+            ]
+          }
+        ]
+      }
+    },
+    "dataCollectionRuleMDFCSQLLock": {
+      "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleMDFCSQLName'))]",
+      "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleMDFCSQLName')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
+      },
+      "dependsOn": [
+        "resDataCollectionRuleMDFCSQL"
+      ]
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.alz-ama.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "userAssignedManagedIdentity": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-UserAssignedIdentity', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('userAssignedIdentityName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "1856697743030659118"
+            },
+            "name": "User Assigned Identities",
+            "description": "This module deploys a User Assigned Identity."
+          },
+          "definitions": {
+            "federatedIdentityCredentialType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the federated identity credential."
+                  }
+                },
+                "audiences": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The list of audiences that can appear in the issued token."
+                  }
+                },
+                "issuer": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The URL of the issuer to be trusted."
+                  }
+                },
+                "subject": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The identifier of the external identity."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the federated identity credential."
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the User Assigned Identity."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "federatedIdentityCredentials": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/federatedIdentityCredentialType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+                },
+                "description": "Optional. Tags of the resource."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
+              "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "userAssignedIdentity": {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2024-11-30",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            },
+            "userAssignedIdentity_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_roleAssignments": {
+              "copy": {
+                "name": "userAssignedIdentity_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_federatedIdentityCredentials": {
+              "copy": {
+                "name": "userAssignedIdentity_federatedIdentityCredentials",
+                "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
+                  },
+                  "userAssignedIdentityName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "audiences": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
+                  },
+                  "issuer": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
+                  },
+                  "subject": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.39.26.7824",
+                      "templateHash": "1387931959101373036"
+                    },
+                    "name": "User Assigned Identity Federated Identity Credential",
+                    "description": "This module deploys a User Assigned Identity Federated Identity Credential."
+                  },
+                  "parameters": {
+                    "userAssignedIdentityName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the secret."
+                      }
+                    },
+                    "audiences": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token."
+                      }
+                    },
+                    "issuer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged."
+                      }
+                    },
+                    "subject": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+                      "apiVersion": "2024-11-30",
+                      "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
+                      "properties": {
+                        "audiences": "[parameters('audiences')]",
+                        "issuer": "[parameters('issuer')]",
+                        "subject": "[parameters('subject')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the federated identity credential."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the federated identity credential."
+                      },
+                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials', parameters('userAssignedIdentityName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the federated identity credential was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the user assigned identity."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the user assigned identity."
+              },
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID (object ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').principalId]"
+            },
+            "clientId": {
+              "type": "string",
+              "metadata": {
+                "description": "The client ID (application ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').clientId]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the user assigned identity was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('userAssignedIdentity', '2024-11-30', 'full').location]"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "userAssignedManagedIdentityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the User Assigned Managed Identity."
+      },
+      "value": "[reference('userAssignedManagedIdentity').outputs.resourceId.value]"
+    },
+    "dataCollectionRuleVMInsightsResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Data Collection Rule for VM Insights."
+      },
+      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleVMInsightsName'))]"
+    },
+    "dataCollectionRuleChangeTrackingResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Data Collection Rule for Change Tracking."
+      },
+      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleChangeTrackingName'))]"
+    },
+    "dataCollectionRuleMDFCSQLResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Data Collection Rule for Microsoft Defender for SQL."
+      },
+      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleMDFCSQLName'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the deployment script was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

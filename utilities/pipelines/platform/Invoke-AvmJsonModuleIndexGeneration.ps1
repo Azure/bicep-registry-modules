@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
+Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry. Modules marked as deprecated with a DEPRECATED.md file will be excluded.
 
 .PARAMETER storageAccountName
 The name of the Azure Storage Account where the moduleIndex.json file is stored. Default is 'biceplivedatasaprod'.
@@ -26,7 +26,9 @@ If specified, the last version of the moduleIndex.json file that is downloaded f
 .DESCRIPTION
 Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
 
-Also has error handling to cope with a module not being published fully but will not prevent the script from completeing each time.
+Modules are excluded from the moduleIndex.json file if they are marked as deprecated with a DEPRECATED.md file in the module's root directory. This applies to both main modules and child modules.
+
+Also has error handling to cope with a module not being published fully but will not prevent the script from completing each time.
 
 The script uses a merging strategy with the previous version of moduleIndex.json to ensure that the file is always up to date with the latest modules but previous versions are not removed, this can be changed by specifying the $doNotMergeWithLastModuleIndexJsonFileVersion parameter.
 
@@ -83,38 +85,88 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
             foreach ($moduleName in $moduleNames) {
                 $modulePath = "$moduleGroupPath/$moduleName"
+
+                # Check if the module is deprecated by looking for a DEPRECATED.md file
+                if (Test-Path -Path "$modulePath/DEPRECATED.md") {
+                    Write-Verbose "Module '$modulePath' is marked as DEPRECATED. Skipping..." -Verbose
+                    continue
+                }
+
+                # Check if this is a multi-scope module that should not be published directly
+                $isMultiScopeModule = Test-IsMultiScopeModule -modulePath $modulePath
+                if ($isMultiScopeModule) {
+                    Write-Verbose "Module '$modulePath' is a multi-scope module. Skipping main module and processing scope-specific modules..." -Verbose
+
+                    # Process scope-specific subdirectories as standalone modules
+                    $scopeDirectories = (Get-ChildItem -Path $modulePath -Directory -Exclude 'tests').Name
+                    foreach ($scopeDirectory in $scopeDirectories) {
+                        $scopeModulePath = "$modulePath/$scopeDirectory"
+
+                        # Check if scope module is deprecated
+                        if (Test-Path -Path "$scopeModulePath/DEPRECATED.md") {
+                            Write-Verbose "  Scope module '$scopeModulePath' is marked as DEPRECATED. Skipping..." -Verbose
+                            continue
+                        }
+
+                        # Check if scope module has required files
+                        $scopeModuleHasRequiredFiles = (Test-Path -Path "$scopeModulePath/main.bicep") -and (Test-Path -Path "$scopeModulePath/main.json") -and (Test-Path -Path "$scopeModulePath/README.md") -and (Test-Path -Path "$scopeModulePath/version.json")
+                        if (-not $scopeModuleHasRequiredFiles) {
+                            Write-Verbose "  Scope module '$scopeModulePath' does not have required files. Skipping..." -Verbose
+                            continue
+                        }
+
+                        Write-Verbose "  Processing scope module '$scopeModulePath'..." -Verbose
+                        $scopeMainJsonPath = "$scopeModulePath/main.json"
+                        $scopeTagListUrl = "https://mcr.microsoft.com/v2/bicep/$scopeModulePath/tags/list"
+
+                        Add-ModuleToAvmJsonModuleIndex -modulePath $scopeModulePath -mainJsonPath $scopeMainJsonPath -tagListUrl $scopeTagListUrl
+                    }
+                    continue
+                }
+
+                # Only proceed if the module has necessary files
+                if (-not (Test-Path -Path "$modulePath/main.json")) {
+                    Write-Verbose "Module '$modulePath' does not have main.json. Skipping..." -Verbose
+                    continue
+                }
+
                 $mainJsonPath = "$modulePath/main.json"
                 $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
 
                 Add-ModuleToAvmJsonModuleIndex -modulePath $modulePath -mainJsonPath $mainJsonPath -tagListUrl $tagListUrl
 
                 ## Find child modules that contain a main.bicep, main.json, README.md and version.json file
-                $verifiedChildModules = @()
-                $possibleChildModules = (Get-ChildItem -Path $modulePath -Directory -Exclude 'tests').Name
-                Write-Verbose '  Checking for possible child modules...' -Verbose
-                if ($possibleChildModules.Count -ne 0) {
-                    Write-Verbose "  Possible child modules: $possibleChildModules" -Verbose
-                    foreach ($possibleChildModule in $possibleChildModules) {
-                        Write-Verbose "    Processing possible child module: $possibleChildModule" -Verbose
+                ## Skip child module processing for multi-scope modules as they are handled above
+                if (-not $isMultiScopeModule) {
+                    Write-Verbose '  Checking for child modules (including nested ones)...' -Verbose
 
-                        $checkChildModuleContainsRequiredFilesForPublishing = (Test-Path -Path "$modulePath/$possibleChildModule/main.bicep") -and (Test-Path -Path "$modulePath/$possibleChildModule/main.json") -and (Test-Path -Path "$modulePath/$possibleChildModule/README.md") -and (Test-Path -Path "$modulePath/$possibleChildModule/version.json")
-                        Write-Verbose "      Child module contains required files for publishing?: $checkChildModuleContainsRequiredFilesForPublishing" -Verbose
+                    # Use the new recursive function to find all valid child modules at any depth
+                    $verifiedChildModules = Find-ChildModulesRecursively -modulePath $modulePath
 
-                        if ($checkChildModuleContainsRequiredFilesForPublishing) {
-                            Write-Verbose '      Add child module to array for inclusion in index JSON generation...' -Verbose
-                            $verifiedChildModules += $possibleChildModule
+                    if ($verifiedChildModules.Count -ne 0) {
+                        Write-Verbose "  Found child modules: $($verifiedChildModules -join ', ')" -Verbose
+
+                        foreach ($childModulePath in $verifiedChildModules) {
+                            # Double-check if the child module is deprecated (should already be filtered, but just to be safe)
+                            if (Test-Path -Path "$childModulePath/DEPRECATED.md") {
+                                Write-Verbose "  Child module '$childModulePath' is marked as DEPRECATED. Skipping..." -Verbose
+                                continue
+                            }
+
+                            # Double-check that the required files exist (should already be verified, but just to be safe)
+                            if (-not (Test-Path -Path "$childModulePath/main.json")) {
+                                Write-Verbose "  Child module '$childModulePath' does not have main.json. Skipping..." -Verbose
+                                continue
+                            }
+
+                            $childModuleMainJsonPath = "$childModulePath/main.json"
+                            $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath/tags/list"
+
+                            Add-ModuleToAvmJsonModuleIndex -modulePath $childModulePath -mainJsonPath $childModuleMainJsonPath -tagListUrl $childModuleTagListUrl
                         }
+                    } else {
+                        Write-Verbose '  No child modules found for this module.' -Verbose
                     }
-                } else {
-                    Write-Verbose '  No possible child modules found for this module.' -Verbose
-                }
-
-                foreach ($verifiedChildModule in $verifiedChildModules) {
-                    $childModulePath = "$modulePath/$verifiedChildModule"
-                    $childModuleMainJsonPath = "$childModulePath/main.json"
-                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath$mod/tags/list"
-
-                    Add-ModuleToAvmJsonModuleIndex -modulePath $childModulePath -mainJsonPath $childModuleMainJsonPath -tagListUrl $childModuleTagListUrl
                 }
 
             }
@@ -204,7 +256,137 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
 }
 
+function Test-IsMultiScopeModule {
+    <#
+    .SYNOPSIS
+    Tests if a module is a multi-scope module that should not be published directly.
+
+    .DESCRIPTION
+    Uses the same reliable logic as module.tests.ps1 to detect multi-scope modules by checking
+    for child directories that match the naming pattern for scope-specific modules (rg-scope, sub-scope, mg-scope).
+
+    .PARAMETER modulePath
+    The path to the module.
+
+    .OUTPUTS
+    Returns $true if the module is a multi-scope module, $false otherwise.
+    #>
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $modulePath
+    )
+
+    # Use the same logic as module.tests.ps1: check for child directories matching scope patterns
+    # This is more reliable than parsing text content and matches the existing codebase approach
+    try {
+        $scopeDirectories = Get-ChildItem -Directory -Path $modulePath -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }
+        $isMultiScopeParentModule = $scopeDirectories.Count -gt 0
+
+        if ($isMultiScopeParentModule) {
+            Write-Verbose "  Multi-scope module detected: '$modulePath' (found $($scopeDirectories.Count) scope modules: $($scopeDirectories.Name -join ', '))" -Verbose
+        }
+
+        return $isMultiScopeParentModule
+    } catch {
+        Write-Verbose "  Warning: Could not analyze directory structure for module '$modulePath': $($_.Exception.Message)" -Verbose
+        return $false
+    }
+}
+
+function Find-ChildModulesRecursively {
+    <#
+    .SYNOPSIS
+    Recursively finds all valid child modules at any depth level.
+
+    .DESCRIPTION
+    Searches through a module's directory structure to find all child modules
+    that have the required files (main.bicep, main.json, README.md, version.json)
+    and are not marked as deprecated.
+
+    .PARAMETER modulePath
+    The path to the parent module to search within.
+
+    .PARAMETER processedPaths
+    HashSet to track already processed paths to avoid duplicates.
+
+    .OUTPUTS
+    Returns an array of child module paths that meet the requirements.
+    #>
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $modulePath,
+
+        [Parameter(Mandatory = $false)]
+        [System.Collections.Generic.HashSet[string]] $processedPaths = [System.Collections.Generic.HashSet[string]]::new()
+    )
+
+    $validChildModules = @()
+
+    # Get all subdirectories, excluding 'tests' and any already processed paths
+    $possibleChildDirectories = Get-ChildItem -Path $modulePath -Directory -Exclude 'tests' -ErrorAction SilentlyContinue
+
+    foreach ($childDir in $possibleChildDirectories) {
+        $childPath = $childDir.FullName
+        $relativePath = $childPath -replace [regex]::Escape((Get-Location).Path + [System.IO.Path]::DirectorySeparatorChar), ''
+        $relativePath = $relativePath -replace '\\', '/'  # Normalize path separators
+
+        # Skip if we've already processed this path
+        if ($processedPaths.Contains($relativePath)) {
+            continue
+        }
+
+        # Add to processed paths
+        $processedPaths.Add($relativePath) | Out-Null
+
+        # Check if this directory is deprecated
+        if (Test-Path -Path "$childPath/DEPRECATED.md") {
+            Write-Verbose "    Child module '$relativePath' is marked as DEPRECATED. Skipping..." -Verbose
+            continue
+        }
+
+        # Check if this directory has the required files for a publishable module
+        $hasRequiredFiles = (Test-Path -Path "$childPath/main.bicep") -and
+                           (Test-Path -Path "$childPath/main.json") -and
+                           (Test-Path -Path "$childPath/README.md") -and
+                           (Test-Path -Path "$childPath/version.json")
+
+        if ($hasRequiredFiles) {
+            Write-Verbose "    Found valid child module: $relativePath" -Verbose
+            $validChildModules += $relativePath
+        }
+
+        # Recursively search this directory for more child modules
+        $nestedChildren = Find-ChildModulesRecursively -modulePath $childPath -processedPaths $processedPaths
+        $validChildModules += $nestedChildren
+    }
+
+    return $validChildModules
+}
+
 function Add-ModuleToAvmJsonModuleIndex {
+    <#
+    .SYNOPSIS
+    Adds a module to the module index data.
+
+    .DESCRIPTION
+    Processes a module to add to the AVM JSON module index. Retrieves the module's
+    tags and description and adds it to the module index data.
+
+    Note: The calling code already checks for DEPRECATED.md and ensures that main.json exists
+    before calling this function.
+
+    .PARAMETER modulePath
+    The path to the module.
+
+    .PARAMETER mainJsonPath
+    The path to the module's main.json file. Default is "$modulePath/main.json".
+
+    .PARAMETER tagListUrl
+    The URL to retrieve the module's tags. Default is "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list".
+
+    .OUTPUTS
+    Returns $true if no errors occurred, $false otherwise.
+    #>
     param (
         [Parameter(Mandatory = $true)]
         [string] $modulePath,
@@ -215,6 +397,9 @@ function Add-ModuleToAvmJsonModuleIndex {
         [Parameter(Mandatory = $false)]
         [string] $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
     )
+
+    # Note: We've already checked for DEPRECATED.md in the main script
+    # and verified that main.json exists, so we don't need to check again here
 
     try {
         Write-Verbose "Processing AVM Module '$modulePath'..." -Verbose

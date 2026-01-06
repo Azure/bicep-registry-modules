@@ -24,13 +24,13 @@ param taskType string
 param tags object?
 
 @sys.description('Optional. If the schedule will occur once each day of the week, specify the daily recurrence.')
-param dailyRecurrence dailyRecurrenceType
+param dailyRecurrence dailyRecurrenceType?
 
 @sys.description('Optional. If the schedule will occur multiple times a day, specify the hourly recurrence.')
-param hourlyRecurrence hourlyRecurrenceType
+param hourlyRecurrence hourlyRecurrenceType?
 
 @sys.description('Optional. If the schedule will occur only some days of the week, specify the weekly recurrence.')
-param weeklyRecurrence weeklyRecurrenceType
+param weeklyRecurrence weeklyRecurrenceType?
 
 @allowed([
   'Enabled'
@@ -46,7 +46,7 @@ param targetResourceId string?
 param timeZoneId string = 'Pacific Standard time'
 
 @sys.description('Optional. The notification settings for the schedule.')
-param notificationSettings notificationSettingsType
+param notificationSettings notificationSettingType?
 
 resource lab 'Microsoft.DevTestLab/labs@2018-09-15' existing = {
   name: labName
@@ -82,29 +82,33 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@sys.description('The type for the daily recurrence of the schedule.')
 type dailyRecurrenceType = {
   @sys.description('Required. The time of day the schedule will occur.')
   time: string
-}?
+}
 
 @export()
+@sys.description('The type for the hourly recurrence of the schedule.')
 type hourlyRecurrenceType = {
   @sys.description('Required. Minutes of the hour the schedule will run.')
   minute: int
-}?
+}
 
 @export()
+@sys.description('The type for the weekly recurrence of the schedule.')
 type weeklyRecurrenceType = {
   @sys.description('Required. The time of day the schedule will occur.')
   time: string
 
   @sys.description('Required. The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday, etc.).')
   weekdays: string[]
-}?
+}
 
 @export()
-type notificationSettingsType = {
-  @description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.')
+@sys.description('The type for the notification setting.')
+type notificationSettingType = {
+  @description('Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty.')
   emailRecipient: string?
 
   @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
@@ -117,5 +121,5 @@ type notificationSettingsType = {
   timeInMinutes: int?
 
   @description('Conditional. The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.')
-  webHookUrl: string?
-}?
+  webhookUrl: string?
+}

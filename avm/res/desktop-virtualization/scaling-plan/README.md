@@ -1,6 +1,19 @@
 # Azure Virtual Desktop Scaling Plan `[Microsoft.DesktopVirtualization/scalingPlans]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Virtual Desktop Scaling Plan.
+
+You can reference the module as follows:
+```bicep
+module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -8,16 +21,17 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/scalingPlans` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/scalingPlans) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DesktopVirtualization/scalingPlans` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.desktopvirtualization_scalingplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2025-03-01-preview/scalingPlans)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -35,6 +49,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,12 +58,8 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: 'scalingPlanDeployment'
   params: {
-    // Required parameters
     name: 'dvspmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -64,13 +76,8 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dvspmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -86,10 +93,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 ```bicep-params
 using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
 
-// Required parameters
 param name = 'dvspmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -99,6 +103,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -106,7 +112,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: 'scalingPlanDeployment'
   params: {
     // Required parameters
     name: 'dvspmax002'
@@ -129,7 +134,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     friendlyName: 'friendlyName'
     hostPoolReferences: [
       {
-        hostPoolArmPath: '<hostPoolArmPath>'
+        hostPoolResourceId: '<hostPoolResourceId>'
         scalingPlanEnabled: true
       }
     ]
@@ -316,7 +321,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "hostPoolReferences": {
       "value": [
         {
-          "hostPoolArmPath": "<hostPoolArmPath>",
+          "hostPoolResourceId": "<hostPoolResourceId>",
           "scalingPlanEnabled": true
         }
       ]
@@ -503,7 +508,7 @@ param diagnosticSettings = [
 param friendlyName = 'friendlyName'
 param hostPoolReferences = [
   {
-    hostPoolArmPath: '<hostPoolArmPath>'
+    hostPoolResourceId: '<hostPoolResourceId>'
     scalingPlanEnabled: true
   }
 ]
@@ -653,6 +658,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -660,7 +667,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>' = {
-  name: 'scalingPlanDeployment'
   params: {
     // Required parameters
     name: 'dvspwaf002'
@@ -675,7 +681,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
       }
     ]
     friendlyName: 'myFriendlyName'
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -718,9 +723,6 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "friendlyName": {
       "value": "myFriendlyName"
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -755,7 +757,6 @@ param diagnosticSettings = [
   }
 ]
 param friendlyName = 'myFriendlyName'
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -779,12 +780,12 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of the Scaling Plan. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The database-level diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
 | [`hostPoolReferences`](#parameter-hostpoolreferences) | array | Host pool references of the Scaling Plan. |
-| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. |
+| [`hostPoolType`](#parameter-hostpooltype) | string | Host pool type of the Scaling Plan. Defaults to 'Pooled'. |
 | [`location`](#parameter-location) | string | Location of the Scaling Plan. Defaults to resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -809,7 +810,7 @@ Description of the Scaling Plan.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The database-level diagnostic settings of the service.
 
 - Required: No
 - Type: array
@@ -867,7 +868,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
 | [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
@@ -879,7 +880,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
@@ -933,7 +934,6 @@ Exclusion tag to be used for exclusion of VMs from Scaling Plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `friendlyName`
 
@@ -949,11 +949,36 @@ Host pool references of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hostPoolResourceId`](#parameter-hostpoolreferenceshostpoolresourceid) | string | Arm path of referenced hostpool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`scalingPlanEnabled`](#parameter-hostpoolreferencesscalingplanenabled) | bool | Is the scaling plan enabled for this hostpool. Defaults to `true`. |
+
+### Parameter: `hostPoolReferences.hostPoolResourceId`
+
+Arm path of referenced hostpool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hostPoolReferences.scalingPlanEnabled`
+
+Is the scaling plan enabled for this hostpool. Defaults to `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `hostPoolType`
 
-Host pool type of the Scaling Plan.
+Host pool type of the Scaling Plan. Defaults to 'Pooled'.
 
 - Required: No
 - Type: string
@@ -987,6 +1012,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1006,6 +1032,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1133,7 +1166,6 @@ Schedules of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -1159,6 +1191,14 @@ Time zone of the Scaling Plan. Defaults to UTC.
 | `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
 | `resourceId` | string | The resource ID of the Scaling Plan. |
 
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -8,16 +8,16 @@ param name string
 param topicName string
 
 @description('Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).')
-param deadLetterDestination object = {}
+param deadLetterDestination resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterDestination?
 
 @description('Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information).')
-param deadLetterWithResourceIdentity object = {}
+param deadLetterWithResourceIdentity resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deadLetterWithResourceIdentity?
 
 @description('Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).')
-param deliveryWithResourceIdentity object = {}
+param deliveryWithResourceIdentity resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deliveryWithResourceIdentity?
 
-@description('Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
-param destination object
+@description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
+param destination resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.destination?
 
 @description('Optional. The event delivery schema for the event subscription.')
 @allowed([
@@ -29,34 +29,34 @@ param destination object
 param eventDeliverySchema string = 'EventGridSchema'
 
 @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
-param expirationTimeUtc string = ''
+param expirationTimeUtc string?
 
 @description('Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information).')
-param filter object = {}
+param filter resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.filter?
 
 @description('Optional. The list of user defined labels.')
-param labels array = []
+param labels string[]?
 
 @description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
-param retryPolicy object = {}
+param retryPolicy resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.retryPolicy?
 
-resource topic 'Microsoft.EventGrid/topics@2022-06-15' existing = {
+resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' existing = {
   name: topicName
 }
 
-resource eventSubscription 'Microsoft.EventGrid/topics/eventSubscriptions@2022-06-15' = {
+resource eventSubscription 'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview' = {
   name: name
   parent: topic
   properties: {
-    deadLetterDestination: !empty(deadLetterDestination) ? deadLetterDestination : null
-    deadLetterWithResourceIdentity: !empty(deadLetterWithResourceIdentity) ? deadLetterWithResourceIdentity : null
-    deliveryWithResourceIdentity: !empty(deliveryWithResourceIdentity) ? deliveryWithResourceIdentity : null
+    deadLetterDestination: deadLetterDestination
+    deadLetterWithResourceIdentity: deadLetterWithResourceIdentity
+    deliveryWithResourceIdentity: deliveryWithResourceIdentity
     destination: empty(deliveryWithResourceIdentity) ? destination : null
     eventDeliverySchema: eventDeliverySchema
-    expirationTimeUtc: !empty(expirationTimeUtc) ? expirationTimeUtc : ''
-    filter: !empty(filter) ? filter : {}
-    labels: !empty(labels) ? labels : []
-    retryPolicy: !empty(retryPolicy) ? retryPolicy : null
+    expirationTimeUtc: expirationTimeUtc ?? ''
+    filter: filter ?? {}
+    labels: labels ?? []
+    retryPolicy: retryPolicy
   }
 }
 

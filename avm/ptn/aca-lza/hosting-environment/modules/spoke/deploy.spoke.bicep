@@ -115,6 +115,7 @@ var defaultSubnets = [
   {
     name: deploymentSubnetName
     addressPrefix: deploymentSubnetAddressPrefix
+    networkSecurityGroupResourceId: nsgDeploymentSubnet.outputs.resourceId
     delegation: 'Microsoft.ContainerInstance/containerGroups'
   }
   {
@@ -135,7 +136,7 @@ var appGwAndDefaultSubnets = !empty(spokeApplicationGatewaySubnetAddressPrefix)
     ])
   : defaultSubnets
 
-//Append optional jumpbox subnet, if required
+// Append optional jumpbox subnet, if required
 var spokeSubnets = vmJumpboxOSType != 'none'
   ? concat(appGwAndDefaultSubnets, [
       {
@@ -179,14 +180,13 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
 }
 
 @description('The log sink for Azure Diagnostics')
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.1' = {
+module logAnalyticsWorkspace 'logAnalytics.bicep' = {
   name: take('deploy-logAnalyticsWs-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    name: resourcesNames.logAnalyticsWorkspace
+    resourcesNames: resourcesNames
     location: location
     tags: tags
-    enableTelemetry: enableTelemetry
   }
 }
 
@@ -426,6 +426,68 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
           direction: 'Outbound'
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: '*'
+        }
+      }
+    ]
+    diagnosticSettings: [
+      {
+        name: 'logAnalyticsSettings'
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+  }
+}
+
+@description('NSG Rules for the deployment subnet (container instances).')
+module nsgDeploymentSubnet 'br/public:avm/res/network/network-security-group:0.5.0' = {
+  name: take('deploy-nsgDeploymentSubnet-${deployment().name}', 64)
+  scope: resourceGroup(resourcesNames.resourceGroup)
+  params: {
+    name: resourcesNames.acrDeploymentPoolNsg
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    securityRules: [
+      {
+        name: 'Allow_HTTPS_Inbound'
+        properties: {
+          description: 'Allow inbound HTTPS traffic on port 443 from any source.'
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          access: 'Allow'
+          priority: 110
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'Allow_HTTPS_Outbound'
+        properties: {
+          description: 'Allow outbound HTTPS traffic on port 443 to any destination.'
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          access: 'Allow'
+          priority: 120
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Allow_Azure_Container_Instance_Outbound'
+        properties: {
+          description: 'Allow outbound traffic to Azure services for container instances.'
+          protocol: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'Internet'
+          destinationPortRange: '*'
+          access: 'Allow'
+          priority: 200
+          direction: 'Outbound'
         }
       }
     ]

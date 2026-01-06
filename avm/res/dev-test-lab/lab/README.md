@@ -2,6 +2,14 @@
 
 This module deploys a DevTest Lab.
 
+You can reference the module as follows:
+```bicep
+module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,17 +21,18 @@ This module deploys a DevTest Lab.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DevTestLab/labs` | [2018-10-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/labs) |
-| `Microsoft.DevTestLab/labs/artifactsources` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/artifactsources) |
-| `Microsoft.DevTestLab/labs/costs` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/costs) |
-| `Microsoft.DevTestLab/labs/notificationchannels` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/notificationchannels) |
-| `Microsoft.DevTestLab/labs/policysets/policies` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/policysets/policies) |
-| `Microsoft.DevTestLab/labs/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules) |
-| `Microsoft.DevTestLab/labs/virtualnetworks` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/virtualnetworks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DevTestLab/labs` | 2018-10-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/labs)</li></ul> |
+| `Microsoft.DevTestLab/labs/artifactsources` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_artifactsources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/artifactsources)</li></ul> |
+| `Microsoft.DevTestLab/labs/costs` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_costs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/costs)</li></ul> |
+| `Microsoft.DevTestLab/labs/notificationchannels` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_notificationchannels.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/notificationchannels)</li></ul> |
+| `Microsoft.DevTestLab/labs/policysets/policies` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_policysets_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/policysets/policies)</li></ul> |
+| `Microsoft.DevTestLab/labs/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules)</li></ul> |
+| `Microsoft.DevTestLab/labs/secrets` | 2018-10-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/labs)</li></ul> |
+| `Microsoft.DevTestLab/labs/virtualnetworks` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/virtualnetworks)</li></ul> |
 
 ## Usage examples
 
@@ -41,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -48,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: 'labDeployment'
   params: {
     // Required parameters
     name: 'dtllmin001'
@@ -105,6 +115,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -112,7 +124,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: 'labDeployment'
   params: {
     // Required parameters
     name: 'dtllmax001'
@@ -322,6 +333,13 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         }
       }
     ]
+    secrets: [
+      {
+        name: 'labSecret1'
+        value: '<value>'
+      }
+    ]
+    storageAccountAccess: '<storageAccountAccess>'
     support: {
       enabled: 'Enabled'
       markdown: 'DevTest Lab support text. <br> New line. It also supports Markdown'
@@ -645,6 +663,17 @@ module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
         }
       ]
     },
+    "secrets": {
+      "value": [
+        {
+          "name": "labSecret1",
+          "value": "<value>"
+        }
+      ]
+    },
+    "storageAccountAccess": {
+      "value": "<storageAccountAccess>"
+    },
     "support": {
       "value": {
         "enabled": "Enabled",
@@ -930,6 +959,13 @@ param schedules = [
     }
   }
 ]
+param secrets = [
+  {
+    name: 'labSecret1'
+    value: '<value>'
+  }
+]
+param storageAccountAccess = '<storageAccountAccess>'
 param support = {
   enabled: 'Enabled'
   markdown: 'DevTest Lab support text. <br> New line. It also supports Markdown'
@@ -994,6 +1030,8 @@ param vmCreationResourceGroupId = '<vmCreationResourceGroupId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1001,7 +1039,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module lab 'br/public:avm/res/dev-test-lab/lab:<version>' = {
-  name: 'labDeployment'
   params: {
     // Required parameters
     name: 'dtllwaf001'
@@ -1112,6 +1149,8 @@ param tags = {
 | [`premiumDataDisks`](#parameter-premiumdatadisks) | string | The setting to enable usage of premium data disks. When its value is "Enabled", creation of standard or premium data disks is allowed. When its value is "Disabled", only creation of standard data disks is allowed. Default is "Disabled". |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`schedules`](#parameter-schedules) | array | Schedules to create for the lab. |
+| [`secrets`](#parameter-secrets) | array | Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it's needed. |
+| [`storageAccountAccess`](#parameter-storageaccountaccess) | string | Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the "Azure Lab Services" service principal (Application ID: "1a14be2a-e903-4cec-99cf-b2e209259a0f") assigned with at least the "Reader" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with "Contributor" rights, but template deployments require this to be done programmatically prior using this feature. |
 | [`support`](#parameter-support) | object | The properties of any lab support message associated with this lab. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualnetworks`](#parameter-virtualnetworks) | array | Virtual networks to create for the lab. |
@@ -1713,6 +1752,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1732,6 +1772,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2109,8 +2156,8 @@ The notification settings for the schedule.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`emailRecipient`](#parameter-schedulesnotificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty. |
-| [`webHookUrl`](#parameter-schedulesnotificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
+| [`emailRecipient`](#parameter-schedulesnotificationsettingsemailrecipient) | string | The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty. |
+| [`webhookUrl`](#parameter-schedulesnotificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty. |
 
 **Optional parameters**
 
@@ -2122,12 +2169,12 @@ The notification settings for the schedule.
 
 ### Parameter: `schedules.notificationSettings.emailRecipient`
 
-The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webHookUrl" is empty.
+The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if "webhookUrl" is empty.
 
 - Required: No
 - Type: string
 
-### Parameter: `schedules.notificationSettings.webHookUrl`
+### Parameter: `schedules.notificationSettings.webhookUrl`
 
 The webhook URL to which the notification will be sent. Required if "emailRecipient" is empty.
 
@@ -2224,6 +2271,63 @@ The days of the week for which the schedule is set (e.g. Sunday, Monday, Tuesday
 
 - Required: Yes
 - Type: array
+
+### Parameter: `secrets`
+
+Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it's needed.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+| [`value`](#parameter-secretsvalue) | securestring | The value of the secret. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabledForArtifacts`](#parameter-secretsenabledforartifacts) | bool | Set a secret for your artifacts (e.g., a personal access token to clone your Git repository via an artifact). At least one of the following must be true: enabledForArtifacts, enabledForVmCreation. |
+| [`enabledForVmCreation`](#parameter-secretsenabledforvmcreation) | bool | Set a user password or provide an SSH public key to access your Windows or Linux virtual machines. At least one of the following must be true: enabledForArtifacts, enabledForVmCreation. |
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `secrets.value`
+
+The value of the secret.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `secrets.enabledForArtifacts`
+
+Set a secret for your artifacts (e.g., a personal access token to clone your Git repository via an artifact). At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.
+
+- Required: No
+- Type: bool
+
+### Parameter: `secrets.enabledForVmCreation`
+
+Set a user password or provide an SSH public key to access your Windows or Linux virtual machines. At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountAccess`
+
+Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the "Azure Lab Services" service principal (Application ID: "1a14be2a-e903-4cec-99cf-b2e209259a0f") assigned with at least the "Reader" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with "Contributor" rights, but template deployments require this to be done programmatically prior using this feature.
+
+- Required: No
+- Type: string
+- Default: `'sas'`
 
 ### Parameter: `support`
 
@@ -2487,8 +2591,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

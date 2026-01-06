@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata description = '''This instance deploys the module with most of its features enabled.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -35,9 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
   }
 }
 
@@ -62,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
       autoScaleMin: 3
       autoScaleMax: 6
       enableAutoScale: true
-      principalAssignments: [
+      clusterPrincipalAssignments: [
         {
           principalId: nestedDependencies.outputs.managedIdentityClientId
           principalType: 'App'
@@ -86,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
           value: 'https://contoso.com'
         }
       ]
-      enableZoneRedundant: true
+      availabilityZones: [1, 2, 3]
       engineType: 'V3'
       publicIPType: 'DualStack'
       enableRestrictOutboundNetworkAccess: true
@@ -125,8 +124,19 @@ module testDeployment '../../../main.bicep' = [
             softDeletePeriod: 'P7D'
             hotCachePeriod: 'P1D'
           }
+          databasePrincipalAssignments: [
+            {
+              principalId: nestedDependencies.outputs.managedIdentityClientId
+              principalType: 'App'
+              role: 'Viewer'
+            }
+          ]
         }
       ]
+      tags: {
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
+      }
     }
   }
 ]

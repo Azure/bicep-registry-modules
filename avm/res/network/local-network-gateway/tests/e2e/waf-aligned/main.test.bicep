@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,17 +41,16 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      localAddressPrefixes: [
-        '192.168.1.0/24'
-      ]
+      localNetworkAddressSpace: {
+        addressPrefixes: [
+          '192.168.1.0/24'
+        ]
+      }
       localGatewayPublicIpAddress: '8.8.8.8'
-      localAsn: '65123'
-      localBgpPeeringAddress: '192.168.1.5'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+      bgpSettings: {
+        localAsn: 65123
+        localBgpPeeringAddress: '192.168.1.5'
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

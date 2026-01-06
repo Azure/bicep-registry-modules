@@ -21,14 +21,27 @@ resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   }
 }
 
-module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
+resource managementGroup2 'Microsoft.Management/managementGroups@2023-04-01' = {
+  name: 'test-mgmt-group-2'
+  properties: {
+    displayName: 'Test Management Group'
+    details:{
+      parent:{
+        id: rootManagementGroupResourceId
+      }
+    }
+  }
+}
+
+module subVending 'br/public:avm/ptn/lz/sub-vending:0.4.0' = {
   name: 'subVendingDeployment'
   scope: managementGroup
   params: {
     subscriptionAliasEnabled: true
-    subscriptionAliasName: 'NewSubscription'
+    subscriptionAliasName: 'AVMSubPlacementSub'
     subscriptionBillingScope: subscriptionBillingScope
-    subscriptionDisplayName: 'NewSubscription'
+    subscriptionDisplayName: 'AVMSubPlacementSub'
+
     subscriptionTags: {
       avmTest: 'true'
     }
@@ -42,6 +55,12 @@ output managementGroupId string = managementGroup.id
 
 @description('Output of the management group name.')
 output managementGroupName string = managementGroup.name
+
+@description('Output of the second management group resource ID.')
+output managementGroupId2 string = managementGroup2.id
+
+@description('Output of the second management group name.')
+output managementGroupName2 string = managementGroup2.name
 
 @description('Output of the subscription vending resource ID.')
 output subVendingResourceId string = subVending.outputs.subscriptionResourceId

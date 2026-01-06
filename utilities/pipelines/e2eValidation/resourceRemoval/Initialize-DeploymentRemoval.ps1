@@ -104,6 +104,12 @@ function Initialize-DeploymentRemoval {
             'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
             'Microsoft.Network/virtualNetworkGateways', # Must be deleted before the Public IP that is associated with it
             'Microsoft.Network/loadBalancers', # Must be deleted before e.g. a GatewaySubnet that is associated with it
+            'Microsoft.DataProtection/backupVaults', # This resource has a custom removal logic and hence needs to be deleted before its resource group
+            'Microsoft.CognitiveServices/accounts/projects',
+            'Microsoft.CognitiveServices/accounts',
+            'Microsoft.KeyVault/managedHSMs/keys', # Should be deleted before e.g. a SQL server that is associated with it to avoid issues with access token expiration
+            'Microsoft.Sql/servers/databases', # Should be deleted before its parent SQL server to save time during removal
+            'Microsoft.Sql/servers',
             'Microsoft.Resources/resourceGroups'
         )
 

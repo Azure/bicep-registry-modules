@@ -46,7 +46,7 @@ param principalId string
 param principalType string = 'User'
 
 @description('Optional. Kubernetes Version.')
-param kubernetesVersion string = '1.29'
+param kubernetesVersion string = '1.31'
 
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
@@ -102,7 +102,7 @@ param publicNetworkAccess string = 'Enabled'
 param loadBalancerSku string = 'standard'
 
 @description('Optional. Scope maps setting.')
-param scopeMaps scopeMapsType
+param scopeMaps scopeMapType[]?
 
 @description('Optional. Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.')
 param webApplicationRoutingEnabled bool = true
@@ -121,7 +121,7 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
-import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
 @description('Optional. Custom configuration of system node pool.')
 param systemPoolConfig agentPoolType[]?
 
@@ -177,12 +177,12 @@ param enableVaultForTemplateDeployment bool = false
 @description('Optional. Enable RBAC using AAD.')
 param enableAzureRbac bool = false
 
-import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
 @description('Optional. Enable Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
 var systemPoolsConfig = !empty(systemPoolConfig)
-  ? systemPoolConfig
+  ? systemPoolConfig!
   : [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
 
 var agentPoolsConfig = !empty(agentPoolConfig)
@@ -279,7 +279,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.2' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -345,7 +345,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.2
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -379,14 +379,14 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' =
     roleAssignments: [
       {
         name: containerRegistryRoleName
-        principalId: managedCluster.outputs.kubeletIdentityObjectId
+        principalId: managedCluster.outputs.?kubeletIdentityObjectId ?? ''
         roleDefinitionIdOrName: acrPullRole
       }
     ]
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName
@@ -397,7 +397,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
     enablePurgeProtection: enablePurgeProtection
     accessPolicies: [
       {
-        objectId: managedCluster.outputs.kubeletIdentityObjectId
+        objectId: managedCluster.outputs.?kubeletIdentityObjectId ?? ''
         permissions: {
           secrets: ['get', 'list']
         }
@@ -417,13 +417,13 @@ output resourceGroupName string = resourceGroup().name
 output managedClusterName string = managedCluster.outputs.name
 
 @description('The Client ID of the AKS identity.')
-output managedClusterClientId string = managedCluster.outputs.kubeletIdentityClientId
+output managedClusterClientId string? = managedCluster.outputs.?kubeletIdentityClientId
 
 @description('The Object ID of the AKS identity.')
-output managedClusterObjectId string = managedCluster.outputs.kubeletIdentityObjectId
+output managedClusterObjectId string? = managedCluster.outputs.?kubeletIdentityObjectId
 
 @description('The resource ID of the AKS cluster.')
-output managedClusterResourceId string = managedCluster.outputs.kubeletIdentityResourceId
+output managedClusterResourceId string? = managedCluster.outputs.?kubeletIdentityResourceId
 
 @description('The resource name of the ACR.')
 output containerRegistryName string = containerRegistry.outputs.name
@@ -435,7 +435,9 @@ output containerRegistryLoginServer string = containerRegistry.outputs.loginServ
 //   Definitions   //
 // =============== //
 
-type scopeMapsType = {
+@export()
+@description('The type of a scope map.')
+type scopeMapType = {
   @description('Optional. The name of the scope map.')
   name: string?
 
@@ -444,4 +446,4 @@ type scopeMapsType = {
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?
-}[]?
+}

@@ -42,9 +42,6 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      // Note: This value is not required and only set to enable testing
-      location: enforcedLocation
-    }
+    params: {}
   }
 ]

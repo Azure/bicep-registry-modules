@@ -1,6 +1,19 @@
 # Azure Stack HCI Logical Network `[Microsoft.AzureStackHCI/logicalNetworks]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Stack HCI Logical Network.
+
+You can reference the module as follows:
+```bicep
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -13,10 +26,10 @@ This module deploys an Azure Stack HCI Logical Network.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/logicalNetworks` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.AzureStackHCI/logicalNetworks` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_logicalnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks)</li></ul> |
 
 ## Usage examples
 
@@ -33,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -40,15 +55,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
-  name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnminlogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
-    // Non-required parameters
-    routeName: 'default'
-    vlanId: '<vlanId>'
+    vmSwitchName: '<vmSwitchName>'
   }
 }
 ```
@@ -73,14 +84,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnminlogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
-    },
-    // Non-required parameters
-    "routeName": {
-      "value": "default"
-    },
-    "vlanId": {
-      "value": "<vlanId>"
+      "value": "<vmSwitchName>"
     }
   }
 }
@@ -99,10 +103,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnminlogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
-// Non-required parameters
-param routeName = 'default'
-param vlanId = '<vlanId>'
+param vmSwitchName = '<vmSwitchName>'
 ```
 
 </details>
@@ -112,6 +113,8 @@ param vlanId = '<vlanId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -119,22 +122,25 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
-  name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnwaflogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
+    vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
-    addressPrefix: '172.20.0.1/24'
-    defaultGateway: '172.20.0.1'
+    addressPrefix: '192.168.1.0/24'
+    defaultGateway: '192.168.1.1'
     dnsServers: [
-      '172.20.0.1'
+      '192.168.1.254'
     ]
-    endingAddress: '172.20.0.190'
     ipAllocationMethod: 'Static'
+    ipPools: [
+      {
+        end: '192.168.1.190'
+        start: '192.168.1.171'
+      }
+    ]
     routeName: 'default'
-    startingAddress: '172.20.0.171'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -165,31 +171,33 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnwaflogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
+      "value": "<vmSwitchName>"
     },
     // Non-required parameters
     "addressPrefix": {
-      "value": "172.20.0.1/24"
+      "value": "192.168.1.0/24"
     },
     "defaultGateway": {
-      "value": "172.20.0.1"
+      "value": "192.168.1.1"
     },
     "dnsServers": {
       "value": [
-        "172.20.0.1"
+        "192.168.1.254"
       ]
-    },
-    "endingAddress": {
-      "value": "172.20.0.190"
     },
     "ipAllocationMethod": {
       "value": "Static"
     },
+    "ipPools": {
+      "value": [
+        {
+          "end": "192.168.1.190",
+          "start": "192.168.1.171"
+        }
+      ]
+    },
     "routeName": {
       "value": "default"
-    },
-    "startingAddress": {
-      "value": "172.20.0.171"
     },
     "tags": {
       "value": {
@@ -218,17 +226,21 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
+param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
-param addressPrefix = '172.20.0.1/24'
-param defaultGateway = '172.20.0.1'
+param addressPrefix = '192.168.1.0/24'
+param defaultGateway = '192.168.1.1'
 param dnsServers = [
-  '172.20.0.1'
+  '192.168.1.254'
 ]
-param endingAddress = '172.20.0.190'
 param ipAllocationMethod = 'Static'
+param ipPools = [
+  {
+    end: '192.168.1.190'
+    start: '192.168.1.171'
+  }
+]
 param routeName = 'default'
-param startingAddress = '172.20.0.171'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -257,9 +269,8 @@ param vlanId = '<vlanId>'
 | [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required if ipAllocationMethod is Static. |
 | [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required if ipAllocationMethod is Static. |
 | [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required if ipAllocationMethod is Static. |
-| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required if ipAllocationMethod is Static. |
+| [`ipPools`](#parameter-ippools) | array | Network associated pool of IP Addresses. Required if ipAllocationMethod is Static. |
 | [`routeName`](#parameter-routename) | string | The route name. Required if ipAllocationMethod is Static. |
-| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required if ipAllocationMethod is Static. |
 
 **Optional parameters**
 
@@ -317,9 +328,66 @@ The DNS servers list. Required if ipAllocationMethod is Static.
 - Type: array
 - Default: `[]`
 
-### Parameter: `endingAddress`
+### Parameter: `ipPools`
 
-The ending IP address of the IP address range. Required if ipAllocationMethod is Static.
+Network associated pool of IP Addresses. Required if ipAllocationMethod is Static.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`end`](#parameter-ippoolsend) | string | The end IP address of the pool. |
+| [`start`](#parameter-ippoolsstart) | string | The start IP address of the pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`info`](#parameter-ippoolsinfo) | object | Additional info for the pool. |
+| [`ipPoolType`](#parameter-ippoolsippooltype) | string | The type of the IP pool. Must be either vippool or vm. |
+| [`name`](#parameter-ippoolsname) | string | The name of the IP pool. |
+
+### Parameter: `ipPools.end`
+
+The end IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.start`
+
+The start IP address of the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipPools.info`
+
+Additional info for the pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `ipPools.ipPoolType`
+
+The type of the IP pool. Must be either vippool or vm.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'vippool'
+    'vm'
+  ]
+  ```
+
+### Parameter: `ipPools.name`
+
+The name of the IP pool.
 
 - Required: No
 - Type: string
@@ -327,13 +395,6 @@ The ending IP address of the IP address range. Required if ipAllocationMethod is
 ### Parameter: `routeName`
 
 The route name. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `startingAddress`
-
-The starting IP address of the IP address range. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string
@@ -533,4 +594,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -49,8 +49,8 @@ function Publish-ModuleFromPathToPBR {
 
     $resultSet = [ordered]@{}
 
-    # 1. Get list of all modules qualifying for publishing (updated and versioned)
-    $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath $topModuleFolderPath
+    # 1. Get list of all modules qualifying for publishing (updated and versioned) and order them by length, so that child modules are processed first
+    $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath $topModuleFolderPath | Sort-Object -Property Length -Descending
 
     # If no module qualifies for publishing, return
     if (-not $modulesToPublishList) {
@@ -89,7 +89,7 @@ function Publish-ModuleFromPathToPBR {
         $null = Convert-TokensInFileList @tokenConfiguration
 
         # Double-check that tokens are correctly replaced
-        $templateContent = bicep build $moduleBicepFilePath --stdout
+        $templateContent = Get-Content -Path $moduleBicepFilePath
         $incorrectLines = @()
         for ($index = 0; $index -lt $templateContent.Count; $index++) {
             if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {
@@ -122,7 +122,6 @@ function Publish-ModuleFromPathToPBR {
             publishedModuleName = $publishedModuleName
             gitTagName          = $gitTagName
         }
-
     }
 
     return $resultSet

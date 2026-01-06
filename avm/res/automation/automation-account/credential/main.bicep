@@ -17,7 +17,7 @@ param password string
 @sys.description('Optional. Description of the credential.')
 param description string?
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 

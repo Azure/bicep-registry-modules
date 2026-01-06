@@ -49,7 +49,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -63,7 +62,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -118,7 +116,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       dnsZonePartnerResourceId: ''
-      encryptionProtectorObj: {
+      encryptionProtector: {
         serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
       }
@@ -160,10 +158,19 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      securityAlertPoliciesObj: {
+      securityAlertPolicy: {
         emailAccountAdmins: true
         name: 'default'
         state: 'Enabled'
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        emailAddresses: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        disabledAlerts: [
+          'Unsafe_Action'
+        ]
+        retentionDays: 7
       }
       servicePrincipal: 'SystemAssigned'
       skuName: 'GP_Gen5'
@@ -178,20 +185,22 @@ module testDeployment '../../../main.bicep' = [
       maintenanceWindow: 'Custom1'
       timezoneId: 'UTC'
       vCores: 4
-      vulnerabilityAssessmentsObj: {
-        emailSubscriptionAdmins: true
+      vulnerabilityAssessment: {
         name: 'default'
-        recurringScansEmails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
-        recurringScansIsEnabled: true
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        recurringScans: {
+          isEnabled: true
+          emailSubscriptionAdmins: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
         }
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
     }
   }

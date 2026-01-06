@@ -2,22 +2,31 @@
 
 This module deploys a Traffic Manager Profile.
 
+You can reference the module as follows:
+```bicep
+module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/trafficmanagerprofiles` | [2018-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-08-01/trafficmanagerprofiles) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/trafficmanagerprofiles` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_trafficmanagerprofiles.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-04-01/trafficmanagerprofiles)</li></ul> |
 
 ## Usage examples
 
@@ -35,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,12 +53,8 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: 'trafficmanagerprofileDeployment'
   params: {
-    // Required parameters
     name: 'ntmpmin001'
-    // Non-required parameters
-    location: 'global'
   }
 }
 ```
@@ -64,13 +71,8 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "ntmpmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "global"
     }
   }
 }
@@ -86,10 +88,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 ```bicep-params
 using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
 
-// Required parameters
 param name = 'ntmpmin001'
-// Non-required parameters
-param location = 'global'
 ```
 
 </details>
@@ -99,6 +98,8 @@ param location = 'global'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -106,7 +107,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: 'trafficmanagerprofileDeployment'
   params: {
     // Required parameters
     name: 'ntmpmax001'
@@ -302,6 +302,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -309,7 +311,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
-  name: 'trafficmanagerprofileDeployment'
   params: {
     // Required parameters
     name: 'ntmpwaf001'
@@ -352,14 +353,9 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
       }
     ]
-    location: 'global'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     monitorConfig: {
       path: '/'
-      port: '443'
+      port: 443
       protocol: 'https'
     }
     tags: {
@@ -430,19 +426,10 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         }
       ]
     },
-    "location": {
-      "value": "global"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "monitorConfig": {
       "value": {
         "path": "/",
-        "port": "443",
+        "port": 443,
         "protocol": "https"
       }
     },
@@ -508,14 +495,9 @@ param endpoints = [
     type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
   }
 ]
-param location = 'global'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param monitorConfig = {
   path: '/'
-  port: '443'
+  port: 443
   protocol: 'https'
 }
 param tags = {
@@ -540,6 +522,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowedEndpointRecordTypes`](#parameter-allowedendpointrecordtypes) | array | The list of allowed endpoint record types. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endpoints`](#parameter-endpoints) | array | The list of endpoints in the Traffic Manager profile. |
@@ -562,6 +545,13 @@ Name of the Traffic Manager.
 - Required: Yes
 - Type: string
 
+### Parameter: `allowedEndpointRecordTypes`
+
+The list of allowed endpoint record types.
+
+- Required: No
+- Type: array
+
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.
@@ -579,7 +569,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -689,7 +679,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -744,6 +734,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -767,6 +758,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `maxReturn`
 
 Maximum number of endpoints to be returned for MultiValue routing type.
@@ -785,7 +783,7 @@ The endpoint monitoring settings of the Traffic Manager profile.
   ```Bicep
   {
       path: '/'
-      port: '80'
+      port: 80
       protocol: 'http'
   }
   ```
@@ -823,7 +821,7 @@ Array of role assignments to create.
   - `'Network Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'Traffic Manager Contributor'`
   - `'User Access Administrator'`
 
@@ -974,6 +972,15 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 | `resourceGroupName` | string | The resource group the traffic manager was deployed into. |
 | `resourceId` | string | The resource ID of the traffic manager. |
 
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Network Gateway.
 
+You can reference the module as follows:
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,14 +21,15 @@ This module deploys a Virtual Network Gateway.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/virtualNetworkGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworkGateways) |
-| `Microsoft.Network/virtualNetworkGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworkGateways/natRules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/virtualNetworkGateways` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworkgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualNetworkGateways)</li></ul> |
+| `Microsoft.Network/virtualNetworkGateways/natRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworkgateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualNetworkGateways/natRules)</li></ul> |
 
 ## Usage examples
 
@@ -37,16 +46,19 @@ The following section provides usage examples for the module, which were used to
 - [VPN Active Passive with BGP settings](#example-5-vpn-active-passive-with-bgp-settings)
 - [VPN Active Passive with BGP settings using existing Public IP](#example-6-vpn-active-passive-with-bgp-settings-using-existing-public-ip)
 - [VPN Active Passive without BGP settings](#example-7-vpn-active-passive-without-bgp-settings)
-- [Using only defaults](#example-8-using-only-defaults)
-- [ExpressRoute](#example-9-expressroute)
-- [Using large parameter set](#example-10-using-large-parameter-set)
-- [Using SKU without Availability Zones](#example-11-using-sku-without-availability-zones)
-- [VPN](#example-12-vpn)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Custom Routes](#example-8-custom-routes)
+- [Using only defaults](#example-9-using-only-defaults)
+- [ExpressRoute](#example-10-expressroute)
+- [Using large parameter set](#example-11-using-large-parameter-set)
+- [Using SKU without Availability Zones](#example-12-using-sku-without-availability-zones)
+- [VPN](#example-13-vpn)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _VPN Active Active with BGP settings_
 
 This instance deploys the module with the VPN Active Active with BGP settings.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveBGP]
 
 
 <details>
@@ -55,7 +67,6 @@ This instance deploys the module with the VPN Active Active with BGP settings.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -73,7 +84,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -133,7 +144,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -179,7 +190,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -196,6 +207,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active with APIPA BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveBgpAPIPA]
+
 
 <details>
 
@@ -203,7 +216,6 @@ This instance deploys the module with the VPN Active Active with APIPA BGP setti
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -229,7 +241,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -297,7 +309,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -351,7 +363,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -368,6 +380,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveExistingPip]
+
 
 <details>
 
@@ -375,7 +389,6 @@ This instance deploys the module with the VPN Active Active without BGP settings
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -395,7 +408,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enablePrivateIpAddress: true
     existingPrimaryPublicIPResourceId: '<existingPrimaryPublicIPResourceId>'
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -459,7 +472,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -507,7 +520,7 @@ param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param existingPrimaryPublicIPResourceId = '<existingPrimaryPublicIPResourceId>'
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -524,6 +537,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Active without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activeActiveNoBGP]
+
 
 <details>
 
@@ -531,7 +546,6 @@ This instance deploys the module with the VPN Active Active without BGP settings
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -549,7 +563,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -609,7 +623,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -655,7 +669,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -672,6 +686,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveBGP]
+
 
 <details>
 
@@ -679,7 +695,6 @@ This instance deploys the module with the VPN Active Passive with APIPA BGP sett
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -702,7 +717,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -767,7 +782,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -818,7 +833,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -835,6 +850,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive with APIPA BGP settings and existing primary public IP.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveExistingPip]
+
 
 <details>
 
@@ -842,7 +859,6 @@ This instance deploys the module with the VPN Active Passive with APIPA BGP sett
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -866,7 +882,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enablePrivateIpAddress: true
     existingPrimaryPublicIPResourceId: '<existingPrimaryPublicIPResourceId>'
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -934,7 +950,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -986,7 +1002,7 @@ param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param existingPrimaryPublicIPResourceId = '<existingPrimaryPublicIPResourceId>'
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1003,6 +1019,8 @@ param vpnType = 'RouteBased'
 
 This instance deploys the module with the VPN Active Passive without BGP settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/activePassiveNoBGP]
+
 
 <details>
 
@@ -1010,7 +1028,6 @@ This instance deploys the module with the VPN Active Passive without BGP setting
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1028,7 +1045,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1088,7 +1105,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1134,7 +1151,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1147,9 +1164,11 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 8: _Using only defaults_
+### Example 8: _Custom Routes_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with custom routes configuration for Point-to-Site VPN clients.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/customRoute]
 
 
 <details>
@@ -1158,7 +1177,133 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgcr001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    customRoutes: {
+      addressPrefixes: [
+        '10.1.0.0/16'
+        '10.2.0.0/16'
+        '192.168.100.0/24'
+        '192.168.200.0/24'
+      ]
+    }
+    skuName: 'VpnGw2AZ'
+    vpnClientAddressPoolPrefix: '172.16.0.0/24'
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveNoBgp"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgcr001"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    // Non-required parameters
+    "customRoutes": {
+      "value": {
+        "addressPrefixes": [
+          "10.1.0.0/16",
+          "10.2.0.0/16",
+          "192.168.100.0/24",
+          "192.168.200.0/24"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vpnClientAddressPoolPrefix": {
+      "value": "172.16.0.0/24"
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgcr001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param customRoutes = {
+  addressPrefixes: [
+    '10.1.0.0/16'
+    '10.2.0.0/16'
+    '192.168.100.0/24'
+    '192.168.200.0/24'
+  ]
+}
+param skuName = 'VpnGw2AZ'
+param vpnClientAddressPoolPrefix = '172.16.0.0/24'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
+```
+
+</details>
+<p>
+
+### Example 9: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
   params: {
     // Required parameters
     clusterSettings: {
@@ -1224,9 +1369,11 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 9: _ExpressRoute_
+### Example 10: _ExpressRoute_
 
 This instance deploys the module with the ExpressRoute set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/expressRoute]
 
 
 <details>
@@ -1235,25 +1382,15 @@ This instance deploys the module with the ExpressRoute set of required parameter
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
       clusterMode: 'activePassiveBgp'
     }
     gatewayType: 'ExpressRoute'
-    name: 'nvger001'
+    name: 'nvger002'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    domainNameLabel: [
-      'dm-nvger'
-    ]
-    primaryPublicIPName: 'pip-nvger'
-    publicIpZones: [
-      1
-      2
-      3
-    ]
     skuName: 'ErGw1AZ'
   }
 }
@@ -1281,27 +1418,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "ExpressRoute"
     },
     "name": {
-      "value": "nvger001"
+      "value": "nvger002"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "domainNameLabel": {
-      "value": [
-        "dm-nvger"
-      ]
-    },
-    "primaryPublicIPName": {
-      "value": "pip-nvger"
-    },
-    "publicIpZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
-    },
     "skuName": {
       "value": "ErGw1AZ"
     }
@@ -1324,27 +1446,20 @@ param clusterSettings = {
   clusterMode: 'activePassiveBgp'
 }
 param gatewayType = 'ExpressRoute'
-param name = 'nvger001'
+param name = 'nvger002'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param domainNameLabel = [
-  'dm-nvger'
-]
-param primaryPublicIPName = 'pip-nvger'
-param publicIpZones = [
-  1
-  2
-  3
-]
 param skuName = 'ErGw1AZ'
 ```
 
 </details>
 <p>
 
-### Example 10: _Using large parameter set_
+### Example 11: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -1353,7 +1468,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1391,6 +1505,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     domainNameLabel: [
       'dm-nvgmax'
     ]
+    domainNameLabelScope: 'TenantReuse'
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
@@ -1433,7 +1548,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         type: 'Static'
       }
     ]
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1533,6 +1648,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         "dm-nvgmax"
       ]
     },
+    "domainNameLabelScope": {
+      "value": "TenantReuse"
+    },
     "enableBgpRouteTranslationForNat": {
       "value": true
     },
@@ -1587,7 +1705,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1681,6 +1799,7 @@ param disableIPSecReplayProtection = true
 param domainNameLabel = [
   'dm-nvgmax'
 ]
+param domainNameLabelScope = 'TenantReuse'
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
@@ -1723,7 +1842,7 @@ param natRules = [
     type: 'Static'
   }
 ]
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1760,9 +1879,11 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 11: _Using SKU without Availability Zones_
+### Example 12: _Using SKU without Availability Zones_
 
 This instance deploys the module with a SKU that does not support Availability Zones.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn-no-az]
 
 
 <details>
@@ -1771,7 +1892,6 @@ This instance deploys the module with a SKU that does not support Availability Z
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1781,7 +1901,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     name: 'nvgnaz001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    publicIpZones: []
+    publicIpAvailabilityZones: []
     skuName: 'VpnGw1'
   }
 }
@@ -1815,7 +1935,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": []
     },
     "skuName": {
@@ -1843,16 +1963,18 @@ param gatewayType = 'Vpn'
 param name = 'nvgnaz001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param publicIpZones = []
+param publicIpAvailabilityZones = []
 param skuName = 'VpnGw1'
 ```
 
 </details>
 <p>
 
-### Example 12: _VPN_
+### Example 13: _VPN_
 
 This instance deploys the module with the VPN set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn]
 
 
 <details>
@@ -1861,7 +1983,6 @@ This instance deploys the module with the VPN set of required parameters.
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -1879,7 +2000,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -1939,7 +2060,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -1985,7 +2106,7 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -1998,9 +2119,11 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -2009,7 +2132,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  name: 'virtualNetworkGatewayDeployment'
   params: {
     // Required parameters
     clusterSettings: {
@@ -2050,6 +2172,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
     gatewayDefaultSiteLocalNetworkGatewayResourceId: '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+    maintenanceConfiguration: {
+      assignmentName: 'myAssignment'
+      maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    }
     natRules: [
       {
         externalMappings: [
@@ -2084,7 +2210,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         type: 'Static'
       }
     ]
-    publicIpZones: [
+    publicIpAvailabilityZones: [
       1
       2
       3
@@ -2174,6 +2300,12 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "gatewayDefaultSiteLocalNetworkGatewayResourceId": {
       "value": "<gatewayDefaultSiteLocalNetworkGatewayResourceId>"
     },
+    "maintenanceConfiguration": {
+      "value": {
+        "assignmentName": "myAssignment",
+        "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>"
+      }
+    },
     "natRules": {
       "value": [
         {
@@ -2210,7 +2342,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         }
       ]
     },
-    "publicIpZones": {
+    "publicIpAvailabilityZones": {
       "value": [
         1,
         2,
@@ -2286,6 +2418,10 @@ param domainNameLabel = [
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
 param gatewayDefaultSiteLocalNetworkGatewayResourceId = '<gatewayDefaultSiteLocalNetworkGatewayResourceId>'
+param maintenanceConfiguration = {
+  assignmentName: 'myAssignment'
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+}
 param natRules = [
   {
     externalMappings: [
@@ -2320,7 +2456,7 @@ param natRules = [
     type: 'Static'
   }
 ]
-param publicIpZones = [
+param publicIpAvailabilityZones = [
   1
   2
   3
@@ -2353,13 +2489,17 @@ param vpnType = 'RouteBased'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminState`](#parameter-adminstate) | string | Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
+| [`autoScaleConfiguration`](#parameter-autoscaleconfiguration) | object | Autoscale configuration for virtual network gateway. Only applicable for certain SKUs. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
+| [`customRoutes`](#parameter-customroutes) | object | The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
 | [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
+| [`domainNameLabelScope`](#parameter-domainnamelabelscope) | string | The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway. |
 | [`enableDnsForwarding`](#parameter-enablednsforwarding) | bool | Whether DNS forwarding is enabled or not and is only supported for Express Route Gateways. The DNS forwarding feature flag must be enabled on the current subscription. |
 | [`enablePrivateIpAddress`](#parameter-enableprivateipaddress) | bool | Whether private IP needs to be enabled on this gateway for connections or not. Used for configuring a Site-to-Site VPN connection over ExpressRoute private peering. |
@@ -2368,11 +2508,14 @@ param vpnType = 'RouteBased'
 | [`gatewayDefaultSiteLocalNetworkGatewayResourceId`](#parameter-gatewaydefaultsitelocalnetworkgatewayresourceid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Virtual Network Gateway. |
+| [`managedIdentity`](#parameter-managedidentity) | object | The managed identity definition for this resource. Supports system-assigned and user-assigned identities. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
 | [`primaryPublicIPName`](#parameter-primarypublicipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
+| [`publicIpAvailabilityZones`](#parameter-publicipavailabilityzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
 | [`publicIpDiagnosticSettings`](#parameter-publicipdiagnosticsettings) | array | The diagnostic settings of the Public IP. |
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
-| [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
+| [`resiliencyModel`](#parameter-resiliencymodel) | string | Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2414,6 +2557,7 @@ To use this variant, set the property `clusterMode` to `activeActiveNoBgp`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`existingTertiaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingtertiarypublicipresourceid) | string | The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
 | [`secondPipName`](#parameter-clustersettingsclustermode-activeactivenobgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
 
 ### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.clusterMode`
@@ -2432,6 +2576,13 @@ The cluster mode deciding the configuration.
 ### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingSecondaryPublicIPResourceId`
 
 The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingTertiaryPublicIPResourceId`
+
+The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
 
 - Required: No
 - Type: string
@@ -2461,6 +2612,7 @@ To use this variant, set the property `clusterMode` to `activeActiveBgp`.
 | [`asn`](#parameter-clustersettingsclustermode-activeactivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
 | [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
 | [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`existingTertiaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingtertiarypublicipresourceid) | string | The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
 | [`secondCustomBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpsecondcustombgpipaddresses) | array | The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
 | [`secondPipName`](#parameter-clustersettingsclustermode-activeactivebgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
 
@@ -2496,6 +2648,13 @@ The list of custom BGP IP Address (APIPA) peering addresses which belong to IP c
 ### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingSecondaryPublicIPResourceId`
 
 The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingTertiaryPublicIPResourceId`
+
+The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
 
 - Required: No
 - Type: string
@@ -2613,6 +2772,21 @@ Virtual Network resource ID.
 - Required: Yes
 - Type: string
 
+### Parameter: `adminState`
+
+Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `allowRemoteVnetTraffic`
 
 Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN.
@@ -2629,6 +2803,47 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 - Type: bool
 - Default: `False`
 
+### Parameter: `autoScaleConfiguration`
+
+Autoscale configuration for virtual network gateway. Only applicable for certain SKUs.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bounds`](#parameter-autoscaleconfigurationbounds) | object | The bounds of the autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds`
+
+The bounds of the autoscale configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-autoscaleconfigurationboundsmax) | int | Maximum Scale Units for autoscale configuration. |
+| [`min`](#parameter-autoscaleconfigurationboundsmin) | int | Minimum Scale Units for autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds.max`
+
+Maximum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `autoScaleConfiguration.bounds.min`
+
+Minimum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `clientRevokedCertThumbprint`
 
 Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.
@@ -2644,6 +2859,73 @@ Client root certificate data used to authenticate VPN clients. Cannot be configu
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `customRoutes`
+
+The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-customroutesaddressprefixes) | array | A list of address blocks reserved for this virtual network in CIDR notation. |
+| [`ipamPoolPrefixAllocations`](#parameter-customroutesipampoolprefixallocations) | array | A list of IPAM Pools allocating IP address prefixes. |
+
+### Parameter: `customRoutes.addressPrefixes`
+
+A list of address blocks reserved for this virtual network in CIDR notation.
+
+- Required: No
+- Type: array
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations`
+
+A list of IPAM Pools allocating IP address prefixes.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pool`](#parameter-customroutesipampoolprefixallocationspool) | object | Pool configuration for IPAM. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`numberOfIpAddresses`](#parameter-customroutesipampoolprefixallocationsnumberofipaddresses) | string | Number of IP addresses to allocate. |
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.pool`
+
+Pool configuration for IPAM.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-customroutesipampoolprefixallocationspoolid) | string | Resource id of the associated Azure IpamPool resource. |
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.pool.id`
+
+Resource id of the associated Azure IpamPool resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.numberOfIpAddresses`
+
+Number of IP addresses to allocate.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -2807,6 +3089,22 @@ DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you
 - Type: array
 - Default: `[]`
 
+### Parameter: `domainNameLabelScope`
+
+The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
+
 ### Parameter: `enableBgpRouteTranslationForNat`
 
 EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway.
@@ -2876,6 +3174,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2898,6 +3197,69 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `maintenanceConfiguration`
+
+The maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignmentName`](#parameter-maintenanceconfigurationassignmentname) | string | The name of the maintenance configuration assignment. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationmaintenanceconfigurationresourceid) | string | The resource ID of the maintenance configuration to assign to the Virtual Network Gateway. |
+
+### Parameter: `maintenanceConfiguration.assignmentName`
+
+The name of the maintenance configuration assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maintenanceConfiguration.maintenanceConfigurationResourceId`
+
+The resource ID of the maintenance configuration to assign to the Virtual Network Gateway.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedIdentity`
+
+The managed identity definition for this resource. Supports system-assigned and user-assigned identities.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentityuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentity.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentity.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `natRules`
 
@@ -3037,6 +3399,29 @@ Specifies the name of the Public IP to be created for the Virtual Network Gatewa
 - Required: No
 - Type: string
 - Default: `[format('{0}-pip1', parameters('name'))]`
+
+### Parameter: `publicIpAvailabilityZones`
+
+Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `publicIpDiagnosticSettings`
 
@@ -3192,18 +3577,18 @@ Resource ID of the Public IP Prefix object. This is only needed if you want your
 - Type: string
 - Default: `''`
 
-### Parameter: `publicIpZones`
+### Parameter: `resiliencyModel`
 
-Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones.
+Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways.
 
 - Required: No
-- Type: array
-- Default:
+- Type: string
+- Default: `'SingleHomed'`
+- Allowed:
   ```Bicep
   [
-    1
-    2
-    3
+    'MultiHomed'
+    'SingleHomed'
   ]
   ```
 
@@ -3325,6 +3710,7 @@ The SKU of the Gateway.
     'ErGw1AZ'
     'ErGw2AZ'
     'ErGw3AZ'
+    'ErGwScale'
     'HighPerformance'
     'Standard'
     'UltraPerformance'
@@ -3354,6 +3740,67 @@ Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured i
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-vpnclientaadconfigurationaadaudience) | string | The AAD audience property for VPN client connection used for AAD authentication. |
+| [`aadIssuer`](#parameter-vpnclientaadconfigurationaadissuer) | string | The AAD issuer property for VPN client connection used for AAD authentication. |
+| [`aadTenant`](#parameter-vpnclientaadconfigurationaadtenant) | string | The AAD tenant property for VPN client connection used for AAD authentication. |
+| [`vpnAuthenticationTypes`](#parameter-vpnclientaadconfigurationvpnauthenticationtypes) | array | VPN authentication types for the virtual network gateway. |
+| [`vpnClientProtocols`](#parameter-vpnclientaadconfigurationvpnclientprotocols) | array | VPN client protocols for Virtual network gateway. |
+
+### Parameter: `vpnClientAadConfiguration.aadAudience`
+
+The AAD audience property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadIssuer`
+
+The AAD issuer property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadTenant`
+
+The AAD tenant property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.vpnAuthenticationTypes`
+
+VPN authentication types for the virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+    'Certificate'
+    'Radius'
+  ]
+  ```
+
+### Parameter: `vpnClientAadConfiguration.vpnClientProtocols`
+
+VPN client protocols for Virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'IkeV2'
+    'OpenVPN'
+    'SSTP'
+  ]
+  ```
 
 ### Parameter: `vpnClientAddressPoolPrefix`
 
@@ -3411,6 +3858,7 @@ Specifies the VPN type.
 | `secondaryCustomBgpIpAddress` | string | The secondary custom Azure APIPA BGP IP address (Active-Active mode). |
 | `secondaryDefaultBgpIpAddress` | string | The secondary default Azure BGP peer IP address (Active-Active mode). |
 | `secondaryPublicIpAddress` | string | The secondary public IP address of the virtual network gateway (Active-Active mode). |
+| `tertiaryPublicIpAddress` | string | The tertiary public IP address of the virtual network gateway (Active-Active with P2S mode). |
 
 ## Cross-referenced modules
 
@@ -3418,9 +3866,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.10.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -6,12 +6,12 @@ param subscriptionManagementGroupId string
 @description('The ID of the Subscription to move to the target Management Group')
 param subscriptionId string
 
-resource exisitngManagementGroup 'Microsoft.Management/managementGroups@2021-04-01' existing = {
+resource exisitngManagementGroup 'Microsoft.Management/managementGroups@2023-04-01' existing = {
   scope: tenant()
   name: subscriptionManagementGroupId
 }
 
-resource managementGroupSubscriptionAssociation 'Microsoft.Management/managementGroups/subscriptions@2021-04-01' = {
+resource managementGroupSubscriptionAssociation 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = {
   parent: exisitngManagementGroup
   name: subscriptionId
 }

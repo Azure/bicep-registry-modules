@@ -10,9 +10,9 @@ This module deploys an Event Grid Domain Topic.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventGrid/domains/topics` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/domains/topics) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventGrid/domains/topics` | 2022-06-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_domains_topics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/domains/topics)</li></ul> |
 
 ## Parameters
 

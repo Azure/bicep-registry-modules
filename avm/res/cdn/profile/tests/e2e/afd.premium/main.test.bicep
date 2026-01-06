@@ -26,12 +26,12 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
 
-module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.2.0' = {
+module wafPolicy 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.2' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-dep-waf-policy-${serviceShort}'
   params: {
@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-${serviceShort}'
+      name: 'dep-${namePrefix}-test-afd-${serviceShort}'
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Premium_AzureFrontDoor'
@@ -102,16 +102,14 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+          name: 'dep-${namePrefix}-test-afd-${serviceShort}-afd-endpoint'
           routes: [
             {
               name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
               originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
               customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
-                {
-                  name: 'dep${namePrefix}test${serviceShort}ruleset'
-                }
+                'dep${namePrefix}test${serviceShort}ruleset'
               ]
             }
           ]
@@ -127,9 +125,9 @@ module testDeployment '../../../main.bicep' = [
                   id: resourceId(
                     subscription().subscriptionId,
                     resourceGroup.name,
-                    'Microsoft.Cdn/profiles/afdEndpoints',
-                    'dep-${namePrefix}-test-${serviceShort}',
-                    'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+                    'Microsoft.Cdn/profiles/customDomains',
+                    'dep-${namePrefix}-test-afd-${serviceShort}',
+                    'dep-${namePrefix}-test-${serviceShort}-custom-domain'
                   )
                 }
               ]

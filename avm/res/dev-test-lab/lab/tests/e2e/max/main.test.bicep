@@ -17,6 +17,10 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dtllmax'
 
+@description('Required. My parameter\'s description. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureLabServicesEnterpriseApplicationObjectId\'.')
+@secure()
+param AzureLabServicesEnterpriseApplicationObjectId string = ''
+
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
@@ -29,7 +33,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -39,6 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    AzureLabServicesEnterpriseApplicationObjectId: AzureLabServicesEnterpriseApplicationObjectId
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
@@ -103,6 +108,7 @@ module testDeployment '../../../main.bicep' = [
       }
       labStorageType: 'Premium'
       artifactsStorageAccount: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountAccess: nestedDependencies.outputs.managedIdentityResourceId
       premiumDataDisks: 'Enabled'
       support: {
         enabled: 'Enabled'
@@ -322,6 +328,12 @@ module testDeployment '../../../main.bicep' = [
         thresholdValue125DisplayOnChart: 'Disabled'
         thresholdValue75DisplayOnChart: 'Enabled'
       }
+      secrets: [
+        {
+          name: 'labSecret1'
+          value: guid(baseTime)
+        }
+      ]
     }
   }
 ]

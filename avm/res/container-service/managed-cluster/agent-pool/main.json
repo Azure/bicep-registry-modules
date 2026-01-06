@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7049305712242986495"
+      "version": "0.37.4.10188",
+      "templateHash": "10674124128040534735"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -109,6 +109,16 @@
       "metadata": {
         "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
       }
+    },
+    "linuxOSConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/linuxOSConfig"
+        },
+        "description": "Optional. Linux OS configuration."
+      },
+      "nullable": true
     },
     "maxCount": {
       "type": "int",
@@ -270,6 +280,17 @@
         "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
       }
     },
+    "sshAccess": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "LocalUser"
+      ],
+      "metadata": {
+        "description": "Optional. SSH access method of an agent pool."
+      }
+    },
     "spotMaxPrice": {
       "type": "int",
       "nullable": true,
@@ -318,18 +339,28 @@
       "metadata": {
         "description": "Optional. Determines the type of workload a node can run."
       }
+    },
+    "windowsProfile": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-05-02-preview#properties/properties/properties/windowsProfile"
+        },
+        "description": "Optional. Windows OS configuration."
+      },
+      "nullable": true
     }
   },
   "resources": {
     "managedCluster": {
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2024-09-01",
+      "apiVersion": "2025-05-02-preview",
       "name": "[parameters('managedClusterName')]"
     },
     "agentPool": {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
-      "apiVersion": "2024-09-01",
+      "apiVersion": "2025-05-02-preview",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
         "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
@@ -342,6 +373,7 @@
         "enableUltraSSD": "[parameters('enableUltraSSD')]",
         "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
         "kubeletDiskType": "[parameters('kubeletDiskType')]",
+        "linuxOSConfig": "[parameters('linuxOSConfig')]",
         "maxCount": "[parameters('maxCount')]",
         "maxPods": "[parameters('maxPods')]",
         "minCount": "[parameters('minCount')]",
@@ -361,7 +393,8 @@
         "scaleSetPriority": "[parameters('scaleSetPriority')]",
         "securityProfile": {
           "enableSecureBoot": "[parameters('enableSecureBoot')]",
-          "enableVTPM": "[parameters('enableVTPM')]"
+          "enableVTPM": "[parameters('enableVTPM')]",
+          "sshAccess": "[parameters('sshAccess')]"
         },
         "spotMaxPrice": "[parameters('spotMaxPrice')]",
         "tags": "[parameters('tags')]",
@@ -371,7 +404,8 @@
         },
         "vmSize": "[parameters('vmSize')]",
         "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
-        "workloadRuntime": "[parameters('workloadRuntime')]"
+        "workloadRuntime": "[parameters('workloadRuntime')]",
+        "windowsProfile": "[parameters('windowsProfile')]"
       }
     }
   },

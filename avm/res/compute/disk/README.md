@@ -2,6 +2,14 @@
 
 This module deploys a Compute Disk
 
+You can reference the module as follows:
+```bicep
+module disk 'br/public:avm/res/compute/disk:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,11 +21,11 @@ This module deploys a Compute Disk
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/disks` | [2023-10-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-10-02/disks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Compute/disks` | 2025-01-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-01-02/disks)</li></ul> |
 
 ## Usage examples
 
@@ -28,14 +36,17 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using an image](#example-2-using-an-image)
-- [Using an imported image](#example-3-using-an-imported-image)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-2-enabling-encryption-at-rest-via-a-disk-encryption-set-des-using-customer-managed-keys-cmk-and-a-user-assigned-identity)
+- [Using an image](#example-3-using-an-image)
+- [Using an imported image](#example-4-using-an-imported-image)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -44,11 +55,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
-    name: 'cdmin001'
+    availabilityZone: -1
+    name: 'cdmin-001'
     sku: 'Standard_LRS'
     // Non-required parameters
     diskSizeGB: 1
@@ -71,10 +81,10 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
-      "value": "cdmin001"
+      "value": "cdmin-001"
     },
     "sku": {
       "value": "Standard_LRS"
@@ -101,8 +111,8 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
-param name = 'cdmin001'
+param availabilityZone = -1
+param name = 'cdmin-001'
 param sku = 'Standard_LRS'
 // Non-required parameters
 param diskSizeGB = 1
@@ -112,9 +122,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using an image_
+### Example 2: _Enabling encryption-at-rest via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity_
 
-This instance deploys the module with an image reference.
+This instance deploys the module with encryption-at-rest using a Disk Encryption Set (DES) secured by Customer-Managed Keys (CMK), and leveraging a User-Assigned Managed Identity to access the key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/des-cmk-uami]
 
 
 <details>
@@ -123,10 +135,89 @@ This instance deploys the module with an image reference.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
+    name: 'cdcmk001'
+    sku: 'Standard_LRS'
+    // Non-required parameters
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    diskSizeGB: 1
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "cdcmk001"
+    },
+    "sku": {
+      "value": "Standard_LRS"
+    },
+    // Non-required parameters
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
+    },
+    "diskSizeGB": {
+      "value": 1
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/disk:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'cdcmk001'
+param sku = 'Standard_LRS'
+// Non-required parameters
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param diskSizeGB = 1
+```
+
+</details>
+<p>
+
+### Example 3: _Using an image_
+
+This instance deploys the module with an image reference.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/image]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module disk 'br/public:avm/res/compute/disk:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
     name: 'cdimg001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -151,7 +242,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimg001"
@@ -184,7 +275,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimg001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -196,9 +287,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using an imported image_
+### Example 4: _Using an imported image_
 
 This instance deploys the module with a custom image that is imported from a VHD in a storage account.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/import]
 
 
 <details>
@@ -207,10 +300,9 @@ This instance deploys the module with a custom image that is imported from a VHD
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
-    availabilityZone: 0
+    availabilityZone: -1
     name: 'cdimp001'
     sku: 'Standard_LRS'
     // Non-required parameters
@@ -236,7 +328,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
   "parameters": {
     // Required parameters
     "availabilityZone": {
-      "value": 0
+      "value": -1
     },
     "name": {
       "value": "cdimp001"
@@ -272,7 +364,7 @@ module disk 'br/public:avm/res/compute/disk:<version>' = {
 using 'br/public:avm/res/compute/disk:<version>'
 
 // Required parameters
-param availabilityZone = 0
+param availabilityZone = -1
 param name = 'cdimp001'
 param sku = 'Standard_LRS'
 // Non-required parameters
@@ -285,9 +377,11 @@ param storageAccountId = '<storageAccountId>'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -296,7 +390,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -479,9 +572,11 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -490,7 +585,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module disk 'br/public:avm/res/compute/disk:<version>' = {
-  name: 'diskDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -620,7 +714,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the disk that is being created. |
 | [`sku`](#parameter-sku) | string | The disks sku name. Can be . |
 
@@ -640,6 +734,7 @@ param tags = {
 | [`burstingEnabled`](#parameter-burstingenabled) | bool | Set to true to enable bursting beyond the provisioned performance target of the disk. |
 | [`completionPercent`](#parameter-completionpercent) | int | Percentage complete for the background copy when a resource is created via the CopyStart operation. |
 | [`createOption`](#parameter-createoption) | string | Sources of a disk creation. |
+| [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The resource ID of the disk encryption set to use for enabling encryption-at-rest. |
 | [`diskIOPSReadWrite`](#parameter-diskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. |
 | [`diskMBpsReadWrite`](#parameter-diskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. |
 | [`edgeZone`](#parameter-edgezone) | string | Specifies the Edge Zone within the Azure Region where this Managed Disk should exist. Changing this forces a new Managed Disk to be created. |
@@ -663,14 +758,14 @@ param tags = {
 
 ### Parameter: `availabilityZone`
 
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If zero, then availability zones are not used. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: Yes
 - Type: int
 - Allowed:
   ```Bicep
   [
-    0
+    -1
     1
     2
     3
@@ -732,11 +827,9 @@ CPU architecture supported by an OS disk.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Arm64'
     'x64'
   ]
@@ -781,6 +874,13 @@ Sources of a disk creation.
   ]
   ```
 
+### Parameter: `diskEncryptionSetResourceId`
+
+The resource ID of the disk encryption set to use for enabling encryption-at-rest.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diskIOPSReadWrite`
 
 The number of IOPS allowed for this disk; only settable for UltraSSD disks.
@@ -803,11 +903,9 @@ Specifies the Edge Zone within the Azure Region where this Managed Disk should e
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'EdgeZone'
   ]
   ```
@@ -864,6 +962,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -883,6 +982,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -933,11 +1039,9 @@ Sources of a disk creation.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Linux'
     'Windows'
   ]
@@ -1120,8 +1224,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

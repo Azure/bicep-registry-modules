@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.tags?
 
 @description('Required. Address-prefix for this VirtualHub.')
 param addressPrefix string
@@ -27,22 +27,12 @@ param expressRouteGatewayResourceId string?
 param p2SVpnGatewayResourceId string?
 
 @description('Optional. The preferred routing preference for this virtual hub.')
-@allowed([
-  'ASPath'
-  'ExpressRoute'
-  'VpnGateway'
-])
-param hubRoutingPreference string?
+param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.hubRoutingPreference?
 
 @description('Optional. The preferred routing gateway types.')
-@allowed([
-  'ExpressRoute'
-  'None'
-  'VpnGateway'
-])
-param preferredRoutingGateway string?
+param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
 
-@description('Optional. VirtualHub route tables.')
+@description('Optional. The VirtualHub route tables.')
 param routeTableRoutes array?
 
 @description('Optional. ID of the Security Partner Provider to link to.')
@@ -62,10 +52,16 @@ param sku string = 'Standard'
 param virtualHubRouteTableV2s array = []
 
 @description('Optional. VirtualRouter ASN.')
-param virtualRouterAsn int?
+param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.virtualRouterAsn?
 
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array?
+
+@description('Optional. The auto scale configuration for the virtual router.')
+param virtualRouterAutoScaleConfiguration {
+  @description('Required. The minimum number of virtual routers in the scale set.')
+  minCount: int
+}?
 
 @description('Required. Resource ID of the virtual WAN to link to.')
 param virtualWanResourceId string
@@ -82,7 +78,7 @@ param hubRouteTables hubRouteTableType[]?
 @description('Optional. Virtual network connections to create for the virtual hub.')
 param hubVirtualNetworkConnections hubVirtualNetworkConnectionType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -111,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -150,6 +146,9 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
     virtualHubRouteTableV2s: virtualHubRouteTableV2s
     virtualRouterAsn: virtualRouterAsn
     virtualRouterIps: virtualRouterIps
+    virtualRouterAutoScaleConfiguration: {
+      minCapacity: virtualRouterAutoScaleConfiguration.?minCount
+    }
     virtualWan: {
       id: virtualWanResourceId
     }
@@ -165,15 +164,15 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: virtualHub
 }
 
-module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
-  name: '${uniqueString(deployment().name, location)}-routingIntent'
+module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name
     azureFirewallResourceId: azureFirewallResourceId!
@@ -182,9 +181,10 @@ module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFir
   }
 }
 
-module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
+// Initially create the route tables without routes
+module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
-    name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: routeTable.name
@@ -194,9 +194,9 @@ module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
   }
 ]
 
-module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main.bicep' = [
+module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
   for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
-    name: '${uniqueString(deployment().name, location)}-connection-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-connection-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: virtualNetworkConnection.name
@@ -236,7 +236,22 @@ type hubRouteTableType = {
   labels: array?
 
   @description('Optional. List of all routes.')
-  routes: array?
+  routes: {
+    @description('Required. The address prefix for the route.')
+    destinations: string[]
+
+    @description('Required. The destination type for the route.')
+    destinationType: ('CIDR')
+
+    @description('Required. The name of the route.')
+    name: string
+
+    @description('Required. The next hop type for the route.')
+    nextHopType: ('ResourceId')
+
+    @description('Required. The next hop IP address for the route.')
+    nextHop: string
+  }[]?
 }
 
 @export()

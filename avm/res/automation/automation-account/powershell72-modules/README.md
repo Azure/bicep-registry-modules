@@ -10,9 +10,9 @@ This module deploys a Powershell72 Module in the Automation Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Automation/automationAccounts/powerShell72Modules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Automation/automationAccounts/powerShell72Modules` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_powershell72modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules)</li></ul> |
 
 ## Parameters
 

@@ -10,9 +10,9 @@ This module deploys a Digital Twins Instance Endpoint.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DigitalTwins/digitalTwinsInstances/endpoints` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DigitalTwins/2023-01-31/digitalTwinsInstances/endpoints) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DigitalTwins/digitalTwinsInstances/endpoints` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.digitaltwins_digitaltwinsinstances_endpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DigitalTwins/2023-01-31/digitalTwinsInstances/endpoints)</li></ul> |
 
 ## Parameters
 

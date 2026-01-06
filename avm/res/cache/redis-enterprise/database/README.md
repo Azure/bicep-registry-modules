@@ -1,6 +1,6 @@
 # Redis database `[Microsoft.Cache/redisEnterprise/databases]`
 
-This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster.
+This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster.
 
 ## Navigation
 
@@ -11,12 +11,11 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Cache/redisEnterprise/databases` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases) |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Cache/redisEnterprise/databases` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases)</li></ul> |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Parameters
 
@@ -24,16 +23,16 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`redisClusterName`](#parameter-redisclustername) | string | The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment. |
+| [`redisClusterName`](#parameter-redisclustername) | string | The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKeysAuthentication`](#parameter-accesskeysauthentication) | string | Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION. |
-| [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION. |
+| [`accessKeysAuthentication`](#parameter-accesskeysauthentication) | string | Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
+| [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. |
 | [`clientProtocol`](#parameter-clientprotocol) | string | Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols. |
-| [`clusteringPolicy`](#parameter-clusteringpolicy) | string | Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering). |
+| [`clusteringPolicy`](#parameter-clusteringpolicy) | string | Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies). |
 | [`deferUpgrade`](#parameter-deferupgrade) | string | Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The database-level diagnostic settings of the service. |
 | [`evictionPolicy`](#parameter-evictionpolicy) | string | Specifies the eviction policy for the Redis resource. |
@@ -42,18 +41,17 @@ This module deploys a Redis database in a Redis Enterprise or Azure Managed Redi
 | [`name`](#parameter-name) | string | Name of the database. |
 | [`persistence`](#parameter-persistence) | object | The persistence settings of the service. |
 | [`port`](#parameter-port) | int | TCP port of the database endpoint. |
-| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 
 ### Parameter: `redisClusterName`
 
-The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment.
+The name of the parent Redis Enterprise or Azure Managed Redis resource. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `accessKeysAuthentication`
 
-Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION.
+Allow authentication via access keys. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: string
@@ -68,7 +66,7 @@ Allow authentication via access keys. Only supported on Azure Managed Redis (Pre
 
 ### Parameter: `accessPolicyAssignments`
 
-Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION.
+Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized.
 
 - Required: No
 - Type: array
@@ -130,7 +128,7 @@ Specifies whether Redis clients can connect using TLS-encrypted or plaintext Red
 
 ### Parameter: `clusteringPolicy`
 
-Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering).
+Redis clustering policy. [Learn more](https://learn.microsoft.com/azure/redis/architecture#cluster-policies).
 
 - Required: No
 - Type: string
@@ -139,6 +137,7 @@ Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering
   ```Bicep
   [
     'EnterpriseCluster'
+    'NoCluster'
     'OSSCluster'
   ]
   ```
@@ -523,89 +522,22 @@ TCP port of the database endpoint.
 - MinValue: 10000
 - MaxValue: 10000
 
-### Parameter: `secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`primaryAccessKeyName`](#parameter-secretsexportconfigurationprimaryaccesskeyname) | string | The primaryAccessKey secret name to create. |
-| [`primaryConnectionStringName`](#parameter-secretsexportconfigurationprimaryconnectionstringname) | string | The primaryConnectionString secret name to create. |
-| [`primaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationprimarystackexchangeredisconnectionstringname) | string | The primaryStackExchangeRedisConnectionString secret name to create. |
-| [`secondaryAccessKeyName`](#parameter-secretsexportconfigurationsecondaryaccesskeyname) | string | The secondaryAccessKey secret name to create. |
-| [`secondaryConnectionStringName`](#parameter-secretsexportconfigurationsecondaryconnectionstringname) | string | The secondaryConnectionString secret name to create. |
-| [`secondaryStackExchangeRedisConnectionStringName`](#parameter-secretsexportconfigurationsecondarystackexchangeredisconnectionstringname) | string | The secondaryStackExchangeRedisConnectionString secret name to create. |
-
-### Parameter: `secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryAccessKeyName`
-
-The primaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryConnectionStringName`
-
-The primaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
-
-The primaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
-
-The secondaryAccessKey secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
-
-The secondaryConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
-
-The secondaryStackExchangeRedisConnectionString secret name to create.
-
-- Required: No
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The Redis endpoint. |
-| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
+| `hostname` | string | The Redis host name. |
 | `name` | string | The name of the Redis database. |
 | `port` | int | The Redis database port. |
+| `primaryAccessKey` | securestring | The primary access key. |
+| `primaryConnectionString` | securestring | The primary connection string. |
+| `primaryStackExchangeRedisConnectionString` | securestring | The primary StackExchange.Redis connection string. |
 | `resourceGroupName` | string | The name of the resource group the Redis resource was created in. |
 | `resourceId` | string | The resource ID of the database. |
+| `secondaryAccessKey` | securestring | The secondary access key. |
+| `secondaryConnectionString` | securestring | The secondary connection string. |
+| `secondaryStackExchangeRedisConnectionString` | securestring | The secondary StackExchange.Redis connection string. |
 
 ## Cross-referenced modules
 
@@ -613,4 +545,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
