@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/public-ip-address/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Replaced custom types for `ipTags`, `dnsSettings` and `ddosSettings` with direct references to the resource input types from the `Microsoft.Network/publicIPAddresses@2025-01-01` API version.
+
+### Breaking Changes
+
+- Parameters `ipTags`, `dnsSettings`, and `ddosSettings` now use resource input types from the `Microsoft.Network/publicIPAddresses@2025-01-01` API version instead of custom-defined types.
+
 ## 0.10.0
 
 ### Changes
