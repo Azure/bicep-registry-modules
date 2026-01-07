@@ -69,7 +69,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataExports: [
       {
         destination: {
@@ -373,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "<dailyQuotaGb>"
     },
     "dataExports": {
       "value": [
@@ -701,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataExports = [
   {
     destination: {
@@ -1010,7 +1010,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmhsmu001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '10'
     linkedServices: [
       {
         name: 'Cluster'
@@ -1045,7 +1045,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "10"
     },
     "linkedServices": {
       "value": [
@@ -1082,7 +1082,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmhsmu001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '10'
 param linkedServices = [
   {
     name: 'Cluster'
@@ -1241,7 +1241,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "<dailyQuotaGb>"
     },
     "dataSources": {
       "value": [
@@ -1921,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2245,7 +2245,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwwaf001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '2'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -2416,7 +2416,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "2"
     },
     "dataSources": {
       "value": [
@@ -2607,7 +2607,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwwaf001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '2'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2779,7 +2779,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-dailyquotagb) | int | The workspace daily quota for ingestion. |
+| [`dailyQuotaGb`](#parameter-dailyquotagb) | string | The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit). |
 | [`dataExports`](#parameter-dataexports) | array | LAW data export instances to be deployed. |
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
@@ -2842,12 +2842,11 @@ Linked storage accounts resources Ids.
 
 ### Parameter: `dailyQuotaGb`
 
-The workspace daily quota for ingestion.
+The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit).
 
 - Required: No
-- Type: int
-- Default: `-1`
-- MinValue: -1
+- Type: string
+- Default: `'-1'`
 
 ### Parameter: `dataExports`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2675853336332906061"
+      "templateHash": "4126538616555617085"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1108,11 +1108,10 @@
       }
     },
     "dailyQuotaGb": {
-      "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "type": "string",
+      "defaultValue": "-1",
       "metadata": {
-        "description": "Optional. The workspace daily quota for ingestion."
+        "description": "Optional. The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit)."
       }
     },
     "defaultDataCollectionRuleResourceId": {
@@ -1285,7 +1284,7 @@
         },
         "retentionInDays": "[parameters('dataRetention')]",
         "workspaceCapping": {
-          "dailyQuotaGb": "[parameters('dailyQuotaGb')]"
+          "dailyQuotaGb": "[json(parameters('dailyQuotaGb'))]"
         },
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
