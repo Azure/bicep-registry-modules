@@ -3698,6 +3698,7 @@ param siteConfig = {
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: '1.2', ftpsState: 'FtpsOnly'. |
 | [`slots`](#parameter-slots) | array | Configuration for deployment slots for an app. |
+| [`sshEnabled`](#parameter-sshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
@@ -9253,6 +9254,7 @@ Configuration for deployment slots for an app.
 | [`roleAssignments`](#parameter-slotsroleassignments) | array | Array of role assignments to create. |
 | [`serverFarmResourceId`](#parameter-slotsserverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
 | [`siteConfig`](#parameter-slotssiteconfig) | object | The site config object. |
+| [`sshEnabled`](#parameter-slotssshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-slotsstorageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-slotstags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-slotsvirtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
@@ -14654,6 +14656,13 @@ The site config object.
 - Required: No
 - Type: object
 
+### Parameter: `slots.sshEnabled`
+
+Whether to enable SSH access.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `slots.storageAccountRequired`
 
 Checks if Customer provided storage account is required.
@@ -14692,6 +14701,13 @@ To enable pulling image over Virtual Network.
 ### Parameter: `slots.vnetRouteAllEnabled`
 
 Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sshEnabled`
+
+Whether to enable SSH access.
 
 - Required: No
 - Type: bool
