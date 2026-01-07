@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4782086184094554594"
+      "templateHash": "7904502469527808938"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -55,23 +55,33 @@
         "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Required. Product Name."
+      }
+    },
     "displayName": {
       "type": "string",
+      "minLength": 1,
       "maxLength": 300,
       "metadata": {
-        "description": "Required. API Management Service Products name. Must be 1 to 300 characters long."
+        "description": "Required. Product display name."
       }
     },
     "approvalRequired": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
       }
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "maxLength": 1000,
       "metadata": {
         "description": "Optional. Product description. May include HTML formatting tags."
       }
@@ -106,17 +116,15 @@
         "description": "Optional. Array of Policies to apply to the Service Product."
       }
     },
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Product Name."
-      }
-    },
     "state": {
       "type": "string",
       "defaultValue": "published",
+      "allowedValues": [
+        "notPublished",
+        "published"
+      ],
       "metadata": {
-        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published."
+        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
       }
     },
     "subscriptionRequired": {
@@ -309,7 +317,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "product"
+      ]
     },
     "product_groups": {
       "copy": {
@@ -318,7 +329,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Group-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-Grp-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -428,7 +439,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "product"
+      ]
     },
     "product_policies": {
       "copy": {
@@ -437,7 +451,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -451,7 +465,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
           },
           "format": {
             "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
@@ -467,9 +481,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "11723183895091881679"
+              "templateHash": "16879011987124410005"
             },
-            "name": "API Management Service Products Policies",
+            "name": "API Management Service Product Policies",
             "description": "This module deploys an API Management Service Product Policy."
           },
           "parameters": {
@@ -527,27 +541,30 @@
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the API policy."
+                "description": "The resource ID of the Product policy."
               },
               "value": "[resourceId('Microsoft.ApiManagement/service/products/policies', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the API policy."
+                "description": "The name of the Product policy."
               },
               "value": "[parameters('name')]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the API policy was deployed into."
+                "description": "The resource group the Product policy was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "product"
+      ]
     }
   },
   "outputs": {
