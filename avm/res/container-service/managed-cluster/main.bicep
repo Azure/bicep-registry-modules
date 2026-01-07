@@ -649,11 +649,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
       scaleDownMode: profile.?scaleDownMode ?? 'Delete'
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
-      securityProfile: {
-        enableSecureBoot: profile.?enableSecureBoot ?? false
-        enableVTPM: profile.?enableVTPM ?? false
-        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
-      }
+      securityProfile: profile.?securityProfile
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
@@ -883,6 +879,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
       userAssignedIdentityExceptions: podIdentityProfileUserAssignedIdentityExceptions
     }
     securityProfile: {
+      // TODO: azureKeyVaultKms:
+      // TODO: customCATrustCertificates:
       defender: enableAzureDefender
         ? {
             // Note: securityGating is not available in 2025-09-01 API
@@ -896,18 +894,6 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
         ? {
             enabled: enableImageCleaner
             intervalHours: imageCleanerIntervalHours
-          }
-        : null
-      #disable-next-line BCP037 // Property exists in 2025-09-01 API despite type definition warning
-      imageIntegrity: enableImageIntegrity
-        ? {
-            enabled: enableImageIntegrity
-          }
-        : null
-      #disable-next-line BCP037 // Property exists in 2025-09-01 API despite type definition warning
-      nodeRestriction: enableNodeRestriction
-        ? {
-            enabled: enableNodeRestriction
           }
         : null
       workloadIdentity: enableWorkloadIdentity
@@ -1022,9 +1008,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       scaleDownMode: agentPool.?scaleDownMode
       scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
       scaleSetPriority: agentPool.?scaleSetPriority
-      enableSecureBoot: agentPool.?enableSecureBoot
-      enableVTPM: agentPool.?enableVTPM
-      sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
+      securityProfile: agentPool.?securityProfile
       spotMaxPrice: agentPool.?spotMaxPrice
       tags: agentPool.?tags ?? tags
       type: agentPool.?type
@@ -1339,14 +1323,8 @@ type agentPoolType = {
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
 
-  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
-  enableSecureBoot: bool?
-
-  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
-  enableVTPM: bool?
-
-  @description('Optional. SSH access method of an agent pool.')
-  sshAccess: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile.sshAccess?
+  @description('Optional. The security settings of an agent pool.')
+  securityProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
