@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Added support for customer-managed keys through a combination of the added parameters `defaultIdentity` & `keyVaultKeyUri`
+- Added support for the parameters
+
+### Breaking Changes
+
+- None
+
 ## 0.18.0
 
 ### Changes
