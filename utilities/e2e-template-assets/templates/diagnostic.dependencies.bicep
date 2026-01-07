@@ -32,6 +32,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   properties: {
     allowBlobPublicAccess: false
   }
+  tags: {
+    SecurityControl: 'Ignore'
+  }
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
