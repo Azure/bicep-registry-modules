@@ -670,8 +670,8 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-var aiFoundryAiServicesResourceName = 'aisa-${solutionSuffix}'
-var aiFoundryAiProjectResourceName = 'aifp-${solutionSuffix}'
+var aiFoundryAiServicesResourceName = 'aif-${solutionSuffix}'
+var aiFoundryAiProjectResourceName = 'proj-${solutionSuffix}'
 var aiFoundryAiServicesModelDeployment = {
   format: 'OpenAI'
   name: gptModelName
