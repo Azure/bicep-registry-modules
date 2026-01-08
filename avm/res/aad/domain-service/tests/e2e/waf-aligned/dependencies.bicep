@@ -348,9 +348,6 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     arguments: ' -KeyVaultName "${keyVault.name}" -ResourceGroupName "${resourceGroup().name}" -NamePrefix "${namePrefix}" -CertPWSecretName "${certPWSecretName}" -CertSecretName "${certSecretName}"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-PfxCertificateInKeyVault.ps1')
   }
-  tags: {
-    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
-  }
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
