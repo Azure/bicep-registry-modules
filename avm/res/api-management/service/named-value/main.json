@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "1217065249823917300"
+      "version": "0.39.26.7824",
+      "templateHash": "14288395369769353201"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -20,6 +20,8 @@
     },
     "displayName": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
       "metadata": {
         "description": "Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters."
       }
@@ -37,7 +39,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Named value Name."
+        "description": "Required. The name of the named value."
       }
     },
     "tags": {
@@ -46,7 +48,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/tags"
         },
-        "description": "Optional. Tags that when provided can be used to filter the NamedValue list. - string."
+        "description": "Optional. Tags that when provided can be used to filter the NamedValue list."
       },
       "nullable": true
     },
@@ -54,12 +56,13 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false."
+        "description": "Optional. Determines whether the value is a secret and should be encrypted or not."
       }
     },
     "value": {
       "type": "securestring",
       "defaultValue": "[newGuid()]",
+      "maxLength": 4096,
       "metadata": {
         "description": "Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
       }
