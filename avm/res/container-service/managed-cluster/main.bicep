@@ -15,32 +15,16 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
-@allowed([
-  'azure'
-  'cilium'
-])
-param networkDataplane string?
+param networkDataplane resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkDataplane?
 
 @description('Optional. Specifies the network plugin used for building Kubernetes network.')
-@allowed([
-  'azure'
-  'kubenet'
-])
-param networkPlugin string?
+param networkPlugin resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPlugin?
 
 @description('Optional. Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin.')
-@allowed([
-  'overlay'
-])
-param networkPluginMode string?
+param networkPluginMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPluginMode?
 
 @description('Optional. Specifies the network policy used for building Kubernetes network. - calico or azure.')
-@allowed([
-  'azure'
-  'calico'
-  'cilium'
-])
-param networkPolicy string?
+param networkPolicy resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPolicy?
 
 @description('Optional. Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used.')
 param podCidr string?
@@ -52,11 +36,7 @@ param serviceCidr string?
 param dnsServiceIP string?
 
 @description('Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.')
-@allowed([
-  'basic'
-  'standard'
-])
-param loadBalancerSku string = 'standard'
+param loadBalancerSku resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.loadBalancerSku = 'standard'
 
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
@@ -74,34 +54,15 @@ param outboundPublicIPResourceIds string[]?
 param outboundPublicIPPrefixResourceIds string[]?
 
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
-@allowed([
-  'NodeIP'
-  'NodeIPConfiguration'
-])
-param backendPoolType string = 'NodeIPConfiguration'
+param backendPoolType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.loadBalancerProfile.backendPoolType = 'NodeIPConfiguration'
 
 @description('Optional. Specifies outbound (egress) routing method.')
-@allowed([
-  'loadBalancer'
-  'userDefinedRouting'
-  'managedNATGateway'
-  'userAssignedNATGateway'
-])
-param outboundType string = 'loadBalancer'
+param outboundType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.outboundType = 'loadBalancer'
 
 @description('Optional. Name of a managed cluster SKU.')
-@allowed([
-  'Base'
-  'Automatic'
-])
-param skuName string = 'Base'
+param skuName resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.sku.name = 'Base'
 
 @description('Optional. Tier of a managed cluster SKU.')
-@allowed([
-  'Free'
-  'Premium'
-  'Standard'
-])
 param skuTier resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.sku.tier = 'Standard'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
@@ -164,13 +125,7 @@ param webApplicationRoutingEnabled bool = false
 param dnsZoneResourceId string?
 
 @description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
-@allowed([
-  'AnnotationControlled'
-  'External'
-  'Internal'
-  'None'
-])
-param defaultIngressControllerType string?
+param defaultIngressControllerType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.ingressProfile.webAppRouting.nginx.defaultIngressControllerType?
 
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
@@ -231,12 +186,8 @@ param enableStorageProfileFileCSIDriver bool = false
 @description('Optional. Whether the snapshot controller for the storage profile is enabled.')
 param enableStorageProfileSnapshotController bool = false
 
-@allowed([
-  'AKSLongTermSupport'
-  'KubernetesOfficial'
-])
 @description('Optional. The support plan for the Managed Cluster.')
-param supportPlan string = 'KubernetesOfficial'
+param supportPlan resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.supportPlan = 'KubernetesOfficial'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
