@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "13967322527731197778"
+      "version": "0.39.26.7824",
+      "templateHash": "3198197612416407048"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -132,6 +132,7 @@
           "type": "string",
           "allowedValues": [
             "AllDatabasesAdmin",
+            "AllDatabasesMonitor",
             "AllDatabasesViewer"
           ],
           "metadata": {
@@ -1322,7 +1323,7 @@
         "virtualClusterGraduationProperties": "[parameters('virtualClusterGraduationProperties')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('virtualNetworkConfiguration'))), createObject('dataManagementPublicIpId', parameters('virtualNetworkConfiguration').dataManagementPublicIpResourceId, 'enginePublicIpId', parameters('virtualNetworkConfiguration').enginePublicIpResourceId, 'subnetId', parameters('virtualNetworkConfiguration').subnetResourceId), null())]"
       },
-      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+      "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -1441,8 +1442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1012223909934891391"
+              "version": "0.39.26.7824",
+              "templateHash": "1076445580230733725"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -2230,8 +2231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14255520298720928878"
+              "version": "0.39.26.7824",
+              "templateHash": "886640872970884910"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database."
@@ -2455,8 +2456,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "7106563084045148449"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18297685041650493369"
                     },
                     "name": "Kusto Cluster Database Principal Assignments",
                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."
