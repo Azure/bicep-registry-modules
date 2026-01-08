@@ -34,10 +34,10 @@ param availabilityZones int[] = [
 param publicIPAddressVersion string = 'IPv4'
 
 @description('Optional. The DNS settings of the public IP address.')
-param dnsSettings dnsSettingsType?
+param dnsSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.dnsSettings?
 
 @description('Optional. The list of tags associated with the public IP address.')
-param ipTags ipTagType[]?
+param ipTags resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ipTags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -58,7 +58,7 @@ param skuName string = 'Standard'
 param skuTier string = 'Regional'
 
 @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
-param ddosSettings ddosSettingsType?
+param ddosSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ddosSettings?
 
 @description('Optional. The delete option for the public IP address.')
 @allowed([
@@ -246,42 +246,3 @@ output ipAddress string = publicIpAddress.properties.?ipAddress ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = publicIpAddress.location
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-type dnsSettingsType = {
-  @description('Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.')
-  domainNameLabel: string
-
-  @description('Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.')
-  domainNameLabelScope: ('NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse')?
-
-  @description('Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone.')
-  fqdn: string?
-
-  @description('Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.')
-  reverseFqdn: string?
-}
-
-@export()
-type ddosSettingsType = {
-  @description('Optional. The DDoS protection plan associated with the public IP address.')
-  ddosProtectionPlan: {
-    @description('Required. The resource ID of the DDOS protection plan associated with the public IP address.')
-    id: string
-  }?
-  @description('Required. The DDoS protection policy customizations.')
-  protectionMode: 'Enabled'
-}
-
-@export()
-type ipTagType = {
-  @description('Required. The IP tag type.')
-  ipTagType: string
-
-  @description('Required. The IP tag.')
-  tag: string
-}

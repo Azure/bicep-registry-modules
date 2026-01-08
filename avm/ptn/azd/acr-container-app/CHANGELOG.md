@@ -6,8 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Update underlying AVM container-app module to version 0.20.0
-- Update test case short names to avoid conflicts with ACA tests
+- Update module dependencies to latest versions
 
 ### Breaking Changes
 

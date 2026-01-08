@@ -94,7 +94,7 @@ param ingressAllowInsecure bool = true
 @description('Optional. Controls how active revisions are handled for the Container app.')
 param revisionMode string = 'Single'
 
-import { secretType } from 'br/public:avm/res/app/container-app:0.18.1'
+import { secretType } from 'br/public:avm/res/app/container-app:0.19.0'
 @description('Optional. The secrets required for the container.')
 param secrets secretType[]?
 

@@ -1,0 +1,204 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "15670376638740090520"
+    },
+    "name": "API Management Workspace APIs Diagnostics",
+    "description": "This module deploys an API Diagnostic in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent API."
+      }
+    },
+    "loggerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the logger."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "local",
+      "allowedValues": [
+        "azuremonitor",
+        "applicationinsights",
+        "local"
+      ],
+      "metadata": {
+        "description": "Optional. Name of diagnostic resource."
+      }
+    },
+    "alwaysLog": {
+      "type": "string",
+      "defaultValue": "allErrors",
+      "metadata": {
+        "description": "Optional. Specifies for what type of messages sampling settings should not apply."
+      }
+    },
+    "backend": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01#properties/properties/properties/backend"
+        },
+        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
+      },
+      "nullable": true
+    },
+    "frontend": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/apis/diagnostics@2024-05-01#properties/properties/properties/frontend"
+        },
+        "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
+      },
+      "nullable": true
+    },
+    "httpCorrelationProtocol": {
+      "type": "string",
+      "defaultValue": "Legacy",
+      "allowedValues": [
+        "Legacy",
+        "None",
+        "W3C"
+      ],
+      "metadata": {
+        "description": "Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights."
+      }
+    },
+    "logClientIp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Log the ClientIP."
+      }
+    },
+    "metrics": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights."
+      }
+    },
+    "operationNameFormat": {
+      "type": "string",
+      "defaultValue": "Name",
+      "allowedValues": [
+        "Name",
+        "Url"
+      ],
+      "metadata": {
+        "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
+      }
+    },
+    "samplingPercentage": {
+      "type": "int",
+      "defaultValue": 100,
+      "metadata": {
+        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged."
+      }
+    },
+    "verbosity": {
+      "type": "string",
+      "defaultValue": "error",
+      "allowedValues": [
+        "error",
+        "information",
+        "verbose"
+      ],
+      "metadata": {
+        "description": "Optional. The verbosity level applied to traces emitted by trace policies."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace::api": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces/apis",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'))]"
+    },
+    "service::workspace::logger": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces/loggers",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('loggerName'))]"
+    },
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "diagnostic": {
+      "type": "Microsoft.ApiManagement/service/workspaces/apis/diagnostics",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
+      "properties": {
+        "alwaysLog": "[parameters('alwaysLog')]",
+        "backend": "[parameters('backend')]",
+        "frontend": "[parameters('frontend')]",
+        "httpCorrelationProtocol": "[parameters('httpCorrelationProtocol')]",
+        "logClientIp": "[parameters('logClientIp')]",
+        "loggerId": "[resourceId('Microsoft.ApiManagement/service/workspaces/loggers', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('loggerName'))]",
+        "metrics": "[parameters('metrics')]",
+        "operationNameFormat": "[parameters('operationNameFormat')]",
+        "sampling": {
+          "percentage": "[parameters('samplingPercentage')]",
+          "samplingType": "fixed"
+        },
+        "verbosity": "[parameters('verbosity')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace API diagnostic."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/apis/diagnostics', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace API diagnostic."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace API diagnostic was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

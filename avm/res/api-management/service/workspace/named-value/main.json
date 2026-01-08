@@ -1,0 +1,126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "8239145656546334716"
+    },
+    "name": "API Management Workspace Named Values",
+    "description": "This module deploys a Named Value in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters."
+      }
+    },
+    "keyVault": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/namedValues@2024-05-01#properties/properties/properties/keyVault"
+        },
+        "description": "Optional. KeyVault location details of the namedValue."
+      },
+      "nullable": true
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the named value."
+      }
+    },
+    "tags": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/workspaces/namedValues@2024-05-01#properties/properties/properties/tags"
+        },
+        "description": "Optional. Tags that when provided can be used to filter the NamedValue list."
+      },
+      "nullable": true
+    },
+    "secret": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Determines whether the value is a secret and should be encrypted or not."
+      }
+    },
+    "value": {
+      "type": "securestring",
+      "defaultValue": "[newGuid()]",
+      "maxLength": 4096,
+      "metadata": {
+        "description": "Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "namedValue": {
+      "type": "Microsoft.ApiManagement/service/workspaces/namedValues",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "tags": "[parameters('tags')]",
+        "secret": "[parameters('secret')]",
+        "displayName": "[parameters('displayName')]",
+        "value": "[if(empty(parameters('keyVault')), parameters('value'), null())]",
+        "keyVault": "[parameters('keyVault')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace named value."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/namedValues', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace named value."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace named value was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
