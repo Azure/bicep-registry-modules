@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "14447011447079270143"
+      "templateHash": "3202909610439650729"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -108,17 +108,13 @@
     },
     "gpuInstanceProfile": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "MIG1g",
-        "MIG2g",
-        "MIG3g",
-        "MIG4g",
-        "MIG7g"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/gpuInstanceProfile"
+        },
         "description": "Optional. GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU."
-      }
+      },
+      "nullable": true
     },
     "gpuProfile": {
       "type": "object",
@@ -149,14 +145,13 @@
     },
     "kubeletDiskType": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "OS",
-        "Temporary"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/kubeletDiskType"
+        },
         "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
-      }
+      },
+      "nullable": true
     },
     "linuxOSConfig": {
       "type": "object",
@@ -208,15 +203,13 @@
     },
     "mode": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "System",
-        "User",
-        "Gateway"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/mode"
+        },
         "description": "Optional. A cluster must have at least one \"System\" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools."
-      }
+      },
+      "nullable": true
     },
     "networkProfile": {
       "type": "object",
@@ -230,10 +223,13 @@
     },
     "nodeLabels": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/nodeLabels"
+        },
         "description": "Optional. The node labels to be persisted across all nodes in agent pool."
-      }
+      },
+      "nullable": true
     },
     "nodePublicIpPrefixResourceId": {
       "type": "string",
@@ -244,6 +240,9 @@
     },
     "nodeTaints": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule."
@@ -265,53 +264,43 @@
     },
     "osDiskType": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "Ephemeral",
-        "Managed"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osDiskType"
+        },
         "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
-      }
+      },
+      "nullable": true
     },
     "osSKU": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "AzureLinux",
-        "AzureLinux3",
-        "CBLMariner",
-        "Ubuntu",
-        "Ubuntu2204",
-        "Ubuntu2404",
-        "Windows2019",
-        "Windows2022"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osSKU"
+        },
         "description": "Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows."
-      }
+      },
+      "nullable": true
     },
     "osType": {
       "type": "string",
-      "defaultValue": "Linux",
-      "allowedValues": [
-        "Linux",
-        "Windows"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osType"
+        },
         "description": "Optional. The operating system type. The default is Linux."
-      }
+      },
+      "defaultValue": "Linux"
     },
-    "podIpAllocationMode": {
+    "podIPAllocationMode": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "DynamicIndividual",
-        "StaticBlock"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/podIPAllocationMode"
+        },
         "description": "Optional. Pod IP allocation mode."
-      }
+      },
+      "nullable": true
     },
     "podSubnetResourceId": {
       "type": "string",
@@ -339,36 +328,33 @@
     },
     "scaleDownMode": {
       "type": "string",
-      "defaultValue": "Delete",
-      "allowedValues": [
-        "Deallocate",
-        "Delete"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/scaleDownMode"
+        },
         "description": "Optional. Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing)."
-      }
+      },
+      "defaultValue": "Delete"
     },
     "scaleSetEvictionPolicy": {
       "type": "string",
-      "defaultValue": "Delete",
-      "allowedValues": [
-        "Deallocate",
-        "Delete"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/scaleSetEvictionPolicy"
+        },
         "description": "Optional. The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs."
-      }
+      },
+      "defaultValue": "Delete"
     },
     "scaleSetPriority": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "Regular",
-        "Spot"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/scaleSetPriority"
+        },
         "description": "Optional. The Virtual Machine Scale Set priority."
-      }
+      },
+      "nullable": true
     },
     "securityProfile": {
       "type": "object",
@@ -389,10 +375,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "type": {
       "type": "string",
@@ -427,15 +416,13 @@
     },
     "workloadRuntime": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "OCIContainer",
-        "WasmWasi",
-        "KataVmIsolation"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/workloadRuntime"
+        },
         "description": "Optional. Determines the type of workload a node can run."
-      }
+      },
+      "nullable": true
     },
     "windowsProfile": {
       "type": "object",
@@ -501,7 +488,7 @@
         "osDiskType": "[parameters('osDiskType')]",
         "osSKU": "[parameters('osSKU')]",
         "osType": "[parameters('osType')]",
-        "podIPAllocationMode": "[parameters('podIpAllocationMode')]",
+        "podIPAllocationMode": "[parameters('podIPAllocationMode')]",
         "podSubnetID": "[parameters('podSubnetResourceId')]",
         "powerState": "[parameters('powerState')]",
         "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",

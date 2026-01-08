@@ -80,15 +80,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
-    autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+    autoUpgradeProfile: {
+      nodeOSUpgradeChannel: 'NodeImage'
+    }
     defaultIngressControllerType: 'Internal'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
-    kedaAddon: true
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -112,15 +113,24 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     managedIdentities: {
       systemAssigned: true
     }
-    nodeProvisioningProfileMode: 'Auto'
+    nodeProvisioningProfile: {
+      mode: 'Auto'
+    }
     nodeResourceGroupProfile: {
       restrictionLevel: 'ReadOnly'
     }
     outboundType: 'managedNATGateway'
     publicNetworkAccess: 'Enabled'
     skuName: 'Automatic'
-    vpaAddon: true
     webApplicationRoutingEnabled: true
+    workloadAutoScalerProfile: {
+      keda: {
+        enabled: true
+      }
+      verticalPodAutoscaler: {
+        enabled: true
+      }
+    }
   }
 }
 ```
@@ -154,12 +164,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
-    "autoNodeOsUpgradeProfileUpgradeChannel": {
-      "value": "NodeImage"
+    "autoUpgradeProfile": {
+      "value": {
+        "nodeOSUpgradeChannel": "NodeImage"
+      }
     },
     "defaultIngressControllerType": {
       "value": "Internal"
@@ -171,9 +183,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": true
     },
     "enableSecretRotation": {
-      "value": true
-    },
-    "kedaAddon": {
       "value": true
     },
     "maintenanceConfigurations": {
@@ -203,8 +212,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "systemAssigned": true
       }
     },
-    "nodeProvisioningProfileMode": {
-      "value": "Auto"
+    "nodeProvisioningProfile": {
+      "value": {
+        "mode": "Auto"
+      }
     },
     "nodeResourceGroupProfile": {
       "value": {
@@ -220,11 +231,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "skuName": {
       "value": "Automatic"
     },
-    "vpaAddon": {
-      "value": true
-    },
     "webApplicationRoutingEnabled": {
       "value": true
+    },
+    "workloadAutoScalerProfile": {
+      "value": {
+        "keda": {
+          "enabled": true
+        },
+        "verticalPodAutoscaler": {
+          "enabled": true
+        }
+      }
     }
   }
 }
@@ -252,15 +270,16 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
-param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
+param autoUpgradeProfile = {
+  nodeOSUpgradeChannel: 'NodeImage'
+}
 param defaultIngressControllerType = 'Internal'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
-param kedaAddon = true
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -284,15 +303,24 @@ param maintenanceConfigurations = [
 param managedIdentities = {
   systemAssigned: true
 }
-param nodeProvisioningProfileMode = 'Auto'
+param nodeProvisioningProfile = {
+  mode: 'Auto'
+}
 param nodeResourceGroupProfile = {
   restrictionLevel: 'ReadOnly'
 }
 param outboundType = 'managedNATGateway'
 param publicNetworkAccess = 'Enabled'
 param skuName = 'Automatic'
-param vpaAddon = true
 param webApplicationRoutingEnabled = true
+param workloadAutoScalerProfile = {
+  keda: {
+    enabled: true
+  }
+  verticalPodAutoscaler: {
+    enabled: true
+  }
+}
 ```
 
 </details>
@@ -324,8 +352,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     managedIdentities: {
       systemAssigned: true
@@ -363,8 +391,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "managedIdentities": {
@@ -398,8 +426,8 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param managedIdentities = {
   systemAssigned: true
@@ -435,8 +463,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     managedIdentities: {
@@ -475,8 +503,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "diskEncryptionSetResourceId": {
@@ -513,8 +541,8 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
 param managedIdentities = {
@@ -551,26 +579,39 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
-    istioServiceMeshCertificateAuthority: {
-      certChainObjectName: '<certChainObjectName>'
-      certObjectName: '<certObjectName>'
-      keyObjectName: '<keyObjectName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      rootCertObjectName: '<rootCertObjectName>'
-    }
-    istioServiceMeshEnabled: true
-    istioServiceMeshInternalIngressGatewayEnabled: true
-    istioServiceMeshRevisions: [
-      'asm-1-27'
-    ]
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
+    }
+    serviceMeshProfile: {
+      istio: {
+        certificateAuthority: {
+          plugin: {
+            certChainObjectName: '<certChainObjectName>'
+            certObjectName: '<certObjectName>'
+            keyObjectName: '<keyObjectName>'
+            keyVaultId: '<keyVaultId>'
+            rootCertObjectName: '<rootCertObjectName>'
+          }
+        }
+        components: {
+          ingressGateways: [
+            {
+              enabled: true
+              mode: 'Internal'
+            }
+          ]
+        }
+        revisions: [
+          'asm-1-27'
+        ]
+      }
+      mode: 'Istio'
     }
   }
 }
@@ -605,8 +646,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "enableKeyvaultSecretsProvider": {
@@ -615,32 +656,39 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enableSecretRotation": {
       "value": true
     },
-    "istioServiceMeshCertificateAuthority": {
-      "value": {
-        "certChainObjectName": "<certChainObjectName>",
-        "certObjectName": "<certObjectName>",
-        "keyObjectName": "<keyObjectName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "rootCertObjectName": "<rootCertObjectName>"
-      }
-    },
-    "istioServiceMeshEnabled": {
-      "value": true
-    },
-    "istioServiceMeshInternalIngressGatewayEnabled": {
-      "value": true
-    },
-    "istioServiceMeshRevisions": {
-      "value": [
-        "asm-1-27"
-      ]
-    },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
+      }
+    },
+    "serviceMeshProfile": {
+      "value": {
+        "istio": {
+          "certificateAuthority": {
+            "plugin": {
+              "certChainObjectName": "<certChainObjectName>",
+              "certObjectName": "<certObjectName>",
+              "keyObjectName": "<keyObjectName>",
+              "keyVaultId": "<keyVaultId>",
+              "rootCertObjectName": "<rootCertObjectName>"
+            }
+          },
+          "components": {
+            "ingressGateways": [
+              {
+                "enabled": true,
+                "mode": "Internal"
+              }
+            ]
+          },
+          "revisions": [
+            "asm-1-27"
+          ]
+        },
+        "mode": "Istio"
       }
     }
   }
@@ -669,26 +717,39 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
-param istioServiceMeshCertificateAuthority = {
-  certChainObjectName: '<certChainObjectName>'
-  certObjectName: '<certObjectName>'
-  keyObjectName: '<keyObjectName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  rootCertObjectName: '<rootCertObjectName>'
-}
-param istioServiceMeshEnabled = true
-param istioServiceMeshInternalIngressGatewayEnabled = true
-param istioServiceMeshRevisions = [
-  'asm-1-27'
-]
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
+}
+param serviceMeshProfile = {
+  istio: {
+    certificateAuthority: {
+      plugin: {
+        certChainObjectName: '<certChainObjectName>'
+        certObjectName: '<certObjectName>'
+        keyObjectName: '<keyObjectName>'
+        keyVaultId: '<keyVaultId>'
+        rootCertObjectName: '<rootCertObjectName>'
+      }
+    }
+    components: {
+      ingressGateways: [
+        {
+          enabled: true
+          mode: 'Internal'
+        }
+      ]
+    }
+    revisions: [
+      'asm-1-27'
+    ]
+  }
+  mode: 'Istio'
 }
 ```
 
@@ -734,8 +795,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     agentPools: [
       {
@@ -849,8 +910,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "agentPools": {
@@ -970,8 +1031,8 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param agentPools = [
   {
@@ -1084,8 +1145,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     agentPools: [
       {
@@ -1110,15 +1171,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
+    apiServerAccessProfile: {
+      enablePrivateCluster: true
+      privateDNSZone: '<privateDNSZone>'
+    }
     dnsServiceIP: '10.10.200.10'
-    enablePrivateCluster: true
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
     networkPlugin: 'azure'
-    privateDNSZone: '<privateDNSZone>'
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
   }
@@ -1168,8 +1231,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "agentPools": {
@@ -1197,11 +1260,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
+    "apiServerAccessProfile": {
+      "value": {
+        "enablePrivateCluster": true,
+        "privateDNSZone": "<privateDNSZone>"
+      }
+    },
     "dnsServiceIP": {
       "value": "10.10.200.10"
-    },
-    "enablePrivateCluster": {
-      "value": true
     },
     "managedIdentities": {
       "value": {
@@ -1212,9 +1278,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "networkPlugin": {
       "value": "azure"
-    },
-    "privateDNSZone": {
-      "value": "<privateDNSZone>"
     },
     "serviceCidr": {
       "value": "10.10.200.0/24"
@@ -1262,8 +1325,8 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param agentPools = [
   {
@@ -1288,15 +1351,17 @@ param agentPools = [
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
+param apiServerAccessProfile = {
+  enablePrivateCluster: true
+  privateDNSZone: '<privateDNSZone>'
+}
 param dnsServiceIP = '10.10.200.10'
-param enablePrivateCluster = true
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
 param networkPlugin = 'azure'
-param privateDNSZone = '<privateDNSZone>'
 param serviceCidr = '10.10.200.0/24'
 param skuTier = 'Standard'
 ```
@@ -1344,8 +1409,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     // Non-required parameters
     aadProfile: {
-      aadProfileEnableAzureRBAC: true
-      aadProfileManaged: true
+      enableAzureRBAC: true
+      managed: true
     }
     agentPools: [
       {
@@ -1392,8 +1457,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS4_v2'
       }
     ]
-    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
-    autoUpgradeProfileUpgradeChannel: 'stable'
+    apiServerAccessProfile: {
+      enablePrivateCluster: true
+      privateDNSZone: '<privateDNSZone>'
+    }
+    autoUpgradeProfile: {
+      nodeOSUpgradeChannel: 'Unmanaged'
+      upgradeChannel: 'stable'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1424,8 +1495,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     disableLocalAccounts: true
     dnsServiceIP: '10.10.200.10'
-    enableAzureDefender: true
-    enablePrivateCluster: true
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -1467,7 +1536,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     networkPlugin: 'azure'
     networkPolicy: 'azure'
     omsAgentEnabled: true
-    privateDNSZone: '<privateDNSZone>'
+    securityProfile: {
+      defender: {
+        logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+        securityMonitoring: {
+          enabled: true
+        }
+      }
+    }
     serviceCidr: '10.10.200.0/24'
     skuTier: 'Standard'
     tags: {
@@ -1522,8 +1598,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     "aadProfile": {
       "value": {
-        "aadProfileEnableAzureRBAC": true,
-        "aadProfileManaged": true
+        "enableAzureRBAC": true,
+        "managed": true
       }
     },
     "agentPools": {
@@ -1573,11 +1649,17 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
-    "autoNodeOsUpgradeProfileUpgradeChannel": {
-      "value": "Unmanaged"
+    "apiServerAccessProfile": {
+      "value": {
+        "enablePrivateCluster": true,
+        "privateDNSZone": "<privateDNSZone>"
+      }
     },
-    "autoUpgradeProfileUpgradeChannel": {
-      "value": "stable"
+    "autoUpgradeProfile": {
+      "value": {
+        "nodeOSUpgradeChannel": "Unmanaged",
+        "upgradeChannel": "stable"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -1614,12 +1696,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "dnsServiceIP": {
       "value": "10.10.200.10"
-    },
-    "enableAzureDefender": {
-      "value": true
-    },
-    "enablePrivateCluster": {
-      "value": true
     },
     "maintenanceConfigurations": {
       "value": [
@@ -1674,8 +1750,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "omsAgentEnabled": {
       "value": true
     },
-    "privateDNSZone": {
-      "value": "<privateDNSZone>"
+    "securityProfile": {
+      "value": {
+        "defender": {
+          "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>",
+          "securityMonitoring": {
+            "enabled": true
+          }
+        }
+      }
     },
     "serviceCidr": {
       "value": "10.10.200.0/24"
@@ -1730,8 +1813,8 @@ param primaryAgentPoolProfiles = [
 ]
 // Non-required parameters
 param aadProfile = {
-  aadProfileEnableAzureRBAC: true
-  aadProfileManaged: true
+  enableAzureRBAC: true
+  managed: true
 }
 param agentPools = [
   {
@@ -1778,8 +1861,14 @@ param agentPools = [
     vmSize: 'Standard_DS4_v2'
   }
 ]
-param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
-param autoUpgradeProfileUpgradeChannel = 'stable'
+param apiServerAccessProfile = {
+  enablePrivateCluster: true
+  privateDNSZone: '<privateDNSZone>'
+}
+param autoUpgradeProfile = {
+  nodeOSUpgradeChannel: 'Unmanaged'
+  upgradeChannel: 'stable'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1810,8 +1899,6 @@ param diagnosticSettings = [
 ]
 param disableLocalAccounts = true
 param dnsServiceIP = '10.10.200.10'
-param enableAzureDefender = true
-param enablePrivateCluster = true
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -1853,7 +1940,14 @@ param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
 param networkPlugin = 'azure'
 param networkPolicy = 'azure'
 param omsAgentEnabled = true
-param privateDNSZone = '<privateDNSZone>'
+param securityProfile = {
+  defender: {
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    securityMonitoring: {
+      enabled: true
+    }
+  }
+}
 param serviceCidr = '10.10.200.0/24'
 param skuTier = 'Standard'
 param tags = {
@@ -1888,33 +1982,13 @@ param tags = {
 | :-- | :-- | :-- |
 | [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
-| [`adminUsername`](#parameter-adminusername) | string | Specifies the administrator username of Linux virtual machines. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`aiToolchainOperatorProfile`](#parameter-aitoolchainoperatorprofile) | object | AI toolchain operator settings that apply to the whole cluster. |
 | [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
-| [`authorizedIPRanges`](#parameter-authorizedipranges) | array | IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer. |
-| [`autoNodeOsUpgradeProfileUpgradeChannel`](#parameter-autonodeosupgradeprofileupgradechannel) | string | Auto-upgrade channel on the Node Os. |
-| [`autoScalerProfileBalanceSimilarNodeGroups`](#parameter-autoscalerprofilebalancesimilarnodegroups) | bool | Specifies the balance of similar node groups for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileDaemonsetEvictionForEmptyNodes`](#parameter-autoscalerprofiledaemonsetevictionforemptynodes) | bool | Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileDaemonsetEvictionForOccupiedNodes`](#parameter-autoscalerprofiledaemonsetevictionforoccupiednodes) | bool | Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileExpander`](#parameter-autoscalerprofileexpander) | string | Specifies the expand strategy for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileIgnoreDaemonsetsUtilization`](#parameter-autoscalerprofileignoredaemonsetsutilization) | bool | Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileMaxEmptyBulkDelete`](#parameter-autoscalerprofilemaxemptybulkdelete) | int | Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileMaxGracefulTerminationSec`](#parameter-autoscalerprofilemaxgracefulterminationsec) | int | Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileMaxNodeProvisionTime`](#parameter-autoscalerprofilemaxnodeprovisiontime) | string | Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported. |
-| [`autoScalerProfileMaxTotalUnreadyPercentage`](#parameter-autoscalerprofilemaxtotalunreadypercentage) | int | Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0. |
-| [`autoScalerProfileNewPodScaleUpDelay`](#parameter-autoscalerprofilenewpodscaleupdelay) | string | For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc). |
-| [`autoScalerProfileOkTotalUnreadyCount`](#parameter-autoscalerprofileoktotalunreadycount) | int | Specifies the OK total unready count for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScaleDownDelayAfterAdd`](#parameter-autoscalerprofilescaledowndelayafteradd) | string | Specifies the scale down delay after add of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScaleDownDelayAfterDelete`](#parameter-autoscalerprofilescaledowndelayafterdelete) | string | Specifies the scale down delay after delete of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScaleDownDelayAfterFailure`](#parameter-autoscalerprofilescaledowndelayafterfailure) | string | Specifies scale down delay after failure of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScaleDownUnneededTime`](#parameter-autoscalerprofilescaledownunneededtime) | string | Specifies the scale down unneeded time of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScaleDownUnreadyTime`](#parameter-autoscalerprofilescaledownunreadytime) | string | Specifies the scale down unready time of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileScanInterval`](#parameter-autoscalerprofilescaninterval) | string | Specifies the scan interval of the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileSkipNodesWithLocalStorage`](#parameter-autoscalerprofileskipnodeswithlocalstorage) | bool | Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileSkipNodesWithSystemPods`](#parameter-autoscalerprofileskipnodeswithsystempods) | bool | Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster. |
-| [`autoScalerProfileUtilizationThreshold`](#parameter-autoscalerprofileutilizationthreshold) | string | Specifies the utilization threshold of the auto-scaler of the AKS cluster. |
-| [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
+| [`apiServerAccessProfile`](#parameter-apiserveraccessprofile) | object | The access profile for managed cluster API server |
+| [`autoScalerProfile`](#parameter-autoscalerprofile) | object | Parameters to be applied to the cluster-autoscaler when enabled. |
+| [`autoUpgradeProfile`](#parameter-autoupgradeprofile) | object | The auto upgrade configuration. |
+| [`azureMonitorProfile`](#parameter-azuremonitorprofile) | object | Azure Monitor addon profiles for monitoring the managed cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
@@ -1922,25 +1996,14 @@ param tags = {
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
-| [`disablePrometheusMetricsScraping`](#parameter-disableprometheusmetricsscraping) | bool | Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false. |
-| [`disableRunCommand`](#parameter-disableruncommand) | bool | Whether to disable run command for the cluster or not. |
 | [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
-| [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metric state of the kubenetes cluster is enabled. |
-| [`enableContainerInsights`](#parameter-enablecontainerinsights) | bool | Indicates if Azure Monitor Container Insights Logs Addon is enabled. |
 | [`enableDnsZoneContributorRoleAssignment`](#parameter-enablednszonecontributorroleassignment) | bool | Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided. |
-| [`enableImageCleaner`](#parameter-enableimagecleaner) | bool | Whether to enable Image Cleaner. |
-| [`enableImageIntegrity`](#parameter-enableimageintegrity) | bool | Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy. |
 | [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
-| [`enableNodeRestriction`](#parameter-enablenoderestriction) | bool | Whether to enable Node Restriction. |
 | [`enableOidcIssuerProfile`](#parameter-enableoidcissuerprofile) | bool | Whether the The OIDC issuer profile of the Managed Cluster is enabled. |
-| [`enablePrivateCluster`](#parameter-enableprivatecluster) | bool | Specifies whether to create the cluster as a private cluster or not. |
-| [`enablePrivateClusterPublicFQDN`](#parameter-enableprivateclusterpublicfqdn) | bool | Whether to create additional public FQDN for private cluster or not. |
 | [`enableRBAC`](#parameter-enablerbac) | bool | Whether to enable Kubernetes Role-Based Access Control. |
 | [`enableSecretRotation`](#parameter-enablesecretrotation) | bool | Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation. |
 | [`enableStorageProfileBlobCSIDriver`](#parameter-enablestorageprofileblobcsidriver) | bool | Whether the AzureBlob CSI Driver for the storage profile is enabled. |
@@ -1948,37 +2011,28 @@ param tags = {
 | [`enableStorageProfileFileCSIDriver`](#parameter-enablestorageprofilefilecsidriver) | bool | Whether the AzureFile CSI Driver for the storage profile is enabled. |
 | [`enableStorageProfileSnapshotController`](#parameter-enablestorageprofilesnapshotcontroller) | bool | Whether the snapshot controller for the storage profile is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableWorkloadIdentity`](#parameter-enableworkloadidentity) | bool | Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled. |
 | [`fluxExtension`](#parameter-fluxextension) | object | Settings and configurations for the flux extension. |
 | [`fqdnSubdomain`](#parameter-fqdnsubdomain) | string | The FQDN subdomain of the private cluster with custom private dns zone. This cannot be updated once the Managed Cluster has been created. |
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
 | [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | Desired outbound flow idle timeout in minutes. |
-| [`imageCleanerIntervalHours`](#parameter-imagecleanerintervalhours) | int | The interval in hours Image Cleaner will run. The maximum value is three months. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
-| [`istioServiceMeshCertificateAuthority`](#parameter-istioservicemeshcertificateauthority) | object | The Istio Certificate Authority definition. |
-| [`istioServiceMeshEnabled`](#parameter-istioservicemeshenabled) | bool | Specifies whether the Istio ServiceMesh add-on is enabled or not. |
-| [`istioServiceMeshExternalIngressGatewayEnabled`](#parameter-istioservicemeshexternalingressgatewayenabled) | bool | Specifies whether the External Istio Ingress Gateway is enabled or not. |
-| [`istioServiceMeshInternalIngressGatewayEnabled`](#parameter-istioservicemeshinternalingressgatewayenabled) | bool | Specifies whether the Internal Istio Ingress Gateway is enabled or not. |
-| [`istioServiceMeshRevisions`](#parameter-istioservicemeshrevisions) | array | The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values. |
-| [`kedaAddon`](#parameter-kedaaddon) | bool | Enables Kubernetes Event-driven Autoscaling (KEDA). |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
+| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the Managed Cluster. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Whether or not to use AKS Automatic mode. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
-| [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes cluster metrics annotations. |
-| [`metricLabelsAllowlist`](#parameter-metriclabelsallowlist) | string | A comma-separated list of kubernetes cluster metrics labels. |
 | [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
-| [`nodeProvisioningProfileMode`](#parameter-nodeprovisioningprofilemode) | string | Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION. |
+| [`nodeProvisioningProfile`](#parameter-nodeprovisioningprofile) | object | Node provisioning settings that apply to the whole cluster. |
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
@@ -1988,24 +2042,20 @@ param tags = {
 | [`outboundPublicIPResourceIds`](#parameter-outboundpublicipresourceids) | array | A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
-| [`podIdentityProfileAllowNetworkPluginKubenet`](#parameter-podidentityprofileallownetworkpluginkubenet) | bool | Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing. |
-| [`podIdentityProfileEnable`](#parameter-podidentityprofileenable) | bool | Whether the pod identity addon is enabled. |
-| [`podIdentityProfileUserAssignedIdentities`](#parameter-podidentityprofileuserassignedidentities) | array | The pod identities to use in the cluster. |
-| [`podIdentityProfileUserAssignedIdentityExceptions`](#parameter-podidentityprofileuserassignedidentityexceptions) | array | The pod identity exceptions to allow. |
-| [`privateDNSZone`](#parameter-privatednszone) | string | Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone. |
+| [`podIdentityProfile`](#parameter-podidentityprofile) | object | The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityProfile`](#parameter-securityprofile) | object | Security profile for the managed cluster. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
+| [`serviceMeshProfile`](#parameter-servicemeshprofile) | object | Service mesh profile for a managed cluster. |
 | [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
-| [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
-| [`syslogPort`](#parameter-syslogport) | int | The syslog host port. If not specified, the default port is 28330. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradeSettings`](#parameter-upgradesettings) | object | Settings for upgrading the cluster with override options. |
-| [`vpaAddon`](#parameter-vpaaddon) | bool | Whether to enable VPA add-on in cluster. Default value is false. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 | [`windowsProfile`](#parameter-windowsprofile) | object | The Windows profile for Windows VMs in the Managed Cluster. |
+| [`workloadAutoScalerProfile`](#parameter-workloadautoscalerprofile) | object | Workload Auto-scaler profile for the managed cluster. |
 
 ### Parameter: `name`
 
@@ -2063,7 +2113,7 @@ Properties of the primary agent pool.
 | [`osDiskType`](#parameter-primaryagentpoolprofilesosdisktype) | string | The OS disk type of the agent pool. |
 | [`osSKU`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-primaryagentpoolprofilesostype) | string | The OS type of the agent pool. |
-| [`podIpAllocationMode`](#parameter-primaryagentpoolprofilespodipallocationmode) | string | Pod IP allocation mode. |
+| [`podIPAllocationMode`](#parameter-primaryagentpoolprofilespodipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-primaryagentpoolprofilespodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`powerState`](#parameter-primaryagentpoolprofilespowerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-primaryagentpoolprofilesproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -2165,16 +2215,6 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'MIG1g'
-    'MIG2g'
-    'MIG3g'
-    'MIG4g'
-    'MIG7g'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.gpuProfile`
 
@@ -2203,13 +2243,6 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'OS'
-    'Temporary'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.linuxOSConfig`
 
@@ -2266,14 +2299,6 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Gateway'
-    'System'
-    'User'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.networkProfile`
 
@@ -2330,19 +2355,6 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureLinux'
-    'AzureLinux3'
-    'CBLMariner'
-    'Ubuntu'
-    'Ubuntu2204'
-    'Ubuntu2404'
-    'Windows2019'
-    'Windows2022'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.osType`
 
@@ -2350,28 +2362,13 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
 
-### Parameter: `primaryAgentPoolProfiles.podIpAllocationMode`
+### Parameter: `primaryAgentPoolProfiles.podIPAllocationMode`
 
 Pod IP allocation mode.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DynamicBlock'
-    'DynamicIndividual'
-    'StaticBlock'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.podSubnetResourceId`
 
@@ -2400,13 +2397,6 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.scaleSetEvictionPolicy`
 
@@ -2414,13 +2404,6 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.scaleSetPriority`
 
@@ -2428,14 +2411,6 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Low'
-    'Regular'
-    'Spot'
-  ]
-  ```
 
 ### Parameter: `primaryAgentPoolProfiles.securityProfile`
 
@@ -2520,14 +2495,6 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'KataVmIsolation'
-    'OCIContainer'
-    'WasmWasi'
-  ]
-  ```
 
 ### Parameter: `aksServicePrincipalProfile`
 
@@ -2550,72 +2517,6 @@ Enable Azure Active Directory integration.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadProfileEnableAzureRBAC`](#parameter-aadprofileaadprofileenableazurerbac) | bool | Specifies whether to enable Azure RBAC for Kubernetes authorization. |
-| [`aadProfileManaged`](#parameter-aadprofileaadprofilemanaged) | bool | Specifies whether to enable managed AAD integration. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadProfileAdminGroupObjectIDs`](#parameter-aadprofileaadprofileadmingroupobjectids) | array | Specifies the AAD group object IDs that will have admin role of the cluster. |
-| [`aadProfileClientAppID`](#parameter-aadprofileaadprofileclientappid) | string | The client AAD application ID. |
-| [`aadProfileServerAppID`](#parameter-aadprofileaadprofileserverappid) | string | The server AAD application ID. |
-| [`aadProfileServerAppSecret`](#parameter-aadprofileaadprofileserverappsecret) | string | The server AAD application secret. |
-| [`aadProfileTenantId`](#parameter-aadprofileaadprofiletenantid) | string | Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication. |
-
-### Parameter: `aadProfile.aadProfileEnableAzureRBAC`
-
-Specifies whether to enable Azure RBAC for Kubernetes authorization.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `aadProfile.aadProfileManaged`
-
-Specifies whether to enable managed AAD integration.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `aadProfile.aadProfileAdminGroupObjectIDs`
-
-Specifies the AAD group object IDs that will have admin role of the cluster.
-
-- Required: No
-- Type: array
-
-### Parameter: `aadProfile.aadProfileClientAppID`
-
-The client AAD application ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `aadProfile.aadProfileServerAppID`
-
-The server AAD application ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `aadProfile.aadProfileServerAppSecret`
-
-The server AAD application secret.
-
-- Required: No
-- Type: string
-
-### Parameter: `aadProfile.aadProfileTenantId`
-
-Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.
-
-- Required: No
-- Type: string
-
 ### Parameter: `aciConnectorLinuxEnabled`
 
 Specifies whether the aciConnectorLinux add-on is enabled or not.
@@ -2623,14 +2524,6 @@ Specifies whether the aciConnectorLinux add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `adminUsername`
-
-Specifies the administrator username of Linux virtual machines.
-
-- Required: No
-- Type: string
-- Default: `'azureuser'`
 
 ### Parameter: `agentPools`
 
@@ -2681,7 +2574,7 @@ Define one or more secondary/additional agent pools.
 | [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
 | [`osSKU`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
-| [`podIpAllocationMode`](#parameter-agentpoolspodipallocationmode) | string | Pod IP allocation mode. |
+| [`podIPAllocationMode`](#parameter-agentpoolspodipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-agentpoolspodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`powerState`](#parameter-agentpoolspowerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -2783,16 +2676,6 @@ The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'MIG1g'
-    'MIG2g'
-    'MIG3g'
-    'MIG4g'
-    'MIG7g'
-  ]
-  ```
 
 ### Parameter: `agentPools.gpuProfile`
 
@@ -2821,13 +2704,6 @@ The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'OS'
-    'Temporary'
-  ]
-  ```
 
 ### Parameter: `agentPools.linuxOSConfig`
 
@@ -2884,14 +2760,6 @@ The mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Gateway'
-    'System'
-    'User'
-  ]
-  ```
 
 ### Parameter: `agentPools.networkProfile`
 
@@ -2948,19 +2816,6 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureLinux'
-    'AzureLinux3'
-    'CBLMariner'
-    'Ubuntu'
-    'Ubuntu2204'
-    'Ubuntu2404'
-    'Windows2019'
-    'Windows2022'
-  ]
-  ```
 
 ### Parameter: `agentPools.osType`
 
@@ -2968,28 +2823,13 @@ The OS type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
 
-### Parameter: `agentPools.podIpAllocationMode`
+### Parameter: `agentPools.podIPAllocationMode`
 
 Pod IP allocation mode.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DynamicBlock'
-    'DynamicIndividual'
-    'StaticBlock'
-  ]
-  ```
 
 ### Parameter: `agentPools.podSubnetResourceId`
 
@@ -3018,13 +2858,6 @@ The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `agentPools.scaleSetEvictionPolicy`
 
@@ -3032,13 +2865,6 @@ The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `agentPools.scaleSetPriority`
 
@@ -3046,14 +2872,6 @@ The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Low'
-    'Regular'
-    'Spot'
-  ]
-  ```
 
 ### Parameter: `agentPools.securityProfile`
 
@@ -3138,14 +2956,6 @@ The workload runtime of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'KataVmIsolation'
-    'OCIContainer'
-    'WasmWasi'
-  ]
-  ```
 
 ### Parameter: `aiToolchainOperatorProfile`
 
@@ -3162,216 +2972,33 @@ The desired number of allocated SNAT ports per VM. Default is 0, which results i
 - Type: int
 - Default: `0`
 
-### Parameter: `authorizedIPRanges`
+### Parameter: `apiServerAccessProfile`
 
-IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
-
-- Required: No
-- Type: array
-
-### Parameter: `autoNodeOsUpgradeProfileUpgradeChannel`
-
-Auto-upgrade channel on the Node Os.
+The access profile for managed cluster API server
 
 - Required: No
-- Type: string
-- Default: `'Unmanaged'`
-- Allowed:
-  ```Bicep
-  [
-    'NodeImage'
-    'None'
-    'SecurityPatch'
-    'Unmanaged'
-  ]
-  ```
+- Type: object
 
-### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
+### Parameter: `autoScalerProfile`
 
-Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.
+Parameters to be applied to the cluster-autoscaler when enabled.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: object
 
-### Parameter: `autoScalerProfileDaemonsetEvictionForEmptyNodes`
+### Parameter: `autoUpgradeProfile`
 
-Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `autoScalerProfileDaemonsetEvictionForOccupiedNodes`
-
-Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster.
+The auto upgrade configuration.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: object
 
-### Parameter: `autoScalerProfileExpander`
+### Parameter: `azureMonitorProfile`
 
-Specifies the expand strategy for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'random'`
-- Allowed:
-  ```Bicep
-  [
-    'least-waste'
-    'most-pods'
-    'priority'
-    'random'
-  ]
-  ```
-
-### Parameter: `autoScalerProfileIgnoreDaemonsetsUtilization`
-
-Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster.
+Azure Monitor addon profiles for monitoring the managed cluster.
 
 - Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `autoScalerProfileMaxEmptyBulkDelete`
-
-Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: int
-- Default: `10`
-
-### Parameter: `autoScalerProfileMaxGracefulTerminationSec`
-
-Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: int
-- Default: `600`
-
-### Parameter: `autoScalerProfileMaxNodeProvisionTime`
-
-Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.
-
-- Required: No
-- Type: string
-- Default: `'15m'`
-
-### Parameter: `autoScalerProfileMaxTotalUnreadyPercentage`
-
-Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.
-
-- Required: No
-- Type: int
-- Default: `45`
-
-### Parameter: `autoScalerProfileNewPodScaleUpDelay`
-
-For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).
-
-- Required: No
-- Type: string
-- Default: `'0s'`
-
-### Parameter: `autoScalerProfileOkTotalUnreadyCount`
-
-Specifies the OK total unready count for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: int
-- Default: `3`
-
-### Parameter: `autoScalerProfileScaleDownDelayAfterAdd`
-
-Specifies the scale down delay after add of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'10m'`
-
-### Parameter: `autoScalerProfileScaleDownDelayAfterDelete`
-
-Specifies the scale down delay after delete of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'20s'`
-
-### Parameter: `autoScalerProfileScaleDownDelayAfterFailure`
-
-Specifies scale down delay after failure of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'3m'`
-
-### Parameter: `autoScalerProfileScaleDownUnneededTime`
-
-Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'10m'`
-
-### Parameter: `autoScalerProfileScaleDownUnreadyTime`
-
-Specifies the scale down unready time of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'20m'`
-
-### Parameter: `autoScalerProfileScanInterval`
-
-Specifies the scan interval of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'10s'`
-
-### Parameter: `autoScalerProfileSkipNodesWithLocalStorage`
-
-Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `autoScalerProfileSkipNodesWithSystemPods`
-
-Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `autoScalerProfileUtilizationThreshold`
-
-Specifies the utilization threshold of the auto-scaler of the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'0.5'`
-
-### Parameter: `autoUpgradeProfileUpgradeChannel`
-
-Auto-upgrade channel on the AKS cluster.
-
-- Required: No
-- Type: string
-- Default: `'stable'`
-- Allowed:
-  ```Bicep
-  [
-    'node-image'
-    'none'
-    'patch'
-    'rapid'
-    'stable'
-  ]
-  ```
+- Type: object
 
 ### Parameter: `azurePolicyEnabled`
 
@@ -3396,13 +3023,6 @@ The type of the managed inbound Load Balancer BackendPool.
 - Required: No
 - Type: string
 - Default: `'NodeIPConfiguration'`
-- Allowed:
-  ```Bicep
-  [
-    'NodeIP'
-    'NodeIPConfiguration'
-  ]
-  ```
 
 ### Parameter: `bootstrapProfile`
 
@@ -3425,15 +3045,6 @@ Ingress type for the default NginxIngressController custom resource. It will be 
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AnnotationControlled'
-    'External'
-    'Internal'
-    'None'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -3581,14 +3192,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `disableCustomMetrics`
-
-Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `disableLocalAccounts`
 
 If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.
@@ -3596,22 +3199,6 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `disablePrometheusMetricsScraping`
-
-Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `disableRunCommand`
-
-Whether to disable run command for the cluster or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `diskEncryptionSetResourceId`
 
@@ -3642,30 +3229,6 @@ Specifies the resource ID of connected DNS zone. It will be ignored if `webAppli
 - Required: No
 - Type: string
 
-### Parameter: `enableAzureDefender`
-
-Whether to enable Azure Defender.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableAzureMonitorProfileMetrics`
-
-Whether the metric state of the kubenetes cluster is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableContainerInsights`
-
-Indicates if Azure Monitor Container Insights Logs Addon is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableDnsZoneContributorRoleAssignment`
 
 Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.
@@ -3673,22 +3236,6 @@ Specifies whether assing the DNS zone contributor role to the cluster service pr
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enableImageCleaner`
-
-Whether to enable Image Cleaner.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enableImageIntegrity`
-
-Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableKeyvaultSecretsProvider`
 
@@ -3698,33 +3245,9 @@ Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableNodeRestriction`
-
-Whether to enable Node Restriction.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableOidcIssuerProfile`
 
 Whether the The OIDC issuer profile of the Managed Cluster is enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enablePrivateCluster`
-
-Specifies whether to create the cluster as a private cluster or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enablePrivateClusterPublicFQDN`
-
-Whether to create additional public FQDN for private cluster or not.
 
 - Required: No
 - Type: bool
@@ -3786,14 +3309,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableWorkloadIdentity`
-
-Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `fluxExtension`
 
 Settings and configurations for the flux extension.
@@ -3806,8 +3321,8 @@ Settings and configurations for the flux extension.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`configurationProtectedSettings`](#parameter-fluxextensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
-| [`configurations`](#parameter-fluxextensionconfigurations) | array | The flux configurations of the extension. |
 | [`configurationSettings`](#parameter-fluxextensionconfigurationsettings) | object | The configuration settings of the extension. |
+| [`fluxConfigurations`](#parameter-fluxextensionfluxconfigurations) | array | The flux configurations of the extension. |
 | [`name`](#parameter-fluxextensionname) | string | The name of the extension. |
 | [`releaseNamespace`](#parameter-fluxextensionreleasenamespace) | string | Namespace where the extension Release must be placed. |
 | [`releaseTrain`](#parameter-fluxextensionreleasetrain) | string | The release train of the extension. |
@@ -3821,32 +3336,19 @@ The configuration protected settings of the extension.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | securestring | The SSH private key to use for Git authentication. |
-
-### Parameter: `fluxExtension.configurationProtectedSettings.sshPrivateKey`
-
-The SSH private key to use for Git authentication.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `fluxExtension.configurations`
-
-The flux configurations of the extension.
-
-- Required: No
-- Type: array
-
 ### Parameter: `fluxExtension.configurationSettings`
 
 The configuration settings of the extension.
 
 - Required: No
 - Type: object
+
+### Parameter: `fluxExtension.fluxConfigurations`
+
+The flux configurations of the extension.
+
+- Required: No
+- Type: array
 
 ### Parameter: `fluxExtension.name`
 
@@ -3920,109 +3422,9 @@ Desired outbound flow idle timeout in minutes.
 - Type: int
 - Default: `30`
 
-### Parameter: `imageCleanerIntervalHours`
-
-The interval in hours Image Cleaner will run. The maximum value is three months.
-
-- Required: No
-- Type: int
-- Default: `24`
-- MinValue: 24
-
 ### Parameter: `ingressApplicationGatewayEnabled`
 
 Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `istioServiceMeshCertificateAuthority`
-
-The Istio Certificate Authority definition.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`certChainObjectName`](#parameter-istioservicemeshcertificateauthoritycertchainobjectname) | string | The Certificate chain object name in Azure Key Vault. |
-| [`certObjectName`](#parameter-istioservicemeshcertificateauthoritycertobjectname) | string | The Intermediate certificate object name in Azure Key Vault. |
-| [`keyObjectName`](#parameter-istioservicemeshcertificateauthoritykeyobjectname) | string | The Intermediate certificate private key object name in Azure Key Vault. |
-| [`keyVaultResourceId`](#parameter-istioservicemeshcertificateauthoritykeyvaultresourceid) | string | The resource ID of a key vault to reference a Certificate Authority from. |
-| [`rootCertObjectName`](#parameter-istioservicemeshcertificateauthorityrootcertobjectname) | string | Root certificate object name in Azure Key Vault. |
-
-### Parameter: `istioServiceMeshCertificateAuthority.certChainObjectName`
-
-The Certificate chain object name in Azure Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
-
-The Intermediate certificate object name in Azure Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
-
-The Intermediate certificate private key object name in Azure Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
-
-The resource ID of a key vault to reference a Certificate Authority from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
-
-Root certificate object name in Azure Key Vault.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `istioServiceMeshEnabled`
-
-Specifies whether the Istio ServiceMesh add-on is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
-
-Specifies whether the External Istio Ingress Gateway is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
-
-Specifies whether the Internal Istio Ingress Gateway is enabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `istioServiceMeshRevisions`
-
-The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.
-
-- Required: No
-- Type: array
-
-### Parameter: `kedaAddon`
-
-Enables Kubernetes Event-driven Autoscaling (KEDA).
 
 - Required: No
 - Type: bool
@@ -4043,6 +3445,13 @@ Version of Kubernetes specified when creating the managed cluster.
 - Required: No
 - Type: string
 
+### Parameter: `linuxProfile`
+
+The profile for Linux VMs in the Managed Cluster.
+
+- Required: No
+- Type: object
+
 ### Parameter: `loadBalancerSku`
 
 Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.
@@ -4050,13 +3459,6 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
 - Required: No
 - Type: string
 - Default: `'standard'`
-- Allowed:
-  ```Bicep
-  [
-    'basic'
-    'standard'
-  ]
-  ```
 
 ### Parameter: `location`
 
@@ -4124,6 +3526,13 @@ Whether or not to use AKS Automatic mode.
 | [`maintenanceWindow`](#parameter-maintenanceconfigurationsmaintenancewindow) | object | Maintenance window for the maintenance configuration. |
 | [`name`](#parameter-maintenanceconfigurationsname) | string | Name of maintenance window. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`notAllowedTime`](#parameter-maintenanceconfigurationsnotallowedtime) | array | Time slots on which upgrade is not allowed. |
+| [`timeInWeek`](#parameter-maintenanceconfigurationstimeinweek) | array | Time slots during the week when planned maintenance is allowed to proceed. |
+
 ### Parameter: `maintenanceConfigurations.maintenanceWindow`
 
 Maintenance window for the maintenance configuration.
@@ -4144,6 +3553,20 @@ Name of maintenance window.
     'aksManagedNodeOSUpgradeSchedule'
   ]
   ```
+
+### Parameter: `maintenanceConfigurations.notAllowedTime`
+
+Time slots on which upgrade is not allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `maintenanceConfigurations.timeInWeek`
+
+Time slots during the week when planned maintenance is allowed to proceed.
+
+- Required: No
+- Type: array
 
 ### Parameter: `managedIdentities`
 
@@ -4181,22 +3604,6 @@ Outbound IP Count for the Load balancer.
 - Type: int
 - Default: `0`
 
-### Parameter: `metricAnnotationsAllowList`
-
-A comma-separated list of Kubernetes cluster metrics annotations.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `metricLabelsAllowlist`
-
-A comma-separated list of kubernetes cluster metrics labels.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `monitoringWorkspaceResourceId`
 
 Resource ID of the monitoring log analytics workspace.
@@ -4210,13 +3617,6 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'azure'
-    'cilium'
-  ]
-  ```
 
 ### Parameter: `networkPlugin`
 
@@ -4224,13 +3624,6 @@ Specifies the network plugin used for building Kubernetes network.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'azure'
-    'kubenet'
-  ]
-  ```
 
 ### Parameter: `networkPluginMode`
 
@@ -4238,12 +3631,6 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'overlay'
-  ]
-  ```
 
 ### Parameter: `networkPolicy`
 
@@ -4251,28 +3638,13 @@ Specifies the network policy used for building Kubernetes network. - calico or a
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'azure'
-    'calico'
-    'cilium'
-  ]
-  ```
 
-### Parameter: `nodeProvisioningProfileMode`
+### Parameter: `nodeProvisioningProfile`
 
-Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.
+Node provisioning settings that apply to the whole cluster.
 
 - Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Auto'
-    'Manual'
-  ]
-  ```
+- Type: object
 
 ### Parameter: `nodeResourceGroup`
 
@@ -4334,15 +3706,6 @@ Specifies outbound (egress) routing method.
 - Required: No
 - Type: string
 - Default: `'loadBalancer'`
-- Allowed:
-  ```Bicep
-  [
-    'loadBalancer'
-    'managedNATGateway'
-    'userAssignedNATGateway'
-    'userDefinedRouting'
-  ]
-  ```
 
 ### Parameter: `podCidr`
 
@@ -4351,42 +3714,12 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 - Required: No
 - Type: string
 
-### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
+### Parameter: `podIdentityProfile`
 
-Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `podIdentityProfileEnable`
-
-Whether the pod identity addon is enabled.
+The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration.
 
 - Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `podIdentityProfileUserAssignedIdentities`
-
-The pod identities to use in the cluster.
-
-- Required: No
-- Type: array
-
-### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
-
-The pod identity exceptions to allow.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateDNSZone`
-
-Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.
-
-- Required: No
-- Type: string
+- Type: object
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4521,12 +3854,26 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `securityProfile`
+
+Security profile for the managed cluster.
+
+- Required: No
+- Type: object
+
 ### Parameter: `serviceCidr`
 
 A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges.
 
 - Required: No
 - Type: string
+
+### Parameter: `serviceMeshProfile`
+
+Service mesh profile for a managed cluster.
+
+- Required: No
+- Type: object
 
 ### Parameter: `skuName`
 
@@ -4535,13 +3882,6 @@ Name of a managed cluster SKU.
 - Required: No
 - Type: string
 - Default: `'Base'`
-- Allowed:
-  ```Bicep
-  [
-    'Automatic'
-    'Base'
-  ]
-  ```
 
 ### Parameter: `skuTier`
 
@@ -4550,21 +3890,6 @@ Tier of a managed cluster SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Free'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `sshPublicKey`
-
-Specifies the SSH RSA public key string for the Linux nodes.
-
-- Required: No
-- Type: string
 
 ### Parameter: `supportPlan`
 
@@ -4573,21 +3898,6 @@ The support plan for the Managed Cluster.
 - Required: No
 - Type: string
 - Default: `'KubernetesOfficial'`
-- Allowed:
-  ```Bicep
-  [
-    'AKSLongTermSupport'
-    'KubernetesOfficial'
-  ]
-  ```
-
-### Parameter: `syslogPort`
-
-The syslog host port. If not specified, the default port is 28330.
-
-- Required: No
-- Type: int
-- Default: `28330`
 
 ### Parameter: `tags`
 
@@ -4603,14 +3913,6 @@ Settings for upgrading the cluster with override options.
 - Required: No
 - Type: object
 
-### Parameter: `vpaAddon`
-
-Whether to enable VPA add-on in cluster. Default value is false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `webApplicationRoutingEnabled`
 
 Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
@@ -4622,6 +3924,13 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 ### Parameter: `windowsProfile`
 
 The Windows profile for Windows VMs in the Managed Cluster.
+
+- Required: No
+- Type: object
+
+### Parameter: `workloadAutoScalerProfile`
+
+Workload Auto-scaler profile for the managed cluster.
 
 - Required: No
 - Type: object

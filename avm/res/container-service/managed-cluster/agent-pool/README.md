@@ -62,7 +62,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`osDiskType`](#parameter-osdisktype) | string | The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os). |
 | [`osSKU`](#parameter-ossku) | string | Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows. |
 | [`osType`](#parameter-ostype) | string | The operating system type. The default is Linux. |
-| [`podIpAllocationMode`](#parameter-podipallocationmode) | string | Pod IP allocation mode. |
+| [`podIPAllocationMode`](#parameter-podipallocationmode) | string | Pod IP allocation mode. |
 | [`podSubnetResourceId`](#parameter-podsubnetresourceid) | string | Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}. |
 | [`powerState`](#parameter-powerstate) | object | Power State of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-proximityplacementgroupresourceid) | string | The ID for the Proximity Placement Group. |
@@ -180,16 +180,6 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'MIG1g'
-    'MIG2g'
-    'MIG3g'
-    'MIG4g'
-    'MIG7g'
-  ]
-  ```
 
 ### Parameter: `gpuProfile`
 
@@ -218,13 +208,6 @@ Determines the placement of emptyDir volumes, container runtime data root, and K
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'OS'
-    'Temporary'
-  ]
-  ```
 
 ### Parameter: `linuxOSConfig`
 
@@ -274,14 +257,6 @@ A cluster must have at least one "System" Agent Pool at all times. For additiona
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Gateway'
-    'System'
-    'User'
-  ]
-  ```
 
 ### Parameter: `networkProfile`
 
@@ -331,13 +306,6 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Ephemeral'
-    'Managed'
-  ]
-  ```
 
 ### Parameter: `osSKU`
 
@@ -345,19 +313,6 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureLinux'
-    'AzureLinux3'
-    'CBLMariner'
-    'Ubuntu'
-    'Ubuntu2204'
-    'Ubuntu2404'
-    'Windows2019'
-    'Windows2022'
-  ]
-  ```
 
 ### Parameter: `osType`
 
@@ -366,27 +321,13 @@ The operating system type. The default is Linux.
 - Required: No
 - Type: string
 - Default: `'Linux'`
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
 
-### Parameter: `podIpAllocationMode`
+### Parameter: `podIPAllocationMode`
 
 Pod IP allocation mode.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DynamicIndividual'
-    'StaticBlock'
-  ]
-  ```
 
 ### Parameter: `podSubnetResourceId`
 
@@ -416,13 +357,6 @@ Describes how VMs are added to or removed from Agent Pools. See [billing states]
 - Required: No
 - Type: string
 - Default: `'Delete'`
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `scaleSetEvictionPolicy`
 
@@ -431,13 +365,6 @@ The eviction policy specifies what to do with the VM when it is evicted. The def
 - Required: No
 - Type: string
 - Default: `'Delete'`
-- Allowed:
-  ```Bicep
-  [
-    'Deallocate'
-    'Delete'
-  ]
-  ```
 
 ### Parameter: `scaleSetPriority`
 
@@ -445,13 +372,6 @@ The Virtual Machine Scale Set priority.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Regular'
-    'Spot'
-  ]
-  ```
 
 ### Parameter: `securityProfile`
 
@@ -530,14 +450,6 @@ Determines the type of workload a node can run.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'KataVmIsolation'
-    'OCIContainer'
-    'WasmWasi'
-  ]
-  ```
 
 ## Outputs
 
