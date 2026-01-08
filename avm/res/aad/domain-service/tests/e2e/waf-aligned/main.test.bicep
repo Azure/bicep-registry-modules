@@ -43,7 +43,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     replicaVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-replica'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     namePrefix: namePrefix
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -77,7 +76,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
 // as of https://azure.github.io/Azure-Verified-Modules/spec/SNFR7 the idem test it is not required
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
