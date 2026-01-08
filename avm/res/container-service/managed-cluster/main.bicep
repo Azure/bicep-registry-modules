@@ -109,7 +109,7 @@ param primaryAgentPoolProfiles agentPoolType[]
 @description('Optional. Define one or more secondary/additional agent pools.')
 param agentPools agentPoolType[]?
 
-@description('Optional. Whether or not to use AKS Automatic mode.')
+@description('Optional. Maintenance configurations for the managed cluster.')
 param maintenanceConfigurations maintenanceConfigurationType[]?
 
 @description('Optional. Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed.')
