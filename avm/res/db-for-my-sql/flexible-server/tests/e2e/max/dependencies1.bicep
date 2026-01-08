@@ -25,8 +25,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-#disable-next-line use-recent-api-versions
-resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: pairedRegionScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -37,7 +36,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
@@ -45,6 +44,9 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
   dependsOn: [
     roleAssignment
   ]
+  tags: {
+    SecurityControl: 'Ignore'
+  }
 }
 
 @description('The name of the paired region.')
