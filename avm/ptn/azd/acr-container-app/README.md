@@ -25,8 +25,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/containerApps` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps)</li></ul> |
-| `Microsoft.App/containerApps/authConfigs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs)</li></ul> |
+| `Microsoft.App/containerApps` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps/authConfigs)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -58,7 +58,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
-    name: 'acamin001'
+    name: 'acracamin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -82,7 +82,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
       "value": "<containerAppsEnvironmentName>"
     },
     "name": {
-      "value": "acamin001"
+      "value": "acracamin001"
     },
     // Non-required parameters
     "location": {
@@ -104,7 +104,7 @@ using 'br/public:avm/ptn/azd/acr-container-app:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
-param name = 'acamin001'
+param name = 'acracamin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -128,7 +128,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
-    name: 'acaprb001'
+    name: 'acracaprb001'
     // Non-required parameters
     containerProbes: [
       {
@@ -169,7 +169,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
       "value": "<containerAppsEnvironmentName>"
     },
     "name": {
-      "value": "acaprb001"
+      "value": "acracaprb001"
     },
     // Non-required parameters
     "containerProbes": {
@@ -210,7 +210,7 @@ using 'br/public:avm/ptn/azd/acr-container-app:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
-param name = 'acaprb001'
+param name = 'acracaprb001'
 // Non-required parameters
 param containerProbes = [
   {
@@ -877,6 +877,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/app/container-app:0.18.1` | Remote reference |
+| `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
 
 ## Data Collection
 
