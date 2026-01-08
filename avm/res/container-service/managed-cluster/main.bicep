@@ -102,22 +102,19 @@ param skuName string = 'Base'
   'Premium'
   'Standard'
 ])
-param skuTier string = 'Standard'
+param skuTier resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.sku.tier = 'Standard'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
 param kubernetesVersion string?
 
-@description('Optional. Specifies the administrator username of Linux virtual machines.')
-param adminUsername string = 'azureuser'
-
-@description('Optional. Specifies the SSH RSA public key string for the Linux nodes.')
-param sshPublicKey string?
+@description('Optional. The profile for Linux VMs in the Managed Cluster.')
+param linuxProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.linuxProfile?
 
 @description('Optional. Enable Azure Active Directory integration.')
-param aadProfile aadProfileType?
+param aadProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.aadProfile?
 
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
-param aksServicePrincipalProfile object?
+param aksServicePrincipalProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.servicePrincipalProfile?
 
 @description('Optional. Whether to enable Kubernetes Role-Based Access Control.')
 param enableRBAC bool = true
@@ -125,24 +122,17 @@ param enableRBAC bool = true
 @description('Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.')
 param disableLocalAccounts bool = true
 
-@description('Optional. Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAMETER USED FOR A PREVIEW FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-automatic-deploy?pivots=bicep#before-you-begin) FOR CLARIFICATION.')
-@allowed([
-  'Auto'
-  'Manual'
-])
-param nodeProvisioningProfileMode string?
+@description('Optional. Node provisioning settings that apply to the whole cluster.')
+param nodeProvisioningProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.nodeProvisioningProfile?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 
 @description('Optional. The node resource group configuration profile.')
-param nodeResourceGroupProfile object?
+param nodeResourceGroupProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.nodeResourceGroupProfile?
 
-@description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
-param authorizedIPRanges string[]?
-
-@description('Optional. Whether to disable run command for the cluster or not.')
-param disableRunCommand bool = false
+@description('Optional. The access profile for managed cluster API server')
+param apiServerAccessProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.apiServerAccessProfile?
 
 @description('Optional. Allow or deny public network access for AKS.')
 @allowed([
@@ -151,15 +141,6 @@ param disableRunCommand bool = false
   'SecuredByPerimeter'
 ])
 param publicNetworkAccess string = 'Disabled'
-
-@description('Optional. Specifies whether to create the cluster as a private cluster or not.')
-param enablePrivateCluster bool = false
-
-@description('Optional. Whether to create additional public FQDN for private cluster or not.')
-param enablePrivateClusterPublicFQDN bool = false
-
-@description('Optional. Private DNS Zone configuration. Set to \'system\' and AKS will create a private DNS zone in the node resource group. Set to \'\' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.')
-param privateDNSZone string?
 
 @description('Required. Properties of the primary agent pool.')
 param primaryAgentPoolProfiles agentPoolType[]
@@ -223,128 +204,20 @@ param enableKeyvaultSecretsProvider bool = false
 #disable-next-line secure-secrets-in-params // Not a secret
 param enableSecretRotation bool = false
 
-@description('Optional. Specifies the scan interval of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScanInterval string = '10s'
+@description('Optional. Parameters to be applied to the cluster-autoscaler when enabled.')
+param autoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoScalerProfile?
 
-@description('Optional. Specifies the scale down delay after add of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterAdd string = '10m'
+@description('Optional. The auto upgrade configuration.')
+param autoUpgradeProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoUpgradeProfile?
 
-@description('Optional. Specifies the scale down delay after delete of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterDelete string = '20s'
-
-@description('Optional. Specifies scale down delay after failure of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownDelayAfterFailure string = '3m'
-
-@description('Optional. Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownUnneededTime string = '10m'
-
-@description('Optional. Specifies the scale down unready time of the auto-scaler of the AKS cluster.')
-param autoScalerProfileScaleDownUnreadyTime string = '20m'
-
-@description('Optional. Specifies the utilization threshold of the auto-scaler of the AKS cluster.')
-param autoScalerProfileUtilizationThreshold string = '0.5'
-
-@description('Optional. Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxGracefulTerminationSec int = 600
-
-@description('Optional. Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.')
-param autoScalerProfileBalanceSimilarNodeGroups bool = false
-
-@description('Optional. Specifies whether to enable daemonset eviction for empty nodes for the auto-scaler of the AKS cluster.')
-param autoScalerProfileDaemonsetEvictionForEmptyNodes bool = false
-
-@description('Optional. Specifies whether to enable daemonset eviction for occupied nodes for the auto-scaler of the AKS cluster.')
-param autoScalerProfileDaemonsetEvictionForOccupiedNodes bool = false
-
-@description('Optional. Specifies whether to ignore daemonsets utilization for the auto-scaler of the AKS cluster.')
-param autoScalerProfileIgnoreDaemonsetsUtilization bool = false
-
-@allowed([
-  'least-waste'
-  'most-pods'
-  'priority'
-  'random'
-])
-@description('Optional. Specifies the expand strategy for the auto-scaler of the AKS cluster.')
-param autoScalerProfileExpander string = 'random'
-
-@description('Optional. Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.')
-param autoScalerProfileMaxEmptyBulkDelete int = 10
-
-@description('Optional. Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.')
-param autoScalerProfileMaxNodeProvisionTime string = '15m'
-
-@description('Optional. Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.')
-param autoScalerProfileMaxTotalUnreadyPercentage int = 45
-
-@description('Optional. For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).')
-param autoScalerProfileNewPodScaleUpDelay string = '0s'
-
-@description('Optional. Specifies the OK total unready count for the auto-scaler of the AKS cluster.')
-param autoScalerProfileOkTotalUnreadyCount int = 3
-
-@description('Optional. Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithLocalStorage bool = true
-
-@description('Optional. Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.')
-param autoScalerProfileSkipNodesWithSystemPods bool = true
-
-@allowed([
-  'node-image'
-  'none'
-  'patch'
-  'rapid'
-  'stable'
-])
-@description('Optional. Auto-upgrade channel on the AKS cluster.')
-param autoUpgradeProfileUpgradeChannel string = 'stable'
-
-@allowed([
-  'NodeImage'
-  'None'
-  'SecurityPatch'
-  'Unmanaged'
-])
-@description('Optional. Auto-upgrade channel on the Node Os.')
-param autoNodeOsUpgradeProfileUpgradeChannel string = 'Unmanaged'
-
-@description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
-param podIdentityProfileAllowNetworkPluginKubenet bool = false
-
-@description('Optional. Whether the pod identity addon is enabled.')
-param podIdentityProfileEnable bool = false
-
-@description('Optional. The pod identities to use in the cluster.')
-param podIdentityProfileUserAssignedIdentities resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.podIdentityProfile.userAssignedIdentities?
-
-@description('Optional. The pod identity exceptions to allow.')
-param podIdentityProfileUserAssignedIdentityExceptions resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.podIdentityProfile.userAssignedIdentityExceptions?
+@description('Optional. The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration.')
+param podIdentityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.podIdentityProfile?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
 
-@description('Optional. Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.')
-param enableWorkloadIdentity bool = false
-
-@description('Optional. Whether to enable Azure Defender.')
-param enableAzureDefender bool = false
-
-// Note: securityGating property is not available in Microsoft.ContainerService/managedClusters@2025-09-01
-// @description('Optional. Microsoft Defender settings for security gating, validates container images eligibility for deployment based on Defender for Containers security findings. Using Admission Controller, it either audits or prevents the deployment of images that do not meet security standards.')
-// param securityGatingConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.securityProfile.defender.securityGating?
-
-@description('Optional. Whether to enable Image Cleaner.')
-param enableImageCleaner bool = false
-
-@description('Optional. Whether to enable Image Integrity. Image integrity is a feature that works with Azure Policy to verify image integrity by signature. This will not have any effect unless Azure Policy is applied to enforce image signatures. See https://aka.ms/aks/image-integrity for how to use this feature via policy.')
-param enableImageIntegrity bool = false
-
-@description('Optional. Whether to enable Node Restriction.')
-param enableNodeRestriction bool = false
-
-@description('Optional. The interval in hours Image Cleaner will run. The maximum value is three months.')
-@minValue(24)
-param imageCleanerIntervalHours int = 24
+@description('Optional. Security profile for the managed cluster.')
+param securityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.securityProfile?
 
 @description('Optional. Whether the AzureBlob CSI Driver for the storage profile is enabled.')
 param enableStorageProfileBlobCSIDriver bool = false
@@ -404,52 +277,14 @@ param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@
 @description('Optional. Identities associated with the cluster.')
 param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.identityProfile?
 
-@description('Optional. Enables Kubernetes Event-driven Autoscaling (KEDA).')
-param kedaAddon bool = false
+@description('Optional. Workload Auto-scaler profile for the managed cluster.')
+param workloadAutoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.workloadAutoScalerProfile?
 
-@description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
-param vpaAddon bool = false
+@description('Optional. Azure Monitor addon profiles for monitoring the managed cluster.')
+param azureMonitorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.azureMonitorProfile?
 
-@description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
-param enableAzureMonitorProfileMetrics bool = false
-
-// Note: appMonitoring property is not available in Microsoft.ContainerService/managedClusters@2025-09-01
-// @description('Optional. Application Monitoring Profile for Kubernetes Application Container. Collects application logs, metrics and traces through auto-instrumentation of the application using Azure Monitor OpenTelemetry based SDKs. See aka.ms/AzureMonitorApplicationMonitoring for an overview.')
-// param appMonitoring resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.azureMonitorProfile.appMonitoring?
-
-// Note: containerInsights is not available at resource level in 2025-09-01. It's now under addons/extensions
-@description('Optional. Indicates if Azure Monitor Container Insights Logs Addon is enabled.')
-param enableContainerInsights bool = false
-
-@description('Optional. Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false.')
-param disableCustomMetrics bool = false
-
-@description('Optional. Indicates whether prometheus metrics scraping is disabled or not. If not specified the default is false. No prometheus metrics will be emitted if this field is false but the container insights enabled field is false.')
-param disablePrometheusMetricsScraping bool = false
-
-@description('Optional. The syslog host port. If not specified, the default port is 28330.')
-param syslogPort int = 28330
-
-@description('Optional. A comma-separated list of kubernetes cluster metrics labels.')
-param metricLabelsAllowlist string = ''
-
-@description('Optional. A comma-separated list of Kubernetes cluster metrics annotations.')
-param metricAnnotationsAllowList string = ''
-
-@description('Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not.')
-param istioServiceMeshEnabled bool = false
-
-@description('Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values.')
-param istioServiceMeshRevisions array?
-
-@description('Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not.')
-param istioServiceMeshInternalIngressGatewayEnabled bool = false
-
-@description('Optional. Specifies whether the External Istio Ingress Gateway is enabled or not.')
-param istioServiceMeshExternalIngressGatewayEnabled bool = false
-
-@description('Optional. The Istio Certificate Authority definition.')
-param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType?
+@description('Optional. Service mesh profile for a managed cluster.')
+param serviceMeshProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.serviceMeshProfile?
 
 @description('Optional. AI toolchain operator settings that apply to the whole cluster.')
 param aiToolchainOperatorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.aiToolchainOperatorProfile?
@@ -642,7 +477,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
       osDiskType: profile.?osDiskType
       osType: profile.?osType ?? 'Linux'
       osSKU: profile.?osSKU
-      podIPAllocationMode: profile.?podIpAllocationMode
+      podIPAllocationMode: profile.?podIPAllocationMode
       podSubnetID: profile.?podSubnetResourceId
       powerState: profile.?powerState
       proximityPlacementGroupID: profile.?proximityPlacementGroupResourceId
@@ -668,22 +503,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
     kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
     fqdnSubdomain: fqdnSubdomain
-    linuxProfile: !empty(sshPublicKey)
-      ? {
-          adminUsername: adminUsername
-          ssh: {
-            publicKeys: [
-              {
-                keyData: sshPublicKey ?? ''
-              }
-            ]
-          }
-        }
-      : null
+    linuxProfile: linuxProfile
     servicePrincipalProfile: aksServicePrincipalProfile
     metricsProfile: {
       costAnalysis: {
-        enabled: skuTier == 'free' ? false : costAnalysisEnabled
+        enabled: skuTier == 'Free' ? false : costAnalysisEnabled
       }
     }
     ingressProfile: {
@@ -764,19 +588,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
     disableLocalAccounts: disableLocalAccounts
     nodeResourceGroup: nodeResourceGroup
     nodeResourceGroupProfile: nodeResourceGroupProfile
-    nodeProvisioningProfile: !empty(nodeProvisioningProfileMode)
-      ? {
-          mode: nodeProvisioningProfileMode
-        }
-      : null
-    workloadAutoScalerProfile: {
-      keda: {
-        enabled: kedaAddon
-      }
-      verticalPodAutoscaler: {
-        enabled: vpaAddon
-      }
-    }
+    nodeProvisioningProfile: nodeProvisioningProfile
+    workloadAutoScalerProfile: workloadAutoScalerProfile
     networkProfile: {
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
@@ -816,98 +629,19 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
         : null
     }
     publicNetworkAccess: publicNetworkAccess
-    aadProfile: !empty(aadProfile)
-      ? {
-          clientAppID: aadProfile.?aadProfileClientAppID
-          serverAppID: aadProfile.?aadProfileServerAppID
-          serverAppSecret: aadProfile.?aadProfileServerAppSecret
-          managed: aadProfile.?aadProfileManaged
-          enableAzureRBAC: aadProfile.?aadProfileEnableAzureRBAC
-          adminGroupObjectIDs: aadProfile.?aadProfileAdminGroupObjectIDs
-          tenantID: aadProfile.?aadProfileTenantId
-        }
-      : null
-    autoScalerProfile: {
-      'balance-similar-node-groups': toLower(string(autoScalerProfileBalanceSimilarNodeGroups))
-      'daemonset-eviction-for-empty-nodes': autoScalerProfileDaemonsetEvictionForEmptyNodes
-      'daemonset-eviction-for-occupied-nodes': autoScalerProfileDaemonsetEvictionForOccupiedNodes
-      expander: autoScalerProfileExpander
-      'ignore-daemonsets-utilization': autoScalerProfileIgnoreDaemonsetsUtilization
-      'max-empty-bulk-delete': '${autoScalerProfileMaxEmptyBulkDelete}'
-      'max-graceful-termination-sec': '${autoScalerProfileMaxGracefulTerminationSec}'
-      'max-node-provision-time': autoScalerProfileMaxNodeProvisionTime
-      'max-total-unready-percentage': '${autoScalerProfileMaxTotalUnreadyPercentage}'
-      'new-pod-scale-up-delay': autoScalerProfileNewPodScaleUpDelay
-      'ok-total-unready-count': '${autoScalerProfileOkTotalUnreadyCount}'
-      'scale-down-delay-after-add': autoScalerProfileScaleDownDelayAfterAdd
-      'scale-down-delay-after-delete': autoScalerProfileScaleDownDelayAfterDelete
-      'scale-down-delay-after-failure': autoScalerProfileScaleDownDelayAfterFailure
-      'scale-down-unneeded-time': autoScalerProfileScaleDownUnneededTime
-      'scale-down-unready-time': autoScalerProfileScaleDownUnreadyTime
-      'scale-down-utilization-threshold': autoScalerProfileUtilizationThreshold
-      'scan-interval': autoScalerProfileScanInterval
-      'skip-nodes-with-local-storage': toLower(string(autoScalerProfileSkipNodesWithLocalStorage))
-      'skip-nodes-with-system-pods': toLower(string(autoScalerProfileSkipNodesWithSystemPods))
-    }
-    autoUpgradeProfile: {
-      upgradeChannel: autoUpgradeProfileUpgradeChannel
-      nodeOSUpgradeChannel: autoNodeOsUpgradeProfileUpgradeChannel
-    }
-    apiServerAccessProfile: {
-      authorizedIPRanges: authorizedIPRanges
-      disableRunCommand: disableRunCommand
-      enablePrivateCluster: enablePrivateCluster
-      enablePrivateClusterPublicFQDN: enablePrivateClusterPublicFQDN
-      privateDNSZone: privateDNSZone
-    }
-    azureMonitorProfile: {
-      // Note: appMonitoring and containerInsights are not available in 2025-09-01 API
-      metrics: enableAzureMonitorProfileMetrics
-        ? {
-            enabled: enableAzureMonitorProfileMetrics
-            kubeStateMetrics: {
-              metricLabelsAllowlist: metricLabelsAllowlist
-              metricAnnotationsAllowList: metricAnnotationsAllowList
-            }
-          }
-        : null
-    }
-    podIdentityProfile: {
-      allowNetworkPluginKubenet: podIdentityProfileAllowNetworkPluginKubenet
-      enabled: podIdentityProfileEnable
-      userAssignedIdentities: podIdentityProfileUserAssignedIdentities
-      userAssignedIdentityExceptions: podIdentityProfileUserAssignedIdentityExceptions
-    }
-    securityProfile: {
-      // TODO: azureKeyVaultKms:
-      // TODO: customCATrustCertificates:
-      defender: enableAzureDefender
-        ? {
-            // Note: securityGating is not available in 2025-09-01 API
-            securityMonitoring: {
-              enabled: enableAzureDefender
-            }
-            logAnalyticsWorkspaceResourceId: monitoringWorkspaceResourceId
-          }
-        : null
-      imageCleaner: enableImageCleaner
-        ? {
-            enabled: enableImageCleaner
-            intervalHours: imageCleanerIntervalHours
-          }
-        : null
-      workloadIdentity: enableWorkloadIdentity
-        ? {
-            enabled: enableWorkloadIdentity
-          }
-        : null
-    }
+    aadProfile: aadProfile
+    autoScalerProfile: autoScalerProfile
+    autoUpgradeProfile: autoUpgradeProfile
+    apiServerAccessProfile: apiServerAccessProfile
+    azureMonitorProfile: azureMonitorProfile
+    podIdentityProfile: podIdentityProfile
+    securityProfile: securityProfile
     storageProfile: {
       blobCSIDriver: {
         enabled: enableStorageProfileBlobCSIDriver
       }
       diskCSIDriver: {
-        enabled: costAnalysisEnabled == true && skuTier != 'free' ? true : enableStorageProfileDiskCSIDriver
+        enabled: costAnalysisEnabled == true && skuTier != 'Free' ? true : enableStorageProfileDiskCSIDriver
       }
       fileCSIDriver: {
         enabled: enableStorageProfileFileCSIDriver
@@ -919,37 +653,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
     supportPlan: supportPlan
     upgradeSettings: upgradeSettings
     windowsProfile: windowsProfile
-    serviceMeshProfile: istioServiceMeshEnabled
-      ? {
-          istio: {
-            revisions: !empty(istioServiceMeshRevisions) ? istioServiceMeshRevisions : null
-            components: {
-              ingressGateways: [
-                {
-                  enabled: istioServiceMeshInternalIngressGatewayEnabled
-                  mode: 'Internal'
-                }
-                {
-                  enabled: istioServiceMeshExternalIngressGatewayEnabled
-                  mode: 'External'
-                }
-              ]
-            }
-            certificateAuthority: !empty(istioServiceMeshCertificateAuthority)
-              ? {
-                  plugin: {
-                    certChainObjectName: istioServiceMeshCertificateAuthority.?certChainObjectName
-                    certObjectName: istioServiceMeshCertificateAuthority.?certObjectName
-                    keyObjectName: istioServiceMeshCertificateAuthority.?keyObjectName
-                    keyVaultId: istioServiceMeshCertificateAuthority.?keyVaultResourceId
-                    rootCertObjectName: istioServiceMeshCertificateAuthority.?rootCertObjectName
-                  }
-                }
-              : null
-          }
-          mode: 'Istio'
-        }
-      : null
+    serviceMeshProfile: serviceMeshProfile
   }
 }
 
@@ -957,9 +661,11 @@ module managedCluster_maintenanceConfigurations 'maintenance-configurations/main
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {
-      name: maintenanceConfiguration!.name
-      maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
       managedClusterName: managedCluster.name
+      name: maintenanceConfiguration.name
+      maintenanceWindow: maintenanceConfiguration.maintenanceWindow
+      notAllowedTime: maintenanceConfiguration.?notAllowedTime
+      timeInWeek: maintenanceConfiguration.?timeInWeek
     }
   }
 ]
@@ -1001,7 +707,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       osDiskType: agentPool.?osDiskType
       osSKU: agentPool.?osSKU
       osType: agentPool.?osType
-      podIpAllocationMode: agentPool.?podIpAllocationMode
+      podIPAllocationMode: agentPool.?podIPAllocationMode
       podSubnetResourceId: agentPool.?podSubnetResourceId
       powerState: agentPool.?powerState
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
@@ -1030,7 +736,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     configurationSettings: fluxExtension.?configurationSettings
     enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
-    fluxConfigurations: fluxExtension.?configurations
+    fluxConfigurations: fluxExtension.?fluxConfigurations
     location: location
     name: fluxExtension.?name ?? 'flux'
     releaseNamespace: fluxExtension.?releaseNamespace ?? 'flux-system'
@@ -1148,7 +854,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = managedCluster.name
 
 @description('The control plane FQDN of the managed cluster.')
-output controlPlaneFQDN string = enablePrivateCluster
+output controlPlaneFQDN string = (apiServerAccessProfile.?enablePrivateCluster ?? false)
   ? managedCluster.properties.privateFQDN
   : managedCluster.properties.fqdn
 
@@ -1183,7 +889,7 @@ output location string = managedCluster.location
 output oidcIssuerUrl string? = managedCluster.properties.?oidcIssuerProfile.?issuerURL
 
 @description('The addonProfiles of the Kubernetes cluster.')
-output addonProfiles object? = managedCluster.properties.?addonProfiles
+output addonProfiles resourceOutput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.addonProfiles? = managedCluster.properties.?addonProfiles
 
 @description('The Object ID of Web Application Routing.')
 output webAppRoutingIdentityObjectId string? = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId
@@ -1229,7 +935,7 @@ type agentPoolType = {
   gatewayProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gatewayProfile?
 
   @description('Optional. The GPU instance profile of the agent pool.')
-  gpuInstanceProfile: ('MIG1g' | 'MIG2g' | 'MIG3g' | 'MIG4g' | 'MIG7g')?
+  gpuInstanceProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuInstanceProfile?
 
   @description('Optional. GPU settings.')
   gpuProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuProfile?
@@ -1241,7 +947,7 @@ type agentPoolType = {
   kubeletConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletConfig?
 
   @description('Optional. The kubelet disk type of the agent pool.')
-  kubeletDiskType: ('OS' | 'Temporary')?
+  kubeletDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletDiskType?
 
   @description('Optional. The Linux OS configuration of the agent pool.')
   linuxOSConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.linuxOSConfig?
@@ -1265,13 +971,13 @@ type agentPoolType = {
   minPods: int?
 
   @description('Optional. The mode of the agent pool.')
-  mode: ('System' | 'User' | 'Gateway')?
+  mode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.mode?
 
   @description('Optional. Network profile to be used for agent pool nodes.')
   networkProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.networkProfile?
 
   @description('Optional. The node labels of the agent pool.')
-  nodeLabels: object?
+  nodeLabels: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.nodeLabels?
 
   @description('Optional. The node public IP prefix ID of the agent pool.')
   nodePublicIpPrefixResourceId: string?
@@ -1286,24 +992,16 @@ type agentPoolType = {
   osDiskSizeGB: int?
 
   @description('Optional. The OS disk type of the agent pool.')
-  osDiskType: string?
+  osDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osDiskType?
 
   @description('Optional. The OS SKU of the agent pool.')
-  osSKU: (
-    | 'AzureLinux'
-    | 'AzureLinux3'
-    | 'CBLMariner'
-    | 'Ubuntu'
-    | 'Ubuntu2204'
-    | 'Ubuntu2404'
-    | 'Windows2019'
-    | 'Windows2022')?
+  osSKU: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osSKU?
 
   @description('Optional. The OS type of the agent pool.')
-  osType: ('Linux' | 'Windows')?
+  osType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osType?
 
   @description('Optional. Pod IP allocation mode.')
-  podIpAllocationMode: ('DynamicIndividual' | 'DynamicBlock' | 'StaticBlock')?
+  podIPAllocationMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.podIPAllocationMode?
 
   @description('Optional. The pod subnet ID of the agent pool.')
   podSubnetResourceId: string?
@@ -1315,13 +1013,13 @@ type agentPoolType = {
   proximityPlacementGroupResourceId: string?
 
   @description('Optional. The scale down mode of the agent pool.')
-  scaleDownMode: ('Delete' | 'Deallocate')?
+  scaleDownMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleDownMode?
 
   @description('Optional. The scale set eviction policy of the agent pool.')
-  scaleSetEvictionPolicy: ('Delete' | 'Deallocate')?
+  scaleSetEvictionPolicy: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetEvictionPolicy?
 
   @description('Optional. The scale set priority of the agent pool.')
-  scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+  scaleSetPriority: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetPriority?
 
   @description('Optional. The security settings of an agent pool.')
   securityProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile?
@@ -1330,7 +1028,7 @@ type agentPoolType = {
   spotMaxPrice: int?
 
   @description('Optional. The tags of the agent pool.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.tags?
 
   @description('Optional. The type of the agent pool.')
   type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
@@ -1348,21 +1046,13 @@ type agentPoolType = {
   vnetSubnetResourceId: string?
 
   @description('Optional. The workload runtime of the agent pool.')
-  workloadRuntime: ('OCIContainer' | 'WasmWasi' | 'KataVmIsolation')?
+  workloadRuntime: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.workloadRuntime?
 
   @description('Optional. The Windows profile of the agent pool.')
   windowsProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.windowsProfile?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?
-}
-
-@export()
-@description('The type for flux configuration protected settings.')
-type fluxConfigurationProtectedSettingsType = {
-  @description('Optional. The SSH private key to use for Git authentication.')
-  @secure()
-  sshPrivateKey: string?
 }
 
 @export()
@@ -1381,16 +1071,16 @@ type extensionType = {
   releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
-  configurationProtectedSettings: fluxConfigurationProtectedSettingsType?
+  configurationProtectedSettings: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties.configurationProtectedSettings?
 
   @description('Optional. The configuration settings of the extension.')
-  configurationSettings: object?
+  configurationSettings: resourceInput<'Microsoft.KubernetesConfiguration/extensions@2024-11-01'>.properties.configurationSettings?
 
   @description('Optional. The version of the extension.')
   version: string?
 
   @description('Optional. The flux configurations of the extension.')
-  configurations: array?
+  fluxConfigurations: resourceInput<'Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01'>.properties[]?
 }
 
 @export()
@@ -1400,49 +1090,11 @@ type maintenanceConfigurationType = {
   name: ('aksManagedAutoUpgradeSchedule' | 'aksManagedNodeOSUpgradeSchedule')
 
   @description('Required. Maintenance window for the maintenance configuration.')
-  maintenanceWindow: object
-}
+  maintenanceWindow: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.maintenanceWindow
 
-@export()
-@description('The type for an The Istio Certificate Authority definition.')
-type istioServiceMeshCertificateAuthorityType = {
-  @description('Required. The resource ID of a key vault to reference a Certificate Authority from.')
-  keyVaultResourceId: string
+  @description('Optional. Time slots on which upgrade is not allowed.')
+  notAllowedTime: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.notAllowedTime?
 
-  @description('Required. The Certificate chain object name in Azure Key Vault.')
-  certChainObjectName: string
-
-  @description('Required. The Intermediate certificate object name in Azure Key Vault.')
-  certObjectName: string
-
-  @description('Required. The Intermediate certificate private key object name in Azure Key Vault.')
-  keyObjectName: string
-
-  @description('Required. Root certificate object name in Azure Key Vault.')
-  rootCertObjectName: string
-}
-
-@export()
-@description('The type for an AAD profile.')
-type aadProfileType = {
-  @description('Optional. The client AAD application ID.')
-  aadProfileClientAppID: string?
-
-  @description('Optional. The server AAD application ID.')
-  aadProfileServerAppID: string?
-
-  @description('Optional. The server AAD application secret.')
-  aadProfileServerAppSecret: string?
-
-  @description('Required. Specifies whether to enable managed AAD integration.')
-  aadProfileManaged: bool
-
-  @description('Required. Specifies whether to enable Azure RBAC for Kubernetes authorization.')
-  aadProfileEnableAzureRBAC: bool
-
-  @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-  aadProfileAdminGroupObjectIDs: string[]?
-
-  @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
-  aadProfileTenantId: string?
+  @description('Optional. Time slots during the week when planned maintenance is allowed to proceed.')
+  timeInWeek: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.timeInWeek?
 }

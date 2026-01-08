@@ -40,14 +40,7 @@ param enableUltraSSD bool = false
 param gatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gatewayProfile?
 
 @description('Optional. GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU.')
-@allowed([
-  'MIG1g'
-  'MIG2g'
-  'MIG3g'
-  'MIG4g'
-  'MIG7g'
-])
-param gpuInstanceProfile string?
+param gpuInstanceProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuInstanceProfile?
 
 @description('Optional. GPU settings.')
 param gpuProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuProfile?
@@ -59,11 +52,7 @@ param hostGroupId string?
 param kubeletConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletConfig?
 
 @description('Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage.')
-@allowed([
-  'OS'
-  'Temporary'
-])
-param kubeletDiskType string?
+param kubeletDiskType resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletDiskType?
 
 @description('Optional. Linux OS configuration.')
 param linuxOSConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.linuxOSConfig?
@@ -84,24 +73,19 @@ param maxPods int?
 param minCount int?
 
 @description('Optional. A cluster must have at least one "System" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools.')
-@allowed([
-  'System'
-  'User'
-  'Gateway'
-])
-param mode string?
+param mode resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.mode?
 
 @description('Optional. Network profile to be used for agent pool nodes.')
 param networkProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.networkProfile?
 
 @description('Optional. The node labels to be persisted across all nodes in agent pool.')
-param nodeLabels object?
+param nodeLabels resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.nodeLabels?
 
 @description('Optional. ResourceId of the node PublicIPPrefix.')
 param nodePublicIpPrefixResourceId string?
 
 @description('Optional. The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule.')
-param nodeTaints array?
+param nodeTaints string[]?
 
 @description('Optional. As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool).')
 param orchestratorVersion string?
@@ -110,38 +94,16 @@ param orchestratorVersion string?
 param osDiskSizeGB int?
 
 @description('Optional. The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os).')
-@allowed([
-  'Ephemeral'
-  'Managed'
-])
-param osDiskType string?
+param osDiskType resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osDiskType?
 
 @description('Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows.')
-@allowed([
-  'AzureLinux'
-  'AzureLinux3'
-  'CBLMariner'
-  'Ubuntu'
-  'Ubuntu2204'
-  'Ubuntu2404'
-  'Windows2019'
-  'Windows2022'
-])
-param osSKU string?
+param osSKU resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osSKU?
 
 @description('Optional. The operating system type. The default is Linux.')
-@allowed([
-  'Linux'
-  'Windows'
-])
-param osType string = 'Linux'
+param osType resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osType = 'Linux'
 
 @description('Optional. Pod IP allocation mode.')
-@allowed([
-  'DynamicIndividual'
-  'StaticBlock'
-])
-param podIpAllocationMode string?
+param podIPAllocationMode resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.podIPAllocationMode?
 
 @description('Optional. Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
 param podSubnetResourceId string?
@@ -153,25 +115,13 @@ param proximityPlacementGroupResourceId string?
 param powerState resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.powerState?
 
 @description('Optional. Describes how VMs are added to or removed from Agent Pools. See [billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing).')
-@allowed([
-  'Deallocate'
-  'Delete'
-])
-param scaleDownMode string = 'Delete'
+param scaleDownMode resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleDownMode = 'Delete'
 
 @description('Optional. The eviction policy specifies what to do with the VM when it is evicted. The default is Delete. For more information about eviction see spot VMs.')
-@allowed([
-  'Deallocate'
-  'Delete'
-])
-param scaleSetEvictionPolicy string = 'Delete'
+param scaleSetEvictionPolicy resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetEvictionPolicy = 'Delete'
 
 @description('Optional. The Virtual Machine Scale Set priority.')
-@allowed([
-  'Regular'
-  'Spot'
-])
-param scaleSetPriority string?
+param scaleSetPriority resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetPriority?
 
 @description('Optional. The security settings of an agent pool.')
 param securityProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile?
@@ -180,7 +130,7 @@ param securityProfile resourceInput<'Microsoft.ContainerService/managedClusters/
 param spotMaxPrice int?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.tags?
 
 @description('Optional. The type of Agent Pool.')
 param type string?
@@ -195,12 +145,7 @@ param vmSize string = 'Standard_D2s_v3'
 param vnetSubnetResourceId string?
 
 @description('Optional. Determines the type of workload a node can run.')
-@allowed([
-  'OCIContainer'
-  'WasmWasi'
-  'KataVmIsolation'
-])
-param workloadRuntime string?
+param workloadRuntime resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.workloadRuntime?
 
 @description('Optional. Windows OS configuration.')
 param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.windowsProfile?
@@ -251,7 +196,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-0
     osDiskType: osDiskType
     osSKU: osSKU
     osType: osType
-    podIPAllocationMode: podIpAllocationMode
+    podIPAllocationMode: podIPAllocationMode
     podSubnetID: podSubnetResourceId
     powerState: powerState
     proximityPlacementGroupID: proximityPlacementGroupResourceId

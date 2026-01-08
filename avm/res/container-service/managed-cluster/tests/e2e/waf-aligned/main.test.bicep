@@ -69,7 +69,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      enablePrivateCluster: true
+      apiServerAccessProfile: {
+        enablePrivateCluster: true
+        privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
+      }
       primaryAgentPoolProfiles: [
         {
           availabilityZones: [
@@ -137,8 +140,10 @@ module testDeployment '../../../main.bicep' = [
           vmSize: 'Standard_DS4_v2'
         }
       ]
-      autoUpgradeProfileUpgradeChannel: 'stable'
-      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      autoUpgradeProfile: {
+        upgradeChannel: 'stable'
+        nodeOSUpgradeChannel: 'Unmanaged'
+      }
       maintenanceConfigurations: [
         {
           name: 'aksManagedAutoUpgradeSchedule'
@@ -179,7 +184,14 @@ module testDeployment '../../../main.bicep' = [
       omsAgentEnabled: true
       monitoringWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       disableLocalAccounts: true
-      enableAzureDefender: true
+      securityProfile: {
+        defender: {
+          securityMonitoring: {
+            enabled: true
+          }
+          logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -208,7 +220,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
@@ -220,8 +231,8 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
     }
   }
