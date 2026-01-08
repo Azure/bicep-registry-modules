@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2960992235052760601"
+      "version": "0.39.26.7824",
+      "templateHash": "11117582948611480157"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -357,7 +357,7 @@
         "description": "Required. The rule criteria that defines the conditions of the scheduled query rule."
       }
     },
-    "suppressForMinutes": {
+    "muteActionsDuration": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -436,7 +436,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[parameters('kind')]",
-      "properties": "[shallowMerge(createArray(createObject('actions', createObject('actionGroups', tryGet(parameters('actions'), 'actionGroupResourceIds'), 'actionProperties', coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject()), 'customProperties', coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())), 'criteria', parameters('criterias'), 'description', parameters('alertDescription'), 'displayName', coalesce(parameters('alertDisplayName'), parameters('name')), 'enabled', parameters('enabled'), 'scopes', parameters('scopes')), if(equals(parameters('kind'), 'LogAlert'), shallowMerge(createArray(createObject('evaluationFrequency', parameters('evaluationFrequency'), 'overrideQueryTimeRange', parameters('queryTimeRange'), 'severity', parameters('severity'), 'skipQueryValidation', parameters('skipQueryValidation'), 'targetResourceTypes', parameters('targetResourceTypes'), 'windowSize', parameters('windowSize'), 'resolveConfiguration', parameters('ruleResolveConfiguration')), if(empty(parameters('ruleResolveConfiguration')), createObject('autoMitigate', parameters('autoMitigate'), 'muteActionsDuration', parameters('suppressForMinutes')), createObject()))), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('actions', createObject('actionGroups', tryGet(parameters('actions'), 'actionGroupResourceIds'), 'actionProperties', coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject()), 'customProperties', coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())), 'criteria', parameters('criterias'), 'description', parameters('alertDescription'), 'displayName', coalesce(parameters('alertDisplayName'), parameters('name')), 'enabled', parameters('enabled'), 'scopes', parameters('scopes')), if(equals(parameters('kind'), 'LogAlert'), shallowMerge(createArray(createObject('evaluationFrequency', parameters('evaluationFrequency'), 'overrideQueryTimeRange', parameters('queryTimeRange'), 'severity', parameters('severity'), 'skipQueryValidation', parameters('skipQueryValidation'), 'targetResourceTypes', parameters('targetResourceTypes'), 'windowSize', parameters('windowSize'), 'resolveConfiguration', parameters('ruleResolveConfiguration')), if(empty(parameters('ruleResolveConfiguration')), createObject('autoMitigate', parameters('autoMitigate'), 'muteActionsDuration', parameters('muteActionsDuration')), createObject()))), createObject())))]"
     },
     "queryRule_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
