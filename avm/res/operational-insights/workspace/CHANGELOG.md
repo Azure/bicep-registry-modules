@@ -6,9 +6,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Changed `dailyQuotaGb` parameter type from `int` to `string` to support fractional daily ingestion quotas (e.g., `'0.5'` for 0.5 GB, `'2'` for 2 GB). The default remains `'-1'` (no limit).
-- Updated parameter description to clarify fractional support and examples.
-- Internally converts the parameter with `json(dailyQuotaGb)` when setting `workspaceCapping.dailyQuotaGb` to ensure the resource receives a numeric value.
 - Update to the newest API versions.
 
 ### Breaking Changes
