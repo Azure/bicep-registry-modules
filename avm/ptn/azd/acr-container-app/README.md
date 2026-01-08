@@ -876,10 +876,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-<<<<<<< HEAD
-| `br/public:avm/res/app/container-app:0.18.1` | Remote reference |
-=======
->>>>>>> 3da17a36d4f56da42ccebf3de3f27cdddbd41fca
 | `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
 
 ## Data Collection
