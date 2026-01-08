@@ -198,7 +198,7 @@ module testDeployment '../../../main.bicep' = [
           ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          //storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
