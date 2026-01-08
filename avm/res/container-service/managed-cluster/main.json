@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "8843282892749011916"
+      "templateHash": "3509872969755661030"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1113,7 +1113,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/apiServerAccessProfile"
         },
-        "description": "Optional. The access profile for managed cluster API server"
+        "description": "Optional. The access profile for managed cluster API server."
       },
       "nullable": true
     },
@@ -1284,7 +1284,9 @@
         },
         "description": "Optional. The auto upgrade configuration."
       },
-      "nullable": true
+      "defaultValue": {
+        "upgradeChannel": "stable"
+      }
     },
     "podIdentityProfile": {
       "type": "object",

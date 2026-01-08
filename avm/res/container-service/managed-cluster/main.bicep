@@ -92,7 +92,7 @@ param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 @description('Optional. The node resource group configuration profile.')
 param nodeResourceGroupProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.nodeResourceGroupProfile?
 
-@description('Optional. The access profile for managed cluster API server')
+@description('Optional. The access profile for managed cluster API server.')
 param apiServerAccessProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.apiServerAccessProfile?
 
 @description('Optional. Allow or deny public network access for AKS.')
@@ -163,7 +163,9 @@ param enableSecretRotation bool = false
 param autoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoScalerProfile?
 
 @description('Optional. The auto upgrade configuration.')
-param autoUpgradeProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoUpgradeProfile?
+param autoUpgradeProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoUpgradeProfile = {
+  upgradeChannel: 'stable'
+}
 
 @description('Optional. The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration.')
 param podIdentityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.podIdentityProfile?

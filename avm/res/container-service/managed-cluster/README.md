@@ -1985,7 +1985,7 @@ param tags = {
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`aiToolchainOperatorProfile`](#parameter-aitoolchainoperatorprofile) | object | AI toolchain operator settings that apply to the whole cluster. |
 | [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
-| [`apiServerAccessProfile`](#parameter-apiserveraccessprofile) | object | The access profile for managed cluster API server |
+| [`apiServerAccessProfile`](#parameter-apiserveraccessprofile) | object | The access profile for managed cluster API server. |
 | [`autoScalerProfile`](#parameter-autoscalerprofile) | object | Parameters to be applied to the cluster-autoscaler when enabled. |
 | [`autoUpgradeProfile`](#parameter-autoupgradeprofile) | object | The auto upgrade configuration. |
 | [`azureMonitorProfile`](#parameter-azuremonitorprofile) | object | Azure Monitor addon profiles for monitoring the managed cluster. |
@@ -2974,7 +2974,7 @@ The desired number of allocated SNAT ports per VM. Default is 0, which results i
 
 ### Parameter: `apiServerAccessProfile`
 
-The access profile for managed cluster API server
+The access profile for managed cluster API server.
 
 - Required: No
 - Type: object
@@ -2992,6 +2992,12 @@ The auto upgrade configuration.
 
 - Required: No
 - Type: object
+- Default:
+  ```Bicep
+  {
+      upgradeChannel: 'stable'
+  }
+  ```
 
 ### Parameter: `azureMonitorProfile`
 
