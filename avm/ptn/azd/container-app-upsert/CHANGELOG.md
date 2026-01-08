@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/azd/container-app-upsert/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Add new `allowedOrigins` param to configure allowed origins
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

@@ -1,33 +1,54 @@
 metadata name = 'API Management Service Subscriptions'
 metadata description = 'This module deploys an API Management Service Subscription.'
 
-@description('Optional. Determines whether tracing can be enabled.')
-param allowTracing bool = true
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
+param apiManagementServiceName string
 
-@description('Required. API Management Service Subscriptions name. Must be 1 to 100 characters long.')
+@description('Required. Subscription name.')
+param name string
+
+@description('Required. API Management Service Subscriptions name.')
+@minLength(1)
 @maxLength(100)
 param displayName string
 
-@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
-param apiManagementServiceName string
+@description('Optional. Determines whether tracing can be enabled.')
+param allowTracing bool = true
 
 @description('Optional. User (user ID path) for whom subscription is being created in form /users/{userId}.')
 param ownerId string?
 
+@minLength(1)
+@maxLength(256)
+@secure()
 @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
 param primaryKey string?
 
-@description('Optional. Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
+@description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
 param scope string = '/apis'
 
+@minLength(1)
+@maxLength(256)
+@secure()
 @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
 param secondaryKey string?
 
-@description('Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are "*" active "?" the subscription is active, "*" suspended "?" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled.')
+@allowed([
+  'active'
+  'cancelled'
+  'expired'
+  'rejected'
+  'submitted'
+  'suspended'
+])
+@description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:
+* active - the subscription is active
+* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product
+* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected
+* rejected - the subscription request has been denied by an administrator
+* cancelled - the subscription has been cancelled by the developer or administrator
+* expired - the subscription reached its expiration date and was deactivated.''')
 param state string?
-
-@description('Required. Subscription name.')
-param name string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -59,13 +80,13 @@ resource subscription 'Microsoft.ApiManagement/service/subscriptions@2024-05-01'
   name: name
   parent: service
   properties: {
-    scope: scope
     displayName: displayName
+    allowTracing: allowTracing
     ownerId: ownerId
     primaryKey: primaryKey
+    scope: scope
     secondaryKey: secondaryKey
     state: state
-    allowTracing: allowTracing
   }
 }
 
