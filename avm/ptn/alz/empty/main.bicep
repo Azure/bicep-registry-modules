@@ -383,7 +383,7 @@ module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   }
 ]
 
-module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.3' = [
+module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: take(
       '${deploymentNames.mgRoleAssignments}-${uniqueString(managementGroupName, roleAssignment.principalId, roleAssignment.roleDefinitionId)}',

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "14919930200951061092"
+      "version": "0.39.26.7824",
+      "templateHash": "15302696710472046095"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -2232,8 +2232,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1394089926798493893"
+              "version": "0.39.26.7824",
+              "templateHash": "356315690886888607"
             }
           },
           "definitions": {
@@ -2429,6 +2429,22 @@
           "networkInterfaceResourceIds": "[reference(format('cognitiveService_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "The primary access key."
+      },
+      "value": "[if(not(parameters('disableLocalAuth')), listKeys('cognitiveService', '2025-06-01').key1, null())]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "The secondary access key."
+      },
+      "value": "[if(not(parameters('disableLocalAuth')), listKeys('cognitiveService', '2025-06-01').key2, null())]"
     }
   }
 }

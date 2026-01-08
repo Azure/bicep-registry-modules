@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15279070503934328796"
+      "templateHash": "15871028473807324655"
     },
     "name": "Bastion Hosts",
     "description": "This module deploys a Bastion Host."
@@ -200,7 +200,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
         }
       }
     },
@@ -462,7 +462,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
         }
       }
     },
@@ -484,7 +484,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
         }
       }
     },
@@ -806,7 +806,7 @@
     },
     "azureBastion": {
       "type": "Microsoft.Network/bastionHosts",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[coalesce(parameters('tags'), createObject())]",
@@ -957,8 +957,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "14921988046704902194"
+              "version": "0.39.26.7824",
+              "templateHash": "16564959277054027786"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
@@ -1175,7 +1175,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1200,12 +1200,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1280,7 +1287,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1393,6 +1400,17 @@
                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
               }
             },
+            "deleteOption": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Delete",
+                "Detach"
+              ],
+              "metadata": {
+                "description": "Optional. The delete option for the public IP address."
+              }
+            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -1426,10 +1444,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "diagnosticSettings": {
               "type": "array",
@@ -1468,7 +1489,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1486,7 +1507,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1502,7 +1523,8 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": "[parameters('ipTags')]"
+                "ipTags": "[parameters('ipTags')]",
+                "deleteOption": "[parameters('deleteOption')]"
               }
             },
             "publicIpAddress_lock": {
@@ -1513,7 +1535,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "publicIpAddress"
@@ -1617,7 +1639,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -1651,7 +1673,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('azureBastion', '2024-07-01', 'full').location]"
+      "value": "[reference('azureBastion', '2025-01-01', 'full').location]"
     },
     "ipConfAzureBastionSubnet": {
       "type": "object",
