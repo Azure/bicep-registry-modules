@@ -31,10 +31,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   }
   properties: {
     allowBlobPublicAccess: false
-    allowSharedKeyAccess: true
-  }
-  tags: {
-    SecurityControl: 'Ignore'
   }
 }
 
