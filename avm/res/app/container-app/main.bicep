@@ -63,7 +63,7 @@ param ingressAllowInsecure bool = true
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
 
-@description('Optional. Whether an http app listens on http or https')
+@description('Optional. Whether an http app listens on http or https.')
 param targetPortHttpScheme resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.ingress.targetPortHttpScheme?
 
 @description('Optional. The scaling settings of the service.')

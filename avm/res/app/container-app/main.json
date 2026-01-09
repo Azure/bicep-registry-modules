@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "4490935287165334218"
+      "templateHash": "11057599016523951568"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -908,7 +908,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/targetPortHttpScheme"
         },
-        "description": "Optional. Whether an http app listens on http or https"
+        "description": "Optional. Whether an http app listens on http or https."
       },
       "nullable": true
     },
