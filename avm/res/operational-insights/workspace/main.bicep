@@ -57,9 +57,8 @@ param onboardWorkspaceToSentinel bool = false
 @maxValue(730)
 param dataRetention int = 365
 
-@description('Optional. The workspace daily quota for ingestion.')
-@minValue(-1)
-param dailyQuotaGb int = -1
+@description('Optional. The workspace daily quota for ingestion in GB. Supports decimal values. Example: \'0.5\' for 0.5 GB, \'2\' for 2 GB. Default is \'-1\' (no limit).')
+param dailyQuotaGb string = '-1'
 
 @description('Optional. The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR.')
 param defaultDataCollectionRuleResourceId string?
@@ -105,7 +104,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.OperationalInsights/workspaces@2025-02-01'>.tags?
+param tags resourceInput<'Microsoft.OperationalInsights/workspaces@2025-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -213,7 +212,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07
     }
     retentionInDays: dataRetention
     workspaceCapping: {
-      dailyQuotaGb: dailyQuotaGb
+      dailyQuotaGb: json(dailyQuotaGb)
     }
     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
@@ -639,7 +638,7 @@ type dataSourceType = {
   syslogSeverities: array?
 
   @description('Optional. Tags to configure in the resource.')
-  tags: resourceInput<'Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01'>.tags?
+  tags: resourceInput<'Microsoft.OperationalInsights/workspaces/dataSources@2025-07-01'>.tags?
 }
 
 import { schemaType, restoredLogsType, searchResultsType } from 'table/main.bicep'
