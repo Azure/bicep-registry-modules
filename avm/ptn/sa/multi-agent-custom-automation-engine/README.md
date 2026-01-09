@@ -159,9 +159,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    gpt41ModelCapacity: 10
-    gptModelCapacity: 10
-    gptReasoningModelCapacity: 10
     location: '<location>'
     solutionName: 'macaemin'
   }
@@ -185,15 +182,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
-    "gpt41ModelCapacity": {
-      "value": 10
-    },
-    "gptModelCapacity": {
-      "value": 10
-    },
-    "gptReasoningModelCapacity": {
-      "value": 10
-    },
     "location": {
       "value": "<location>"
     },
@@ -217,9 +205,6 @@ using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-gpt41ModelCapacity: 10
-param gptModelCapacity = 10
-param gptReasoningModelCapacity = 10
 param location = '<location>'
 param solutionName = 'macaemin'
 ```
@@ -249,9 +234,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
-    gpt41ModelCapacity: 10
-    gptModelCapacity: 10
-    gptReasoningModelCapacity: 10
     location: '<location>'
     solutionName: 'macaewaf'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
@@ -292,15 +274,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     "enableTelemetry": {
       "value": true
     },
-    "gpt41ModelCapacity": {
-      "value": 10
-    },
-    "gptModelCapacity": {
-      "value": 10
-    },
-    "gptReasoningModelCapacity": {
-      "value": 10
-    },
     "location": {
       "value": "<location>"
     },
@@ -335,9 +308,6 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
-gpt41ModelCapacity: 10
-param gptModelCapacity = 10
-param gptReasoningModelCapacity = 10
 param location = '<location>'
 param solutionName = 'macaewaf'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'

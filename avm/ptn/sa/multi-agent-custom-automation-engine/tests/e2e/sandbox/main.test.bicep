@@ -44,9 +44,6 @@ module testDeployment '../../../main.bicep' = [
       solutionName: '${namePrefix}${serviceShort}'
       azureAiServiceLocation: enforcedLocation
       location: enforcedLocation
-      gptModelCapacity: 10
-      gpt41ModelCapacity: 10
-      gptReasoningModelCapacity: 10
     }
   }
 ]
