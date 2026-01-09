@@ -681,6 +681,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
               ? createNatGateway.?outputs.resourceId
               : null
             delegation: subnet.?delegation
+            serviceEndpoints: subnet.?serviceEndpoints
           }
         : {}
     ]
