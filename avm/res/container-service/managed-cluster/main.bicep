@@ -14,6 +14,20 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. Advanced Networking profile for enabling observability and security feature suite on a cluster. For more information see https://aka.ms/aksadvancednetworking.')
+param advancedNetworking resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.advancedNetworking?
+
+@description('Optional. The IP families used for the cluster.')
+param ipFamilies resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.ipFamilies = [
+  'IPv4'
+]
+
+@description('Optional. NAT Gateway profile for the cluster.')
+param natGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.natGatewayProfile?
+
+@description('Optional. Network mode used for building the Kubernetes network.')
+param networkMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkMode?
+
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
 param networkDataplane resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkDataplane?
 
@@ -31,6 +45,15 @@ param podCidr string?
 
 @description('Optional. A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges.')
 param serviceCidr string?
+
+@description('Optional. The CIDR notation IP ranges from which to assign service cluster IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. They must not overlap with any Subnet IP ranges.')
+param serviceCidrs string[]?
+
+@description('Optional. The CIDR notation IP ranges from which to assign pod IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking.')
+param podCidrs string[]?
+
+@description('Optional. Static egress gateway profile for the cluster.')
+param staticEgressGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.staticEgressGatewayProfile?
 
 @description('Optional. Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr.')
 param dnsServiceIP string?
@@ -544,6 +567,13 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
     nodeProvisioningProfile: nodeProvisioningProfile
     workloadAutoScalerProfile: workloadAutoScalerProfile
     networkProfile: {
+      advancedNetworking: advancedNetworking
+      ipFamilies: ipFamilies
+      natGatewayProfile: natGatewayProfile
+      networkMode: networkMode
+      podCidrs: podCidrs
+      serviceCidrs: serviceCidrs
+      staticEgressGatewayProfile: staticEgressGatewayProfile
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
       networkPluginMode: networkDataplane == 'cilium' ? 'overlay' : networkPluginMode
@@ -948,7 +978,16 @@ type agentPoolType = {
   osDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osDiskType?
 
   @description('Optional. The OS SKU of the agent pool.')
-  osSKU: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osSKU?
+  osSKU: (
+    | 'AzureLinux'
+    | 'AzureLinux3'
+    | 'CBLMariner'
+    | 'Ubuntu'
+    | 'Ubuntu2204'
+    | 'Ubuntu2404'
+    | 'Windows2019'
+    | 'Windows2022'
+    | 'Windows2025')?
 
   @description('Optional. The OS type of the agent pool.')
   osType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osType?

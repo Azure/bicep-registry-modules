@@ -97,7 +97,18 @@ param osDiskSizeGB int?
 param osDiskType resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osDiskType?
 
 @description('Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows.')
-param osSKU resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osSKU?
+@allowed([
+  'AzureLinux'
+  'AzureLinux3'
+  'CBLMariner'
+  'Ubuntu'
+  'Ubuntu2204'
+  'Ubuntu2404'
+  'Windows2019'
+  'Windows2022'
+  'Windows2025'
+])
+param osSKU string?
 
 @description('Optional. The operating system type. The default is Linux.')
 param osType resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osType = 'Linux'
