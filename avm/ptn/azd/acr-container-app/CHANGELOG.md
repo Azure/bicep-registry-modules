@@ -7,7 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Update module version of container app
-- Change test case names to avoid conflict
 
 ### Breaking Changes
 
