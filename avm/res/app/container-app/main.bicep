@@ -270,6 +270,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-02-02-preview' = {
             external: ingressExternal
             ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
             targetPort: ingressTargetPort
+            targetPortHttpScheme:
             stickySessions: {
               affinity: stickySessionsAffinity
             }
