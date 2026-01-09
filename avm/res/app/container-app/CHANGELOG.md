@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Update API versions to v2025-07-01 for enhanced features and capabilities.
+- Update API versions to v2025-10-02-preview for enhanced features and capabilities.
 
 ### Breaking Changes
 
