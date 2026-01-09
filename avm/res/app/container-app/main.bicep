@@ -63,7 +63,7 @@ param ingressAllowInsecure bool = true
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
 
-@description('Optional. 	Whether an http app listens on http or https')
+@description('Optional. Whether an http app listens on http or https.')
 param targetPortHttpScheme resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.ingress.targetPortHttpScheme?
 
 @description('Optional. The scaling settings of the service.')
@@ -85,7 +85,7 @@ param activeRevisionsMode string = 'Single'
 @description('Required. Resource ID of environment.')
 param environmentResourceId string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -95,11 +95,11 @@ param tags resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.tags?
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.registries?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -163,7 +163,7 @@ param workloadProfileName string?
 @description('Optional. The name of the Container App Auth configs.')
 param authConfig authConfigType?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -176,8 +176,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -242,22 +242,22 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     template: {
       containers: containers
       terminationGracePeriodSeconds: terminationGracePeriodSeconds
-      initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
+      initContainers: initContainersTemplate
       revisionSuffix: revisionSuffix
       scale: scaleSettings
-      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
-      volumes: !empty(volumes) ? volumes : null
+      serviceBinds: includeAddOns ? serviceBinds : null
+      volumes: volumes
     }
     configuration: {
       activeRevisionsMode: activeRevisionsMode
-      dapr: !empty(dapr) ? dapr : null
-      identitySettings: !empty(identitySettings) ? identitySettings : null
+      dapr: dapr
+      identitySettings: identitySettings
       ingress: disableIngress
         ? null
         : {
             additionalPortMappings: additionalPortMappings
             allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
-            customDomains: !empty(customDomains) ? customDomains : null
+            customDomains: customDomains
             corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
               ? {
                   allowCredentials: corsPolicy.?allowCredentials ?? false
@@ -271,7 +271,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
             clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
             exposedPort: exposedPort
             external: ingressExternal
-            ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
+            ipSecurityRestrictions: ipSecurityRestrictions
             targetPort: ingressTargetPort
             targetPortHttpScheme: targetPortHttpScheme
             stickySessions: {
@@ -289,11 +289,11 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
               : null
             transport: ingressTransport
           }
-      service: (includeAddOns && !empty(service)) ? service : null
+      service: includeAddOns ? service : null
       maxInactiveRevisions: maxInactiveRevisions
-      registries: !empty(registries) ? registries : null
+      registries: registries
       secrets: secrets
-      runtime: !empty(runtime) ? runtime : null
+      runtime: runtime
     }
   }
 }
@@ -325,7 +325,7 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+module containerAppAuthConfigs 'auth-config/main.bicep' = if (!empty(authConfig)) {
   name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
