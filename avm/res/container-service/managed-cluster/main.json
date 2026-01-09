@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3509872969755661030"
+      "templateHash": "8709793615487488337"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -272,13 +272,21 @@
         },
         "osSKU": {
           "type": "string",
+          "allowedValues": [
+            "AzureLinux",
+            "AzureLinux3",
+            "CBLMariner",
+            "Ubuntu",
+            "Ubuntu2204",
+            "Ubuntu2404",
+            "Windows2019",
+            "Windows2022",
+            "Windows2025"
+          ],
+          "nullable": true,
           "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osSKU"
-            },
             "description": "Optional. The OS SKU of the agent pool."
-          },
-          "nullable": true
+          }
         },
         "osType": {
           "type": "string",
@@ -877,6 +885,48 @@
         "description": "Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both."
       }
     },
+    "advancedNetworking": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/networkProfile/properties/advancedNetworking"
+        },
+        "description": "Optional. Advanced Networking profile for enabling observability and security feature suite on a cluster. For more information see https://aka.ms/aksadvancednetworking."
+      },
+      "nullable": true
+    },
+    "ipFamilies": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/networkProfile/properties/ipFamilies"
+        },
+        "description": "Optional. The IP families used for the cluster."
+      },
+      "defaultValue": [
+        "IPv4"
+      ]
+    },
+    "natGatewayProfile": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/networkProfile/properties/natGatewayProfile"
+        },
+        "description": "Optional. NAT Gateway profile for the cluster."
+      },
+      "nullable": true
+    },
+    "networkMode": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/networkProfile/properties/networkMode"
+        },
+        "description": "Optional. Network mode used for building the Kubernetes network."
+      },
+      "nullable": true
+    },
     "networkDataplane": {
       "type": "string",
       "metadata": {
@@ -930,6 +980,36 @@
       "metadata": {
         "description": "Optional. A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges."
       }
+    },
+    "serviceCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The CIDR notation IP ranges from which to assign service cluster IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. They must not overlap with any Subnet IP ranges."
+      }
+    },
+    "podCidrs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The CIDR notation IP ranges from which to assign pod IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking."
+      }
+    },
+    "staticEgressGatewayProfile": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/networkProfile/properties/staticEgressGatewayProfile"
+        },
+        "description": "Optional. Static egress gateway profile for the cluster."
+      },
+      "nullable": true
     },
     "dnsServiceIP": {
       "type": "string",
@@ -1155,7 +1235,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Whether or not to use AKS Automatic mode."
+        "description": "Optional. Maintenance configurations for the managed cluster."
       }
     },
     "costAnalysisEnabled": {
@@ -1658,6 +1738,13 @@
         "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
         "workloadAutoScalerProfile": "[parameters('workloadAutoScalerProfile')]",
         "networkProfile": {
+          "advancedNetworking": "[parameters('advancedNetworking')]",
+          "ipFamilies": "[parameters('ipFamilies')]",
+          "natGatewayProfile": "[parameters('natGatewayProfile')]",
+          "networkMode": "[parameters('networkMode')]",
+          "podCidrs": "[parameters('podCidrs')]",
+          "serviceCidrs": "[parameters('serviceCidrs')]",
+          "staticEgressGatewayProfile": "[parameters('staticEgressGatewayProfile')]",
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
           "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
@@ -2125,7 +2212,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "3202909610439650729"
+              "templateHash": "10636210701982227392"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2393,13 +2480,21 @@
             },
             "osSKU": {
               "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "AzureLinux",
+                "AzureLinux3",
+                "CBLMariner",
+                "Ubuntu",
+                "Ubuntu2204",
+                "Ubuntu2404",
+                "Windows2019",
+                "Windows2022",
+                "Windows2025"
+              ],
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osSKU"
-                },
                 "description": "Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows."
-              },
-              "nullable": true
+              }
             },
             "osType": {
               "type": "string",

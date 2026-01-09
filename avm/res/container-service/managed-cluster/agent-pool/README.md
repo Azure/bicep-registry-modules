@@ -313,6 +313,20 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureLinux'
+    'AzureLinux3'
+    'CBLMariner'
+    'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
+    'Windows2019'
+    'Windows2022'
+    'Windows2025'
+  ]
+  ```
 
 ### Parameter: `osType`
 

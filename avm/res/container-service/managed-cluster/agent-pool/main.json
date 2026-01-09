@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3202909610439650729"
+      "templateHash": "10636210701982227392"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -274,13 +274,21 @@
     },
     "osSKU": {
       "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "AzureLinux",
+        "AzureLinux3",
+        "CBLMariner",
+        "Ubuntu",
+        "Ubuntu2204",
+        "Ubuntu2404",
+        "Windows2019",
+        "Windows2022",
+        "Windows2025"
+      ],
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerService/managedClusters/agentPools@2025-09-01#properties/properties/properties/osSKU"
-        },
         "description": "Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows."
-      },
-      "nullable": true
+      }
     },
     "osType": {
       "type": "string",

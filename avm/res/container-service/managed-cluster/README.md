@@ -45,8 +45,9 @@ The following section provides usage examples for the module, which were used to
 - [Enabling encryption via a Disk Encryption Set (DES) using Customer-Managed-Keys (CMK) and a User-Assigned Identity](#example-3-enabling-encryption-via-a-disk-encryption-set-des-using-customer-managed-keys-cmk-and-a-user-assigned-identity)
 - [Using Istio Service Mesh add-on](#example-4-using-istio-service-mesh-add-on)
 - [Using Kubenet Network Plugin.](#example-5-using-kubenet-network-plugin)
-- [Using Private Cluster.](#example-6-using-private-cluster)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [Using Private Cluster.](#example-7-using-private-cluster)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults and use AKS Automatic mode (PREVIEW)_
 
@@ -1105,7 +1106,1194 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Using Private Cluster._
+### Example 6: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled to test maximum parameter coverage.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'csmax001'
+    primaryAgentPoolProfiles: [
+      {
+        availabilityZones: [
+          1
+          2
+        ]
+        count: 1
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
+        mode: 'System'
+        name: 'systempool'
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
+        osDiskSizeGB: 128
+        osDiskType: 'Managed'
+        osType: 'Linux'
+        powerState: {
+          code: 'Running'
+        }
+        type: 'VirtualMachineScaleSets'
+        upgradeSettings: {
+          drainTimeoutInMinutes: 30
+          maxSurge: '33%'
+          nodeSoakDurationInMinutes: 0
+        }
+        vmSize: 'Standard_DS2_v2'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
+      }
+    ]
+    // Non-required parameters
+    aadProfile: {
+      enableAzureRBAC: true
+      managed: true
+      tenantID: '<tenantID>'
+    }
+    aciConnectorLinuxEnabled: false
+    agentPools: [
+      {
+        availabilityZones: [
+          1
+        ]
+        count: 1
+        enableAutoScaling: true
+        kubeletConfig: {
+          allowedUnsafeSysctls: [
+            'net.core.somaxconn'
+          ]
+          containerLogMaxFiles: 5
+          containerLogMaxSizeMB: 50
+          cpuCfsQuota: true
+          cpuCfsQuotaPeriod: '100ms'
+          cpuManagerPolicy: 'static'
+          failSwapOn: false
+          imageGcHighThreshold: 85
+          imageGcLowThreshold: 80
+          podMaxPids: 100
+          topologyManagerPolicy: 'best-effort'
+        }
+        maxCount: 2
+        maxPods: 30
+        minCount: 1
+        minPods: 0
+        mode: 'User'
+        name: 'userpool1'
+        nodeLabels: {
+          environment: 'dev'
+          workload: 'general'
+        }
+        nodeTaints: []
+        osDiskSizeGB: 30
+        osDiskType: 'Ephemeral'
+        osType: 'Linux'
+        powerState: {
+          code: 'Running'
+        }
+        scaleSetEvictionPolicy: 'Delete'
+        scaleSetPriority: 'Regular'
+        type: 'VirtualMachineScaleSets'
+        upgradeSettings: {
+          drainTimeoutInMinutes: 30
+          maxSurge: '50%'
+          nodeSoakDurationInMinutes: 0
+        }
+        vmSize: 'Standard_D2s_v3'
+        vnetSubnetResourceId: '<vnetSubnetResourceId>'
+      }
+    ]
+    aiToolchainOperatorProfile: {
+      enabled: false
+    }
+    allocatedOutboundPorts: 0
+    apiServerAccessProfile: {
+      enablePrivateCluster: true
+      enableVnetIntegration: true
+      privateDNSZone: '<privateDNSZone>'
+      subnetId: '<subnetId>'
+    }
+    appGatewayResourceId: '<appGatewayResourceId>'
+    autoScalerProfile: {
+      'balance-similar-node-groups': 'false'
+      'daemonset-eviction-for-empty-nodes': false
+      'daemonset-eviction-for-occupied-nodes': true
+      expander: 'random'
+      'ignore-daemonsets-utilization': false
+      'max-empty-bulk-delete': '10'
+      'max-graceful-termination-sec': '600'
+      'max-node-provision-time': '15m'
+      'max-total-unready-percentage': '45'
+      'new-pod-scale-up-delay': '0s'
+      'ok-total-unready-count': '3'
+      'scale-down-delay-after-add': '10m'
+      'scale-down-delay-after-delete': '20s'
+      'scale-down-delay-after-failure': '3m'
+      'scale-down-unneeded-time': '10m'
+      'scale-down-unready-time': '20m'
+      'scale-down-utilization-threshold': '0.5'
+      'scan-interval': '10s'
+      'skip-nodes-with-local-storage': 'true'
+      'skip-nodes-with-system-pods': 'true'
+    }
+    autoUpgradeProfile: {
+      nodeOSUpgradeChannel: 'NodeImage'
+      upgradeChannel: 'stable'
+    }
+    azurePolicyEnabled: true
+    azurePolicyVersion: 'v2'
+    backendPoolType: 'NodeIPConfiguration'
+    costAnalysisEnabled: true
+    defaultIngressControllerType: 'Internal'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'kube-apiserver'
+          }
+          {
+            category: 'kube-controller-manager'
+          }
+          {
+            category: 'kube-scheduler'
+          }
+          {
+            category: 'kube-audit'
+          }
+          {
+            category: 'kube-audit-admin'
+          }
+          {
+            category: 'guard'
+          }
+          {
+            category: 'cluster-autoscaler'
+          }
+          {
+            category: 'cloud-controller-manager'
+          }
+          {
+            category: 'csi-azuredisk-controller'
+          }
+          {
+            category: 'csi-azurefile-controller'
+          }
+          {
+            category: 'csi-snapshot-controller'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableLocalAccounts: true
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+    dnsServiceIP: '10.10.200.10'
+    enableDnsZoneContributorRoleAssignment: true
+    enableKeyvaultSecretsProvider: true
+    enableOidcIssuerProfile: true
+    enableRBAC: true
+    enableSecretRotation: true
+    enableStorageProfileBlobCSIDriver: true
+    enableStorageProfileDiskCSIDriver: true
+    enableStorageProfileFileCSIDriver: true
+    enableStorageProfileSnapshotController: true
+    httpApplicationRoutingEnabled: false
+    identityProfile: {
+      kubeletidentity: {
+        resourceId: '<resourceId>'
+      }
+    }
+    idleTimeoutInMinutes: 30
+    ingressApplicationGatewayEnabled: true
+    kubeDashboardEnabled: false
+    linuxProfile: {
+      adminUsername: 'azureuser'
+      ssh: {
+        publicKeys: [
+          {
+            keyData: '<keyData>'
+          }
+        ]
+      }
+    }
+    loadBalancerSku: 'standard'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    maintenanceConfigurations: [
+      {
+        maintenanceWindow: {
+          durationHours: 4
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Sunday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '00:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedAutoUpgradeSchedule'
+      }
+      {
+        maintenanceWindow: {
+          durationHours: 6
+          schedule: {
+            weekly: {
+              dayOfWeek: 'Saturday'
+              intervalWeeks: 1
+            }
+          }
+          startDate: '2024-07-15'
+          startTime: '02:00'
+          utcOffset: '+00:00'
+        }
+        name: 'aksManagedNodeOSUpgradeSchedule'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    managedOutboundIPCount: 2
+    monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
+    networkDataplane: 'azure'
+    networkPlugin: 'azure'
+    networkPluginMode: 'overlay'
+    networkPolicy: 'azure'
+    nodeProvisioningProfile: {
+      mode: 'Manual'
+    }
+    nodeResourceGroup: '<nodeResourceGroup>'
+    nodeResourceGroupProfile: {
+      restrictionLevel: 'ReadOnly'
+    }
+    omsAgentEnabled: true
+    omsAgentUseAADAuth: true
+    openServiceMeshEnabled: false
+    outboundPublicIPResourceIds: [
+      '<publicIPAKSResourceId>'
+    ]
+    outboundType: 'loadBalancer'
+    podCidr: '10.244.0.0/16'
+    podIdentityProfile: {
+      enabled: false
+    }
+    publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Azure Kubernetes Service RBAC Cluster Admin'
+      }
+    ]
+    securityProfile: {
+      defender: {
+        logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+        securityMonitoring: {
+          enabled: true
+        }
+      }
+      imageCleaner: {
+        enabled: true
+        intervalHours: 48
+      }
+    }
+    serviceCidr: '10.10.200.0/24'
+    serviceMeshProfile: {
+      mode: 'Disabled'
+    }
+    skuName: 'Base'
+    skuTier: 'Standard'
+    supportPlan: 'KubernetesOfficial'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    upgradeSettings: {
+      overrideSettings: {
+        forceUpgrade: false
+        until: '2025-12-31T23:59:59Z'
+      }
+    }
+    webApplicationRoutingEnabled: true
+    workloadAutoScalerProfile: {
+      keda: {
+        enabled: true
+      }
+      verticalPodAutoscaler: {
+        enabled: true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csmax001"
+    },
+    "primaryAgentPoolProfiles": {
+      "value": [
+        {
+          "availabilityZones": [
+            1,
+            2
+          ],
+          "count": 1,
+          "enableAutoScaling": true,
+          "maxCount": 3,
+          "maxPods": 50,
+          "minCount": 1,
+          "mode": "System",
+          "name": "systempool",
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
+          "osDiskSizeGB": 128,
+          "osDiskType": "Managed",
+          "osType": "Linux",
+          "powerState": {
+            "code": "Running"
+          },
+          "type": "VirtualMachineScaleSets",
+          "upgradeSettings": {
+            "drainTimeoutInMinutes": 30,
+            "maxSurge": "33%",
+            "nodeSoakDurationInMinutes": 0
+          },
+          "vmSize": "Standard_DS2_v2",
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
+        }
+      ]
+    },
+    // Non-required parameters
+    "aadProfile": {
+      "value": {
+        "enableAzureRBAC": true,
+        "managed": true,
+        "tenantID": "<tenantID>"
+      }
+    },
+    "aciConnectorLinuxEnabled": {
+      "value": false
+    },
+    "agentPools": {
+      "value": [
+        {
+          "availabilityZones": [
+            1
+          ],
+          "count": 1,
+          "enableAutoScaling": true,
+          "kubeletConfig": {
+            "allowedUnsafeSysctls": [
+              "net.core.somaxconn"
+            ],
+            "containerLogMaxFiles": 5,
+            "containerLogMaxSizeMB": 50,
+            "cpuCfsQuota": true,
+            "cpuCfsQuotaPeriod": "100ms",
+            "cpuManagerPolicy": "static",
+            "failSwapOn": false,
+            "imageGcHighThreshold": 85,
+            "imageGcLowThreshold": 80,
+            "podMaxPids": 100,
+            "topologyManagerPolicy": "best-effort"
+          },
+          "maxCount": 2,
+          "maxPods": 30,
+          "minCount": 1,
+          "minPods": 0,
+          "mode": "User",
+          "name": "userpool1",
+          "nodeLabels": {
+            "environment": "dev",
+            "workload": "general"
+          },
+          "nodeTaints": [],
+          "osDiskSizeGB": 30,
+          "osDiskType": "Ephemeral",
+          "osType": "Linux",
+          "powerState": {
+            "code": "Running"
+          },
+          "scaleSetEvictionPolicy": "Delete",
+          "scaleSetPriority": "Regular",
+          "type": "VirtualMachineScaleSets",
+          "upgradeSettings": {
+            "drainTimeoutInMinutes": 30,
+            "maxSurge": "50%",
+            "nodeSoakDurationInMinutes": 0
+          },
+          "vmSize": "Standard_D2s_v3",
+          "vnetSubnetResourceId": "<vnetSubnetResourceId>"
+        }
+      ]
+    },
+    "aiToolchainOperatorProfile": {
+      "value": {
+        "enabled": false
+      }
+    },
+    "allocatedOutboundPorts": {
+      "value": 0
+    },
+    "apiServerAccessProfile": {
+      "value": {
+        "enablePrivateCluster": true,
+        "enableVnetIntegration": true,
+        "privateDNSZone": "<privateDNSZone>",
+        "subnetId": "<subnetId>"
+      }
+    },
+    "appGatewayResourceId": {
+      "value": "<appGatewayResourceId>"
+    },
+    "autoScalerProfile": {
+      "value": {
+        "balance-similar-node-groups": "false",
+        "daemonset-eviction-for-empty-nodes": false,
+        "daemonset-eviction-for-occupied-nodes": true,
+        "expander": "random",
+        "ignore-daemonsets-utilization": false,
+        "max-empty-bulk-delete": "10",
+        "max-graceful-termination-sec": "600",
+        "max-node-provision-time": "15m",
+        "max-total-unready-percentage": "45",
+        "new-pod-scale-up-delay": "0s",
+        "ok-total-unready-count": "3",
+        "scale-down-delay-after-add": "10m",
+        "scale-down-delay-after-delete": "20s",
+        "scale-down-delay-after-failure": "3m",
+        "scale-down-unneeded-time": "10m",
+        "scale-down-unready-time": "20m",
+        "scale-down-utilization-threshold": "0.5",
+        "scan-interval": "10s",
+        "skip-nodes-with-local-storage": "true",
+        "skip-nodes-with-system-pods": "true"
+      }
+    },
+    "autoUpgradeProfile": {
+      "value": {
+        "nodeOSUpgradeChannel": "NodeImage",
+        "upgradeChannel": "stable"
+      }
+    },
+    "azurePolicyEnabled": {
+      "value": true
+    },
+    "azurePolicyVersion": {
+      "value": "v2"
+    },
+    "backendPoolType": {
+      "value": "NodeIPConfiguration"
+    },
+    "costAnalysisEnabled": {
+      "value": true
+    },
+    "defaultIngressControllerType": {
+      "value": "Internal"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "kube-apiserver"
+            },
+            {
+              "category": "kube-controller-manager"
+            },
+            {
+              "category": "kube-scheduler"
+            },
+            {
+              "category": "kube-audit"
+            },
+            {
+              "category": "kube-audit-admin"
+            },
+            {
+              "category": "guard"
+            },
+            {
+              "category": "cluster-autoscaler"
+            },
+            {
+              "category": "cloud-controller-manager"
+            },
+            {
+              "category": "csi-azuredisk-controller"
+            },
+            {
+              "category": "csi-azurefile-controller"
+            },
+            {
+              "category": "csi-snapshot-controller"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableLocalAccounts": {
+      "value": true
+    },
+    "diskEncryptionSetResourceId": {
+      "value": "<diskEncryptionSetResourceId>"
+    },
+    "dnsServiceIP": {
+      "value": "10.10.200.10"
+    },
+    "enableDnsZoneContributorRoleAssignment": {
+      "value": true
+    },
+    "enableKeyvaultSecretsProvider": {
+      "value": true
+    },
+    "enableOidcIssuerProfile": {
+      "value": true
+    },
+    "enableRBAC": {
+      "value": true
+    },
+    "enableSecretRotation": {
+      "value": true
+    },
+    "enableStorageProfileBlobCSIDriver": {
+      "value": true
+    },
+    "enableStorageProfileDiskCSIDriver": {
+      "value": true
+    },
+    "enableStorageProfileFileCSIDriver": {
+      "value": true
+    },
+    "enableStorageProfileSnapshotController": {
+      "value": true
+    },
+    "httpApplicationRoutingEnabled": {
+      "value": false
+    },
+    "identityProfile": {
+      "value": {
+        "kubeletidentity": {
+          "resourceId": "<resourceId>"
+        }
+      }
+    },
+    "idleTimeoutInMinutes": {
+      "value": 30
+    },
+    "ingressApplicationGatewayEnabled": {
+      "value": true
+    },
+    "kubeDashboardEnabled": {
+      "value": false
+    },
+    "linuxProfile": {
+      "value": {
+        "adminUsername": "azureuser",
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "<keyData>"
+            }
+          ]
+        }
+      }
+    },
+    "loadBalancerSku": {
+      "value": "standard"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "maintenanceConfigurations": {
+      "value": [
+        {
+          "maintenanceWindow": {
+            "durationHours": 4,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Sunday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "00:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedAutoUpgradeSchedule"
+        },
+        {
+          "maintenanceWindow": {
+            "durationHours": 6,
+            "schedule": {
+              "weekly": {
+                "dayOfWeek": "Saturday",
+                "intervalWeeks": 1
+              }
+            },
+            "startDate": "2024-07-15",
+            "startTime": "02:00",
+            "utcOffset": "+00:00"
+          },
+          "name": "aksManagedNodeOSUpgradeSchedule"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "managedOutboundIPCount": {
+      "value": 2
+    },
+    "monitoringWorkspaceResourceId": {
+      "value": "<monitoringWorkspaceResourceId>"
+    },
+    "networkDataplane": {
+      "value": "azure"
+    },
+    "networkPlugin": {
+      "value": "azure"
+    },
+    "networkPluginMode": {
+      "value": "overlay"
+    },
+    "networkPolicy": {
+      "value": "azure"
+    },
+    "nodeProvisioningProfile": {
+      "value": {
+        "mode": "Manual"
+      }
+    },
+    "nodeResourceGroup": {
+      "value": "<nodeResourceGroup>"
+    },
+    "nodeResourceGroupProfile": {
+      "value": {
+        "restrictionLevel": "ReadOnly"
+      }
+    },
+    "omsAgentEnabled": {
+      "value": true
+    },
+    "omsAgentUseAADAuth": {
+      "value": true
+    },
+    "openServiceMeshEnabled": {
+      "value": false
+    },
+    "outboundPublicIPResourceIds": {
+      "value": [
+        "<publicIPAKSResourceId>"
+      ]
+    },
+    "outboundType": {
+      "value": "loadBalancer"
+    },
+    "podCidr": {
+      "value": "10.244.0.0/16"
+    },
+    "podIdentityProfile": {
+      "value": {
+        "enabled": false
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Azure Kubernetes Service RBAC Cluster Admin"
+        }
+      ]
+    },
+    "securityProfile": {
+      "value": {
+        "defender": {
+          "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>",
+          "securityMonitoring": {
+            "enabled": true
+          }
+        },
+        "imageCleaner": {
+          "enabled": true,
+          "intervalHours": 48
+        }
+      }
+    },
+    "serviceCidr": {
+      "value": "10.10.200.0/24"
+    },
+    "serviceMeshProfile": {
+      "value": {
+        "mode": "Disabled"
+      }
+    },
+    "skuName": {
+      "value": "Base"
+    },
+    "skuTier": {
+      "value": "Standard"
+    },
+    "supportPlan": {
+      "value": "KubernetesOfficial"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "upgradeSettings": {
+      "value": {
+        "overrideSettings": {
+          "forceUpgrade": false,
+          "until": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    "webApplicationRoutingEnabled": {
+      "value": true
+    },
+    "workloadAutoScalerProfile": {
+      "value": {
+        "keda": {
+          "enabled": true
+        },
+        "verticalPodAutoscaler": {
+          "enabled": true
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-service/managed-cluster:<version>'
+
+// Required parameters
+param name = 'csmax001'
+param primaryAgentPoolProfiles = [
+  {
+    availabilityZones: [
+      1
+      2
+    ]
+    count: 1
+    enableAutoScaling: true
+    maxCount: 3
+    maxPods: 50
+    minCount: 1
+    mode: 'System'
+    name: 'systempool'
+    nodeTaints: [
+      'CriticalAddonsOnly=true:NoSchedule'
+    ]
+    osDiskSizeGB: 128
+    osDiskType: 'Managed'
+    osType: 'Linux'
+    powerState: {
+      code: 'Running'
+    }
+    type: 'VirtualMachineScaleSets'
+    upgradeSettings: {
+      drainTimeoutInMinutes: 30
+      maxSurge: '33%'
+      nodeSoakDurationInMinutes: 0
+    }
+    vmSize: 'Standard_DS2_v2'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
+  }
+]
+// Non-required parameters
+param aadProfile = {
+  enableAzureRBAC: true
+  managed: true
+  tenantID: '<tenantID>'
+}
+param aciConnectorLinuxEnabled = false
+param agentPools = [
+  {
+    availabilityZones: [
+      1
+    ]
+    count: 1
+    enableAutoScaling: true
+    kubeletConfig: {
+      allowedUnsafeSysctls: [
+        'net.core.somaxconn'
+      ]
+      containerLogMaxFiles: 5
+      containerLogMaxSizeMB: 50
+      cpuCfsQuota: true
+      cpuCfsQuotaPeriod: '100ms'
+      cpuManagerPolicy: 'static'
+      failSwapOn: false
+      imageGcHighThreshold: 85
+      imageGcLowThreshold: 80
+      podMaxPids: 100
+      topologyManagerPolicy: 'best-effort'
+    }
+    maxCount: 2
+    maxPods: 30
+    minCount: 1
+    minPods: 0
+    mode: 'User'
+    name: 'userpool1'
+    nodeLabels: {
+      environment: 'dev'
+      workload: 'general'
+    }
+    nodeTaints: []
+    osDiskSizeGB: 30
+    osDiskType: 'Ephemeral'
+    osType: 'Linux'
+    powerState: {
+      code: 'Running'
+    }
+    scaleSetEvictionPolicy: 'Delete'
+    scaleSetPriority: 'Regular'
+    type: 'VirtualMachineScaleSets'
+    upgradeSettings: {
+      drainTimeoutInMinutes: 30
+      maxSurge: '50%'
+      nodeSoakDurationInMinutes: 0
+    }
+    vmSize: 'Standard_D2s_v3'
+    vnetSubnetResourceId: '<vnetSubnetResourceId>'
+  }
+]
+param aiToolchainOperatorProfile = {
+  enabled: false
+}
+param allocatedOutboundPorts = 0
+param apiServerAccessProfile = {
+  enablePrivateCluster: true
+  enableVnetIntegration: true
+  privateDNSZone: '<privateDNSZone>'
+  subnetId: '<subnetId>'
+}
+param appGatewayResourceId = '<appGatewayResourceId>'
+param autoScalerProfile = {
+  'balance-similar-node-groups': 'false'
+  'daemonset-eviction-for-empty-nodes': false
+  'daemonset-eviction-for-occupied-nodes': true
+  expander: 'random'
+  'ignore-daemonsets-utilization': false
+  'max-empty-bulk-delete': '10'
+  'max-graceful-termination-sec': '600'
+  'max-node-provision-time': '15m'
+  'max-total-unready-percentage': '45'
+  'new-pod-scale-up-delay': '0s'
+  'ok-total-unready-count': '3'
+  'scale-down-delay-after-add': '10m'
+  'scale-down-delay-after-delete': '20s'
+  'scale-down-delay-after-failure': '3m'
+  'scale-down-unneeded-time': '10m'
+  'scale-down-unready-time': '20m'
+  'scale-down-utilization-threshold': '0.5'
+  'scan-interval': '10s'
+  'skip-nodes-with-local-storage': 'true'
+  'skip-nodes-with-system-pods': 'true'
+}
+param autoUpgradeProfile = {
+  nodeOSUpgradeChannel: 'NodeImage'
+  upgradeChannel: 'stable'
+}
+param azurePolicyEnabled = true
+param azurePolicyVersion = 'v2'
+param backendPoolType = 'NodeIPConfiguration'
+param costAnalysisEnabled = true
+param defaultIngressControllerType = 'Internal'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'kube-apiserver'
+      }
+      {
+        category: 'kube-controller-manager'
+      }
+      {
+        category: 'kube-scheduler'
+      }
+      {
+        category: 'kube-audit'
+      }
+      {
+        category: 'kube-audit-admin'
+      }
+      {
+        category: 'guard'
+      }
+      {
+        category: 'cluster-autoscaler'
+      }
+      {
+        category: 'cloud-controller-manager'
+      }
+      {
+        category: 'csi-azuredisk-controller'
+      }
+      {
+        category: 'csi-azurefile-controller'
+      }
+      {
+        category: 'csi-snapshot-controller'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAccounts = true
+param diskEncryptionSetResourceId = '<diskEncryptionSetResourceId>'
+param dnsServiceIP = '10.10.200.10'
+param enableDnsZoneContributorRoleAssignment = true
+param enableKeyvaultSecretsProvider = true
+param enableOidcIssuerProfile = true
+param enableRBAC = true
+param enableSecretRotation = true
+param enableStorageProfileBlobCSIDriver = true
+param enableStorageProfileDiskCSIDriver = true
+param enableStorageProfileFileCSIDriver = true
+param enableStorageProfileSnapshotController = true
+param httpApplicationRoutingEnabled = false
+param identityProfile = {
+  kubeletidentity: {
+    resourceId: '<resourceId>'
+  }
+}
+param idleTimeoutInMinutes = 30
+param ingressApplicationGatewayEnabled = true
+param kubeDashboardEnabled = false
+param linuxProfile = {
+  adminUsername: 'azureuser'
+  ssh: {
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+      }
+    ]
+  }
+}
+param loadBalancerSku = 'standard'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceConfigurations = [
+  {
+    maintenanceWindow: {
+      durationHours: 4
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Sunday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '00:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedAutoUpgradeSchedule'
+  }
+  {
+    maintenanceWindow: {
+      durationHours: 6
+      schedule: {
+        weekly: {
+          dayOfWeek: 'Saturday'
+          intervalWeeks: 1
+        }
+      }
+      startDate: '2024-07-15'
+      startTime: '02:00'
+      utcOffset: '+00:00'
+    }
+    name: 'aksManagedNodeOSUpgradeSchedule'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedOutboundIPCount = 2
+param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
+param networkDataplane = 'azure'
+param networkPlugin = 'azure'
+param networkPluginMode = 'overlay'
+param networkPolicy = 'azure'
+param nodeProvisioningProfile = {
+  mode: 'Manual'
+}
+param nodeResourceGroup = '<nodeResourceGroup>'
+param nodeResourceGroupProfile = {
+  restrictionLevel: 'ReadOnly'
+}
+param omsAgentEnabled = true
+param omsAgentUseAADAuth = true
+param openServiceMeshEnabled = false
+param outboundPublicIPResourceIds = [
+  '<publicIPAKSResourceId>'
+]
+param outboundType = 'loadBalancer'
+param podCidr = '10.244.0.0/16'
+param podIdentityProfile = {
+  enabled: false
+}
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Azure Kubernetes Service RBAC Cluster Admin'
+  }
+]
+param securityProfile = {
+  defender: {
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    securityMonitoring: {
+      enabled: true
+    }
+  }
+  imageCleaner: {
+    enabled: true
+    intervalHours: 48
+  }
+}
+param serviceCidr = '10.10.200.0/24'
+param serviceMeshProfile = {
+  mode: 'Disabled'
+}
+param skuName = 'Base'
+param skuTier = 'Standard'
+param supportPlan = 'KubernetesOfficial'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param upgradeSettings = {
+  overrideSettings: {
+    forceUpgrade: false
+    until: '2025-12-31T23:59:59Z'
+  }
+}
+param webApplicationRoutingEnabled = true
+param workloadAutoScalerProfile = {
+  keda: {
+    enabled: true
+  }
+  verticalPodAutoscaler: {
+    enabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using Private Cluster._
 
 This instance deploys the module with a private cluster instance.
 
@@ -1369,7 +2557,7 @@ param skuTier = 'Standard'
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1982,6 +3170,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`aadProfile`](#parameter-aadprofile) | object | Enable Azure Active Directory integration. |
 | [`aciConnectorLinuxEnabled`](#parameter-aciconnectorlinuxenabled) | bool | Specifies whether the aciConnectorLinux add-on is enabled or not. |
+| [`advancedNetworking`](#parameter-advancednetworking) | object | Advanced Networking profile for enabling observability and security feature suite on a cluster. For more information see https://aka.ms/aksadvancednetworking. |
 | [`agentPools`](#parameter-agentpools) | array | Define one or more secondary/additional agent pools. |
 | [`aiToolchainOperatorProfile`](#parameter-aitoolchainoperatorprofile) | object | AI toolchain operator settings that apply to the whole cluster. |
 | [`allocatedOutboundPorts`](#parameter-allocatedoutboundports) | int | The desired number of allocated SNAT ports per VM. Default is 0, which results in Azure dynamically allocating ports. |
@@ -2018,17 +3207,20 @@ param tags = {
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
 | [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | Desired outbound flow idle timeout in minutes. |
 | [`ingressApplicationGatewayEnabled`](#parameter-ingressapplicationgatewayenabled) | bool | Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not. |
+| [`ipFamilies`](#parameter-ipfamilies) | array | The IP families used for the cluster. |
 | [`kubeDashboardEnabled`](#parameter-kubedashboardenabled) | bool | Specifies whether the kubeDashboard add-on is enabled or not. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | Version of Kubernetes specified when creating the managed cluster. |
 | [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the Managed Cluster. |
 | [`loadBalancerSku`](#parameter-loadbalancersku) | string | Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools. |
 | [`location`](#parameter-location) | string | Specifies the location of AKS cluster. It picks up Resource Group's location by default. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Whether or not to use AKS Automatic mode. |
+| [`maintenanceConfigurations`](#parameter-maintenanceconfigurations) | array | Maintenance configurations for the managed cluster. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
 | [`monitoringWorkspaceResourceId`](#parameter-monitoringworkspaceresourceid) | string | Resource ID of the monitoring log analytics workspace. |
+| [`natGatewayProfile`](#parameter-natgatewayprofile) | object | NAT Gateway profile for the cluster. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
+| [`networkMode`](#parameter-networkmode) | string | Network mode used for building the Kubernetes network. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
 | [`networkPluginMode`](#parameter-networkpluginmode) | string | Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin. |
 | [`networkPolicy`](#parameter-networkpolicy) | string | Specifies the network policy used for building Kubernetes network. - calico or azure. |
@@ -2042,14 +3234,17 @@ param tags = {
 | [`outboundPublicIPResourceIds`](#parameter-outboundpublicipresourceids) | array | A list of the resource IDs of the public IP addresses to use for the load balancer outbound rules. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
+| [`podCidrs`](#parameter-podcidrs) | array | The CIDR notation IP ranges from which to assign pod IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. |
 | [`podIdentityProfile`](#parameter-podidentityprofile) | object | The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or deny public network access for AKS. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile for the managed cluster. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
+| [`serviceCidrs`](#parameter-servicecidrs) | array | The CIDR notation IP ranges from which to assign service cluster IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. They must not overlap with any Subnet IP ranges. |
 | [`serviceMeshProfile`](#parameter-servicemeshprofile) | object | Service mesh profile for a managed cluster. |
 | [`skuName`](#parameter-skuname) | string | Name of a managed cluster SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. |
+| [`staticEgressGatewayProfile`](#parameter-staticegressgatewayprofile) | object | Static egress gateway profile for the cluster. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradeSettings`](#parameter-upgradesettings) | object | Settings for upgrading the cluster with override options. |
@@ -2355,6 +3550,20 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureLinux'
+    'AzureLinux3'
+    'CBLMariner'
+    'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
+    'Windows2019'
+    'Windows2022'
+    'Windows2025'
+  ]
+  ```
 
 ### Parameter: `primaryAgentPoolProfiles.osType`
 
@@ -2524,6 +3733,13 @@ Specifies whether the aciConnectorLinux add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `advancedNetworking`
+
+Advanced Networking profile for enabling observability and security feature suite on a cluster. For more information see https://aka.ms/aksadvancednetworking.
+
+- Required: No
+- Type: object
 
 ### Parameter: `agentPools`
 
@@ -2816,6 +4032,20 @@ The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureLinux'
+    'AzureLinux3'
+    'CBLMariner'
+    'Ubuntu'
+    'Ubuntu2204'
+    'Ubuntu2404'
+    'Windows2019'
+    'Windows2022'
+    'Windows2025'
+  ]
+  ```
 
 ### Parameter: `agentPools.osType`
 
@@ -3436,6 +4666,19 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Type: bool
 - Default: `False`
 
+### Parameter: `ipFamilies`
+
+The IP families used for the cluster.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'IPv4'
+  ]
+  ```
+
 ### Parameter: `kubeDashboardEnabled`
 
 Specifies whether the kubeDashboard add-on is enabled or not.
@@ -3520,7 +4763,7 @@ Specify the notes of the lock.
 
 ### Parameter: `maintenanceConfigurations`
 
-Whether or not to use AKS Automatic mode.
+Maintenance configurations for the managed cluster.
 
 - Required: No
 - Type: array
@@ -3617,9 +4860,23 @@ Resource ID of the monitoring log analytics workspace.
 - Required: No
 - Type: string
 
+### Parameter: `natGatewayProfile`
+
+NAT Gateway profile for the cluster.
+
+- Required: No
+- Type: object
+
 ### Parameter: `networkDataplane`
 
 Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkMode`
+
+Network mode used for building the Kubernetes network.
 
 - Required: No
 - Type: string
@@ -3719,6 +4976,13 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
+
+### Parameter: `podCidrs`
+
+The CIDR notation IP ranges from which to assign pod IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking.
+
+- Required: No
+- Type: array
 
 ### Parameter: `podIdentityProfile`
 
@@ -3874,6 +5138,13 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 - Required: No
 - Type: string
 
+### Parameter: `serviceCidrs`
+
+The CIDR notation IP ranges from which to assign service cluster IPs. One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. They must not overlap with any Subnet IP ranges.
+
+- Required: No
+- Type: array
+
 ### Parameter: `serviceMeshProfile`
 
 Service mesh profile for a managed cluster.
@@ -3896,6 +5167,13 @@ Tier of a managed cluster SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
+
+### Parameter: `staticEgressGatewayProfile`
+
+Static egress gateway profile for the cluster.
+
+- Required: No
+- Type: object
 
 ### Parameter: `supportPlan`
 
