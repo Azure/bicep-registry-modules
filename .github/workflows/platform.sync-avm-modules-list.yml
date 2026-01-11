@@ -9,6 +9,7 @@ on:
 jobs:
   sync-avm-modules-list:
     runs-on: ubuntu-latest
+    if: github.repository == 'Azure/bicep-registry-modules'
     permissions:
       issues: write
     steps:

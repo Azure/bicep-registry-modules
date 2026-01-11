@@ -21,6 +21,7 @@ env:
 jobs:
   upload-index-data:
     runs-on: ubuntu-latest
+    if: github.repository == 'Azure/bicep-registry-modules'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
