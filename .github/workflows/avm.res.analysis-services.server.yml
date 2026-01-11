@@ -60,10 +60,15 @@ jobs:
     name: "Initialize pipeline"
     if: |
       !cancelled() &&
-      github.repository == 'Azure/bicep-registry-modules' ||
-      (github.repository != 'Azure/bicep-registry-modules' &&
+      !(github.repository != 'Azure/bicep-registry-modules' &&
       github.event_name == 'push' &&
-      github.ref != 'refs/heads/main')
+      github.ref == 'refs/heads/main')
+    # if: |
+    #   !cancelled() &&
+    #   github.repository == 'Azure/bicep-registry-modules' ||
+    #   (github.repository != 'Azure/bicep-registry-modules' &&
+    #   github.event_name == 'push' &&
+    #   github.ref != 'refs/heads/main')
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
