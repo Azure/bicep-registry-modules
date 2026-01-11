@@ -140,6 +140,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
+    isolationScope: 'Regional'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -209,6 +210,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
+    },
+    "isolationScope": {
+      "value": "Regional"
     },
     "location": {
       "value": "<location>"
@@ -282,6 +286,7 @@ param federatedIdentityCredentials = [
     subject: 'system:serviceaccount:default:workload-identity-sa'
   }
 ]
+param isolationScope = 'Regional'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -351,6 +356,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         subject: 'system:serviceaccount:default:workload-identity-sa'
       }
     ]
+    isolationScope: 'Regional'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -401,6 +407,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
+    },
+    "isolationScope": {
+      "value": "Regional"
     },
     "location": {
       "value": "<location>"
@@ -453,6 +462,7 @@ param federatedIdentityCredentials = [
     subject: 'system:serviceaccount:default:workload-identity-sa'
   }
 ]
+param isolationScope = 'Regional'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -482,6 +492,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedIdentityCredentials`](#parameter-federatedidentitycredentials) | array | The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object. |
+| [`isolationScope`](#parameter-isolationscope) | string | Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional". |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -545,6 +556,20 @@ The identifier of the external identity.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `isolationScope`
+
+Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'Regional'
+  ]
+  ```
 
 ### Parameter: `location`
 

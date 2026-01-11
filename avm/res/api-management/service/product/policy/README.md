@@ -1,4 +1,4 @@
-# API Management Service Products Policies `[Microsoft.ApiManagement/service/products/policies]`
+# API Management Service Product Policies `[Microsoft.ApiManagement/service/products/policies]`
 
 This module deploys an API Management Service Product Policy.
 
@@ -86,6 +86,6 @@ The name of the policy.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the API policy. |
-| `resourceGroupName` | string | The resource group the API policy was deployed into. |
-| `resourceId` | string | The resource ID of the API policy. |
+| `name` | string | The name of the Product policy. |
+| `resourceGroupName` | string | The resource group the Product policy was deployed into. |
+| `resourceId` | string | The resource ID of the Product policy. |

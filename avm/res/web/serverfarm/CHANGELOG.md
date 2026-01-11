@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/serverfarm/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Added support for `hyperV` parameter to enable or disable Hyper-V container app service plan
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes
