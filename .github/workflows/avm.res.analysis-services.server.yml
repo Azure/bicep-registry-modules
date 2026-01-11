@@ -46,8 +46,8 @@ concurrency:
 # Test
 # In fork (in main) push to main should not trigger the workflow
 #         (in main) workflow dispatch should not trigger the workflow
-#         (in branch) push to branch should not trigger the workflow
-#         (in branch) workflow dispatch should trigger the workflow
+#         (in branch after merged to main) push to branch should not trigger the workflow
+#         (in branch after merged to main) workflow dispatch should trigger the workflow
 # Upstream (in main) push to main should trigger the workflow
 #          (in main) workflow dispatch should trigger the workflow
 
