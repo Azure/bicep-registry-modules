@@ -22,6 +22,7 @@ defaults:
 jobs:
   sync-labels:
     runs-on: ubuntu-latest
+    if: github.repository == 'Azure/bicep-registry-modules'
     steps:
       - name: Sync AVM Labels To Repos GitHub Labels
         run: |
