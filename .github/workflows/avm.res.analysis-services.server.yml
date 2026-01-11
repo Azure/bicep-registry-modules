@@ -42,14 +42,6 @@ env:
 concurrency:
   group: ${{ github.workflow }}
 
-# Test
-# In fork (in main) push to main should not trigger the workflow
-#         (in main) workflow dispatch should not trigger the workflow
-#         (in branch after merged to main) push to branch should not trigger the workflow
-#         (in branch after merged to main) workflow dispatch should trigger the workflow
-# Upstream (in main) push to main should trigger the workflow
-#          (in main) workflow dispatch should trigger the workflow
-# Test change
 jobs:
   ###########################
   #   Initialize pipeline   #
@@ -62,12 +54,6 @@ jobs:
       !(github.repository != 'Azure/bicep-registry-modules' &&
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main')
-    # if: |
-    #   !cancelled() &&
-    #   github.repository == 'Azure/bicep-registry-modules' ||
-    #   (github.repository != 'Azure/bicep-registry-modules' &&
-    #   github.event_name == 'push' &&
-    #   github.ref != 'refs/heads/main')
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
@@ -92,17 +78,17 @@ jobs:
   ##############################
   #   Call reusable workflow   #
   ##############################
-  # call-workflow-passing-data:
-  #   name: "Run"
-  #   permissions:
-  #     id-token: write # For OIDC
-  #     contents: write # For release tags
-  #   needs:
-  #     - job_initialize_pipeline
-  #   uses: ./.github/workflows/avm.template.module.yml
-  #   with:
-  #     workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
-  #     moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-  #     psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-  #     modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
-  #   secrets: inherit
+  call-workflow-passing-data:
+    name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+    secrets: inherit
