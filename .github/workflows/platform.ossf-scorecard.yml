@@ -21,7 +21,7 @@ jobs:
   analysis:
     name: Scorecard analysis
     runs-on: ubuntu-latest
-    if: !(github.repository != 'Azure/bicep-registry-modules' && github.event_name == 'schedule')
+    if: ${{ !(github.repository != 'Azure/bicep-registry-modules' && github.event_name == 'schedule') }}
     permissions:
       # Needed to upload the results to code-scanning dashboard.
       security-events: write
