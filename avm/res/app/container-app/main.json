@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5613863531179875154"
+      "templateHash": "11057599016523951568"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -633,7 +633,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -670,7 +670,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -698,7 +698,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -773,7 +773,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -908,7 +908,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/targetPortHttpScheme"
         },
-        "description": "Optional. \tWhether an http app listens on http or https"
+        "description": "Optional. Whether an http app listens on http or https."
       },
       "nullable": true
     },
@@ -1179,7 +1179,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "ContainerApp Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ad2dd5fb-cd4b-4fd4-a9b6-4fed3630980b')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -1224,22 +1224,22 @@
         "template": {
           "containers": "[parameters('containers')]",
           "terminationGracePeriodSeconds": "[parameters('terminationGracePeriodSeconds')]",
-          "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
+          "initContainers": "[parameters('initContainersTemplate')]",
           "revisionSuffix": "[parameters('revisionSuffix')]",
           "scale": "[parameters('scaleSettings')]",
-          "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
-          "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
+          "serviceBinds": "[if(parameters('includeAddOns'), parameters('serviceBinds'), null())]",
+          "volumes": "[parameters('volumes')]"
         },
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
-          "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
-          "identitySettings": "[if(not(empty(parameters('identitySettings'))), parameters('identitySettings'), null())]",
-          "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'targetPortHttpScheme', parameters('targetPortHttpScheme'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
-          "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
+          "dapr": "[parameters('dapr')]",
+          "identitySettings": "[parameters('identitySettings')]",
+          "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', parameters('customDomains'), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', parameters('ipSecurityRestrictions'), 'targetPort', parameters('ingressTargetPort'), 'targetPortHttpScheme', parameters('targetPortHttpScheme'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
+          "service": "[if(parameters('includeAddOns'), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
-          "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
+          "registries": "[parameters('registries')]",
           "secrets": "[parameters('secrets')]",
-          "runtime": "[if(not(empty(parameters('runtime'))), parameters('runtime'), null())]"
+          "runtime": "[parameters('runtime')]"
         }
       }
     },

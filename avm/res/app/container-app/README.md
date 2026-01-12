@@ -1265,7 +1265,7 @@ param tags = {
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`targetPortHttpScheme`](#parameter-targetporthttpscheme) | string | 	Whether an http app listens on http or https |
+| [`targetPortHttpScheme`](#parameter-targetporthttpscheme) | string | Whether an http app listens on http or https. |
 | [`terminationGracePeriodSeconds`](#parameter-terminationgraceperiodseconds) | int | The termination grace period for the container app. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
 | [`trafficLatestRevision`](#parameter-trafficlatestrevision) | bool | Indicates that the traffic weight belongs to a latest stable revision. |
@@ -2155,7 +2155,7 @@ Tags of the resource.
 
 ### Parameter: `targetPortHttpScheme`
 
-	Whether an http app listens on http or https
+Whether an http app listens on http or https.
 
 - Required: No
 - Type: string
@@ -2229,8 +2229,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
