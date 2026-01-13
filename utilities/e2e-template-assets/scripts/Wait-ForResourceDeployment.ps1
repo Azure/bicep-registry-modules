@@ -1,4 +1,26 @@
-﻿[CmdletBinding()]
+﻿<#
+.SYNOPSIS
+Wait for the specified resource to report a successful provisioning state.
+
+.DESCRIPTION
+This script waits for a specified resource to finish deploying by periodically checking its provisioning state.
+This can be useful as the provisioning state can sometimes report as 'Succeeded' before the resources are fully operational.
+
+.PARAMETER ResourceId
+Mandatory. The Resource ID of the resource to wait for deployment completion.
+
+.PARAMETER MaxRetries
+Optional. The maximum number of retries when waiting for the resource deployment to complete. Default is 240.
+
+.PARAMETER WaitIntervalInSeconds
+Optional. The wait interval between checks for resource deployment status, in seconds. Default is 15 seconds.
+
+.EXAMPLE
+.\Wait-ForResourceDeployment.ps1 -ResourceId "/subscriptions/xxxx/resourceGroups/rg-name/providers/Microsoft.Compute/virtualMachines/vm-name" -MaxRetries 120 -WaitIntervalInSeconds 10
+
+This example waits for the specified virtual machine resource to finish deploying, checking every 10 seconds for up to 120 retries.
+#>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $true)]
     [string] $ResourceId,
