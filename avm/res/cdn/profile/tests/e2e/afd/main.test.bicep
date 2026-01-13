@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-${serviceShort}'
+      name: '${namePrefix}-test-${serviceShort}'
       managedIdentities: {
         systemAssigned: true
       }
@@ -50,21 +50,21 @@ module testDeployment '../../../main.bicep' = [
       sku: 'Standard_AzureFrontDoor'
       customDomains: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
-          hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
+          name: '${namePrefix}-test-${serviceShort}-custom-domain'
+          hostName: '${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
           // The default value for minimumTlsVersion is 'TLS12_2022'.
         }
         {
-          name: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain'
-          hostName: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
+          name: '${namePrefix}-test2-${serviceShort}-custom-domain'
+          hostName: '${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
           // If you set cipherSuiteSetType to a predefined value (like "TLS12_2022"), you must not provide customizedCipherSuiteSet.
           cipherSuiteSetType: 'TLS12_2022'
         }
         {
-          name: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain'
-          hostName: 'dep-${namePrefix}-test3-${serviceShort}-custom-domain.azurewebsites.net'
+          name: '${namePrefix}-test3-${serviceShort}-custom-domain'
+          hostName: '${namePrefix}-test3-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
           // If you set cipherSuiteSetType to "Customized", you must provide a valid customizedCipherSuiteSet object.
           // The below setup with a customized cipher suite effectively deploys the resources
@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       originGroups: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
+          name: '${namePrefix}-test-${serviceShort}-origin-group'
           loadBalancingSettings: {
             additionalLatencyInMilliseconds: 50
             sampleSize: 4
@@ -91,8 +91,8 @@ module testDeployment '../../../main.bicep' = [
           }
           origins: [
             {
-              name: 'dep-${namePrefix}-test-${serviceShort}-origin'
-              hostName: 'dep-${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
+              name: '${namePrefix}-test-${serviceShort}-origin'
+              hostName: '${namePrefix}-test-${serviceShort}-origin.azurewebsites.net'
             }
           ]
         }
@@ -122,12 +122,12 @@ module testDeployment '../../../main.bicep' = [
       ]
       afdEndpoints: [
         {
-          name: 'dep-${namePrefix}-test-${serviceShort}-afd-endpoint'
+          name: '${namePrefix}-test-${serviceShort}-afd-endpoint'
           routes: [
             {
-              name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
-              originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-              customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
+              name: '${namePrefix}-test-${serviceShort}-afd-route'
+              originGroupName: '${namePrefix}-test-${serviceShort}-origin-group'
+              customDomainNames: ['${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
                 'dep${namePrefix}test${serviceShort}ruleset'
               ]
