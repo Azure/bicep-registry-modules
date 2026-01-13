@@ -1,5 +1,24 @@
-// Example usage:
+// .TEMPLATE:
+// ----------
+// waitForDeployment.bicep
 //
+// .DESCRIPTION
+// -----------
+// This template deploys a deployment script that waits for a specified resource to finish deploying
+// by periodically checking its provisioning state. This can be useful as the provisioning state can sometimes
+// report as 'Succeeded' before the resources are fully operational.
+//
+// .PARAMETERS
+// -----------
+// - waitForResourceId: The Resource ID of the resource to wait for deployment completion.
+// - managedIdentityName: The name of the managed identity to create for the deployment script.
+// - deploymentScriptName: The name of the deployment script resource.
+// - location: The location where the resources will be deployed.
+// - maxRetries: The maximum retries when waiting for the resource deployment to complete.
+// - waitIntervalInSeconds: The interval between checks for resource deployment status, in seconds.
+//
+// .EXAMPLE
+// --------
 // module waitForDeployment '../../../../../../../utilities/e2e-template-assets/templates/waitForDeployment.bicep' = {
 //   scope: resourceGroup
 //   params: {
