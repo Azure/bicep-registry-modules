@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2601770611102672033"
+      "templateHash": "9639606580619724327"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1010,7 +1010,7 @@
       "$ref": "#/definitions/endpointType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
+        "description": "Optional. Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details)."
       }
     },
     "secrets": {

@@ -24,7 +24,7 @@ param sku string
 @description('Optional. Send and receive timeout on forwarding request to the origin.')
 param originResponseTimeoutSeconds int = 60
 
-@description('Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
+@description('Optional. Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details).')
 param endpoint endpointType?
 
 @description('Optional. Array of secret objects.')
