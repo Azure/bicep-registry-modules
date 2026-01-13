@@ -6,6 +6,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Updated references of the 'avm-common-types' to version' `0.6.1
+
+### Breaking Changes
+
+- None
+
+## 0.3.4
+
+### Changes
+
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
 - Added Resource-Derived-Type for `firewallSettings` parameter
 
