@@ -5,9 +5,9 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11723183895091881679"
+      "templateHash": "16879011987124410005"
     },
-    "name": "API Management Service Products Policies",
+    "name": "API Management Service Product Policies",
     "description": "This module deploys an API Management Service Product Policy."
   },
   "parameters": {
@@ -65,21 +65,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the API policy."
+        "description": "The resource ID of the Product policy."
       },
       "value": "[resourceId('Microsoft.ApiManagement/service/products/policies', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the API policy."
+        "description": "The name of the Product policy."
       },
       "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the API policy was deployed into."
+        "description": "The resource group the Product policy was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

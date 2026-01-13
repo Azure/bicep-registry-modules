@@ -72,7 +72,7 @@ param actions actionsType?
 param criterias resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.properties.criteria
 
 @description('Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.')
-param suppressForMinutes string?
+param muteActionsDuration string?
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.tags?
@@ -174,7 +174,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
           ...(empty(ruleResolveConfiguration)
             ? {
                 autoMitigate: autoMitigate
-                muteActionsDuration: suppressForMinutes
+                muteActionsDuration: muteActionsDuration
               }
             : {})
         }

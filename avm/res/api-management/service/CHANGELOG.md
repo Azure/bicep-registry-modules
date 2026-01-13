@@ -2,6 +2,43 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- Added support for `PremiumV2` SKU to the service module and updated related VNet injection documentation.
+- Added new `serviceDiagnostics` parameter for service-level diagnostics configuration and corresponding `diagnostic` child module deployment.
+- Added new `workspaces` parameter for workspace configuration and corresponding `workspace` child module deployment.
+- Added following child modules of the `workspace` module:
+  - `workspace/api`
+  - `workspace/api/diagnostic`
+  - `workspace/api/operation`
+  - `workspace/api/operation/policy`
+  - `workspace/api/policy`
+  - `workspace/api-version-set`
+  - `workspace/backend`
+  - `workspace/diagnostic`
+  - `workspace/logger`
+  - `workspace/named-value`
+  - `workspace/policy`
+  - `workspace/product`
+  - `workspace/product/api-link`
+  - `workspace/product/group-link`
+  - `workspace/product/policy`
+  - `workspace/subscription`
+- Child module **api** (v0.2.0): Added length decorators and updated parameter descriptions; added missing allowed values; added allowed values to `protocols` parameter; aligned `operationType` and `diagnosticType` definitions; fixed `diagnosticType.alwaysLog` type and corrected `diagnosticType.operationNameFormat` allowed value from `URI` to `Url`.
+- Child module **api-version-set** (v0.2.0): Changed `name` parameter to required (was optional with default `"default"`); updated `displayName` description.
+- Child module **backend** (v0.2.1): Added length validation to `url` parameter.
+- Child module **logger** (v0.2.1): Updated parameter descriptions; added length constraint to `description`; made `description` nullable; renamed internal resource symbol and aligned outputs.
+- Child module **named-value** (v0.1.2): Added length constraints to `displayName` and `value` parameters; updated parameter descriptions.
+- Child module **product** (v0.3.0): Added length constraints to `name`, `displayName`, and `description`; updated descriptions; changed `description` to be nullable; added `@allowed` constraint to `state` parameter.
+- Child module **subscription** (v0.1.2): Updated parameter descriptions; added length constraints to `displayName`, `primaryKey`, and `secondaryKey`; added allowed values to `state`; simplified `scope` description; reordered resource properties.
+
+### Breaking Changes
+
+- The `api.diagnostic.operationNameFormat` parameter - allowed value corrected from `URI` to `Url`.
+- Removed redundand (and conflicting) `apiDiagnostics` parameter from the service module; use `diagnostics` property within the `apis` parameter instead.
+
 ## 0.13.0
 
 ### Changes

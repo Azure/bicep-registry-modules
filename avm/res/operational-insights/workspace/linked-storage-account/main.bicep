@@ -17,11 +17,11 @@ param name string
 @description('Required. Linked storage accounts resources Ids.')
 param storageAccountIds string[]
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource linkedStorageAccount 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2025-02-01' = {
+resource linkedStorageAccount 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2025-07-01' = {
   name: name
   parent: workspace
   properties: {

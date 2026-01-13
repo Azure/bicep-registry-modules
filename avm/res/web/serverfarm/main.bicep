@@ -66,6 +66,9 @@ param targetWorkerSize int = 0
 @description('Optional. Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
 param zoneRedundant bool = startsWith(skuName, 'P') || startsWith(skuName, 'EP') ? true : false
 
+@description('Optional. If Hyper-V container app service plan true, false otherwise.')
+param hyperV bool?
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -164,6 +167,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
     targetWorkerCount: targetWorkerCount
     targetWorkerSizeId: targetWorkerSize
     zoneRedundant: zoneRedundant
+    hyperV: hyperV
   }
 }
 
