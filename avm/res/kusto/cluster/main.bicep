@@ -265,6 +265,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
       : null
   }
   zones: map(availabilityZones, zone => '${zone}')
+  // zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
 }
 
 resource kustoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
