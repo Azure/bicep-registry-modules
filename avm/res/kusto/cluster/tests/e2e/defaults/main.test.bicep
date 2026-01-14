@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}0001'
-      sku: 'Standard_E2ads_v5'
+      sku: 'Standard_E2a_v4'
       enableDiskEncryption: true
       availabilityZones: []
       managedIdentities: {
