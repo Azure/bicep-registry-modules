@@ -20,7 +20,8 @@ param serviceShort string = 'kcmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var enforcedLocation = 'westcentralus'
+var enforcedLocation = 'uksouth'
+// var enforcedLocation = 'westcentralus'
 
 // ============ //
 // Dependencies //
@@ -52,7 +53,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}0001'
-      sku: 'Standard_D11_v2'
+      // sku: 'Standard_D11_v2' // For westcentralus
+      sku: 'Standard_E2ads_v5'
       enableDiskEncryption: true
       availabilityZones: []
       managedIdentities: {
