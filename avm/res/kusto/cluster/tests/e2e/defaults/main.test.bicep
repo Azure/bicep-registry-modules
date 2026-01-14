@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}0001'
       sku: 'Standard_E2ads_v5'
       enableDiskEncryption: true
+      availabilityZones: []
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
