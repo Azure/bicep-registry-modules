@@ -992,7 +992,7 @@ Describe 'Module tests' -Tag 'Module' {
                         }
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('the description of conditional parameters in the template file must contain a sentence that starts with "Required if", explaining when the parameter is mandatory. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
