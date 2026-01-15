@@ -19,8 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Note, we enforce the location due to quota restrictions in other regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
-
+var enforcedLocation = 'swedencentral'
 // ============ //
 // Dependencies //
 // ============ //
