@@ -593,7 +593,6 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $missingPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of missing push trigger path filters should be 0, but got [{0}].' -f ($missingPushTriggerPathFilters -join ', '))
     }
 
-
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should only have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
