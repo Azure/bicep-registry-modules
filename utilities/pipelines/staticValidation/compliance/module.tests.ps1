@@ -616,6 +616,30 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
 
         $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
     }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have a condition to run only automatically on changes in upstream `main`.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [string] $WorkflowPath
+        )
+
+        $workflowContent = ConvertFrom-Yaml -Yaml (Get-Content $WorkflowPath -Raw)
+        $initalizeConditions = $workflowContent.jobs['job_initialize_pipeline'].if
+
+        $expectedConditions = @(
+            '!cancelled()',
+            "!(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch')"
+        )
+
+        $missingConditions = @()
+        foreach ($condition in $expectedConditions) {
+            if ($initalizeConditions -notlike "*$condition*") {
+                $missingConditions += $condition
+            }
+        }
+
+        $missingConditions.Count | Should -Be 0 -Because ('the number of missing conditions of the `job_initialize_pipeline` step should be 0, but got [{0}] ([ref](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/#4-implement-your-contribution)).' -f ($missingConditions -join ', '))
+    }
 }
 
 Describe 'Module tests' -Tag 'Module' {
