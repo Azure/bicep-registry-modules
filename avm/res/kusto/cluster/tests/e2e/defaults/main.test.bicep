@@ -56,7 +56,8 @@ module testDeployment '../../../main.bicep' = [
       // sku: 'Standard_D11_v2' // For westcentralus
       sku: 'Standard_E2ads_v5'
       enableDiskEncryption: true
-      availabilityZones: [1, 2, 3]
+      // availabilityZones: [1, 2, 3]
+      availabilityZones: []
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
