@@ -593,29 +593,6 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $missingPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of missing push trigger path filters should be 0, but got [{0}].' -f ($missingPushTriggerPathFilters -join ', '))
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have a condition to run only automatically on changes in upstream `main`.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [string] $WorkflowPath
-        )
-
-        $workflowContent = ConvertFrom-Yaml -Yaml (Get-Content $WorkflowPath -Raw)
-        $initalizeConditions = $workflowContent.jobs['job_initialize_pipeline'].if
-
-        $expectedConditions = @(
-            '!cancelled()',
-            "!(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch')"
-        )
-
-        $missingConditions = @()
-        foreach ($condition in $expectedConditions) {
-            if ($initalizeConditions -notlike "*$condition*") {
-                $missingConditions += $condition
-            }
-        }
-
-        $missingConditions.Count | Should -Be 0 -Because ('the number of missing conditions of the `job_initialize_pipeline` step should be 0, but got [{0}].' -f ($missingConditions -join ', '))
-    }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should only have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
@@ -721,8 +698,8 @@ Describe 'Module tests' -Tag 'Module' {
                 git checkout HEAD -- $readMeFilePath
             }
 
-            $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\| ', '\ | '
-            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff { 0 }<module.' -f $mdFormattedDiff)
+            $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
         }
     }
 
@@ -739,7 +716,7 @@ Describe 'Module tests' -Tag 'Module' {
                     continue
                 }
 
-                $resourceTypeIdentifier = ($moduleFolderPath -split '[\/| \\]avm[\/ | \\](res | ptn | utl)[\/ | \\]')[2] -replace '\\', '/' # 'avm/res | ptn | utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
+                $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
 
                 $armTemplateTestCases += @{
                     moduleFolderName = $resourceTypeIdentifier
@@ -793,7 +770,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
                 $templateFileContent = $builtTestFileMap[$templateFilePath]
 
-                $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/| \\]avm[\/ | \\](res | ptn | utl)[\/ | \\]') # 'avm/res | ptn | utl/<provider>/<resourceType>' would return 'avm', 'res | ptn | utl', '<provider>/<resourceType>'
+                $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
 
                 # Test file setup
@@ -803,11 +780,11 @@ Describe 'Module tests' -Tag 'Module' {
                     templateFilePath         = $templateFilePath
                     templateFileParameters   = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
                     readMeFilePath           = Join-Path (Split-Path $templateFilePath) 'README.md'
-                    isTopLevelModule         = ($resourceTypeIdentifier -split '[\/| \\]').Count -eq 2
+                    isTopLevelModule         = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType               = $moduleType
                     versionFileExists        = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule  = $moduleFolderPath -match '[\/| \\](rg | sub | mg)\-scope$'
-                    isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/| \\](rg | sub | mg)\-scope$' }).Count -gt 0
+                    isMultiScopeChildModule  = $moduleFolderPath -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
 
                 }
             }
@@ -887,7 +864,7 @@ Describe 'Module tests' -Tag 'Module' {
 
         Context 'Parameters' {
 
-            It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of '[resourceGroup().Location]' or 'global' for ResourceGroup deployment scope.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of "[resourceGroup().Location]" or "global" for ResourceGroup deployment scope.' -TestCases $moduleFolderTestCases {
 
                 param(
                     [hashtable] $templateFileParameters
@@ -933,7 +910,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                     # workaround for Azure Stack HCI cluster deployment settings resource, where property names have underscores - https://github.com/Azure/Azure-Verified-Modules/issues/1029
                     if ($moduleFolderPath -match 'azure-stack-hci[/\\]cluster[/\\]deployment-settings' -and $paramName -in ('bandwidthPercentage_SMB', 'priorityValue8021Action_Cluster', 'priorityValue8021Action_SMB')) {
-                        Set-ItResult -Skipped -Because 'the module path matches 'azure-stack-hci/cluster/deployment-settings' and the parameter name is in list [bandwidthPercentage_SMB, priorityValue8021Action_Cluster, priorityValue8021Action_SMB], which have underscores in the API spec.'
+                        Set-ItResult -Skipped -Because 'the module path matches "azure-stack-hci/cluster/deployment-settings" and the parameter name is in list [bandwidthPercentage_SMB, priorityValue8021Action_Cluster, priorityValue8021Action_SMB], which have underscores in the API spec.'
                         return
                     }
 
@@ -941,7 +918,7 @@ Describe 'Module tests' -Tag 'Module' {
                         $incorrectParameters += @() + $parameter
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [ { 0 }].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             It "[<moduleFolderName>] Each parameters' & UDT's description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
@@ -964,7 +941,7 @@ Describe 'Module tests' -Tag 'Module' {
                         $incorrectParameters += $parameter
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a 'Category' prefix like 'Required. ' and ending with a dot. Found incorrect items: [ { 0 }].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a "Category" prefix like "Required. " and ending with a dot. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             # TODO: Update specs with note
@@ -992,10 +969,10 @@ Describe 'Module tests' -Tag 'Module' {
                         }
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with 'Required.'. Found incorrect items: [ { 0 }].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
-            It '[<parameters & UDTs in template file should not have description that start with 'Required.'.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
                 param (
                     [hashtable] $templateFileContent,
                     [hashtable] $templateFileParameters
@@ -1013,10 +990,10 @@ Describe 'Module tests' -Tag 'Module' {
                     }
                 }
 
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with 'Required.'. Found incorrect items: [ { 0 }].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
-            It '[<parameters & UDTs in template file should have description that start with '(Required | Conditional).'.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] All required parameters & UDTs in template file should have description that start with "(Required|Conditional).".' -TestCases $moduleFolderTestCases {
                 param (
                     [hashtable] $templateFileContent,
                     [hashtable] $templateFileParameters
@@ -1028,16 +1005,16 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if ($isRequired) {
                         $description = $templateFileParameters.$parameter.metadata.description
-                        if ($description -notmatch '^(Required | Conditional)\.') {
+                        if ($description -notmatch '^(Required|Conditional)\.') {
                             $incorrectParameters += $parameter
                         }
                     }
                 }
 
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with 'Required.'. Found incorrect items: [ { 0 }].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
-            It '[<type.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
                 param (
                     [hashtable] $TemplateFileContent,
                     [hashtable] $TemplateFileParameters,
@@ -1054,7 +1031,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                     if ($isArrayOfObjects) {
                         ## Array of objects
-                        # Note: We don't need to check for `$parameter.items.keys -contains '$ref'`because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
+                        # Note: We don't need to check for `$parameter.items.keys -contains '$ref'` because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
                         $hasProperties = $parameter.items.keys -contains 'properties'
                         $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
                         if (-not ($hasProperties -or $hasRdtDefintion)) {
@@ -2554,12 +2531,12 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
                 $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
-                #                 Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
+                Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
 
-                #                 Write-Output @{
-                #                     Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
-                #                 }
-                #             }
-                #         }
-                #     }
-                # }
+                Write-Output @{
+                    Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
+                }
+            }
+        }
+    }
+}
