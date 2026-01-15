@@ -617,7 +617,7 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have a condition to run only automatically on changes in upstream `main`.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should include a condition to run automatically only on upstream `main` changes.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
             [string] $WorkflowPath
