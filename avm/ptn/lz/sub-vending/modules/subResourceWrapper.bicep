@@ -571,7 +571,7 @@ module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
     tags: subscriptionTags
   }
 }
-module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.3' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForLzNetworking
   params: {
@@ -588,7 +588,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
   }
 }
 
-module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(userAssignedManagedIdentities)) {
+module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(userAssignedManagedIdentities)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForIdentities
   params: {
@@ -619,7 +619,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.2' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
     createLzRouteTable
@@ -681,6 +681,8 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
               ? createNatGateway.?outputs.resourceId
               : null
             delegation: subnet.?delegation
+            serviceEndpoints: subnet.?serviceEndpoints
+            privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
           }
         : {}
     ]
@@ -688,7 +690,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
   }
 }
 
-module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.2' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -841,7 +843,7 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1'
   }
 }
 
-module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (subnet, i) in virtualNetworkSubnets: if (!empty(virtualNetworkSubnets)) {
     scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
     dependsOn: [
@@ -857,7 +859,7 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
   }
 ]
 
-module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (nsg, i) in networkSecurityGroups: if (!empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)) {
     scope: resourceGroup(subscriptionId, networkSecurityGroupResourceGroupName)
     dependsOn: [
@@ -889,7 +891,7 @@ module createLzRouteTable 'br/public:avm/res/network/route-table:0.5.0' = [
   }
 ]
 
-module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)
     dependsOn: [
@@ -1371,7 +1373,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(resourceProviders)) {
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(resourceProviders)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForDeploymentScript
   params: {
@@ -1382,7 +1384,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
-module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
+module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForRouteTables
   params: {
@@ -1393,7 +1395,7 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   }
 }
 
-module createResourceGroupForNetworkSecurityGroups 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(networkSecurityGroupResourceGroupName) && !empty(networkSecurityGroups)) {
+module createResourceGroupForNetworkSecurityGroups 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(networkSecurityGroupResourceGroupName) && !empty(networkSecurityGroups)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForNetworkSecurityGroups
   params: {
@@ -1441,7 +1443,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.2' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -1507,7 +1509,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2'
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.2' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -1668,7 +1670,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.4.0' =
   }
 ]
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
@@ -1691,7 +1693,7 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (vi
   }
 }
 
-module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = [
+module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.3' = [
   for (identity, i) in userAssignedManagedIdentities: if (!empty(userAssignedManagedIdentities)) {
     scope: resourceGroup(subscriptionId, userAssignedIdentityResourceGroupName)
     dependsOn: [
@@ -1709,7 +1711,7 @@ module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 ]
 
-module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = [
+module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.3' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: subscription(subscriptionId)
     params: {
@@ -1727,7 +1729,7 @@ module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources
   }
 ]
 
-module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' = [
+module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.2' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
@@ -1771,6 +1773,8 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
             ? createAdditonalNatGateway[i].?outputs.resourceId
             : null
           delegation: subnet.?delegation
+          serviceEndpoints: subnet.?serviceEndpoints
+          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
         }
       ]
       location: vnet.?location ?? deployment().location

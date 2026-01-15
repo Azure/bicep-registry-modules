@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "10398416687685575846"
+    },
+    "name": "API Management Workspace Product API Links",
+    "description": "This module deploys an Product API Link in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "productName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Product API link."
+      }
+    },
+    "apiResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Full resource Id of an API."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/workspaces/products/apiLinks",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+      "properties": {
+        "apiId": "[parameters('apiResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace product API link."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/apiLinks', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace product API link."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace product API link was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

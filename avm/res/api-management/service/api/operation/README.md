@@ -37,7 +37,7 @@ This module deploys an API Management Service API Operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
+| [`description`](#parameter-description) | string | Description of the operation. May include HTML formatting tags. |
 | [`policies`](#parameter-policies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-request) | object | An entity containing request details. |
 | [`responses`](#parameter-responses) | array | An entity containing request details. |
@@ -87,7 +87,7 @@ The name of the parent API. Required if the template is used in a standalone dep
 
 ### Parameter: `description`
 
-Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.
+Description of the operation. May include HTML formatting tags.
 
 - Required: No
 - Type: string
@@ -103,15 +103,27 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-policiesname) | string | The name of the policy. |
-| [`value`](#parameter-policiesvalue) | string | Contents of the Policy as defined by the format. |
+
+### Parameter: `policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `policies.format`
 
 Format of the policyContent.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -127,14 +139,7 @@ Format of the policyContent.
 
 The name of the policy.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `policies.value`
-
-Contents of the Policy as defined by the format.
-
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `request`

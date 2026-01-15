@@ -6,11 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1379752246024845273"
+      "templateHash": "4368338395237990451"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
-    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
+    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://aka.ms/lz-vending/techdocs/bicep)"
   },
   "definitions": {
     "_1.constrainedDelegationTemplatesType": {
@@ -2259,7 +2259,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "8357106121482872089"
+              "templateHash": "1216387000729873608"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -4640,12 +4640,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -4669,12 +4668,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -4787,10 +4793,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -4805,7 +4814,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -4824,7 +4833,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -4833,8 +4842,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4856,8 +4865,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -4922,8 +4931,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4942,8 +4951,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -5097,7 +5106,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -5137,12 +5146,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -5166,12 +5174,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -5284,10 +5299,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -5302,7 +5320,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -5321,7 +5339,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -5330,8 +5348,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5353,8 +5371,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -5419,8 +5437,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5439,8 +5457,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -5594,7 +5612,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -6009,7 +6027,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation')), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', tryGet(if(not(empty(parameters('virtualNetworkSubnets'))), reference(format('createLzNsg[{0}]', copyIndex('value'))), null()), 'outputs', 'name', 'value')))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(parameters('virtualNetworkDeployNatGateway'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), reference('createNatGateway'), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'delegation'), 'serviceEndpoints', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'serviceEndpoints'), 'privateEndpointNetworkPolicies', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'privateEndpointNetworkPolicies')), createObject())]"
                       }
                     ]
                   },
@@ -6024,8 +6042,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16195883788906927531"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15393147213974991892"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -6131,6 +6149,9 @@
                             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "subnetType": {
@@ -6304,6 +6325,9 @@
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "diagnosticSettingFullType": {
@@ -6449,12 +6473,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -6703,7 +6734,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -6744,7 +6775,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "virtualNetwork"
@@ -6821,8 +6852,8 @@
                         "batchSize": 1
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -6891,8 +6922,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "9728353654559466189"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11087937906182478872"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet."
@@ -7148,7 +7179,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -7278,8 +7309,8 @@
                         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -7317,8 +7348,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -7433,8 +7464,8 @@
                       },
                       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
                       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
                       "properties": {
@@ -7474,8 +7505,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -7817,8 +7848,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2305747478751645177"
+                      "version": "0.38.5.1644",
+                      "templateHash": "11959948740766233645"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG)."
@@ -8102,12 +8133,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -8247,10 +8285,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the NSG resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -8282,7 +8323,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -8342,7 +8383,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkSecurityGroup"
@@ -8476,8 +8517,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2305747478751645177"
+                      "version": "0.38.5.1644",
+                      "templateHash": "11959948740766233645"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG)."
@@ -8761,12 +8802,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -8906,10 +8954,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the NSG resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -8941,7 +8992,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -9001,7 +9052,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkSecurityGroup"
@@ -9135,8 +9186,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2305747478751645177"
+                      "version": "0.38.5.1644",
+                      "templateHash": "11959948740766233645"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG)."
@@ -9420,12 +9471,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -9565,10 +9623,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the NSG resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -9600,7 +9661,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -9660,7 +9721,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkSecurityGroup"
@@ -10142,8 +10203,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2305747478751645177"
+                      "version": "0.38.5.1644",
+                      "templateHash": "11959948740766233645"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG)."
@@ -10427,12 +10488,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -10572,10 +10640,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the NSG resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -10607,7 +10678,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -10667,7 +10738,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkSecurityGroup"
@@ -10798,7 +10869,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "2697601347448864025"
+                      "templateHash": "2178170660919155994"
                     }
                   },
                   "parameters": {
@@ -10838,7 +10909,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
                       "properties": {
                         "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
@@ -26167,12 +26238,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -26196,12 +26266,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -26314,10 +26391,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -26332,7 +26412,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -26351,7 +26431,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -26360,8 +26440,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -26383,8 +26463,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -26449,8 +26529,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -26469,8 +26549,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -26624,7 +26704,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -26663,12 +26743,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -26692,12 +26771,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -26810,10 +26896,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -26828,7 +26917,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -26847,7 +26936,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -26856,8 +26945,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -26879,8 +26968,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -26945,8 +27034,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -26965,8 +27054,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -27120,7 +27209,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -27159,12 +27248,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -27188,12 +27276,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -27306,10 +27401,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -27324,7 +27422,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -27343,7 +27441,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -27352,8 +27450,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -27375,8 +27473,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -27441,8 +27539,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -27461,8 +27559,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -27616,7 +27714,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -29529,8 +29627,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2305747478751645177"
+                      "version": "0.38.5.1644",
+                      "templateHash": "11959948740766233645"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG)."
@@ -29814,12 +29912,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -29959,10 +30064,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the NSG resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -29994,7 +30102,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -30054,7 +30162,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "networkSecurityGroup"
@@ -39476,8 +39584,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16195883788906927531"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15393147213974991892"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -39583,6 +39691,9 @@
                             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "subnetType": {
@@ -39756,6 +39867,9 @@
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "diagnosticSettingFullType": {
@@ -39901,12 +40015,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -40155,7 +40276,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -40196,7 +40317,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "virtualNetwork"
@@ -40273,8 +40394,8 @@
                         "batchSize": 1
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -40343,8 +40464,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "9728353654559466189"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11087937906182478872"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet."
@@ -40600,7 +40721,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -40730,8 +40851,8 @@
                         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -40769,8 +40890,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -40885,8 +41006,8 @@
                       },
                       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
                       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
                       "properties": {
@@ -40926,8 +41047,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -45075,8 +45196,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "8154163068428418954"
+                      "version": "0.39.26.7824",
+                      "templateHash": "7741601918225805390"
                     },
                     "name": "Bastion Hosts",
                     "description": "This module deploys a Bastion Host."
@@ -45270,7 +45391,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
                         }
                       }
                     },
@@ -45532,7 +45653,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
                         }
                       }
                     },
@@ -45554,7 +45675,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.9.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/public-ip-address:0.10.0"
                         }
                       }
                     },
@@ -45858,7 +45979,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.8.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -45876,7 +45997,7 @@
                     },
                     "azureBastion": {
                       "type": "Microsoft.Network/bastionHosts",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[coalesce(parameters('tags'), createObject())]",
@@ -45960,8 +46081,8 @@
                     "publicIPAddress": {
                       "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-Bastion-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -46027,8 +46148,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "14921988046704902194"
+                              "version": "0.39.26.7824",
+                              "templateHash": "16564959277054027786"
                             },
                             "name": "Public IP Addresses",
                             "description": "This module deploys a Public IP Address."
@@ -46245,7 +46366,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                                 }
                               }
                             },
@@ -46270,12 +46391,19 @@
                                   "metadata": {
                                     "description": "Optional. Specify the type of lock."
                                   }
+                                },
+                                "notes": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the notes of the lock."
+                                  }
                                 }
                               },
                               "metadata": {
                                 "description": "An AVM-aligned type for a lock.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                                 }
                               }
                             },
@@ -46350,7 +46478,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a role assignment.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                                 }
                               }
                             }
@@ -46463,6 +46591,17 @@
                                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
                               }
                             },
+                            "deleteOption": {
+                              "type": "string",
+                              "nullable": true,
+                              "allowedValues": [
+                                "Delete",
+                                "Detach"
+                              ],
+                              "metadata": {
+                                "description": "Optional. The delete option for the public IP address."
+                              }
+                            },
                             "location": {
                               "type": "string",
                               "defaultValue": "[resourceGroup().location]",
@@ -46496,10 +46635,13 @@
                             },
                             "tags": {
                               "type": "object",
-                              "nullable": true,
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
+                                },
                                 "description": "Optional. Tags of the resource."
-                              }
+                              },
+                              "nullable": true
                             },
                             "diagnosticSettings": {
                               "type": "array",
@@ -46538,7 +46680,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -46556,7 +46698,7 @@
                             },
                             "publicIpAddress": {
                               "type": "Microsoft.Network/publicIPAddresses",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-01-01",
                               "name": "[parameters('name')]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -46572,7 +46714,8 @@
                                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                                "ipTags": "[parameters('ipTags')]"
+                                "ipTags": "[parameters('ipTags')]",
+                                "deleteOption": "[parameters('deleteOption')]"
                               }
                             },
                             "publicIpAddress_lock": {
@@ -46583,7 +46726,7 @@
                               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                               "properties": {
                                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                               },
                               "dependsOn": [
                                 "publicIpAddress"
@@ -46687,7 +46830,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+                              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
                             }
                           }
                         }
@@ -46721,7 +46864,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('azureBastion', '2024-07-01', 'full').location]"
+                      "value": "[reference('azureBastion', '2025-01-01', 'full').location]"
                     },
                     "ipConfAzureBastionSubnet": {
                       "type": "object",
@@ -46781,8 +46924,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "16707109626832623586"
+                      "version": "0.39.26.7824",
+                      "templateHash": "1856697743030659118"
                     },
                     "name": "User Assigned Identities",
                     "description": "This module deploys a User Assigned Identity."
@@ -46845,12 +46988,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -46973,10 +47123,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -47009,7 +47162,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -47040,7 +47193,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "userAssignedIdentity"
@@ -47076,8 +47229,8 @@
                         "batchSize": 1
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -47106,8 +47259,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.34.44.8038",
-                              "templateHash": "13656021764446440473"
+                              "version": "0.39.26.7824",
+                              "templateHash": "1387931959101373036"
                             },
                             "name": "User Assigned Identity Federated Identity Credential",
                             "description": "This module deploys a User Assigned Identity Federated Identity Credential."
@@ -47274,12 +47427,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15010504026239849745"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16016723996074961877"
                     },
                     "name": "Resource Groups",
-                    "description": "This module deploys a Resource Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Resource Group."
                   },
                   "definitions": {
                     "lockType": {
@@ -47303,12 +47455,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -47421,10 +47580,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the storage account resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -47439,7 +47601,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "mode": "Incremental",
@@ -47458,7 +47620,7 @@
                     },
                     "resourceGroup": {
                       "type": "Microsoft.Resources/resourceGroups",
-                      "apiVersion": "2021-04-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -47467,8 +47629,8 @@
                     "resourceGroup_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -47490,8 +47652,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "1203907446887412297"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4527672396498924055"
                             }
                           },
                           "definitions": {
@@ -47556,8 +47718,8 @@
                     "resourceGroup_roleAssignments": {
                       "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -47576,8 +47738,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "6029968255804453751"
+                              "version": "0.39.26.7824",
+                              "templateHash": "336316490653552562"
                             }
                           },
                           "definitions": {
@@ -47731,7 +47893,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                      "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
                     }
                   }
                 }
@@ -47766,7 +47928,7 @@
                       {
                         "name": "value",
                         "count": "[length(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))]",
-                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'))]"
+                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'ipamPoolPrefixAllocations', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'ipamPoolPrefixAllocations'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), tryGet(if(and(and(and(and(parameters('virtualNetworkDeployBastion'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), reference('createBastionNsg'), null()), 'outputs', 'resourceId', 'value'), if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), tryGet(if(and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())), null()), 'outputs', 'resourceId', 'value'), null()), 'delegation', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'delegation'), 'serviceEndpoints', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'serviceEndpoints'), 'privateEndpointNetworkPolicies', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'privateEndpointNetworkPolicies'))]"
                       }
                     ]
                   },
@@ -47794,8 +47956,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16195883788906927531"
+                      "version": "0.39.26.7824",
+                      "templateHash": "15393147213974991892"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -47901,6 +48063,9 @@
                             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "subnetType": {
@@ -48074,6 +48239,9 @@
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
                       }
                     },
                     "diagnosticSettingFullType": {
@@ -48219,12 +48387,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                         }
                       }
                     },
@@ -48473,7 +48648,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -48514,7 +48689,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "virtualNetwork"
@@ -48591,8 +48766,8 @@
                         "batchSize": 1
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -48661,8 +48836,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "9728353654559466189"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11087937906182478872"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet."
@@ -48918,7 +49093,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -49048,8 +49223,8 @@
                         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -49087,8 +49262,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -49203,8 +49378,8 @@
                       },
                       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
                       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
                       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
                       "properties": {
@@ -49244,8 +49419,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "11179987886456111827"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4173704498931603856"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -49452,7 +49627,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "2697601347448864025"
+                      "templateHash": "2178170660919155994"
                     }
                   },
                   "parameters": {
@@ -49492,7 +49667,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
                       "properties": {
                         "enableInternetSecurity": "[parameters('enableInternetSecurity')]",

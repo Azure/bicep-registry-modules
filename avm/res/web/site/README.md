@@ -27,16 +27,16 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Web/sites` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Web/sites` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites)</li></ul> |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies)</li></ul> |
 | `Microsoft.Web/sites/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config)</li></ul> |
 | `Microsoft.Web/sites/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions)</li></ul> |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/hybridConnectionNamespaces/relays)</li></ul> |
-| `Microsoft.Web/sites/slots` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots)</li></ul> |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
-| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config)</li></ul> |
+| `Microsoft.Web/sites/slots` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots)</li></ul> |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
+| `Microsoft.Web/sites/slots/config` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/config)</li></ul> |
 | `Microsoft.Web/sites/slots/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions)</li></ul> |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays)</li></ul> |
 
@@ -317,6 +317,101 @@ module site 'br/public:avm/res/web/site:<version>' = {
       alwaysOn: true
       use32BitWorkerProcess: false
     }
+    slots: [
+      {
+        basicPublishingCredentialsPolicies: [
+          {
+            allow: false
+            name: 'ftp'
+          }
+          {
+            allow: false
+            name: 'scm'
+          }
+        ]
+        configs: [
+          {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
+            name: 'appsettings'
+            properties: {
+              ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+            }
+            storageAccountResourceId: '<storageAccountResourceId>'
+            storageAccountUseIdentityAuthentication: true
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        dnsConfiguration: {
+          dnsMaxCacheTimeout: 45
+          dnsRetryAttemptCount: 3
+          dnsRetryAttemptTimeout: 5
+          dnsServers: [
+            '168.63.129.20'
+          ]
+        }
+        hybridConnectionRelays: [
+          {
+            hybridConnectionResourceId: '<hybridConnectionResourceId>'
+            sendKeyName: 'defaultSender'
+          }
+        ]
+        name: 'slot1'
+        privateEndpoints: [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            service: 'sites-slot1'
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Environment: 'Non-Prod'
+              'hidden-title': 'This is visible in the resource name'
+              Role: 'DeploymentValidation'
+            }
+          }
+        ]
+        roleAssignments: [
+          {
+            name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            name: '<name>'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        siteConfig: {
+          alwaysOn: true
+          metadata: [
+            {
+              name: 'CURRENT_STACK'
+              value: 'dotnetcore'
+            }
+          ]
+        }
+      }
+    ]
   }
 }
 ```
@@ -536,6 +631,103 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "alwaysOn": true,
         "use32BitWorkerProcess": false
       }
+    },
+    "slots": {
+      "value": [
+        {
+          "basicPublishingCredentialsPolicies": [
+            {
+              "allow": false,
+              "name": "ftp"
+            },
+            {
+              "allow": false,
+              "name": "scm"
+            }
+          ],
+          "configs": [
+            {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
+              "name": "appsettings",
+              "properties": {
+                "ApplicationInsightsAgent_EXTENSION_VERSION": "~2"
+              },
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "storageAccountUseIdentityAuthentication": true
+            }
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "dnsConfiguration": {
+            "dnsMaxCacheTimeout": 45,
+            "dnsRetryAttemptCount": 3,
+            "dnsRetryAttemptTimeout": 5,
+            "dnsServers": [
+              "168.63.129.20"
+            ]
+          },
+          "hybridConnectionRelays": [
+            {
+              "hybridConnectionResourceId": "<hybridConnectionResourceId>",
+              "sendKeyName": "defaultSender"
+            }
+          ],
+          "name": "slot1",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "service": "sites-slot1",
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Environment": "Non-Prod",
+                "hidden-title": "This is visible in the resource name",
+                "Role": "DeploymentValidation"
+              }
+            }
+          ],
+          "roleAssignments": [
+            {
+              "name": "845ed19c-78e7-4422-aa3d-b78b67cd1234",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "name": "<name>",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "siteConfig": {
+            "alwaysOn": true,
+            "metadata": [
+              {
+                "name": "CURRENT_STACK",
+                "value": "dotnetcore"
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }
@@ -727,6 +919,101 @@ param siteConfig = {
   alwaysOn: true
   use32BitWorkerProcess: false
 }
+param slots = [
+  {
+    basicPublishingCredentialsPolicies: [
+      {
+        allow: false
+        name: 'ftp'
+      }
+      {
+        allow: false
+        name: 'scm'
+      }
+    ]
+    configs: [
+      {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
+        name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+        }
+        storageAccountResourceId: '<storageAccountResourceId>'
+        storageAccountUseIdentityAuthentication: true
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsConfiguration: {
+      dnsMaxCacheTimeout: 45
+      dnsRetryAttemptCount: 3
+      dnsRetryAttemptTimeout: 5
+      dnsServers: [
+        '168.63.129.20'
+      ]
+    }
+    hybridConnectionRelays: [
+      {
+        hybridConnectionResourceId: '<hybridConnectionResourceId>'
+        sendKeyName: 'defaultSender'
+      }
+    ]
+    name: 'slot1'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'sites-slot1'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    siteConfig: {
+      alwaysOn: true
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnetcore'
+        }
+      ]
+    }
+  }
+]
 ```
 
 </details>
@@ -1559,7 +1846,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+        }
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
       }
@@ -1720,6 +2011,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         configs: [
           {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
             name: 'appsettings'
             storageAccountResourceId: '<storageAccountResourceId>'
             storageAccountUseIdentityAuthentication: true
@@ -1857,7 +2149,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "configs": {
       "value": [
         {
+          "applicationInsightResourceId": "<applicationInsightResourceId>",
           "name": "appsettings",
+          "properties": {
+            "ApplicationInsightsAgent_EXTENSION_VERSION": "~2"
+          },
           "storageAccountResourceId": "<storageAccountResourceId>",
           "storageAccountUseIdentityAuthentication": true
         },
@@ -2046,6 +2342,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "configs": [
             {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
               "name": "appsettings",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "storageAccountUseIdentityAuthentication": true
@@ -2173,7 +2470,11 @@ param basicPublishingCredentialsPolicies = [
 ]
 param configs = [
   {
+    applicationInsightResourceId: '<applicationInsightResourceId>'
     name: 'appsettings'
+    properties: {
+      ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+    }
     storageAccountResourceId: '<storageAccountResourceId>'
     storageAccountUseIdentityAuthentication: true
   }
@@ -2334,6 +2635,7 @@ param slots = [
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
@@ -2532,7 +2834,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
+        properties: {
+          ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+        }
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
       }
@@ -2643,6 +2949,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
         configs: [
           {
+            applicationInsightResourceId: '<applicationInsightResourceId>'
             name: 'appsettings'
             storageAccountResourceId: '<storageAccountResourceId>'
             storageAccountUseIdentityAuthentication: true
@@ -2770,7 +3077,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "configs": {
       "value": [
         {
+          "applicationInsightResourceId": "<applicationInsightResourceId>",
           "name": "appsettings",
+          "properties": {
+            "ApplicationInsightsAgent_EXTENSION_VERSION": "~3"
+          },
           "storageAccountResourceId": "<storageAccountResourceId>",
           "storageAccountUseIdentityAuthentication": true
         }
@@ -2907,6 +3218,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
           ],
           "configs": [
             {
+              "applicationInsightResourceId": "<applicationInsightResourceId>",
               "name": "appsettings",
               "storageAccountResourceId": "<storageAccountResourceId>",
               "storageAccountUseIdentityAuthentication": true
@@ -3024,7 +3336,11 @@ param basicPublishingCredentialsPolicies = [
 ]
 param configs = [
   {
+    applicationInsightResourceId: '<applicationInsightResourceId>'
     name: 'appsettings'
+    properties: {
+      ApplicationInsightsAgent_EXTENSION_VERSION: '~3'
+    }
     storageAccountResourceId: '<storageAccountResourceId>'
     storageAccountUseIdentityAuthentication: true
   }
@@ -3135,6 +3451,7 @@ param slots = [
     ]
     configs: [
       {
+        applicationInsightResourceId: '<applicationInsightResourceId>'
         name: 'appsettings'
         storageAccountResourceId: '<storageAccountResourceId>'
         storageAccountUseIdentityAuthentication: true
@@ -3381,6 +3698,7 @@ param siteConfig = {
 | [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: '1.2', ftpsState: 'FtpsOnly'. |
 | [`slots`](#parameter-slots) | array | Configuration for deployment slots for an app. |
+| [`sshEnabled`](#parameter-sshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
@@ -8936,6 +9254,7 @@ Configuration for deployment slots for an app.
 | [`roleAssignments`](#parameter-slotsroleassignments) | array | Array of role assignments to create. |
 | [`serverFarmResourceId`](#parameter-slotsserverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
 | [`siteConfig`](#parameter-slotssiteconfig) | object | The site config object. |
+| [`sshEnabled`](#parameter-slotssshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-slotsstorageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-slotstags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-slotsvirtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
@@ -14337,6 +14656,13 @@ The site config object.
 - Required: No
 - Type: object
 
+### Parameter: `slots.sshEnabled`
+
+Whether to enable SSH access.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `slots.storageAccountRequired`
 
 Checks if Customer provided storage account is required.
@@ -14375,6 +14701,13 @@ To enable pulling image over Virtual Network.
 ### Parameter: `slots.vnetRouteAllEnabled`
 
 Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
+
+- Required: No
+- Type: bool
+
+### Parameter: `sshEnabled`
+
+Whether to enable SSH access.
 
 - Required: No
 - Type: bool
@@ -14422,7 +14755,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 

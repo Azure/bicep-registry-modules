@@ -174,6 +174,20 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Cdn/profiles' {
+            # Removing custom removal logic as the default `Remove-AzResource` does not correctly handle the resource's inner workings
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
+            if ($cdnProfile) {
+                if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                    az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+                }
+            } else {
+                Write-Warning "Unable to find CDN profile [$resourceName] in resource group [$resourceGroupName]"
+            }
+            break
+        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
