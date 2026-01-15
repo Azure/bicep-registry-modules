@@ -131,11 +131,16 @@ param databases databaseType[]?
 
 @description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
 @allowed([
+  -1
   1
   2
   3
 ])
 param availabilityZones int[] = [1, 2, 3]
+
+// var zoneValidation = contains(availabilityZones, -1) && length(availabilityZones) > 1
+//   ? fail('If using -1 to indicate no availability zones, it must be the only value in the array.')
+//   : true
 
 var enableReferencedModulesTelemetry = false
 
@@ -265,7 +270,13 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
       : null
   }
   // zones: map(availabilityZones, zone => '${zone}')
-  zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
+  // zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
+  // zones: contains(availabilityZones, -1) ? null : map(availabilityZones, zone => '${zone}')
+  zones: contains(availabilityZones, -1)
+    ? length(availabilityZones) > 1
+        ? fail('If using -1 to indicate no availability zones, it must be the only value in the array.')
+        : null
+    : map(availabilityZones, zone => '${zone}')
 }
 
 resource kustoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
