@@ -149,7 +149,7 @@ jobs:
           outputFormat: Csv
           outputPath: "${{ env.PSRuleOutputFilePath }}"
           option: "${{ github.workspace }}/${{ env.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
-          source: "${{ env.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
+          source: "${{ env.psrulePath}}/.ps-rule/suppression-groups/" # Path to folder containing suppression rules to use for analysis.
           summary: false # Disabling as taken care in customized task
 
       # [Print to Summary] task(s)
