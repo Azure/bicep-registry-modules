@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.18.1
+
+### Changes
+
+- Enabling child module `<avm/res/path/to/child-module>` for publishing (added telemetry option)
+
+### Breaking Changes
+
+- None
+
 ## 0.18.0
 
 ### Changes
