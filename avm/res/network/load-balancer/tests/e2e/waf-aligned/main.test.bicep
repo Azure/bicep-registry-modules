@@ -74,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'privateIPConfig1'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          availabilityZones: []
+          availabilityZones: [1, 2, 3]
           // availabilityZones: [
           //   1
           //   2
