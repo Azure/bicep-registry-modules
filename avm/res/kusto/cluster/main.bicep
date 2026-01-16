@@ -129,7 +129,7 @@ param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
 
-@description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the resource and not be unset.')
+@description('Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again.')
 @allowed([
   1
   2
