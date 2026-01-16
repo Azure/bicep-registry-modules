@@ -20,8 +20,8 @@ param serviceShort string = 'nlbwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var enforcedLocation = 'westcentralus'
-// var enforcedLocation = 'uksouth'
+// var enforcedLocation = 'westcentralus'
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
