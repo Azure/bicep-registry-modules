@@ -81,7 +81,7 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
             locationName: location
           }
           {
-            failoverPriority: 0
+            failoverPriority: 1
             isZoneRedundant: zoneRedundant
             locationName: secondaryLocation!
           }
