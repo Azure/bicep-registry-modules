@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "11921412446024663103"
+      "version": "0.39.26.7824",
+      "templateHash": "13768665059903680106"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize Your Code Solution Accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and enterprise-grade environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -232,7 +232,7 @@
     },
     "appIdentity": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('identity-app-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -715,7 +715,7 @@
     "logAnalyticsWorkspace": {
       "condition": "[or(parameters('enableMonitoring'), parameters('enablePrivateNetworking'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('log-analytics-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3817,7 +3817,7 @@
     "applicationInsights": {
       "condition": "[parameters('enableMonitoring')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('app-insights-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4559,7 +4559,7 @@
     "network": {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('network-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4595,8 +4595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "13970442413437769151"
+              "version": "0.39.26.7824",
+              "templateHash": "1083280651980647062"
             }
           },
           "parameters": {
@@ -4670,7 +4670,7 @@
           "resources": [
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('network-{0}-create', parameters('resourcesName')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -4793,8 +4793,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "9017613383873630514"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18288949354001093318"
                     },
                     "name": "Secure Virtual Network Module",
                     "description": "This module creates a secure Virtual Network with optional Azure Bastion Host and Jumpbox VM. It includes NSGs for each subnet and integrates with Log Analytics for monitoring."
@@ -5267,7 +5267,7 @@
                   "resources": {
                     "virtualNetwork": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-virtualNetwork', parameters('resourcesName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5304,8 +5304,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "2277907531928238475"
+                              "version": "0.39.26.7824",
+                              "templateHash": "5560559728098329763"
                             }
                           },
                           "definitions": {
@@ -5690,7 +5690,7 @@
                               },
                               "condition": "[not(empty(tryGet(parameters('subnets')[copyIndex()], 'networkSecurityGroup')))]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-{1}-networksecuritygroup', parameters('name'), tryGet(parameters('subnets')[copyIndex()], 'networkSecurityGroup', 'name')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -6342,7 +6342,7 @@
                             },
                             "virtualNetwork": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-virtualNetwork', parameters('name')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -8056,7 +8056,7 @@
                     "bastionHost": {
                       "condition": "[not(empty(parameters('bastionConfiguration')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-bastionHost', parameters('resourcesName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -8096,8 +8096,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "8194910120480692682"
+                              "version": "0.39.26.7824",
+                              "templateHash": "7469675636920116039"
                             }
                           },
                           "definitions": {
@@ -8191,7 +8191,7 @@
                             "bastionSubnet": {
                               "condition": "[not(empty(parameters('subnetAddressPrefixes')))]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('bastionSubnet-{0}', parameters('vnetName')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -8599,7 +8599,7 @@
                             },
                             "bastionHost": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('bastionHost-{0}-{1}', parameters('vnetName'), parameters('name')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -9945,7 +9945,7 @@
                     "jumpbox": {
                       "condition": "[not(empty(parameters('jumpboxConfiguration')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-jumpbox', parameters('resourcesName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -9991,8 +9991,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.36.177.2456",
-                              "templateHash": "11353990117260256710"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4187236982969714047"
                             }
                           },
                           "definitions": {
@@ -10400,7 +10400,7 @@
                             "nsg": {
                               "condition": "[not(empty(parameters('subnet')))]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-{1}', parameters('vnetName'), tryGet(parameters('subnet'), 'networkSecurityGroup', 'name'))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -11053,7 +11053,7 @@
                             "subnetResource": {
                               "condition": "[not(empty(parameters('subnet')))]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[coalesce(tryGet(parameters('subnet'), 'name'), format('{0}-jumpbox-subnet', parameters('vnetName')))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -11467,7 +11467,7 @@
                             },
                             "maintenanceConfiguration": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-jumpbox-maintenance-config', variables('vmName')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -11870,7 +11870,7 @@
                             },
                             "windowsVmDataCollectionRules": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-jumpbox-data-collection-rule', variables('vmName')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -12821,7 +12821,7 @@
                             },
                             "proximityPlacementGroup": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-jumpbox-prox-place-group', variables('vmName')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -13162,7 +13162,7 @@
                             },
                             "vm": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[take(format('{0}-jumpbox', variables('vmName')), 64)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -21711,28 +21711,28 @@
               "metadata": {
                 "description": "Name of the Virtual Network resource."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2022-09-01').outputs.name.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2025-04-01').outputs.name.value]"
             },
             "vnetResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Resource ID of the Virtual Network."
               },
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2022-09-01').outputs.resourceId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2025-04-01').outputs.resourceId.value]"
             },
             "subnetWebResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Resource ID of the \"web\" subnet."
               },
-              "value": "[coalesce(tryGet(first(filter(reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2022-09-01').outputs.subnets.value, lambda('s', equals(lambdaVariables('s').name, 'web')))), 'resourceId'), '')]"
+              "value": "[coalesce(tryGet(first(filter(reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2025-04-01').outputs.subnets.value, lambda('s', equals(lambdaVariables('s').name, 'web')))), 'resourceId'), '')]"
             },
             "subnetPrivateEndpointsResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Resource ID of the \"peps\" subnet for Private Endpoints."
               },
-              "value": "[coalesce(tryGet(first(filter(reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2022-09-01').outputs.subnets.value, lambda('s', equals(lambdaVariables('s').name, 'peps')))), 'resourceId'), '')]"
+              "value": "[coalesce(tryGet(first(filter(reference(resourceId('Microsoft.Resources/deployments', take(format('network-{0}-create', parameters('resourcesName')), 64)), '2025-04-01').outputs.subnets.value, lambda('s', equals(lambdaVariables('s').name, 'peps')))), 'resourceId'), '')]"
             }
           }
         }
@@ -21743,7 +21743,7 @@
     },
     "aiServices": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('aiservices-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -21806,8 +21806,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "15767522715261793871"
+              "version": "0.39.26.7824",
+              "templateHash": "9808410001216713019"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -22238,7 +22238,7 @@
             "cognitiveServicesPrivateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-cognitiveservices-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -22263,8 +22263,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -22352,7 +22352,7 @@
             "openAiPrivateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-openai-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -22377,8 +22377,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -22466,7 +22466,7 @@
             "aiServicesPrivateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-ai-services-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -22491,8 +22491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -22579,7 +22579,7 @@
             },
             "cognitiveService": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-aiservices-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -22624,7 +22624,7 @@
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('cognitiveServicesPrivateDnsZone', '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('openAiPrivateDnsZone', '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('aiServicesPrivateDnsZone', '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('cognitiveServicesPrivateDnsZone', '2025-04-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('openAiPrivateDnsZone', '2025-04-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('aiServicesPrivateDnsZone', '2025-04-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
@@ -24904,7 +24904,7 @@
             },
             "aiProject": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-ai-project-{1}-deployment', parameters('name'), parameters('projectName')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -24941,8 +24941,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "12248728725671717667"
+                      "version": "0.39.26.7824",
+                      "templateHash": "11061299386753730848"
                     }
                   },
                   "definitions": {
@@ -25146,7 +25146,7 @@
                         "count": "[length(variables('formattedRoleAssignments'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(parameters('name'), variables('formattedRoleAssignments')[copyIndex()].roleDefinitionId, variables('formattedRoleAssignments')[copyIndex()].principalId))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -25483,7 +25483,7 @@
     },
     "storageAccount": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('storage-account-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -25533,8 +25533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "7255469486907950736"
+              "version": "0.39.26.7824",
+              "templateHash": "9438556130375523807"
             }
           },
           "definitions": {
@@ -25732,7 +25732,7 @@
             "blobPrivateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-blob-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -25757,8 +25757,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -25846,7 +25846,7 @@
             "filePrivateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-file-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -25871,8 +25871,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -25959,7 +25959,7 @@
             },
             "storageAccount": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-sa-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -26023,7 +26023,7 @@
                     "value": true
                   },
                   "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', createArray()))]",
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('blobPrivateDnsZone', '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), '')))), 'service', 'blob', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('filePrivateDnsZone', '2022-09-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), '')))), 'service', 'file', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('blobPrivateDnsZone', '2025-04-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'blobPrivateDnsZoneResourceId')), '')))), 'service', 'blob', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('filePrivateDnsZone', '2025-04-01').resourceId, ''), tryGet(parameters('privateNetworking'), 'filePrivateDnsZoneResourceId')), '')))), 'service', 'file', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
                   },
@@ -31809,7 +31809,7 @@
     },
     "cosmosDb": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('cosmos-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -31846,8 +31846,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "970388626825967760"
+              "version": "0.39.26.7824",
+              "templateHash": "8912670287677504204"
             }
           },
           "definitions": {
@@ -32047,7 +32047,7 @@
             "privateDnsZone": {
               "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-documents-pdns-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -32072,8 +32072,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.177.2456",
-                      "templateHash": "3193390016268446606"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10611300857486351648"
                     }
                   },
                   "parameters": {
@@ -32160,7 +32160,7 @@
             },
             "cosmosAccount": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('{0}-account-deployment', parameters('name')), 64)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -32197,7 +32197,7 @@
                   "automaticFailover": {
                     "value": "[not(empty(parameters('secondaryLocation')))]"
                   },
-                  "failoverLocations": "[if(not(empty(parameters('secondaryLocation'))), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', parameters('zoneRedundant'), 'locationName', parameters('location')), createObject('failoverPriority', 0, 'isZoneRedundant', parameters('zoneRedundant'), 'locationName', parameters('secondaryLocation')))), createObject('value', createArray()))]",
+                  "failoverLocations": "[if(not(empty(parameters('secondaryLocation'))), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', parameters('zoneRedundant'), 'locationName', parameters('location')), createObject('failoverPriority', 1, 'isZoneRedundant', parameters('zoneRedundant'), 'locationName', parameters('secondaryLocation')))), createObject('value', createArray()))]",
                   "enableMultipleWriteLocations": {
                     "value": "[not(empty(parameters('secondaryLocation')))]"
                   },
@@ -32210,7 +32210,7 @@
                     "value": "[not(equals(parameters('privateNetworking'), null()))]"
                   },
                   "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', createArray()))]",
-                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('privateDnsZone', '2022-09-01').resourceId, ''), coalesce(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId'), '')), '')))), 'service', 'Sql', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId')), coalesce(listOutputsWithSecureValues('privateDnsZone', '2025-04-01').resourceId, ''), coalesce(tryGet(parameters('privateNetworking'), 'privateDnsZoneResourceId'), '')), '')))), 'service', 'Sql', 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
                   "sqlDatabases": {
                     "value": [
                       {
@@ -36085,7 +36085,7 @@
     },
     "containerAppsEnvironment": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('container-env-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -36117,7 +36117,7 @@
             }
           },
           "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', reference('applicationInsights').outputs.connectionString.value), createObject('value', null()))]",
-          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listOutputsWithSecureValues('logAnalyticsWorkspace', '2022-09-01').primarySharedKey))), createObject('value', createObject()))]",
+          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listOutputsWithSecureValues('logAnalyticsWorkspace', '2025-04-01').primarySharedKey))), createObject('value', createObject()))]",
           "workloadProfiles": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('maximumCount', 3, 'minimumCount', 3, 'name', 'CAW01', 'workloadProfileType', 'D4'))), createObject('value', createArray(createObject('name', 'Consumption', 'workloadProfileType', 'Consumption'))))]",
           "tags": {
             "value": "[variables('allTags')]"
@@ -37005,7 +37005,7 @@
     },
     "containerAppFrontend": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('container-app-frontend-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -38509,7 +38509,7 @@
     },
     "containerAppBackend": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('container-app-backend-{0}-deployment', variables('resourcesName')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -38538,7 +38538,7 @@
               {
                 "name": "cmsabackend",
                 "image": "[format('{0}/{1}:{2}', parameters('backendContainerRegistryHostname'), parameters('backendContainerImageName'), parameters('backendContainerImageTag'))]",
-                "env": "[concat(createArray(createObject('name', 'COSMOSDB_ENDPOINT', 'value', listOutputsWithSecureValues('cosmosDb', '2022-09-01').endpoint), createObject('name', 'COSMOSDB_DATABASE', 'value', reference('cosmosDb').outputs.databaseName.value), createObject('name', 'COSMOSDB_BATCH_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.batch), createObject('name', 'COSMOSDB_FILE_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.file), createObject('name', 'COSMOSDB_LOG_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.log), createObject('name', 'AZURE_BLOB_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_BLOB_CONTAINER_NAME', 'value', variables('appStorageContainerName')), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', format('https://{0}.openai.azure.com/', reference('aiServices').outputs.name.value)), createObject('name', 'MIGRATOR_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'PICKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'FIXER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SEMANTIC_VERIFIER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SYNTAX_CHECKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SELECTION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'TERMINATION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_PROJECT_NAME', 'value', reference('aiServices').outputs.project.value.name), createObject('name', 'AZURE_AI_AGENT_RESOURCE_GROUP_NAME', 'value', resourceGroup().name), createObject('name', 'AZURE_AI_AGENT_SUBSCRIPTION_ID', 'value', subscription().subscriptionId), createObject('name', 'AZURE_AI_AGENT_ENDPOINT', 'value', reference('aiServices').outputs.project.value.apiEndpoint), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('appIdentity').outputs.clientId.value)), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY', 'value', reference('applicationInsights').outputs.instrumentationKey.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]",
+                "env": "[concat(createArray(createObject('name', 'COSMOSDB_ENDPOINT', 'value', listOutputsWithSecureValues('cosmosDb', '2025-04-01').endpoint), createObject('name', 'COSMOSDB_DATABASE', 'value', reference('cosmosDb').outputs.databaseName.value), createObject('name', 'COSMOSDB_BATCH_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.batch), createObject('name', 'COSMOSDB_FILE_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.file), createObject('name', 'COSMOSDB_LOG_CONTAINER', 'value', reference('cosmosDb').outputs.containerNames.value.log), createObject('name', 'AZURE_BLOB_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_BLOB_CONTAINER_NAME', 'value', variables('appStorageContainerName')), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', format('https://{0}.openai.azure.com/', reference('aiServices').outputs.name.value)), createObject('name', 'MIGRATOR_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'PICKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'FIXER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SEMANTIC_VERIFIER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SYNTAX_CHECKER_AGENT_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'SELECTION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'TERMINATION_MODEL_DEPLOY', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME', 'value', variables('modelDeployment').name), createObject('name', 'AZURE_AI_AGENT_PROJECT_NAME', 'value', reference('aiServices').outputs.project.value.name), createObject('name', 'AZURE_AI_AGENT_RESOURCE_GROUP_NAME', 'value', resourceGroup().name), createObject('name', 'AZURE_AI_AGENT_SUBSCRIPTION_ID', 'value', subscription().subscriptionId), createObject('name', 'AZURE_AI_AGENT_ENDPOINT', 'value', reference('aiServices').outputs.project.value.apiEndpoint), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('appIdentity').outputs.clientId.value)), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY', 'value', reference('applicationInsights').outputs.instrumentationKey.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]",
                 "resources": {
                   "cpu": 1,
                   "memory": "2.0Gi"
