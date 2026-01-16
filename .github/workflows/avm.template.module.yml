@@ -72,7 +72,7 @@ jobs:
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psrulePath: "utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
 
@@ -99,7 +99,7 @@ jobs:
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
-          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psrulePath: "utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
 
