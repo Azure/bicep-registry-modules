@@ -86,3 +86,7 @@ rule:
 
 suppression:
   - .ps-rule/suppressions/**/*.yaml
+
+# baseline:
+#   - .ps-rule/baselines/*.yaml
+
