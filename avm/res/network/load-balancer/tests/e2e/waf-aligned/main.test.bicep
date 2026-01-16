@@ -21,7 +21,7 @@ param serviceShort string = 'nlbwaf'
 param namePrefix string = '#_namePrefix_#'
 
 // var enforcedLocation = 'westcentralus'
-var enforcedLocation = 'ukSouth'
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
