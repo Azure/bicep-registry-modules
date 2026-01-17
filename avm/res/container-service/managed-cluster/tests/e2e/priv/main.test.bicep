@@ -53,10 +53,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      enablePrivateCluster: true
+      apiServerAccessProfile: {
+        enablePrivateCluster: true
+        privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
+      }
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
       primaryAgentPoolProfiles: [
         {
@@ -107,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
       skuTier: 'Standard'
       dnsServiceIP: '10.10.200.10'
       serviceCidr: '10.10.200.0/24'
-      privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
