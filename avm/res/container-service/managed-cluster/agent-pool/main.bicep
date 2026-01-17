@@ -46,7 +46,7 @@ param gpuInstanceProfile resourceInput<'Microsoft.ContainerService/managedCluste
 param gpuProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuProfile?
 
 @description('Optional. This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts).')
-param hostGroupId string?
+param hostGroupResourceId string?
 
 @description('Optional. Kubelet configuration on agent pool nodes.')
 param kubeletConfig resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletConfig?
@@ -188,7 +188,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-0
     gatewayProfile: mode == 'Gateway' ? gatewayProfile : null
     gpuInstanceProfile: gpuInstanceProfile
     gpuProfile: gpuProfile
-    hostGroupID: hostGroupId
+    hostGroupID: hostGroupResourceId
     kubeletConfig: kubeletConfig
     kubeletDiskType: kubeletDiskType
     linuxOSConfig: linuxOSConfig

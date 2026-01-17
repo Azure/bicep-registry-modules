@@ -434,7 +434,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' 
       gatewayProfile: profile.?gatewayProfile
       gpuInstanceProfile: profile.?gpuInstanceProfile
       gpuProfile: profile.?gpuProfile
-      hostGroupID: profile.?hostGroupId
+      hostGroupID: profile.?hostGroupResourceId
       kubeletConfig: profile.?kubeletConfig
       kubeletDiskType: profile.?kubeletDiskType
       linuxOSConfig: profile.?linuxOSConfig
@@ -671,7 +671,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       gatewayProfile: agentPool.?gatewayProfile
       gpuInstanceProfile: agentPool.?gpuInstanceProfile
       gpuProfile: agentPool.?gpuProfile
-      hostGroupId: agentPool.?hostGroupId
+      hostGroupResourceId: agentPool.?hostGroupResourceId
       kubeletConfig: agentPool.?kubeletConfig
       kubeletDiskType: agentPool.?kubeletDiskType
       linuxOSConfig: agentPool.?linuxOSConfig
@@ -924,7 +924,7 @@ type agentPoolType = {
   gpuProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuProfile?
 
   @description('Optional. Host group resource ID.')
-  hostGroupId: string?
+  hostGroupResourceId: string?
 
   @description('Optional. Kubelet configuration on agent pool nodes.')
   kubeletConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletConfig?
