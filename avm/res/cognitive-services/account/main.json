@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15302696710472046095"
+      "templateHash": "16985712006258491784"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -103,8 +103,9 @@
             },
             "version": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The version of Cognitive Services account deployment model."
+                "description": "Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version."
               }
             }
           },

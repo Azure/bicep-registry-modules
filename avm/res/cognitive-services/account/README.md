@@ -427,12 +427,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         model: {
           format: 'OpenAI'
           name: 'gpt-4o'
-          version: '2024-11-20'
         }
         name: 'gpt-4o'
         sku: {
           capacity: 10
-          name: 'Standard'
+          name: 'GlobalStandard'
         }
       }
     ]
@@ -468,13 +467,12 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "gpt-4o"
           },
           "name": "gpt-4o",
           "sku": {
             "capacity": 10,
-            "name": "Standard"
+            "name": "GlobalStandard"
           }
         }
       ]
@@ -503,12 +501,11 @@ param deployments = [
     model: {
       format: 'OpenAI'
       name: 'gpt-4o'
-      version: '2024-11-20'
     }
     name: 'gpt-4o'
     sku: {
       capacity: 10
-      name: 'Standard'
+      name: 'GlobalStandard'
     }
   }
 ]
@@ -2318,7 +2315,12 @@ Properties of Cognitive Services account deployment model.
 | :-- | :-- | :-- |
 | [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
 | [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
-| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. Required if the model does not have a default version. |
 
 ### Parameter: `deployments.model.format`
 
@@ -2336,9 +2338,9 @@ The name of Cognitive Services account deployment model.
 
 ### Parameter: `deployments.model.version`
 
-The version of Cognitive Services account deployment model.
+The version of Cognitive Services account deployment model. Required if the model does not have a default version.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `deployments.name`
