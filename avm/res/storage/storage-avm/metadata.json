@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-registry-modules/main/avm/res/storage/storage-avm/0.1.0/module.json",
+  "name": "storage-avm",
+  "description": "This module deploys an Azure Storage Account.",
+  "owner": "Azure Verified Modules",
+  "version": "0.1.0",
+  "keywords": [
+    "storage",
+    "storage-account",
+    "avm"
+  ]
+}

@@ -1,0 +1,44 @@
+name: Bicep Validation
+
+on:
+  pull_request:
+    paths:
+      - 'avm/res/storage/storage-avm/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'avm/res/storage/storage-avm/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Validate Bicep Syntax
+        run: |
+          az bicep build --file avm/res/storage/storage-avm/main.bicep
+
+      - name: Validate Test Deployments
+        run: |
+          for test in avm/res/storage/storage-avm/tests/e2e/*/main.test.bicep; do
+            echo "Validating: $test"
+            az bicep build --file "$test"
+          done
+
+      - name: Run PSRule Validation
+        run: |
+          # Install PSRule for Azure
+          Install-Module -Name PSRule.Rules.Azure -Repository PSGallery -Force
+          # Run validation
+          Invoke-PSRule -Module PSRule.Rules.Azure -InputPath avm/res/storage/storage-avm/
+        shell: pwsh
+        continue-on-error: true

@@ -1,0 +1,222 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "9938175560375426950"
+    },
+    "name": "Storage Account - Default Deployment Test",
+    "description": "Tests the Storage Account module with default parameters"
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for test resources"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-test-default', uniqueString(deployment().name))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('stg{0}', uniqueString(resourceGroup().id))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "sku": {
+            "value": "Standard_LRS"
+          },
+          "kind": {
+            "value": "StorageV2"
+          },
+          "accessTier": {
+            "value": "Hot"
+          },
+          "httpsOnly": {
+            "value": true
+          },
+          "tags": {
+            "value": {
+              "environment": "test",
+              "scenario": "defaults"
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "5293527215825264507"
+            },
+            "name": "Storage Account",
+            "description": "This module deploys a Storage Account.",
+            "owner": "Azure Verified Modules"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Storage Account."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Required. Location for the Storage Account."
+              }
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "Standard_LRS",
+              "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Standard_ZRS",
+                "Premium_LRS",
+                "Premium_ZRS"
+              ],
+              "metadata": {
+                "description": "Optional. Storage Account SKU."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "defaultValue": "StorageV2",
+              "allowedValues": [
+                "Storage",
+                "StorageV2",
+                "BlobStorage",
+                "FileStorage",
+                "BlockBlobStorage"
+              ],
+              "metadata": {
+                "description": "Optional. Storage Account kind."
+              }
+            },
+            "accessTier": {
+              "type": "string",
+              "defaultValue": "Hot",
+              "allowedValues": [
+                "Hot",
+                "Cool"
+              ],
+              "metadata": {
+                "description": "Optional. Access tier for the Storage Account."
+              }
+            },
+            "httpsOnly": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable HTTPS traffic only."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags for the Storage Account."
+              }
+            },
+            "publicNetworkAccess": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "metadata": {
+                "description": "Optional. Enable public network access."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('sku')]"
+              },
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "accessTier": "[parameters('accessTier')]",
+                "supportsHttpsTrafficOnly": "[parameters('httpsOnly')]",
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+              },
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Account resource ID."
+              },
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Account name."
+              },
+              "value": "[parameters('name')]"
+            },
+            "primaryBlobEndpoint": {
+              "type": "string",
+              "metadata": {
+                "description": "Primary blob endpoint."
+              },
+              "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-01-01').primaryEndpoints.blob]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Account location."
+              },
+              "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-01-01', 'full').location]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Account resource ID"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-test-default', uniqueString(deployment().name))), '2025-04-01').outputs.resourceId.value]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Account name"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-test-default', uniqueString(deployment().name))), '2025-04-01').outputs.name.value]"
+    },
+    "primaryBlobEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Primary blob endpoint"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-test-default', uniqueString(deployment().name))), '2025-04-01').outputs.primaryBlobEndpoint.value]"
+    }
+  }
+}
