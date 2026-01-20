@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "7143065015158091886"
+      "templateHash": "18056380148876211556"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
@@ -480,7 +480,7 @@
                 "asn": {
                   "type": "int",
                   "metadata": {
-                    "description": "Required. ASN for BGP."
+                    "description": "Required. ASN for BGP. The default Azure VPN Gateway ASN is 65515. Custom ASN values require contacting Azure Support to enable ASN modification on the VPN Gateway."
                   }
                 },
                 "bgpPeeringAddress": {
@@ -1171,7 +1171,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1320,7 +1320,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -6158,7 +6158,7 @@
         "name": "p2sVpnGatewayModule",
         "count": "[length(variables('hubConfigurations'))]"
       },
-      "condition": "[variables('hubConfigurations')[copyIndex()].deployP2sGateway]",
+      "condition": "[and(variables('hubConfigurations')[copyIndex()].deployP2sGateway, variables('createP2sVpnServerConfig'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'p2sVpnParameters'), 'vpnGatewayName')]",
@@ -6648,7 +6648,7 @@
             "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 's2sVpnParameters'), 'natRules')]"
           },
           "vpnConnections": {
-            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 's2sVpnParameters'), 'vpnConnections')]"
+            "value": "[coalesce(tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 's2sVpnParameters'), 'vpnConnections'), createArray())]"
           },
           "vpnGatewayScaleUnit": {
             "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 's2sVpnParameters'), 'vpnGatewayScaleUnit')]"
@@ -8586,7 +8586,7 @@
             "value": "[reference(format('virtualHubModule[{0}]', variables('hubConfigurations')[copyIndex()].index)).outputs.resourceId.value]"
           },
           "allowNonVirtualWanTraffic": {
-            "value": "[tryGet(variables('hubConfigurations')[copyIndex()].hub, 'allowBranchToBranchTraffic')]"
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'expressRouteParameters'), 'allowNonVirtualWanTraffic')]"
           },
           "autoScaleConfigurationBoundsMin": {
             "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'expressRouteParameters'), 'autoScaleConfigurationBoundsMin')]"
@@ -8954,14 +8954,14 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group where the resource is deployed."
+        "description": "Required. The resource group where the resource is deployed."
       },
       "value": "[resourceGroup().name]"
     },
     "virtualWan": {
       "type": "object",
       "metadata": {
-        "description": "Object containing the Virtual WAN information."
+        "description": "Required. Object containing the Virtual WAN information."
       },
       "value": {
         "name": "[reference('virtualWan').outputs.name.value]",
@@ -8972,7 +8972,7 @@
     "virtualHubs": {
       "type": "array",
       "metadata": {
-        "description": "The array containing the Virtual Hub information with deployment status."
+        "description": "Required. The array containing the Virtual Hub information with deployment status."
       },
       "copy": {
         "count": "[length(variables('hubConfigurations'))]",
@@ -8993,14 +8993,14 @@
     "vpnServerConfigurationResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the VPN Server Configuration, if created."
+        "description": "Conditional. The resource ID of the VPN Server Configuration, if created."
       },
       "value": "[if(variables('createP2sVpnServerConfig'), reference('vpnServerConfiguration').outputs.resourceId.value, '')]"
     },
     "deploymentSummary": {
       "type": "object",
       "metadata": {
-        "description": "Deployment summary with component counts."
+        "description": "Required. Deployment summary with component counts."
       },
       "value": {
         "virtualWanName": "[reference('virtualWan').outputs.name.value]",

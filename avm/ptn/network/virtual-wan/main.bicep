@@ -12,7 +12,7 @@ param virtualWanParameters virtualWanParameterType
 @description('Required. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType[]
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
 param lock lockType?
 
@@ -149,7 +149,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
 }
 
 module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.3' = [
-  for config in hubConfigurations: if (config.deployP2sGateway) {
+  for config in hubConfigurations: if (config.deployP2sGateway && createP2sVpnServerConfig) {
     name: config.hub.?p2sVpnParameters.?vpnGatewayName!
     params: {
       name: config.hub.?p2sVpnParameters.?vpnGatewayName!
@@ -188,7 +188,7 @@ module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.2' = [
       enableBgpRouteTranslationForNat: config.hub.?s2sVpnParameters.?enableBgpRouteTranslationForNat
       isRoutingPreferenceInternet: config.hub.?s2sVpnParameters.?isRoutingPreferenceInternet
       natRules: config.hub.?s2sVpnParameters.?natRules
-      vpnConnections: config.hub.?s2sVpnParameters.?vpnConnections!
+      vpnConnections: config.hub.?s2sVpnParameters.?vpnConnections ?? []
       vpnGatewayScaleUnit: config.hub.?s2sVpnParameters.?vpnGatewayScaleUnit
       enableTelemetry: enableTelemetry
       tags: config.hubTags
@@ -206,7 +206,7 @@ module expressRouteGatewayModule 'br/public:avm/res/network/express-route-gatewa
       location: virtualHubModule[config.index].outputs.location
       virtualHubResourceId: virtualHubModule[config.index].outputs.resourceId
       // Optional parameters
-      allowNonVirtualWanTraffic: config.hub.?allowBranchToBranchTraffic
+      allowNonVirtualWanTraffic: config.hub.?expressRouteParameters.?allowNonVirtualWanTraffic
       autoScaleConfigurationBoundsMin: config.hub.?expressRouteParameters.?autoScaleConfigurationBoundsMin
       autoScaleConfigurationBoundsMax: config.hub.?expressRouteParameters.?autoScaleConfigurationBoundsMax
       expressRouteConnections: config.hub.?expressRouteParameters.?expressRouteConnections
@@ -272,17 +272,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableT
 // Outputs      //
 // ============ //
 
-@description('The resource group where the resource is deployed.')
+@description('Required. The resource group where the resource is deployed.')
 output resourceGroupName string = resourceGroup().name
 
-@description('Object containing the Virtual WAN information.')
+@description('Required. Object containing the Virtual WAN information.')
 output virtualWan object = {
   name: virtualWan.outputs.name
   resourceId: virtualWan.outputs.resourceId
   resourceGroupName: virtualWan.outputs.resourceGroupName
 }
 
-@description('The array containing the Virtual Hub information with deployment status.')
+@description('Required. The array containing the Virtual Hub information with deployment status.')
 output virtualHubs array = [
   for config in hubConfigurations: {
     name: virtualHubModule[config.index].outputs.name
@@ -298,12 +298,12 @@ output virtualHubs array = [
   }
 ]
 
-@description('The resource ID of the VPN Server Configuration, if created.')
+@description('Conditional. The resource ID of the VPN Server Configuration, if created.')
 output vpnServerConfigurationResourceId string = createP2sVpnServerConfig
   ? vpnServerConfiguration!.outputs.resourceId
   : ''
 
-@description('Deployment summary with component counts.')
+@description('Required. Deployment summary with component counts.')
 output deploymentSummary object = {
   virtualWanName: virtualWan.outputs.name
   virtualWanType: virtualWanParameters.?type ?? 'Standard'
@@ -327,7 +327,7 @@ import { vnetRoutesStaticRoutesType } from 'br/public:avm/res/network/p2s-vpn-ga
 import { hubVirtualNetworkConnectionType, routingIntentType, hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.3'
 
 @description('Imports the full diagnostic setting type from the AVM common types module.')
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @description('Imports the routing configuration type from the VPN Gateway module.')
 import { routingConfigurationType } from 'br/public:avm/res/network/vpn-gateway:0.2.2'
@@ -510,7 +510,7 @@ type virtualHubParameterType = {
 
     @description('Optional. BGP settings for the VPN Gateway.')
     bgpSettings: {
-      @description('Required. ASN for BGP.')
+      @description('Required. ASN for BGP. The default Azure VPN Gateway ASN is 65515. Custom ASN values require contacting Azure Support to enable ASN modification on the VPN Gateway.')
       asn: int
 
       @description('Optional. BGP peering address.')

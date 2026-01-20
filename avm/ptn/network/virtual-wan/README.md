@@ -217,6 +217,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       {
         allowBranchToBranchTraffic: true
         expressRouteParameters: {
+          allowNonVirtualWanTraffic: true
           autoScaleConfigurationBoundsMax: 2
           autoScaleConfigurationBoundsMin: 1
           deployExpressRouteGateway: true
@@ -252,7 +253,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         ]
         p2sVpnParameters: {
           connectionConfigurationsName: 'default'
+          customDnsServers: [
+            '8.8.4.4'
+            '8.8.8.8'
+          ]
           deployP2SVpnGateway: true
+          enableInternetSecurity: true
+          isRoutingPreferenceInternet: true
           vpnClientAddressPoolAddressPrefixes: [
             '192.168.1.0/24'
           ]
@@ -261,7 +268,12 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           vpnGatewayScaleUnit: 1
         }
         s2sVpnParameters: {
+          bgpSettings: {
+            asn: 65515
+          }
           deployS2SVpnGateway: true
+          isRoutingPreferenceInternet: false
+          vpnConnections: []
           vpnGatewayName: 'dep-s2s-gw-nvwanmax'
           vpnGatewayScaleUnit: 1
         }
@@ -270,6 +282,18 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           deploySecureHub: true
+          diagnosticSettings: [
+            {
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              name: 'diagnosticSettings'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
           routingIntent: {
             internetToFirewall: true
@@ -292,6 +316,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         p2sVpnServerConfigurationName: 'dep-p2s-nvwanmax'
         vpnAuthenticationTypes: [
           'AAD'
+        ]
+        vpnProtocols: [
+          'OpenVPN'
         ]
       }
       tags: {
@@ -329,6 +356,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         {
           "allowBranchToBranchTraffic": true,
           "expressRouteParameters": {
+            "allowNonVirtualWanTraffic": true,
             "autoScaleConfigurationBoundsMax": 2,
             "autoScaleConfigurationBoundsMin": 1,
             "deployExpressRouteGateway": true,
@@ -364,7 +392,13 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           ],
           "p2sVpnParameters": {
             "connectionConfigurationsName": "default",
+            "customDnsServers": [
+              "8.8.4.4",
+              "8.8.8.8"
+            ],
             "deployP2SVpnGateway": true,
+            "enableInternetSecurity": true,
+            "isRoutingPreferenceInternet": true,
             "vpnClientAddressPoolAddressPrefixes": [
               "192.168.1.0/24"
             ],
@@ -373,7 +407,12 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "vpnGatewayScaleUnit": 1
           },
           "s2sVpnParameters": {
+            "bgpSettings": {
+              "asn": 65515
+            },
             "deployS2SVpnGateway": true,
+            "isRoutingPreferenceInternet": false,
+            "vpnConnections": [],
             "vpnGatewayName": "dep-s2s-gw-nvwanmax",
             "vpnGatewayScaleUnit": 1
           },
@@ -382,6 +421,18 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "deploySecureHub": true,
+            "diagnosticSettings": [
+              {
+                "metricCategories": [
+                  {
+                    "category": "AllMetrics"
+                  }
+                ],
+                "name": "diagnosticSettings",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
             "firewallPolicyResourceId": "<firewallPolicyResourceId>",
             "routingIntent": {
               "internetToFirewall": true,
@@ -406,6 +457,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "p2sVpnServerConfigurationName": "dep-p2s-nvwanmax",
           "vpnAuthenticationTypes": [
             "AAD"
+          ],
+          "vpnProtocols": [
+            "OpenVPN"
           ]
         },
         "tags": {
@@ -443,6 +497,7 @@ param virtualHubParameters = [
   {
     allowBranchToBranchTraffic: true
     expressRouteParameters: {
+      allowNonVirtualWanTraffic: true
       autoScaleConfigurationBoundsMax: 2
       autoScaleConfigurationBoundsMin: 1
       deployExpressRouteGateway: true
@@ -478,7 +533,13 @@ param virtualHubParameters = [
     ]
     p2sVpnParameters: {
       connectionConfigurationsName: 'default'
+      customDnsServers: [
+        '8.8.4.4'
+        '8.8.8.8'
+      ]
       deployP2SVpnGateway: true
+      enableInternetSecurity: true
+      isRoutingPreferenceInternet: true
       vpnClientAddressPoolAddressPrefixes: [
         '192.168.1.0/24'
       ]
@@ -487,7 +548,12 @@ param virtualHubParameters = [
       vpnGatewayScaleUnit: 1
     }
     s2sVpnParameters: {
+      bgpSettings: {
+        asn: 65515
+      }
       deployS2SVpnGateway: true
+      isRoutingPreferenceInternet: false
+      vpnConnections: []
       vpnGatewayName: 'dep-s2s-gw-nvwanmax'
       vpnGatewayScaleUnit: 1
     }
@@ -496,6 +562,18 @@ param virtualHubParameters = [
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       deploySecureHub: true
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: 'diagnosticSettings'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
       routingIntent: {
         internetToFirewall: true
@@ -518,6 +596,9 @@ param virtualWanParameters = {
     p2sVpnServerConfigurationName: 'dep-p2s-nvwanmax'
     vpnAuthenticationTypes: [
       'AAD'
+    ]
+    vpnProtocols: [
+      'OpenVPN'
     ]
   }
   tags: {
@@ -2122,7 +2203,7 @@ BGP settings for the VPN Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`asn`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsasn) | int | ASN for BGP. |
+| [`asn`](#parameter-virtualhubparameterss2svpnparametersbgpsettingsasn) | int | ASN for BGP. The default Azure VPN Gateway ASN is 65515. Custom ASN values require contacting Azure Support to enable ASN modification on the VPN Gateway. |
 
 **Optional parameters**
 
@@ -2134,7 +2215,7 @@ BGP settings for the VPN Gateway.
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.bgpSettings.asn`
 
-ASN for BGP.
+ASN for BGP. The default Azure VPN Gateway ASN is 65515. Custom ASN values require contacting Azure Support to enable ASN modification on the VPN Gateway.
 
 - Required: Yes
 - Type: int
@@ -3522,11 +3603,11 @@ Tags to be applied to all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `deploymentSummary` | object | Deployment summary with component counts. |
-| `resourceGroupName` | string | The resource group where the resource is deployed. |
-| `virtualHubs` | array | The array containing the Virtual Hub information with deployment status. |
-| `virtualWan` | object | Object containing the Virtual WAN information. |
-| `vpnServerConfigurationResourceId` | string | The resource ID of the VPN Server Configuration, if created. |
+| `deploymentSummary` | object | Required. Deployment summary with component counts. |
+| `resourceGroupName` | string | Required. The resource group where the resource is deployed. |
+| `virtualHubs` | array | Required. The array containing the Virtual Hub information with deployment status. |
+| `virtualWan` | object | Required. Object containing the Virtual WAN information. |
+| `vpnServerConfigurationResourceId` | string | Conditional. The resource ID of the VPN Server Configuration, if created. |
 
 ## Cross-referenced modules
 

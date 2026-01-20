@@ -19,6 +19,18 @@ param expressRouteCircuitName string
 @description('The name of the ExpressRoute port.')
 param expressRoutePortName string
 
+@description('The name of the Storage Account for diagnostics.')
+param storageAccountName string
+
+@description('The name of the Log Analytics Workspace for diagnostics.')
+param logAnalyticsWorkspaceName string
+
+@description('The name of the Event Hub Namespace for diagnostics.')
+param eventHubNamespaceName string
+
+@description('The name of the Event Hub within the Event Hub Namespace for diagnostics.')
+param eventHubNamespaceEventHubName string
+
 resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-07-01' = {
   name: azureFirewallPolicyName
   location: resourceGroup().location
@@ -70,7 +82,6 @@ module testDeploymentPort 'br/public:avm/res/network/express-route-port:0.3.1' =
   }
 }
 
-// Deploy second circuit
 module testDeploymentCircuit 'br/public:avm/res/network/express-route-circuit:0.8.0' = {
   name: expressRouteCircuitName
   params: {
@@ -107,6 +118,23 @@ module testDeploymentCircuit 'br/public:avm/res/network/express-route-circuit:0.
   }
 }
 
+// Diagnostic dependencies (Storage Account, Log Analytics Workspace, Event Hub Namespace)
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  name: '${uniqueString(deployment().name)}-diagnosticDependencies'
+  params: {
+    storageAccountName: storageAccountName
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    eventHubNamespaceName: eventHubNamespaceName
+    eventHubNamespaceEventHubName: eventHubNamespaceEventHubName
+    location: resourceGroup().location
+    tags: {
+      SkipS360CNE: 'True'
+      'skip-CloudGov-StoragAcc-SS': 'true'
+      'skip-CloudGov-EventHub-SS': 'true'
+    }
+  }
+}
+
 @description('The ID of the Azure Firewall Policy.')
 output azureFirewallPolicyId string = azureFirewallPolicy.id
 
@@ -136,3 +164,18 @@ output virtualHub2Location string = vnet2.location
 
 @description('The resource ID of the ExpressRoute circuit.')
 output expressRouteCircuitId string = testDeploymentCircuit.outputs.resourceId
+
+@description('The resource ID of the Log Analytics Workspace.')
+output logAnalyticsWorkspaceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+
+@description('The resource ID of the Storage Account used for diagnostics.')
+output logAnalyticsStorageAccountId string = diagnosticDependencies.outputs.storageAccountResourceId
+
+@description('The resource ID of the Event Hub Namespace.')
+output eventHubNamespaceId string = diagnosticDependencies.outputs.eventHubNamespaceResourceId
+
+@description('The resource ID of the Event Hub Namespace Authorization Rule.')
+output eventHubAuthorizationRuleId string = diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+
+@description('The name of the Event Hub.')
+output eventHubNamespaceEventHubName string = diagnosticDependencies.outputs.eventHubNamespaceEventHubName

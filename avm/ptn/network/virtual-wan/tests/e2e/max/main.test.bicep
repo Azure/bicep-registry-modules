@@ -46,6 +46,10 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetwork2Location: resourceLocation
     expressRouteCircuitName: 'dep-${namePrefix}-erc-${serviceShort}'
     expressRoutePortName: 'dep-${namePrefix}-erp-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
   }
 }
 
@@ -67,6 +71,9 @@ module testDeployment '../../../main.bicep' = [
           aadTenant: '${environment().authentication.loginEndpoint}${tenant().tenantId}'
           aadAudience: '41b23e61-6c1e-4545-b367-cd054e0ed4b4'
           aadIssuer: 'https://sts.windows.net/${tenant().tenantId}/'
+          vpnProtocols: [
+            'OpenVPN'
+          ]
         }
         tags: {
           Environment: 'Test'
@@ -99,15 +106,27 @@ module testDeployment '../../../main.bicep' = [
             vpnClientAddressPoolAddressPrefixes: ['192.168.1.0/24']
             vpnGatewayScaleUnit: 1
             vpnGatewayAssociatedRouteTable: 'defaultRouteTable'
+            customDnsServers: [
+              '8.8.8.8'
+              '8.8.4.4'
+            ]
+            enableInternetSecurity: true
+            isRoutingPreferenceInternet: true
           }
           s2sVpnParameters: {
             deployS2SVpnGateway: true
             vpnGatewayName: 'dep-${namePrefix}-s2s-gw-${serviceShort}'
             vpnGatewayScaleUnit: 1
+            bgpSettings: {
+              asn: 65515
+            }
+            vpnConnections: []
+            isRoutingPreferenceInternet: false
           }
           expressRouteParameters: {
             deployExpressRouteGateway: true
             expressRouteGatewayName: 'dep-${namePrefix}-er-gw-${serviceShort}'
+            allowNonVirtualWanTraffic: true
             autoScaleConfigurationBoundsMin: 1
             autoScaleConfigurationBoundsMax: 2
             expressRouteConnections: [
@@ -133,6 +152,18 @@ module testDeployment '../../../main.bicep' = [
               privateToFirewall: true
             }
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            diagnosticSettings: [
+              {
+                name: 'diagnosticSettings'
+                storageAccountResourceId: nestedDependencies.outputs.logAnalyticsStorageAccountId
+                workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceId
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+              }
+            ]
           }
           tags: {
             HubType: 'Transit'

@@ -18,6 +18,9 @@ param eventHubNamespaceEventHubName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Optional. Tags to apply to resources.')
+param tags object = {}
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -32,6 +35,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   properties: {
     allowBlobPublicAccess: false
   }
+  tags: tags
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
@@ -57,6 +61,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
       ]
     }
   }
+  tags: tags
 }
 
 // ======= //
