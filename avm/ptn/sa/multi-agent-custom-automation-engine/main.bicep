@@ -1728,9 +1728,6 @@ output azureAiAgentApiVersion string = azureAiAgentAPIVersion
 @description('The Azure AI agent project connection string.')
 output azureAiAgentProjectConnectionString string = '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
 
-@description('The Azure Developer CLI telemetry collection setting.')
-output azureDevCollectTelemetry string = 'no'
-
 @description('The name of the Azure Storage container for retail customer data.')
 output azureStorageContainerNameRetailCustomer string = storageContainerNameRetailCustomer
 

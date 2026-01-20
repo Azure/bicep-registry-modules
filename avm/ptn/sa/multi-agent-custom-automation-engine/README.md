@@ -724,7 +724,6 @@ The user name for the administrator account of the virtual machine. Allows to cu
 | `azureAiSubscriptionId` | string | The Azure subscription ID. |
 | `azureClientId` | string | The Azure client ID for the user-assigned managed identity. |
 | `azureCognitiveServices` | string | The Azure Cognitive Services scope URL. |
-| `azureDevCollectTelemetry` | string | The Azure Developer CLI telemetry collection setting. |
 | `azureOpenAiApiVersion` | string | The Azure OpenAI API version. |
 | `azureOpenAiDeploymentName` | string | The name of the Azure OpenAI deployment. |
 | `azureOpenAiEndpoint` | string | The Azure OpenAI service endpoint URL. |
