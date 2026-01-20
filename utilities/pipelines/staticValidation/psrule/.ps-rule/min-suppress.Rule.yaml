@@ -62,6 +62,8 @@ spec:
     - Azure.VNG.MaintenanceConfig # Requires a maintenance configuration resource Id as a user input.
     # Recovery Services Vault
     - Azure.RSV.ReplicationAlert # Requires user input, like an E-Mail to send alerts to
+    # Azure Container Registry
+    - Azure.ACR.GeoReplica # Excluded as it requires user input
   if:
     name: "."
     contains:
