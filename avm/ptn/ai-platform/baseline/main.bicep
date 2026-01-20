@@ -46,8 +46,6 @@ param bastionConfiguration bastionConfigurationType?
 @description('Optional. Configuration for the virtual machine.')
 param virtualMachineConfiguration virtualMachineConfigurationType?
 
-import { replicationType } from 'br/public:avm/res/container-registry/registry:0.9.3'
-
 // ============== //
 // Variables      //
 // ============== //
@@ -725,6 +723,7 @@ type storageAccountConfigurationType = {
   allowSharedKeyAccess: bool?
 }
 
+import { replicationType } from 'br/public:avm/res/container-registry/registry:0.9.3'
 @export()
 @description('The type for a container registry configuration.')
 type containerRegistryConfigurationType = {
