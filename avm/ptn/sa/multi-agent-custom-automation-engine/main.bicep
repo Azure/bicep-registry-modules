@@ -1169,10 +1169,6 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
           }
           {
-            name: 'AZURE_DEV_COLLECT_TELEMETRY'
-            value: 'no'
-          }
-          {
             name: 'AZURE_BASIC_LOGGING_LEVEL'
             value: 'INFO'
           }
