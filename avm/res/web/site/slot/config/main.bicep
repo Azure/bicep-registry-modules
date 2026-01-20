@@ -32,8 +32,8 @@ param currentAppSettings {
 } = {}
 
 // Parameters only relevant for the config type 'appsettings'
-@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
-param storageAccountUseIdentityAuthentication bool = false
+@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'. Defaults to true for secure deployments. When set to false, storage account keys are exposed in deployment templates which triggers Azure Defender for Cloud security alerts.')
+param storageAccountUseIdentityAuthentication bool = true
 
 @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
 param storageAccountResourceId string?
