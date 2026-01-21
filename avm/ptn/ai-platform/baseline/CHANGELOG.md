@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-platform/baseline/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Add replications to Container Registry
+
+### Breaking Changes
+
+- None
+
 ## 0.7.1
 
 ### Changes
