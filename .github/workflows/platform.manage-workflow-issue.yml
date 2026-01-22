@@ -22,7 +22,7 @@ jobs:
     if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
@@ -40,7 +40,7 @@ jobs:
       - job_initialize_pipeline
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/create-github-app-token@v2
