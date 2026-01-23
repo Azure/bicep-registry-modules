@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Enabling child module `<avm/res/path/to/child-module>` for publishing (added telemetry option)
+- Enabling child module `table` for publishing (added telemetry option)
 
 ### Breaking Changes
 
