@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "8709793615487488337"
+      "version": "0.40.2.10011",
+      "templateHash": "17624608039137841174"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -117,7 +117,7 @@
           },
           "nullable": true
         },
-        "hostGroupId": {
+        "hostGroupResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1676,7 +1676,7 @@
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
-        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', coalesce(tryGet(lambdaVariables('profile'), 'count'), 1), 'availabilityZones', map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone')))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false()), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', tryGet(lambdaVariables('profile'), 'maxCount'), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', tryGet(lambdaVariables('profile'), 'minCount'), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIPAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', tryGet(lambdaVariables('profile'), 'securityProfile'), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3'), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
+        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', coalesce(tryGet(lambdaVariables('profile'), 'count'), 1), 'availabilityZones', map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone')))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false()), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupResourceId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', tryGet(lambdaVariables('profile'), 'maxCount'), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', tryGet(lambdaVariables('profile'), 'minCount'), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIPAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', tryGet(lambdaVariables('profile'), 'securityProfile'), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3'), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
         "aiToolchainOperatorProfile": "[parameters('aiToolchainOperatorProfile')]",
         "bootstrapProfile": "[parameters('bootstrapProfile')]",
         "httpProxyConfig": "[parameters('httpProxyConfig')]",
@@ -1788,7 +1788,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1805,7 +1805,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1846,7 +1846,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1879,7 +1879,7 @@
       "condition": "[and(and(and(not(equals(parameters('publicNetworkAccess'), 'Disabled')), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/dnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
+      "scope": "[resourceId('Microsoft.Network/dnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
       "name": "[guid(resourceId('Microsoft.Network/dnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
@@ -1894,7 +1894,7 @@
       "condition": "[and(and(and(equals(parameters('publicNetworkAccess'), 'Disabled'), equals(parameters('enableDnsZoneContributorRoleAssignment'), true())), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/privateDnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
+      "scope": "[resourceId('Microsoft.Network/privateDnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
       "name": "[guid(resourceId('Microsoft.Network/privateDnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
@@ -1942,8 +1942,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1019174495127705800"
+              "version": "0.40.2.10011",
+              "templateHash": "6036878171154507989"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2095,8 +2095,8 @@
           "gpuProfile": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'gpuProfile')]"
           },
-          "hostGroupId": {
-            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'hostGroupId')]"
+          "hostGroupResourceId": {
+            "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'hostGroupResourceId')]"
           },
           "kubeletConfig": {
             "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'kubeletConfig')]"
@@ -2211,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "10636210701982227392"
+              "version": "0.40.2.10011",
+              "templateHash": "18097677770677678855"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2332,7 +2332,7 @@
               },
               "nullable": true
             },
-            "hostGroupId": {
+            "hostGroupResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -2683,7 +2683,7 @@
                 "gatewayProfile": "[if(equals(parameters('mode'), 'Gateway'), parameters('gatewayProfile'), null())]",
                 "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
                 "gpuProfile": "[parameters('gpuProfile')]",
-                "hostGroupID": "[parameters('hostGroupId')]",
+                "hostGroupID": "[parameters('hostGroupResourceId')]",
                 "kubeletConfig": "[parameters('kubeletConfig')]",
                 "kubeletDiskType": "[parameters('kubeletDiskType')]",
                 "linuxOSConfig": "[parameters('linuxOSConfig')]",

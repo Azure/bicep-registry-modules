@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "10636210701982227392"
+      "version": "0.40.2.10011",
+      "templateHash": "18097677770677678855"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -126,7 +126,7 @@
       },
       "nullable": true
     },
-    "hostGroupId": {
+    "hostGroupResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -477,7 +477,7 @@
         "gatewayProfile": "[if(equals(parameters('mode'), 'Gateway'), parameters('gatewayProfile'), null())]",
         "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
         "gpuProfile": "[parameters('gpuProfile')]",
-        "hostGroupID": "[parameters('hostGroupId')]",
+        "hostGroupID": "[parameters('hostGroupResourceId')]",
         "kubeletConfig": "[parameters('kubeletConfig')]",
         "kubeletDiskType": "[parameters('kubeletDiskType')]",
         "linuxOSConfig": "[parameters('linuxOSConfig')]",

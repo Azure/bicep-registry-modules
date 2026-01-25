@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "1019174495127705800"
+      "version": "0.40.2.10011",
+      "templateHash": "6036878171154507989"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."

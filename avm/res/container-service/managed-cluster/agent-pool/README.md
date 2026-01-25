@@ -43,7 +43,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`gatewayProfile`](#parameter-gatewayprofile) | object | Profile specific to a managed agent pool in Gateway mode. Ignored if agent pool mode is not Gateway. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`gpuProfile`](#parameter-gpuprofile) | object | GPU settings. |
-| [`hostGroupId`](#parameter-hostgroupid) | string | This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts). |
+| [`hostGroupResourceId`](#parameter-hostgroupresourceid) | string | This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts). |
 | [`kubeletConfig`](#parameter-kubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
 | [`linuxOSConfig`](#parameter-linuxosconfig) | object | Linux OS configuration. |
@@ -188,7 +188,7 @@ GPU settings.
 - Required: No
 - Type: object
 
-### Parameter: `hostGroupId`
+### Parameter: `hostGroupResourceId`
 
 This is of the form /subscriptions/{subscriptionId}/resourcegroups/{resourcegroupname}/providers/microsoft.compute/hostgroups/{hostgroupname}. For more information see [Azure Dedicated Hosts](https://learn.microsoft.com/azure/virtual-machines/dedicated-hosts).
 

@@ -3288,7 +3288,7 @@ Properties of the primary agent pool.
 | [`gatewayProfile`](#parameter-primaryagentpoolprofilesgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`gpuProfile`](#parameter-primaryagentpoolprofilesgpuprofile) | object | GPU settings. |
-| [`hostGroupId`](#parameter-primaryagentpoolprofileshostgroupid) | string | Host group resource ID. |
+| [`hostGroupResourceId`](#parameter-primaryagentpoolprofileshostgroupresourceid) | string | Host group resource ID. |
 | [`kubeletConfig`](#parameter-primaryagentpoolprofileskubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`linuxOSConfig`](#parameter-primaryagentpoolprofileslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
@@ -3418,7 +3418,7 @@ GPU settings.
 - Required: No
 - Type: object
 
-### Parameter: `primaryAgentPoolProfiles.hostGroupId`
+### Parameter: `primaryAgentPoolProfiles.hostGroupResourceId`
 
 Host group resource ID.
 
@@ -3770,7 +3770,7 @@ Define one or more secondary/additional agent pools.
 | [`gatewayProfile`](#parameter-agentpoolsgatewayprofile) | object | Represents the Gateway node pool configuration. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`gpuProfile`](#parameter-agentpoolsgpuprofile) | object | GPU settings. |
-| [`hostGroupId`](#parameter-agentpoolshostgroupid) | string | Host group resource ID. |
+| [`hostGroupResourceId`](#parameter-agentpoolshostgroupresourceid) | string | Host group resource ID. |
 | [`kubeletConfig`](#parameter-agentpoolskubeletconfig) | object | Kubelet configuration on agent pool nodes. |
 | [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`linuxOSConfig`](#parameter-agentpoolslinuxosconfig) | object | The Linux OS configuration of the agent pool. |
@@ -3900,7 +3900,7 @@ GPU settings.
 - Required: No
 - Type: object
 
-### Parameter: `agentPools.hostGroupId`
+### Parameter: `agentPools.hostGroupResourceId`
 
 Host group resource ID.
 
