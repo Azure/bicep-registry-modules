@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cdn/profiles/afdEndpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/afdEndpoints/routes` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints_routes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes)</li></ul> |
 | `Microsoft.Cdn/profiles/customDomains` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/customDomains)</li></ul> |
-| `Microsoft.Cdn/profiles/endpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints)</li></ul> |
+| `Microsoft.Cdn/profiles/endpoints` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/endpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/endpoints/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints/origins)</li></ul> |
 | `Microsoft.Cdn/profiles/originGroups` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups)</li></ul> |
 | `Microsoft.Cdn/profiles/originGroups/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups/origins)</li></ul> |
@@ -68,19 +68,19 @@ You can find the full example and the setup of its dependencies in the deploymen
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
-    name: 'dep-test-afd-cdnpafdp'
+    name: 'test-afd-cdnpafdp'
     sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
     afdEndpoints: [
       {
-        name: 'dep-test-afd-cdnpafdp-afd-endpoint'
+        name: 'test-afd-cdnpafdp-afd-endpoint'
         routes: [
           {
             customDomainNames: [
-              'dep-test-cdnpafdp-custom-domain'
+              'test-cdnpafdp-custom-domain'
             ]
-            name: 'dep-test-cdnpafdp-afd-route'
-            originGroupName: 'dep-test-cdnpafdp-origin-group'
+            name: 'test-cdnpafdp-afd-route'
+            originGroupName: 'test-cdnpafdp-origin-group'
             ruleSets: [
               'deptestcdnpafdpruleset'
             ]
@@ -91,8 +91,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     customDomains: [
       {
         certificateType: 'ManagedCertificate'
-        hostName: 'dep-test-cdnpafdp-custom-domain.azurewebsites.net'
-        name: 'dep-test-cdnpafdp-custom-domain'
+        hostName: 'test-cdnpafdp-custom-domain.azurewebsites.net'
+        name: 'test-cdnpafdp-custom-domain'
       }
     ]
     location: 'global'
@@ -103,11 +103,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           sampleSize: 4
           successfulSamplesRequired: 3
         }
-        name: 'dep-test-cdnpafdp-origin-group'
+        name: 'test-cdnpafdp-origin-group'
         origins: [
           {
-            hostName: 'dep-test-cdnpafdp-origin.azurewebsites.net'
-            name: 'dep-test-cdnpafdp-origin'
+            hostName: 'test-cdnpafdp-origin.azurewebsites.net'
+            name: 'test-cdnpafdp-origin'
           }
         ]
       }
@@ -172,7 +172,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-afd-cdnpafdp"
+      "value": "test-afd-cdnpafdp"
     },
     "sku": {
       "value": "Premium_AzureFrontDoor"
@@ -181,14 +181,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "afdEndpoints": {
       "value": [
         {
-          "name": "dep-test-afd-cdnpafdp-afd-endpoint",
+          "name": "test-afd-cdnpafdp-afd-endpoint",
           "routes": [
             {
               "customDomainNames": [
-                "dep-test-cdnpafdp-custom-domain"
+                "test-cdnpafdp-custom-domain"
               ],
-              "name": "dep-test-cdnpafdp-afd-route",
-              "originGroupName": "dep-test-cdnpafdp-origin-group",
+              "name": "test-cdnpafdp-afd-route",
+              "originGroupName": "test-cdnpafdp-origin-group",
               "ruleSets": [
                 "deptestcdnpafdpruleset"
               ]
@@ -201,8 +201,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": [
         {
           "certificateType": "ManagedCertificate",
-          "hostName": "dep-test-cdnpafdp-custom-domain.azurewebsites.net",
-          "name": "dep-test-cdnpafdp-custom-domain"
+          "hostName": "test-cdnpafdp-custom-domain.azurewebsites.net",
+          "name": "test-cdnpafdp-custom-domain"
         }
       ]
     },
@@ -217,11 +217,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             "sampleSize": 4,
             "successfulSamplesRequired": 3
           },
-          "name": "dep-test-cdnpafdp-origin-group",
+          "name": "test-cdnpafdp-origin-group",
           "origins": [
             {
-              "hostName": "dep-test-cdnpafdp-origin.azurewebsites.net",
-              "name": "dep-test-cdnpafdp-origin"
+              "hostName": "test-cdnpafdp-origin.azurewebsites.net",
+              "name": "test-cdnpafdp-origin"
             }
           ]
         }
@@ -290,19 +290,19 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-afd-cdnpafdp'
+param name = 'test-afd-cdnpafdp'
 param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
 param afdEndpoints = [
   {
-    name: 'dep-test-afd-cdnpafdp-afd-endpoint'
+    name: 'test-afd-cdnpafdp-afd-endpoint'
     routes: [
       {
         customDomainNames: [
-          'dep-test-cdnpafdp-custom-domain'
+          'test-cdnpafdp-custom-domain'
         ]
-        name: 'dep-test-cdnpafdp-afd-route'
-        originGroupName: 'dep-test-cdnpafdp-origin-group'
+        name: 'test-cdnpafdp-afd-route'
+        originGroupName: 'test-cdnpafdp-origin-group'
         ruleSets: [
           'deptestcdnpafdpruleset'
         ]
@@ -313,8 +313,8 @@ param afdEndpoints = [
 param customDomains = [
   {
     certificateType: 'ManagedCertificate'
-    hostName: 'dep-test-cdnpafdp-custom-domain.azurewebsites.net'
-    name: 'dep-test-cdnpafdp-custom-domain'
+    hostName: 'test-cdnpafdp-custom-domain.azurewebsites.net'
+    name: 'test-cdnpafdp-custom-domain'
   }
 ]
 param location = 'global'
@@ -325,11 +325,11 @@ param originGroups = [
       sampleSize: 4
       successfulSamplesRequired: 3
     }
-    name: 'dep-test-cdnpafdp-origin-group'
+    name: 'test-cdnpafdp-origin-group'
     origins: [
       {
-        hostName: 'dep-test-cdnpafdp-origin.azurewebsites.net'
-        name: 'dep-test-cdnpafdp-origin'
+        hostName: 'test-cdnpafdp-origin.azurewebsites.net'
+        name: 'test-cdnpafdp-origin'
       }
     ]
   }
@@ -396,19 +396,19 @@ You can find the full example and the setup of its dependencies in the deploymen
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
-    name: 'dep-test-cdnpafd'
+    name: 'test-cdnpafd'
     sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
     afdEndpoints: [
       {
-        name: 'dep-test-cdnpafd-afd-endpoint'
+        name: 'test-cdnpafd-afd-endpoint'
         routes: [
           {
             customDomainNames: [
-              'dep-test-cdnpafd-custom-domain'
+              'test-cdnpafd-custom-domain'
             ]
-            name: 'dep-test-cdnpafd-afd-route'
-            originGroupName: 'dep-test-cdnpafd-origin-group'
+            name: 'test-cdnpafd-afd-route'
+            originGroupName: 'test-cdnpafd-origin-group'
             ruleSets: [
               'deptestcdnpafdruleset'
             ]
@@ -419,14 +419,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     customDomains: [
       {
         certificateType: 'ManagedCertificate'
-        hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
-        name: 'dep-test-cdnpafd-custom-domain'
+        hostName: 'test-cdnpafd-custom-domain.azurewebsites.net'
+        name: 'test-cdnpafd-custom-domain'
       }
       {
         certificateType: 'ManagedCertificate'
         cipherSuiteSetType: 'TLS12_2022'
-        hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
-        name: 'dep-test2-cdnpafd-custom-domain'
+        hostName: 'test2-cdnpafd-custom-domain.azurewebsites.net'
+        name: 'test2-cdnpafd-custom-domain'
       }
       {
         certificateType: 'ManagedCertificate'
@@ -441,8 +441,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             'TLS_AES_256_GCM_SHA384'
           ]
         }
-        hostName: 'dep-test3-cdnpafd-custom-domain.azurewebsites.net'
-        name: 'dep-test3-cdnpafd-custom-domain'
+        hostName: 'test3-cdnpafd-custom-domain.azurewebsites.net'
+        name: 'test3-cdnpafd-custom-domain'
       }
     ]
     location: 'global'
@@ -456,11 +456,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           sampleSize: 4
           successfulSamplesRequired: 3
         }
-        name: 'dep-test-cdnpafd-origin-group'
+        name: 'test-cdnpafd-origin-group'
         origins: [
           {
-            hostName: 'dep-test-cdnpafd-origin.azurewebsites.net'
-            name: 'dep-test-cdnpafd-origin'
+            hostName: 'test-cdnpafd-origin.azurewebsites.net'
+            name: 'test-cdnpafd-origin'
           }
         ]
       }
@@ -507,7 +507,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-cdnpafd"
+      "value": "test-cdnpafd"
     },
     "sku": {
       "value": "Standard_AzureFrontDoor"
@@ -516,14 +516,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "afdEndpoints": {
       "value": [
         {
-          "name": "dep-test-cdnpafd-afd-endpoint",
+          "name": "test-cdnpafd-afd-endpoint",
           "routes": [
             {
               "customDomainNames": [
-                "dep-test-cdnpafd-custom-domain"
+                "test-cdnpafd-custom-domain"
               ],
-              "name": "dep-test-cdnpafd-afd-route",
-              "originGroupName": "dep-test-cdnpafd-origin-group",
+              "name": "test-cdnpafd-afd-route",
+              "originGroupName": "test-cdnpafd-origin-group",
               "ruleSets": [
                 "deptestcdnpafdruleset"
               ]
@@ -536,14 +536,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": [
         {
           "certificateType": "ManagedCertificate",
-          "hostName": "dep-test-cdnpafd-custom-domain.azurewebsites.net",
-          "name": "dep-test-cdnpafd-custom-domain"
+          "hostName": "test-cdnpafd-custom-domain.azurewebsites.net",
+          "name": "test-cdnpafd-custom-domain"
         },
         {
           "certificateType": "ManagedCertificate",
           "cipherSuiteSetType": "TLS12_2022",
-          "hostName": "dep-test2-cdnpafd-custom-domain.azurewebsites.net",
-          "name": "dep-test2-cdnpafd-custom-domain"
+          "hostName": "test2-cdnpafd-custom-domain.azurewebsites.net",
+          "name": "test2-cdnpafd-custom-domain"
         },
         {
           "certificateType": "ManagedCertificate",
@@ -558,8 +558,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "TLS_AES_256_GCM_SHA384"
             ]
           },
-          "hostName": "dep-test3-cdnpafd-custom-domain.azurewebsites.net",
-          "name": "dep-test3-cdnpafd-custom-domain"
+          "hostName": "test3-cdnpafd-custom-domain.azurewebsites.net",
+          "name": "test3-cdnpafd-custom-domain"
         }
       ]
     },
@@ -579,11 +579,11 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             "sampleSize": 4,
             "successfulSamplesRequired": 3
           },
-          "name": "dep-test-cdnpafd-origin-group",
+          "name": "test-cdnpafd-origin-group",
           "origins": [
             {
-              "hostName": "dep-test-cdnpafd-origin.azurewebsites.net",
-              "name": "dep-test-cdnpafd-origin"
+              "hostName": "test-cdnpafd-origin.azurewebsites.net",
+              "name": "test-cdnpafd-origin"
             }
           ]
         }
@@ -632,19 +632,19 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-cdnpafd'
+param name = 'test-cdnpafd'
 param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
 param afdEndpoints = [
   {
-    name: 'dep-test-cdnpafd-afd-endpoint'
+    name: 'test-cdnpafd-afd-endpoint'
     routes: [
       {
         customDomainNames: [
-          'dep-test-cdnpafd-custom-domain'
+          'test-cdnpafd-custom-domain'
         ]
-        name: 'dep-test-cdnpafd-afd-route'
-        originGroupName: 'dep-test-cdnpafd-origin-group'
+        name: 'test-cdnpafd-afd-route'
+        originGroupName: 'test-cdnpafd-origin-group'
         ruleSets: [
           'deptestcdnpafdruleset'
         ]
@@ -655,14 +655,14 @@ param afdEndpoints = [
 param customDomains = [
   {
     certificateType: 'ManagedCertificate'
-    hostName: 'dep-test-cdnpafd-custom-domain.azurewebsites.net'
-    name: 'dep-test-cdnpafd-custom-domain'
+    hostName: 'test-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'test-cdnpafd-custom-domain'
   }
   {
     certificateType: 'ManagedCertificate'
     cipherSuiteSetType: 'TLS12_2022'
-    hostName: 'dep-test2-cdnpafd-custom-domain.azurewebsites.net'
-    name: 'dep-test2-cdnpafd-custom-domain'
+    hostName: 'test2-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'test2-cdnpafd-custom-domain'
   }
   {
     certificateType: 'ManagedCertificate'
@@ -677,8 +677,8 @@ param customDomains = [
         'TLS_AES_256_GCM_SHA384'
       ]
     }
-    hostName: 'dep-test3-cdnpafd-custom-domain.azurewebsites.net'
-    name: 'dep-test3-cdnpafd-custom-domain'
+    hostName: 'test3-cdnpafd-custom-domain.azurewebsites.net'
+    name: 'test3-cdnpafd-custom-domain'
   }
 ]
 param location = 'global'
@@ -692,11 +692,11 @@ param originGroups = [
       sampleSize: 4
       successfulSamplesRequired: 3
     }
-    name: 'dep-test-cdnpafd-origin-group'
+    name: 'test-cdnpafd-origin-group'
     origins: [
       {
-        hostName: 'dep-test-cdnpafd-origin.azurewebsites.net'
-        name: 'dep-test-cdnpafd-origin'
+        hostName: 'test-cdnpafd-origin.azurewebsites.net'
+        name: 'test-cdnpafd-origin'
       }
     ]
   }
@@ -745,7 +745,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
-    name: 'dep-test-cdnpmin'
+    name: 'test-cdnpmin'
     sku: 'Standard_AzureFrontDoor'
     // Non-required parameters
     location: 'global'
@@ -767,7 +767,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-cdnpmin"
+      "value": "test-cdnpmin"
     },
     "sku": {
       "value": "Standard_AzureFrontDoor"
@@ -791,7 +791,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-cdnpmin'
+param name = 'test-cdnpmin'
 param sku = 'Standard_AzureFrontDoor'
 // Non-required parameters
 param location = 'global'
@@ -815,14 +815,14 @@ You can find the full example and the setup of its dependencies in the deploymen
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
-    name: 'dep-test-cdnpmax'
+    name: 'test-cdnpmax'
     sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
     afdEndpoints: [
       {
         autoGeneratedDomainNameLabelScope: 'TenantReuse'
         enabledState: 'Enabled'
-        name: 'dep-test-cdnpmax-afd-endpoint-1'
+        name: 'test-cdnpmax-afd-endpoint-1'
         routes: [
           {
             cacheConfiguration: {
@@ -838,14 +838,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
             }
             customDomainNames: [
-              'dep-test1-cdnpmax-custom-domain'
+              'test1-cdnpmax-custom-domain'
             ]
             enabledState: 'Enabled'
             forwardingProtocol: 'MatchRequest'
             httpsRedirect: 'Enabled'
             linkToDefaultDomain: 'Enabled'
-            name: 'dep-test-cdnpmax-afd-route-1'
-            originGroupName: 'dep-test-cdnpmax-origin-group-1'
+            name: 'test-cdnpmax-afd-route-1'
+            originGroupName: 'test-cdnpmax-origin-group-1'
             patternsToMatch: [
               '/api/*'
               '/health'
@@ -864,16 +864,16 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     customDomains: [
       {
         certificateType: 'ManagedCertificate'
-        hostName: 'dep-test1-cdnpmax-custom-domain.azurewebsites.net'
+        hostName: 'test1-cdnpmax-custom-domain.azurewebsites.net'
         minimumTlsVersion: 'TLS12'
-        name: 'dep-test1-cdnpmax-custom-domain'
+        name: 'test1-cdnpmax-custom-domain'
       }
       {
         certificateType: 'ManagedCertificate'
         cipherSuiteSetType: 'TLS12_2022'
-        hostName: 'dep-test2-cdnpmax-custom-domain.azurewebsites.net'
+        hostName: 'test2-cdnpmax-custom-domain.azurewebsites.net'
         minimumTlsVersion: 'TLS12'
-        name: 'dep-test2-cdnpmax-custom-domain'
+        name: 'test2-cdnpmax-custom-domain'
       }
       {
         certificateType: 'ManagedCertificate'
@@ -884,9 +884,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             'TLS_AES_256_GCM_SHA384'
           ]
         }
-        hostName: 'dep-test3-cdnpmax-custom-domain.azurewebsites.net'
+        hostName: 'test3-cdnpmax-custom-domain.azurewebsites.net'
         minimumTlsVersion: 'TLS13'
-        name: 'dep-test3-cdnpmax-custom-domain'
+        name: 'test3-cdnpmax-custom-domain'
       }
     ]
     diagnosticSettings: [
@@ -935,7 +935,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           sampleSize: 4
           successfulSamplesRequired: 3
         }
-        name: 'dep-test-cdnpmax-origin-group-1'
+        name: 'test-cdnpmax-origin-group-1'
         origins: [
           {
             enabledState: 'Enabled'
@@ -943,7 +943,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
-            name: 'dep-test-cdnpmax-origin-1'
+            name: 'test-cdnpmax-origin-1'
             priority: 1
             weight: 1000
           }
@@ -957,7 +957,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           sampleSize: 6
           successfulSamplesRequired: 4
         }
-        name: 'dep-test-cdnpmax-origin-group-2'
+        name: 'test-cdnpmax-origin-group-2'
         origins: [
           {
             enabledState: 'Enabled'
@@ -965,7 +965,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
-            name: 'dep-test-cdnpmax-origin-2'
+            name: 'test-cdnpmax-origin-2'
             priority: 1
             weight: 1000
           }
@@ -1031,7 +1031,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-test-cdnpmax"
+      "value": "test-cdnpmax"
     },
     "sku": {
       "value": "Premium_AzureFrontDoor"
@@ -1042,7 +1042,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         {
           "autoGeneratedDomainNameLabelScope": "TenantReuse",
           "enabledState": "Enabled",
-          "name": "dep-test-cdnpmax-afd-endpoint-1",
+          "name": "test-cdnpmax-afd-endpoint-1",
           "routes": [
             {
               "cacheConfiguration": {
@@ -1058,14 +1058,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "queryStringCachingBehavior": "IncludeSpecifiedQueryStrings"
               },
               "customDomainNames": [
-                "dep-test1-cdnpmax-custom-domain"
+                "test1-cdnpmax-custom-domain"
               ],
               "enabledState": "Enabled",
               "forwardingProtocol": "MatchRequest",
               "httpsRedirect": "Enabled",
               "linkToDefaultDomain": "Enabled",
-              "name": "dep-test-cdnpmax-afd-route-1",
-              "originGroupName": "dep-test-cdnpmax-origin-group-1",
+              "name": "test-cdnpmax-afd-route-1",
+              "originGroupName": "test-cdnpmax-origin-group-1",
               "patternsToMatch": [
                 "/api/*",
                 "/health"
@@ -1086,16 +1086,16 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": [
         {
           "certificateType": "ManagedCertificate",
-          "hostName": "dep-test1-cdnpmax-custom-domain.azurewebsites.net",
+          "hostName": "test1-cdnpmax-custom-domain.azurewebsites.net",
           "minimumTlsVersion": "TLS12",
-          "name": "dep-test1-cdnpmax-custom-domain"
+          "name": "test1-cdnpmax-custom-domain"
         },
         {
           "certificateType": "ManagedCertificate",
           "cipherSuiteSetType": "TLS12_2022",
-          "hostName": "dep-test2-cdnpmax-custom-domain.azurewebsites.net",
+          "hostName": "test2-cdnpmax-custom-domain.azurewebsites.net",
           "minimumTlsVersion": "TLS12",
-          "name": "dep-test2-cdnpmax-custom-domain"
+          "name": "test2-cdnpmax-custom-domain"
         },
         {
           "certificateType": "ManagedCertificate",
@@ -1106,9 +1106,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "TLS_AES_256_GCM_SHA384"
             ]
           },
-          "hostName": "dep-test3-cdnpmax-custom-domain.azurewebsites.net",
+          "hostName": "test3-cdnpmax-custom-domain.azurewebsites.net",
           "minimumTlsVersion": "TLS13",
-          "name": "dep-test3-cdnpmax-custom-domain"
+          "name": "test3-cdnpmax-custom-domain"
         }
       ]
     },
@@ -1167,7 +1167,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             "sampleSize": 4,
             "successfulSamplesRequired": 3
           },
-          "name": "dep-test-cdnpmax-origin-group-1",
+          "name": "test-cdnpmax-origin-group-1",
           "origins": [
             {
               "enabledState": "Enabled",
@@ -1175,7 +1175,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "hostName": "<hostName>",
               "httpPort": 80,
               "httpsPort": 443,
-              "name": "dep-test-cdnpmax-origin-1",
+              "name": "test-cdnpmax-origin-1",
               "priority": 1,
               "weight": 1000
             }
@@ -1189,7 +1189,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             "sampleSize": 6,
             "successfulSamplesRequired": 4
           },
-          "name": "dep-test-cdnpmax-origin-group-2",
+          "name": "test-cdnpmax-origin-group-2",
           "origins": [
             {
               "enabledState": "Enabled",
@@ -1197,7 +1197,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "hostName": "<hostName>",
               "httpPort": 80,
               "httpsPort": 443,
-              "name": "dep-test-cdnpmax-origin-2",
+              "name": "test-cdnpmax-origin-2",
               "priority": 1,
               "weight": 1000
             }
@@ -1269,14 +1269,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-test-cdnpmax'
+param name = 'test-cdnpmax'
 param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
 param afdEndpoints = [
   {
     autoGeneratedDomainNameLabelScope: 'TenantReuse'
     enabledState: 'Enabled'
-    name: 'dep-test-cdnpmax-afd-endpoint-1'
+    name: 'test-cdnpmax-afd-endpoint-1'
     routes: [
       {
         cacheConfiguration: {
@@ -1292,14 +1292,14 @@ param afdEndpoints = [
           queryStringCachingBehavior: 'IncludeSpecifiedQueryStrings'
         }
         customDomainNames: [
-          'dep-test1-cdnpmax-custom-domain'
+          'test1-cdnpmax-custom-domain'
         ]
         enabledState: 'Enabled'
         forwardingProtocol: 'MatchRequest'
         httpsRedirect: 'Enabled'
         linkToDefaultDomain: 'Enabled'
-        name: 'dep-test-cdnpmax-afd-route-1'
-        originGroupName: 'dep-test-cdnpmax-origin-group-1'
+        name: 'test-cdnpmax-afd-route-1'
+        originGroupName: 'test-cdnpmax-origin-group-1'
         patternsToMatch: [
           '/api/*'
           '/health'
@@ -1318,16 +1318,16 @@ param afdEndpoints = [
 param customDomains = [
   {
     certificateType: 'ManagedCertificate'
-    hostName: 'dep-test1-cdnpmax-custom-domain.azurewebsites.net'
+    hostName: 'test1-cdnpmax-custom-domain.azurewebsites.net'
     minimumTlsVersion: 'TLS12'
-    name: 'dep-test1-cdnpmax-custom-domain'
+    name: 'test1-cdnpmax-custom-domain'
   }
   {
     certificateType: 'ManagedCertificate'
     cipherSuiteSetType: 'TLS12_2022'
-    hostName: 'dep-test2-cdnpmax-custom-domain.azurewebsites.net'
+    hostName: 'test2-cdnpmax-custom-domain.azurewebsites.net'
     minimumTlsVersion: 'TLS12'
-    name: 'dep-test2-cdnpmax-custom-domain'
+    name: 'test2-cdnpmax-custom-domain'
   }
   {
     certificateType: 'ManagedCertificate'
@@ -1338,9 +1338,9 @@ param customDomains = [
         'TLS_AES_256_GCM_SHA384'
       ]
     }
-    hostName: 'dep-test3-cdnpmax-custom-domain.azurewebsites.net'
+    hostName: 'test3-cdnpmax-custom-domain.azurewebsites.net'
     minimumTlsVersion: 'TLS13'
-    name: 'dep-test3-cdnpmax-custom-domain'
+    name: 'test3-cdnpmax-custom-domain'
   }
 ]
 param diagnosticSettings = [
@@ -1389,7 +1389,7 @@ param originGroups = [
       sampleSize: 4
       successfulSamplesRequired: 3
     }
-    name: 'dep-test-cdnpmax-origin-group-1'
+    name: 'test-cdnpmax-origin-group-1'
     origins: [
       {
         enabledState: 'Enabled'
@@ -1397,7 +1397,7 @@ param originGroups = [
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
-        name: 'dep-test-cdnpmax-origin-1'
+        name: 'test-cdnpmax-origin-1'
         priority: 1
         weight: 1000
       }
@@ -1411,7 +1411,7 @@ param originGroups = [
       sampleSize: 6
       successfulSamplesRequired: 4
     }
-    name: 'dep-test-cdnpmax-origin-group-2'
+    name: 'test-cdnpmax-origin-group-2'
     origins: [
       {
         enabledState: 'Enabled'
@@ -1419,7 +1419,7 @@ param originGroups = [
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
-        name: 'dep-test-cdnpmax-origin-2'
+        name: 'test-cdnpmax-origin-2'
         priority: 1
         weight: 1000
       }
@@ -1487,14 +1487,14 @@ You can find the full example and the setup of its dependencies in the deploymen
 module profile 'br/public:avm/res/cdn/profile:<version>' = {
   params: {
     // Required parameters
-    name: 'dep-waf-cdnpwaf'
+    name: 'waf-cdnpwaf'
     sku: 'Premium_AzureFrontDoor'
     // Non-required parameters
     afdEndpoints: [
       {
         autoGeneratedDomainNameLabelScope: 'TenantReuse'
         enabledState: 'Enabled'
-        name: 'dep-waf-primary-endpoint'
+        name: 'waf-primary-endpoint'
         routes: [
           {
             cacheConfiguration: {
@@ -1510,14 +1510,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings'
             }
             customDomainNames: [
-              'dep-waf-api-cdnpwaf-domain'
+              'waf-api-cdnpwaf-domain'
             ]
             enabledState: 'Enabled'
             forwardingProtocol: 'HttpsOnly'
             httpsRedirect: 'Enabled'
             linkToDefaultDomain: 'Disabled'
-            name: 'dep-waf-api-route'
-            originGroupName: 'dep-waf-api-origin-group'
+            name: 'waf-api-route'
+            originGroupName: 'waf-api-origin-group'
             patternsToMatch: [
               '/api/*'
               '/v1/*'
@@ -1537,9 +1537,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       {
         certificateType: 'ManagedCertificate'
         cipherSuiteSetType: 'TLS12_2023'
-        hostName: 'dep-waf-primary-cdnpwaf.example.com'
+        hostName: 'waf-primary-cdnpwaf.example.com'
         minimumTlsVersion: 'TLS12'
-        name: 'dep-waf-primary-cdnpwaf-domain'
+        name: 'waf-primary-cdnpwaf-domain'
       }
       {
         certificateType: 'ManagedCertificate'
@@ -1550,9 +1550,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             'TLS_AES_256_GCM_SHA384'
           ]
         }
-        hostName: 'api-dep-waf-cdnpwaf.example.com'
+        hostName: 'api-waf-cdnpwaf.example.com'
         minimumTlsVersion: 'TLS13'
-        name: 'dep-waf-api-cdnpwaf-domain'
+        name: 'waf-api-cdnpwaf-domain'
       }
     ]
     diagnosticSettings: [
@@ -1601,7 +1601,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           sampleSize: 6
           successfulSamplesRequired: 4
         }
-        name: 'dep-waf-api-origin-group'
+        name: 'waf-api-origin-group'
         origins: [
           {
             enabledState: 'Enabled'
@@ -1609,7 +1609,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
-            name: 'dep-waf-api-origin'
+            name: 'waf-api-origin'
             originHostHeader: 'www.bing.com'
             priority: 1
             weight: 100
@@ -1620,7 +1620,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
-            name: 'dep-waf-api-origin-no-2'
+            name: 'waf-api-origin-no-2'
             originHostHeader: ''
             priority: 2
             weight: 200
@@ -1631,7 +1631,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             hostName: '<hostName>'
             httpPort: 80
             httpsPort: 443
-            name: 'dep-waf-api-origin-no-3'
+            name: 'waf-api-origin-no-3'
             priority: 3
             weight: 300
           }
@@ -1810,7 +1810,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dep-waf-cdnpwaf"
+      "value": "waf-cdnpwaf"
     },
     "sku": {
       "value": "Premium_AzureFrontDoor"
@@ -1821,7 +1821,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         {
           "autoGeneratedDomainNameLabelScope": "TenantReuse",
           "enabledState": "Enabled",
-          "name": "dep-waf-primary-endpoint",
+          "name": "waf-primary-endpoint",
           "routes": [
             {
               "cacheConfiguration": {
@@ -1837,14 +1837,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "queryStringCachingBehavior": "IgnoreSpecifiedQueryStrings"
               },
               "customDomainNames": [
-                "dep-waf-api-cdnpwaf-domain"
+                "waf-api-cdnpwaf-domain"
               ],
               "enabledState": "Enabled",
               "forwardingProtocol": "HttpsOnly",
               "httpsRedirect": "Enabled",
               "linkToDefaultDomain": "Disabled",
-              "name": "dep-waf-api-route",
-              "originGroupName": "dep-waf-api-origin-group",
+              "name": "waf-api-route",
+              "originGroupName": "waf-api-origin-group",
               "patternsToMatch": [
                 "/api/*",
                 "/v1/*",
@@ -1866,9 +1866,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         {
           "certificateType": "ManagedCertificate",
           "cipherSuiteSetType": "TLS12_2023",
-          "hostName": "dep-waf-primary-cdnpwaf.example.com",
+          "hostName": "waf-primary-cdnpwaf.example.com",
           "minimumTlsVersion": "TLS12",
-          "name": "dep-waf-primary-cdnpwaf-domain"
+          "name": "waf-primary-cdnpwaf-domain"
         },
         {
           "certificateType": "ManagedCertificate",
@@ -1879,9 +1879,9 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "TLS_AES_256_GCM_SHA384"
             ]
           },
-          "hostName": "api-dep-waf-cdnpwaf.example.com",
+          "hostName": "api-waf-cdnpwaf.example.com",
           "minimumTlsVersion": "TLS13",
-          "name": "dep-waf-api-cdnpwaf-domain"
+          "name": "waf-api-cdnpwaf-domain"
         }
       ]
     },
@@ -1940,7 +1940,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
             "sampleSize": 6,
             "successfulSamplesRequired": 4
           },
-          "name": "dep-waf-api-origin-group",
+          "name": "waf-api-origin-group",
           "origins": [
             {
               "enabledState": "Enabled",
@@ -1948,7 +1948,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "hostName": "<hostName>",
               "httpPort": 80,
               "httpsPort": 443,
-              "name": "dep-waf-api-origin",
+              "name": "waf-api-origin",
               "originHostHeader": "www.bing.com",
               "priority": 1,
               "weight": 100
@@ -1959,7 +1959,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "hostName": "<hostName>",
               "httpPort": 80,
               "httpsPort": 443,
-              "name": "dep-waf-api-origin-no-2",
+              "name": "waf-api-origin-no-2",
               "originHostHeader": "",
               "priority": 2,
               "weight": 200
@@ -1970,7 +1970,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               "hostName": "<hostName>",
               "httpPort": 80,
               "httpsPort": 443,
-              "name": "dep-waf-api-origin-no-3",
+              "name": "waf-api-origin-no-3",
               "priority": 3,
               "weight": 300
             }
@@ -2155,14 +2155,14 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
 using 'br/public:avm/res/cdn/profile:<version>'
 
 // Required parameters
-param name = 'dep-waf-cdnpwaf'
+param name = 'waf-cdnpwaf'
 param sku = 'Premium_AzureFrontDoor'
 // Non-required parameters
 param afdEndpoints = [
   {
     autoGeneratedDomainNameLabelScope: 'TenantReuse'
     enabledState: 'Enabled'
-    name: 'dep-waf-primary-endpoint'
+    name: 'waf-primary-endpoint'
     routes: [
       {
         cacheConfiguration: {
@@ -2178,14 +2178,14 @@ param afdEndpoints = [
           queryStringCachingBehavior: 'IgnoreSpecifiedQueryStrings'
         }
         customDomainNames: [
-          'dep-waf-api-cdnpwaf-domain'
+          'waf-api-cdnpwaf-domain'
         ]
         enabledState: 'Enabled'
         forwardingProtocol: 'HttpsOnly'
         httpsRedirect: 'Enabled'
         linkToDefaultDomain: 'Disabled'
-        name: 'dep-waf-api-route'
-        originGroupName: 'dep-waf-api-origin-group'
+        name: 'waf-api-route'
+        originGroupName: 'waf-api-origin-group'
         patternsToMatch: [
           '/api/*'
           '/v1/*'
@@ -2205,9 +2205,9 @@ param customDomains = [
   {
     certificateType: 'ManagedCertificate'
     cipherSuiteSetType: 'TLS12_2023'
-    hostName: 'dep-waf-primary-cdnpwaf.example.com'
+    hostName: 'waf-primary-cdnpwaf.example.com'
     minimumTlsVersion: 'TLS12'
-    name: 'dep-waf-primary-cdnpwaf-domain'
+    name: 'waf-primary-cdnpwaf-domain'
   }
   {
     certificateType: 'ManagedCertificate'
@@ -2218,9 +2218,9 @@ param customDomains = [
         'TLS_AES_256_GCM_SHA384'
       ]
     }
-    hostName: 'api-dep-waf-cdnpwaf.example.com'
+    hostName: 'api-waf-cdnpwaf.example.com'
     minimumTlsVersion: 'TLS13'
-    name: 'dep-waf-api-cdnpwaf-domain'
+    name: 'waf-api-cdnpwaf-domain'
   }
 ]
 param diagnosticSettings = [
@@ -2269,7 +2269,7 @@ param originGroups = [
       sampleSize: 6
       successfulSamplesRequired: 4
     }
-    name: 'dep-waf-api-origin-group'
+    name: 'waf-api-origin-group'
     origins: [
       {
         enabledState: 'Enabled'
@@ -2277,7 +2277,7 @@ param originGroups = [
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
-        name: 'dep-waf-api-origin'
+        name: 'waf-api-origin'
         originHostHeader: 'www.bing.com'
         priority: 1
         weight: 100
@@ -2288,7 +2288,7 @@ param originGroups = [
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
-        name: 'dep-waf-api-origin-no-2'
+        name: 'waf-api-origin-no-2'
         originHostHeader: ''
         priority: 2
         weight: 200
@@ -2299,7 +2299,7 @@ param originGroups = [
         hostName: '<hostName>'
         httpPort: 80
         httpsPort: 443
-        name: 'dep-waf-api-origin-no-3'
+        name: 'waf-api-origin-no-3'
         priority: 3
         weight: 300
       }
@@ -2488,7 +2488,7 @@ param tags = {
 | [`customDomains`](#parameter-customdomains) | array | Array of custom domain objects. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`endpoint`](#parameter-endpoint) | object | Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details). |
+| [`endpoint`](#parameter-endpoint) | object | Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -3173,7 +3173,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `endpoint`
 
-Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).
+Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details).
 
 - Required: No
 - Type: object
