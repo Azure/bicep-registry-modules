@@ -279,6 +279,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         '<managedIdentityResourceId>'
       ]
     }
+    muteActionsDuration: 'PT5M'
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
@@ -303,7 +304,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       autoResolved: true
       timeToResolve: 'PT5M'
     }
-    suppressForMinutes: 'PT5M'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -405,6 +405,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         ]
       }
     },
+    "muteActionsDuration": {
+      "value": "PT5M"
+    },
     "queryTimeRange": {
       "value": "PT5M"
     },
@@ -434,9 +437,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         "autoResolved": true,
         "timeToResolve": "PT5M"
       }
-    },
-    "suppressForMinutes": {
-      "value": "PT5M"
     },
     "tags": {
       "value": {
@@ -519,6 +519,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param muteActionsDuration = 'PT5M'
 param queryTimeRange = 'PT5M'
 param roleAssignments = [
   {
@@ -543,7 +544,6 @@ param ruleResolveConfiguration = {
   autoResolved: true
   timeToResolve: 'PT5M'
 }
-param suppressForMinutes = 'PT5M'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -605,8 +605,8 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     alertDescription: 'My sample Alert'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
+    muteActionsDuration: 'PT5M'
     queryTimeRange: 'PT5M'
-    suppressForMinutes: 'PT5M'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -677,10 +677,10 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "queryTimeRange": {
+    "muteActionsDuration": {
       "value": "PT5M"
     },
-    "suppressForMinutes": {
+    "queryTimeRange": {
       "value": "PT5M"
     },
     "tags": {
@@ -743,8 +743,8 @@ param scopes = [
 param alertDescription = 'My sample Alert'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
+param muteActionsDuration = 'PT5M'
 param queryTimeRange = 'PT5M'
-param suppressForMinutes = 'PT5M'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -787,12 +787,12 @@ param windowSize = 'PT5M'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both. |
+| [`muteActionsDuration`](#parameter-muteactionsduration) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
-| [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceTypes`](#parameter-targetresourcetypes) | array | List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert. |
 
@@ -1027,6 +1027,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
+### Parameter: `muteActionsDuration`
+
+Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.
+
+- Required: No
+- Type: string
+
 ### Parameter: `queryTimeRange`
 
 If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert.
@@ -1169,13 +1176,6 @@ The flag which indicates whether the provided query should be validated or not. 
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `suppressForMinutes`
-
-Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.
-
-- Required: No
-- Type: string
 
 ### Parameter: `tags`
 

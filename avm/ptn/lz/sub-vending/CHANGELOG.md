@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.5.3
+
+### Changes
+
+- Fix networkPolicies property
+- Bump old modules' versions
+
+### Breaking Changes
+
+- None
+
 ## 0.5.2
 
 ### Changes

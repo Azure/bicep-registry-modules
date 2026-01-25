@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "15555486835943827858"
+      "templateHash": "140290971998938797"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -55,7 +55,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+          "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-07-01#properties/tags"
         },
         "description": "Optional. Tags to configure in the resource."
       },
@@ -66,18 +66,18 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
     },
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "storageinsightconfig": {
       "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -85,7 +85,7 @@
         "tables": "[parameters('tables')]",
         "storageAccount": {
           "id": "[parameters('storageAccountResourceId')]",
-          "key": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
+          "key": "[listKeys('storageAccount', '2025-06-01').keys[0].value]"
         }
       }
     }
