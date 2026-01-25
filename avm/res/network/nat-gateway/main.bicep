@@ -47,7 +47,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags for the resource.')
-param tags resourceInput<'Microsoft.Network/natGateways@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/natGateways@2025-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -171,7 +171,7 @@ module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
 
 // NAT GATEWAY
 // ===========
-resource natGateway 'Microsoft.Network/natGateways@2024-07-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2025-05-01' = {
   name: name
   location: location
   tags: tags
