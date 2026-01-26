@@ -38,9 +38,6 @@ param tags object = {}
 @maxValue(730)
 param appInsightsRetentionInDays int = 365
 
-@description('Optional. Use an existing Log Analytics workspace by providing its resource ID. If provided, the module will not create a new workspace.')
-param existingLogAnalyticsWorkspaceId string = ''
-
 @description('Optional. Dashboard name to create/link for Application Insights (pass-through).')
 param applicationInsightsDashboardName string = ''
 
@@ -55,7 +52,7 @@ param applicationType string = 'web'
 // Resources  //
 // ========== //
 
-module avmWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (empty(existingLogAnalyticsWorkspaceId)) {
+module avmWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsName}', 64)
   params: {
     name: logAnalyticsName
@@ -115,9 +112,7 @@ module avmWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = 
   }
 }
 
-var workspaceResourceId = empty(existingLogAnalyticsWorkspaceId)
-  ? avmWorkspace!.outputs.resourceId
-  : existingLogAnalyticsWorkspaceId
+var workspaceResourceId = avmWorkspace.outputs.resourceId
 
 module avmAppInsights 'br/public:avm/res/insights/component:0.6.0' = {
   name: '${applicationInsightsName}-deploy'
@@ -130,8 +125,8 @@ module avmAppInsights 'br/public:avm/res/insights/component:0.6.0' = {
     kind: applicationType
     disableIpMasking: false
     flowType: 'Bluefield'
-    workspaceResourceId: empty(workspaceResourceId) ? '' : workspaceResourceId
-    diagnosticSettings: empty(workspaceResourceId) ? null : [{ workspaceResourceId: workspaceResourceId }]
+    workspaceResourceId: workspaceResourceId
+    diagnosticSettings: [{ workspaceResourceId: workspaceResourceId }]
   }
 }
 

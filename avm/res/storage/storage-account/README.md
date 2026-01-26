@@ -2,6 +2,14 @@
 
 This module deploys a Storage Account.
 
+You can reference the module as follows:
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -26,7 +34,7 @@ This module deploys a Storage Account.
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
 | `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
@@ -46,21 +54,25 @@ The following section provides usage examples for the module, which were used to
 - [Deploying as a Blob Storage](#example-1-deploying-as-a-blob-storage)
 - [Deploying as a Block Blob Storage](#example-2-deploying-as-a-block-blob-storage)
 - [Using only changefeed configuration](#example-3-using-only-changefeed-configuration)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using extended zones](#example-5-using-extended-zones)
-- [With immutability policy](#example-6-with-immutability-policy)
-- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [Deploying with a NFS File Share](#example-9-deploying-with-a-nfs-file-share)
-- [Using object replication](#example-10-using-object-replication)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-11-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-12-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-13-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-7-using-only-defaults)
+- [Using extended zones](#example-8-using-extended-zones)
+- [With immutability policy](#example-9-with-immutability-policy)
+- [Deploying with a key vault reference to save secrets](#example-10-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-11-using-large-parameter-set)
+- [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
+- [Using object replication](#example-13-using-object-replication)
+- [Using premium file shares](#example-14-using-premium-file-shares)
+- [Deploying as Storage Account version 1](#example-15-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-16-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
 This instance deploys the module as a Blob Storage account.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/blob]
 
 
 <details>
@@ -69,7 +81,6 @@ This instance deploys the module as a Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablob001'
@@ -131,6 +142,8 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module as a Premium Block Blob Storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/block]
+
 
 <details>
 
@@ -138,7 +151,6 @@ This instance deploys the module as a Premium Block Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablock001'
@@ -200,6 +212,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/changefeed]
+
 
 <details>
 
@@ -207,7 +221,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssachf001'
@@ -271,9 +284,135 @@ param blobServices = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssauhsmu001'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssauhsmu001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauhsmu001'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
 
 
 <details>
@@ -282,10 +421,336 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssamin001'
+    name: '<name>'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssauacr001'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssauacr001"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssauacr001'
+// Non-required parameters
+param blobServices = {
+  containers: [
+    {
+      name: 'container'
+      publicAccess: 'None'
+    }
+  ]
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'blob'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 7: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'stamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
     networkAcls: {
@@ -310,7 +775,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssamin001"
+      "value": "stamin001"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -337,7 +802,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssamin001'
+param name = 'stamin001'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param networkAcls = {
@@ -349,7 +814,7 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 5: _Using extended zones_
+### Example 8: _Using extended zones_
 
 This instance deploys the module within an Azure Extended Zone.
 
@@ -361,6 +826,8 @@ This instance deploys the module within an Azure Extended Zone.
 > Please refer to the [documentation](https://learn.microsoft.com/en-us/azure/extended-zones/request-access) for more information.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/extended-location]
+
 
 <details>
 
@@ -368,7 +835,6 @@ This instance deploys the module within an Azure Extended Zone.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaexzn001'
@@ -441,9 +907,11 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 6: _With immutability policy_
+### Example 9: _With immutability policy_
 
 This instance deploys the module with the immutability policy enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/immutability]
 
 
 <details>
@@ -452,7 +920,6 @@ This instance deploys the module with the immutability policy enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaim001'
@@ -595,9 +1062,11 @@ param networkAcls = {
 </details>
 <p>
 
-### Example 7: _Deploying with a key vault reference to save secrets_
+### Example 10: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
 
 
 <details>
@@ -606,7 +1075,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'kvref'
@@ -677,9 +1145,11 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 11: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -688,7 +1158,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamax001'
@@ -2316,9 +2785,11 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Deploying with a NFS File Share_
+### Example 12: _Deploying with a NFS File Share_
 
 This instance deploys the module with a NFS File Share.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nfs]
 
 
 <details>
@@ -2327,7 +2798,6 @@ This instance deploys the module with a NFS File Share.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssanfs001'
@@ -2411,9 +2881,11 @@ param skuName = 'Premium_LRS'
 </details>
 <p>
 
-### Example 10: _Using object replication_
+### Example 13: _Using object replication_
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/object-replication]
 
 
 <details>
@@ -2422,7 +2894,6 @@ This instance deploys the module with Object Replication features to async repli
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaobre001'
@@ -2557,160 +3028,11 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 11: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 14: _Using premium file shares_
 
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+This instance deploys the module with File Services with PremiumV2 SKU and a file share.
 
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
-  params: {
-    // Required parameters
-    name: '<name>'
-    // Non-required parameters
-    blobServices: {
-      containers: [
-        {
-          name: 'container'
-          publicAccess: 'None'
-        }
-      ]
-    }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'blob'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "blobServices": {
-      "value": {
-        "containers": [
-          {
-            "name": "container",
-            "publicAccess": "None"
-          }
-        ]
-      }
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "blob",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/storage/storage-account:<version>'
-
-// Required parameters
-param name = '<name>'
-// Non-required parameters
-param blobServices = {
-  containers: [
-    {
-      name: 'container'
-      publicAccess: 'None'
-    }
-  ]
-}
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-param managedIdentities = {
-  systemAssigned: true
-}
-param privateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'blob'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 12: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/premium-file-share]
 
 
 <details>
@@ -2719,46 +3041,24 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssauacr001'
+    name: 'ssapfs001'
     // Non-required parameters
-    blobServices: {
-      containers: [
+    allowBlobPublicAccess: false
+    fileServices: {
+      shares: [
         {
-          name: 'container'
-          publicAccess: 'None'
+          name: 'fileshare01'
         }
       ]
     }
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
+    kind: 'FileStorage'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'blob'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
+    skuName: 'PremiumV2_LRS'
   }
 }
 ```
@@ -2777,32 +3077,23 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauacr001"
+      "value": "ssapfs001"
     },
     // Non-required parameters
-    "blobServices": {
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "fileServices": {
       "value": {
-        "containers": [
+        "shares": [
           {
-            "name": "container",
-            "publicAccess": "None"
+            "name": "fileshare01"
           }
         ]
       }
     },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
+    "kind": {
+      "value": "FileStorage"
     },
     "networkAcls": {
       "value": {
@@ -2810,20 +3101,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         "defaultAction": "Deny"
       }
     },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "blob",
-          "subnetResourceId": "<subnetResourceId>"
-        }
-      ]
+    "skuName": {
+      "value": "PremiumV2_LRS"
     }
   }
 }
@@ -2840,51 +3119,32 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauacr001'
+param name = 'ssapfs001'
 // Non-required parameters
-param blobServices = {
-  containers: [
+param allowBlobPublicAccess = false
+param fileServices = {
+  shares: [
     {
-      name: 'container'
-      publicAccess: 'None'
+      name: 'fileshare01'
     }
   ]
 }
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
+param kind = 'FileStorage'
 param networkAcls = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
 }
-param privateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'blob'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
+param skuName = 'PremiumV2_LRS'
 ```
 
 </details>
 <p>
 
-### Example 13: _Deploying as Storage Account version 1_
+### Example 15: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v1]
 
 
 <details>
@@ -2893,7 +3153,6 @@ This instance deploys the module as Storage Account version 1.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssav1001'
@@ -2946,9 +3205,11 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 16: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -2957,7 +3218,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssawaf001'
@@ -4033,20 +4293,20 @@ Configure immutability policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowProtectedAppendWrites`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
-| [`allowProtectedAppendWritesAll`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`allowProtectedAppendWrites`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. Defaults to false. |
+| [`allowProtectedAppendWritesAll`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false. |
 | [`immutabilityPeriodSinceCreationInDays`](#parameter-blobservicescontainersimmutabilitypolicyimmutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
 
 ### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWrites`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. Defaults to false.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWritesAll`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -6048,6 +6308,7 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -7070,4 +7331,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

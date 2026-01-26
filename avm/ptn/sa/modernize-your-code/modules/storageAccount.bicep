@@ -14,11 +14,11 @@ param location string
   'Standard_GZRS'
   'Standard_RAGZRS'
 ])
-@description('Optional. Storage Account Sku Name. Defaults to Standard_GRS.')
-param skuName string = 'Standard_GRS'
+@description('Optional. Storage Account Sku Name. Defaults to Standard_LRS.')
+param skuName string = 'Standard_LRS'
 
 @description('Optional. Tags to be applied to the resources.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
+param tags object = {}
 
 @description('Optional. Resource ID of the Log Analytics workspace to use for diagnostic settings.')
 param logAnalyticsWorkspaceResourceId string?
@@ -36,39 +36,16 @@ param containers array?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module blobPrivateDnsZone 'privateDnsZone.bicep' = if (privateNetworking != null && empty(privateNetworking.?blobPrivateDnsZoneResourceId)) {
-  name: take('${name}-blob-pdns-deployment', 64)
-  params: {
-    name: 'privatelink.blob.${environment().suffixes.storage}'
-    virtualNetworkResourceId: privateNetworking.?virtualNetworkResourceId ?? ''
-    tags: tags
-  }
-}
-
-module filePrivateDnsZone 'privateDnsZone.bicep' = if (privateNetworking != null && empty(privateNetworking.?filePrivateDnsZoneResourceId)) {
-  name: take('${name}-file-pdns-deployment', 64)
-  params: {
-    name: 'privatelink.file.${environment().suffixes.storage}'
-    virtualNetworkResourceId: privateNetworking.?virtualNetworkResourceId ?? ''
-    tags: tags
-  }
-}
-
 var blobPrivateDnsZoneResourceId = privateNetworking != null
-  ? (empty(privateNetworking.?blobPrivateDnsZoneResourceId)
-      ? blobPrivateDnsZone.outputs.resourceId ?? ''
-      : privateNetworking.?blobPrivateDnsZoneResourceId)
+  ? privateNetworking.?blobPrivateDnsZoneResourceId ?? ''
   : ''
 var filePrivateDnsZoneResourceId = privateNetworking != null
-  ? (empty(privateNetworking.?filePrivateDnsZoneResourceId)
-      ? filePrivateDnsZone.outputs.resourceId ?? ''
-      : privateNetworking.?filePrivateDnsZoneResourceId)
+  ? privateNetworking.?filePrivateDnsZoneResourceId ?? ''
   : ''
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
-  name: take('${name}-sa-deployment', 64)
+module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+  name: take('avm.res.storage.storage-account.${name}', 64)
   #disable-next-line no-unnecessary-dependson
-  dependsOn: [filePrivateDnsZone, blobPrivateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: name
     location: location
@@ -101,6 +78,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
     privateEndpoints: privateNetworking != null
       ? [
           {
+            name: 'pep-blob-${name}'
+            customNetworkInterfaceName: 'nic-blob-${name}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -112,6 +91,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
             subnetResourceId: privateNetworking.?subnetResourceId ?? ''
           }
           {
+            name: 'pep-file-${name}'
+            customNetworkInterfaceName: 'nic-file-${name}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
@@ -127,18 +108,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
     roleAssignments: roleAssignments
     blobServices: {
       containers: containers ?? []
-      corsRules: []
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: true
       containerDeleteRetentionPolicyDays: 7
-      deleteRetentionPolicyEnabled: true
-      deleteRetentionPolicyDays: 6
-      diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
-        ? [
-            {
-              workspaceResourceId: logAnalyticsWorkspaceResourceId
-            }
-          ]
-        : []
     }
     enableTelemetry: enableTelemetry
   }
@@ -147,7 +120,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.25.0' = {
 @description('Name of the Storage Account.')
 output name string = storageAccount.outputs.name
 
-@secure() // marked secure to meet AVM validation requirements
 @description('Resource ID of the Storage Account.')
 output resourceId string = storageAccount.outputs.resourceId
 

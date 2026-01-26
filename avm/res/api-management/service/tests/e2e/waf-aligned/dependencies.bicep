@@ -1,6 +1,9 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Required. The location to deploy resources to.')
+param lawReplicationRegion string
+
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
@@ -16,7 +19,7 @@ param applicationInsightsName string
 var addressPrefix = '10.0.0.0/16'
 
 #disable-next-line use-recent-api-versions
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -61,7 +64,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
 }
 
 #disable-next-line use-recent-api-versions
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsWorkspaceName
   location: location
   tags: {
@@ -72,6 +75,10 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
     type: 'SystemAssigned'
   }
   properties: {
+    replication: {
+      enabled: true
+      location: lawReplicationRegion
+    }
     sku: {
       name: 'PerGB2018'
     }

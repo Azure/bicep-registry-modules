@@ -204,7 +204,7 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
 @batchSize(1)
 module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = [
   for (ruleCollectionGroup, index) in (ruleCollectionGroups ?? []): {
-    name: '${uniqueString(deployment().name, location)}-firewallPolicy_ruleCollectionGroups-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-firewallPolicy_ruleCollectionGroups-${index}'
     params: {
       firewallPolicyName: firewallPolicy.name
       name: ruleCollectionGroup.name

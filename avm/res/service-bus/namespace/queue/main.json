@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14438394156998159960"
+      "version": "0.39.26.7824",
+      "templateHash": "1834255414874254098"
     },
     "name": "Service Bus Namespace Queue",
     "description": "This module deploys a Service Bus Namespace Queue."
@@ -288,6 +288,13 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -310,15 +317,35 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.servicebus-namespacequeue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "queue": {
       "type": "Microsoft.ServiceBus/namespaces/queues",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "autoDeleteOnIdle": "[if(not(empty(parameters('autoDeleteOnIdle'))), parameters('autoDeleteOnIdle'), null())]",
@@ -332,7 +359,7 @@
         "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), null())]",
         "lockDuration": "[parameters('lockDuration')]",
         "maxDeliveryCount": "[parameters('maxDeliveryCount')]",
-        "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
+        "maxMessageSizeInKilobytes": "[if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), parameters('maxMessageSizeInKilobytes'), null())]",
         "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
         "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
         "requiresSession": "[parameters('requiresSession')]",
@@ -384,7 +411,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -411,8 +438,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "7794650951361395393"
+              "version": "0.39.26.7824",
+              "templateHash": "4116748364582130588"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -452,7 +479,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('queueName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"

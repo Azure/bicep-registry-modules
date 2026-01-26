@@ -18,7 +18,7 @@ param policyAssignmentIdentityId string
 
 module additionalSubscriptionRoleAssignmentsPerSub 'subscription-additional-rbac-asi.bicep' = [
   for sub in subscriptionIDsToAssignRbacTo: {
-    name: '${uniqueString(deployment().name, location, roleDefinitionId, name)}-PolicyAssignment-MG-Module-RBAC-Sub-${substring(sub, 0, 8)}'
+    name: 'pol-asi-mg-rbac-sub-${uniqueString(managementGroup().name, sub, location, roleDefinitionId, name, policyAssignmentIdentityId)}'
     scope: subscription(sub)
     params: {
       name: name

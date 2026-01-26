@@ -17,11 +17,11 @@ param subnetResourceId string
 // Resources      //
 // ============== //
 
-resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-11-01' existing = {
+resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2025-01-01' existing = {
   name: trafficControllerName
 }
 
-resource association 'Microsoft.ServiceNetworking/trafficControllers/associations@2023-11-01' = {
+resource association 'Microsoft.ServiceNetworking/trafficControllers/associations@2025-01-01' = {
   name: name
   parent: trafficController
   location: location

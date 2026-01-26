@@ -11,17 +11,16 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-@description('Required. Resource ID of the KeyVault containing the key or secret.')
-param keyVaultResourceId string
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-@description('Required. The name of the key used for encryption.')
-param keyName string
-
-@description('Optional. The version of the customer managed key to reference for encryption. If not provided, the latest key version is used.')
-param keyVersion string?
+@description('Optional. Assign permissions to the Key Vault Key.')
+param enableKeyPermissions bool = false
 
 @description('Optional. The type of key used to encrypt the data of the disk. For security reasons, it is recommended to set encryptionType to EncryptionAtRestWithPlatformAndCustomerKeys.')
 @allowed([
+  'ConfidentialVmEncryptedWithCustomerKey'
   'EncryptionAtRestWithCustomerKey'
   'EncryptionAtRestWithPlatformAndCustomerKeys'
 ])
@@ -29,9 +28,6 @@ param encryptionType string = 'EncryptionAtRestWithPlatformAndCustomerKeys'
 
 @description('Optional. Multi-tenant application client ID to access key vault in a different tenant. Setting the value to "None" will clear the property.')
 param federatedClientId string = 'None'
-
-@description('Optional. Set this flag to true to enable auto-updating of this disk encryption set to the latest key version.')
-param rotationToLatestKeyVersionEnabled bool = false
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -128,27 +124,34 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
-  name: last(split(keyVaultResourceId, '/'))!
-  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
-  resource key 'keys@2024-11-01' existing = {
-    name: keyName
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!isHSMManagedCMK) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+  resource cMKKey 'keys@2024-11-01' existing = {
+    name: customerManagedKey.?keyName!
   }
 }
 
 // Note: This is only enabled for user-assigned identities as the service's system-assigned identity isn't available during its initial deployment
-module keyVaultPermissions 'modules/nested_keyVaultPermissions.bicep' = [
-  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): {
+module keyVaultPermissionsUami 'modules/nested_keyVaultPermissions.bicep' = [
+  for (userAssignedIdentityResourceId, index) in (managedIdentities.?userAssignedResourceIds ?? []): if (enableKeyPermissions && !isHSMManagedCMK) {
     name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
     params: {
-      keyName: keyName
-      keyVaultResourceId: keyVaultResourceId
+      keyName: customerManagedKey!.keyName
+      keyVaultResourceId: customerManagedKey!.keyVaultResourceId
       userAssignedIdentityResourceId: userAssignedIdentityResourceId
-      rbacAuthorizationEnabled: keyVault.properties.enableRbacAuthorization
+      rbacAuthorizationEnabled: cMKKeyVault!.properties.enableRbacAuthorization
       location: location
     }
-    scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+    scope: resourceGroup(
+      split(customerManagedKey!.keyVaultResourceId, '/')[2],
+      split(customerManagedKey!.keyVaultResourceId, '/')[4]
+    )
   }
 ]
 
@@ -160,18 +163,22 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   properties: {
     activeKey: {
       sourceVault: {
-        id: keyVaultResourceId
+        id: customerManagedKey!.keyVaultResourceId
       }
-      keyUrl: !empty(keyVersion)
-        ? '${keyVault::key.properties.keyUri}/${keyVersion}'
-        : keyVault::key.properties.keyUriWithVersion
+      keyUrl: !empty(customerManagedKey!.?keyVersion)
+        ? (!isHSMManagedCMK
+            ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+            : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+        : (!isHSMManagedCMK
+            ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+            : fail('Managed HSM CMK encryption requires specifying the \'keyVersion\'.'))
     }
     encryptionType: encryptionType
     federatedClientId: federatedClientId
-    rotationToLatestKeyVersionEnabled: rotationToLatestKeyVersionEnabled
+    rotationToLatestKeyVersionEnabled: customerManagedKey.?autoRotationEnabled
   }
   dependsOn: [
-    keyVaultPermissions
+    keyVaultPermissionsUami
   ]
 }
 
@@ -188,7 +195,7 @@ resource diskEncryptionSet_roleAssignments 'Microsoft.Authorization/roleAssignme
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: diskEncryptionSet
@@ -222,7 +229,7 @@ output systemAssignedMIPrincipalId string? = diskEncryptionSet.?identity.?princi
 output identities object = diskEncryptionSet.identity
 
 @description('The name of the key vault with the disk encryption key.')
-output keyVaultName string = last(split(keyVaultResourceId, '/'))!
+output keyVaultName string = cMKKeyVault.name
 
 @description('The location the resource was deployed into.')
 output location string = diskEncryptionSet.location

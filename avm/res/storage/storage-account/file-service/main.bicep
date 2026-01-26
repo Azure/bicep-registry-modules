@@ -29,7 +29,10 @@ param shares fileShareType[]?
 
 var enableReferencedModulesTelemetry = false
 
-var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
+// default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind (unless V2 where accessTier is not supported so null is supplied), 'TransactionOptimized' otherwise
+var defaultShareAccessTier = storageAccount.kind == 'FileStorage'
+  ? (startsWith(storageAccount.sku.name, 'PremiumV2_') ? null : 'Premium')
+  : 'TransactionOptimized'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName

@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Authorization Server.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/authorization-server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -38,7 +46,7 @@ This module deploys an API Management Service Authorization Server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationMethods`](#parameter-authorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE. |
+| [`authorizationMethods`](#parameter-authorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. |
 | [`bearerTokenSendingMethods`](#parameter-bearertokensendingmethods) | array | Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query. |
 | [`clientAuthenticationMethod`](#parameter-clientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
 | [`clientRegistrationEndpoint`](#parameter-clientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
@@ -48,7 +56,7 @@ This module deploys an API Management Service Authorization Server.
 | [`resourceOwnerUsername`](#parameter-resourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
 | [`serverDescription`](#parameter-serverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
 | [`supportState`](#parameter-supportstate) | bool | If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security. |
-| [`tokenBodyParameters`](#parameter-tokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties. |
+| [`tokenBodyParameters`](#parameter-tokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. |
 | [`tokenEndpoint`](#parameter-tokenendpoint) | string | OAuth token endpoint. Contains absolute URI to entity being referenced. |
 
 ### Parameter: `authorizationEndpoint`
@@ -89,6 +97,7 @@ Form of an authorization grant, which the client uses to request the access toke
   ```Bicep
   [
     'authorizationCode'
+    'authorizationCodeWithPkce'
     'clientCredentials'
     'implicit'
     'resourceOwnerPassword'
@@ -111,7 +120,7 @@ The name of the parent API Management service. Required if the template is used 
 
 ### Parameter: `authorizationMethods`
 
-HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.
+HTTP verbs supported by the authorization endpoint. GET must be always present.
 
 - Required: No
 - Type: array
@@ -206,7 +215,7 @@ If true, authorization server will include state parameter from the authorizatio
 
 ### Parameter: `tokenBodyParameters`
 
-Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties.
+Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}.
 
 - Required: No
 - Type: array
@@ -230,4 +239,4 @@ OAuth token endpoint. Contains absolute URI to entity being referenced.
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
