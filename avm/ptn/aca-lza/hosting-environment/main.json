@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12229859837716028394"
+      "version": "0.40.2.10011",
+      "templateHash": "2932353698954326597"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -312,8 +312,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "3952363006517170080"
+              "version": "0.40.2.10011",
+              "templateHash": "5979251378016139881"
             }
           },
           "parameters": {
@@ -994,8 +994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "11754079241915546592"
+              "version": "0.40.2.10011",
+              "templateHash": "11672866175847441624"
             }
           },
           "parameters": {
@@ -2779,8 +2779,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "5812840681810575748"
+                      "version": "0.40.2.10011",
+                      "templateHash": "15696589830684132345"
                     }
                   },
                   "parameters": {
@@ -6153,8 +6153,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "9404889194307735079"
+                      "version": "0.40.2.10011",
+                      "templateHash": "9666596094864795642"
                     }
                   },
                   "parameters": {
@@ -12787,8 +12787,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "262547489278791564"
+                      "version": "0.40.2.10011",
+                      "templateHash": "13001990679216484105"
                     }
                   },
                   "parameters": {
@@ -19422,8 +19422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16091448388533036985"
+              "version": "0.40.2.10011",
+              "templateHash": "16951811495232834076"
             }
           },
           "parameters": {
@@ -19557,8 +19557,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "3603012938949609145"
+                      "version": "0.40.2.10011",
+                      "templateHash": "3617673313251898265"
                     }
                   },
                   "parameters": {
@@ -26878,8 +26878,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "250591344654527510"
+                      "version": "0.40.2.10011",
+                      "templateHash": "9387765526982705267"
                     }
                   },
                   "parameters": {
@@ -33312,8 +33312,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "9928025242803794910"
+                      "version": "0.40.2.10011",
+                      "templateHash": "11969556395209233648"
                     }
                   },
                   "parameters": {
@@ -42151,8 +42151,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "12756158066962909244"
+              "version": "0.40.2.10011",
+              "templateHash": "17539660289632708220"
             }
           },
           "parameters": {
@@ -46697,8 +46697,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "3906691217007701142"
+              "version": "0.40.2.10011",
+              "templateHash": "5165550671305545726"
             }
           },
           "parameters": {
@@ -48034,8 +48034,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "10459838920619738161"
+              "version": "0.40.2.10011",
+              "templateHash": "5866414698484990664"
             }
           },
           "parameters": {
@@ -48664,8 +48664,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "17858571200038790862"
+                      "version": "0.40.2.10011",
+                      "templateHash": "14341776471871831563"
                     }
                   },
                   "parameters": {
@@ -48738,7 +48738,7 @@
                       "condition": "[empty(parameters('appGatewayCertificateData'))]",
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+                      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
                       "name": "[guid(resourceGroup().id, parameters('keyVaultName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))), '2023-07-31-preview').principalId]",
@@ -48752,7 +48752,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                       "name": "[guid(resourceGroup().id, parameters('storageAccountName'), 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))))]",
                       "properties": {
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-selfSignedCertManagedIdentity', uniqueString(resourceGroup().id, parameters('location')))), '2023-07-31-preview').principalId]",
@@ -48815,7 +48815,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
+                      "scope": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
                       "name": "[guid(subscription().id, resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), parameters('appGatewayUserAssignedIdentityPrincipalId'), 'KeyVaultSecretUser')]",
                       "properties": {
                         "principalId": "[parameters('appGatewayUserAssignedIdentityPrincipalId')]",
@@ -49606,8 +49606,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4856008784195078416"
+                      "version": "0.40.2.10011",
+                      "templateHash": "14646954597270894305"
                     }
                   },
                   "parameters": {
