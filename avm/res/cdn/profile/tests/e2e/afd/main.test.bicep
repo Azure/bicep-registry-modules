@@ -112,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
                     redirectType: 'PermanentRedirect'
                     destinationProtocol: 'Https'
                     customPath: '/test123'
-                    customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+                    customHostname: 'dev-contoso.azurewebsites.net'
                   }
                 }
               ]
