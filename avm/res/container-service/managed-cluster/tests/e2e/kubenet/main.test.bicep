@@ -157,8 +157,8 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
     }
   }
