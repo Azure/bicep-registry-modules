@@ -274,7 +274,7 @@ param fqdnSubdomain string?
 @description('Optional. Settings for upgrading the cluster with override options.')
 param upgradeSettings resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.upgradeSettings?
 
-@description('Optional. The Windows profile for Windows VMs in the Managed Cluster.')
+@description('Optional. The profile for Windows VMs in the Managed Cluster.')
 param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.windowsProfile?
 
 // =========== //

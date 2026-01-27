@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "17624608039137841174"
+      "templateHash": "15481335468407716579"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1605,7 +1605,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ContainerService/managedClusters@2025-09-01#properties/properties/properties/windowsProfile"
         },
-        "description": "Optional. The Windows profile for Windows VMs in the Managed Cluster."
+        "description": "Optional. The profile for Windows VMs in the Managed Cluster."
       },
       "nullable": true
     }

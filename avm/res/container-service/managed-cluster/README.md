@@ -3249,7 +3249,7 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradeSettings`](#parameter-upgradesettings) | object | Settings for upgrading the cluster with override options. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
-| [`windowsProfile`](#parameter-windowsprofile) | object | The Windows profile for Windows VMs in the Managed Cluster. |
+| [`windowsProfile`](#parameter-windowsprofile) | object | The profile for Windows VMs in the Managed Cluster. |
 | [`workloadAutoScalerProfile`](#parameter-workloadautoscalerprofile) | object | Workload Auto-scaler profile for the managed cluster. |
 
 ### Parameter: `name`
@@ -5207,7 +5207,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 
 ### Parameter: `windowsProfile`
 
-The Windows profile for Windows VMs in the Managed Cluster.
+The profile for Windows VMs in the Managed Cluster.
 
 - Required: No
 - Type: object
