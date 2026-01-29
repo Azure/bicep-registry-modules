@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2870967664284606852"
+      "templateHash": "4134636445168418199"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -104,9 +104,9 @@
     },
     "gptModelCapacity": {
       "type": "int",
-      "defaultValue": 10,
+      "defaultValue": 50,
       "metadata": {
-        "description": "Optional. AI model deployment token capacity. Defaults to 10 for optimal performance."
+        "description": "Optional. AI model deployment token capacity. Defaults to 50 for optimal performance."
       }
     },
     "embeddingModel": {
@@ -122,7 +122,7 @@
     },
     "embeddingDeploymentCapacity": {
       "type": "int",
-      "defaultValue": 10,
+      "defaultValue": 50,
       "minValue": 10,
       "metadata": {
         "description": "Optional. Capacity of the Embedding Model deployment."
@@ -196,7 +196,7 @@
     },
     "backendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "latest_2026-01-28_82",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the backend."
       }
@@ -217,7 +217,7 @@
     },
     "frontendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest",
+      "defaultValue": "latest_2026-01-28_82",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
@@ -24880,9 +24880,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -27288,9 +27288,6 @@
           },
           "searchServiceName": {
             "value": "[reference('searchService').outputs.name.value]"
-          },
-          "searchApiKey": {
-            "value": "[listOutputsWithSecureValues('searchService', '2025-04-01').primaryKey]"
           }
         },
         "template": {
@@ -27300,30 +27297,45 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "13854536965493424643"
+              "templateHash": "17866948616305206544"
             }
           },
           "parameters": {
             "aifSearchConnectionName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Name of the AI Foundry search connection"
+              }
             },
             "searchServiceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Name of the Azure AI Search service"
+              }
             },
             "searchServiceResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the Azure AI Search service"
+              }
             },
             "searchServiceLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Location/region of the Azure AI Search service"
+              }
             },
             "aiFoundryName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Name of the AI Foundry account"
+              }
             },
             "aiFoundryProjectName": {
-              "type": "string"
-            },
-            "searchApiKey": {
-              "type": "securestring"
+              "type": "string",
+              "metadata": {
+                "description": "Name of the AI Foundry project"
+              }
             }
           },
           "resources": [
@@ -27334,10 +27346,7 @@
               "properties": {
                 "category": "CognitiveSearch",
                 "target": "[format('https://{0}.search.windows.net', parameters('searchServiceName'))]",
-                "authType": "ApiKey",
-                "credentials": {
-                  "key": "[parameters('searchApiKey')]"
-                },
+                "authType": "AAD",
                 "isSharedToAll": true,
                 "metadata": {
                   "ApiType": "Azure",

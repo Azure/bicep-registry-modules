@@ -319,7 +319,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 10 for optimal performance. |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 50 for optimal performance. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-07-18. |
@@ -380,7 +380,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
+- Default: `'latest_2026-01-28_82'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -404,7 +404,7 @@ Capacity of the Embedding Model deployment.
 
 - Required: No
 - Type: int
-- Default: `10`
+- Default: `50`
 - MinValue: 10
 
 ### Parameter: `embeddingModel`
@@ -475,7 +475,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
+- Default: `'latest_2026-01-28_82'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
@@ -487,11 +487,11 @@ The Container Registry hostname where the docker images for the frontend are loc
 
 ### Parameter: `gptModelCapacity`
 
-AI model deployment token capacity. Defaults to 10 for optimal performance.
+AI model deployment token capacity. Defaults to 50 for optimal performance.
 
 - Required: No
 - Type: int
-- Default: `10`
+- Default: `50`
 
 ### Parameter: `gptModelDeploymentType`
 
