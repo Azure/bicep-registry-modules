@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 param serviceShort string = 'sccsasb'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '123'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
