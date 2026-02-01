@@ -390,7 +390,7 @@ import { sourceType } from 'catalog/main.bicep'
 @export()
 @sys.description('The type for a Dev Center Catalog.')
 type catalogType = {
-  @sys.description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain #_namePrefix_#numeric characters, hyphens, underscores, and periods.')
+  @sys.description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods.')
   name: string
 
   @sys.description('Optional. GitHub repository configuration for the catalog.')
@@ -433,7 +433,7 @@ type projectPolicyType = {
 
 @description('The type for Dev Center Gallery.')
 type devCenterGalleryType = {
-  @description('Required. It must be between 3 and 63 characters, can only include #_namePrefix_#numeric characters, underscores and periods, and can not start or end with "." or "_".')
+  @description('Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
   @minLength(3)
   @maxLength(63)
   name: string
