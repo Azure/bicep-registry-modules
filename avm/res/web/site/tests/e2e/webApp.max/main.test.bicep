@@ -19,8 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
-
+var enforcedLocation = 'swedencentral'
 // ============ //
 // Dependencies //
 // ============ //
@@ -43,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
     apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
+    applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
   }
 }
 
@@ -182,6 +182,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'appsettings'
               storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
               storageAccountUseIdentityAuthentication: true
             }
           ]
@@ -273,6 +274,10 @@ module testDeployment '../../../main.bicep' = [
           // Persisted on service in 'Settings/Environment variables'
           name: 'appsettings'
           storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+          properties: {
+            ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+          }
           storageAccountUseIdentityAuthentication: true
         }
         {

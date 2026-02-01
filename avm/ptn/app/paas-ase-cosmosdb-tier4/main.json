@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "14491701791320745675"
+      "templateHash": "9677410372218378940"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."
@@ -43,7 +43,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/networkSecurityGroups@2024-07-01#properties/tags"
+          "source": "Microsoft.Network/networkSecurityGroups@2024-10-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -14013,7 +14013,7 @@
             "value": "S1"
           },
           "skuCapacity": {
-            "value": 1
+            "value": 2
           },
           "appServiceEnvironmentResourceId": {
             "value": "[reference('ase').outputs.resourceId.value]"

@@ -2,6 +2,14 @@
 
 This module deploys a NAT Gateway.
 
+You can reference the module as follows:
+```bicep
+module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,9 +26,9 @@ This module deploys a NAT Gateway.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/natGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_natgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/natGateways)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
-| `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
+| `Microsoft.Network/natGateways` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_natgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/natGateways)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPPrefixes` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPPrefixes)</li></ul> |
 
 ## Usage examples
 
@@ -40,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -47,7 +57,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -101,6 +110,8 @@ param name = 'nngmin001'
 
 This instance deploys the module using an existing Public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/existingPip]
+
 
 <details>
 
@@ -108,7 +119,6 @@ This instance deploys the module using an existing Public IP address.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -170,6 +180,8 @@ param publicIpResourceIds = '<publicIpResourceIds>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -177,7 +189,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -457,6 +468,8 @@ param tags = {
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/prefixCombined]
+
 
 <details>
 
@@ -464,7 +477,6 @@ This example shows how you can provide a Public IP Prefix to the module, while a
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -550,6 +562,8 @@ param publicIPPrefixes = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -557,7 +571,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: 'natGatewayDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -721,6 +734,7 @@ param tags = {
 | [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The idle timeout of the NAT gateway. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`natGatewaySku`](#parameter-natgatewaysku) | string | The SKU of the NAT Gateway. |
 | [`publicIPAddresses`](#parameter-publicipaddresses) | array | Specifies the properties of the Public IPs to create and be used by the NAT Gateway. |
 | [`publicIPPrefixes`](#parameter-publicipprefixes) | array | Specifies the properties of the Public IP Prefixes to create and be used by the NAT Gateway. |
 | [`publicIPPrefixResourceIds`](#parameter-publicipprefixresourceids) | array | Existing Public IP Prefixes resource IDs to use for the NAT Gateway. |
@@ -818,6 +832,21 @@ Specify the notes of the lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `natGatewaySku`
+
+The SKU of the NAT Gateway.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+    'StandardV2'
+  ]
+  ```
 
 ### Parameter: `publicIPAddresses`
 
@@ -1370,6 +1399,7 @@ Name of a public IP address SKU.
   [
     'Basic'
     'Standard'
+    'StandardV2'
   ]
   ```
 
@@ -1820,10 +1850,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/network/public-ip-address:0.12.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-prefix:0.7.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-prefix:0.8.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

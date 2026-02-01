@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Updated all 'avm-common-types' references to version 0.6.1
+- Updated avm/res/network/private-endpoint cross-referenced module to version 0.11.1
+
+### Breaking Changes
+
+- Replacing `enableZoneRedundant` with `availabilityZones` parameter.
+  Per best practice, the default is to deploy to all zones, i.e., to avoid this, set the value to of `availabilityZones` to `[]`
+
 ## 0.8.0
 
 ### Changes

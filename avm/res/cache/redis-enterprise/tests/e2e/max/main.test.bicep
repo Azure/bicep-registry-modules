@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
@@ -51,7 +50,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
   }
 }
 
@@ -66,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      publicNetworkAccess: 'Disabled'
       location: resourceLocation
       skuName: 'Balanced_B10'
       database: {
@@ -81,10 +80,6 @@ module testDeployment '../../../main.bicep' = [
             name: 'RediSearch'
           }
         ]
-        persistence: {
-          type: 'aof'
-          frequency: '1s'
-        }
         diagnosticSettings: [
           {
             name: 'customSettingDatabase'
@@ -173,3 +168,21 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@secure()
+output primaryAccessKey string = testDeployment[0].outputs.primaryAccessKey!
+
+@secure()
+output primaryConnectionString string = testDeployment[0].outputs.primaryConnectionString!
+
+@secure()
+output primaryStackExchangeRedisConnectionString string = testDeployment[0].outputs.primaryStackExchangeRedisConnectionString!
+
+@secure()
+output secondaryAccessKey string = testDeployment[0].outputs.secondaryAccessKey!
+
+@secure()
+output secondaryConnectionString string = testDeployment[0].outputs.secondaryConnectionString!
+
+@secure()
+output secondaryStackExchangeRedisConnectionString string = testDeployment[0].outputs.secondaryStackExchangeRedisConnectionString!

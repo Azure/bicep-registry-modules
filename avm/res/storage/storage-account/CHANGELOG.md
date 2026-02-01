@@ -2,12 +2,56 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.31.0
+
+### Changes
+
+- Updated `file-service/share` property `accessTier` to allow for `null`
+- Updated default `file-service/share accessTier` to default to `null` when Storage Account sku is in `PremiumV2` family
+
+### Breaking Changes
+
+- Updated `blob-service/container/immutabilityPolicy` write access flags `allowProtectedAppendWrites` and `allowProtectedAppendWritesAll` to default to `false` instead of `true`
+
+## 0.30.0
+
+### Changes
+
+- Updated `publicNetworkAccess` enum to include `SecuredByPerimeter`
+
+### Breaking Changes
+
+- None
+
+## 0.29.0
+
+### Changes
+
+- Added support for managed HSM key encryption
+
+### Breaking Changes
+
+- None
+
+## 0.28.0
+
+### Changes
+
+- Added strict types for `fileServices`, `queueServices`, and `tableServices` inputs
+- Updated input `managementPolicyRules` to match underlying strict type `storageAccounts/managementPolicies.properties.policy.rules`
+- Added optional input `blobServices.versionDeletePolicyDays` to provide a friendly means of including an auto-created lifecycle policy for deleting blob versions after x days.
+- Added optional input `extendedLocationZone` to support Azure Extended Zone region deployment
+- Added optional input `objectReplicationPolicies` to support Object Replication policies across storage accounts
+
+### Breaking Changes
+
+- None
+
 ## 0.27.1
 
 ### Changes
 
 - Added check for immutability when hierarchical namespace is enabled
-
 
 ### Breaking Changes
 

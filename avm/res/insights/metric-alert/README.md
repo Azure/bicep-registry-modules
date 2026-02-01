@@ -2,6 +2,14 @@
 
 This module deploys a Metric Alert.
 
+You can reference the module as follows:
+```bicep
+module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criteria: {
@@ -149,6 +158,8 @@ param scopes = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -156,7 +167,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criteria: {
@@ -373,6 +383,8 @@ param windowSize = 'PT15M'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -380,7 +392,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
-  name: 'metricAlertDeployment'
   params: {
     // Required parameters
     criteria: {
@@ -975,4 +986,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

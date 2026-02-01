@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "17444120099448473770"
+      "version": "0.39.26.7824",
+      "templateHash": "12582804890302222446"
     },
     "name": "Azure NetApp Files Volume Backup",
     "description": "This module deploys a backup of a NetApp Files Volume."

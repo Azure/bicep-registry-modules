@@ -4,6 +4,14 @@ This module provides a secure and scalable environment for deploying AI applicat
 The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
 By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.
 
+You can reference the module as follows:
+```bicep
+module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -24,7 +32,9 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.Compute/virtualMachines/extensions` | 2022-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.ContainerRegistry/registries` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_cacherules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | 2023-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_credentialsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/replications` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_scopemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/webhooks` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2020-06-25 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments)</li></ul> |
@@ -51,10 +61,12 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2023-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets)</li></ul> |
@@ -92,6 +104,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -99,7 +113,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -165,6 +178,8 @@ param virtualMachineConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -172,7 +187,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: 'aipbmax'
@@ -550,6 +564,8 @@ param workspaceConfiguration = {
 
 This instance deploys the module with a virtual network, but no virtual machine or Azure Bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/no-vm]
+
 
 <details>
 
@@ -557,7 +573,6 @@ This instance deploys the module with a virtual network, but no virtual machine 
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -631,6 +646,8 @@ param virtualMachineConfiguration = {
 
 This instance deploys the module without a virtual network, virtual machine or Azure Bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/no-vnet]
+
 
 <details>
 
@@ -638,7 +655,6 @@ This instance deploys the module without a virtual network, virtual machine or A
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -701,6 +717,8 @@ param virtualNetworkConfiguration = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -708,11 +726,18 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
-  name: 'baselineDeployment'
   params: {
     // Required parameters
     name: '<name>'
     // Non-required parameters
+    containerRegistryConfiguration: {
+      replications: [
+        {
+          location: '<location>'
+          name: '<name>'
+        }
+      ]
+    }
     managedIdentityName: '<managedIdentityName>'
     tags: {
       Env: 'test'
@@ -761,6 +786,16 @@ module baseline 'br/public:avm/ptn/ai-platform/baseline:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
+    "containerRegistryConfiguration": {
+      "value": {
+        "replications": [
+          {
+            "location": "<location>",
+            "name": "<name>"
+          }
+        ]
+      }
+    },
     "managedIdentityName": {
       "value": "<managedIdentityName>"
     },
@@ -813,6 +848,14 @@ using 'br/public:avm/ptn/ai-platform/baseline:<version>'
 // Required parameters
 param name = '<name>'
 // Non-required parameters
+param containerRegistryConfiguration = {
+  replications: [
+    {
+      location: '<location>'
+      name: '<name>'
+    }
+  ]
+}
 param managedIdentityName = '<managedIdentityName>'
 param tags = {
   Env: 'test'
@@ -1017,6 +1060,7 @@ Configuration for the container registry.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-containerregistryconfigurationname) | string | The name of the container registry. |
+| [`replications`](#parameter-containerregistryconfigurationreplications) | array | The list of container replications to create. |
 | [`trustPolicyStatus`](#parameter-containerregistryconfigurationtrustpolicystatus) | string | Whether the trust policy is enabled for the container registry. Defaults to 'enabled'. |
 
 ### Parameter: `containerRegistryConfiguration.name`
@@ -1025,6 +1069,70 @@ The name of the container registry.
 
 - Required: No
 - Type: string
+
+### Parameter: `containerRegistryConfiguration.replications`
+
+The list of container replications to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-containerregistryconfigurationreplicationsname) | string | The name of the replication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-containerregistryconfigurationreplicationslocation) | string | Location for all resources. |
+| [`regionEndpointEnabled`](#parameter-containerregistryconfigurationreplicationsregionendpointenabled) | bool | Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications. |
+| [`tags`](#parameter-containerregistryconfigurationreplicationstags) | object | Tags of the resource. |
+| [`zoneRedundancy`](#parameter-containerregistryconfigurationreplicationszoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+
+### Parameter: `containerRegistryConfiguration.replications.name`
+
+The name of the replication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `containerRegistryConfiguration.replications.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `containerRegistryConfiguration.replications.regionEndpointEnabled`
+
+Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.
+
+- Required: No
+- Type: bool
+
+### Parameter: `containerRegistryConfiguration.replications.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `containerRegistryConfiguration.replications.zoneRedundancy`
+
+Whether or not zone redundancy is enabled for this container registry.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `containerRegistryConfiguration.trustPolicyStatus`
 
@@ -1901,7 +2009,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/compute/virtual-machine:0.5.3` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.3.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/insights/component:0.3.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.6.2` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.5.0` | Remote reference |
@@ -1913,4 +2021,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

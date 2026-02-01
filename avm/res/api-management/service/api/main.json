@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "18116979725417472212"
+      "version": "0.39.26.7824",
+      "templateHash": "15676621016906998141"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -18,7 +18,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the policy."
+            "description": "Required. The name of the operation."
           }
         },
         "displayName": {
@@ -45,6 +45,8 @@
         },
         "urlTemplate": {
           "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
           "metadata": {
             "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
           }
@@ -52,6 +54,7 @@
         "description": {
           "type": "string",
           "nullable": true,
+          "maxLength": 1000,
           "metadata": {
             "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
           }
@@ -72,7 +75,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/responses"
             },
-            "description": "Optional. An entity containing request details."
+            "description": "Optional. Array of Operation responses."
           },
           "nullable": true
         },
@@ -133,7 +136,7 @@
         "loggerName": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the logger."
+            "description": "Required. The name of the target logger."
           }
         },
         "name": {
@@ -145,11 +148,14 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Type of diagnostic resource."
+            "description": "Optional. The identifier of the Diagnostic."
           }
         },
         "alwaysLog": {
           "type": "string",
+          "allowedValues": [
+            "allErrors"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies for what type of messages sampling settings should not apply."
@@ -205,7 +211,7 @@
           "type": "string",
           "allowedValues": [
             "Name",
-            "URI"
+            "Url"
           ],
           "nullable": true,
           "metadata": {
@@ -215,8 +221,10 @@
         "samplingPercentage": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 100,
           "metadata": {
-            "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+            "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged."
           }
         },
         "verbosity": {
@@ -242,8 +250,9 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the policy."
+            "description": "Optional. The name of the policy."
           }
         },
         "format": {
@@ -254,8 +263,9 @@
             "xml",
             "xml-link"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Format of the policyContent."
+            "description": "Optional. Format of the policyContent."
           }
         },
         "value": {
@@ -274,8 +284,16 @@
     }
   },
   "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
       "metadata": {
         "description": "Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number."
       }
@@ -310,15 +328,11 @@
         "description": "Optional. The operations of the api."
       }
     },
-    "apiManagementServiceName": {
-      "type": "string",
-      "metadata": {
-        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
-      }
-    },
     "apiRevision": {
       "type": "string",
       "nullable": true,
+      "minLength": 1,
+      "maxLength": 100,
       "metadata": {
         "description": "Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created."
       }
@@ -326,6 +340,7 @@
     "apiRevisionDescription": {
       "type": "string",
       "nullable": true,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Description of the API Revision."
       }
@@ -340,12 +355,13 @@
         "websocket"
       ],
       "metadata": {
-        "description": "Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API."
+        "description": "Optional. Type of API to create.\n* `http` creates a REST API\n* `soap` creates a SOAP pass-through API\n* `websocket` creates websocket API\n* `graphql` creates GraphQL API."
       }
     },
     "apiVersion": {
       "type": "string",
       "nullable": true,
+      "maxLength": 100,
       "metadata": {
         "description": "Optional. Indicates the Version identifier of the API if the API is versioned."
       }
@@ -353,6 +369,7 @@
     "apiVersionDescription": {
       "type": "string",
       "nullable": true,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Description of the API Version."
       }
@@ -378,23 +395,28 @@
       "type": "string",
       "maxLength": 300,
       "metadata": {
-        "description": "Required. API name. Must be 1 to 300 characters long."
+        "description": "Required. API display name."
       }
     },
     "format": {
       "type": "string",
       "defaultValue": "openapi",
       "allowedValues": [
-        "wadl-xml",
-        "wadl-link-json",
-        "swagger-json",
-        "swagger-link-json",
-        "wsdl",
-        "wsdl-link",
+        "graphql-link",
+        "grpc",
+        "grpc-link",
+        "odata",
+        "odata-link",
         "openapi",
         "openapi+json",
+        "openapi+json-link",
         "openapi-link",
-        "openapi+json-link"
+        "swagger-json",
+        "swagger-link-json",
+        "wadl-link-json",
+        "wadl-xml",
+        "wsdl",
+        "wsdl-link"
       ],
       "metadata": {
         "description": "Optional. Format of the Content in which the API is getting imported."
@@ -409,6 +431,7 @@
     },
     "path": {
       "type": "string",
+      "maxLength": 400,
       "metadata": {
         "description": "Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API."
       }
@@ -421,8 +444,14 @@
       "defaultValue": [
         "https"
       ],
+      "allowedValues": [
+        "http",
+        "https",
+        "ws",
+        "wss"
+      ],
       "metadata": {
-        "description": "Optional. Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS."
+        "description": "Optional. Describes on which protocols the operations in this API can be invoked."
       }
     },
     "serviceUrl": {
@@ -430,7 +459,7 @@
       "nullable": true,
       "maxLength": 2000,
       "metadata": {
-        "description": "Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long."
+        "description": "Optional. Absolute URL of the backend service implementing this API."
       }
     },
     "apiVersionSetName": {
@@ -469,7 +498,9 @@
       "defaultValue": "http",
       "allowedValues": [
         "graphql",
+        "grpc",
         "http",
+        "odata",
         "soap",
         "websocket"
       ],
@@ -572,8 +603,8 @@
         "count": "[length(coalesce(parameters('policies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -587,7 +618,7 @@
             "value": "[parameters('name')]"
           },
           "format": {
-            "value": "[coalesce(tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), 'xml')]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
@@ -602,8 +633,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "6713053293232206479"
+              "version": "0.39.26.7824",
+              "templateHash": "14860819055801108886"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -721,8 +752,8 @@
         "count": "[length(coalesce(parameters('diagnostics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-diagnostics-{1}', deployment().name, copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Diag-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -779,8 +810,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "18295485777200437093"
+              "version": "0.39.26.7824",
+              "templateHash": "11918460798028606310"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -789,7 +820,7 @@
             "apiManagementServiceName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent API Management service."
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
               }
             },
             "apiName": {
@@ -813,7 +844,7 @@
                 "local"
               ],
               "metadata": {
-                "description": "Optional. Type of diagnostic resource."
+                "description": "Optional. Name of diagnostic resource."
               }
             },
             "alwaysLog": {
@@ -874,7 +905,7 @@
               "defaultValue": "Name",
               "allowedValues": [
                 "Name",
-                "URI"
+                "Url"
               ],
               "metadata": {
                 "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
@@ -884,7 +915,7 @@
               "type": "int",
               "defaultValue": 100,
               "metadata": {
-                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+                "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged."
               }
             },
             "verbosity": {
@@ -1002,14 +1033,17 @@
         "count": "[length(coalesce(parameters('operations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-operation-{1}', deployment().name, copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Opr-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].name]"
+          },
           "apiManagementServiceName": {
             "value": "[parameters('apiManagementServiceName')]"
           },
@@ -1021,9 +1055,6 @@
           },
           "method": {
             "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].method]"
-          },
-          "name": {
-            "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].name]"
           },
           "urlTemplate": {
             "value": "[coalesce(parameters('operations'), createArray())[copyIndex()].urlTemplate]"
@@ -1051,8 +1082,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2321178038283517825"
+              "version": "0.39.26.7824",
+              "templateHash": "4681878954827475819"
             },
             "name": "API Management Service APIs Operations",
             "description": "This module deploys an API Management Service API Operation."
@@ -1063,8 +1094,9 @@
               "properties": {
                 "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The name of the policy."
+                    "description": "Optional. The name of the policy."
                   }
                 },
                 "format": {
@@ -1075,8 +1107,9 @@
                     "xml",
                     "xml-link"
                   ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. Format of the policyContent."
+                    "description": "Optional. Format of the policyContent."
                   }
                 },
                 "value": {
@@ -1135,6 +1168,8 @@
             },
             "urlTemplate": {
               "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
               "metadata": {
                 "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
               }
@@ -1142,8 +1177,9 @@
             "description": {
               "type": "string",
               "nullable": true,
+              "maxLength": 1000,
               "metadata": {
-                "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
+                "description": "Optional. Description of the operation. May include HTML formatting tags."
               }
             },
             "request": {
@@ -1204,14 +1240,14 @@
                 "templateParameters": "[parameters('templateParameters')]"
               }
             },
-            "policy": {
+            "operation_policies": {
               "copy": {
-                "name": "policy",
+                "name": "operation_policies",
                 "count": "[length(coalesce(parameters('policies'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1228,10 +1264,10 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
                   },
                   "format": {
-                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].format]"
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
                   },
                   "value": {
                     "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
@@ -1243,8 +1279,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17700550507187528779"
+                      "version": "0.39.26.7824",
+                      "templateHash": "18389382180802111163"
                     },
                     "name": "API Management Service API Operation Policies",
                     "description": "This module deploys an API Management Service API Operation Policy."
@@ -1270,12 +1306,14 @@
                     },
                     "name": {
                       "type": "string",
+                      "defaultValue": "policy",
                       "metadata": {
-                        "description": "Required. The name of the policy."
+                        "description": "Optional. The name of the policy."
                       }
                     },
                     "format": {
                       "type": "string",
+                      "defaultValue": "xml",
                       "allowedValues": [
                         "rawxml",
                         "rawxml-link",
@@ -1283,7 +1321,7 @@
                         "xml-link"
                       ],
                       "metadata": {
-                        "description": "Required. Format of the policyContent."
+                        "description": "Optional. Format of the policyContent."
                       }
                     },
                     "value": {

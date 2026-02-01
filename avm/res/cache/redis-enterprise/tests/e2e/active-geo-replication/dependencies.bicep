@@ -7,14 +7,16 @@ param redisClusterName string
 @description('Optional. The name of the geo-replication group.')
 param geoReplicationGroupName string = 'geo-replication-group'
 
-resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-05-01-preview' = {
+resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
   name: redisClusterName
   location: location
   sku: {
     name: 'Balanced_B10'
   }
-
-  resource redisDatabase 'databases@2025-05-01-preview' = {
+  properties: {
+    publicNetworkAccess: 'Enabled'
+  }
+  resource redisDatabase 'databases@2025-07-01' = {
     name: 'default'
     properties: {
       geoReplication: {

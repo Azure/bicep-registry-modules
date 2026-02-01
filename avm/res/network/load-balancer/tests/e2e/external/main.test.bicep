@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using external load balancer parameter'
-metadata description = 'This instance deploys the module with an externally facing load balancer.'
+metadata name = 'Using external load balancer parameter - NIC backend addresses'
+metadata description = 'This instance deploys the module with an externally facing load balancer with a public IP address and NIC backend address pool.'
 
 // ========== //
 // Parameters //
@@ -70,15 +70,17 @@ module testDeployment '../../../main.bicep' = [
       frontendIPConfigurations: [
         {
           name: 'publicIPConfig1'
-          publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
+          publicIPAddressResourceId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
       backendAddressPools: [
         {
           name: 'backendAddressPool1'
+          backendMembershipMode: 'NIC'
         }
         {
           name: 'backendAddressPool2'
+          backendMembershipMode: 'None'
         }
       ]
       diagnosticSettings: [

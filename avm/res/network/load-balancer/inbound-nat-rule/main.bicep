@@ -29,7 +29,7 @@ param enableTcpReset bool = false
 @description('Required. The name of the frontend IP address to set for the inbound NAT rule.')
 param frontendIPConfigurationName string
 
-@description('Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.')
+@description('Conditional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified.')
 @minValue(0)
 @maxValue(65534)
 param frontendPortRangeEnd int?

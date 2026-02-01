@@ -1,7 +1,8 @@
 targetScope = 'subscription'
 
 metadata name = 'Private endpoint-enabled deployment'
-metadata description = 'This instance deploys the module with private endpoints.'
+metadata description = '''This instance deploys the module with private endpoints.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).'''
 
 // ========== //
 // Parameters //
@@ -26,7 +27,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}0001'
-      location: resourceLocation
       sku: 'Standard_E2ads_v5'
       enablePublicNetworkAccess: false
       publicIPType: 'IPv4'
@@ -83,10 +82,9 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
+        // Only for testing purposes. Ref: https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete
+        'opt-out-of-soft-delete': 'true'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -53,8 +53,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
       managedIdentities: {
         systemAssigned: true
@@ -67,17 +67,30 @@ module testDeployment '../../../main.bicep' = [
           mode: 'System'
         }
       ]
-      istioServiceMeshEnabled: true
-      istioServiceMeshInternalIngressGatewayEnabled: true
-      istioServiceMeshRevisions: [
-        'asm-1-27'
-      ]
-      istioServiceMeshCertificateAuthority: {
-        certChainObjectName: nestedDependencies.outputs.certChainSecretName
-        certObjectName: nestedDependencies.outputs.caCertSecretName
-        keyObjectName: nestedDependencies.outputs.caKeySecretName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
+      serviceMeshProfile: {
+        mode: 'Istio'
+        istio: {
+          revisions: [
+            'asm-1-27'
+          ]
+          components: {
+            ingressGateways: [
+              {
+                enabled: true
+                mode: 'Internal'
+              }
+            ]
+          }
+          certificateAuthority: {
+            plugin: {
+              certChainObjectName: nestedDependencies.outputs.certChainSecretName
+              certObjectName: nestedDependencies.outputs.caCertSecretName
+              keyObjectName: nestedDependencies.outputs.caKeySecretName
+              keyVaultId: nestedDependencies.outputs.keyVaultResourceId
+              rootCertObjectName: nestedDependencies.outputs.rootCertSecretName
+            }
+          }
+        }
       }
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true

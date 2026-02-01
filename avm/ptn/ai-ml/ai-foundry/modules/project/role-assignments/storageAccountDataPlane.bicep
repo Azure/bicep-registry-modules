@@ -19,7 +19,7 @@ resource storageBlobDataOwnerRoleDefinition 'Microsoft.Authorization/roleDefinit
 
 resource storageAccountCustomContainerDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: storageAccount
-  name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, storageAccountName)
+  name: guid(storageAccount.id, storageBlobDataOwnerRoleDefinition.id, storageAccountName, projectIdentityPrincipalId)
   properties: {
     principalId: projectIdentityPrincipalId
     roleDefinitionId: storageBlobDataOwnerRoleDefinition.id

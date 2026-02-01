@@ -54,9 +54,9 @@ param vpnGatewayScaleUnit int?
 param vpnServerConfigurationResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/p2svpnGateways@2024-01-01'>.tags?
+param tags resourceInput<'Microsoft.Network/p2svpnGateways@2024-10-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -71,7 +71,7 @@ var virtualHubName = split(virtualHubResourceId, '/')[8]
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-p2svpngateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -92,7 +92,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
+resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
   name: name
   location: location
   tags: tags

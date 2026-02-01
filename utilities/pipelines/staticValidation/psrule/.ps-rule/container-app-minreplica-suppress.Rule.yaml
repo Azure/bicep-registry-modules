@@ -1,0 +1,15 @@
+---
+# Synopsis: Suppress Rules for Conversational Knowledge & Multi-Agent Custom Automation Engine module due to architectural requirement for single replica operation
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressMinReplica"
+spec:
+  rule:
+    - Azure.ContainerApp.MinReplicas
+    - Azure.AppService.PlanInstanceCount
+  if:
+    source: Template
+    withinPath:
+      - avm/ptn/sa/multi-agent-custom-automation-engine/
+      - avm/ptn/sa/conversation-knowledge-mining/

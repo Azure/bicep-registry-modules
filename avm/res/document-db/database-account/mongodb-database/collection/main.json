@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14050805189442830205"
+      "version": "0.38.33.27573",
+      "templateHash": "4317369978166598876"
     },
     "name": "DocumentDB Database Account MongoDB Database Collections",
     "description": "This module deploys a MongoDB Database Collection."
@@ -39,12 +39,18 @@
     "indexes": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+        },
         "description": "Required. Indexes for the collection."
       }
     },
     "shardKey": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+        },
         "description": "Required. ShardKey for the collection."
       }
     }
@@ -52,10 +58,10 @@
   "resources": [
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
       "properties": {
-        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2025-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]",
           "indexes": "[parameters('indexes')]",

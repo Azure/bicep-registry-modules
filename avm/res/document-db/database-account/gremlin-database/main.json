@@ -5,11 +5,58 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "16834580070429190924"
+      "version": "0.38.33.27573",
+      "templateHash": "14708982296215631776"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
     "description": "This module deploys a Gremlin Database within a CosmosDB Account."
+  },
+  "definitions": {
+    "graphType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the graph."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+            },
+            "description": "Optional. Tags of the Gremlin graph resource."
+          },
+          "nullable": true
+        },
+        "indexingPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+            },
+            "description": "Optional. Indexing policy of the graph."
+          },
+          "nullable": true
+        },
+        "partitionKeyPaths": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+            },
+            "description": "Optional. List of paths using which data within the container can be partitioned."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a graph."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -20,10 +67,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15#properties/tags"
+        },
         "description": "Optional. Tags of the Gremlin database resource."
-      }
+      },
+      "nullable": true
     },
     "databaseAccountName": {
       "type": "string",
@@ -33,7 +83,10 @@
     },
     "graphs": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/graphType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of graphs to deploy in the Gremlin database."
       }
@@ -57,12 +110,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "gremlinDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -78,11 +131,11 @@
     "gremlinDatabase_gremlinGraphs": {
       "copy": {
         "name": "gremlinDatabase_gremlinGraphs",
-        "count": "[length(parameters('graphs'))]"
+        "count": "[length(coalesce(parameters('graphs'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-gremlindb-{1}', uniqueString(deployment().name, parameters('name')), parameters('graphs')[copyIndex()].name)]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-gremlindb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('graphs'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -90,7 +143,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('graphs')[copyIndex()].name]"
+            "value": "[coalesce(parameters('graphs'), createArray())[copyIndex()].name]"
           },
           "gremlinDatabaseName": {
             "value": "[parameters('name')]"
@@ -99,9 +152,11 @@
             "value": "[parameters('databaseAccountName')]"
           },
           "indexingPolicy": {
-            "value": "[tryGet(parameters('graphs')[copyIndex()], 'indexingPolicy')]"
+            "value": "[tryGet(coalesce(parameters('graphs'), createArray())[copyIndex()], 'indexingPolicy')]"
           },
-          "partitionKeyPaths": "[if(not(empty(parameters('graphs')[copyIndex()].partitionKeyPaths)), createObject('value', parameters('graphs')[copyIndex()].partitionKeyPaths), createObject('value', createArray()))]"
+          "partitionKeyPaths": {
+            "value": "[tryGet(coalesce(parameters('graphs'), createArray())[copyIndex()], 'partitionKeyPaths')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -110,8 +165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15062578211366932944"
+              "version": "0.38.33.27573",
+              "templateHash": "15097132107382000570"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
             "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -125,10 +180,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+                },
                 "description": "Optional. Tags of the Gremlin graph resource."
-              }
+              },
+              "nullable": true
             },
             "databaseAccountName": {
               "type": "string",
@@ -144,43 +202,49 @@
             },
             "indexingPolicy": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                },
                 "description": "Optional. Indexing policy of the graph."
-              }
+              },
+              "nullable": true
             },
             "partitionKeyPaths": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+                },
                 "description": "Optional. List of paths using which data within the container can be partitioned."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
             "databaseAccount::gremlinDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinGraph": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "resource": {
                   "id": "[parameters('name')]",
-                  "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
+                  "indexingPolicy": "[parameters('indexingPolicy')]",
                   "partitionKey": {
-                    "paths": "[if(not(empty(parameters('partitionKeyPaths'))), parameters('partitionKeyPaths'), null())]"
+                    "paths": "[parameters('partitionKeyPaths')]"
                   }
                 }
               }

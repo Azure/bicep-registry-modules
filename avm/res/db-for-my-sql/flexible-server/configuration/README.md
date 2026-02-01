@@ -12,7 +12,7 @@ This module deploys a DBforMySQL Flexible Server Configuration.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DBforMySQL/flexibleServers/configurations` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-01-preview/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/configurations` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/configurations)</li></ul> |
 
 ## Parameters
 

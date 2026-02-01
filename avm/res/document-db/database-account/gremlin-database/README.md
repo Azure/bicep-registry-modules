@@ -13,8 +13,8 @@ This module deploys a Gremlin Database within a CosmosDB Account.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
 
 ## Parameters
 
@@ -59,7 +59,48 @@ Array of graphs to deploy in the Gremlin database.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-graphsname) | string | Name of the graph. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`indexingPolicy`](#parameter-graphsindexingpolicy) | object | Indexing policy of the graph. |
+| [`partitionKeyPaths`](#parameter-graphspartitionkeypaths) | array | List of paths using which data within the container can be partitioned. |
+| [`tags`](#parameter-graphstags) | object | Tags of the Gremlin graph resource. |
+
+### Parameter: `graphs.name`
+
+Name of the graph.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `graphs.indexingPolicy`
+
+Indexing policy of the graph.
+
+- Required: No
+- Type: object
+
+### Parameter: `graphs.partitionKeyPaths`
+
+List of paths using which data within the container can be partitioned.
+
+- Required: No
+- Type: array
+
+### Parameter: `graphs.tags`
+
+Tags of the Gremlin graph resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `maxThroughput`
 

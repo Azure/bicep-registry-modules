@@ -19,7 +19,7 @@ param suffix string?
 // Common Parameters
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-10-01'>.tags?
 
 // Network Parameters
 
@@ -200,7 +200,7 @@ module asp 'br/public:avm/res/web/serverfarm:0.5.0' = {
     tags: tags
     kind: 'linux'
     skuName: 'S1'
-    skuCapacity: 1
+    skuCapacity: 2 // Required for WAF-reliability
     appServiceEnvironmentResourceId: ase.outputs.resourceId
     enableTelemetry: enableTelemetry
   }
