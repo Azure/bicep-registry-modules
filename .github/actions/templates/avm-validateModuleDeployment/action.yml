@@ -110,6 +110,7 @@ runs:
             'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/ptn/virtual-machine-images/azure-image-builder' # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/dev-center/devcenter'                       # Long-running deployment (~50+ min) exceeds OIDC token lifetime
           )
           if ($exceptionModulePaths.Contains($modulePath)) {
             $oidcException = 'true'
