@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Named Value.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/named-value:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -23,7 +31,7 @@ This module deploys an API Management Service Named Value.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters. |
-| [`name`](#parameter-name) | string | Named value Name. |
+| [`name`](#parameter-name) | string | The name of the named value. |
 
 **Conditional parameters**
 
@@ -37,8 +45,8 @@ This module deploys an API Management Service Named Value.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyVault`](#parameter-keyvault) | object | KeyVault location details of the namedValue. |
-| [`secret`](#parameter-secret) | bool | Determines whether the value is a secret and should be encrypted or not. Default value is false. |
-| [`tags`](#parameter-tags) | array | Tags that when provided can be used to filter the NamedValue list. - string. |
+| [`secret`](#parameter-secret) | bool | Determines whether the value is a secret and should be encrypted or not. |
+| [`tags`](#parameter-tags) | array | Tags that when provided can be used to filter the NamedValue list. |
 | [`value`](#parameter-value) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
 
 ### Parameter: `displayName`
@@ -50,7 +58,7 @@ Unique name of NamedValue. It may contain only letters, digits, period, dash, an
 
 ### Parameter: `name`
 
-Named value Name.
+The name of the named value.
 
 - Required: Yes
 - Type: string
@@ -79,7 +87,7 @@ KeyVault location details of the namedValue.
 
 ### Parameter: `secret`
 
-Determines whether the value is a secret and should be encrypted or not. Default value is false.
+Determines whether the value is a secret and should be encrypted or not.
 
 - Required: No
 - Type: bool
@@ -87,7 +95,7 @@ Determines whether the value is a secret and should be encrypted or not. Default
 
 ### Parameter: `tags`
 
-Tags that when provided can be used to filter the NamedValue list. - string.
+Tags that when provided can be used to filter the NamedValue list.
 
 - Required: No
 - Type: array

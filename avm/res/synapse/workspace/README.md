@@ -2,6 +2,14 @@
 
 This module deploys a Synapse Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -52,6 +60,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the configuration of Big Data Pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/bigdatapool]
+
 
 <details>
 
@@ -59,7 +69,6 @@ This instance deploys the module with the configuration of Big Data Pool.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -200,6 +209,8 @@ param bigDataPools = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -207,7 +218,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -271,6 +281,8 @@ param sqlAdministratorLogin = 'synwsadmin'
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encrwsai]
+
 
 <details>
 
@@ -278,7 +290,6 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -364,6 +375,8 @@ param encryptionActivateWorkspace = true
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encrwuai]
+
 
 <details>
 
@@ -371,7 +384,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -455,6 +467,8 @@ param customerManagedKey = {
 
 This instance deploys the module with the configuration of firewall rules.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fwrules]
+
 
 <details>
 
@@ -462,7 +476,6 @@ This instance deploys the module with the configuration of firewall rules.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -567,6 +580,8 @@ param firewallRules = [
 
 This instance deploys the module using a managed Vnet.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managedvnet]
+
 
 <details>
 
@@ -574,7 +589,6 @@ This instance deploys the module using a managed Vnet.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -662,6 +676,8 @@ param preventDataExfiltration = true
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -669,7 +685,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -1364,6 +1379,8 @@ param sqlPools = [
 
 This instance deploys the module with the configuration of SQL Pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqlpool]
+
 
 <details>
 
@@ -1371,7 +1388,6 @@ This instance deploys the module with the configuration of SQL Pool.
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
@@ -1479,6 +1495,8 @@ param sqlPools = [
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1486,7 +1504,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'

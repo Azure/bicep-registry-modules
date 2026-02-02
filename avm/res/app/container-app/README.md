@@ -2,6 +2,14 @@
 
 This module deploys a Container App.
 
+You can reference the module as follows:
+```bicep
+module containerApp 'br/public:avm/res/app/container-app:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -15,8 +23,8 @@ This module deploys a Container App.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/containerApps` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps)</li></ul> |
-| `Microsoft.App/containerApps/authConfigs` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps/authConfigs)</li></ul> |
+| `Microsoft.App/containerApps` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/containerApps/authConfigs)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -40,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -47,7 +57,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -133,6 +142,8 @@ param name = 'acamin001'
 
 This instance deploys the module with ingress traffic completely disabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/disable-ingress]
+
 
 <details>
 
@@ -140,7 +151,6 @@ This instance deploys the module with ingress traffic completely disabled.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -234,6 +244,8 @@ param disableIngress = true
 
 This instance is configured to be able to host Azure Functions
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/function-optimized]
+
 
 <details>
 
@@ -241,7 +253,6 @@ This instance is configured to be able to host Azure Functions
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -375,6 +386,8 @@ param trafficWeight = 100
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -382,7 +395,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -836,6 +848,8 @@ param tags = {
 
 This instance deploys the container app in a managed environment with a virtual network using TCP ingress.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vnet]
+
 
 <details>
 
@@ -843,7 +857,6 @@ This instance deploys the container app in a managed environment with a virtual 
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -975,6 +988,8 @@ param ingressTransport = 'tcp'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -982,7 +997,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module containerApp 'br/public:avm/res/app/container-app:<version>' = {
-  name: 'containerAppDeployment'
   params: {
     // Required parameters
     containers: [
@@ -1251,6 +1265,7 @@ param tags = {
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`targetPortHttpScheme`](#parameter-targetporthttpscheme) | string | Whether an http app listens on http or https. |
 | [`terminationGracePeriodSeconds`](#parameter-terminationgraceperiodseconds) | int | The termination grace period for the container app. |
 | [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
 | [`trafficLatestRevision`](#parameter-trafficlatestrevision) | bool | Indicates that the traffic weight belongs to a latest stable revision. |
@@ -2138,6 +2153,13 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `targetPortHttpScheme`
+
+Whether an http app listens on http or https.
+
+- Required: No
+- Type: string
+
 ### Parameter: `terminationGracePeriodSeconds`
 
 The termination grace period for the container app.
@@ -2207,8 +2229,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

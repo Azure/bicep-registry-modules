@@ -22,7 +22,7 @@ param kind string = 'MSDeploy'
 @description('Optional. Sets the properties.')
 param properties resourceInput<'Microsoft.Web/sites/extensions@2024-04-01'>.properties?
 
-resource app 'Microsoft.Web/sites@2024-04-01' existing = {
+resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   name: appName
 
   resource slot 'slots' existing = {

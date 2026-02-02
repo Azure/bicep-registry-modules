@@ -2,6 +2,14 @@
 
 This module deploys a SQL Role Assignment in a CosmosDB Account.
 
+You can reference the module as follows:
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account/sql-role-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

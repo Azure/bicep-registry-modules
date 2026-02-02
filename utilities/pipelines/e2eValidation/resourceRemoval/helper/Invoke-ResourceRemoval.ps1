@@ -174,6 +174,20 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Cdn/profiles' {
+            # Removing custom removal logic as the default `Remove-AzResource` does not correctly handle the resource's inner workings
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
+            if ($cdnProfile) {
+                if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                    az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+                }
+            } else {
+                Write-Warning "Unable to find CDN profile [$resourceName] in resource group [$resourceGroupName]"
+            }
+            break
+        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
@@ -368,6 +382,7 @@ function Invoke-ResourceRemoval {
                             $retryCount++
                         }
                     } while (($workspaceStateContent.properties.replication.enabled -or $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') -and $retryCount -lt $retryLimit)
+                    Start-Sleep -Seconds 30  # Additional wait to ensure replication is fully disabled and avoid leftovers in the Entra ID
 
                     if ($retryCount -ge $retryLimit) {
                         Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))

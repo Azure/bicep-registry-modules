@@ -2,6 +2,14 @@
 
 This module deploys an App Service Plan.
 
+You can reference the module as follows:
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with a base set of parameters. Note it does include the use of Availability zones by default.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: 'serverfarmDeployment'
   params: {
     name: 'wsfmin001'
   }
@@ -90,6 +99,8 @@ param name = 'wsfmin001'
 
 This instance deploys the module in a flexible consumption app service plan.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/flexible-consumption]
+
 
 <details>
 
@@ -97,7 +108,6 @@ This instance deploys the module in a flexible consumption app service plan.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsffcp001'
@@ -225,6 +235,8 @@ param zoneRedundant = false
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -232,7 +244,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsfmax001'
@@ -448,6 +459,8 @@ param zoneRedundant = true
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -455,7 +468,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: 'serverfarmDeployment'
   params: {
     // Required parameters
     name: 'wsfwaf001'
@@ -606,6 +618,7 @@ param zoneRedundant = true
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`hyperV`](#parameter-hyperv) | bool | If Hyper-V container app service plan true, false otherwise. |
 | [`kind`](#parameter-kind) | string | Kind of server OS. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -767,6 +780,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `hyperV`
+
+If Hyper-V container app service plan true, false otherwise.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `kind`
 

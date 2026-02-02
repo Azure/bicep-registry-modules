@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.17.1
+
+### Changes
+
+- Updated test files to use generic dummy hostname for URL redirect action parameters.
+
+### Breaking Changes
+
+- None
+
+## 0.17.0
+
+### Changes
+
+- Added a dependency on the profile_originGroups module for ruleSets to ensure proper deployment order.
+
+### Breaking Changes
+
+- None
+
+
 ## 0.16.1
 
 ### Changes

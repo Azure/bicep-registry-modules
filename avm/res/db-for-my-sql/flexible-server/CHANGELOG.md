@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Updated `version` parameter to support MySQL versions 8.4 and 9.3 (preview)
+- Fixed minor typos.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### Changes

@@ -95,6 +95,7 @@ module testDeployment '../../../main.bicep' = [
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
+      domainNameLabelScope: 'TenantReuse'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

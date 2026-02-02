@@ -5,31 +5,38 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8450474183617387575"
+      "version": "0.39.26.7824",
+      "templateHash": "14160282380562647316"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
   },
   "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Subscription name."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "metadata": {
+        "description": "Required. API Management Service Subscriptions name."
+      }
+    },
     "allowTracing": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Determines whether tracing can be enabled."
-      }
-    },
-    "displayName": {
-      "type": "string",
-      "maxLength": 100,
-      "metadata": {
-        "description": "Required. API Management Service Subscriptions name. Must be 1 to 100 characters long."
-      }
-    },
-    "apiManagementServiceName": {
-      "type": "string",
-      "metadata": {
-        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "ownerId": {
@@ -40,8 +47,10 @@
       }
     },
     "primaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
+      "minLength": 1,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
       }
@@ -50,12 +59,14 @@
       "type": "string",
       "defaultValue": "/apis",
       "metadata": {
-        "description": "Optional. Scope type to choose between a product, \"allAPIs\" or a specific API. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
+        "description": "Optional. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
       }
     },
     "secondaryKey": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
+      "minLength": 1,
+      "maxLength": 256,
       "metadata": {
         "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
       }
@@ -63,14 +74,16 @@
     "state": {
       "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "active",
+        "cancelled",
+        "expired",
+        "rejected",
+        "submitted",
+        "suspended"
+      ],
       "metadata": {
-        "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are \"*\" active \"?\" the subscription is active, \"*\" suspended \"?\" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled."
-      }
-    },
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Subscription name."
+        "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:\n* active - the subscription is active\n* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product\n* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected\n* rejected - the subscription request has been denied by an administrator\n* cancelled - the subscription has been cancelled by the developer or administrator\n* expired - the subscription reached its expiration date and was deactivated."
       }
     },
     "enableTelemetry": {
@@ -113,13 +126,13 @@
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
-        "scope": "[parameters('scope')]",
         "displayName": "[parameters('displayName')]",
+        "allowTracing": "[parameters('allowTracing')]",
         "ownerId": "[parameters('ownerId')]",
         "primaryKey": "[parameters('primaryKey')]",
+        "scope": "[parameters('scope')]",
         "secondaryKey": "[parameters('secondaryKey')]",
-        "state": "[parameters('state')]",
-        "allowTracing": "[parameters('allowTracing')]"
+        "state": "[parameters('state')]"
       }
     }
   },

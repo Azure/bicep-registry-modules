@@ -10,12 +10,12 @@ param logAnalyticsWorkspaceName string
 @description('Required. The name of the Action Group to create.')
 param actionGroupName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.2' = {
   params: {
     name: logAnalyticsWorkspaceName
     roleAssignments: [

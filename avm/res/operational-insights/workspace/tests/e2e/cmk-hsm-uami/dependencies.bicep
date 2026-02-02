@@ -71,7 +71,7 @@ resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
   }
 }
 
-resource cluster 'Microsoft.OperationalInsights/clusters@2025-02-01' = {
+resource cluster 'Microsoft.OperationalInsights/clusters@2025-07-01' = {
   name: logAnalyticsClusterName
   location: location
   sku: {

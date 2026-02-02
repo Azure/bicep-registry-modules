@@ -2,6 +2,14 @@
 
 This module deploys a Log Analytics Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,16 +26,16 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataExports)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/dataSources)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedStorageAccounts)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/savedSearches)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/storageInsightConfigs)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/tables` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/tables)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedServices)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedStorageAccounts)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/savedSearches)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/storageInsightConfigs)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
-| `Microsoft.SecurityInsights/onboardingStates` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates)</li></ul> |
+| `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
 
 ## Usage examples
 
@@ -39,13 +47,16 @@ The following section provides usage examples for the module, which were used to
 
 - [Advanced features](#example-1-advanced-features)
 - [Using Log Analytics Cluster with Customer-Managed-Keys](#example-2-using-log-analytics-cluster-with-customer-managed-keys)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using default Data Collection Rule](#example-3-using-default-data-collection-rule)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Advanced features_
 
 This instance deploys the module with advanced features like custom tables, data exports & encryption.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adv]
 
 
 <details>
@@ -54,12 +65,11 @@ This instance deploys the module with advanced features like custom tables, data
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataExports: [
       {
         destination: {
@@ -363,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "<dailyQuotaGb>"
     },
     "dataExports": {
       "value": [
@@ -691,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataExports = [
   {
     destination: {
@@ -982,6 +992,8 @@ param tags = {
 
 This instance deploys a Log Analytics Cluster with Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity and links the Log Analytics Workspace to it.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
@@ -994,12 +1006,11 @@ For further information, please refer to: [ref](https://learn.microsoft.com/en-u
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'oiwmhsm001'
+    name: 'oiwmhsmu001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '10'
     linkedServices: [
       {
         name: 'Cluster'
@@ -1030,11 +1041,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
   "parameters": {
     // Required parameters
     "name": {
-      "value": "oiwmhsm001"
+      "value": "oiwmhsmu001"
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "10"
     },
     "linkedServices": {
       "value": [
@@ -1069,9 +1080,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 using 'br/public:avm/res/operational-insights/workspace:<version>'
 
 // Required parameters
-param name = 'oiwmhsm001'
+param name = 'oiwmhsmu001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '10'
 param linkedServices = [
   {
     name: 'Cluster'
@@ -1089,9 +1100,11 @@ param skuName = 'LACluster'
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using default Data Collection Rule_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with a default Data Collection Rule.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-dcr]
 
 
 <details>
@@ -1100,7 +1113,76 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'oiwdcr001'
+    // Non-required parameters
+    defaultDataCollectionRuleResourceId: '<defaultDataCollectionRuleResourceId>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwdcr001"
+    },
+    // Non-required parameters
+    "defaultDataCollectionRuleResourceId": {
+      "value": "<defaultDataCollectionRuleResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwdcr001'
+// Non-required parameters
+param defaultDataCollectionRuleResourceId = '<defaultDataCollectionRuleResourceId>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
   params: {
     name: 'oiwmin001'
   }
@@ -1142,9 +1224,11 @@ param name = 'oiwmin001'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -1153,12 +1237,11 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '<dailyQuotaGb>'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1482,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "<dailyQuotaGb>"
     },
     "dataSources": {
       "value": [
@@ -1838,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '<dailyQuotaGb>'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2145,9 +2228,11 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -2156,12 +2241,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'oiwwaf001'
     // Non-required parameters
-    dailyQuotaGb: 10
+    dailyQuotaGb: '2'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -2332,7 +2416,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": 10
+      "value": "2"
     },
     "dataSources": {
       "value": [
@@ -2523,7 +2607,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwwaf001'
 // Non-required parameters
-param dailyQuotaGb = 10
+param dailyQuotaGb = '2'
 param dataSources = [
   {
     eventLogName: 'Application'
@@ -2695,10 +2779,11 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-dailyquotagb) | int | The workspace daily quota for ingestion. |
+| [`dailyQuotaGb`](#parameter-dailyquotagb) | string | The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit). |
 | [`dataExports`](#parameter-dataexports) | array | LAW data export instances to be deployed. |
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
+| [`defaultDataCollectionRuleResourceId`](#parameter-defaultdatacollectionruleresourceid) | string | The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`features`](#parameter-features) | object | The workspace features. |
@@ -2757,12 +2842,11 @@ Linked storage accounts resources Ids.
 
 ### Parameter: `dailyQuotaGb`
 
-The workspace daily quota for ingestion.
+The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit).
 
 - Required: No
-- Type: int
-- Default: `-1`
-- MinValue: -1
+- Type: string
+- Default: `'-1'`
 
 ### Parameter: `dataExports`
 
@@ -2990,6 +3074,13 @@ Tags to configure in the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `defaultDataCollectionRuleResourceId`
+
+The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3408,6 +3499,7 @@ The network access type for accessing Log Analytics ingestion.
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
@@ -3423,6 +3515,7 @@ The network access type for accessing Log Analytics query.
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 

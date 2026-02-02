@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "12303664773309996921"
+      "version": "0.39.26.7824",
+      "templateHash": "12230533121190686251"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -1911,8 +1911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9802623335395286897"
+              "version": "0.39.26.7824",
+              "templateHash": "7331395302433111098"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -2014,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12684500962727878582"
+              "version": "0.39.26.7824",
+              "templateHash": "5536916122228196610"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -2118,8 +2118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4516324711962540493"
+              "version": "0.39.26.7824",
+              "templateHash": "17455962299216694274"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -2222,8 +2222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4837497362195219145"
+              "version": "0.39.26.7824",
+              "templateHash": "2674842963224947050"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -2412,6 +2412,9 @@
           },
           "status": {
             "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2421,8 +2424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12024590628726803043"
+              "version": "0.39.26.7824",
+              "templateHash": "1834255414874254098"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue."
@@ -2704,6 +2707,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -2726,6 +2736,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.servicebus-namespacequeue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
@@ -2827,8 +2857,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "11020612431315095786"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4116748364582130588"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -2998,6 +3028,9 @@
           },
           "maxSizeInMegabytes": {
             "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3007,8 +3040,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4772960740722851772"
+              "version": "0.39.26.7824",
+              "templateHash": "5082885619629238407"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -3589,18 +3622,18 @@
                 "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
-            "authorizationRules": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Authorization Rules for the Service Bus Topic."
-              }
-            },
             "lock": {
               "$ref": "#/definitions/lockType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
+              }
+            },
+            "authorizationRules": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Authorization Rules for the Service Bus Topic."
               }
             },
             "roleAssignments": {
@@ -3621,6 +3654,13 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. The subscriptions of the topic."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -3644,6 +3684,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.servicebus-namespacetopic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
@@ -3728,8 +3788,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "1167899423117043460"
+                      "version": "0.39.26.7824",
+                      "templateHash": "16587567666261394583"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -3881,8 +3941,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "17722317559130689691"
+                      "version": "0.39.26.7824",
+                      "templateHash": "11047735223529370411"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -4340,8 +4400,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "13550281176676896741"
+                              "version": "0.39.26.7824",
+                              "templateHash": "10380124336770907492"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."

@@ -2,6 +2,14 @@
 
 This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.
 
+You can reference the module as follows:
+```bicep
+module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -50,7 +60,6 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdeshsmu001'
@@ -139,6 +148,8 @@ param managedIdentities = {
 
 This instance deploys the module with the minimum set of required parameters. Note: The default configuration uses a system-assigned identity, which must be granted the necessary permissions on the Key Vault key after deployment.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -146,7 +157,6 @@ This instance deploys the module with the minimum set of required parameters. No
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdesmin001'
@@ -217,6 +227,8 @@ param enableKeyPermissions = true
 
 This instance uses a Key Vault with the Access Policy permission model. The option to add the permissions on the key via the module is enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/key-access-policies]
+
 
 <details>
 
@@ -224,7 +236,6 @@ This instance uses a Key Vault with the Access Policy permission model. The opti
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdesap001'
@@ -368,6 +379,8 @@ param roleAssignments = [
 
 This instance uses a Key Vault with the Role Based Access Control (RBAC) permission model. The option to add the permissions on the key via the module is enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/key-rbac]
+
 
 <details>
 
@@ -375,7 +388,6 @@ This instance uses a Key Vault with the Role Based Access Control (RBAC) permiss
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdesrbac001'
@@ -466,6 +478,8 @@ param managedIdentities = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -473,7 +487,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdesmax001'
@@ -657,6 +670,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -664,7 +679,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module diskEncryptionSet 'br/public:avm/res/compute/disk-encryption-set:<version>' = {
-  name: 'diskEncryptionSetDeployment'
   params: {
     // Required parameters
     name: 'cdeswaf001'

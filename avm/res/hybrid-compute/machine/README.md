@@ -1,11 +1,19 @@
 # Hybrid Compute Machines `[Microsoft.HybridCompute/machines]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.
+
+You can reference the module as follows:
+```bicep
+module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hci.defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
-  name: 'machineDeployment'
   params: {
     // Required parameters
     kind: 'HCI'
@@ -111,6 +120,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max.hci]
+
 
 <details>
 
@@ -118,7 +129,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
-  name: 'machineDeployment'
   params: {
     // Required parameters
     kind: 'HCI'
@@ -288,6 +298,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vmware.defaults]
+
 
 <details>
 
@@ -295,7 +307,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
-  name: 'machineDeployment'
   params: {
     // Required parameters
     kind: 'VMware'
@@ -357,6 +368,8 @@ param location = '<location>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -364,7 +377,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module machine 'br/public:avm/res/hybrid-compute/machine:<version>' = {
-  name: 'machineDeployment'
   params: {
     // Required parameters
     kind: 'HCI'

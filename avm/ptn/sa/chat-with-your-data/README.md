@@ -9,6 +9,14 @@ This module contains the resources required to deploy the [Chat-with-your-data-s
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
+You can reference the module as follows:
+```bicep
+module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -112,6 +120,8 @@ The following section provides usage examples for the module, which were used to
 
 This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox-cosmos]
+
 
 <details>
 
@@ -119,7 +129,6 @@ This deploys the sandbox configuration for Chat with your data Solution Accelera
 
 ```bicep
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
   params: {
     azureOpenAIEmbeddingModelCapacity: 10
     azureOpenAIModelCapacity: 10
@@ -185,6 +194,8 @@ param solutionName = '<solutionName>'
 
 This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
 
 <details>
 
@@ -192,7 +203,6 @@ This deploys the sandbox configuration for Chat with your data Solution Accelera
 
 ```bicep
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
   params: {
     azureOpenAIEmbeddingModelCapacity: 10
     azureOpenAIModelCapacity: 10
@@ -253,6 +263,8 @@ param solutionName = '<solutionName>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -260,7 +272,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  name: 'chatWithYourDataDeployment'
   params: {
     azureOpenAIEmbeddingModelCapacity: 10
     azureOpenAIModelCapacity: 10

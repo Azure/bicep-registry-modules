@@ -2,6 +2,14 @@
 
 Private Link Private DNS Zones
 
+You can reference the module as follows:
+```bicep
+module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
 
   }
@@ -85,6 +94,8 @@ using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 
 This instance deploys and excludes 3 zones from the default set of zones using the parameter `privateLinkPrivateDnsZonesToExclude`. The default set of zones is defined in the module in the parameter `privateLinkPrivateDnsZones`.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/exclude-zones]
+
 
 <details>
 
@@ -92,7 +103,6 @@ This instance deploys and excludes 3 zones from the default set of zones using t
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     privateLinkPrivateDnsZonesToExclude: [
       'privatelink.{regionCode}.backup.windowsazure.com'
@@ -150,6 +160,8 @@ param privateLinkPrivateDnsZonesToExclude = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -157,7 +169,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     additionalPrivateLinkPrivateDnsZonesToInclude: [
       'privatelink.3.azurestaticapps.net'
@@ -331,6 +342,8 @@ param virtualNetworkResourceIdsToLinkTo = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -338,7 +351,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     virtualNetworkLinks: [
       {

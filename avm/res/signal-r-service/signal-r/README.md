@@ -1,11 +1,19 @@
 # SignalR Service SignalR `[Microsoft.SignalRService/signalR]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys a SignalR Service SignalR.
+
+You can reference the module as follows:
+```bicep
+module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -43,6 +51,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -50,7 +60,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: 'signalRDeployment'
   params: {
     name: 'srsdrmin-001'
   }
@@ -96,6 +105,8 @@ param name = 'srsdrmin-001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -103,7 +114,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: 'signalRDeployment'
   params: {
     // Required parameters
     name: 'srssrmax-001'
@@ -499,6 +509,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -506,7 +518,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module signalR 'br/public:avm/res/signal-r-service/signal-r:<version>' = {
-  name: 'signalRDeployment'
   params: {
     // Required parameters
     name: 'srssrwaf-001'

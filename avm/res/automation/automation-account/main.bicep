@@ -226,7 +226,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
 
 module automationAccount_credentials 'credential/main.bicep' = [
   for (credential, index) in (credentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutomationAccount-Credential-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: credential.name
@@ -239,7 +239,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Module-${index}'
     params: {
       name: module.name
       automationAccountName: automationAccount.name
@@ -253,7 +253,7 @@ module automationAccount_modules 'module/main.bicep' = [
 
 module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
       name: pwsh72module.name
       automationAccountName: automationAccount.name
@@ -267,7 +267,7 @@ module automationAccount_powershell72modules 'powershell72-modules/main.bicep' =
 
 module automationAccount_python3packages 'python3-packages/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
     params: {
       name: python3package.name
       automationAccountName: automationAccount.name
@@ -280,7 +280,7 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
 
 module automationAccount_python2packages 'python2-packages/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
     params: {
       name: python2package.name
       automationAccountName: automationAccount.name
@@ -293,7 +293,7 @@ module automationAccount_python2packages 'python2-packages/main.bicep' = [
 
 module automationAccount_schedules 'schedule/main.bicep' = [
   for (schedule, index) in schedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Schedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Schedule-${index}'
     params: {
       name: schedule.name
       automationAccountName: automationAccount.name
@@ -310,7 +310,7 @@ module automationAccount_schedules 'schedule/main.bicep' = [
 
 module automationAccount_runbooks 'runbook/main.bicep' = [
   for (runbook, index) in runbooks: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Runbook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Runbook-${index}'
     params: {
       name: runbook.name
       automationAccountName: automationAccount.name
@@ -328,7 +328,7 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
 
 module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
   for (jobSchedule, index) in jobSchedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-JobSchedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-JobSchedule-${index}'
     params: {
       automationAccountName: automationAccount.name
       runbookName: jobSchedule.runbookName
@@ -345,7 +345,7 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
 
 module automationAccount_variables 'variable/main.bicep' = [
   for (variable, index) in variables: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: variable.name
@@ -358,7 +358,7 @@ module automationAccount_variables 'variable/main.bicep' = [
 
 module automationAccount_webhook 'webhook/main.bicep' = [
   for (webhook, index) in webhooks: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Webhook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Webhook-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: webhook.name
@@ -372,7 +372,7 @@ module automationAccount_webhook 'webhook/main.bicep' = [
 
 module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
   for (configuration, index) in (sourceControlConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
     params: {
       automationAccountName: automationAccount.name
       branch: configuration.branch
@@ -389,7 +389,7 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
 ]
 
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
-  name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-LinkedService'
   params: {
     name: 'automation'
     logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
@@ -410,7 +410,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
@@ -476,7 +476,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 
 module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-pe-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

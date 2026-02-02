@@ -187,17 +187,17 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
                   ? 'userAssignedIdentity'
                   : 'systemAssignedIdentity'
               }
-              keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion)
+              keyEncryptionKeyUrl: !empty(customerManagedKey!.?keyVersion)
                 ? (!isHSMManagedCMK
-                    ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-                    : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
-                : (customerManagedKey.?autoRotationEnabled ?? true)
-                    ? (!isHSMManagedCMK
-                        ? cMKKeyVault::cMKKey!.properties.keyUri
-                        : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}}')
-                    : (!isHSMManagedCMK
-                        ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
-                        : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
+                  ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
+                  : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
+                : (customerManagedKey!.?autoRotationEnabled ?? true)
+                  ? (!isHSMManagedCMK
+                    ? cMKKeyVault::cMKKey!.properties.keyUri
+                    : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}')
+                  : (!isHSMManagedCMK
+                    ? cMKKeyVault::cMKKey!.properties.keyUriWithVersion
+                    : fail('Managed HSM CMK encryption requires either specifying the \'keyVersion\' or omitting the \'autoRotationEnabled\' property. Setting \'autoRotationEnabled\' to false without a \'keyVersion\' is not allowed.'))
             }
             infrastructureEncryption: requireInfrastructureEncryption // Property renamed
           }

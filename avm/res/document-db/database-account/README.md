@@ -2,6 +2,14 @@
 
 This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
+You can reference the module as follows:
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -63,6 +71,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with analytical storage enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/analytical]
+
 
 <details>
 
@@ -70,7 +80,6 @@ This instance deploys the module with analytical storage enabled.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'analytical'
@@ -149,6 +158,8 @@ param zoneRedundant = false
 
 This instance deploys the module specifying a default consistency level.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/boundedConsistency]
+
 
 <details>
 
@@ -156,7 +167,6 @@ This instance deploys the module specifying a default consistency level.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'bounded'
@@ -245,6 +255,8 @@ param zoneRedundant = false
 
 This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
+
 
 <details>
 
@@ -252,7 +264,6 @@ This instance deploys the module with Cassandra Keyspaces in alignment with the 
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddacswaf001'
@@ -750,6 +761,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -757,7 +770,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddamin001'
@@ -814,6 +826,8 @@ param zoneRedundant = false
 
 This instance deploys the module with a Gremlin Database.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/gremlindb]
+
 
 <details>
 
@@ -821,7 +835,6 @@ This instance deploys the module with a Gremlin Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddagrm002'
@@ -1038,6 +1051,8 @@ param zoneRedundant = false
 
 This instance deploys the module with an system and user assigned managed identity.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managedIdentity]
+
 
 <details>
 
@@ -1045,7 +1060,6 @@ This instance deploys the module with an system and user assigned managed identi
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'user-mi'
@@ -1178,6 +1192,8 @@ param zoneRedundant = false
 
 This instance deploys the module with a Mongo Database.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mongodb]
+
 
 <details>
 
@@ -1185,7 +1201,6 @@ This instance deploys the module with a Mongo Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddamng001'
@@ -1802,6 +1817,8 @@ param zoneRedundant = false
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiRegion]
+
 
 <details>
 
@@ -1809,7 +1826,6 @@ This instance deploys the module in multiple regions with configs specific of mu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'multi-region'
@@ -1946,6 +1962,8 @@ param sqlDatabases = [
 
 This instance deploys the module without a Database.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plain]
+
 
 <details>
 
@@ -1953,7 +1971,6 @@ This instance deploys the module without a Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddapln001'
@@ -2071,6 +2088,8 @@ param zoneRedundant = false
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/publicRestrictedAccess]
+
 
 <details>
 
@@ -2078,7 +2097,6 @@ This instance deploys the module with public network access enabled but restrict
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddapres001'
@@ -2193,6 +2211,8 @@ param zoneRedundant = false
 
 This instance deploys the module with a SQL Database.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqldb]
+
 
 <details>
 
@@ -2200,7 +2220,6 @@ This instance deploys the module with a SQL Database.
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddasql001'
@@ -3014,6 +3033,8 @@ param zoneRedundant = false
 
 This instance deploys the module with sql role definition and assignment
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqlroles]
+
 
 <details>
 
@@ -3021,7 +3042,6 @@ This instance deploys the module with sql role definition and assignment
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddarole001'
@@ -3282,6 +3302,8 @@ param zoneRedundant = false
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/table]
+
 
 <details>
 
@@ -3289,7 +3311,6 @@ This instance deploys the module for an Azure Cosmos DB for Table account with t
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddatbl001'
@@ -3389,6 +3410,8 @@ param zoneRedundant = false
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -3396,7 +3419,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddawaf001'

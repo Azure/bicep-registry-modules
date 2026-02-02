@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "10248235472065827019"
+    },
+    "name": "API Management Workspace Product Policies",
+    "description": "This module deploys a Policy for a Product in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "productName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "policy",
+      "metadata": {
+        "description": "Optional. The name of the policy."
+      }
+    },
+    "format": {
+      "type": "string",
+      "defaultValue": "xml",
+      "allowedValues": [
+        "rawxml",
+        "rawxml-link",
+        "xml",
+        "xml-link"
+      ],
+      "metadata": {
+        "description": "Optional. Format of the policyContent."
+      }
+    },
+    "value": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Contents of the Policy as defined by the format."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/workspaces/products/policies",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+      "properties": {
+        "format": "[parameters('format')]",
+        "value": "[parameters('value')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace product policy."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/policies', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace product policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace product policy was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

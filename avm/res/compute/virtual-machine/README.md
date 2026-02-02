@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.
 
+You can reference the module as follows:
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -56,6 +64,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with registering to an automation account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/atmg]
+
 
 <details>
 
@@ -63,7 +73,6 @@ This instance deploys the module with registering to an automation account.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -269,6 +278,8 @@ param publicKeys = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.defaults]
+
 
 <details>
 
@@ -276,7 +287,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -451,6 +461,8 @@ param publicKeys = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux.max]
+
 
 <details>
 
@@ -458,7 +470,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -1404,6 +1415,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1411,7 +1424,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -2291,6 +2303,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.defaults]
+
 
 <details>
 
@@ -2298,7 +2312,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -2453,6 +2466,8 @@ param imageReference = {
 
 This instance deploys the module with using a pre-existing OS Disk, premium SSDv2 data disk and attachment of an existing shared disk.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.disks]
+
 
 <details>
 
@@ -2460,7 +2475,6 @@ This instance deploys the module with using a pre-existing OS Disk, premium SSDv
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -2651,6 +2665,8 @@ param securityType = '<securityType>'
 
 This instance deploys the module with the a guest configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.guestconfiguration]
+
 
 <details>
 
@@ -2658,7 +2674,6 @@ This instance deploys the module with the a guest configuration.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -2918,6 +2933,8 @@ param managedIdentities = {
 
 This instance deploys the module and registers it in a host pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.hostpool]
+
 
 <details>
 
@@ -2925,7 +2942,6 @@ This instance deploys the module and registers it in a host pool.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -3164,6 +3180,8 @@ param managedIdentities = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.max]
+
 
 <details>
 
@@ -3171,7 +3189,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: 2
@@ -4252,6 +4269,8 @@ param tags = {
 
 This instance deploys the module for a VM with dedicated nVidia graphic card.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.nvidia]
+
 
 <details>
 
@@ -4259,7 +4278,6 @@ This instance deploys the module for a VM with dedicated nVidia graphic card.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -4435,6 +4453,8 @@ param location = '<location>'
 
 This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.vmss]
+
 
 <details>
 
@@ -4442,7 +4462,6 @@ This instance deploys the module with the minimum set of required parameters and
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -4602,6 +4621,8 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 
 This instance deploys the module with a premium zrs data disk.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.zrsdisks]
+
 
 <details>
 
@@ -4609,7 +4630,6 @@ This instance deploys the module with a premium zrs data disk.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
   params: {
     // Required parameters
     availabilityZone: 2

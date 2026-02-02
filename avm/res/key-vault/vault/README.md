@@ -2,6 +2,14 @@
 
 This module deploys a Key Vault.
 
+You can reference the module as follows:
+```bicep
+module vault 'br/public:avm/res/key-vault/vault:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -43,6 +51,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -50,7 +60,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmin002'
@@ -107,6 +116,8 @@ param enablePurgeProtection = false
 
 This instance deploys the module with the parameters needed for an EC key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/eckey]
+
 
 <details>
 
@@ -114,7 +125,6 @@ This instance deploys the module with the parameters needed for an EC key.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvec002'
@@ -275,6 +285,8 @@ param keys = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -282,7 +294,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvmax002'
@@ -1057,6 +1068,8 @@ param tags = {
 
 This instance deploys the module with the parameters needed for an RSA key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rsakey]
+
 
 <details>
 
@@ -1064,7 +1077,6 @@ This instance deploys the module with the parameters needed for an RSA key.
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvrsa002'
@@ -1225,6 +1237,8 @@ param keys = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1232,7 +1246,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
-  name: 'vaultDeployment'
   params: {
     // Required parameters
     name: 'kvvwaf002'
