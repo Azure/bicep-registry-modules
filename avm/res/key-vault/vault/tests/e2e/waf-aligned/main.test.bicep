@@ -21,6 +21,7 @@ param serviceShort string = 'kvvwaf'
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A JSON string of key-value pairs for tags to be applied to resources in the environment. E.g., \'{ "customTag1": "value1", "customTag2": "value2" }\'.')
+@secure()
 param envTags string?
 
 // ============ //
