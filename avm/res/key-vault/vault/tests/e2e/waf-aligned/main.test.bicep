@@ -20,6 +20,9 @@ param serviceShort string = 'kvvwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A JSON string of key-value pairs for tags to be applied to resources in the environment. E.g., \'{ "customTag1": "value1", "customTag2": "value2" }\'.')
+param envTags string?
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -52,6 +55,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: resourceLocation
+    tags: json(envTags ?? '{}')
   }
 }
 
@@ -141,11 +145,14 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       softDeleteRetentionInDays: 7
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
+      tags: union(
+        {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        },
+        json(envTags ?? '{}')
+      )
     }
   }
 ]

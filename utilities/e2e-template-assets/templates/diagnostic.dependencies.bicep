@@ -18,6 +18,9 @@ param eventHubNamespaceEventHubName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Optional. A JSON string of key-value pairs for tags to be applied to resources in the environment. E.g., \'{ "customTag1": "value1", "customTag2": "value2" }\'.')
+param tags object?
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -26,6 +29,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
+  tags: tags
   sku: {
     name: 'Standard_LRS'
   }
@@ -37,11 +41,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: location
+  tags: tags
 }
 
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: eventHubNamespaceName
   location: location
+  tags: tags
 
   resource eventHub 'eventhubs@2024-01-01' = {
     name: eventHubNamespaceEventHubName
