@@ -73,57 +73,57 @@ module nestedDependencies2 'dependencies2.bicep' = {
   }
 }
 
-//module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:0.1.6' = {
-//  name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
-//  params: {
-//    imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
-//    location: enforcedLocation
-//    deploymentsToPerform: 'All'
-//    waitForImageBuild: true
-//    resourceGroupName: resourceGroup2.name
-//    waitForImageBuildTimeout: 'PT60M'
-//    virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
-//    virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
-//    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
-//    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[0].properties.addressPrefix
-//    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
-//    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
-//    imageTemplateResourceGroupName: ''
-//    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
-//    assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
-//    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
-//    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
-//    imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
-//    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
-//    computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
-//    computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
-//    imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
-//    deploymentScriptManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
-//    computeGalleryImageDefinitions: [
-//      {
-//        name: 'dep-${namePrefix}-galid-${serviceShort}'
-//        hyperVGeneration: 'V2'
-//        identifier: {
-//          offer: 'avmDevbox'
-//          publisher: 'avm'
-//          sku: 'devbox-avmwindows'
-//        }
-//        osState: 'Generalized'
-//        osType: 'Windows'
-//        securityType: 'TrustedLaunch'
-//        isHibernateSupported: true
-//        architecture: 'x64'
-//      }
-//    ]
-//    imageTemplateImageSource: {
-//      offer: 'Windows-11'
-//      publisher: 'MicrosoftWindowsDesktop'
-//      sku: 'win11-24h2-ent'
-//      type: 'PlatformImage'
-//      version: 'latest'
-//    }
-//  }
-//}
+module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:0.1.6' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
+  params: {
+    imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
+    location: enforcedLocation
+    deploymentsToPerform: 'All'
+    waitForImageBuild: true
+    resourceGroupName: resourceGroup2.name
+    waitForImageBuildTimeout: 'PT60M'
+    virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
+    virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
+    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
+    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[0].properties.addressPrefix
+    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
+    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
+    imageTemplateResourceGroupName: ''
+    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
+    assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
+    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
+    imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
+    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
+    computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
+    computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
+    imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+    deploymentScriptManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+    computeGalleryImageDefinitions: [
+      {
+        name: 'dep-${namePrefix}-galid-${serviceShort}'
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'avmDevbox'
+          publisher: 'avm'
+          sku: 'devbox-avmwindows'
+        }
+        osState: 'Generalized'
+        osType: 'Windows'
+        securityType: 'TrustedLaunch'
+        isHibernateSupported: true
+        architecture: 'x64'
+      }
+    ]
+    imageTemplateImageSource: {
+      offer: 'Windows-11'
+      publisher: 'MicrosoftWindowsDesktop'
+      sku: 'win11-24h2-ent'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
+  }
+}
 
 // ============== //
 // Test Execution //
@@ -316,7 +316,6 @@ module testDeployment '../../../main.bicep' = [
                 gracePeriodMinutes: 60
                 status: 'Enabled'
               }
-              managedVirtualNetworkRegion: 'westeurope'
               networkConnectionName: 'test-attached-network'
             }
           ]
@@ -358,8 +357,7 @@ module testDeployment '../../../main.bicep' = [
               resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
             }
             {
-              action: 'Deny'
-              resourceType: 'AttachedNetworks'
+              resources: '${devcenterExpectedResourceID}/attachednetworks/test-attached-network'
             }
           ]
           projectsResourceIdOrName: [
@@ -376,7 +374,7 @@ module testDeployment '../../../main.bicep' = [
       ]
     }
     dependsOn: [
-      //imageBuilder
+      imageBuilder
     ]
   }
 ]

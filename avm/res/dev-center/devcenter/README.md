@@ -271,8 +271,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
             resources: '<resources>'
           }
           {
-            action: 'Deny'
-            resourceType: 'AttachedNetworks'
+            resources: '<resources>'
           }
         ]
       }
@@ -315,7 +314,6 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
             devBoxDefinitionType: 'Reference'
             displayName: 'My Sandbox Pool - Unmanaged Network'
             localAdministrator: 'Disabled'
-            managedVirtualNetworkRegion: 'westeurope'
             name: 'sandbox-pool'
             networkConnectionName: 'test-attached-network'
             singleSignOnStatus: 'Enabled'
@@ -550,8 +548,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
               "resources": "<resources>"
             },
             {
-              "action": "Deny",
-              "resourceType": "AttachedNetworks"
+              "resources": "<resources>"
             }
           ]
         }
@@ -596,7 +593,6 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
               "devBoxDefinitionType": "Reference",
               "displayName": "My Sandbox Pool - Unmanaged Network",
               "localAdministrator": "Disabled",
-              "managedVirtualNetworkRegion": "westeurope",
               "name": "sandbox-pool",
               "networkConnectionName": "test-attached-network",
               "singleSignOnStatus": "Enabled",
@@ -805,8 +801,7 @@ param projectPolicies = [
         resources: '<resources>'
       }
       {
-        action: 'Deny'
-        resourceType: 'AttachedNetworks'
+        resources: '<resources>'
       }
     ]
   }
@@ -849,7 +844,6 @@ param projects = [
         devBoxDefinitionType: 'Reference'
         displayName: 'My Sandbox Pool - Unmanaged Network'
         localAdministrator: 'Disabled'
-        managedVirtualNetworkRegion: 'westeurope'
         name: 'sandbox-pool'
         networkConnectionName: 'test-attached-network'
         singleSignOnStatus: 'Enabled'
