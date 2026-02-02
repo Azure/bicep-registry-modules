@@ -832,6 +832,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionMonitoringAgentConfig.?settings ?? {}
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
   }
