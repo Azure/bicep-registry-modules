@@ -81,7 +81,7 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
     deploymentsToPerform: 'All'
     waitForImageBuild: true
     resourceGroupName: resourceGroup2.name
-    waitForImageBuildTimeout: 'PT60M'
+    waitForImageBuildTimeout: 'PT40M'
     virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
     virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
     imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
