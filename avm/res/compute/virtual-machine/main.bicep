@@ -516,7 +516,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId) && (dataDisk.?createOption ?? 'Empty') != 'FromImage') {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -525,7 +525,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
     properties: {
       diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
-        createOption: dataDisk.?createoption ?? 'Empty'
+        createOption: dataDisk.?createOption ?? 'Empty'
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
@@ -597,19 +597,31 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           name: !empty(dataDisk.managedDisk.?resourceId)
             ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
-            ? 'Attach'
-            : dataDisk.?createoption ?? 'Empty'
+          createOption: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? 'FromImage'
+            : (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
+                ? 'Attach'
+                : dataDisk.?createOption ?? 'Empty'
           deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
-          managedDisk: {
-            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
-            diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
-              ? {
-                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
-                }
-              : null
-          }
+          diskSizeGB: (dataDisk.?createOption ?? 'Empty') == 'FromImage' ? null : dataDisk.?diskSizeGB
+          managedDisk: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? {
+                storageAccountType: dataDisk.managedDisk.?storageAccountType
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
+            : {
+                id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
         }
       ]
     }
@@ -782,7 +794,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: filteredAadJoinSettings
+    settings: !empty(filteredAadJoinSettings) ? filteredAadJoinSettings : null
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
