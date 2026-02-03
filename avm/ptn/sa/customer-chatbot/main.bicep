@@ -563,8 +563,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.17.0' = if (e
     nicConfigurations: [
       {
         name: 'nic-${virtualMachineResourceName}'
-        //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
-        //nicSuffix: 'nic-${virtualMachineResourceName}'
         tags: tags
         deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
