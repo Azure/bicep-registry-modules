@@ -19,7 +19,10 @@ param eventHubNamespaceEventHubName string
 param location string = resourceGroup().location
 
 @description('Optional. A JSON string of key-value pairs for tags to be applied to resources in the environment. E.g., \'{ "customTag1": "value1", "customTag2": "value2" }\'.')
-param tags object?
+param tags {
+  @description('Optional.The key-value pair to be applied as a tag to the resources.')
+  *: string
+}?
 
 // ============ //
 // Dependencies //
