@@ -2,7 +2,12 @@
 targetScope = 'resourceGroup'
 
 metadata name = 'Customer Chat bot'
+
 metadata description = '''This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
 
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
@@ -54,8 +59,8 @@ param azureAiAgentApiVersion string = '2025-05-01'
 @description('Optional. GPT model deployment type. Defaults to GlobalStandard.')
 param gptModelDeploymentType string = 'GlobalStandard'
 
-@description('Optional. AI model deployment token capacity. Defaults to 10 for optimal performance.')
-param gptModelCapacity int = 10
+@description('Optional. AI model deployment token capacity. Defaults to 50 for optimal performance.')
+param gptModelCapacity int = 50
 
 @minLength(1)
 @description('Optional. Name of the Text Embedding model to deploy.')
@@ -66,7 +71,7 @@ param embeddingModel string = 'text-embedding-ada-002'
 
 @minValue(10)
 @description('Optional. Capacity of the Embedding Model deployment.')
-param embeddingDeploymentCapacity int = 10
+param embeddingDeploymentCapacity int = 50
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -99,7 +104,7 @@ param backendContainerRegistryHostname string = 'ccbcontainerreg.azurecr.io'
 param backendContainerImageName string = 'backend'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest'
+param backendContainerImageTag string = 'latest_2026-01-28_82'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'ccbcontainerreg.azurecr.io'
@@ -108,7 +113,7 @@ param frontendContainerRegistryHostname string = 'ccbcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'frontend'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest'
+param frontendContainerImageTag string = 'latest_2026-01-28_82'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -859,7 +864,6 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
     searchServiceResourceId: searchService.outputs.resourceId
     searchServiceLocation: searchService.outputs.location
     searchServiceName: searchService.outputs.name
-    searchApiKey: searchService.outputs.primaryKey
   }
 }
 

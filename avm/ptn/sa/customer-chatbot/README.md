@@ -2,6 +2,10 @@
 
 This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.
 
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
@@ -319,7 +323,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 10 for optimal performance. |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 50 for optimal performance. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-07-18. |
@@ -380,7 +384,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
+- Default: `'latest_2026-01-28_82'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -404,7 +408,7 @@ Capacity of the Embedding Model deployment.
 
 - Required: No
 - Type: int
-- Default: `10`
+- Default: `50`
 - MinValue: 10
 
 ### Parameter: `embeddingModel`
@@ -475,7 +479,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
+- Default: `'latest_2026-01-28_82'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
@@ -487,11 +491,11 @@ The Container Registry hostname where the docker images for the frontend are loc
 
 ### Parameter: `gptModelCapacity`
 
-AI model deployment token capacity. Defaults to 10 for optimal performance.
+AI model deployment token capacity. Defaults to 50 for optimal performance.
 
 - Required: No
 - Type: int
-- Default: `10`
+- Default: `50`
 
 ### Parameter: `gptModelDeploymentType`
 
