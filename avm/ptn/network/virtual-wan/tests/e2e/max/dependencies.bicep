@@ -130,7 +130,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     eventHubNamespaceName: eventHubNamespaceName
     eventHubNamespaceEventHubName: eventHubNamespaceEventHubName
     location: resourceGroup().location
-    tags: json(tags ?? '{}')
+    tags: tags ?? {}
   }
 }
 
