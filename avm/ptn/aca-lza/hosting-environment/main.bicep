@@ -125,6 +125,9 @@ param enableDdosProtection bool = false
 @description('Optional. Deploy the agent pool for the container registry. Default value is true.')
 param deployAgentPool bool = true
 
+@description('Optional. The geo-replication paired locations for the container registry.')
+param acrGeoReplicationLocations array = []
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -198,6 +201,7 @@ module supportingServices 'modules/supporting-services/deploy.supporting-service
     hubVNetResourceId: hubVirtualNetworkResourceId
     logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
     deployAgentPool: deployAgentPool
+    acrGeoReplicationLocations: acrGeoReplicationLocations
   }
 }
 

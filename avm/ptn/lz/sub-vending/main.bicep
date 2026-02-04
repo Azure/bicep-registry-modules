@@ -4,7 +4,7 @@ metadata details = '''These are the input parameters for the Bicep module: [`mai
 
 This is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.
 
-> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)'''
+> For more information and examples please see the [wiki](https://aka.ms/lz-vending/techdocs/bicep)'''
 
 targetScope = 'managementGroup'
 

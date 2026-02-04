@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/public-ip-address/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Switched parameters `publicIPAllocationMethod`, `publicIPAddressVersion`, `skuName`, `skuTier`, and `deleteOption` to use resource input types from `Microsoft.Network/publicIPAddresses@2025-01-01` for consistency with the RP schema and built-in validation. This adds support for the `StandardV2` SKU.
+
+### Breaking Changes
+
+- Parameter types for `publicIPAllocationMethod`, `publicIPAddressVersion`, `skuName`, `skuTier`, and `deleteOption` now use resource input types instead of string literals.
+
 ## 0.11.0
 
 ### Changes

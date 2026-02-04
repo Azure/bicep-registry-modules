@@ -56,6 +56,9 @@ module testDeployment '../../../main.bicep' = {
     deployZoneRedundantResources: true
     exposeContainerAppsWith: 'applicationGateway'
     enableDdosProtection: true
+    acrGeoReplicationLocations: [
+      'westeurope'
+    ]
   }
 }
 

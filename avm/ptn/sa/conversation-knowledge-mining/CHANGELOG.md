@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated all the moudules including waf & non-waf with readme.
+- Removed usage of dpeloyment script bicep module.
 
 ### Breaking Changes
 
