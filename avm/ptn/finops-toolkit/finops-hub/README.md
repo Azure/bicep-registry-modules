@@ -1,137 +1,204 @@
-# FinOps Hub
+# FinOps Hub `[FinopsToolkit/FinopsHub]`
 
-This module deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.
+This module deploys a FinOps Hub for cloud cost analytics, enabling organizations to ingest, normalize, and analyze cloud cost data from Azure, AWS, GCP, and other providers using the FOCUS specification.
+
+You can reference the module as follows:
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  params: { (...) }
+}
+```
+
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
 - [Resource Types](#resource-types)
-- [Usage Examples](#usage-examples)
+- [Usage examples](#usage-examples)
 - [Parameters](#parameters)
 - [Outputs](#outputs)
+- [Cross-referenced modules](#cross-referenced-modules)
+- [Notes](#notes)
 - [Data Collection](#data-collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 |:--|:--|
-| `Microsoft.Resources/deployments` | 2024-03-01 |
-| `Microsoft.Storage/storageAccounts` | 2023-05-01 |
-| `Microsoft.KeyVault/vaults` | 2023-07-01 |
-| `Microsoft.DataFactory/factories` | 2018-06-01 |
-| `Microsoft.Kusto/clusters` | 2023-08-15 |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 |
-| `Microsoft.Network/virtualNetworks` | 2024-01-01 |
-| `Microsoft.Network/privateEndpoints` | 2024-01-01 |
-| `Microsoft.Network/privateDnsZones` | 2024-06-01 |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
+| `Microsoft.DataFactory/factories` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults) |
+| `Microsoft.Kusto/clusters` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters) |
+| `Microsoft.Kusto/clusters/databases` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/databases) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.Network/privateDnsZones` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones) |
+| `Microsoft.Network/privateEndpoints` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/privateEndpoints) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Resources/deployments` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2024-03-01/deployments) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 
-## Deployment Modes
+## Usage examples
 
-This module supports two deployment modes to accommodate different environments:
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
 
-### Enterprise Mode (EA/MCA)
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-For tenants with Enterprise Agreement or Microsoft Customer Agreement billing:
-- Full Cost Management export support
-- Price sheets and reservation data available
-- Automated data ingestion via ADF pipelines
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
-### Demo Mode (PAYGO/Dev)
+- [Using only defaults](#example-1-using-only-defaults)
+- [ADX deployment with enterprise billing](#example-2-adx-deployment-with-enterprise-billing)
+- [WAF-aligned](#example-3-waf-aligned)
+- [Multi-cloud demo](#example-4-multi-cloud-demo)
 
-For tenants without export-capable billing accounts:
-- Use test data generation scripts in `src/`
-- Realistic FOCUS 1.0r2 compliant data
-- Perfect for demos, POCs, and development
+### Example 1: _Using only defaults_
 
-## Usage Examples
+This instance deploys the module with the minimum set of required parameters.
 
-### Example 1: Minimal Deployment (Demo Mode)
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults](./tests/e2e/defaults)
+
+<details>
+
+<summary>via Bicep module</summary>
 
 ```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHub'
   params: {
+    // Required parameters
     hubName: 'myfinopshub'
-    deploymentType: 'storage-only'
-    billingAccountType: 'paygo'  // Indicates demo mode
   }
 }
-
-// After deployment, run:
-// .\src\Test-FinOpsHub.ps1 -StorageAccountName <storage-account-name>
 ```
 
-### Example 2: ADX Deployment with Enterprise Billing
+</details>
+<p>
 
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
-  name: 'finopsHub'
-  params: {
-    hubName: 'myfinopshub'
-    deploymentType: 'adx'
-    dataExplorerClusterName: 'myfinopsadx'
-    billingAccountType: 'ea'
-    
-    // Define scopes to monitor
-    scopesToMonitor: [
-      {
-        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
-        scopeType: 'ea'
-        displayName: 'Contoso EA'
-      }
-    ]
-  }
-}
+<details>
 
-// After deployment, create exports using the PowerShell command from outputs
-```
+<summary>via JSON parameters file</summary>
 
-### Example 3: WAF-Aligned Production Deployment
-
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
-  name: 'finopsHub'
-  params: {
-    hubName: 'prodfinopshub'
-    deploymentConfiguration: 'waf-aligned'
-    deploymentType: 'adx'
-    dataExplorerClusterName: 'prodfinopsadx'
-    networkIsolationMode: 'Managed'
-    billingAccountType: 'ea'
-    billingAccountId: '1234567'  // Enables MACC tracking
-    
-    scopesToMonitor: [
-      {
-        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
-        scopeType: 'ea'
-        displayName: 'Production EA'
-      }
-    ]
-    
-    tags: {
-      Environment: 'Production'
-      CostCenter: 'FinOps'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubName": {
+      "value": "myfinopshub"
     }
   }
 }
 ```
 
-### Example 4: Multi-Cloud Demo
+</details>
+<p>
+
+### Example 2: _ADX deployment with enterprise billing_
+
+This instance deploys the module with Azure Data Explorer and enterprise billing account configuration.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-minimal](./tests/e2e/adx-minimal)
+
+<details>
+
+<summary>via Bicep module</summary>
 
 ```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   name: 'finopsHub'
   params: {
-    hubName: 'multicloudfinops'
+    // Required parameters
+    hubName: 'myfinopshub'
+    // Non-required parameters
+    billingAccountType: 'ea'
+    dataExplorerClusterName: 'myfinopsadx'
     deploymentType: 'adx'
+    scopesToMonitor: [
+      {
+        displayName: 'Contoso EA'
+        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
+        scopeType: 'ea'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-waf-aligned](./tests/e2e/adx-waf-aligned)
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  name: 'finopsHub'
+  params: {
+    // Required parameters
+    hubName: 'prodfinopshub'
+    // Non-required parameters
+    billingAccountId: '1234567'
+    billingAccountType: 'ea'
+    dataExplorerClusterName: 'prodfinopsadx'
+    deploymentConfiguration: 'waf-aligned'
+    deploymentType: 'adx'
+    networkIsolationMode: 'Managed'
+    scopesToMonitor: [
+      {
+        displayName: 'Production EA'
+        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
+        scopeType: 'ea'
+      }
+    ]
+    tags: {
+      CostCenter: 'FinOps'
+      Environment: 'Production'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Multi-cloud demo_
+
+This instance deploys the module for multi-cloud demo scenarios using test data.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-minimal](./tests/e2e/adx-minimal)
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  name: 'finopsHub'
+  params: {
+    // Required parameters
+    hubName: 'multicloudfinops'
+    // Non-required parameters
+    billingAccountType: 'paygo'
     dataExplorerClusterName: 'multicloudadx'
     dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'
-    billingAccountType: 'paygo'  // Demo mode
+    deploymentType: 'adx'
   }
 }
 
 // After deployment, generate multi-cloud test data:
 // .\src\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName <storage-account-name>
 ```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -219,46 +286,63 @@ diagnosticSettings: [
 | `settingsJson` | object | Settings.json content for config container. |
 | `gettingStartedGuide` | object | Step-by-step instructions based on mode. |
 
-## Getting Started
+## Cross-referenced modules
 
-### For Demo/Dev Environments (PAYGO)
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced Azure Verified Modules references, as well as their versions.
 
-1. Deploy the module with `billingAccountType: 'paygo'`
-2. Navigate to the `src/` folder
-3. Run the test data script:
-   ```powershell
-   .\Test-FinOpsHub.ps1 -StorageAccountName "<storage-account-name>"
-   ```
-4. Wait ~5 minutes for ADF pipelines to process
-5. Query data in ADX: Hub database → Costs table
+| Reference | Type | Version |
+| :-- | :-- | :-- |
+| `avm/utl/types/avm-common-types` | Remote reference | [0.6.1](https://github.com/Azure/bicep-registry-modules/tree/avm/utl/types/avm-common-types/0.6.1) |
 
-### For Enterprise Environments (EA/MCA)
+## Notes
 
-1. Deploy the module with `scopesToMonitor` configured
-2. Get the export command from deployment outputs
-3. Install FinOps Toolkit PowerShell:
-   ```powershell
-   Install-Module FinOpsToolkit -Force
-   ```
-4. Create Cost Management exports using the provided command
-5. Wait for first export (up to 24 hours)
-6. Query data in ADX: Hub database → Costs table
+> **📚 Full Documentation**: For comprehensive documentation, see [Microsoft Learn - FinOps Hubs](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/finops-hubs-overview).
 
-## Folder Structure
+### Architecture Decision Records
 
-```
-finops-hub/
-├── main.bicep          # Main module entry point
-├── modules/            # Internal helper modules
-│   ├── scripts/        # KQL scripts for ADX schema
-│   └── README.md       # Module architecture docs
-├── src/                # Helper scripts
-│   ├── Test-FinOpsHub.ps1              # Test data generator
-│   ├── Generate-MultiCloudTestData.ps1 # Multi-cloud data
-│   └── README.md       # Script documentation
-├── tests/              # E2E tests
-└── dashboards/         # ADX dashboard templates
-```
+For detailed information about the design decisions, FinOps Foundation alignment, and engineering rationale, see [ADR.md](./ADR.md).
+
+### FinOps Toolkit Alignment
+
+This AVM module is aligned with **[FinOps Toolkit](https://aka.ms/finops/toolkit) v0.7** and the **[FOCUS Specification](https://focus.finops.org/) 1.0r2**.
+
+| Documentation | Link |
+|--------------|------|
+| Deploy FinOps Hub | [learn.microsoft.com/...deploy-hub](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/deploy-hub) |
+| Configure Exports | [learn.microsoft.com/...configure-exports](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/configure-exports) |
+| Power BI Reports | [learn.microsoft.com/...powerbi](https://learn.microsoft.com/cloud-computing/finops/toolkit/powerbi) |
+| KQL Functions | [modules/scripts/README.md](./modules/scripts/README.md) |
+| ADX Dashboard | [dashboards/README.md](./dashboards/README.md) |
+
+### Deployment Modes
+
+| Mode | Billing Types | Use Case | Documentation |
+|------|---------------|----------|---------------|
+| **Enterprise** | EA, MCA, MPA | Production with Cost Management exports | [Configure Exports](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/configure-exports) |
+| **Demo** | PAYGO, CSP, Dev | POCs and demos with test data | [src/README.md](./src/README.md) |
+
+### Getting Started
+
+Helper scripts in the [src/](./src/) folder simplify deployment and testing:
+
+| Script | Purpose |
+|--------|---------|
+| `Deploy-FinOpsHub.ps1` | Interactive deployment with validation |
+| `Generate-MultiCloudTestData.ps1` | Generate FOCUS 1.0-1.3 test data (Azure/AWS/GCP/DC) |
+| `Get-BestAdxSku.ps1` | Find available ADX SKUs by region |
+
+See [src/README.md](./src/README.md) for detailed usage, or use the `gettingStartedGuide` output from deployment.
+
+### Visualization Options
+
+| Option | Included | Best For | Documentation |
+|--------|----------|----------|---------------|
+| **ADX Dashboard** | ✅ Yes | Central FinOps team, real-time analysis | [dashboards/README.md](./dashboards/README.md) |
+| **Power BI Reports** | External | Department distribution, RLS, mobile | [aka.ms/finops/toolkit/powerbi](https://aka.ms/finops/toolkit/powerbi) |
+
+### Folder Structure
+
+For module architecture details, see [modules/README.md](./modules/README.md).
 
 ## Data Collection
 

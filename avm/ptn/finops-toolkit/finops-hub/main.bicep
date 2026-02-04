@@ -138,7 +138,7 @@ SCOPE TYPES and export support:
 
 DEMO/DEV MODE: For tenants without EA/MCA billing:
 - Leave scopesToMonitor empty
-- Use src/Test-FinOpsHub.ps1 to generate FOCUS test data
+- Use src/Generate-MultiCloudTestData.ps1 to generate FOCUS test data
 - Upload directly to the 'ingestion' container
 
 Example scopes:
@@ -1232,7 +1232,7 @@ output exportConfiguration object = {
   
   // Demo mode commands  
   demoCommands: {
-    generateTestData: '.\\src\\Test-FinOpsHub.ps1 -StorageAccountName "${storageAccount.outputs.name}" -TargetMonthlySpend 10000 -MonthsOfData 3'
+    generateTestData: '.\\src\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName "${storageAccount.outputs.name}" -CloudProvider Azure -TotalBudget 30000 -MonthsOfData 3'
     generateMultiCloudData: '.\\src\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName "${storageAccount.outputs.name}" -TotalBudget 100000'
   }
 }
@@ -1276,10 +1276,10 @@ output gettingStartedGuide object = {
   
   demoModeSteps: [
     '1. Navigate to the src/ folder in this module'
-    '2. Run: .\\Test-FinOpsHub.ps1 -StorageAccountName "${storageAccount.outputs.name}"'
+    '2. Run: .\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName "${storageAccount.outputs.name}"'
     '3. Wait ~5 minutes for ADF pipelines to process the data'
     '4. Query data in ADX: Hub database > Costs table'
-    'Note: Demo mode generates realistic FOCUS 1.0r2 test data (~$10K/month)'
+    'Note: Demo mode generates realistic FOCUS 1.0-1.3 test data (~$100K total across 3 months)'
   ]
   
   enterpriseModeSteps: [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "12490279456014866449"
+      "templateHash": "7302042744181031098"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -309,7 +309,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of billing scopes to monitor for cost data.\n\nEach scope generates:\n- Export configuration guidance (for EA/MCA tenants with export support)\n- settings.json entry (for forward compatibility with managed exports)\n- PowerShell commands to create exports\n\nSCOPE TYPES and export support:\n| Type           | FOCUS Costs | Prices | Reservations | Notes |\n|----------------|-------------|--------|--------------|-------|\n| ea             | ✅          | ✅     | ✅           | Full support - EA billing account |\n| mca            | ✅          | ✅     | ✅           | Full support - MCA billing profile |\n| department     | ✅          | ✅     | ⚠️ Limited   | EA department scope |\n| subscription   | ✅          | ❌     | ❌           | Costs only, no pricing |\n| resourceGroup  | ✅          | ❌     | ❌           | Very limited |\n| managementGroup| ✅          | ❌     | ❌           | Aggregated costs only |\n\nDEMO/DEV MODE: For tenants without EA/MCA billing:\n- Leave scopesToMonitor empty\n- Use src/Test-FinOpsHub.ps1 to generate FOCUS test data\n- Upload directly to the 'ingestion' container\n\nExample scopes:\n```bicep\nscopesToMonitor: [\n  { scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567', scopeType: 'ea', displayName: 'Contoso EA' }\n  { scopeId: '/subscriptions/aaaa-bbbb-cccc-dddd', scopeType: 'subscription', displayName: 'Dev Subscription' }\n]\n```"
+        "description": "Optional. List of billing scopes to monitor for cost data.\n\nEach scope generates:\n- Export configuration guidance (for EA/MCA tenants with export support)\n- settings.json entry (for forward compatibility with managed exports)\n- PowerShell commands to create exports\n\nSCOPE TYPES and export support:\n| Type           | FOCUS Costs | Prices | Reservations | Notes |\n|----------------|-------------|--------|--------------|-------|\n| ea             | ✅          | ✅     | ✅           | Full support - EA billing account |\n| mca            | ✅          | ✅     | ✅           | Full support - MCA billing profile |\n| department     | ✅          | ✅     | ⚠️ Limited   | EA department scope |\n| subscription   | ✅          | ❌     | ❌           | Costs only, no pricing |\n| resourceGroup  | ✅          | ❌     | ❌           | Very limited |\n| managementGroup| ✅          | ❌     | ❌           | Aggregated costs only |\n\nDEMO/DEV MODE: For tenants without EA/MCA billing:\n- Leave scopesToMonitor empty\n- Use src/Generate-MultiCloudTestData.ps1 to generate FOCUS test data\n- Upload directly to the 'ingestion' container\n\nExample scopes:\n```bicep\nscopesToMonitor: [\n  { scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567', scopeType: 'ea', displayName: 'Contoso EA' }\n  { scopeId: '/subscriptions/aaaa-bbbb-cccc-dddd', scopeType: 'subscription', displayName: 'Dev Subscription' }\n]\n```"
       }
     },
     "enableRbacAuthorization": {
@@ -43776,7 +43776,7 @@
         "scopeCount": "[length(parameters('scopesToMonitor'))]",
         "exportCommandTemplate": "[format('New-FinOpsCostExport -Name \"FinOpsHub-{0}\" -Scope \"<YOUR-SCOPE-ID>\" -StorageAccountId \"{1}\" -StorageContainer \"msexports\" -Dataset FocusCost -Execute -Backfill 3', parameters('hubName'), reference('storageAccount').outputs.resourceId.value)]",
         "demoCommands": {
-          "generateTestData": "[format('.\\src\\Test-FinOpsHub.ps1 -StorageAccountName \"{0}\" -TargetMonthlySpend 10000 -MonthsOfData 3', reference('storageAccount').outputs.name.value)]",
+          "generateTestData": "[format('.\\src\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName \"{0}\" -CloudProvider Azure -TotalBudget 30000 -MonthsOfData 3', reference('storageAccount').outputs.name.value)]",
           "generateMultiCloudData": "[format('.\\src\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName \"{0}\" -TotalBudget 100000', reference('storageAccount').outputs.name.value)]"
         }
       }
@@ -43812,10 +43812,10 @@
         "mode": "[if(or(or(empty(parameters('scopesToMonitor')), equals(parameters('billingAccountType'), 'paygo')), equals(parameters('billingAccountType'), 'csp')), 'demo', 'enterprise')]",
         "demoModeSteps": [
           "1. Navigate to the src/ folder in this module",
-          "[format('2. Run: .\\Test-FinOpsHub.ps1 -StorageAccountName \"{0}\"', reference('storageAccount').outputs.name.value)]",
+          "[format('2. Run: .\\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName \"{0}\"', reference('storageAccount').outputs.name.value)]",
           "3. Wait ~5 minutes for ADF pipelines to process the data",
           "4. Query data in ADX: Hub database > Costs table",
-          "Note: Demo mode generates realistic FOCUS 1.0r2 test data (~$10K/month)"
+          "Note: Demo mode generates realistic FOCUS 1.0-1.3 test data (~$100K total across 3 months)"
         ],
         "enterpriseModeSteps": [
           "1. Install FinOps Toolkit: Install-Module FinOpsToolkit -Force",

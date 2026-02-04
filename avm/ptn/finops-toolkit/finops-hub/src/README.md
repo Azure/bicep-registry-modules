@@ -7,8 +7,7 @@ This folder contains PowerShell scripts that help with deploying, testing, and m
 | Script | Purpose | When to Use |
 |--------|---------|-------------|
 | `Deploy-FinOpsHub.ps1` | Interactive deployment helper | When you want guided deployment with validation |
-| `Test-FinOpsHub.ps1` | Generate and upload test data | After deployment to validate the pipeline |
-| `Generate-MultiCloudTestData.ps1` | Multi-cloud FOCUS data generator | Testing multi-cloud scenarios (AWS, GCP, DC) |
+| `Generate-MultiCloudTestData.ps1` | FOCUS-compliant data generator | After deployment to generate test/demo data |
 | `Get-BestAdxSku.ps1` | ADX SKU availability checker | Before deployment to find available SKUs |
 
 ## Script Details
@@ -38,25 +37,6 @@ Interactive deployment script with:
     -TenantId "your-tenant-id" `
     -DeploymentType "adx" `
     -DataExplorerClusterName "myfinopsadx"
-```
-
-### Test-FinOpsHub.ps1
-
-Validates the deployment by:
-- **Generating realistic FOCUS test data** (~$10K monthly spend)
-- **Handling storage firewall** (auto-adds your IP)
-- **Granting RBAC permissions** (Storage Blob Data Contributor)
-- **Uploading to correct container** (ingestion or msexports)
-- **Verifying ADF trigger status**
-
-```powershell
-# Example: Quick test with defaults
-.\Test-FinOpsHub.ps1 -StorageAccountName "stfinopshub123abc"
-
-# Example: Larger test dataset
-.\Test-FinOpsHub.ps1 -StorageAccountName "stfinopshub123abc" `
-    -TargetMonthlySpend 50000 `
-    -MonthsOfData 6
 ```
 
 ### Generate-MultiCloudTestData.ps1
@@ -120,7 +100,7 @@ Cost Management exports are **only supported** for certain billing account types
 | Visual Studio / MSDN | ❌ None | Use test data scripts |
 | CSP (customer-side) | ❌ Limited | Partner provides data |
 
-For unsupported billing types, use `Test-FinOpsHub.ps1` or `Generate-MultiCloudTestData.ps1` to populate the hub with test data.
+For unsupported billing types, use `Generate-MultiCloudTestData.ps1` to populate the hub with test data.
 
 ## Data Flow Paths
 
