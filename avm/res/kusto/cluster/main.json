@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3198197612416407048"
+      "templateHash": "10003890830770835553"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -1224,7 +1224,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again."
       }
     }
   },
