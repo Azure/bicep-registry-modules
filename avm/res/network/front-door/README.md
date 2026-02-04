@@ -6,7 +6,7 @@
 > - If the underlying Azure service is not deprecated/retired, this module may still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
 > - It is recommended to migrate to a replacement/alternative version of the module, if available.
 
-DEPRECATED - This module deploys an Azure Front Door.
+DEPRECATED - This module deploys an Azure Front Door (Classic). Please note that the Azure Front Door (Classic) service is being deprecated in favor of the new Azure Front Door Standard/Premium offerings. It is recommended to use the avm/res/network/front-door-standard-premium module for new deployments ([ref(https://learn.microsoft.com/en-us/azure/frontdoor/classic-overview)]). This module will continue to be supported for existing deployments until further notice.
 
 You can reference the module as follows:
 ```bicep
