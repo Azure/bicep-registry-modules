@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "13967322527731197778"
+      "version": "0.40.2.10011",
+      "templateHash": "7445197264840153253"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -132,6 +132,7 @@
           "type": "string",
           "allowedValues": [
             "AllDatabasesAdmin",
+            "AllDatabasesMonitor",
             "AllDatabasesViewer"
           ],
           "metadata": {
@@ -1223,7 +1224,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again."
       }
     }
   },
@@ -1322,7 +1323,7 @@
         "virtualClusterGraduationProperties": "[parameters('virtualClusterGraduationProperties')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('virtualNetworkConfiguration'))), createObject('dataManagementPublicIpId', parameters('virtualNetworkConfiguration').dataManagementPublicIpResourceId, 'enginePublicIpId', parameters('virtualNetworkConfiguration').enginePublicIpResourceId, 'subnetId', parameters('virtualNetworkConfiguration').subnetResourceId), null())]"
       },
-      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+      "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -1335,7 +1336,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1373,7 +1374,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1390,7 +1391,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kusto/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1441,8 +1442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1012223909934891391"
+              "version": "0.40.2.10011",
+              "templateHash": "7737164182940842473"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -2215,6 +2216,9 @@
           "kustoClusterName": {
             "value": "[parameters('name')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "databaseKind": {
             "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].kind]"
           },
@@ -2230,8 +2234,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14255520298720928878"
+              "version": "0.40.2.10011",
+              "templateHash": "4679326301457114965"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database."
@@ -2455,8 +2459,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "7106563084045148449"
+                      "version": "0.40.2.10011",
+                      "templateHash": "6533806870686790278"
                     },
                     "name": "Kusto Cluster Database Principal Assignments",
                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."
