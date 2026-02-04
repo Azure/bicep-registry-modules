@@ -1,0 +1,99 @@
+targetScope = 'subscription'
+
+metadata name = 'ADX WAF-aligned'
+metadata description = 'This instance deploys the module with Azure Data Explorer in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.'
+
+// ========== //
+// Parameters //
+// ========== //
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'fhaxw'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. Principal ID of the deployer to grant ADX access for testing. If not provided, only the ADF managed identity will have access.')
+param deployerPrincipalId string = ''
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
+// Deploy networking dependencies (VNet, subnets, private DNS zones)
+module dependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dependencies'
+  params: {
+    location: resourceLocation
+    namePrefix: '${namePrefix}${serviceShort}'
+  }
+}
+
+// ============== //
+// Test Execution //
+// ============== //
+
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      // Required parameters
+      hubName: '${namePrefix}${serviceShort}'
+      // Non-required parameters
+      location: resourceLocation
+      
+      // WAF-aligned configuration with ADX
+      deploymentConfiguration: 'waf-aligned'
+      deploymentType: 'adx'
+      dataExplorerClusterName: '${namePrefix}${serviceShort}adx'
+      
+      // WAF-aligned automatically enables:
+      // - Premium_ZRS storage for HA/DR
+      // - Purge protection for Key Vault
+      // - Disables public network access
+      
+      // BringYourOwn network isolation - customer manages subnet and DNS zones
+      // ⚠️ You own upgrades when using BringYourOwn - test before deploying new versions
+      // For easier upgrades, consider networkIsolationMode: 'Managed'
+      networkIsolationMode: 'BringYourOwn'
+      byoSubnetResourceId: dependencies.outputs.privateEndpointSubnetId
+      byoBlobDnsZoneId: dependencies.outputs.storageBlobPrivateDnsZoneId
+      byoDfsDnsZoneId: dependencies.outputs.storageDfsPrivateDnsZoneId
+      byoVaultDnsZoneId: dependencies.outputs.keyVaultPrivateDnsZoneId
+      byoDataFactoryDnsZoneId: dependencies.outputs.dataFactoryPrivateDnsZoneId
+      enablePrivateDnsZoneGroups: true
+      
+      // ADX admin access for testing
+      adxAdminPrincipalIds: !empty(deployerPrincipalId) ? [deployerPrincipalId] : []
+      
+      // Telemetry
+      enableTelemetry: true
+      
+      // Tags following WAF recommendations
+      tags: {
+        SecurityControl: 'Ignore'
+        Environment: 'Production'
+        'hidden-title': 'FinOps Hub - ADX WAF Aligned'
+        CostCenter: 'FinOps'
+        Criticality: 'High'
+      }
+    }
+  }
+]

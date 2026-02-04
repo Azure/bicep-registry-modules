@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-types-az/main/generated/schemas/bicepconfig.schema.json",
+  "analyzers": {
+    "core": {
+      "rules": {
+        "no-hardcoded-env-urls": {
+          "level": "off"
+        },
+        "use-stable-resource-identifiers": {
+          "level": "off"
+        },
+        "use-safe-access": {
+          "level": "off"
+        },
+        "outputs-should-not-contain-secrets": {
+          "level": "off"
+        }
+      }
+    }
+  }
+}

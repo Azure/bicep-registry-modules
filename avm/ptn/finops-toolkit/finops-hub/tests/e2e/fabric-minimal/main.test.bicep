@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using Microsoft Fabric with minimal configuration'
+metadata description = 'This instance deploys the module with Microsoft Fabric Eventhouse in a cost-effective dev/test configuration.'
 
 // ========== //
 // Parameters //
@@ -15,10 +15,19 @@ param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-r
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fhmin'
+param serviceShort string = 'fhfab'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// NOTE: Fabric Eventhouse must be pre-created in Microsoft Fabric workspace.
+// These URIs are obtained from your Fabric eventhouse settings.
+// For automated testing, set these via pipeline parameters or parameter file.
+@description('Required for Fabric tests. The query URI of the Microsoft Fabric eventhouse.')
+param fabricQueryUri string = ''
+
+@description('Optional. The ingestion URI of the Microsoft Fabric eventhouse.')
+param fabricIngestionUri string = ''
 
 // ============ //
 // Dependencies //
@@ -35,9 +44,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
+// Note: This test requires a pre-existing Fabric eventhouse.
+// Skip deployment if fabricQueryUri is not provided.
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init', 'idem']: if (!empty(fabricQueryUri)) {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
@@ -46,12 +57,24 @@ module testDeployment '../../../main.bicep' = [
       // Non-required parameters
       location: resourceLocation
       deploymentConfiguration: 'minimal'
-      deploymentType: 'storage-only'
+      deploymentType: 'fabric'
+      
+      // Fabric Eventhouse configuration
+      // The eventhouse must be pre-created in your Fabric workspace
+      fabricQueryUri: fabricQueryUri
+      fabricIngestionUri: fabricIngestionUri
+      fabricDatabaseName: 'finops'
+      
       enableTelemetry: true
+      
+      // Minimal config uses:
+      // - Standard_LRS storage (cost-effective)
+      // - No purge protection (easier cleanup)
+      // - Public network access enabled
       tags: {
         SecurityControl: 'Ignore'
         Environment: 'Development'
-        'hidden-title': 'FinOps Hub - Storage Only Test'
+        'hidden-title': 'FinOps Hub - Fabric Minimal'
       }
     }
   }

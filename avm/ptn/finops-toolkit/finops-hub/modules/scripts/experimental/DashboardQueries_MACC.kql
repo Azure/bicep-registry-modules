@@ -1,0 +1,485 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//======================================================================================================================
+// FinOps Hub - MACC (Microsoft Azure Consumption Commitment) Dashboard Queries
+// Queries for tracking and analyzing MACC commitments, balances, and consumption trends
+// Reference: https://learn.microsoft.com/azure/cost-management-billing/benefits/macc/track-consumption-commitment
+//======================================================================================================================
+
+
+//======================================================================================================================
+// SECTION 1: MACC OVERVIEW
+// Summary views of MACC commitments and current status
+//======================================================================================================================
+
+// 1.1 MACC Current Status
+// Shows the current status of all MACC commitments
+.create-or-alter function
+with (docstring = 'Get current MACC status with consumption progress and remaining balance', folder = 'Dashboard/MACC')
+MACC_CurrentStatus()
+{
+    database('Ingestion').MACC_Lots_final
+    // Get the latest record for each commitment
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining,
+        ExpectedConsumptionPercent = iff(DaysTotal > 0, round(toreal(DaysTotal - DaysRemaining) / DaysTotal * 100, 2), real(0))
+    | extend
+        ConsumptionStatus = case(
+            Status != 'Active', Status,
+            ConsumptionPercent >= ExpectedConsumptionPercent + 10, '🟢 Ahead',
+            ConsumptionPercent >= ExpectedConsumptionPercent - 10, '🟡 On Track',
+            ConsumptionPercent >= ExpectedConsumptionPercent - 20, '🟠 Behind',
+            '🔴 At Risk'
+        )
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Status,
+        Currency,
+        CommitmentAmount,
+        ConsumedAmount,
+        RemainingBalance,
+        ConsumptionPercent,
+        ExpectedConsumptionPercent,
+        ConsumptionStatus,
+        StartDate,
+        EndDate,
+        DaysTotal,
+        DaysElapsed,
+        DaysRemaining
+}
+
+
+// 1.2 MACC Summary Card
+// Provides aggregated MACC data for dashboard cards
+.create-or-alter function
+with (docstring = 'Get aggregated MACC summary for dashboard cards', folder = 'Dashboard/MACC')
+MACC_SummaryCard()
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active'
+    | summarize 
+        TotalCommitment = sum(CommitmentAmount),
+        TotalConsumed = sum(ConsumedAmount),
+        TotalRemaining = sum(RemainingBalance),
+        ActiveCommitments = count(),
+        Currency = take_any(Currency)
+    | extend 
+        OverallConsumptionPercent = round(TotalConsumed / TotalCommitment * 100, 2)
+    | project
+        ActiveCommitments,
+        Currency,
+        TotalCommitment,
+        TotalConsumed,
+        TotalRemaining,
+        OverallConsumptionPercent
+}
+
+
+// 1.3 MACC Health Score
+// Calculates a health score for each MACC based on consumption trajectory
+.create-or-alter function
+with (docstring = 'Calculate MACC health score based on consumption trajectory', folder = 'Dashboard/MACC')
+MACC_HealthScore()
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active'
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining,
+        ExpectedBurnPercent = iff(DaysTotal > 0, round(toreal(DaysTotal - DaysRemaining) / DaysTotal * 100, 2), real(0))
+    | extend
+        DailyBurnRate = iff(DaysElapsed > 0, ConsumedAmount / DaysElapsed, real(0)),
+        RequiredDailyBurn = iff(DaysRemaining > 0, RemainingBalance / DaysRemaining, real(0))
+    | extend
+        ProjectedEndBalance = RemainingBalance - (DailyBurnRate * DaysRemaining),
+        BurnRateRatio = iff(RequiredDailyBurn > 0, DailyBurnRate / RequiredDailyBurn, real(1))
+    | extend
+        // Health score: 100 = perfect, <50 = at risk
+        HealthScore = case(
+            Status != 'Active', real(-1),
+            BurnRateRatio >= 1, real(100),
+            BurnRateRatio >= 0.9, 90 + (BurnRateRatio - 0.9) * 100,
+            BurnRateRatio >= 0.8, 80 + (BurnRateRatio - 0.8) * 100,
+            BurnRateRatio >= 0.5, 50 + (BurnRateRatio - 0.5) * 100,
+            BurnRateRatio * 100
+        )
+    | extend
+        HealthStatus = case(
+            HealthScore >= 90, '🟢 Excellent',
+            HealthScore >= 75, '🟡 Good',
+            HealthScore >= 50, '🟠 Needs Attention',
+            HealthScore >= 0, '🔴 At Risk',
+            'N/A'
+        )
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Currency,
+        CommitmentAmount,
+        ConsumedAmount,
+        RemainingBalance,
+        DailyBurnRate = round(DailyBurnRate, 2),
+        RequiredDailyBurn = round(RequiredDailyBurn, 2),
+        ProjectedEndBalance = round(ProjectedEndBalance, 2),
+        DaysRemaining,
+        HealthScore = round(HealthScore, 0),
+        HealthStatus
+}
+
+
+//======================================================================================================================
+// SECTION 2: MACC TRENDS
+// Historical consumption trends and patterns
+//======================================================================================================================
+
+// 2.1 MACC Monthly Consumption Trend
+// Shows monthly consumption against MACC commitment
+.create-or-alter function
+with (docstring = 'Get monthly MACC consumption trend from events', folder = 'Dashboard/MACC')
+MACC_MonthlyConsumption()
+{
+    database('Ingestion').MACC_Events_final
+    | extend Month = startofmonth(EventDate)
+    | summarize 
+        MonthlyConsumption = sum(DecrementAmount),
+        EventCount = count()
+        by Month, CommitmentId, Currency
+    | order by CommitmentId, Month asc
+    // Calculate running total
+    | extend RunningTotal = row_cumsum(MonthlyConsumption)
+    | project
+        Month,
+        CommitmentId,
+        Currency,
+        MonthlyConsumption = round(MonthlyConsumption, 2),
+        EventCount,
+        CumulativeConsumption = round(RunningTotal, 2)
+}
+
+
+// 2.2 MACC Daily Burn Rate Trend
+// Shows daily consumption rate over time
+.create-or-alter function
+with (docstring = 'Calculate daily burn rate trend from MACC events', folder = 'Dashboard/MACC')
+MACC_DailyBurnTrend()
+{
+    database('Ingestion').MACC_Events_final
+    | extend Day = startofday(EventDate)
+    | summarize 
+        DailyDecrement = sum(DecrementAmount)
+        by Day, CommitmentId, Currency
+    | order by CommitmentId, Day asc
+    // Serialize for row-level calculations
+    | serialize
+    | extend 
+        // Simple rolling average using prev() for last 7 values
+        Prev1 = prev(DailyDecrement, 1, DailyDecrement),
+        Prev2 = prev(DailyDecrement, 2, DailyDecrement),
+        Prev3 = prev(DailyDecrement, 3, DailyDecrement),
+        Prev4 = prev(DailyDecrement, 4, DailyDecrement),
+        Prev5 = prev(DailyDecrement, 5, DailyDecrement),
+        Prev6 = prev(DailyDecrement, 6, DailyDecrement)
+    | extend 
+        MovingAvg7Day = (DailyDecrement + Prev1 + Prev2 + Prev3 + Prev4 + Prev5 + Prev6) / 7.0
+    | project
+        Day,
+        CommitmentId,
+        Currency,
+        DailyDecrement = round(DailyDecrement, 2),
+        MovingAvg7Day = round(MovingAvg7Day, 2)
+}
+
+
+// 2.3 MACC Balance Over Time
+// Shows remaining balance progression
+.create-or-alter function
+with (docstring = 'Get MACC balance progression over time', folder = 'Dashboard/MACC')
+MACC_BalanceTimeline()
+{
+    database('Ingestion').MACC_Events_final
+    | summarize 
+        EndOfDayBalance = min(RemainingBalance)
+        by EventDate, CommitmentId, Currency
+    | order by CommitmentId, EventDate asc
+    | project
+        Date = EventDate,
+        CommitmentId,
+        Currency,
+        RemainingBalance = round(EndOfDayBalance, 2)
+}
+
+
+//======================================================================================================================
+// SECTION 3: MACC FORECASTING
+// Predict MACC completion and identify risks
+//======================================================================================================================
+
+// 3.1 MACC Completion Forecast
+// Projects when MACC will be fully consumed
+.create-or-alter function
+with (docstring = 'Forecast MACC completion date based on current burn rate', folder = 'Dashboard/MACC')
+MACC_CompletionForecast()
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active'
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining
+    | extend
+        DailyBurnRate = iff(DaysElapsed > 0, ConsumedAmount / DaysElapsed, real(0))
+    | extend
+        // Days needed to consume remaining balance at current rate
+        DaysToComplete = iff(DailyBurnRate > 0, RemainingBalance / DailyBurnRate, real(999999)),
+        ProjectedCompletionDate = iff(DailyBurnRate > 0, datetime_add('day', toint(RemainingBalance / DailyBurnRate), now()), datetime(null))
+    | extend
+        WillCompleteOnTime = ProjectedCompletionDate <= EndDate,
+        DaysBeforeExpiry = datetime_diff('day', EndDate, ProjectedCompletionDate)
+    | extend
+        ForecastStatus = case(
+            DaysBeforeExpiry >= 30, '🟢 Will Complete Early',
+            DaysBeforeExpiry >= 0, '🟡 Will Complete On Time',
+            DaysBeforeExpiry >= -30, '🟠 May Not Complete',
+            '🔴 Will Not Complete'
+        )
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Currency,
+        RemainingBalance = round(RemainingBalance, 2),
+        DailyBurnRate = round(DailyBurnRate, 2),
+        DaysRemaining,
+        DaysToComplete = round(DaysToComplete, 0),
+        EndDate,
+        ProjectedCompletionDate,
+        DaysBeforeExpiry,
+        WillCompleteOnTime,
+        ForecastStatus
+}
+
+
+// 3.2 MACC Required Daily Spend
+// Calculates the required daily spend to meet MACC commitment
+.create-or-alter function
+with (docstring = 'Calculate required daily spend to meet MACC commitment', folder = 'Dashboard/MACC')
+MACC_RequiredSpend()
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active'
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining
+    | extend
+        ActualDailyRate = iff(DaysElapsed > 0, ConsumedAmount / DaysElapsed, real(0)),
+        RequiredDailyRate = iff(DaysRemaining > 0, RemainingBalance / DaysRemaining, real(0))
+    | extend
+        DailyGap = RequiredDailyRate - ActualDailyRate,
+        GapPercent = iff(ActualDailyRate > 0, (RequiredDailyRate - ActualDailyRate) / ActualDailyRate * 100, real(0))
+    | extend
+        ActionRequired = case(
+            GapPercent <= 0, 'None - On Track',
+            GapPercent <= 10, 'Minor Increase Needed',
+            GapPercent <= 25, 'Moderate Increase Needed',
+            'Significant Action Required'
+        )
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Currency,
+        RemainingBalance = round(RemainingBalance, 2),
+        DaysRemaining,
+        ActualDailyRate = round(ActualDailyRate, 2),
+        RequiredDailyRate = round(RequiredDailyRate, 2),
+        DailyGap = round(DailyGap, 2),
+        GapPercent = round(GapPercent, 2),
+        ActionRequired
+}
+
+
+//======================================================================================================================
+// SECTION 4: MACC INVOICE ANALYSIS
+// Analyze MACC consumption by invoice and billing profile
+//======================================================================================================================
+
+// 4.1 MACC Consumption by Invoice
+// Shows MACC decrements grouped by invoice
+.create-or-alter function
+with (docstring = 'Get MACC consumption breakdown by invoice', folder = 'Dashboard/MACC')
+MACC_ByInvoice()
+{
+    database('Ingestion').MACC_Events_final
+    | where isnotempty(InvoiceNumber)
+    | summarize 
+        InvoiceDecrement = sum(DecrementAmount),
+        EventDate = max(EventDate)
+        by InvoiceNumber, CommitmentId, BillingProfileName, Currency
+    | order by EventDate desc
+    | project
+        InvoiceNumber,
+        CommitmentId,
+        BillingProfileName,
+        EventDate,
+        Currency,
+        InvoiceDecrement = round(InvoiceDecrement, 2)
+}
+
+
+// 4.2 MACC Consumption by Billing Profile
+// Shows MACC decrements by billing profile (for MCA accounts)
+.create-or-alter function
+with (docstring = 'Get MACC consumption breakdown by billing profile', folder = 'Dashboard/MACC')
+MACC_ByBillingProfile()
+{
+    database('Ingestion').MACC_Events_final
+    | where isnotempty(BillingProfileName)
+    | summarize 
+        TotalDecrement = sum(DecrementAmount),
+        EventCount = count(),
+        FirstEvent = min(EventDate),
+        LastEvent = max(EventDate)
+        by BillingProfileId, BillingProfileName, CommitmentId, Currency
+    | order by TotalDecrement desc
+    | project
+        BillingProfileId,
+        BillingProfileName,
+        CommitmentId,
+        Currency,
+        TotalDecrement = round(TotalDecrement, 2),
+        EventCount,
+        FirstEvent,
+        LastEvent
+}
+
+
+//======================================================================================================================
+// SECTION 5: MACC ALERTS
+// Identify MACC commitments that need attention
+//======================================================================================================================
+
+// 5.1 MACC At Risk Report
+// Identifies MACC commitments at risk of not completing
+.create-or-alter function
+with (docstring = 'Identify MACC commitments at risk of not meeting target', folder = 'Dashboard/MACC')
+MACC_AtRisk()
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active'
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining,
+        ExpectedConsumptionPercent = iff(DaysTotal > 0, round(toreal(DaysTotal - DaysRemaining) / DaysTotal * 100, 2), real(0))
+    | extend
+        ConsumptionGap = ExpectedConsumptionPercent - ConsumptionPercent,
+        DailyBurnRate = iff(DaysElapsed > 0, ConsumedAmount / DaysElapsed, real(0))
+    | extend
+        ProjectedEndBalance = RemainingBalance - (DailyBurnRate * DaysRemaining)
+    | extend
+        ShortfallAmount = iff(ProjectedEndBalance > 0, ProjectedEndBalance, real(0))
+    | where ConsumptionGap > 10 or ShortfallAmount > 0
+    | extend
+        RiskLevel = case(
+            ShortfallAmount > CommitmentAmount * 0.2, 'Critical',
+            ShortfallAmount > CommitmentAmount * 0.1, 'High',
+            ConsumptionGap > 20, 'Medium',
+            'Low'
+        )
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Currency,
+        CommitmentAmount,
+        RemainingBalance = round(RemainingBalance, 2),
+        ConsumptionPercent,
+        ExpectedConsumptionPercent,
+        ConsumptionGap = round(ConsumptionGap, 2),
+        ShortfallAmount = round(ShortfallAmount, 2),
+        DaysRemaining,
+        EndDate,
+        RiskLevel
+    | order by ShortfallAmount desc
+}
+
+
+// 5.2 MACC Expiring Soon
+// Lists MACC commitments expiring within a specified number of days
+.create-or-alter function
+with (docstring = 'Get MACC commitments expiring within specified days', folder = 'Dashboard/MACC')
+MACC_ExpiringSoon(daysThreshold: int)
+{
+    database('Ingestion').MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | where Status == 'Active' and DaysRemaining <= daysThreshold
+    | extend
+        DaysElapsed = DaysTotal - DaysRemaining,
+        DailyBurnRate = iff((DaysTotal - DaysRemaining) > 0, ConsumedAmount / (DaysTotal - DaysRemaining), real(0))
+    | extend
+        ProjectedFinalBalance = RemainingBalance - (DailyBurnRate * DaysRemaining),
+        WillComplete = RemainingBalance <= (DailyBurnRate * DaysRemaining)
+    | project
+        CommitmentId,
+        BillingAccountName,
+        Currency,
+        CommitmentAmount,
+        ConsumedAmount = round(ConsumedAmount, 2),
+        RemainingBalance = round(RemainingBalance, 2),
+        ConsumptionPercent,
+        DaysRemaining,
+        EndDate,
+        ProjectedFinalBalance = round(ProjectedFinalBalance, 2),
+        WillComplete
+    | order by DaysRemaining asc
+}
+
+
+//======================================================================================================================
+// SECTION 6: MANUAL MACC ENTRY INSTRUCTIONS
+// For organizations that need to manually enter MACC data from their contract documents
+// NOTE: The actual manual entry functions are in ManualEntry_MACC.kql and must be run by the user
+//       after they create the required tables (MACC_ManualEntry, MACC_ConsumptionLog)
+//======================================================================================================================
+
+// 6.1 MACC Manual Entry Instructions
+// This function returns instructions for manually entering MACC data
+.create-or-alter function
+with (docstring = 'Get instructions for manually entering MACC commitment data', folder = 'Dashboard/MACC')
+MACC_ManualEntryInstructions()
+{
+    print Instructions = 
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    MACC MANUAL ENTRY INSTRUCTIONS                             ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  If you don't have API access to MACC data, you can manually enter your      ║
+║  commitment details from your MACC contract/amendment document.              ║
+║                                                                               ║
+║  WHAT YOU NEED FROM YOUR MACC CONTRACT:                                       ║
+║  ┌─────────────────────────────────────────────────────────────────────────┐ ║
+║  │ 1. COMMITMENT AMOUNT                                                     │ ║
+║  │    Look for: "Azure Consumption Commitment" or                           │ ║
+║  │              "Minimum Consumption Commitment"                            │ ║
+║  │    Example: $100,000 USD                                                 │ ║
+║  │                                                                          │ ║
+║  │ 2. COMMITMENT PERIOD                                                     │ ║
+║  │    Start Date: When your MACC term begins                                │ ║
+║  │    End Date: When your MACC expires (typically 1-3 years)                │ ║
+║  │    Example: January 1, 2024 through December 31, 2026                    │ ║
+║  │                                                                          │ ║
+║  │ 3. MONTHLY CONSUMPTION (from Azure invoices)                             │ ║
+║  │    Get from: Azure Portal → Cost Management + Billing → Invoices        │ ║
+║  └─────────────────────────────────────────────────────────────────────────┘ ║
+║                                                                               ║
+║  HOW TO ENTER DATA:                                                           ║
+║  1. Run ManualEntry_MACC.kql in ADX to create tables and enter data          ║
+║  2. After entering data, the MACC_ManualStatus/Trend/Forecast queries work   ║
+║  3. See ManualEntry_MACC.kql for detailed scripts and examples               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+}
+
+// NOTE: Manual entry functions (MACC_ManualStatus, MACC_ManualTrend, MACC_ManualForecast) are defined
+// in ManualEntry_MACC.kql and are NOT auto-deployed. Users must run that script after creating
+// the MACC_ManualEntry and MACC_ConsumptionLog tables.

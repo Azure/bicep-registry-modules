@@ -1,265 +1,272 @@
-# Finops-hub `[FinopsToolkit/FinopsHub]`
+# FinOps Hub
 
-This module deploys a Finops hub from the Finops toolkit.
-
-You can reference the module as follows:
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  params: { (...) }
-}
-```
-For examples, please refer to the [Usage Examples](#usage-examples) section.
+This module deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.
 
 ## Navigation
 
-- [Resource Types](#Resource-Types)
-- [Usage examples](#Usage-examples)
-- [Parameters](#Parameters)
-- [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
+- [Resource Types](#resource-types)
+- [Usage Examples](#usage-examples)
+- [Parameters](#parameters)
+- [Outputs](#outputs)
+- [Data Collection](#data-collection)
 
 ## Resource Types
 
-| Resource Type | API Version | References |
-| :-- | :-- | :-- |
-| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.DataFactory/factories` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories)</li></ul> |
-| `Microsoft.DataFactory/factories/datasets` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_datasets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/datasets)</li></ul> |
-| `Microsoft.DataFactory/factories/linkedservices` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/linkedservices)</li></ul> |
-| `Microsoft.DataFactory/factories/pipelines` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_pipelines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/pipelines)</li></ul> |
-| `Microsoft.DataFactory/factories/triggers` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_triggers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/triggers)</li></ul> |
-| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies)</li></ul> |
-| `Microsoft.KeyVault/vaults/keys` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2022-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2022-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2022-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2022-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices` | 2021-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/fileServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares)</li></ul> |
-| `Microsoft.Storage/storageAccounts/localUsers` | 2022-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-05-01/storageAccounts/localUsers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices` | 2021-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/queueServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2021-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/queueServices/queues)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices` | 2021-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/tableServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2021-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2021-09-01/storageAccounts/tableServices/tables)</li></ul> |
+| Resource Type | API Version |
+|:--|:--|
+| `Microsoft.Resources/deployments` | 2024-03-01 |
+| `Microsoft.Storage/storageAccounts` | 2023-05-01 |
+| `Microsoft.KeyVault/vaults` | 2023-07-01 |
+| `Microsoft.DataFactory/factories` | 2018-06-01 |
+| `Microsoft.Kusto/clusters` | 2023-08-15 |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 |
+| `Microsoft.Network/virtualNetworks` | 2024-01-01 |
+| `Microsoft.Network/privateEndpoints` | 2024-01-01 |
+| `Microsoft.Network/privateDnsZones` | 2024-06-01 |
 
-## Usage examples
+## Deployment Modes
 
-The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+This module supports two deployment modes to accommodate different environments:
 
->**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+### Enterprise Mode (EA/MCA)
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
+For tenants with Enterprise Agreement or Microsoft Customer Agreement billing:
+- Full Cost Management export support
+- Price sheets and reservation data available
+- Automated data ingestion via ADF pipelines
 
-- [Using only defaults](#example-1-using-only-defaults)
+### Demo Mode (PAYGO/Dev)
 
-### Example 1: _Using only defaults_
+For tenants without export-capable billing accounts:
+- Use test data generation scripts in `src/`
+- Realistic FOCUS 1.0r2 compliant data
+- Perfect for demos, POCs, and development
 
-This instance deploys the module with the minimum set of required parameters.
+## Usage Examples
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
+### Example 1: Minimal Deployment (Demo Mode)
 
 ```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+  name: 'finopsHub'
   params: {
-    // Required parameters
-    hubName: 'finops-hub-finmin'
-    // Non-required parameters
-    location: '<location>'
+    hubName: 'myfinopshub'
+    deploymentType: 'storage-only'
+    billingAccountType: 'paygo'  // Indicates demo mode
   }
 }
+
+// After deployment, run:
+// .\src\Test-FinOpsHub.ps1 -StorageAccountName <storage-account-name>
 ```
 
-</details>
-<p>
+### Example 2: ADX Deployment with Enterprise Billing
 
-<details>
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+  name: 'finopsHub'
+  params: {
+    hubName: 'myfinopshub'
+    deploymentType: 'adx'
+    dataExplorerClusterName: 'myfinopsadx'
+    billingAccountType: 'ea'
+    
+    // Define scopes to monitor
+    scopesToMonitor: [
+      {
+        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
+        scopeType: 'ea'
+        displayName: 'Contoso EA'
+      }
+    ]
+  }
+}
 
-<summary>via JSON parameters file</summary>
+// After deployment, create exports using the PowerShell command from outputs
+```
 
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubName": {
-      "value": "finops-hub-finmin"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+### Example 3: WAF-Aligned Production Deployment
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+  name: 'finopsHub'
+  params: {
+    hubName: 'prodfinopshub'
+    deploymentConfiguration: 'waf-aligned'
+    deploymentType: 'adx'
+    dataExplorerClusterName: 'prodfinopsadx'
+    networkIsolationMode: 'Managed'
+    billingAccountType: 'ea'
+    billingAccountId: '1234567'  // Enables MACC tracking
+    
+    scopesToMonitor: [
+      {
+        scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567'
+        scopeType: 'ea'
+        displayName: 'Production EA'
+      }
+    ]
+    
+    tags: {
+      Environment: 'Production'
+      CostCenter: 'FinOps'
     }
   }
 }
 ```
 
-</details>
-<p>
+### Example 4: Multi-Cloud Demo
 
-<details>
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:1.0.0' = {
+  name: 'finopsHub'
+  params: {
+    hubName: 'multicloudfinops'
+    deploymentType: 'adx'
+    dataExplorerClusterName: 'multicloudadx'
+    dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'
+    billingAccountType: 'paygo'  // Demo mode
+  }
+}
 
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
-
-// Required parameters
-param hubName = 'finops-hub-finmin'
-// Non-required parameters
-param location = '<location>'
+// After deployment, generate multi-cloud test data:
+// .\src\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName <storage-account-name>
 ```
-
-</details>
-<p>
 
 ## Parameters
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`configContainer`](#parameter-configcontainer) | string | The name of the container used for configuration settings. |
-| [`convertToParquet`](#parameter-converttoparquet) | bool | Indicates whether ingested data should be converted to Parquet. Default: true. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`exportContainer`](#parameter-exportcontainer) | string | The name of the container used for Cost Management exports. |
-| [`exportScopes`](#parameter-exportscopes) | array | List of scope IDs to create exports for. |
-| [`hubName`](#parameter-hubname) | string | Name of the hub. Used to ensure unique resource names. Default: "finops-hub". |
-| [`ingestionContainer`](#parameter-ingestioncontainer) | string | The name of the container used for normalized data ingestion. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
-| [`storageSku`](#parameter-storagesku) | string | Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SKUs are not available for Data Lake gen2 storage. Allowed: Premium_LRS, Premium_ZRS. Default: Premium_LRS. |
-| [`tags`](#parameter-tags) | object | Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management. |
-| [`tagsByResource`](#parameter-tagsbyresource) | object | Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources. |
+| `hubName` | string | Name of the FinOps Hub instance (3-24 characters). |
 
-### Parameter: `configContainer`
+**Optional parameters**
 
-The name of the container used for configuration settings.
+| Parameter | Type | Description | Default |
+| :-- | :-- | :-- | :-- |
+| `location` | string | Azure region for all resources. | `[resourceGroup().location]` |
+| `deploymentConfiguration` | string | Deployment profile: "minimal" or "waf-aligned". | `'minimal'` |
+| `deploymentType` | string | Data platform: "adx", "fabric", or "storage-only". | `'storage-only'` |
+| `billingAccountType` | string | Billing type hint for export support. | `'auto'` |
+| `scopesToMonitor` | array | List of billing scopes to monitor. | `[]` |
+| `networkIsolationMode` | string | Network isolation: "None", "Managed", or "BringYourOwn". | `'None'` |
+| `tags` | object | Tags to apply to all resources. | `{}` |
+| `tagsByResource` | object | Resource-specific tags by resource type. | `{}` |
+| `enableTelemetry` | bool | Enable/Disable AVM usage telemetry. | `false` |
+| `lock` | object | The lock settings of the service (AVM standard interface). | `null` |
+| `diagnosticSettings` | array | The diagnostic settings of the service (AVM standard interface). | `[]` |
 
-- Required: No
-- Type: string
-- Default: `'config'`
+### Lock Parameter
 
-### Parameter: `convertToParquet`
+The `lock` parameter follows the AVM standard interface:
 
-Indicates whether ingested data should be converted to Parquet. Default: true.
+```bicep
+lock: {
+  kind: 'CanNotDelete'  // 'CanNotDelete', 'ReadOnly', or 'None'
+  name: 'myLock'        // Optional custom lock name
+  notes: 'Lock notes'   // Optional lock notes
+}
+```
 
-- Required: No
-- Type: bool
-- Default: `True`
+### Diagnostic Settings Parameter
 
-### Parameter: `enableTelemetry`
+The `diagnosticSettings` parameter follows the AVM standard interface for forwarding logs and metrics to Azure Monitor:
 
-Enable/Disable usage telemetry for module.
+```bicep
+diagnosticSettings: [
+  {
+    name: 'myDiagnosticSetting'
+    workspaceResourceId: '/subscriptions/.../workspaces/myWorkspace'
+    metricCategories: [{ category: 'AllMetrics' }]
+    logCategoriesAndGroups: [{ category: 'allLogs' }]
+  }
+]
+```
 
-- Required: No
-- Type: bool
-- Default: `True`
+### Billing Account Types
 
-### Parameter: `exportContainer`
+| Type | Export Support | Description |
+|------|---------------|-------------|
+| `ea` | ✅ Full | Enterprise Agreement |
+| `mca` | ✅ Full | Microsoft Customer Agreement |
+| `mpa` | ✅ Full | Microsoft Partner Agreement |
+| `subscription` | ⚠️ Limited | Subscription-level (costs only) |
+| `paygo` | ❌ None | Pay-As-You-Go - use demo mode |
+| `csp` | ❌ None | CSP customer - partner manages |
 
-The name of the container used for Cost Management exports.
+### Scope Types
 
-- Required: No
-- Type: string
-- Default: `'exports'`
-
-### Parameter: `exportScopes`
-
-List of scope IDs to create exports for.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `hubName`
-
-Name of the hub. Used to ensure unique resource names. Default: "finops-hub".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `ingestionContainer`
-
-The name of the container used for normalized data ingestion.
-
-- Required: No
-- Type: string
-- Default: `'ingestion'`
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
-### Parameter: `storageSku`
-
-Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SKUs are not available for Data Lake gen2 storage. Allowed: Premium_LRS, Premium_ZRS. Default: Premium_LRS.
-
-- Required: No
-- Type: string
-- Default: `'Premium_LRS'`
-- Allowed:
-  ```Bicep
-  [
-    'Premium_LRS'
-    'Premium_ZRS'
-  ]
-  ```
-
-### Parameter: `tags`
-
-Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.
-
-- Required: No
-- Type: object
-
-### Parameter: `tagsByResource`
-
-Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.
-
-- Required: No
-- Type: object
-- Default: `{}`
+| Type | FOCUS Costs | Prices | Reservations |
+|------|------------|--------|--------------|
+| `ea` | ✅ | ✅ | ✅ |
+| `mca` | ✅ | ✅ | ✅ |
+| `department` | ✅ | ✅ | ⚠️ |
+| `subscription` | ✅ | ❌ | ❌ |
+| `resourceGroup` | ✅ | ❌ | ❌ |
+| `managementGroup` | ✅ | ❌ | ❌ |
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `storageAccountName` | string | Name of the storage account created. |
+| `storageAccountResourceId` | string | Resource ID of the storage account. |
 | `dataFactoryName` | string | Name of the Data Factory. |
-| `location` | string | The location the resources wer deployed to. |
-| `name` | string | The name of the resource group. |
-| `resourceGroupName` | string | The resource group the finops hub was deployed into. |
-| `storageAccountId` | string | The resource ID of the deployed storage account. |
-| `storageAccountName` | string | Name of the storage account created for the hub instance. This must be used when connecting FinOps toolkit Power BI reports to your data. |
-| `storageUrlForPowerBi` | string | URL to use when connecting custom Power BI reports to your data. |
+| `dataExplorerClusterUri` | string | ADX cluster URI (if deployed). |
+| `deploymentMode` | string | Effective mode: "enterprise", "demo", or "hybrid". |
+| `exportConfiguration` | object | Export setup commands and guidance. |
+| `settingsJson` | object | Settings.json content for config container. |
+| `gettingStartedGuide` | object | Step-by-step instructions based on mode. |
 
-## Cross-referenced modules
+## Getting Started
 
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+### For Demo/Dev Environments (PAYGO)
 
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/res/key-vault/vault:0.5.1` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.8.3` | Remote reference |
+1. Deploy the module with `billingAccountType: 'paygo'`
+2. Navigate to the `src/` folder
+3. Run the test data script:
+   ```powershell
+   .\Test-FinOpsHub.ps1 -StorageAccountName "<storage-account-name>"
+   ```
+4. Wait ~5 minutes for ADF pipelines to process
+5. Query data in ADX: Hub database → Costs table
+
+### For Enterprise Environments (EA/MCA)
+
+1. Deploy the module with `scopesToMonitor` configured
+2. Get the export command from deployment outputs
+3. Install FinOps Toolkit PowerShell:
+   ```powershell
+   Install-Module FinOpsToolkit -Force
+   ```
+4. Create Cost Management exports using the provided command
+5. Wait for first export (up to 24 hours)
+6. Query data in ADX: Hub database → Costs table
+
+## Folder Structure
+
+```
+finops-hub/
+├── main.bicep          # Main module entry point
+├── modules/            # Internal helper modules
+│   ├── scripts/        # KQL scripts for ADX schema
+│   └── README.md       # Module architecture docs
+├── src/                # Helper scripts
+│   ├── Test-FinOpsHub.ps1              # Test data generator
+│   ├── Generate-MultiCloudTestData.ps1 # Multi-cloud data
+│   └── README.md       # Script documentation
+├── tests/              # E2E tests
+└── dashboards/         # ADX dashboard templates
+```
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [Azure Verified Modules documentation](https://aka.ms/avm). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at https://go.microsoft.com/fwlink/?LinkID=824704. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+
+## Related Links
+
+- [FinOps Toolkit Documentation](https://aka.ms/finops/toolkit)
+- [FinOps Hubs Overview](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/finops-hubs-overview)
+- [Azure Verified Modules](https://aka.ms/avm)
+- [FOCUS Specification](https://focus.finops.org)

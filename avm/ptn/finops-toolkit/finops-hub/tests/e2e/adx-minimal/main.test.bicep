@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using Azure Data Explorer with minimal configuration'
+metadata description = 'This instance deploys the module with Azure Data Explorer in a cost-effective dev/test configuration.'
 
 // ========== //
 // Parameters //
@@ -15,10 +15,13 @@ param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-r
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fhmin'
+param serviceShort string = 'fhadx'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Optional. Principal ID of the deployer to grant ADX access for testing. If not provided, only the ADF managed identity will have access.')
+param deployerPrincipalId string = ''
 
 // ============ //
 // Dependencies //
@@ -46,12 +49,22 @@ module testDeployment '../../../main.bicep' = [
       // Non-required parameters
       location: resourceLocation
       deploymentConfiguration: 'minimal'
-      deploymentType: 'storage-only'
+      deploymentType: 'adx'
+      dataExplorerClusterName: '${namePrefix}${serviceShort}adx'
       enableTelemetry: true
+      // Grant deployer access to ADX for testing/verification
+      adxAdminPrincipalIds: !empty(deployerPrincipalId) ? [deployerPrincipalId] : []
+      // Use Dev SKU for testing - cheapest option with modern AMD EPYC v4 hardware
+      // Standard_E2a_v4: 2 vCPUs, 16GB RAM, ~$0.15/hr (cheaper than D11_v2)
+      dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'
+      dataExplorerCapacity: 1 // Dev SKU supports single node
+      // Minimal config with Dev SKU:
+      // - Dev(No SLA)_Standard_E2a_v4 with 1 node (no SLA, but cheapest + modern)
+      // - enableAutoStop: true (saves costs when idle)
       tags: {
         SecurityControl: 'Ignore'
         Environment: 'Development'
-        'hidden-title': 'FinOps Hub - Storage Only Test'
+        'hidden-title': 'FinOps Hub - ADX Minimal'
       }
     }
   }
