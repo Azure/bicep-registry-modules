@@ -164,7 +164,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
       }
       {
         imageResourceId: '<imageResourceId>'
-        name: 'test-devbox-definition-custom-gallery-image'
+        name: '<name>'
         sku: {
           name: 'general_i_8c32gb256ssd_v2'
         }
@@ -271,8 +271,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
             resources: '<resources>'
           }
           {
-            action: 'Deny'
-            resourceType: 'AttachedNetworks'
+            resources: '<resources>'
           }
         ]
       }
@@ -311,18 +310,18 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
         name: 'test-project-same-resource-group'
         pools: [
           {
-            devBoxDefinitionName: 'test-devbox-definition-builtin-gallery-image'
+            devBoxDefinitionName: '<devBoxDefinitionName>'
             devBoxDefinitionType: 'Reference'
-            displayName: 'My Sandbox Pool - Managed Network'
+            displayName: 'My Sandbox Pool - Unmanaged Network'
             localAdministrator: 'Disabled'
-            managedVirtualNetworkRegion: 'westeurope'
             name: 'sandbox-pool'
+            networkConnectionName: 'test-attached-network'
             singleSignOnStatus: 'Enabled'
             stopOnDisconnect: {
               gracePeriodMinutes: 60
               status: 'Enabled'
             }
-            virtualNetworkType: 'Managed'
+            virtualNetworkType: 'Unmanaged'
           }
         ]
       }
@@ -420,7 +419,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
         },
         {
           "imageResourceId": "<imageResourceId>",
-          "name": "test-devbox-definition-custom-gallery-image",
+          "name": "<name>",
           "sku": {
             "name": "general_i_8c32gb256ssd_v2"
           }
@@ -549,8 +548,7 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
               "resources": "<resources>"
             },
             {
-              "action": "Deny",
-              "resourceType": "AttachedNetworks"
+              "resources": "<resources>"
             }
           ]
         }
@@ -591,18 +589,18 @@ module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
           "name": "test-project-same-resource-group",
           "pools": [
             {
-              "devBoxDefinitionName": "test-devbox-definition-builtin-gallery-image",
+              "devBoxDefinitionName": "<devBoxDefinitionName>",
               "devBoxDefinitionType": "Reference",
-              "displayName": "My Sandbox Pool - Managed Network",
+              "displayName": "My Sandbox Pool - Unmanaged Network",
               "localAdministrator": "Disabled",
-              "managedVirtualNetworkRegion": "westeurope",
               "name": "sandbox-pool",
+              "networkConnectionName": "test-attached-network",
               "singleSignOnStatus": "Enabled",
               "stopOnDisconnect": {
                 "gracePeriodMinutes": 60,
                 "status": "Enabled"
               },
-              "virtualNetworkType": "Managed"
+              "virtualNetworkType": "Unmanaged"
             }
           ]
         },
@@ -696,7 +694,7 @@ param devboxDefinitions = [
   }
   {
     imageResourceId: '<imageResourceId>'
-    name: 'test-devbox-definition-custom-gallery-image'
+    name: '<name>'
     sku: {
       name: 'general_i_8c32gb256ssd_v2'
     }
@@ -803,8 +801,7 @@ param projectPolicies = [
         resources: '<resources>'
       }
       {
-        action: 'Deny'
-        resourceType: 'AttachedNetworks'
+        resources: '<resources>'
       }
     ]
   }
@@ -843,18 +840,18 @@ param projects = [
     name: 'test-project-same-resource-group'
     pools: [
       {
-        devBoxDefinitionName: 'test-devbox-definition-builtin-gallery-image'
+        devBoxDefinitionName: '<devBoxDefinitionName>'
         devBoxDefinitionType: 'Reference'
-        displayName: 'My Sandbox Pool - Managed Network'
+        displayName: 'My Sandbox Pool - Unmanaged Network'
         localAdministrator: 'Disabled'
-        managedVirtualNetworkRegion: 'westeurope'
         name: 'sandbox-pool'
+        networkConnectionName: 'test-attached-network'
         singleSignOnStatus: 'Enabled'
         stopOnDisconnect: {
           gracePeriodMinutes: 60
           status: 'Enabled'
         }
-        virtualNetworkType: 'Managed'
+        virtualNetworkType: 'Unmanaged'
       }
     ]
   }
@@ -1174,7 +1171,7 @@ param projectPolicies = [
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkSettings`](#parameter-networksettings) | object | Network settings that will be enforced on network resources associated with the Dev Center. |
 | [`projectCatalogSettings`](#parameter-projectcatalogsettings) | object | Dev Center settings to be used when associating a project with a catalog. |
-| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resourcesÔÇöspecifically, SKUs, Images, and Network ConnectionsÔÇöto designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
+| [`projectPolicies`](#parameter-projectpolicies) | array | Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center. |
 | [`projects`](#parameter-projects) | array | The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -1882,7 +1879,7 @@ Whether project catalogs associated with projects in this dev center can be conf
 
 ### Parameter: `projectPolicies`
 
-Project policies provide a mechanism to restrict access to certain resourcesÔÇöspecifically, SKUs, Images, and Network ConnectionsÔÇöto designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
+Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.
 
 - Required: No
 - Type: array
@@ -2529,7 +2526,7 @@ The type of pool to create in the project. A project pool is a container for dev
 | [`devBoxDefinitionName`](#parameter-projectspoolsdevboxdefinitionname) | string | Name of a Dev Box definition in parent Project of this Pool. If creating a pool from a definition defined in the Dev Center, then this will be the name of the definition. If creating a pool from a custom definition (e.g. Team Customizations), first the catalog must be added to this project, and second must use the format "\~Catalog\~{catalogName}\~{imagedefinition YAML name}" (e.g. "\~Catalog\~eshopRepo\~frontend-dev"). |
 | [`localAdministrator`](#parameter-projectspoolslocaladministrator) | string | Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box. |
 | [`name`](#parameter-projectspoolsname) | string | The name of the project pool. This name must be unique within a project and is visible to developers when creating dev boxes. |
-| [`virtualNetworkType`](#parameter-projectspoolsvirtualnetworktype) | string | Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource. |
+| [`virtualNetworkType`](#parameter-projectspoolsvirtualnetworktype) | string | Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource. If "microsoftHostedNetworkEnableStatus" is set to "Disabled" at the Dev Center level, this property must be set to "Unmanaged". |
 
 **Conditional parameters**
 
@@ -2537,7 +2534,7 @@ The type of pool to create in the project. A project pool is a container for dev
 | :-- | :-- | :-- |
 | [`devBoxDefinition`](#parameter-projectspoolsdevboxdefinition) | object | A definition of the machines that are created from this Pool. Required if devBoxDefinitionType is "Value". |
 | [`managedVirtualNetworkRegion`](#parameter-projectspoolsmanagedvirtualnetworkregion) | string | The region of the managed virtual network. Required if virtualNetworkType is "Managed". |
-| [`networkConnectionName`](#parameter-projectspoolsnetworkconnectionname) | string | Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed". |
+| [`networkConnectionName`](#parameter-projectspoolsnetworkconnectionname) | string | Name of a Network Connection (Attached Network) in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed". |
 
 **Optional parameters**
 
@@ -2582,7 +2579,7 @@ The name of the project pool. This name must be unique within a project and is v
 
 ### Parameter: `projects.pools.virtualNetworkType`
 
-Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource.
+Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource. If "microsoftHostedNetworkEnableStatus" is set to "Disabled" at the Dev Center level, this property must be set to "Unmanaged".
 
 - Required: Yes
 - Type: string
@@ -2673,7 +2670,7 @@ The region of the managed virtual network. Required if virtualNetworkType is "Ma
 
 ### Parameter: `projects.pools.networkConnectionName`
 
-Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".
+Name of a Network Connection (Attached Network) in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".
 
 - Required: No
 - Type: string
