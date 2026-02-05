@@ -228,3 +228,95 @@ resource iothub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04
     scope: iotHub
   }
 ]
+
+// =========== //
+// Outputs     //
+// =========== //
+@description('The resource ID of the key vault.')
+output resourceId string = iotHub.id
+
+@description('The name of the resource group the key vault was created in.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The name of the key vault.')
+output name string = iotHub.name
+
+@description('The location the resource was deployed into.')
+output location string = iotHub.location
+
+@description('The private endpoints of the key vault.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: iothub_privateEndpoints[index].outputs.name
+    resourceId: iothub_privateEndpoints[index].outputs.resourceId
+    groupId: iothub_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: iothub_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: iothub_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('The type for rules governing the accessibility of the key vault from specific network locations.')
+type networkAclsType = {
+  @description('Optional. The bypass options for traffic for the network ACLs.')
+  bypass: ('AzureServices' | 'None')?
+
+  @description('Optional. The default action for the network ACLs, when no rule matches.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. A list of IP rules.')
+  ipRules: {
+    @description('Required. An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24".')
+    value: string
+  }[]?
+
+  @description('Optional. A list of virtual network rules.')
+  virtualNetworkRules: {
+    @description('Required. The resource ID of the virtual network subnet.')
+    id: string
+
+    @description('Optional. Whether NRP will ignore the check if parent subnet has serviceEndpoints configured.')
+    ignoreMissingVnetServiceEndpoint: bool?
+  }[]?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a credential output.')
+type credentialOutputType = {
+  @description('The item\'s resourceId.')
+  resourceId: string
+
+  @description('The item\'s uri.')
+  uri: string
+
+  @description('The item\'s uri with version.')
+  uriWithVersion: string
+}
