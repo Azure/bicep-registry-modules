@@ -232,19 +232,19 @@ resource iothub_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04
 // =========== //
 // Outputs     //
 // =========== //
-@description('The resource ID of the key vault.')
+@description('The resource ID of the iotHub.')
 output resourceId string = iotHub.id
 
-@description('The name of the resource group the key vault was created in.')
+@description('The name of the resource group the iotHub was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the key vault.')
+@description('The name of the iotHub.')
 output name string = iotHub.name
 
 @description('The location the resource was deployed into.')
 output location string = iotHub.location
 
-@description('The private endpoints of the key vault.')
+@description('The private endpoints of the iotHub.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
     name: iothub_privateEndpoints[index].outputs.name
@@ -260,7 +260,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 // ================ //
 
 @export()
-@description('The type for rules governing the accessibility of the key vault from specific network locations.')
+@description('The type for rules governing the accessibility of the iotHub from specific network locations.')
 type networkAclsType = {
   @description('Optional. The bypass options for traffic for the network ACLs.')
   bypass: ('AzureServices' | 'None')?
