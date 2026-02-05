@@ -442,6 +442,34 @@ The ADX cluster processes cost **line items** (rows), not dollars. A $10M/mo ent
 3. **Start with storage-only**: Upgrade to ADX later when analytics needs grow
 4. **Use minimal config for dev/test**: WAF-aligned adds ~30-50% for HA features
 5. **Tune retention policies**: Reduce ADX hot cache retention for older data
+6. **Pause when not in use**: See below for dramatic savings
+
+#### Pause/Resume: Pay Only When You Need Analytics
+
+**If you don't need real-time analytics 24/7**, you can pause ADX or Fabric and save 80-95% on compute costs. Your data remains safe in storage - pause only stops the analytics engine.
+
+| Usage Pattern | Hours/Month | ADX Standard Cost | ADX Dev Cost | Fabric F2 Cost |
+|---------------|-------------|-------------------|--------------|----------------|
+| **Always-on** | 730 hrs | ~$380/mo | ~$130/mo | ~$263/mo |
+| **Business hours** (8x5) | 160 hrs | ~$85/mo | ~$30/mo | ~$58/mo |
+| **Weekly review** (4 hrs/wk) | 16 hrs | ~$10/mo | ~$3/mo | ~$6/mo |
+| **Monthly review** (8 hrs/mo) | 8 hrs | ~$5/mo | ~$2/mo | ~$3/mo |
+
+> **Weekly reviewer example**: ~$20-25/mo total (Storage + KV + ADF + 16 hrs ADX Dev)
+
+**Use the helper script** to safely pause and resume:
+
+```powershell
+# Pause the hub (stop incurring compute charges)
+.\src\Manage-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Pause
+
+# Resume the hub (when ready to review - processes any backlog)
+.\src\Manage-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Resume
+```
+
+The script handles the correct order (stop triggers before cluster, start cluster before triggers) and waits for resources to be ready. See [src/Manage-FinOpsHubState.ps1](./src/Manage-FinOpsHubState.ps1) for details.
+
+> **⚠️ Backlog Processing**: If paused for days/weeks, expect 30 min to several hours for ADF to process accumulated data when resumed.
 
 ### Getting Started
 
@@ -452,6 +480,7 @@ Helper scripts in the [src/](./src/) folder simplify deployment and testing:
 | `Deploy-FinOpsHub.ps1` | Interactive deployment with validation |
 | `Generate-MultiCloudTestData.ps1` | Generate FOCUS 1.0-1.3 test data (Azure/AWS/GCP/DC) |
 | `Get-BestAdxSku.ps1` | Find available ADX SKUs by region |
+| `Manage-FinOpsHubState.ps1` | Pause/resume hub to optimize costs |
 
 See [src/README.md](./src/README.md) for detailed usage, or use the `gettingStartedGuide` output from deployment.
 
