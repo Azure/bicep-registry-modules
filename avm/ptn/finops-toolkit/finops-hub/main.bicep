@@ -83,71 +83,18 @@ param deployerPrincipalId string = ''
 param adxAdminPrincipalIds array = []
 
 // --- Cost Management Export Configuration ---
-// IMPORTANT: Cost Management exports are only supported for:
-// - Enterprise Agreement (EA) subscriptions
-// - Microsoft Customer Agreement (MCA) subscriptions  
-// - Microsoft Partner Agreement (MPA) subscriptions
-// Pay-As-You-Go (PAYGO) and Free Trial subscriptions do NOT support exports.
-// For unsupported billing types, use the ingestion container with manual/scripted data uploads.
-// See: https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-export-acm-data
-@description('''Optional. Billing account type hint for Cost Management export compatibility.
-- "auto": (Default) Module outputs export configuration but does not create exports. Use FinOps Toolkit PowerShell to create exports after deployment.
-- "ea": Enterprise Agreement - full export support
-- "mca": Microsoft Customer Agreement - full export support  
-- "mpa": Microsoft Partner Agreement - full export support
-- "paygo": Pay-As-You-Go - NO export support. Use ingestion container for manual data uploads.
-- "csp": Cloud Solution Provider - limited export support (partner-managed)
-
-⚠️ For PAYGO/CSP tenants: Use the "ingestion" container with the FinOps Toolkit test data generator or integrate with 3rd party cost tools.''')
-@allowed([
-  'auto'
-  'ea'
-  'mca'
-  'mpa'
-  'paygo'
-  'csp'
-])
+@description('Optional. Billing type hint: "ea", "mca", "mpa" support exports; "paygo", "csp" use demo mode. See README for export support matrix.')
+@allowed(['auto', 'ea', 'mca', 'mpa', 'paygo', 'csp'])
 param billingAccountType string = 'auto'
 
-@description('''Optional. Billing account ID for MACC (Microsoft Azure Consumption Commitment) tracking.
-When specified, the module creates ADF pipelines to fetch MACC data from the Azure Consumption API.
-Format: The billing account ID from Azure Cost Management (e.g., "12345678" for EA or "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy_yyyy-yy-yy" for MCA).
-Prerequisites: ADF Managed Identity needs "Billing Account Reader" or "Enterprise Administrator" role on the billing account.''')
+@description('Optional. Billing account ID for MACC tracking. Requires ADF MI to have Billing Account Reader role.')
 param billingAccountId string = ''
 
 // --- Scope Configuration (Hybrid Mode) ---
 // This section enables both Enterprise mode (with exports) and Demo mode (without billing accounts).
 // The module generates settings.json for compatibility with the official FinOps Toolkit.
 // For tenants without EA/MCA, use the test data scripts in src/ to populate the hub.
-@description('''Optional. List of billing scopes to monitor for cost data.
-
-Each scope generates:
-- Export configuration guidance (for EA/MCA tenants with export support)
-- settings.json entry (for forward compatibility with managed exports)
-- PowerShell commands to create exports
-
-SCOPE TYPES and export support:
-| Type           | FOCUS Costs | Prices | Reservations | Notes |
-|----------------|-------------|--------|--------------|-------|
-| ea             | ✅          | ✅     | ✅           | Full support - EA billing account |
-| mca            | ✅          | ✅     | ✅           | Full support - MCA billing profile |
-| department     | ✅          | ✅     | ⚠️ Limited   | EA department scope |
-| subscription   | ✅          | ❌     | ❌           | Costs only, no pricing |
-| resourceGroup  | ✅          | ❌     | ❌           | Very limited |
-| managementGroup| ✅          | ❌     | ❌           | Aggregated costs only |
-
-DEMO/DEV MODE: For tenants without EA/MCA billing:
-- Leave scopesToMonitor empty
-- Use src/Generate-MultiCloudTestData.ps1 to generate FOCUS test data
-- Upload directly to the 'ingestion' container
-
-Example scopes:
-```bicep
-scopesToMonitor: [
-  { scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567', scopeType: 'ea', displayName: 'Contoso EA' }
-  { scopeId: '/subscriptions/aaaa-bbbb-cccc-dddd', scopeType: 'subscription', displayName: 'Dev Subscription' }
-]
-```''')
+@description('Optional. Billing scopes to monitor. See README for scope types and export support matrix.')
 param scopesToMonitor array = []
 
 // --- Security & Networking ---
@@ -160,20 +107,8 @@ param enablePurgeProtection bool = false
 @description('Optional. Enable public network access. Automatically disabled for waf-aligned.')
 param enablePublicAccess bool = true
 
-// --- Network Isolation (Three-Tier Model) ---
-// This provides clear upgrade paths with documented trade-offs:
-// - None: Public endpoints (dev/test) - Just redeploy to upgrade
-// - Managed: Module creates VNet/PEs/DNS (recommended) - Just redeploy to upgrade
-// - BringYourOwn: Customer provides infrastructure (advanced) - You maintain upgrades
-@description('''Optional. Network isolation mode for private connectivity.
-- "None": Public endpoints (default for dev/test). Just redeploy to upgrade.
-- "Managed": Module creates self-contained VNet, private endpoints, and DNS zones (RECOMMENDED for production). Just redeploy to upgrade.
-- "BringYourOwn": Customer provides subnet and DNS zone IDs (advanced). ⚠️ You own upgrades - test before deploying new versions.''')
-@allowed([
-  'None'
-  'Managed'
-  'BringYourOwn'
-])
+@description('Optional. Network isolation: "None" (public), "Managed" (module creates VNet/PEs), or "BringYourOwn" (you provide subnet/DNS).')
+@allowed(['None', 'Managed', 'BringYourOwn'])
 param networkIsolationMode string = 'None'
 
 @description('Optional. Address prefix for the managed VNet. Only used when networkIsolationMode is "Managed". Default: 10.0.0.0/24.')
@@ -183,11 +118,7 @@ param managedVnetAddressPrefix string = '10.0.0.0/24'
 param managedSubnetAddressPrefix string = '10.0.0.0/26'
 
 // --- BringYourOwn Network Configuration ---
-// ⚠️ WARNING: Using BringYourOwn mode means you take ownership of network configuration.
-// Module upgrades may require subnet/DNS zone changes. Test in non-production before upgrading.
-// For easier upgrades, consider "Managed" mode and have your network team create their own
-// Private Endpoints from their VNet to the module's resources (separation of concerns).
-@description('Conditional. Resource ID of the subnet for private endpoints. Required when networkIsolationMode is "BringYourOwn".')
+@description('Conditional. Subnet resource ID for private endpoints. Required when networkIsolationMode is "BringYourOwn".')
 param byoSubnetResourceId string = ''
 
 #disable-next-line no-hardcoded-env-urls
@@ -214,7 +145,7 @@ param enableAdfManagedVnet bool = false
 @description('Optional. Enable automatic approval of ADF Managed Private Endpoints. When true (Option A), grants ADF control-plane permissions to auto-approve its PE connections to Storage and Key Vault. When false (Option B), PE connections require manual approval via Azure Portal or CLI. Default: true for streamlined deployments.')
 param enableManagedPeAutoApproval bool = true
 
-@description('''Optional. Enable DNS zone group creation for private endpoints. Set to false when using Azure Policy to manage Private DNS zone records (ESLZ/CAF pattern). When false, the module creates private endpoints but skips DNS zone group configuration, allowing Azure Policy with "DeployIfNotExists" effect to handle DNS record creation in centralized Private DNS zones. Default: true for Managed mode, often false for BringYourOwn (ESLZ) mode.''')
+@description('Optional. Create DNS zone groups for private endpoints. Set false when Azure Policy manages DNS records (ESLZ pattern).')
 param enablePrivateDnsZoneGroups bool = true
 
 // --- Legacy Parameters (Deprecated - use networkIsolationMode instead) ---
@@ -251,52 +182,34 @@ param lock lockType?
 @description('Optional. The diagnostic settings of the service. Applies to Storage Account and Key Vault.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-// --- Deployment Options ---
-@description('Optional. Enable automatic trigger management for idempotent deployments. When true, stops triggers before deployment and restarts them after. This allows redeployment without manual intervention. IMPORTANT: Requires a storage account with shared key access enabled for deployment scripts. Default is false to ensure simple deployments work out of the box.')
+@description('Optional. Enable automatic trigger start/stop for idempotent redeployments. Requires shared key access on storage.')
 param enableTriggerManagement bool = false
 
 // ============================================================================
-// VARIABLES - Configuration-based defaults
+// VARIABLES
 // ============================================================================
 
-// Storage configuration based on deployment profile
-// Minimal: Standard_LRS with StorageV2 (~$0.02/GB) - cheapest option
-// WAF-aligned: Premium_ZRS with BlockBlobStorage (~$0.15/GB) - best performance + HA
+// Storage configuration: minimal=Standard_LRS, waf-aligned=Premium_ZRS
 var storageSku = deploymentConfiguration == 'waf-aligned' ? 'Premium_ZRS' : 'Standard_LRS'
 var storageKind = deploymentConfiguration == 'waf-aligned' ? 'BlockBlobStorage' : 'StorageV2'
 
-// ADX SKU configuration based on deployment configuration
-// FinOps workloads are compute-optimized (analytical queries on structured billing data)
-// See: https://learn.microsoft.com/azure/data-explorer/manage-cluster-choose-sku
-//
-// Recommended SKUs by tier:
-// - Dev/Test: 'Dev(No SLA)_Standard_E2a_v4' (AMD v4, 2 vCPUs, 16GB, single node, no markup charges)
-// - Production: 'Standard_E2d_v5' (Intel v5, 2 vCPUs, 16GB, min 2 nodes, best regional availability)
-//
-// Note: Standard SKUs require minimum 2 nodes for SLA. Dev SKUs have no SLA but no ADX markup.
-// SKU availability varies by region. Use src/Get-BestAdxSku.ps1 to find the best SKU for your region.
+// ADX SKU: Dev SKUs (no SLA, 1 node), Standard SKUs (SLA, min 2 nodes)
 var effectiveAdxSku = !empty(dataExplorerSku) ? dataExplorerSku : 'Standard_E2d_v5'
-// Dev SKUs use 'Basic' tier, Standard SKUs use 'Standard' tier
 var effectiveAdxTier = startsWith(effectiveAdxSku, 'Dev') ? 'Basic' : 'Standard'
-// Dev SKUs support 1 node, Standard SKUs require minimum 2 nodes
 var effectiveAdxCapacity = dataExplorerCapacity > 0 ? dataExplorerCapacity : (startsWith(effectiveAdxSku, 'Dev') ? 1 : 2)
 
-// Security settings based on configuration
+// Security settings
 var effectivePurgeProtection = deploymentConfiguration == 'waf-aligned' ? true : enablePurgeProtection
 var effectivePublicAccess = deploymentConfiguration == 'waf-aligned' ? false : enablePublicAccess
 
-// --- Managed Exports Configuration ---
-// Only deploy managed export pipelines for billing types that support Cost Management exports.
-// PAYGO, CSP, and Free Trial do NOT support exports - these tenants use Demo mode with test data.
-// This conditional deployment prevents unnecessary pipeline failures in unsupported environments.
+// Managed exports: only for billing types that support Cost Management exports
 var enableManagedExports = contains(['ea', 'mca', 'mpa'], billingAccountType) && !empty(scopesToMonitor)
 
-// --- Network Isolation Configuration ---
-// Determine effective mode: waf-aligned defaults to Managed, legacy param upgrades to BringYourOwn
+// Network isolation: waf-aligned defaults to Managed, legacy params upgrade to BringYourOwn
 var effectiveNetworkIsolationMode = deploymentConfiguration == 'waf-aligned' && networkIsolationMode == 'None' 
-  ? 'Managed'  // waf-aligned defaults to Managed for private networking
+  ? 'Managed'
   : (!empty(privateEndpointSubnetId) && networkIsolationMode == 'None'
-    ? 'BringYourOwn'  // Legacy parameter detected, upgrade to BringYourOwn
+    ? 'BringYourOwn'
     : networkIsolationMode)
 
 // Private endpoint configuration - enabled for Managed or BringYourOwn modes
@@ -305,31 +218,24 @@ var enablePrivateEndpoints = effectiveNetworkIsolationMode != 'None'
 // ADF Managed VNet - auto-enable when private endpoints are enabled
 var effectiveAdfManagedVnet = enableAdfManagedVnet || enablePrivateEndpoints
 
-// Generate unique suffix for globally unique resource names
+// Resource naming (CAF conventions)
 var uniqueSuffix = uniqueString(resourceGroup().id, hubName)
+var storageAccountName = take(toLower('st${replace(hubName, '-', '')}${uniqueSuffix}'), 24)
+var keyVaultName = take('kv-${hubName}-${take(uniqueSuffix, 6)}', 24)
+var dataFactoryName = take('adf-${hubName}-${take(uniqueSuffix, 6)}', 63)
+var managedIdentityName = 'id-${hubName}'
 
-// Resource naming following Microsoft Cloud Adoption Framework conventions
-// Reference: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
-// Pattern: <resource-type-prefix>-<workload>-<unique-suffix>
-var storageAccountName = take(toLower('st${replace(hubName, '-', '')}${uniqueSuffix}'), 24)  // st = storage account
-var keyVaultName = take('kv-${hubName}-${take(uniqueSuffix, 6)}', 24)                         // kv = key vault
-var dataFactoryName = take('adf-${hubName}-${take(uniqueSuffix, 6)}', 63)                     // adf = azure data factory
-var managedIdentityName = 'id-${hubName}'                                                      // id = managed identity
-
-// ADX cluster name must be globally unique - add suffix if user provides just a base name
-// ADX naming: 4-22 chars, lowercase alphanumeric, start with letter
+// ADX cluster: globally unique, 4-22 chars, lowercase alphanumeric
 var adxClusterName = !empty(dataExplorerClusterName) ? take(toLower('${replace(dataExplorerClusterName, '-', '')}${take(uniqueSuffix, 6)}'), 22) : ''
 
-// Deployment flags - determine if we need to CREATE new resources or use existing
+// Deployment flags
 var useExistingIdentity = !empty(existingManagedIdentityResourceId)
 var useExistingAdx = !empty(existingDataExplorerClusterId)
 var createNewAdx = deploymentType == 'adx' && !empty(dataExplorerClusterName) && !useExistingAdx
 var useFabric = deploymentType == 'fabric' && !empty(fabricQueryUri)
-
-// Schema deployment - deploy to new ADX or existing ADX when deploymentType is 'adx'
 var deployAdxSchema = deploymentType == 'adx' && (createNewAdx || useExistingAdx)
 
-// ADX cluster principal assignments - combine ADF identity with additional admin users
+// ADX admin principal assignments
 var adxAdminAssignments = [for principalId in adxAdminPrincipalIds: {
   principalId: principalId
   principalType: 'User'
@@ -337,7 +243,6 @@ var adxAdminAssignments = [for principalId in adxAdminPrincipalIds: {
   tenantId: tenant().tenantId
 }]
 
-// Deployer admin assignment - grants cluster admin to deployer for troubleshooting/manual operations
 var deployerAdminAssignment = !empty(deployerPrincipalId) ? [
   {
     principalId: deployerPrincipalId
@@ -347,18 +252,14 @@ var deployerAdminAssignment = !empty(deployerPrincipalId) ? [
   }
 ] : []
 
-// Extract existing resource names from resource IDs if provided
+// Extract names from existing resource IDs
 var existingIdentityName = useExistingIdentity ? last(split(existingManagedIdentityResourceId, '/')) : ''
 var existingAdxClusterName = useExistingAdx ? last(split(existingDataExplorerClusterId, '/')) : ''
 
-// Standard container names per FinOps toolkit
-var containers = [
-  'config'      // Hub configuration files (settings.json, schemas)
-  'msexports'   // Raw Cost Management export data (temporary staging)
-  'ingestion'   // Normalized FOCUS-aligned data (final storage for reporting)
-]
+// Standard FinOps Hub containers
+var containers = ['config', 'msexports', 'ingestion']
 
-// Version tags for tracking - update when upgrading
+// Version tracking
 var ftkVersion = '0.7.0'
 var hubModuleVersion = '1.0.0'
 
@@ -394,12 +295,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // ============================================================================
-// RESOURCES - Using Azure Verified Modules Directly
+// RESOURCES
 // ============================================================================
 
-// --- Managed Network (Conditional) ---
-// Creates self-contained VNet, subnet, NSG, and Private DNS zones when networkIsolationMode is 'Managed'.
-// This is the RECOMMENDED approach - enables clean upgrades without customization.
+// --- Managed Network (when networkIsolationMode is 'Managed') ---
 module managedNetwork 'modules/network.bicep' = if (effectiveNetworkIsolationMode == 'Managed') {
   name: '${uniqueString(deployment().name, location)}-managed-network'
   params: {
@@ -413,9 +312,7 @@ module managedNetwork 'modules/network.bicep' = if (effectiveNetworkIsolationMod
 }
 
 // --- Effective Subnet and DNS Zone IDs ---
-// Uses Managed network outputs, BringYourOwn params, or legacy params (backward compatibility)
-// Note: managedNetwork is only deployed when effectiveNetworkIsolationMode == 'Managed'
-#disable-next-line BCP321 // managedNetwork outputs are only accessed when mode is 'Managed'
+#disable-next-line BCP321
 var effectiveSubnetId = effectiveNetworkIsolationMode == 'Managed' 
   ? managedNetwork!.outputs.subnetResourceId 
   : (effectiveNetworkIsolationMode == 'BringYourOwn' 
@@ -442,19 +339,16 @@ var effectiveDataFactoryDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.dataFactoryDnsZoneId
   : (!empty(byoDataFactoryDnsZoneId) ? byoDataFactoryDnsZoneId : dataFactoryPrivateDnsZoneId)
 
-// Note: Kusto DNS zone is used for ADX private endpoints
 #disable-next-line BCP321
 var effectiveKustoDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.kustoDnsZoneId
   : byoKustoDnsZoneId
 
 // --- User-Assigned Managed Identity ---
-// Reference existing identity if provided
 resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingIdentity) {
   name: existingIdentityName
 }
 
-// Create new identity only if not using existing
 module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = if (!useExistingIdentity) {
   name: '${uniqueString(deployment().name, location)}-managed-identity'
   params: {
@@ -467,24 +361,12 @@ module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identit
   }
 }
 
-// Effective identity values - use existing or newly created
+// Effective identity values
 var effectiveIdentityPrincipalId = useExistingIdentity ? existingManagedIdentity!.properties.principalId : managedIdentity!.outputs.principalId
 var effectiveIdentityResourceId = useExistingIdentity ? existingManagedIdentityResourceId : managedIdentity!.outputs.resourceId
 var effectiveIdentityName = useExistingIdentity ? existingIdentityName : managedIdentity!.outputs.name
 
-// --- Pre-Deployment: Stop Triggers for Idempotent Updates ---
-// This MUST run BEFORE Data Factory resources are updated.
-// Without this, ARM fails with "Cannot update enabled Trigger" error on redeployments.
-// Note: On first deployment this gracefully handles the case where ADF doesn't exist yet.
-// On subsequent deployments, the managed identity already has the required RBAC from previous deploy.
-// MOVED: This now runs AFTER storage account is created so we can reuse it for deployment scripts.
-
 // --- Storage Account (ADLS Gen2) ---
-// SecurityControl: 'Ignore' tag exempts this storage account from Azure Policies that
-// enforce disabling shared key access. This is required because:
-// 1. ADF native ingestion uses managed_identity=system which needs the storage accessible
-// 2. ADX native ingestion requires storage access for data loading
-// 3. Deployment scripts (ACI) require shared key access for mounting storage
 module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
@@ -518,16 +400,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
         publicAccess: 'None'
       }]
     }
-    // Least Privilege: User-Assigned MI only needs read access for configuration
+    // Storage role assignment: Reader for config access
     roleAssignments: [
       {
         principalId: effectiveIdentityPrincipalId
-        roleDefinitionIdOrName: 'Storage Blob Data Reader' // Least privilege: read-only for config
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
         principalType: 'ServicePrincipal'
       }
     ]
-    // Private endpoints for blob and dfs (ADLS Gen2)
-    // When enablePrivateDnsZoneGroups=false (ESLZ/CAF pattern), Azure Policy handles DNS record creation
+    // Private endpoints for blob and dfs
     privateEndpoints: enablePrivateEndpoints ? [
       {
         name: '${storageAccountName}-blob-pe'
@@ -592,7 +473,6 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
     ] : []
     // Private endpoint for Key Vault
-    // When enablePrivateDnsZoneGroups=false (ESLZ/CAF pattern), Azure Policy handles DNS record creation
     privateEndpoints: enablePrivateEndpoints ? [
       {
         name: '${keyVaultName}-pe'
@@ -641,7 +521,6 @@ module dataFactory 'br/public:avm/res/data-factory/factory:0.11.0' = {
       }
     }
     // Private endpoint for Data Factory
-    // When enablePrivateDnsZoneGroups=false (ESLZ/CAF pattern), Azure Policy handles DNS record creation
     privateEndpoints: enablePrivateEndpoints ? [
       {
         name: '${dataFactoryName}-pe'
@@ -656,14 +535,10 @@ module dataFactory 'br/public:avm/res/data-factory/factory:0.11.0' = {
         } : null
       }
     ] : []
-    // Managed Virtual Network - required for ADF to access private endpoints
-    // Creates managed private endpoints inside ADF's isolated network
-    // NOTE: ADX managed PE is created separately via adxManagedPrivateEndpoint module (after ADX exists)
-    // This avoids circular dependency since ADX needs ADF's MI for admin access
+    // Managed Virtual Network for ADF to access private endpoints
     managedVirtualNetwork: effectiveAdfManagedVnet ? {
       name: 'default'
       managedPrivateEndpoints: [
-        // Managed PE for Storage (blob) - allows ADF pipelines to access private storage
         {
           name: '${storageAccountName}-blob-mpe'
           groupId: 'blob'
@@ -672,7 +547,6 @@ module dataFactory 'br/public:avm/res/data-factory/factory:0.11.0' = {
           ]
           privateLinkResourceId: storageAccount.outputs.resourceId
         }
-        // Managed PE for Key Vault - allows ADF to access secrets in private Key Vault
         {
           name: '${keyVaultName}-vault-mpe'
           groupId: 'vault'
@@ -683,7 +557,7 @@ module dataFactory 'br/public:avm/res/data-factory/factory:0.11.0' = {
         }
       ]
     } : null
-    // Managed Integration Runtime - uses the Managed VNet for pipeline execution
+    // Managed Integration Runtime
     integrationRuntimes: effectiveAdfManagedVnet ? [
       {
         name: 'FinOpsHubManagedIR'
@@ -702,11 +576,9 @@ module dataFactory 'br/public:avm/res/data-factory/factory:0.11.0' = {
   }
 }
 
-// --- Data Factory Resources (Linked Services, Datasets, Pipelines, Triggers) ---
+// --- Data Factory Resources ---
 
-// Pre-Deployment: Stop Triggers for Idempotent Updates
-// Placed here because it needs the storage account to exist for deployment scripts
-// Uses the FinOps Hub storage account (no additional resources needed)
+// Stop triggers before updating ADF resources (idempotent redeployment)
 module stopTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManagement) {
   name: '${uniqueString(deployment().name, location)}-stop-triggers'
   dependsOn: [
@@ -725,9 +597,9 @@ module stopTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManagem
 module dataFactoryResources 'modules/dataFactoryResources.bicep' = {
   name: '${uniqueString(deployment().name, location)}-adf-resources'
   dependsOn: [
-    adfStorageRoleAssignment  // Ensure ADF has storage access before creating resources
-    adfKeyVaultRoleAssignment // Ensure ADF has key vault access
-    stopTriggers              // Ensure triggers are stopped before updating ADF resources
+    adfStorageRoleAssignment
+    adfKeyVaultRoleAssignment
+    stopTriggers
   ]
   params: {
     dataFactoryName: dataFactory.outputs.name
@@ -736,28 +608,20 @@ module dataFactoryResources 'modules/dataFactoryResources.bicep' = {
     dataExplorerEndpoint: createNewAdx && dataExplorer != null 
       ? 'https://${dataExplorer!.outputs.name}.${location}.kusto.windows.net' 
       : (useExistingAdx ? 'https://${existingAdxClusterName}.${location}.kusto.windows.net' : '')
-    // ADX system MI principal ID - needed to set managed identity policy for NativeIngestion
-    // This allows the ingestion command with managed_identity=system to work
     dataExplorerPrincipalId: createNewAdx && dataExplorer != null
       ? dataExplorer!.outputs.systemAssignedMIPrincipalId!
-      : ''  // For existing ADX or no ADX, leave empty (policy must be set externally)
+      : ''
     fabricQueryUri: useFabric ? fabricQueryUri : ''
     ftkVersion: ftkVersion
-    // Integration runtime for managed VNet - ensures linked services use private endpoints
     integrationRuntimeName: effectiveAdfManagedVnet ? 'FinOpsHubManagedIR' : ''
-    // MACC tracking - requires billing account ID and ADX
     billingAccountId: billingAccountId
   }
 }
 
-// --- Managed Exports Pipelines (Conditional) ---
-// Only deployed when billing type supports Cost Management exports (EA/MCA/MPA).
-// For PAYGO/CSP tenants, these pipelines are NOT created - use Demo mode instead.
+// --- Managed Exports Pipelines (EA/MCA/MPA only) ---
 module managedExportsPipelines 'modules/managedExportsPipelines.bicep' = if (enableManagedExports) {
   name: '${uniqueString(deployment().name, location)}-managed-exports'
-  dependsOn: [
-    dataFactoryResources  // Core ADF resources must exist first
-  ]
+  dependsOn: [dataFactoryResources]
   params: {
     dataFactoryName: dataFactory.outputs.name
     storageAccountName: storageAccount.outputs.name
@@ -767,12 +631,10 @@ module managedExportsPipelines 'modules/managedExportsPipelines.bicep' = if (ena
   }
 }
 
-// --- Azure Data Explorer (Conditional) ---
+// --- Azure Data Explorer ---
 module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx'
-  dependsOn: effectiveNetworkIsolationMode == 'Managed' ? [
-    managedNetwork  // Ensure DNS zones exist before creating ADX with private endpoints
-  ] : []
+  dependsOn: effectiveNetworkIsolationMode == 'Managed' ? [managedNetwork] : []
   params: {
     name: adxClusterName
     location: location
@@ -783,30 +645,30 @@ module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) 
     sku: effectiveAdxSku
     tier: effectiveAdxTier
     capacity: effectiveAdxCapacity
-    enableAutoScale: deploymentConfiguration == 'waf-aligned' // Auto-scale for production
-    enableAutoStop: deploymentConfiguration == 'minimal' // Save costs in minimal config
-    enablePublicNetworkAccess: !enablePrivateEndpoints  // Disable public access when using private endpoints
-    publicIPType: 'IPv4'  // Required when private endpoints are used
+    enableAutoScale: deploymentConfiguration == 'waf-aligned'
+    enableAutoStop: deploymentConfiguration == 'minimal'
+    enablePublicNetworkAccess: !enablePrivateEndpoints
+    publicIPType: 'IPv4'
     managedIdentities: {
       systemAssigned: true
     }
-    // FinOps Hub databases - Hub for queries, Ingestion for raw data processing
+    // FinOps Hub databases
     databases: [
       {
         name: 'Hub'
         kind: 'ReadWrite'
         readWriteProperties: {}
-        databasePrincipalAssignments: []  // Required by AVM module even if empty
+        databasePrincipalAssignments: []
       }
       {
         name: 'Ingestion'
         kind: 'ReadWrite'
         readWriteProperties: {}
-        databasePrincipalAssignments: []  // Required by AVM module even if empty
+        databasePrincipalAssignments: []
       }
     ]
     clusterPrincipalAssignments: concat(
-      // Data Factory managed identity - required for pipeline operations
+      // ADF managed identity
       [
         {
           principalId: dataFactory.outputs.systemAssignedMIPrincipalId!
@@ -815,7 +677,7 @@ module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) 
           tenantId: tenant().tenantId
         }
       ],
-      // Deployment script managed identity - required to run cluster policy commands (managed identity policy)
+      // Deployment script managed identity
       [
         {
           principalId: effectiveIdentityPrincipalId
@@ -824,9 +686,7 @@ module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) 
           tenantId: tenant().tenantId
         }
       ],
-      // Deployer principal - grants cluster admin for troubleshooting and manual operations
       deployerAdminAssignment,
-      // Additional admin users/groups provided via parameter
       adxAdminAssignments
     )
     // Private endpoints for ADX cluster access
@@ -850,65 +710,56 @@ module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) 
   }
 }
 
-// --- Azure Data Explorer Schema Setup (Conditional) ---
-// Deploys all KQL scripts to create tables, functions, and ingestion mappings
-// This runs AFTER the ADX cluster and databases are created (or uses existing cluster)
-// NOTE: The managed identity policy for ingestion is now configured via adxManagedIdentityPolicy module
+// --- ADX Schema Setup ---
 module adxSchemaSetup 'modules/adxSchemaSetup.bicep' = if (deployAdxSchema) {
   name: '${uniqueString(deployment().name, location)}-adx-schema'
-  dependsOn: createNewAdx ? [
-    dataExplorer  // Cluster and databases must exist first (only for new deployments)
-  ] : []
+  dependsOn: createNewAdx ? [dataExplorer] : []
   params: {
-    // Use new cluster name or existing cluster name
     clusterName: createNewAdx ? dataExplorer!.outputs.name : existingAdxClusterName
-    rawRetentionInDays: 30  // Keep raw ingestion data for 30 days
-    continueOnErrors: true  // Continue even if some objects already exist
+    rawRetentionInDays: 30
+    continueOnErrors: true
   }
 }
 
-// --- Data Factory Storage Access (read/write for pipeline operations) ---
+// --- Role Assignments ---
+
+// ADF -> Storage (read/write for pipelines)
 module adfStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
   name: '${uniqueString(deployment().name, location)}-adf-storage-role'
   params: {
     resourceId: storageAccount.outputs.resourceId
     principalId: dataFactory.outputs.systemAssignedMIPrincipalId!
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe') // Storage Blob Data Contributor
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     principalType: 'ServicePrincipal'
   }
 }
 
-// --- ADX Storage Access (read for native ingestion) ---
-// ADX cluster needs Storage Blob Data Reader to ingest data from storage via native ingestion
-#disable-next-line BCP321 // dataExplorer is guaranteed to exist when createNewAdx is true
+// ADX -> Storage (read for native ingestion)
+#disable-next-line BCP321
 module adxStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx-storage-role'
   params: {
     resourceId: storageAccount.outputs.resourceId
-    #disable-next-line BCP321 // systemAssignedMIPrincipalId is guaranteed to exist when createNewAdx is true
+    #disable-next-line BCP321
     principalId: dataExplorer!.outputs.systemAssignedMIPrincipalId!
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1') // Storage Blob Data Reader
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')
     principalType: 'ServicePrincipal'
   }
 }
 
-// --- Data Factory Key Vault Access (read secrets) ---
+// ADF -> Key Vault (read secrets)
 module adfKeyVaultRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (enableRbacAuthorization) {
   name: '${uniqueString(deployment().name, location)}-adf-kv-role'
   params: {
     resourceId: keyVault.outputs.resourceId
     principalId: dataFactory.outputs.systemAssignedMIPrincipalId!
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // Key Vault Secrets User
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
     principalType: 'ServicePrincipal'
   }
 }
 
-// --- ADF Managed Private Endpoint Auto-Approval (Option A) ---
-// These role assignments grant ADF control-plane permissions to auto-approve its managed PE connections.
-// Storage Account Contributor includes Microsoft.Storage/storageAccounts/privateEndpointConnectionsApproval/action
-// Key Vault Contributor includes Microsoft.KeyVault/vaults/privateEndpointConnectionsApproval/action
-// Only enabled when ADF Managed VNet is used AND auto-approval is enabled.
-
+// --- ADF Managed PE Auto-Approval ---
+// Grants ADF permissions to auto-approve its managed PE connections
 module adfStoragePeApprovalRole 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (effectiveAdfManagedVnet && enableManagedPeAutoApproval) {
   name: '${uniqueString(deployment().name, location)}-adf-storage-pe-approval'
   params: {
@@ -929,11 +780,8 @@ module adfKeyVaultPeApprovalRole 'br/public:avm/ptn/authorization/resource-role-
   }
 }
 
-// --- ADX Managed Private Endpoint (ADF Managed VNet to ADX) ---
-// Creates a managed private endpoint from ADF's managed VNet to the ADX cluster.
-// This allows ADF pipelines to reach ADX when publicNetworkAccess is disabled.
-// Pattern from FinOps Toolkit: deployed AFTER both ADF and ADX exist to avoid circular dependency.
-#disable-next-line BCP321 // dataExplorer is guaranteed to exist when createNewAdx is true
+// --- ADX Managed Private Endpoint ---
+#disable-next-line BCP321
 module adxManagedPrivateEndpoint 'modules/adxManagedPrivateEndpoint.bicep' = if (createNewAdx && effectiveAdfManagedVnet) {
   name: '${uniqueString(deployment().name, location)}-adx-mpe'
   // Dependencies are implicit via outputs used in params
@@ -945,33 +793,27 @@ module adxManagedPrivateEndpoint 'modules/adxManagedPrivateEndpoint.bicep' = if 
   }
 }
 
-// --- ADX Managed PE Connection Approval - Step 1: Get pending connections ---
-// Query the ADX cluster for pending private endpoint connections
-#disable-next-line BCP321 // dataExplorer is guaranteed to exist when createNewAdx is true
+// --- ADX PE Connection Approval ---
+#disable-next-line BCP321
 module getAdxPendingConnections 'modules/adxPrivateEndpointApproval.bicep' = if (createNewAdx && effectiveAdfManagedVnet) {
   name: '${uniqueString(deployment().name, location)}-adx-pe-get'
-  dependsOn: [
-    adxManagedPrivateEndpoint  // Wait for the managed PE to be created
-  ]
+  dependsOn: [adxManagedPrivateEndpoint]
   params: {
     adxClusterName: dataExplorer!.outputs.name
   }
 }
 
-// --- ADX Managed PE Connection Approval - Step 2: Approve pending connections ---
-// Approve the pending managed PE connection from ADF
-#disable-next-line BCP321 // dataExplorer is guaranteed to exist when createNewAdx is true
+#disable-next-line BCP321
 module approveAdxManagedPeConnections 'modules/adxPrivateEndpointApproval.bicep' = if (createNewAdx && effectiveAdfManagedVnet) {
   name: '${uniqueString(deployment().name, location)}-adx-pe-approve'
   params: {
     adxClusterName: dataExplorer!.outputs.name
-    #disable-next-line BCP321 // getAdxPendingConnections is guaranteed to exist when createNewAdx && effectiveAdfManagedVnet is true
+    #disable-next-line BCP321
     privateEndpointConnections: getAdxPendingConnections!.outputs.privateEndpointConnections
   }
 }
 
-// --- Managed Identity Storage Access (for deployment scripts) ---
-// Deployment scripts need Storage File Data Privileged Contributor to store script files
+// --- Managed Identity Permissions ---
 module identityStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (enableTriggerManagement) {
   name: '${uniqueString(deployment().name, location)}-identity-storage-role'
   params: {
@@ -982,8 +824,6 @@ module identityStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-r
   }
 }
 
-// --- Managed Identity Data Factory Contributor (for trigger management deployment scripts) ---
-// This allows the deployment scripts to start/stop triggers during deployment
 module identityAdfRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (enableTriggerManagement) {
   name: '${uniqueString(deployment().name, location)}-identity-adf-role'
   params: {
@@ -994,7 +834,7 @@ module identityAdfRoleAssignment 'br/public:avm/ptn/authorization/resource-role-
   }
 }
 
-// --- Deployer Storage Access (for test data upload) ---
+// --- Deployer Permissions ---
 module deployerStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = if (!empty(deployerPrincipalId)) {
   name: '${uniqueString(deployment().name, location)}-deployer-storage-role'
   params: {
@@ -1006,8 +846,6 @@ module deployerStorageRoleAssignment 'br/public:avm/ptn/authorization/resource-r
 }
 
 // --- Post-Deployment: Start Triggers ---
-// This runs AFTER all resources are deployed to restart the triggers.
-// Ensures the hub is fully operational after deployment completes.
 module startTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManagement) {
   name: '${uniqueString(deployment().name, location)}-start-triggers'
   dependsOn: [
@@ -1026,21 +864,8 @@ module startTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManage
   }
 }
 
-// --- ADX Managed Identity Policy (Required for Native Ingestion) ---
-// This configures the ADX cluster's managed identity policy to allow native ingestion.
-// --- ADX Managed Identity Policy (DEPRECATED - now set inline in pipeline) ---
-// The policy is now set dynamically in the ingestion_ETL_dataExplorer pipeline
-// using the 'Set Ingestion Policy' activity, following the FinOps Toolkit pattern.
-// This deployment script is kept as a backup for initial setup but the pipeline
-// will also set the policy on each run to ensure it's always configured correctly.
-// The ADX cluster's system-assigned identity is used for ingestion (managed_identity=system).
-// This MUST be configured before any data can be ingested via ADF pipelines.
-// Note: This uses a deployment script because cluster-level KQL commands cannot be run
-// via database scripts (which are limited to database-scoped commands only).
-// IMPORTANT: This runs for ALL new ADX clusters, not just when enableTriggerManagement is true.
-// Without this policy, ADF pipelines will fail with ManagedIdentityNotAllowedByPolicyException.
-// NOTE: The deployment script identity is granted AllDatabasesAdmin via clusterPrincipalAssignments
-// in the dataExplorer module, not via Azure RBAC (ADX uses Kusto-level permissions).
+// --- ADX Managed Identity Policy ---
+// Required for native ingestion (managed_identity=system)
 module adxManagedIdentityPolicy 'modules/adxManagedIdentityPolicy.bicep' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx-mi-policy'
   dependsOn: [
@@ -1190,33 +1015,26 @@ output vnetResourceId string = effectiveNetworkIsolationMode == 'Managed' ? mana
 @description('Private endpoint subnet resource ID. Empty when networkIsolationMode is "None".')
 output privateEndpointSubnetResourceId string = effectiveSubnetId
 
-// ============================================================================
-// SCOPE MONITORING & EXPORT CONFIGURATION OUTPUTS
-// ============================================================================
-// These outputs provide guidance for both Enterprise mode (EA/MCA with exports)
-// and Demo mode (PAYGO/CSP without export support).
+// --- Scope Monitoring Outputs ---
 
-@description('Billing account type specified or detected. Use to determine export support.')
+@description('Billing account type. Use to determine export support.')
 output billingAccountTypeHint string = billingAccountType
 
-@description('Indicates whether Cost Management exports are supported for the specified billing type. PAYGO and Free Trial do NOT support exports.')
+@description('Whether Cost Management exports are supported.')
 output exportSupported bool = contains(['ea', 'mca', 'mpa', 'auto'], billingAccountType)
 
-@description('Scopes configured for monitoring. Empty array indicates Demo mode.')
+@description('Scopes configured for monitoring.')
 output configuredScopes array = scopesToMonitor
 
 @description('Number of scopes configured for monitoring.')
 output scopeCount int = length(scopesToMonitor)
 
-@description('''Deployment mode based on configuration:
-- "enterprise": EA/MCA billing with export support configured
-- "demo": No scopes or PAYGO billing - use test data scripts
-- "hybrid": Mixed configuration with some export-capable scopes''')
+@description('Deployment mode: enterprise, demo, or hybrid.')
 output deploymentMode string = empty(scopesToMonitor) || billingAccountType == 'paygo' || billingAccountType == 'csp'
   ? 'demo'
   : contains(['ea', 'mca', 'mpa'], billingAccountType) ? 'enterprise' : 'hybrid'
 
-@description('Cost Management export configuration for FinOps Toolkit PowerShell.')
+@description('Cost Management export configuration.')
 output exportConfiguration object = {
   storageAccountId: storageAccount.outputs.resourceId
   storageAccountName: storageAccount.outputs.name
@@ -1244,9 +1062,7 @@ var settingsJsonScopes = [for scope in scopesToMonitor: {
   tenantId: scope.?tenantId ?? tenant().tenantId
 }]
 
-@description('''Settings.json content for the config container. 
-This file is used by the FinOps Toolkit for managed exports (future feature).
-Currently, it provides forward compatibility and documents configured scopes.''')
+@description('Settings.json content for the config container.')
 output settingsJson object = {
   '$schema': 'https://aka.ms/finops/hubs/settings-schema'
   type: 'HubInstance'
@@ -1269,8 +1085,7 @@ var adxEndpointUrl = useExistingAdx
   ? 'https://${existingAdxClusterName}.${location}.kusto.windows.net'
   : (createNewAdx && dataExplorer != null ? 'https://${dataExplorer!.outputs.name}.${location}.kusto.windows.net' : 'N/A')
 
-@description('''Getting started guide based on deployment mode.
-Provides step-by-step instructions for both Enterprise and Demo modes.''')
+@description('Getting started guide based on deployment mode.')
 output gettingStartedGuide object = {
   mode: empty(scopesToMonitor) || billingAccountType == 'paygo' || billingAccountType == 'csp' ? 'demo' : 'enterprise'
   

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "7302042744181031098"
+      "templateHash": "5122011452110814640"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -295,21 +295,21 @@
         "csp"
       ],
       "metadata": {
-        "description": "Optional. Billing account type hint for Cost Management export compatibility.\n- \"auto\": (Default) Module outputs export configuration but does not create exports. Use FinOps Toolkit PowerShell to create exports after deployment.\n- \"ea\": Enterprise Agreement - full export support\n- \"mca\": Microsoft Customer Agreement - full export support  \n- \"mpa\": Microsoft Partner Agreement - full export support\n- \"paygo\": Pay-As-You-Go - NO export support. Use ingestion container for manual data uploads.\n- \"csp\": Cloud Solution Provider - limited export support (partner-managed)\n\n⚠️ For PAYGO/CSP tenants: Use the \"ingestion\" container with the FinOps Toolkit test data generator or integrate with 3rd party cost tools."
+        "description": "Optional. Billing type hint: \"ea\", \"mca\", \"mpa\" support exports; \"paygo\", \"csp\" use demo mode. See README for export support matrix."
       }
     },
     "billingAccountId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Billing account ID for MACC (Microsoft Azure Consumption Commitment) tracking.\nWhen specified, the module creates ADF pipelines to fetch MACC data from the Azure Consumption API.\nFormat: The billing account ID from Azure Cost Management (e.g., \"12345678\" for EA or \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy_yyyy-yy-yy\" for MCA).\nPrerequisites: ADF Managed Identity needs \"Billing Account Reader\" or \"Enterprise Administrator\" role on the billing account."
+        "description": "Optional. Billing account ID for MACC tracking. Requires ADF MI to have Billing Account Reader role."
       }
     },
     "scopesToMonitor": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of billing scopes to monitor for cost data.\n\nEach scope generates:\n- Export configuration guidance (for EA/MCA tenants with export support)\n- settings.json entry (for forward compatibility with managed exports)\n- PowerShell commands to create exports\n\nSCOPE TYPES and export support:\n| Type           | FOCUS Costs | Prices | Reservations | Notes |\n|----------------|-------------|--------|--------------|-------|\n| ea             | ✅          | ✅     | ✅           | Full support - EA billing account |\n| mca            | ✅          | ✅     | ✅           | Full support - MCA billing profile |\n| department     | ✅          | ✅     | ⚠️ Limited   | EA department scope |\n| subscription   | ✅          | ❌     | ❌           | Costs only, no pricing |\n| resourceGroup  | ✅          | ❌     | ❌           | Very limited |\n| managementGroup| ✅          | ❌     | ❌           | Aggregated costs only |\n\nDEMO/DEV MODE: For tenants without EA/MCA billing:\n- Leave scopesToMonitor empty\n- Use src/Generate-MultiCloudTestData.ps1 to generate FOCUS test data\n- Upload directly to the 'ingestion' container\n\nExample scopes:\n```bicep\nscopesToMonitor: [\n  { scopeId: '/providers/Microsoft.Billing/billingAccounts/1234567', scopeType: 'ea', displayName: 'Contoso EA' }\n  { scopeId: '/subscriptions/aaaa-bbbb-cccc-dddd', scopeType: 'subscription', displayName: 'Dev Subscription' }\n]\n```"
+        "description": "Optional. Billing scopes to monitor. See README for scope types and export support matrix."
       }
     },
     "enableRbacAuthorization": {
@@ -342,7 +342,7 @@
         "BringYourOwn"
       ],
       "metadata": {
-        "description": "Optional. Network isolation mode for private connectivity.\n- \"None\": Public endpoints (default for dev/test). Just redeploy to upgrade.\n- \"Managed\": Module creates self-contained VNet, private endpoints, and DNS zones (RECOMMENDED for production). Just redeploy to upgrade.\n- \"BringYourOwn\": Customer provides subnet and DNS zone IDs (advanced). ⚠️ You own upgrades - test before deploying new versions."
+        "description": "Optional. Network isolation: \"None\" (public), \"Managed\" (module creates VNet/PEs), or \"BringYourOwn\" (you provide subnet/DNS)."
       }
     },
     "managedVnetAddressPrefix": {
@@ -363,7 +363,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the subnet for private endpoints. Required when networkIsolationMode is \"BringYourOwn\"."
+        "description": "Conditional. Subnet resource ID for private endpoints. Required when networkIsolationMode is \"BringYourOwn\"."
       }
     },
     "byoBlobDnsZoneId": {
@@ -419,7 +419,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable DNS zone group creation for private endpoints. Set to false when using Azure Policy to manage Private DNS zone records (ESLZ/CAF pattern). When false, the module creates private endpoints but skips DNS zone group configuration, allowing Azure Policy with \"DeployIfNotExists\" effect to handle DNS record creation in centralized Private DNS zones. Default: true for Managed mode, often false for BringYourOwn (ESLZ) mode."
+        "description": "Optional. Create DNS zone groups for private endpoints. Set false when Azure Policy manages DNS records (ESLZ pattern)."
       }
     },
     "privateEndpointSubnetId": {
@@ -499,7 +499,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable automatic trigger management for idempotent deployments. When true, stops triggers before deployment and restarts them after. This allows redeployment without manual intervention. IMPORTANT: Requires a storage account with shared key access enabled for deployment scripts. Default is false to ensure simple deployments work out of the box."
+        "description": "Optional. Enable automatic trigger start/stop for idempotent redeployments. Requires shared key access on storage."
       }
     }
   },
@@ -43728,21 +43728,21 @@
     "billingAccountTypeHint": {
       "type": "string",
       "metadata": {
-        "description": "Billing account type specified or detected. Use to determine export support."
+        "description": "Billing account type. Use to determine export support."
       },
       "value": "[parameters('billingAccountType')]"
     },
     "exportSupported": {
       "type": "bool",
       "metadata": {
-        "description": "Indicates whether Cost Management exports are supported for the specified billing type. PAYGO and Free Trial do NOT support exports."
+        "description": "Whether Cost Management exports are supported."
       },
       "value": "[contains(createArray('ea', 'mca', 'mpa', 'auto'), parameters('billingAccountType'))]"
     },
     "configuredScopes": {
       "type": "array",
       "metadata": {
-        "description": "Scopes configured for monitoring. Empty array indicates Demo mode."
+        "description": "Scopes configured for monitoring."
       },
       "value": "[parameters('scopesToMonitor')]"
     },
@@ -43756,14 +43756,14 @@
     "deploymentMode": {
       "type": "string",
       "metadata": {
-        "description": "Deployment mode based on configuration:\n- \"enterprise\": EA/MCA billing with export support configured\n- \"demo\": No scopes or PAYGO billing - use test data scripts\n- \"hybrid\": Mixed configuration with some export-capable scopes"
+        "description": "Deployment mode: enterprise, demo, or hybrid."
       },
       "value": "[if(or(or(empty(parameters('scopesToMonitor')), equals(parameters('billingAccountType'), 'paygo')), equals(parameters('billingAccountType'), 'csp')), 'demo', if(contains(createArray('ea', 'mca', 'mpa'), parameters('billingAccountType')), 'enterprise', 'hybrid'))]"
     },
     "exportConfiguration": {
       "type": "object",
       "metadata": {
-        "description": "Cost Management export configuration for FinOps Toolkit PowerShell."
+        "description": "Cost Management export configuration."
       },
       "value": {
         "storageAccountId": "[reference('storageAccount').outputs.resourceId.value]",
@@ -43784,7 +43784,7 @@
     "settingsJson": {
       "type": "object",
       "metadata": {
-        "description": "Settings.json content for the config container. \nThis file is used by the FinOps Toolkit for managed exports (future feature).\nCurrently, it provides forward compatibility and documents configured scopes."
+        "description": "Settings.json content for the config container."
       },
       "value": {
         "$schema": "https://aka.ms/finops/hubs/settings-schema",
@@ -43806,7 +43806,7 @@
     "gettingStartedGuide": {
       "type": "object",
       "metadata": {
-        "description": "Getting started guide based on deployment mode.\nProvides step-by-step instructions for both Enterprise and Demo modes."
+        "description": "Getting started guide based on deployment mode."
       },
       "value": {
         "mode": "[if(or(or(empty(parameters('scopesToMonitor')), equals(parameters('billingAccountType'), 'paygo')), equals(parameters('billingAccountType'), 'csp')), 'demo', 'enterprise')]",
