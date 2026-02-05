@@ -5,6 +5,13 @@ metadata description = 'This module deploys a Public IP Prefix.'
 @minLength(1)
 param name string
 
+@description('Optional. Name of the Public IP Prefix SKU.')
+@allowed([
+  'Standard'
+  'StandardV2'
+])
+param skuName string = 'Standard'
+
 @description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
 @allowed([
   'Global'
@@ -112,7 +119,7 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2025-01-01' = {
   location: location
   tags: tags
   sku: {
-    name: 'Standard'
+    name: skuName
     tier: tier
   }
   zones: map(availabilityZones, zone => string(zone))

@@ -90,6 +90,9 @@ param ldaps ('Disabled' | 'Enabled') = 'Enabled'
 @description('Optional. All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.')
 param syncScope ('All' | 'CloudOnly') = 'All'
 
+@description('Optional. When enabled, the samAccountName attribute in Entra Domain Services is synchronized from the onPremisesSamAccountName attribute in Entra ID.')
+param syncOnPremSamAccountName ('Disabled' | 'Enabled')?
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -103,7 +106,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   '''
 })
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.AAD/domainServices@2022-12-01'>.tags?
+param tags resourceInput<'Microsoft.AAD/domainServices@2025-06-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -144,7 +147,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.aad-domainservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -162,7 +165,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
+resource domainservice 'Microsoft.AAD/domainServices@2025-06-01' = {
   name: name
   location: location
   tags: tags
@@ -189,6 +192,7 @@ resource domainservice 'Microsoft.AAD/domainServices@2022-12-01' = {
       syncOnPremPasswords: syncOnPremPasswords
       kerberosRc4Encryption: kerberosRc4Encryption
       kerberosArmoring: kerberosArmoring
+      syncOnPremSamAccountName: syncOnPremSamAccountName
     }
     sku: sku
     syncScope: syncScope
