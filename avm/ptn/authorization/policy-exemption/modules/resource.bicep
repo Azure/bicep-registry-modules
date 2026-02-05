@@ -1,7 +1,7 @@
-metadata name = 'Policy Exemptions (Subscription scope)'
-metadata description = 'This module deploys a policy exemption at a Subscription scope.'
+metadata name = 'Policy Exemptions (Resource scope)'
+metadata description = 'This module deploys a policy exemption at a resource scope.'
 
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @sys.description('Required. Specifies the name of the policy exemption. Maximum length is 64 characters for subscription scope.')
 @maxLength(64)

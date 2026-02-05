@@ -1,13 +1,13 @@
 targetScope = 'managementGroup'
-metadata name = 'Policy Exemption (Resource Group)'
-metadata description = 'This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.'
+metadata name = 'Policy Exemption (Resource)'
+metadata description = 'This module deploys a Policy Exemption at a resource scope using common parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apergmin'
+param serviceShort string = 'aperesmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -17,7 +17,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-authorization.policyassignments-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-authorization.policyexemptions-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -26,13 +26,26 @@ param resourceLocation string = deployment().location
 // Test Execution //
 // ============== //
 
+var storageAccountName = toLower('st${uniqueString(resourceGroupName, namePrefix, serviceShort)}')
+
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
     name: resourceGroupName
+    location: resourceLocation
+  }
+}
 
-
+module storageAccount './dependencies.bicep' = {
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
+  name: '${uniqueString(deployment().name, resourceLocation)}-storageAccount'
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    location: resourceLocation
+    storageAccountName: storageAccountName
   }
 }
 
@@ -49,7 +62,7 @@ resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01'
       assignedBy: 'Bicep'
     }
     policyDefinitionId: policyDefinition.id
-    description: ' 	This policy audits VMs that do not use managed disks'
+    description: '  This policy audits VMs that do not use managed disks'
     displayName: 'Audit VMs that do not use managed disks'
     enforcementMode: 'DoNotEnforce'
     nonComplianceMessages: [
@@ -65,9 +78,36 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     exemptionCategory: 'Mitigated'
-    subscriptionId: subscriptionId
-    resourceGroupName: resourceGroup.outputs.name
     policyAssignmentId: policyAssignment.id
+    assignmentScopeValidation: 'Default'
+    description: '[Description] Policy Exemption at the resource scope'
+    displayName: '[DisplayName] Policy Exemption at the resource scope'
+    enableTelemetry: true
+    expiresOn: '2030-01-01T00:00:00Z'
+    location: resourceLocation
+    metadata: {
+      category: 'Security'
+      assignedBy: 'Bicep'
+    }
+    resourceId: storageAccount.outputs.storageAccountId
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            kind: 'resourceType'
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+          }
+          {
+            kind: 'resourceLocation'
+            in: [
+              'westeurope'
+            ]
+          }
+        ]
+      }
+    ]
   }
 }
-
