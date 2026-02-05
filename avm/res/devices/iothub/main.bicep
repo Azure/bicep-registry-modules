@@ -1,16 +1,17 @@
 metadata name = 'Azure Iot hubs'
 metadata description = 'This module deploys a Iot Hub.'
 
-@description('Required. ')
+@description('Required. The name of the IoT Hub.')
 param name string
 
 @description('Optional. Defaults to the current resource group scope location. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags for the resource.')
+@description('Required. The name of the IoT Hub SKU.')
 param skuName resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.sku.name
 
-param iotHubProperties resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties
+@description('Optional. The properties of the IoT Hub.')
+param iotHubProperties resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -25,7 +26,7 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
