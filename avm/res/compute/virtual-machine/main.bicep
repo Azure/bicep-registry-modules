@@ -516,7 +516,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId) && (dataDisk.?createOption ?? 'Empty') != 'FromImage') {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -525,7 +525,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
     properties: {
       diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
-        createOption: dataDisk.?createoption ?? 'Empty'
+        createOption: dataDisk.?createOption ?? 'Empty'
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
@@ -561,7 +561,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      imageReference: imageReference
+      imageReference: contains(imageReference, 'id')
+        ? {
+            id: imageReference.?id
+          }
+        : imageReference
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))
@@ -593,19 +597,31 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           name: !empty(dataDisk.managedDisk.?resourceId)
             ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
-            ? 'Attach'
-            : dataDisk.?createoption ?? 'Empty'
+          createOption: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? 'FromImage'
+            : (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
+                ? 'Attach'
+                : dataDisk.?createOption ?? 'Empty'
           deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
-          managedDisk: {
-            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
-            diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
-              ? {
-                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
-                }
-              : null
-          }
+          diskSizeGB: (dataDisk.?createOption ?? 'Empty') == 'FromImage' ? null : dataDisk.?diskSizeGB
+          managedDisk: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? {
+                storageAccountType: dataDisk.managedDisk.?storageAccountType
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
+            : {
+                id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
         }
       ]
     }
@@ -640,6 +656,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -757,6 +774,15 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   }
 }
 
+var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
+  ? reduce(
+      items(aadJoinSettings),
+      {},
+      (cur, item) => item.key == 'mdmId' ? cur : union(cur, { '${item.key}': item.value })
+    )
+  : aadJoinSettings
+
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
@@ -768,7 +794,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
+    settings: !empty(filteredAadJoinSettings) ? filteredAadJoinSettings : null
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
@@ -818,6 +844,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionMonitoringAgentConfig.?settings ?? {}
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
   }
@@ -957,9 +984,6 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
         : {})
     }
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
@@ -1016,6 +1040,8 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
     settings: {
       modulesUrl: extensionHostPoolRegistration.modulesUrl
       configurationFunction: extensionHostPoolRegistration.configurationFunction
+    }
+    protectedSettings: {
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
         registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
