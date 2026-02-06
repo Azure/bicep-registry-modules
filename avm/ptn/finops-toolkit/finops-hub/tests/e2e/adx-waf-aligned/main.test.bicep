@@ -24,6 +24,11 @@ param serviceShort string = 'fhaxw'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Unique suffix to avoid Key Vault soft-delete naming conflicts across CI runs
+// Key Vaults use soft-delete with 90-day retention, causing VaultAlreadyExists errors
+// when the same name is reused before purge
+var deploymentSuffix = take(uniqueString(deployment().name), 4)
+
 @description('Optional. Principal ID of the deployer to grant ADX access for testing. If not provided, only the ADF managed identity will have access.')
 param deployerPrincipalId string = ''
 
@@ -58,15 +63,15 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // Required parameters
-      hubName: '${namePrefix}${serviceShort}'
+      // Required parameters - include deployment suffix to avoid Key Vault naming conflicts
+      hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       // Non-required parameters
       location: enforcedLocation
       
       // WAF-aligned configuration with ADX
       deploymentConfiguration: 'waf-aligned'
       deploymentType: 'adx'
-      dataExplorerClusterName: '${namePrefix}${serviceShort}adx'
+      dataExplorerClusterName: '${namePrefix}${serviceShort}adx${deploymentSuffix}'
       
       // WAF-aligned automatically enables:
       // - Premium_ZRS storage for HA/DR

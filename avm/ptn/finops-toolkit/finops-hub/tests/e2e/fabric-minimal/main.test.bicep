@@ -20,6 +20,11 @@ param serviceShort string = 'fhfab'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Unique suffix to avoid Key Vault soft-delete naming conflicts across CI runs
+// Key Vaults use soft-delete with 90-day retention, causing VaultAlreadyExists errors
+// when the same name is reused before purge
+var deploymentSuffix = take(uniqueString(deployment().name), 4)
+
 // NOTE: Fabric Eventhouse must be pre-created in Microsoft Fabric workspace.
 // These URIs are obtained from your Fabric eventhouse settings.
 // For automated testing, set these via pipeline parameters or parameter file.
@@ -52,8 +57,8 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // Required parameters
-      hubName: '${namePrefix}${serviceShort}'
+      // Required parameters - include deployment suffix to avoid Key Vault naming conflicts
+      hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       // Non-required parameters
       location: resourceLocation
       deploymentConfiguration: 'minimal'

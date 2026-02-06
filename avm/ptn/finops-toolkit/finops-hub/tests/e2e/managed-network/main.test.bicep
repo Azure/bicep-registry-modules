@@ -14,11 +14,27 @@ param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-r
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+// ========================================================================
+// ENFORCED LOCATION FOR CI RELIABILITY
+// ========================================================================
+// WAF-aligned deployments require Premium_ZRS storage, which is not available
+// in all regions. The CI rotation (uksouth, northeurope, westeurope) can land
+// on regions without Premium_ZRS availability.
+//
+// Italy North supports Premium_ZRS and has good capacity for ADX/storage deployments.
+// This ensures consistent CI results regardless of rotation.
+var enforcedLocation = 'italynorth'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fhmng'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
+// Unique suffix to avoid Key Vault soft-delete naming conflicts across CI runs
+// Key Vaults use soft-delete with 90-day retention, causing VaultAlreadyExists errors
+// when the same name is reused before purge
+var deploymentSuffix = take(uniqueString(deployment().name), 4)
 
 @description('Optional. Principal ID of the deployer to grant storage access for testing.')
 param deployerPrincipalId string = ''
@@ -31,7 +47,7 @@ param deployerPrincipalId string = ''
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // NOTE: No dependencies.bicep needed for Managed mode!
@@ -46,13 +62,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // Required parameters
-      hubName: '${namePrefix}${serviceShort}'
+      // Required parameters - include deployment suffix to avoid Key Vault naming conflicts
+      hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       
       // Non-required parameters
-      location: resourceLocation
+      location: enforcedLocation
       
       // =====================================================
       // KEY SETTING: Managed Network Isolation
