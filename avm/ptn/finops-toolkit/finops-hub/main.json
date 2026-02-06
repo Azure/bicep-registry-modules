@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "18118974350748080514"
+      "templateHash": "10330381289921378767"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -426,35 +426,35 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. DEPRECATED: Use networkIsolationMode=\"BringYourOwn\" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints."
+        "description": "Optional. Note: This is a deprecated property, please use `networkIsolationMode=\"BringYourOwn\"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints."
       }
     },
     "storageBlobPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. DEPRECATED: Use byoBlobDnsZoneId instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead."
       }
     },
     "storageDfsPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. DEPRECATED: Use byoDfsDnsZoneId instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead."
       }
     },
     "keyVaultPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. DEPRECATED: Use byoVaultDnsZoneId instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead."
       }
     },
     "dataFactoryPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. DEPRECATED: Use byoDataFactoryDnsZoneId instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead."
       }
     },
     "tags": {

@@ -149,20 +149,20 @@ param enableManagedPeAutoApproval bool = true
 param enablePrivateDnsZoneGroups bool = true
 
 // --- Legacy Parameters (Deprecated - use networkIsolationMode instead) ---
-// These are kept for backward compatibility but will be removed in v2.0
-@description('Optional. DEPRECATED: Use networkIsolationMode="BringYourOwn" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints.')
+// These are kept for backward compatibility but will be removed in v1.0
+@description('Optional. Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints.')
 param privateEndpointSubnetId string = ''
 
-@description('Optional. DEPRECATED: Use byoBlobDnsZoneId instead.')
+@description('Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead.')
 param storageBlobPrivateDnsZoneId string = ''
 
-@description('Optional. DEPRECATED: Use byoDfsDnsZoneId instead.')
+@description('Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead.')
 param storageDfsPrivateDnsZoneId string = ''
 
-@description('Optional. DEPRECATED: Use byoVaultDnsZoneId instead.')
+@description('Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead.')
 param keyVaultPrivateDnsZoneId string = ''
 
-@description('Optional. DEPRECATED: Use byoDataFactoryDnsZoneId instead.')
+@description('Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead.')
 param dataFactoryPrivateDnsZoneId string = ''
 
 // --- Tagging ---

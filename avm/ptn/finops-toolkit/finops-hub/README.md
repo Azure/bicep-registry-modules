@@ -996,7 +996,7 @@ param tags = {
 | [`billingAccountType`](#parameter-billingaccounttype) | string | Billing type hint: "ea", "mca", "mpa" support exports; "paygo", "csp" use demo mode. See README for export support matrix. |
 | [`dataExplorerCapacity`](#parameter-dataexplorercapacity) | int | Number of instances in the Data Explorer cluster. Set to 0 to use configuration default (minimal: 1, waf-aligned: 2). |
 | [`dataExplorerSku`](#parameter-dataexplorersku) | string | Azure Data Explorer SKU. Leave empty to use configuration default (minimal: Dev SKU, waf-aligned: Standard SKU). |
-| [`dataFactoryPrivateDnsZoneId`](#parameter-datafactoryprivatednszoneid) | string | DEPRECATED: Use byoDataFactoryDnsZoneId instead. |
+| [`dataFactoryPrivateDnsZoneId`](#parameter-datafactoryprivatednszoneid) | string | Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead. |
 | [`deployerPrincipalId`](#parameter-deployerprincipalid) | string | Principal ID of the deployer. Grants Storage Blob Data Contributor (for test data upload) and ADX AllDatabasesAdmin (for cluster management and troubleshooting). |
 | [`deploymentConfiguration`](#parameter-deploymentconfiguration) | string | Deployment configuration profile. "minimal" for lowest cost dev/test, "waf-aligned" for production with HA/DR. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Deployment type: "adx" for Azure Data Explorer, "fabric" for Microsoft Fabric, "storage-only" for basic deployment. |
@@ -1013,16 +1013,16 @@ param tags = {
 | [`existingManagedIdentityResourceId`](#parameter-existingmanagedidentityresourceid) | string | Resource ID of an existing user-assigned managed identity. When provided, no new identity is created. Use this for strict security policies where identities must be pre-created. |
 | [`fabricDatabaseName`](#parameter-fabricdatabasename) | string | Microsoft Fabric database name in the eventhouse. |
 | [`fabricIngestionUri`](#parameter-fabricingestionuri) | string | Microsoft Fabric eventhouse ingestion URI. Used for data ingestion pipelines. |
-| [`keyVaultPrivateDnsZoneId`](#parameter-keyvaultprivatednszoneid) | string | DEPRECATED: Use byoVaultDnsZoneId instead. |
+| [`keyVaultPrivateDnsZoneId`](#parameter-keyvaultprivatednszoneid) | string | Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead. |
 | [`location`](#parameter-location) | string | Azure region for all resources. Default: resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedSubnetAddressPrefix`](#parameter-managedsubnetaddressprefix) | string | Address prefix for the private endpoints subnet. Only used when networkIsolationMode is "Managed". Default: 10.0.0.0/26. |
 | [`managedVnetAddressPrefix`](#parameter-managedvnetaddressprefix) | string | Address prefix for the managed VNet. Only used when networkIsolationMode is "Managed". Default: 10.0.0.0/24. |
 | [`networkIsolationMode`](#parameter-networkisolationmode) | string | Network isolation: "None" (public), "Managed" (module creates VNet/PEs), or "BringYourOwn" (you provide subnet/DNS). |
-| [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | DEPRECATED: Use networkIsolationMode="BringYourOwn" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints. |
+| [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints. |
 | [`scopesToMonitor`](#parameter-scopestomonitor) | array | Billing scopes to monitor. See README for scope types and export support matrix. |
-| [`storageBlobPrivateDnsZoneId`](#parameter-storageblobprivatednszoneid) | string | DEPRECATED: Use byoBlobDnsZoneId instead. |
-| [`storageDfsPrivateDnsZoneId`](#parameter-storagedfsprivatednszoneid) | string | DEPRECATED: Use byoDfsDnsZoneId instead. |
+| [`storageBlobPrivateDnsZoneId`](#parameter-storageblobprivatednszoneid) | string | Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead. |
+| [`storageDfsPrivateDnsZoneId`](#parameter-storagedfsprivatednszoneid) | string | Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead. |
 | [`tags`](#parameter-tags) | object | Tags to apply to all resources. |
 | [`tagsByResource`](#parameter-tagsbyresource) | object | Resource-specific tags by resource type. |
 
@@ -1150,7 +1150,7 @@ Azure Data Explorer SKU. Leave empty to use configuration default (minimal: Dev 
 
 ### Parameter: `dataFactoryPrivateDnsZoneId`
 
-DEPRECATED: Use byoDataFactoryDnsZoneId instead.
+Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead.
 
 - Required: No
 - Type: string
@@ -1439,7 +1439,7 @@ Microsoft Fabric eventhouse ingestion URI. Used for data ingestion pipelines.
 
 ### Parameter: `keyVaultPrivateDnsZoneId`
 
-DEPRECATED: Use byoVaultDnsZoneId instead.
+Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead.
 
 - Required: No
 - Type: string
@@ -1531,7 +1531,7 @@ Network isolation: "None" (public), "Managed" (module creates VNet/PEs), or "Bri
 
 ### Parameter: `privateEndpointSubnetId`
 
-DEPRECATED: Use networkIsolationMode="BringYourOwn" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints.
+Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints.
 
 - Required: No
 - Type: string
@@ -1547,7 +1547,7 @@ Billing scopes to monitor. See README for scope types and export support matrix.
 
 ### Parameter: `storageBlobPrivateDnsZoneId`
 
-DEPRECATED: Use byoBlobDnsZoneId instead.
+Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead.
 
 - Required: No
 - Type: string
@@ -1555,7 +1555,7 @@ DEPRECATED: Use byoBlobDnsZoneId instead.
 
 ### Parameter: `storageDfsPrivateDnsZoneId`
 
-DEPRECATED: Use byoDfsDnsZoneId instead.
+Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead.
 
 - Required: No
 - Type: string
@@ -1631,9 +1631,16 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/key-vault/vault:0.5.1` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.8.3` | Remote reference |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/data-factory/factory:0.11.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
+| `br/public:avm/res/kusto/cluster:0.9.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.2` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.31.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
