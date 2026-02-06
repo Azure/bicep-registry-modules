@@ -25,7 +25,7 @@ module testDeployment '../../../sub-scope/main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${iteration}'
     params: {
-      requiredParam: '${serviceShort}-${namePrefix}'
+      requiredParam: 'my-${serviceShort}${namePrefix}'
       optionalParam: 'opt'
     }
   }

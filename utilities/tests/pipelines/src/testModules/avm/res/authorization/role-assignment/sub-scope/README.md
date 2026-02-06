@@ -23,6 +23,70 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment/sub-scope:<version>`.
 
+- [Sub-Scope.Test](#example-1-sub-scopetest)
+
+### Example 1: _Sub-Scope.Test_
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.test]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module roleAssignment 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>' = {
+  params: {
+    // Required parameters
+    requiredParam: 'my-test'
+    // Non-required parameters
+    optionalParam: 'opt'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "requiredParam": {
+      "value": "my-test"
+    },
+    // Non-required parameters
+    "optionalParam": {
+      "value": "opt"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/authorization/role-assignment/sub-scope:<version>'
+
+// Required parameters
+param requiredParam = 'my-test'
+// Non-required parameters
+param optionalParam = 'opt'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

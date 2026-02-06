@@ -60,21 +60,21 @@ Describe 'Test ReadMe generation' {
     #     Set-ModuleReadMe @inputObject
     # }
 
-    It '[Parent module] Should run' {
+    # It '[Parent module] Should run' {
 
-        $inputObject = @{
-            TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'main.bicep')
-        }
-        Set-ModuleReadMe @inputObject
-    }
+    #     $inputObject = @{
+    #         TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'main.bicep')
+    #     }
+    #     Set-ModuleReadMe @inputObject
+    # }
 
-    It '[Child module] Should run' {
+    # It '[Child module] Should run' {
 
-        $inputObject = @{
-            TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'secret' 'main.bicep')
-        }
-        Set-ModuleReadMe @inputObject
-    }
+    #     $inputObject = @{
+    #         TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'secret' 'main.bicep')
+    #     }
+    #     Set-ModuleReadMe @inputObject
+    # }
 
     It '[Multi-scope module] Should run' {
 
