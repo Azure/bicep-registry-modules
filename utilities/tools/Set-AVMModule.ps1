@@ -39,6 +39,9 @@ Optional. Build files only for those modules who's files have changed (based on 
 .PARAMETER RepoRootPath
 Optional. Path to the root of the repository.
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
@@ -96,7 +99,10 @@ function Set-AVMModule {
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
-        [int] $Depth
+        [int] $Depth,
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
 
     # # Load helper scripts
@@ -210,7 +216,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
     if (-not $SkipReadMe) {
         .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
         # load cross-references
-        $crossReferencedModuleList = Get-CrossReferencedModuleList
+        $crossReferencedModuleList = Get-CrossReferencedModuleList -ForceCacheRefresh:$ForceCacheRefresh
 
         # load AVM references (done to reduce WebRequests to GitHub repository)
         # Telemetry

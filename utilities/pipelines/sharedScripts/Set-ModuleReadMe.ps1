@@ -852,6 +852,9 @@ Optional. Pre-Loaded content. May be used to reuse the same data for multiple in
     CrossReferencedModuleList = @{} // Optional. Cross Module References to consider when refreshing the readme. Can be provided to speed up the generation. If not provided, is fetched by this script.
 }
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
 Update the given readme file's 'Cross-referenced modules' section based on the given template file content
@@ -875,13 +878,16 @@ function Set-CrossReferencesSection {
         [Parameter(Mandatory = $false)]
         [hashtable] $PreLoadedContent = @{},
 
+        [Parameter()]
+        [switch] $ForceCacheRefresh,
+
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Cross-referenced modules'
     )
 
     # Load content, if required
     if ($PreLoadedContent.Keys -notcontains 'CrossReferencedModuleList') {
-        $CrossReferencedModuleList = Get-CrossReferencedModuleList
+        $CrossReferencedModuleList = Get-CrossReferencedModuleList -ForceCacheRefresh:$ForceCacheRefresh
     } else {
         $CrossReferencedModuleList = $PreLoadedContent.CrossReferencedModuleList
     }
@@ -1974,6 +1980,9 @@ Required. The path to the module's file
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Initialize-ReadMe -ReadMeFilePath 'C:/ResourceModules/modules/sql/managed-instances/administrators/readme.md' -FullModuleIdentifier 'sql/managed-instance/administrator' -TemplateFileContent @{ resource = @{}; ... }
 
@@ -1993,7 +2002,10 @@ function Initialize-ReadMe {
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $true)]
-        [hashtable] $TemplateFileContent
+        [hashtable] $TemplateFileContent,
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
 
     $moduleName = $TemplateFileContent.metadata.name
@@ -2001,7 +2013,7 @@ function Initialize-ReadMe {
 
     if ($ReadMeFilePath -match 'avm.(?:res)') {
         # Resource module
-        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
 
         $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
             $_ -match "^$formattedResourceType$"
@@ -2118,6 +2130,9 @@ Optional. Pre-Loaded content. May be used to reuse the same data for multiple in
     TelemetryFileContent      = @() // Optional. The text of the telemetry notice to add to each readme.
 }
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Set-ModuleReadMe -TemplateFilePath 'C:\main.bicep'
 
@@ -2179,7 +2194,10 @@ function Set-ModuleReadMe {
             'Template references',
             'Navigation',
             'DataCollection'
-        )
+        ),
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
 
     # Load external functions
@@ -2262,6 +2280,7 @@ function Set-ModuleReadMe {
         FullModuleIdentifier = $FullModuleIdentifier
         TemplateFileContent  = $templateFileContent
         TemplateFilePath     = $TemplateFilePath
+        ForceCacheRefresh    = $ForceCacheRefresh
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 
@@ -2339,6 +2358,7 @@ function Set-ModuleReadMe {
             ReadMeFileContent    = $readMeFileContent
             TemplateFileContent  = $templateFileContent
             PreLoadedContent     = $PreLoadedContent
+            ForceCacheRefresh    = $ForceCacheRefresh
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
