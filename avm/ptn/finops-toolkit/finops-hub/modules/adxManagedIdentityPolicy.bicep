@@ -103,7 +103,7 @@ $ErrorActionPreference = 'Stop'
 $clusterUri = $env:CLUSTER_URI
 $subId = $env:SUBSCRIPTION_ID
 
-// Retry configuration - ADX principal assignments can take 5-10 minutes to propagate
+# Retry configuration - ADX principal assignments can take 5-10 minutes to propagate
 # Increased from 20×15s to 30×20s for better handling of slow AAD propagation in CI
 $maxRetries = 30
 $retryDelaySeconds = 20
