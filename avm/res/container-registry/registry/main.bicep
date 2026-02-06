@@ -279,6 +279,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
+#disable-next-line use-recent-api-versions
 resource registry 'Microsoft.ContainerRegistry/registries@2025-06-01-preview' = {
   name: name
   location: location
@@ -436,6 +437,7 @@ resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   scope: registry
 }
 
+#disable-next-line use-recent-api-versions
 resource registry_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
