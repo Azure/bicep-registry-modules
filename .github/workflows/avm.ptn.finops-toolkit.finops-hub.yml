@@ -18,6 +18,10 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
@@ -26,9 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.finops-toolkit.finops-hub.yml"
       - "avm/ptn/finops-toolkit/finops-hub/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
+      - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
@@ -45,17 +48,16 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
-    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
         id: get-workflow-param
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
-          workflowPath: "${{ env.workflowPath}}"
+          workflowPath: "${{ env.workflowPath }}"
       - name: "Get module test file paths"
         id: get-module-test-file-paths
         uses: ./.github/actions/templates/avm-getModuleTestFiles
@@ -82,5 +84,5 @@ jobs:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
-      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath }}"
     secrets: inherit

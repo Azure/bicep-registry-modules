@@ -50,7 +50,7 @@ param deploymentConfiguration string = 'minimal'
 param deploymentType string = 'storage-only'
 
 // --- Azure Data Explorer Options ---
-@description('Conditional. Azure Data Explorer cluster name. Required when deploymentType is "adx" and not using existing cluster.')
+@description('Conditional. Azure Data Explorer cluster name. Required if deploymentType is "adx" and not using existing cluster.')
 param dataExplorerClusterName string = ''
 
 @description('Optional. Resource ID of an existing Azure Data Explorer cluster to use. When provided, no new cluster is created.')
@@ -63,7 +63,7 @@ param dataExplorerSku string = ''
 param dataExplorerCapacity int = 0
 
 // --- Microsoft Fabric Options ---
-@description('Conditional. Microsoft Fabric eventhouse Query URI. Required when deploymentType is "fabric".')
+@description('Conditional. Microsoft Fabric eventhouse Query URI. Required if deploymentType is "fabric".')
 param fabricQueryUri string = ''
 
 @description('Optional. Microsoft Fabric eventhouse ingestion URI. Used for data ingestion pipelines.')
@@ -118,24 +118,24 @@ param managedVnetAddressPrefix string = '10.0.0.0/24'
 param managedSubnetAddressPrefix string = '10.0.0.0/26'
 
 // --- BringYourOwn Network Configuration ---
-@description('Conditional. Subnet resource ID for private endpoints. Required when networkIsolationMode is "BringYourOwn".')
+@description('Conditional. Subnet resource ID for private endpoints. Required if networkIsolationMode is "BringYourOwn".')
 param byoSubnetResourceId string = ''
 
 #disable-next-line no-hardcoded-env-urls
-@description('Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required when networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
+@description('Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
 param byoBlobDnsZoneId string = ''
 
 #disable-next-line no-hardcoded-env-urls
-@description('Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required when networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
+@description('Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
 param byoDfsDnsZoneId string = ''
 
-@description('Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required when networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
+@description('Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
 param byoVaultDnsZoneId string = ''
 
-@description('Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required when networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
+@description('Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
 param byoDataFactoryDnsZoneId string = ''
 
-@description('Conditional. Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required when networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true.')
+@description('Conditional. Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true.')
 param byoKustoDnsZoneId string = ''
 
 // --- Private Endpoint Options ---
@@ -172,8 +172,8 @@ param tags object = {}
 @description('Optional. Resource-specific tags by resource type.')
 param tagsByResource object = {}
 
-@description('Optional. Enable AVM telemetry.')
-param enableTelemetry bool = false
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 // --- AVM Standard Interface Parameters ---
 @description('Optional. The lock settings of the service.')
@@ -277,7 +277,7 @@ var allTags = union(tags, {
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.ptn.finops-hub.${replace('1.0.0', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
+  name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "5122011452110814640"
+      "templateHash": "13430808836754002940"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -217,7 +217,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Azure Data Explorer cluster name. Required when deploymentType is \"adx\" and not using existing cluster."
+        "description": "Conditional. Azure Data Explorer cluster name. Required if deploymentType is \"adx\" and not using existing cluster."
       }
     },
     "existingDataExplorerClusterId": {
@@ -245,7 +245,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Microsoft Fabric eventhouse Query URI. Required when deploymentType is \"fabric\"."
+        "description": "Conditional. Microsoft Fabric eventhouse Query URI. Required if deploymentType is \"fabric\"."
       }
     },
     "fabricIngestionUri": {
@@ -363,42 +363,42 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Subnet resource ID for private endpoints. Required when networkIsolationMode is \"BringYourOwn\"."
+        "description": "Conditional. Subnet resource ID for private endpoints. Required if networkIsolationMode is \"BringYourOwn\"."
       }
     },
     "byoBlobDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required when networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
+        "description": "Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
     "byoDfsDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required when networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
+        "description": "Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
     "byoVaultDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required when networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
+        "description": "Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
     "byoDataFactoryDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required when networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
+        "description": "Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
     "byoKustoDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required when networkIsolationMode is \"BringYourOwn\", deploymentType is \"adx\", and enablePrivateDnsZoneGroups is true."
+        "description": "Conditional. Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is \"BringYourOwn\", deploymentType is \"adx\", and enablePrivateDnsZoneGroups is true."
       }
     },
     "enableAdfManagedVnet": {
@@ -473,9 +473,9 @@
     },
     "enableTelemetry": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable AVM telemetry."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "lock": {
@@ -564,7 +564,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.ptn.finops-hub.{0}.{1}', replace('1.0.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('46d3xbcp.ptn.finopstoolkit-finopshub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
