@@ -32,14 +32,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment/mg-scope:<version>`.
 
-- [Using only defaults (Management Group scope)](#example-1-using-only-defaults-management-group-scope)
-- [Using large parameter set (Management Group scope)](#example-2-using-large-parameter-set-management-group-scope)
-- [WAF-aligned (Management Group scope)](#example-3-waf-aligned-management-group-scope)
+- [Mg-Scope.Defaults](#example-1-mg-scopedefaults)
+- [Mg-Scope.Max](#example-2-mg-scopemax)
+- [Mg-Scope.Waf-Aligned](#example-3-mg-scopewaf-aligned)
 
-### Example 1: _Using only defaults (Management Group scope)_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Mg-Scope.Defaults_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg-scope.defaults]
 
 
@@ -111,10 +108,7 @@ param principalType = 'ServicePrincipal'
 </details>
 <p>
 
-### Example 2: _Using large parameter set (Management Group scope)_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Mg-Scope.Max_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg-scope.max]
 
 
@@ -196,10 +190,7 @@ param principalType = 'ServicePrincipal'
 </details>
 <p>
 
-### Example 3: _WAF-aligned (Management Group scope)_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Mg-Scope.Waf-Aligned_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg-scope.waf-aligned]
 
 

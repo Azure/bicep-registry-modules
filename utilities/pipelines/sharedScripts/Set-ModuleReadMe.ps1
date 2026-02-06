@@ -1591,6 +1591,8 @@ function Set-UsageExamplesSection {
     ##   Process test files   ##
     ############################
     if (-not $CompiledTestFiles) {
+
+        # Collecting & compiling test file paths
         if ($isMultiScopeChildModule) {
             $scopedModuleFolderName = Split-Path -Path $ModuleRoot -Leaf
             $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
@@ -1599,23 +1601,7 @@ function Set-UsageExamplesSection {
         } else {
             $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
         }
-
-
-        # Prepare data (using thread-safe multithreading) to consume later
-        $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-        $testFilePaths | ForEach-Object -Parallel {
-            $dict = $using:buildTestFileMap
-
-            $folderName = Split-Path (Split-Path -Path $_) -Leaf
-            $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-
-            if ([String]::IsNullOrEmpty($builtTemplate)) {
-                throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
-            }
-            $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
-
-            $null = $dict.TryAdd($folderName, $templateHashTable)
-        }
+        $buildTestFileMap = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
     } else {
         $testFilePaths = $CompiledTestFiles.Keys | Sort-Object -Culture 'en-US'
         $buildTestFileMap = @{}
@@ -2064,7 +2050,7 @@ function Initialize-ReadMe {
             'public-ip-prefixes'  = 'publicIPPrefixes'
         }
         # Get technicalModuleName (e.g., vault) as $fullModuleIdentifier leaf
-        $technicalModuleName = $fullModuleIdentifier.Split('/')[1]
+        $technicalModuleName = $FullModuleIdentifier.Split('/')[1]
         if ($specialConversionHash.ContainsKey($moduleName)) {
             # Convert technicalModuleName using specialConversionHash
             $moduleNameCamelCase = $specialConversionHash[$moduleName]
@@ -2204,6 +2190,7 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Build-ViaRPC.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
@@ -2215,7 +2202,7 @@ function Set-ModuleReadMe {
     # Build template, if required
     if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
         if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
-            $templateFileContent = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
+            $templateFileContent = (Build-ViaRPC -BicepFilePath $TemplateFilePath -PassThru).Values | ConvertFrom-Json -AsHashtable
         } else {
             $templateFileContent = ConvertFrom-Json (Get-Content $TemplateFilePath -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
         }

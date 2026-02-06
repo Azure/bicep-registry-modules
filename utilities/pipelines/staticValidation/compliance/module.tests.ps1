@@ -45,16 +45,7 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-    $pathsToBuild | ForEach-Object -Parallel {
-        $dict = $using:builtTestFileMap
-        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-        if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
-        }
-        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
-        $null = $dict.TryAdd($_, $templateHashTable)
-    }
+    $builtTestFileMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
 
     # Getting the list of child modules allowed for publishing
     $childModuleAllowedListRelativePath = Join-Path 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'

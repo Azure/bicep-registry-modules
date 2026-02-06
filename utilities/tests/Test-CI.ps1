@@ -55,7 +55,7 @@ function Test-CI {
     # Load used functions
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
-    $testFiles = (Get-ChildItem -Path (Join-Path $RepoRootPath 'utilities' 'tests') -Recurse -File -Filter '*.tests.ps1').FullName | Where-Object {
+    $testFiles = (Get-ChildItem -Path (Join-Path $RepoRootPath 'utilities' 'tests') -Recurse -File -Filter '*.Tests.ps1').FullName | Where-Object {
         $_ -match $TestFileRegex
     }
 

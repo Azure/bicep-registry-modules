@@ -103,7 +103,7 @@ function Set-AVMModule {
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
-    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Build-ViaRPC.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
     if ($InvokeForDiff) {
@@ -199,6 +199,13 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
         }
     }
 
+    if (-not $SkipBuild) {
+        if ($PSCmdlet.ShouldProcess(('Building of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Build-ViaRPC -BicepFilePath $relevantTemplatePaths
+        }
+    }
+
+
     # Load recurring information we'll need for the modules
     if (-not $SkipReadMe) {
         .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
@@ -221,23 +228,6 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             $TelemetryFileContent = $null
         }
 
-        # create reference as it must be loaded in the thread to work
-        $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
-    } else {
-        # Instatiate values to enable safe $using usage
-        $crossReferencedModuleList = $null
-        $ReadMeScriptFilePath = $null
-        $TelemetryFileContent = $null
-    }
-
-    if (-not $SkipBuild) {
-        if ($PSCmdlet.ShouldProcess(('Building of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-            Build-ViaRPC -BicepFilePath $relevantTemplatePaths
-        }
-    }
-
-    if (-not $SkipReadMe) {
-
         # Collecting & compiling test file paths for usage examples
         $testFilePaths = $relevantTemplatePaths | ForEach-Object {
             if (Test-Path (Join-Path (Split-Path $_ -Parent) 'tests' 'e2e')) {
@@ -250,10 +240,6 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             $moduleRoot = Split-Path $TemplateFilePath -Parent
 
             $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
-
-            $testFilePaths = (Get-ChildItem -Path (Split-Path $moduleRoot) -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
-                $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
-            }
 
             $relevantTestFilesContent = @{}
             foreach ($filePath in $compiledTestFilePaths.Keys) {

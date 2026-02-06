@@ -175,6 +175,7 @@ function Build-ViaRPC {
 
         }
     } catch {
+        Write-Error "Failed to build template. Try running the command ``bicep build <templatePath> --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
         throw $_
     } finally {
         # Close the process
@@ -183,7 +184,7 @@ function Build-ViaRPC {
 
     $elapsedTime = (Get-Date) - $StartTime
     $totalTime = '{0:HH:mm:ss}' -f ([datetime]$elapsedTime.Ticks)
-    Write-Host ("Execution took [$totalTime]")
+    Write-Verbose ("Execution took [$totalTime]")
 
     if ($PassThru) {
         return $result
