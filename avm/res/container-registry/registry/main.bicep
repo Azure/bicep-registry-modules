@@ -167,6 +167,9 @@ param credentialSets credentialSetType[]?
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType[]?
 
+@description('Optional. Tokens to create for the container registry.')
+param tokens tokenType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -409,6 +412,22 @@ module registry_cacheRules 'cache-rule/main.bicep' = [
   }
 ]
 
+module registry_tokens 'token/main.bicep' = [
+  for (token, index) in (tokens ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Token-${index}'
+    params: {
+      name: token.name
+      registryName: registry.name
+      scopeMapId: token.scopeMapId
+      status: token.?status
+      credentials: token.?credentials
+    }
+    dependsOn: [
+      registry_scopeMaps
+    ]
+  }
+]
+
 module registry_webhooks 'webhook/main.bicep' = [
   for (webhook, index) in (webhooks ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Webhook-${index}'
@@ -639,6 +658,7 @@ type cacheRuleType = {
 
 import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { authCredentialsType } from 'credential-set/main.bicep'
+import { credentialType } from 'token/main.bicep'
 @export()
 @description('The type for a credential set.')
 type credentialSetType = {
@@ -672,6 +692,23 @@ type replicationType = {
 
   @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
   zoneRedundancy: ('Disabled' | 'Enabled')?
+}
+
+@description('The type for a token.')
+type tokenType = {
+  @description('Required. The name of the token.')
+  @minLength(5)
+  @maxLength(50)
+  name: string
+
+  @description('Required. The resource ID of the scope map to which the token will be associated with.')
+  scopeMapId: string
+
+  @description('Optional. The status of the token.')
+  status: ('disabled' | 'enabled')?
+
+  @description('Optional. The credentials of the token, such as certificates and passwords.')
+  credentials: credentialType?
 }
 
 @export()

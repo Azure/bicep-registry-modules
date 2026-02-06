@@ -30,6 +30,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ContainerRegistry/registries/credentialSets` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_credentialsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/credentialSets)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/replications` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/replications)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/scopeMaps` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_scopemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/scopeMaps)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tokens` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tokens.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/tokens)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/webhooks` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/webhooks)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
@@ -335,6 +336,15 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/myrepo/content/read'
+        ]
+        description: 'A test scope map'
+        name: 'crrmaxScopeMap'
+      }
+    ]
     softDeletePolicyDays: 7
     softDeletePolicyStatus: 'disabled'
     tags: {
@@ -342,6 +352,13 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    tokens: [
+      {
+        name: 'crrmaxToken'
+        scopeMapId: '<scopeMapId>'
+        status: 'enabled'
+      }
+    ]
     trustPolicyStatus: 'enabled'
     webhooks: [
       {
@@ -490,6 +507,17 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/myrepo/content/read"
+          ],
+          "description": "A test scope map",
+          "name": "crrmaxScopeMap"
+        }
+      ]
+    },
     "softDeletePolicyDays": {
       "value": 7
     },
@@ -502,6 +530,15 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "tokens": {
+      "value": [
+        {
+          "name": "crrmaxToken",
+          "scopeMapId": "<scopeMapId>",
+          "status": "enabled"
+        }
+      ]
     },
     "trustPolicyStatus": {
       "value": "enabled"
@@ -621,6 +658,15 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param scopeMaps = [
+  {
+    actions: [
+      'repositories/myrepo/content/read'
+    ]
+    description: 'A test scope map'
+    name: 'crrmaxScopeMap'
+  }
+]
 param softDeletePolicyDays = 7
 param softDeletePolicyStatus = 'disabled'
 param tags = {
@@ -628,6 +674,13 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param tokens = [
+  {
+    name: 'crrmaxToken'
+    scopeMapId: '<scopeMapId>'
+    status: 'enabled'
+  }
+]
 param trustPolicyStatus = 'enabled'
 param webhooks = [
   {
@@ -997,6 +1050,7 @@ param trustPolicyStatus = 'enabled'
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tokens`](#parameter-tokens) | array | Tokens to create for the container registry. |
 | [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
 | [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
@@ -2295,6 +2349,173 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `tokens`
+
+Tokens to create for the container registry.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokensname) | string | The name of the token. |
+| [`scopeMapId`](#parameter-tokensscopemapid) | string | The resource ID of the scope map to which the token will be associated with. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentials`](#parameter-tokenscredentials) | object | The credentials of the token, such as certificates and passwords. |
+| [`status`](#parameter-tokensstatus) | string | The status of the token. |
+
+### Parameter: `tokens.name`
+
+The name of the token.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.scopeMapId`
+
+The resource ID of the scope map to which the token will be associated with.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials`
+
+The credentials of the token, such as certificates and passwords.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificates`](#parameter-tokenscredentialscertificates) | array | The certificates associated with the token for authentication. |
+| [`passwords`](#parameter-tokenscredentialspasswords) | array | The passwords associated with the token for authentication. |
+
+### Parameter: `tokens.credentials.certificates`
+
+The certificates associated with the token for authentication.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokenscredentialscertificatesname) | string | The certificate name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`encodedPemCertificate`](#parameter-tokenscredentialscertificatesencodedpemcertificate) | string | Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token. |
+| [`expiry`](#parameter-tokenscredentialscertificatesexpiry) | string | The expiry datetime of the certificate. |
+| [`thumbprint`](#parameter-tokenscredentialscertificatesthumbprint) | string | The thumbprint of the certificate. |
+
+### Parameter: `tokens.credentials.certificates.name`
+
+The certificate name.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'certificate1'
+    'certificate2'
+  ]
+  ```
+
+### Parameter: `tokens.credentials.certificates.encodedPemCertificate`
+
+Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token.
+
+- Required: No
+- Type: string
+
+### Parameter: `tokens.credentials.certificates.expiry`
+
+The expiry datetime of the certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `tokens.credentials.certificates.thumbprint`
+
+The thumbprint of the certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `tokens.credentials.passwords`
+
+The passwords associated with the token for authentication.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokenscredentialspasswordsname) | string | The password name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`creationTime`](#parameter-tokenscredentialspasswordscreationtime) | string | The creation datetime of the password. |
+| [`expiry`](#parameter-tokenscredentialspasswordsexpiry) | string | The expiry datetime of the password. |
+
+### Parameter: `tokens.credentials.passwords.name`
+
+The password name.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'password1'
+    'password2'
+  ]
+  ```
+
+### Parameter: `tokens.credentials.passwords.creationTime`
+
+The creation datetime of the password.
+
+- Required: No
+- Type: string
+
+### Parameter: `tokens.credentials.passwords.expiry`
+
+The expiry datetime of the password.
+
+- Required: No
+- Type: string
+
+### Parameter: `tokens.status`
+
+The status of the token.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+    'enabled'
+  ]
+  ```
 
 ### Parameter: `trustPolicyStatus`
 

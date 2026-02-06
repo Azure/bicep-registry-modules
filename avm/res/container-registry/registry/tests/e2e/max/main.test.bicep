@@ -166,6 +166,22 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      scopeMaps: [
+        {
+          name: '${namePrefix}${serviceShort}ScopeMap'
+          actions: [
+            'repositories/myrepo/content/read'
+          ]
+          description: 'A test scope map'
+        }
+      ]
+      tokens: [
+        {
+          name: '${namePrefix}${serviceShort}Token'
+          scopeMapId: resourceId('Microsoft.ContainerRegistry/registries/scopeMaps', '${namePrefix}${serviceShort}001', '${namePrefix}${serviceShort}ScopeMap')
+          status: 'enabled'
+        }
+      ]
       trustPolicyStatus: 'enabled'
       webhooks: [
         {
