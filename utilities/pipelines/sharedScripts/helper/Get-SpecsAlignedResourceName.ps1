@@ -69,36 +69,42 @@ function Get-SpecsAlignedResourceName {
         [switch] $ForceCacheRefresh
     )
 
-    if (-not $ForceCacheRefresh) {
-        $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
-        $cacheFilePath = Join-Path $cacheFolderPath 'avm-apiSpecs.json'
-        $cacheExists = Test-Path $cacheFilePath
+    $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+    $cacheFilePath = Join-Path $cacheFolderPath 'avm-apiSpecs.json'
+    $cacheExists = Test-Path $cacheFilePath
 
-        if ($cacheExists) {
-            $fileInfo = Get-Item $cacheFilePath
-            $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
-            $cacheContent = Get-Content -Path $cacheFilePath
+    if (-not $cacheExists) {
+        $null = New-Item $cacheFilePath -ItemType 'File'
+    }
 
-            if (-not $cacheExpired -and $cacheContent.count -gt 0) {
-                Write-Verbose 'Fetch api specs from cache'
-                return ($cacheContent | ConvertFrom-Json -AsHashtable)
-            }
+    if ($ForceCacheRefresh) {
+        $fetchNewData = $true
+    } else {
+        $fileInfo = Get-Item $cacheFilePath
+        $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
+        $cacheContent = Get-Content -Path $cacheFilePath -Raw
+
+        if (-not $cacheExpired -and $cacheContent.count -gt 0) {
+            Write-Verbose 'Fetch api specs from cache'
+            $specs = ($cacheContent | ConvertFrom-Json -AsHashtable)
+            $fetchNewData = $false
         } else {
-            $null = New-Item $cacheFilePath -ItemType 'File'
+            $fetchNewData = $true
         }
     }
 
-    try {
-        $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
-        $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-    } catch {
-        Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
-        $specs = @{}
+    if ($fetchNewData) {
+        try {
+            $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
+            $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
+        } catch {
+            Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
+            $specs = @{}
+        }
+
+        Write-Verbose 'Caching api specs references'
+        $null = Set-Content -Path $cacheFilePath -Value ($specs | ConvertTo-Json)
     }
-
-
-    Write-Verbose 'Caching api specs references'
-    $null = Set-Content -Path $cacheFilePath -Value ($specs | ConvertTo-Json)
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
 

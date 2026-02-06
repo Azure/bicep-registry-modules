@@ -22,11 +22,11 @@ Describe 'Test ReadMe generation' {
         Mock Get-CrossReferencedModuleList { return ((Get-Content -Path (Join-Path $PSScriptRoot 'src' 'crossReferences.json')) | ConvertFrom-Json -AsHashtable) }
         Mock Invoke-WebRequest { return @{ Content = (Get-Content -Path (Join-Path $PSScriptRoot 'src' 'apiSpecs.json') -Raw) } } -ParameterFilter { $Uri -eq 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json' }
         Mock Test-Url { return $true }
-        Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -eq 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\README.md' }
+        Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -like '*\README.md' }
     }
 
 
-    It '[Classic module] Should run' {
+    It '[Parent module] Should run' {
 
         $inputObject = @{
             TemplateFilePath = 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\main.bicep'
@@ -34,7 +34,7 @@ Describe 'Test ReadMe generation' {
         Set-ModuleReadMe @inputObject
     }
 
-    It '[Classic module - Prepoulated] Should run' {
+    It '[Parent module - Prepoulated] Should run' {
 
         $templateFilePath = 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\main.bicep'
         $ModuleRoot = Split-Path $TemplateFilePath -Parent

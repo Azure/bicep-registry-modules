@@ -154,69 +154,71 @@ function Get-CrossReferencedModuleList {
         [switch] $ForceCacheRefresh
     )
 
-    # Caching
-    if (-not $ForceCacheRefresh) {
-        $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
-        $cacheFilePath = Join-Path $cacheFolderPath 'avm-crossReferences.json'
-        $cacheExists = Test-Path $cacheFilePath
+    $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+    $cacheFilePath = Join-Path $cacheFolderPath 'avm-crossReferences.json'
+    $cacheExists = Test-Path $cacheFilePath
 
-        if ($cacheExists) {
-            $fileInfo = Get-Item $cacheFilePath
-            $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
-            $cacheContent = Get-Content -Path $cacheFilePath
+    if (-not $cacheExists) {
+        $null = New-Item $cacheFilePath -ItemType 'File'
+    }
 
-            if (-not $cacheExpired -and $cacheContent.count -gt 0) {
-                Write-Verbose 'Fetch references from cache'
-                return ($cacheContent | ConvertFrom-Json -AsHashtable)
-            }
+    if ($ForceCacheRefresh) {
+        $fetchNewData = $true
+    } else {
+        if (-not $cacheExpired -and $cacheContent.count -gt 0) {
+            Write-Verbose 'Fetch references from cache'
+            $resultSet = ($cacheContent | ConvertFrom-Json -AsHashtable)
+            $fetchNewData = $false
         } else {
-            $null = New-Item $cacheFilePath -ItemType 'File'
+            $fetchNewData = $true
         }
     }
 
-    Write-Verbose 'Refreshing references'
-    # Fetch data
-    $repoRoot = ($Path -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[0]
-    $resultSet = [ordered]@{}
+    if ($fetchNewData) {
+        Write-Verbose 'Refreshing references'
+        # Fetch data
+        $repoRoot = ($Path -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[0]
+        $resultSet = [ordered]@{}
 
-    # Collect data
-    $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
-        # No files inthe [/utilities/tools/] folder and none in the [/tests/] folder
-        $_ -notmatch '.*[\\|\/]tools[\\|\/].*|.*[\\|\/]tests[\\|\/].*'
-    } | Sort-Object -Culture 'en-US'
-    $templateMap = @{}
-    foreach ($moduleTemplatePath in $moduleTemplatePaths) {
-        $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
-    }
-
-    # Process data
-    foreach ($moduleTemplatePath in $moduleTemplatePaths) {
-
-        $referenceObject = Get-ReferenceObject -ModuleTemplateFilePath $moduleTemplatePath -TemplateMap $templateMap
-
-        # Convert local absolute references to relative references
-        $referenceObject.localPathReferences = $referenceObject.localPathReferences | ForEach-Object {
-            $result = $_ -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '' # Remove root
-            $result = Split-Path $result -Parent # Use only folder name
-            $result = $result -replace '\\', '/' # Replaces slashes
-            return $result
+        # Collect data
+        $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
+            # No files inthe [/utilities/tools/] folder and none in the [/tests/] folder
+            $_ -notmatch '.*[\\|\/]tools[\\|\/].*|.*[\\|\/]tests[\\|\/].*'
+        } | Sort-Object -Culture 'en-US'
+        $templateMap = @{}
+        foreach ($moduleTemplatePath in $moduleTemplatePaths) {
+            $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
         }
 
-        $moduleFolderPath = Split-Path $moduleTemplatePath -Parent
-        ## avm/res/<provider>/<resourceType>
-        $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
+        # Process data
+        foreach ($moduleTemplatePath in $moduleTemplatePaths) {
 
-        # since the moduleTemplatePath can contain folders outside of modules, skip those
-        if ($resourceTypeIdentifier -ne '') {
-            $providerNamespace = ($resourceTypeIdentifier -split '[\/|\\]')[0]
-            $resourceType = $resourceTypeIdentifier.Substring($providerNamespace.Length + 1)
+            $referenceObject = Get-ReferenceObject -ModuleTemplateFilePath $moduleTemplatePath -TemplateMap $templateMap
 
-            $resultSet["$providerNamespace/$resourceType"] = $referenceObject
+            # Convert local absolute references to relative references
+            $referenceObject.localPathReferences = $referenceObject.localPathReferences | ForEach-Object {
+                $result = $_ -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '' # Remove root
+                $result = Split-Path $result -Parent # Use only folder name
+                $result = $result -replace '\\', '/' # Replaces slashes
+                return $result
+            }
+
+            $moduleFolderPath = Split-Path $moduleTemplatePath -Parent
+            ## avm/res/<provider>/<resourceType>
+            $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
+
+            # since the moduleTemplatePath can contain folders outside of modules, skip those
+            if ($resourceTypeIdentifier -ne '') {
+                $providerNamespace = ($resourceTypeIdentifier -split '[\/|\\]')[0]
+                $resourceType = $resourceTypeIdentifier.Substring($providerNamespace.Length + 1)
+
+                $resultSet["$providerNamespace/$resourceType"] = $referenceObject
+            }
         }
-    }
 
-    Write-Verbose 'Caching cross references'
-    $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
+        Write-Verbose 'Caching cross references'
+        $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
+    }
 
     return $resultSet
 }
