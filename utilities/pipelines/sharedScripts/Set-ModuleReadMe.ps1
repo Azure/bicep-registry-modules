@@ -2133,6 +2133,9 @@ Optional. Pre-Loaded content. May be used to reuse the same data for multiple in
 .PARAMETER ForceCacheRefresh
 Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
+.PARAMETER PassThru
+Optional. Instead of writing to disk, return the generated content
+
 .EXAMPLE
 Set-ModuleReadMe -TemplateFilePath 'C:\main.bicep'
 
@@ -2197,7 +2200,10 @@ function Set-ModuleReadMe {
         ),
 
         [Parameter()]
-        [switch] $ForceCacheRefresh
+        [switch] $ForceCacheRefresh,
+
+        [Parameter()]
+        [switch] $PassThru
     )
 
     # Load external functions
@@ -2394,15 +2400,19 @@ function Set-ModuleReadMe {
     Write-Verbose '============'
     Write-Verbose ($readMeFileContent | Out-String)
 
-    if (Test-Path $ReadMeFilePath) {
-        if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Overwrite')) {
-            Set-Content -Path $ReadMeFilePath -Value $readMeFileContent -Force -Encoding 'utf8'
+    if (-not $PassThru) {
+        if (Test-Path $ReadMeFilePath) {
+            if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Overwrite')) {
+                Set-Content -Path $ReadMeFilePath -Value $readMeFileContent -Force -Encoding 'utf8'
+            }
+            Write-Verbose "File [$ReadMeFilePath] updated" -Verbose
+        } else {
+            if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Create')) {
+                $null = New-Item -Path $ReadMeFilePath -Value ($readMeFileContent | Out-String) -Force
+            }
+            Write-Verbose "File [$ReadMeFilePath] created" -Verbose
         }
-        Write-Verbose "File [$ReadMeFilePath] updated" -Verbose
     } else {
-        if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Create')) {
-            $null = New-Item -Path $ReadMeFilePath -Value ($readMeFileContent | Out-String) -Force
-        }
-        Write-Verbose "File [$ReadMeFilePath] created" -Verbose
+        return ($readMeFileContent | Out-String)
     }
 }
