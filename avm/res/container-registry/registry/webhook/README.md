@@ -12,7 +12,7 @@ This module deploys an Azure Container Registry (ACR) Webhook.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/webhooks` | 2023-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/webhooks` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/webhooks)</li></ul> |
 
 ## Parameters
 
@@ -20,7 +20,7 @@ This module deploys an Azure Container Registry (ACR) Webhook.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`serviceUri`](#parameter-serviceuri) | string | The service URI for the webhook to post notifications. |
+| [`serviceUri`](#parameter-serviceuri) | securestring | The service URI for the webhook to post notifications. |
 
 **Conditional parameters**
 
@@ -45,7 +45,7 @@ This module deploys an Azure Container Registry (ACR) Webhook.
 The service URI for the webhook to post notifications.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `registryName`
 

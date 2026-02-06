@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "4665109513066459403"
+      "version": "0.40.2.10011",
+      "templateHash": "16033434815765796598"
     },
     "name": "Container Registries Cache",
     "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -50,12 +50,12 @@
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "cacheRule": {
       "type": "Microsoft.ContainerRegistry/registries/cacheRules",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
         "sourceRepository": "[parameters('sourceRepository')]",

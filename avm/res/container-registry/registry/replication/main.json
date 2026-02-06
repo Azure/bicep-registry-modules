@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "17284323635484812835"
+      "version": "0.40.2.10011",
+      "templateHash": "2091377699273142845"
     },
     "name": "Azure Container Registry (ACR) Replications",
     "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -61,12 +61,12 @@
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "replication": {
       "type": "Microsoft.ContainerRegistry/registries/replications",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -103,7 +103,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('replication', '2025-11-01', 'full').location]"
     }
   }
 }

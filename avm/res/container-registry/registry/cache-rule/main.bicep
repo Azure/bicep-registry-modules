@@ -16,11 +16,11 @@ param targetRepository string = sourceRepository
 @description('Optional. The resource ID of the credential store which is associated with the cache rule.')
 param credentialSetResourceId string?
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: registryName
 }
 
-resource cacheRule 'Microsoft.ContainerRegistry/registries/cacheRules@2023-06-01-preview' = {
+resource cacheRule 'Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01' = {
   name: name
   parent: registry
   properties: {
