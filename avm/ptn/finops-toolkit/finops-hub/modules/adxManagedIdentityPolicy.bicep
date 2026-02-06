@@ -49,7 +49,8 @@ param tags object = {}
 // ============================================================================
 
 // Generate a unique storage account name for deployment scripts
-var deploymentScriptStorageName = 'stds${uniqueString(resourceGroup().id, clusterName)}'
+// Name starts with 'dep' to match PSRule suppression rules for dependencies
+var deploymentScriptStorageName = 'dep${take(uniqueString(resourceGroup().id, clusterName), 21)}'
 
 // Reference the ADX cluster to get its URI
 resource cluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {

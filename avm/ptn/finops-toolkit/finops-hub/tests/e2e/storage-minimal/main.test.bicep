@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Storage Minimal'
+metadata description = 'This instance deploys the module with the minimum set of required parameters for storage-only mode.'
 
 // ========== //
 // Parameters //

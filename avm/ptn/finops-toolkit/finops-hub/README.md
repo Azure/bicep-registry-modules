@@ -92,10 +92,10 @@ The following section provides usage examples for the module, which were used to
 - [ADX with Managed Network](#example-1-adx-with-managed-network)
 - [Using Azure Data Explorer with minimal configuration](#example-2-using-azure-data-explorer-with-minimal-configuration)
 - [ADX WAF-aligned](#example-3-adx-waf-aligned)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using Microsoft Fabric with minimal configuration](#example-5-using-microsoft-fabric-with-minimal-configuration)
-- [Fabric WAF-aligned](#example-6-fabric-waf-aligned)
-- [Managed Network Isolation](#example-7-managed-network-isolation)
+- [Using Microsoft Fabric with minimal configuration](#example-4-using-microsoft-fabric-with-minimal-configuration)
+- [Fabric WAF-aligned](#example-5-fabric-waf-aligned)
+- [Managed Network Isolation](#example-6-managed-network-isolation)
+- [Storage Minimal](#example-7-storage-minimal)
 
 ### Example 1: _ADX with Managed Network_
 
@@ -498,104 +498,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  params: {
-    // Required parameters
-    hubName: 'fhmin'
-    // Non-required parameters
-    deploymentConfiguration: 'minimal'
-    deploymentType: 'storage-only'
-    enableTelemetry: true
-    location: '<location>'
-    tags: {
-      Environment: 'Development'
-      'hidden-title': 'FinOps Hub - Storage Only Test'
-      SecurityControl: 'Ignore'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubName": {
-      "value": "fhmin"
-    },
-    // Non-required parameters
-    "deploymentConfiguration": {
-      "value": "minimal"
-    },
-    "deploymentType": {
-      "value": "storage-only"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Development",
-        "hidden-title": "FinOps Hub - Storage Only Test",
-        "SecurityControl": "Ignore"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
-
-// Required parameters
-param hubName = 'fhmin'
-// Non-required parameters
-param deploymentConfiguration = 'minimal'
-param deploymentType = 'storage-only'
-param enableTelemetry = true
-param location = '<location>'
-param tags = {
-  Environment: 'Development'
-  'hidden-title': 'FinOps Hub - Storage Only Test'
-  SecurityControl: 'Ignore'
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Using Microsoft Fabric with minimal configuration_
+### Example 4: _Using Microsoft Fabric with minimal configuration_
 
 This instance deploys the module with Microsoft Fabric Eventhouse in a cost-effective dev/test configuration.
 
@@ -707,7 +610,7 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Fabric WAF-aligned_
+### Example 5: _Fabric WAF-aligned_
 
 This instance deploys the module with Microsoft Fabric Eventhouse in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.
 
@@ -850,7 +753,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Managed Network Isolation_
+### Example 6: _Managed Network Isolation_
 
 This instance deploys the module with networkIsolationMode=Managed, which creates a self-contained VNet, private endpoints, and DNS zones. This is the RECOMMENDED approach for production - enables clean upgrades without customization.
 
@@ -959,6 +862,103 @@ param tags = {
   Environment: 'Production'
   'hidden-title': 'FinOps Hub - Managed Network Isolation'
   NetworkMode: 'Managed'
+  SecurityControl: 'Ignore'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Storage Minimal_
+
+This instance deploys the module with the minimum set of required parameters for storage-only mode.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/storage-minimal]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  params: {
+    // Required parameters
+    hubName: 'fhmin'
+    // Non-required parameters
+    deploymentConfiguration: 'minimal'
+    deploymentType: 'storage-only'
+    enableTelemetry: true
+    location: '<location>'
+    tags: {
+      Environment: 'Development'
+      'hidden-title': 'FinOps Hub - Storage Only Test'
+      SecurityControl: 'Ignore'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "hubName": {
+      "value": "fhmin"
+    },
+    // Non-required parameters
+    "deploymentConfiguration": {
+      "value": "minimal"
+    },
+    "deploymentType": {
+      "value": "storage-only"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Development",
+        "hidden-title": "FinOps Hub - Storage Only Test",
+        "SecurityControl": "Ignore"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
+
+// Required parameters
+param hubName = 'fhmin'
+// Non-required parameters
+param deploymentConfiguration = 'minimal'
+param deploymentType = 'storage-only'
+param enableTelemetry = true
+param location = '<location>'
+param tags = {
+  Environment: 'Development'
+  'hidden-title': 'FinOps Hub - Storage Only Test'
   SecurityControl: 'Ignore'
 }
 ```
