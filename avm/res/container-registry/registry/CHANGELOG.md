@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Updated API versions for container registry resources to latest preview versions.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### Changes
