@@ -81,7 +81,8 @@ module testDeployment '../../../main.bicep' = [
       enablePrivateDnsZoneGroups: true
       
       // ADX admin access for testing
-      adxAdminPrincipalIds: !empty(deployerPrincipalId) ? [deployerPrincipalId] : []
+      adxAdminPrincipalIds: []
+      deployerPrincipalId: deployerPrincipalId
       
       // Telemetry
       enableTelemetry: true

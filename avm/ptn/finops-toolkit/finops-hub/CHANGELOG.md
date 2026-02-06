@@ -2,9 +2,9 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/finops-toolkit/finops-hub/CHANGELOG.md).
 
-## 1.0.0
+## 0.1.0
 
-### New Features
+### Changes
 
 - Complete rewrite using Azure Verified Modules (AVM) resource modules
 - Support for three deployment types: `storage-only`, `adx` (Azure Data Explorer), `fabric` (Microsoft Fabric)

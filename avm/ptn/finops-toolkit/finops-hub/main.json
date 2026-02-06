@@ -6,11 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "13430808836754002940"
+      "templateHash": "18118974350748080514"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "owner": "FinOps Team"
   },
   "definitions": {
@@ -426,35 +426,35 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DEPRECATED: Use networkIsolationMode=\"BringYourOwn\" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints."
+        "description": "Optional. DEPRECATED: Use networkIsolationMode=\"BringYourOwn\" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints."
       }
     },
     "storageBlobPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DEPRECATED: Use byoBlobDnsZoneId instead."
+        "description": "Optional. DEPRECATED: Use byoBlobDnsZoneId instead."
       }
     },
     "storageDfsPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DEPRECATED: Use byoDfsDnsZoneId instead."
+        "description": "Optional. DEPRECATED: Use byoDfsDnsZoneId instead."
       }
     },
     "keyVaultPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DEPRECATED: Use byoVaultDnsZoneId instead."
+        "description": "Optional. DEPRECATED: Use byoVaultDnsZoneId instead."
       }
     },
     "dataFactoryPrivateDnsZoneId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DEPRECATED: Use byoDataFactoryDnsZoneId instead."
+        "description": "Optional. DEPRECATED: Use byoDataFactoryDnsZoneId instead."
       }
     },
     "tags": {
@@ -556,7 +556,7 @@
       "ingestion"
     ],
     "ftkVersion": "0.7.0",
-    "hubModuleVersion": "1.0.0",
+    "hubModuleVersion": "0.1.0",
     "allTags": "[union(parameters('tags'), createObject('cm-resource-parent', parameters('hubName'), 'ftk-version', variables('ftkVersion'), 'ftk-hub-module', variables('hubModuleVersion'), 'deployment-configuration', parameters('deploymentConfiguration')))]"
   },
   "resources": {

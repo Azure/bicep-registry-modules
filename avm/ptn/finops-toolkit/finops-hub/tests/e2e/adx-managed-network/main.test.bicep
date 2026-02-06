@@ -78,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
       networkIsolationMode: 'Managed'
       
       // ADX admin access for testing
-      adxAdminPrincipalIds: !empty(deployerPrincipalId) ? [deployerPrincipalId] : []
+      adxAdminPrincipalIds: []
       deployerPrincipalId: deployerPrincipalId
       
       // Telemetry

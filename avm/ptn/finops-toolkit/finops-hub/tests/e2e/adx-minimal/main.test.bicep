@@ -53,7 +53,8 @@ module testDeployment '../../../main.bicep' = [
       dataExplorerClusterName: '${namePrefix}${serviceShort}adx'
       enableTelemetry: true
       // Grant deployer access to ADX for testing/verification
-      adxAdminPrincipalIds: !empty(deployerPrincipalId) ? [deployerPrincipalId] : []
+      adxAdminPrincipalIds: []
+      deployerPrincipalId: deployerPrincipalId
       // Use Dev SKU for testing - cheapest option with modern AMD EPYC v4 hardware
       // Standard_E2a_v4: 2 vCPUs, 16GB RAM, ~$0.15/hr (cheaper than D11_v2)
       dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'

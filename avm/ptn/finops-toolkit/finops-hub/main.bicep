@@ -8,7 +8,7 @@
 
 metadata name = 'FinOps Hub'
 metadata description = 'Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.'
-metadata version = '1.0.0'
+metadata version = '0.1.0'
 metadata owner = 'FinOps Team'
 
 targetScope = 'resourceGroup'
@@ -150,19 +150,19 @@ param enablePrivateDnsZoneGroups bool = true
 
 // --- Legacy Parameters (Deprecated - use networkIsolationMode instead) ---
 // These are kept for backward compatibility but will be removed in v2.0
-@description('DEPRECATED: Use networkIsolationMode="BringYourOwn" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints.')
+@description('Optional. DEPRECATED: Use networkIsolationMode="BringYourOwn" with byoSubnetResourceId instead. Resource ID of the subnet for private endpoints.')
 param privateEndpointSubnetId string = ''
 
-@description('DEPRECATED: Use byoBlobDnsZoneId instead.')
+@description('Optional. DEPRECATED: Use byoBlobDnsZoneId instead.')
 param storageBlobPrivateDnsZoneId string = ''
 
-@description('DEPRECATED: Use byoDfsDnsZoneId instead.')
+@description('Optional. DEPRECATED: Use byoDfsDnsZoneId instead.')
 param storageDfsPrivateDnsZoneId string = ''
 
-@description('DEPRECATED: Use byoVaultDnsZoneId instead.')
+@description('Optional. DEPRECATED: Use byoVaultDnsZoneId instead.')
 param keyVaultPrivateDnsZoneId string = ''
 
-@description('DEPRECATED: Use byoDataFactoryDnsZoneId instead.')
+@description('Optional. DEPRECATED: Use byoDataFactoryDnsZoneId instead.')
 param dataFactoryPrivateDnsZoneId string = ''
 
 // --- Tagging ---
@@ -261,7 +261,7 @@ var containers = ['config', 'msexports', 'ingestion']
 
 // Version tracking
 var ftkVersion = '0.7.0'
-var hubModuleVersion = '1.0.0'
+var hubModuleVersion = '0.1.0'
 
 // Merged tags with FinOps Hub identifier
 var allTags = union(tags, {
