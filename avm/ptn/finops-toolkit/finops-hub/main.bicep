@@ -8,7 +8,7 @@
 
 metadata name = 'FinOps Hub'
 metadata description = 'Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.'
-metadata version = '0.1.0'
+metadata version = '0.2.0'
 metadata owner = 'FinOps Team'
 
 targetScope = 'resourceGroup'
@@ -261,7 +261,7 @@ var containers = ['config', 'msexports', 'ingestion']
 
 // Version tracking
 var ftkVersion = '0.7.0'
-var hubModuleVersion = '0.1.0'
+var hubModuleVersion = '0.2.0'
 
 // Merged tags with FinOps Hub identifier
 var allTags = union(tags, {
