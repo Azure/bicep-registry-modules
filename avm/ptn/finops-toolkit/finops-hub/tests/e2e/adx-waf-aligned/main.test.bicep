@@ -14,6 +14,10 @@ param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-r
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+// Enforced location for ADX tests - Italy North has broad SKU availability
+// This avoids SKU availability issues in capacity-constrained regions
+var enforcedLocation = 'italynorth'
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fhaxw'
 
@@ -31,15 +35,15 @@ param deployerPrincipalId string = ''
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // Deploy networking dependencies (VNet, subnets, private DNS zones)
 module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-dependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-dependencies'
   params: {
-    location: resourceLocation
+    location: enforcedLocation
     namePrefix: '${namePrefix}${serviceShort}'
   }
 }
@@ -52,12 +56,12 @@ module dependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // Required parameters
       hubName: '${namePrefix}${serviceShort}'
       // Non-required parameters
-      location: resourceLocation
+      location: enforcedLocation
       
       // WAF-aligned configuration with ADX
       deploymentConfiguration: 'waf-aligned'
