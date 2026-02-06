@@ -115,6 +115,10 @@ As an output you will receive a hashtable that (for each provider namespace) lis
 .PARAMETER Path
 Optional. The path to search in. Defaults to the 'res' folder.
 
+.PARAMETER UseCache
+Optional. Define whether or not to cache the result of this function in a temporal file stored on disk. Defaults to true.
+The cache expires after 1 day.
+
 .EXAMPLE
 Get-CrossReferencedModuleList
 
@@ -145,9 +149,34 @@ function Get-CrossReferencedModuleList {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
+        [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent,
+
+        [Parameter()]
+        [bool] $UseCache = $true
     )
 
+    # Caching
+    if ($UseCache) {
+        $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+        $cacheFilePath = Join-Path $cacheFolderPath 'avm-crossReferences.json'
+        $cacheExists = Test-Path $cacheFilePath
+
+        if ($cacheExists) {
+            $fileInfo = Get-Item $cacheFilePath
+            $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
+            $cacheContent = Get-Content -Path $cacheFilePath
+
+            if (-not $cacheExpired -and $cacheContent.count -gt 0) {
+                Write-Verbose 'Fetch references from cache'
+                return ($cacheContent | ConvertFrom-Json -AsHashtable)
+            }
+        } else {
+            $null = New-Item $cacheFilePath -ItemType 'File'
+        }
+    }
+
+    Write-Verbose 'Refreshing references'
+    # Fetch data
     $repoRoot = ($Path -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[0]
     $resultSet = [ordered]@{}
 
@@ -185,6 +214,11 @@ function Get-CrossReferencedModuleList {
 
             $resultSet["$providerNamespace/$resourceType"] = $referenceObject
         }
+    }
+
+    if ($UseCache) {
+        Write-Verbose 'Caching cross references'
+        $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
     }
 
     return $resultSet
