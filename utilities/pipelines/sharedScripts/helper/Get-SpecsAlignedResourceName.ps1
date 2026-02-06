@@ -47,6 +47,9 @@ Mandatory. The resource identifier to search for.
 .PARAMETER SpecsFilePath
 Optional. The path to the specs file that contains all available provider namespaces & resource types. Defaults to 'utilities/src/apiSpecsList.json'.
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Get-SpecsAlignedResourceName -ResourceIdentifier 'virtual-machine-images/image-template'.
 
@@ -60,8 +63,30 @@ function Get-SpecsAlignedResourceName {
         [string] $ResourceIdentifier,
 
         [Parameter(Mandatory = $false)]
-        [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
+        [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json',
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
+
+    if (-not $ForceCacheRefresh) {
+        $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+        $cacheFilePath = Join-Path $cacheFolderPath 'avm-apiSpecs.json'
+        $cacheExists = Test-Path $cacheFilePath
+
+        if ($cacheExists) {
+            $fileInfo = Get-Item $cacheFilePath
+            $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
+            $cacheContent = Get-Content -Path $cacheFilePath
+
+            if (-not $cacheExpired -and $cacheContent.count -gt 0) {
+                Write-Verbose 'Fetch api specs from cache'
+                return ($cacheContent | ConvertFrom-Json -AsHashtable)
+            }
+        } else {
+            $null = New-Item $cacheFilePath -ItemType 'File'
+        }
+    }
 
     try {
         $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
@@ -70,6 +95,10 @@ function Get-SpecsAlignedResourceName {
         Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
         $specs = @{}
     }
+
+
+    Write-Verbose 'Caching api specs references'
+    $null = Set-Content -Path $cacheFilePath -Value ($specs | ConvertTo-Json)
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
 

@@ -115,9 +115,8 @@ As an output you will receive a hashtable that (for each provider namespace) lis
 .PARAMETER Path
 Optional. The path to search in. Defaults to the 'res' folder.
 
-.PARAMETER UseCache
-Optional. Define whether or not to cache the result of this function in a temporal file stored on disk. Defaults to true.
-The cache expires after 1 day.
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
 .EXAMPLE
 Get-CrossReferencedModuleList
@@ -152,11 +151,11 @@ function Get-CrossReferencedModuleList {
         [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent,
 
         [Parameter()]
-        [bool] $UseCache = $true
+        [switch] $ForceCacheRefresh
     )
 
     # Caching
-    if ($UseCache) {
+    if (-not $ForceCacheRefresh) {
         $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
         $cacheFilePath = Join-Path $cacheFolderPath 'avm-crossReferences.json'
         $cacheExists = Test-Path $cacheFilePath
@@ -216,10 +215,8 @@ function Get-CrossReferencedModuleList {
         }
     }
 
-    if ($UseCache) {
-        Write-Verbose 'Caching cross references'
-        $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
-    }
+    Write-Verbose 'Caching cross references'
+    $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
 
     return $resultSet
 }
