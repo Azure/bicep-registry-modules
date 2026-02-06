@@ -112,10 +112,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhadm'
+    hubName: '<hubName>'
     // Non-required parameters
     adxAdminPrincipalIds: []
-    dataExplorerClusterName: 'fhadmadx'
+    dataExplorerClusterName: '<dataExplorerClusterName>'
     deployerPrincipalId: '<deployerPrincipalId>'
     deploymentConfiguration: 'waf-aligned'
     deploymentType: 'adx'
@@ -148,14 +148,14 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhadm"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "adxAdminPrincipalIds": {
       "value": []
     },
     "dataExplorerClusterName": {
-      "value": "fhadmadx"
+      "value": "<dataExplorerClusterName>"
     },
     "deployerPrincipalId": {
       "value": "<deployerPrincipalId>"
@@ -200,10 +200,10 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhadm'
+param hubName = '<hubName>'
 // Non-required parameters
 param adxAdminPrincipalIds = []
-param dataExplorerClusterName = 'fhadmadx'
+param dataExplorerClusterName = '<dataExplorerClusterName>'
 param deployerPrincipalId = '<deployerPrincipalId>'
 param deploymentConfiguration = 'waf-aligned'
 param deploymentType = 'adx'
@@ -238,11 +238,11 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhadx'
+    hubName: '<hubName>'
     // Non-required parameters
     adxAdminPrincipalIds: []
     dataExplorerCapacity: 1
-    dataExplorerClusterName: 'fhadxadx'
+    dataExplorerClusterName: '<dataExplorerClusterName>'
     dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'
     deployerPrincipalId: '<deployerPrincipalId>'
     deploymentConfiguration: 'minimal'
@@ -272,7 +272,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhadx"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "adxAdminPrincipalIds": {
@@ -282,7 +282,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": 1
     },
     "dataExplorerClusterName": {
-      "value": "fhadxadx"
+      "value": "<dataExplorerClusterName>"
     },
     "dataExplorerSku": {
       "value": "Dev(No SLA)_Standard_E2a_v4"
@@ -324,11 +324,11 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhadx'
+param hubName = '<hubName>'
 // Non-required parameters
 param adxAdminPrincipalIds = []
 param dataExplorerCapacity = 1
-param dataExplorerClusterName = 'fhadxadx'
+param dataExplorerClusterName = '<dataExplorerClusterName>'
 param dataExplorerSku = 'Dev(No SLA)_Standard_E2a_v4'
 param deployerPrincipalId = '<deployerPrincipalId>'
 param deploymentConfiguration = 'minimal'
@@ -360,7 +360,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhaxw'
+    hubName: '<hubName>'
     // Non-required parameters
     adxAdminPrincipalIds: []
     byoBlobDnsZoneId: '<byoBlobDnsZoneId>'
@@ -368,7 +368,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     byoDfsDnsZoneId: '<byoDfsDnsZoneId>'
     byoSubnetResourceId: '<byoSubnetResourceId>'
     byoVaultDnsZoneId: '<byoVaultDnsZoneId>'
-    dataExplorerClusterName: 'fhaxwadx'
+    dataExplorerClusterName: '<dataExplorerClusterName>'
     deployerPrincipalId: '<deployerPrincipalId>'
     deploymentConfiguration: 'waf-aligned'
     deploymentType: 'adx'
@@ -401,7 +401,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhaxw"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "adxAdminPrincipalIds": {
@@ -423,7 +423,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "<byoVaultDnsZoneId>"
     },
     "dataExplorerClusterName": {
-      "value": "fhaxwadx"
+      "value": "<dataExplorerClusterName>"
     },
     "deployerPrincipalId": {
       "value": "<deployerPrincipalId>"
@@ -470,7 +470,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhaxw'
+param hubName = '<hubName>'
 // Non-required parameters
 param adxAdminPrincipalIds = []
 param byoBlobDnsZoneId = '<byoBlobDnsZoneId>'
@@ -478,7 +478,7 @@ param byoDataFactoryDnsZoneId = '<byoDataFactoryDnsZoneId>'
 param byoDfsDnsZoneId = '<byoDfsDnsZoneId>'
 param byoSubnetResourceId = '<byoSubnetResourceId>'
 param byoVaultDnsZoneId = '<byoVaultDnsZoneId>'
-param dataExplorerClusterName = 'fhaxwadx'
+param dataExplorerClusterName = '<dataExplorerClusterName>'
 param deployerPrincipalId = '<deployerPrincipalId>'
 param deploymentConfiguration = 'waf-aligned'
 param deploymentType = 'adx'
@@ -513,7 +513,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhfab'
+    hubName: '<hubName>'
     // Non-required parameters
     deploymentConfiguration: 'minimal'
     deploymentType: 'fabric'
@@ -545,7 +545,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhfab"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "deploymentConfiguration": {
@@ -591,7 +591,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhfab'
+param hubName = '<hubName>'
 // Non-required parameters
 param deploymentConfiguration = 'minimal'
 param deploymentType = 'fabric'
@@ -625,7 +625,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhfaw'
+    hubName: '<hubName>'
     // Non-required parameters
     dataFactoryPrivateDnsZoneId: '<dataFactoryPrivateDnsZoneId>'
     deploymentConfiguration: 'waf-aligned'
@@ -664,7 +664,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhfaw"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "dataFactoryPrivateDnsZoneId": {
@@ -727,7 +727,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhfaw'
+param hubName = '<hubName>'
 // Non-required parameters
 param dataFactoryPrivateDnsZoneId = '<dataFactoryPrivateDnsZoneId>'
 param deploymentConfiguration = 'waf-aligned'
@@ -768,7 +768,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhmng'
+    hubName: '<hubName>'
     // Non-required parameters
     deployerPrincipalId: '<deployerPrincipalId>'
     deploymentConfiguration: 'waf-aligned'
@@ -802,7 +802,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhmng"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "deployerPrincipalId": {
@@ -848,7 +848,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhmng'
+param hubName = '<hubName>'
 // Non-required parameters
 param deployerPrincipalId = '<deployerPrincipalId>'
 param deploymentConfiguration = 'waf-aligned'
@@ -884,7 +884,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   params: {
     // Required parameters
-    hubName: 'fhmin'
+    hubName: '<hubName>'
     // Non-required parameters
     deploymentConfiguration: 'minimal'
     deploymentType: 'storage-only'
@@ -913,7 +913,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
   "parameters": {
     // Required parameters
     "hubName": {
-      "value": "fhmin"
+      "value": "<hubName>"
     },
     // Non-required parameters
     "deploymentConfiguration": {
@@ -950,7 +950,7 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
 using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 
 // Required parameters
-param hubName = 'fhmin'
+param hubName = '<hubName>'
 // Non-required parameters
 param deploymentConfiguration = 'minimal'
 param deploymentType = 'storage-only'
