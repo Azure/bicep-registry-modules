@@ -874,6 +874,7 @@ module startTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManage
 
 // --- ADX Managed Identity Policy ---
 // Required for native ingestion (managed_identity=system)
+// Note: This deployment script waits up to 13 minutes for AAD permission propagation
 module adxManagedIdentityPolicy 'modules/adxManagedIdentityPolicy.bicep' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx-mi-policy'
   dependsOn: [

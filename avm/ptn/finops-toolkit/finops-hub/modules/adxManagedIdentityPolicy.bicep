@@ -38,8 +38,8 @@ param managedIdentityResourceId string
 @description('Optional. Force script to run even if nothing changed. Use utcNow() when calling.')
 param forceUpdateTag string = utcNow()
 
-@description('Optional. Timeout for the script execution. Allows 2 min initial wait + 20 retries × 15s = 7 min.')
-param timeout string = 'PT15M'
+@description('Optional. Timeout for the script execution. Allows 3 min initial wait + 30 retries × 20s = 13 min.')
+param timeout string = 'PT20M'
 
 @description('Optional. Tags to apply to resources.')
 param tags object = {}
@@ -103,10 +103,11 @@ $ErrorActionPreference = 'Stop'
 $clusterUri = $env:CLUSTER_URI
 $subId = $env:SUBSCRIPTION_ID
 
-# Retry configuration - ADX principal assignments can take 2-5 minutes to propagate
-$maxRetries = 20
-$retryDelaySeconds = 15
-$initialWaitSeconds = 120  # Wait 2 minutes before first attempt for permission propagation
+// Retry configuration - ADX principal assignments can take 5-10 minutes to propagate
+# Increased from 20×15s to 30×20s for better handling of slow AAD propagation in CI
+$maxRetries = 30
+$retryDelaySeconds = 20
+$initialWaitSeconds = 180  # Wait 3 minutes before first attempt for permission propagation
 
 Write-Output "=== Configure ADX Managed Identity Policy ==="
 Write-Output "Cluster URI: $clusterUri"
