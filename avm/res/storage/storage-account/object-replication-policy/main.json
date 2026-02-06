@@ -1,0 +1,581 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "3528396711847214833"
+    },
+    "name": "Storage Account Object Replication Policy",
+    "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
+  },
+  "definitions": {
+    "objectReplicationPolicyRuleType": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+          }
+        },
+        "containerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the source container."
+          }
+        },
+        "destinationContainerName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+          }
+        },
+        "filters": {
+          "type": "object",
+          "properties": {
+            "prefixMatch": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The prefix to match for the replication policy rule."
+              }
+            },
+            "minCreationTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The minimum creation time to match for the replication policy rule."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The filters for the object replication policy rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of an object replication policy rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "policy/main.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Name of the policy."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Required. The name of the parent Storage Account."
+      }
+    },
+    "destinationAccountResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the destination storage account for replication."
+      }
+    },
+    "enableMetrics": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Whether metrics are enabled for the object replication policy."
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/objectReplicationPolicyRuleType"
+      },
+      "metadata": {
+        "description": "Required. Rules for the object replication policy."
+      }
+    }
+  },
+  "variables": {
+    "destAccountResourceIdParts": "[split(parameters('destinationAccountResourceId'), '/')]",
+    "destAccountName": "[if(not(empty(variables('destAccountResourceIdParts'))), last(variables('destAccountResourceIdParts')), parameters('destinationAccountResourceId'))]",
+    "destAccountSubscription": "[if(greater(length(variables('destAccountResourceIdParts')), 2), variables('destAccountResourceIdParts')[2], subscription().subscriptionId)]",
+    "destAccountResourceGroupName": "[if(greater(length(variables('destAccountResourceIdParts')), 4), variables('destAccountResourceIdParts')[4], resourceGroup().name)]"
+  },
+  "resources": {
+    "storageAccount": {
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "name": "[parameters('storageAccountName')]"
+    },
+    "destinationPolicy": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('{0}-ObjRep-Policy-dest-{1}', deployment().name, variables('destAccountName')), 64)]",
+      "subscriptionId": "[variables('destAccountSubscription')]",
+      "resourceGroup": "[variables('destAccountResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('name'), 'default')]"
+          },
+          "storageAccountName": {
+            "value": "[variables('destAccountName')]"
+          },
+          "sourceStorageAccountResourceId": {
+            "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+          },
+          "destinationAccountResourceId": {
+            "value": "[parameters('destinationAccountResourceId')]"
+          },
+          "enableMetrics": {
+            "value": "[parameters('enableMetrics')]"
+          },
+          "rules": {
+            "value": "[parameters('rules')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "4325417308313318683"
+            },
+            "name": "Storage Account Object Replication Policy",
+            "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
+          },
+          "definitions": {
+            "objectReplicationPolicyRuleType": {
+              "type": "object",
+              "properties": {
+                "ruleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                  }
+                },
+                "containerName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the source container."
+                  }
+                },
+                "destinationContainerName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+                  }
+                },
+                "filters": {
+                  "type": "object",
+                  "properties": {
+                    "prefixMatch": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The prefix to match for the replication policy rule."
+                      }
+                    },
+                    "minCreationTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The minimum creation time to match for the replication policy rule."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The filters for the object replication policy rule."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of an object replication policy rule."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the policy."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "maxLength": 24,
+              "metadata": {
+                "description": "Required. The name of the Storage Account on which to create the policy."
+              }
+            },
+            "sourceStorageAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the source storage account for replication."
+              }
+            },
+            "destinationAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the destination storage account for replication."
+              }
+            },
+            "enableMetrics": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether metrics are enabled for the object replication policy."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/objectReplicationPolicyRuleType"
+              },
+              "metadata": {
+                "description": "Required. Rules for the object replication policy."
+              }
+            }
+          },
+          "resources": {
+            "storageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-01-01",
+              "name": "[parameters('storageAccountName')]"
+            },
+            "objectReplicationPolicy": {
+              "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "rules",
+                    "count": "[length(parameters('rules'))]",
+                    "input": {
+                      "ruleId": "[tryGet(parameters('rules')[copyIndex('rules')], 'ruleId')]",
+                      "sourceContainer": "[parameters('rules')[copyIndex('rules')].containerName]",
+                      "destinationContainer": "[coalesce(tryGet(parameters('rules')[copyIndex('rules')], 'destinationContainerName'), parameters('rules')[copyIndex('rules')].containerName)]",
+                      "filters": "[if(not(equals(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), null())), createObject('prefixMatch', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'prefixMatch'), 'minCreationTime', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'minCreationTime')), null())]"
+                    }
+                  }
+                ],
+                "destinationAccount": "[parameters('destinationAccountResourceId')]",
+                "metrics": {
+                  "enabled": "[coalesce(parameters('enableMetrics'), false())]"
+                },
+                "sourceAccount": "[parameters('sourceStorageAccountResourceId')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource group name of the provisioned resources."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "objectReplicationPolicyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the created Object Replication Policy."
+              },
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+            },
+            "policyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy ID of the created Object Replication Policy."
+              },
+              "value": "[reference('objectReplicationPolicy').policyId]"
+            },
+            "rules": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01#properties/properties/properties/rules",
+                  "output": true
+                },
+                "description": "Rules created Object Replication Policy."
+              },
+              "value": "[reference('objectReplicationPolicy').rules]"
+            }
+          }
+        }
+      }
+    },
+    "sourcePolicy": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('{0}-ObjRep-Policy-source-{1}', deployment().name, parameters('storageAccountName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[reference('destinationPolicy').outputs.policyId.value]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "sourceStorageAccountResourceId": {
+            "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+          },
+          "destinationAccountResourceId": {
+            "value": "[parameters('destinationAccountResourceId')]"
+          },
+          "enableMetrics": {
+            "value": "[parameters('enableMetrics')]"
+          },
+          "rules": {
+            "copy": [
+              {
+                "name": "value",
+                "count": "[length(parameters('rules'))]",
+                "input": "[union(parameters('rules')[copyIndex('value')], createObject('ruleId', reference('destinationPolicy').outputs.rules.value[copyIndex('value')].ruleId))]"
+              }
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "4325417308313318683"
+            },
+            "name": "Storage Account Object Replication Policy",
+            "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
+          },
+          "definitions": {
+            "objectReplicationPolicyRuleType": {
+              "type": "object",
+              "properties": {
+                "ruleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ID of the rule. Auto-generated on destination account. Required for source account."
+                  }
+                },
+                "containerName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the source container."
+                  }
+                },
+                "destinationContainerName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the destination container. If not provided, the same name as the source container will be used."
+                  }
+                },
+                "filters": {
+                  "type": "object",
+                  "properties": {
+                    "prefixMatch": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The prefix to match for the replication policy rule."
+                      }
+                    },
+                    "minCreationTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The minimum creation time to match for the replication policy rule."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The filters for the object replication policy rule."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of an object replication policy rule."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the policy."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "maxLength": 24,
+              "metadata": {
+                "description": "Required. The name of the Storage Account on which to create the policy."
+              }
+            },
+            "sourceStorageAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the source storage account for replication."
+              }
+            },
+            "destinationAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the destination storage account for replication."
+              }
+            },
+            "enableMetrics": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether metrics are enabled for the object replication policy."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/objectReplicationPolicyRuleType"
+              },
+              "metadata": {
+                "description": "Required. Rules for the object replication policy."
+              }
+            }
+          },
+          "resources": {
+            "storageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2025-01-01",
+              "name": "[parameters('storageAccountName')]"
+            },
+            "objectReplicationPolicy": {
+              "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "rules",
+                    "count": "[length(parameters('rules'))]",
+                    "input": {
+                      "ruleId": "[tryGet(parameters('rules')[copyIndex('rules')], 'ruleId')]",
+                      "sourceContainer": "[parameters('rules')[copyIndex('rules')].containerName]",
+                      "destinationContainer": "[coalesce(tryGet(parameters('rules')[copyIndex('rules')], 'destinationContainerName'), parameters('rules')[copyIndex('rules')].containerName)]",
+                      "filters": "[if(not(equals(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), null())), createObject('prefixMatch', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'prefixMatch'), 'minCreationTime', tryGet(tryGet(parameters('rules')[copyIndex('rules')], 'filters'), 'minCreationTime')), null())]"
+                    }
+                  }
+                ],
+                "destinationAccount": "[parameters('destinationAccountResourceId')]",
+                "metrics": {
+                  "enabled": "[coalesce(parameters('enableMetrics'), false())]"
+                },
+                "sourceAccount": "[parameters('sourceStorageAccountResourceId')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource group name of the provisioned resources."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "objectReplicationPolicyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of the created Object Replication Policy."
+              },
+              "value": "[resourceId('Microsoft.Storage/storageAccounts/objectReplicationPolicies', parameters('storageAccountName'), parameters('name'))]"
+            },
+            "policyId": {
+              "type": "string",
+              "metadata": {
+                "description": "Policy ID of the created Object Replication Policy."
+              },
+              "value": "[reference('objectReplicationPolicy').policyId]"
+            },
+            "rules": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Storage/storageAccounts/objectReplicationPolicies@2025-01-01#properties/properties/properties/rules",
+                  "output": true
+                },
+                "description": "Rules created Object Replication Policy."
+              },
+              "value": "[reference('objectReplicationPolicy').rules]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "destinationPolicy"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group name of the provisioned resources."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "objectReplicationPolicyId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the created Object Replication Policy in the source account."
+      },
+      "value": "[reference('sourcePolicy').outputs.objectReplicationPolicyId.value]"
+    },
+    "policyId": {
+      "type": "string",
+      "metadata": {
+        "description": "Policy ID of the created Object Replication Policy in the source account."
+      },
+      "value": "[reference('sourcePolicy').outputs.policyId.value]"
+    }
+  }
+}

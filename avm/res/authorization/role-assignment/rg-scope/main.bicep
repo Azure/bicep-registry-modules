@@ -1,5 +1,5 @@
 metadata name = 'Role Assignments (Resource Group scope)'
-metadata description = 'This module deploys a Role Assignment to a Resource Group scope.'
+metadata description = 'This module deploys a Role Assignment at a Resource Group scope.'
 
 @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param name string?

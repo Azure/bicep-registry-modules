@@ -1,13 +1,21 @@
 # Registration Definitions `[Microsoft.ManagedServices/registrationDefinitions]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
 This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
 This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
 The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.
+
+You can reference the module as follows:
+```bicep
+module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -41,6 +49,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -48,7 +58,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
-  name: 'registrationDefinitionDeployment'
   params: {
     // Required parameters
     authorizations: [
@@ -147,6 +156,8 @@ param metadataLocation = '<metadataLocation>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -154,7 +165,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
-  name: 'registrationDefinitionDeployment'
   params: {
     // Required parameters
     authorizations: [
@@ -285,6 +295,8 @@ param registrationId = '<registrationId>'
 
 This instance deploys the module on a resource group.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg]
+
 
 <details>
 
@@ -292,7 +304,6 @@ This instance deploys the module on a resource group.
 
 ```bicep
 module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
-  name: 'registrationDefinitionDeployment'
   params: {
     // Required parameters
     authorizations: [
@@ -401,6 +412,8 @@ param resourceGroupName = '<resourceGroupName>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -408,7 +421,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module registrationDefinition 'br/public:avm/res/managed-services/registration-definition:<version>' = {
-  name: 'registrationDefinitionDeployment'
   params: {
     // Required parameters
     authorizations: [
@@ -646,4 +658,4 @@ Specify the name of the Resource Group to delegate access to. If not provided, d
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

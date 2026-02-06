@@ -13,11 +13,11 @@ param endIpAddress string
 @description('Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.')
 param flexibleServerName string
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' existing = {
   name: flexibleServerName
 }
 
-resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
+resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2025-06-01-preview' = {
   name: name
   parent: flexibleServer
   properties: {

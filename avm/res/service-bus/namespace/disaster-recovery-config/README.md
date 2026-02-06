@@ -12,7 +12,7 @@ This module deploys a Service Bus Namespace Disaster Recovery Config
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | 2022-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_disasterrecoveryconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/disasterRecoveryConfigs)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_disasterrecoveryconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/disasterRecoveryConfigs)</li></ul> |
 
 ## Parameters
 

@@ -2,6 +2,14 @@
 
 This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Policy Exemption at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This module deploys a Policy Exemption at a Management Group scope using minimal
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -101,6 +110,8 @@ param policyAssignmentId = '<policyAssignmentId>'
 
 This module deploys a Policy Exemption at a Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -108,7 +119,6 @@ This module deploys a Policy Exemption at a Management Group scope using common 
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -273,6 +283,8 @@ param resourceSelectors = [
 
 This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.defaults]
+
 
 <details>
 
@@ -280,7 +292,6 @@ This module deploys a Policy Exemption at a Resource Group scope using minimal p
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -352,6 +363,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
+
 
 <details>
 
@@ -359,7 +372,6 @@ This module deploys a Policy Exemption at a Resource Group scope using common pa
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -529,6 +541,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.defaults]
+
 
 <details>
 
@@ -536,7 +550,6 @@ This module deploys a Policy Exemption at a Subscription scope using minimal par
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -603,6 +616,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Exemption at a Subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
+
 
 <details>
 
@@ -610,7 +625,6 @@ This module deploys a Policy Exemption at a Subscription scope using common para
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -930,4 +944,4 @@ The Target Scope for the Policy. The subscription ID of the subscription for the
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

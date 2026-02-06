@@ -23,11 +23,6 @@ param typeProperties object = {}
 @description('Optional. The description of the Integration Runtime.')
 param integrationRuntimeCustomDescription string = 'Managed Integration Runtime created by avm-res-datafactory-factories'
 
-var managedVirtualNetworkVar = {
-  referenceName: type == 'Managed' ? managedVirtualNetworkName : null
-  type: type == 'Managed' ? 'ManagedVirtualNetworkReference' : null
-}
-
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: dataFactoryName
 }
@@ -35,16 +30,20 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
 resource integrationRuntime 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-01' = {
   name: name
   parent: dataFactory
-  properties: type == 'Managed'
-    ? {
-        description: integrationRuntimeCustomDescription
-        type: type
-        managedVirtualNetwork: managedVirtualNetworkVar
-        typeProperties: typeProperties
-      }
-    : {
-        type: type
-      }
+  properties: {
+    #disable-next-line BCP225 // Not a key-word
+    type: type
+    ...(type == 'Managed'
+      ? {
+          description: integrationRuntimeCustomDescription
+          managedVirtualNetwork: {
+            referenceName: managedVirtualNetworkName
+            type: 'ManagedVirtualNetworkReference'
+          }
+          typeProperties: typeProperties
+        }
+      : {})
+  }
 }
 
 @description('The name of the Resource Group the Integration Runtime was created in.')

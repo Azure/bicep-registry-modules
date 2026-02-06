@@ -135,25 +135,5 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
   ]
 }
 
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-01-01' existing = {
-  name: clusterName
-  scope: resourceGroup()
-  dependsOn: [
-    deploymentScript
-  ]
-}
-
-resource extension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = {
-  scope: connectedCluster
-  name: clusterExtensionName
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    extensionType: 'microsoft.flux'
-    autoUpgradeMinorVersion: true
-  }
-}
-
 @description('The name of the created AKS cluster.')
 output clusterName string = clusterName

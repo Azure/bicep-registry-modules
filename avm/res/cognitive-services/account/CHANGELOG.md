@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.14.1
+
+### Changes
+
+- Added `primaryKey` and `primaryKey` outputs
+
+### Breaking Changes
+
+- None
+
+## 0.14.0
+
+### Changes
+
+- Added support for managed HSM customer-managed key encryption
+- Updated all 'avm-common-types' references to version `0.6.1`
+- Updated `avm/res/network/private-endpoint` cross-referenced module to version `0.11.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.2
 
 ### Changes

@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.12.0'
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.13.2'
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
@@ -88,6 +88,7 @@ module foundryAccount 'modules/account.bicep' = {
     name: !empty(aiFoundryConfiguration.?accountName) ? aiFoundryConfiguration!.accountName! : 'ai${resourcesName}'
     location: !empty(aiFoundryConfiguration.?location) ? aiFoundryConfiguration!.location! : location
     sku: !empty(aiFoundryConfiguration.?sku) ? aiFoundryConfiguration!.sku! : 'S0'
+    disableLocalAuth: aiFoundryConfiguration.?disableLocalAuth ?? true
     allowProjectManagement: aiFoundryConfiguration.?allowProjectManagement ?? true
     aiModelDeployments: aiModelDeployments
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
@@ -259,7 +260,7 @@ output storageAccountName string = includeAssociatedResources ? storageAccount!.
 @description('Name of the deployed Azure Cosmos DB account.')
 output cosmosAccountName string = includeAssociatedResources ? cosmosDb!.outputs.name : ''
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
 @export()
 @description('Custom configuration for a resource, including optional name, existing resource ID, and role assignments.')
@@ -326,6 +327,9 @@ type foundryConfigurationType = {
 
   @description('Optional. Whether to create Capability Hosts for the AI Agent Service. If true, the AI Foundry Account and default Project will be created with the capability host for the associated resources. Can only be true if \'includeAssociatedResources\' is true. Defaults to false.')
   createCapabilityHosts: bool?
+
+  @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons. Defaults to true.')
+  disableLocalAuth: bool?
 
   @description('Optional. Whether to allow project management in the AI Foundry account. If true, users can create and manage projects within the AI Foundry account. Defaults to true.')
   allowProjectManagement: bool?

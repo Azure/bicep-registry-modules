@@ -5,13 +5,69 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "17585067054312165142"
+      "version": "0.38.3.11034",
+      "templateHash": "18217359422147885502"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
   },
   "definitions": {
+    "connectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the connection."
+          }
+        },
+        "peeringName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the peering this connection belongs to."
+          }
+        },
+        "peerExpressRouteCircuitPeeringId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the peer ExpressRoute circuit peering."
+          }
+        },
+        "addressPrefix": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The IPv4 address space (/29) to carve out customer addresses for tunnels."
+          }
+        },
+        "authorizationKey": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The authorization key for the connection."
+          }
+        },
+        "ipv6CircuitConnectionConfig": {
+          "type": "object",
+          "properties": {
+            "addressPrefix": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IPv6 address space (/125) to carve out customer addresses for global reach."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IPv6 circuit connection configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -298,58 +354,15 @@
         "description": "Optional. Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families."
       }
     },
-    "peering": {
-      "type": "bool",
-      "defaultValue": false,
+    "peerings": {
+      "type": "array",
       "metadata": {
-        "description": "Optional. Enabled BGP peering type for the Circuit."
-      }
-    },
-    "peeringType": {
-      "type": "string",
-      "defaultValue": "AzurePrivatePeering",
-      "allowedValues": [
-        "AzurePrivatePeering",
-        "MicrosoftPeering"
-      ],
-      "metadata": {
-        "description": "Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering."
-      }
-    },
-    "sharedKey": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required."
-      }
-    },
-    "peerASN": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. The autonomous system number of the customer/connectivity provider."
-      }
-    },
-    "primaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link1."
-      }
-    },
-    "secondaryPeerAddressPrefix": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. A /30 subnet used to configure IP addresses for interfaces on Link2."
-      }
-    },
-    "vlanId": {
-      "type": "int",
-      "defaultValue": 0,
-      "metadata": {
-        "description": "Optional. Specifies the identifier that is used to identify the customer."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/expressRouteCircuits@2024-07-01#properties/properties/properties/peerings"
+        },
+        "description": "Optional. Array of peering configurations for the ExpressRoute circuit."
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
@@ -380,6 +393,16 @@
       "defaultValue": 0,
       "metadata": {
         "description": "Conditional. Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null."
+      }
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/connectionType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of Global Reach connection configurations for peerings."
       }
     },
     "expressRoutePortResourceId": {
@@ -432,10 +455,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/expressRouteCircuits@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -485,7 +511,7 @@
     },
     "expressRouteCircuit": {
       "type": "Microsoft.Network/expressRouteCircuits",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -502,6 +528,26 @@
             "input": {
               "name": "[parameters('authorizationNames')[copyIndex('authorizations')]]"
             }
+          },
+          {
+            "name": "peerings",
+            "count": "[length(coalesce(parameters('peerings'), createArray()))]",
+            "input": {
+              "name": "[coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].name]",
+              "properties": {
+                "peeringType": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'peeringType')]",
+                "sharedKey": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'sharedKey')]",
+                "azureASN": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'azureASN'), 12076)]",
+                "peerASN": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'peerASN')]",
+                "primaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'primaryPeerAddressPrefix')]",
+                "secondaryPeerAddressPrefix": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'secondaryPeerAddressPrefix')]",
+                "vlanId": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'vlanId')]",
+                "ipv6PeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'ipv6PeeringConfig')]",
+                "microsoftPeeringConfig": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'microsoftPeeringConfig')]",
+                "routeFilter": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'routeFilter')]",
+                "state": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex('peerings')].properties, 'state')]"
+              }
+            }
           }
         ],
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
@@ -509,9 +555,31 @@
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "enableDirectPortRateLimit": "[parameters('enableDirectPortRateLimit')]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
-        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]",
-        "peerings": "[if(parameters('peering'), createArray(createObject('name', parameters('peeringType'), 'properties', createObject('peeringType', parameters('peeringType'), 'sharedKey', parameters('sharedKey'), 'peerASN', parameters('peerASN'), 'primaryPeerAddressPrefix', parameters('primaryPeerAddressPrefix'), 'secondaryPeerAddressPrefix', parameters('secondaryPeerAddressPrefix'), 'vlanId', parameters('vlanId')))), null())]"
+        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]"
       }
+    },
+    "expressRouteCircuit_peering_connections": {
+      "copy": {
+        "name": "expressRouteCircuit_peering_connections",
+        "count": "[length(coalesce(parameters('connections'), createArray()))]"
+      },
+      "type": "Microsoft.Network/expressRouteCircuits/peerings/connections",
+      "apiVersion": "2024-10-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), coalesce(parameters('connections'), createArray())[copyIndex()].peeringName, coalesce(parameters('connections'), createArray())[copyIndex()].name)]",
+      "properties": {
+        "peerExpressRouteCircuitPeering": {
+          "id": "[format('{0}/peerings/{1}', coalesce(parameters('connections'), createArray())[copyIndex()].peerExpressRouteCircuitPeeringId, coalesce(parameters('connections'), createArray())[copyIndex()].peeringName)]"
+        },
+        "expressRouteCircuitPeering": {
+          "id": "[format('{0}/peerings/{1}', resourceId('Microsoft.Network/expressRouteCircuits', parameters('name')), coalesce(parameters('connections'), createArray())[copyIndex()].peeringName)]"
+        },
+        "addressPrefix": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'addressPrefix')]",
+        "authorizationKey": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'authorizationKey')]",
+        "ipv6CircuitConnectionConfig": "[tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'ipv6CircuitConnectionConfig')]"
+      },
+      "dependsOn": [
+        "expressRouteCircuit"
+      ]
     },
     "expressRouteCircuit_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -595,21 +663,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of express route curcuit."
+        "description": "The resource ID of express route circuit."
       },
       "value": "[resourceId('Microsoft.Network/expressRouteCircuits', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the express route curcuit was deployed into."
+        "description": "The resource group the express route circuit was deployed into."
       },
       "value": "[resourceGroup().name]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of express route curcuit."
+        "description": "The name of express route circuit."
       },
       "value": "[parameters('name')]"
     },
@@ -632,7 +700,14 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('expressRouteCircuit', '2024-05-01', 'full').location]"
+      "value": "[reference('expressRouteCircuit', '2024-10-01', 'full').location]"
+    },
+    "authorizations": {
+      "type": "array",
+      "metadata": {
+        "description": "The authorizations of the express route circuit."
+      },
+      "value": "[reference('expressRouteCircuit').authorizations]"
     }
   }
 }

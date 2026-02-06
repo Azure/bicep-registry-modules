@@ -1,5 +1,5 @@
 metadata name = 'Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a Role Assignment to a Subscription scope.'
+metadata description = 'This module deploys a Role Assignment at a Subscription scope.'
 
 targetScope = 'subscription'
 

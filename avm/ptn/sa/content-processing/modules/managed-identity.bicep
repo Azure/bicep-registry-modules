@@ -1,17 +1,17 @@
 // ========== Managed Identity ========== //
-@description('The name of the managed identity')
+@description('Required. The name of the managed identity.')
 param name string
 
-@description('The location of the managed identity')
+@description('Required. The location of the managed identity.')
 param location string
 
-@description('Tags to be applied to the managed identity')
+@description('Required. Tags to be applied to the managed identity.')
 param tags object
 
-@description('Enable telemetry for the AVM deployment')
+@description('Required. Enable telemetry for the AVM deployment.')
 param enableTelemetry bool
 
-module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
   name: name
   params: {
     name: name

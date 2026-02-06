@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "6821732602295404719"
+      "version": "0.38.5.1644",
+      "templateHash": "14942911624342499020"
     },
     "name": "Resource Graph Queries",
     "description": "This module deploys a Resource Graph Query."
@@ -158,10 +158,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ResourceGraph/queries@2021-12-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

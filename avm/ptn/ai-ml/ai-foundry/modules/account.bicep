@@ -36,15 +36,18 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. Resource Id of an existing subnet to use for agent connectivity. This is required when using agents with private endpoints.')
 param agentSubnetResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@description('Required. Allow only Azure AD authentication. Should be enabled for security reasons.')
+param disableLocalAuth bool
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the AI Foundry resource.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of AI Foundry resources.')
 param lock lockType?
 
-import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.12.0'
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.13.2'
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentType[] = []
 
@@ -64,7 +67,7 @@ var privateDnsZoneResourceIdValues = [
 ]
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceIdValues) && !empty(privateEndpointSubnetResourceId)
 
-module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.1' = {
+module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.2' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
   params: {
     name: name
@@ -79,7 +82,7 @@ module foundryAccount 'br/public:avm/res/cognitive-services/account:0.13.1' = {
     }
     deployments: aiModelDeployments
     customSubDomainName: name
-    disableLocalAuth: false
+    disableLocalAuth: disableLocalAuth
     publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
     networkAcls: {
       defaultAction: 'Allow'

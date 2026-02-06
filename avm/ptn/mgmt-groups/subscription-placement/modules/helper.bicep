@@ -1,4 +1,4 @@
-targetScope = 'tenant'
+targetScope = 'managementGroup'
 
 @description('The ID of the management group.')
 param managementGroupId string
@@ -7,6 +7,7 @@ param subscriptionIds string[]
 
 resource customSubscriptionPlacement 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = [
   for (subscription, i) in subscriptionIds: if (!empty(subscription)) {
+    scope: tenant()
     name: '${managementGroupId}/${subscription}'
   }
 ]

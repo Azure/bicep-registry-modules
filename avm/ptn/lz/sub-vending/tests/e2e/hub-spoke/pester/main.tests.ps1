@@ -48,12 +48,12 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         It "Should have the 'Microsoft.HybridCompute', 'Microsoft.AVS' resource providers and the 'AzureServicesVm', 'ArcServerPrivateLinkPreview' resource providers features registered" {
             $resourceProviders = @( 'Microsoft.HybridCompute', 'Microsoft.AVS' )
             $resourceProvidersFeatures = @( 'AzureServicesVm', 'ArcServerPrivateLinkPreview' )
-            ForEach ($provider in $resourceProviders) {
+            foreach ($provider in $resourceProviders) {
                 $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState
                 $providerStatus | Should -BeIn @('Registered', 'Registering')
             }
 
-            ForEach ($feature in $resourceProvidersFeatures) {
+            foreach ($feature in $resourceProvidersFeatures) {
                 $providerFeatureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).registrationState
                 $providerFeatureStatus | Should -BeIn @('Registered', 'Registering', 'Pending')
             }

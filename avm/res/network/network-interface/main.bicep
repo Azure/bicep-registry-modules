@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/networkInterfaces@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

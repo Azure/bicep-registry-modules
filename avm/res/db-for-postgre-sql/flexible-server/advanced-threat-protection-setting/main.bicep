@@ -11,11 +11,11 @@ param flexibleServerName string
 @description('Required. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
 param serverThreatProtection string
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' existing = {
   name: flexibleServerName
 }
 
-resource flexibleServer_advancedThreatProtection 'Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings@2024-08-01' = {
+resource flexibleServer_advancedThreatProtection 'Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings@2025-06-01-preview' = {
   name: 'PostgreSQL-advancedThreatProtection'
   parent: flexibleServer
   properties: {

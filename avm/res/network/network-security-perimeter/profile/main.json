@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "18183393498532860472"
+      "version": "0.38.33.27573",
+      "templateHash": "3178550593460166182"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile."
@@ -149,7 +149,7 @@
         "count": "[length(coalesce(parameters('accessRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-nsp-accessrule-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -195,8 +195,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5803193043229403363"
+              "version": "0.38.33.27573",
+              "templateHash": "15729882010132355819"
             },
             "name": "Network Security Perimeter Access Rule",
             "description": "This module deploys a Network Security Perimeter Access Rule."

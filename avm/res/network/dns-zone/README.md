@@ -2,6 +2,14 @@
 
 This module deploys a Public DNS zone.
 
+You can reference the module as follows:
+```bicep
+module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -45,6 +53,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -52,12 +62,8 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: 'dnsZoneDeployment'
   params: {
-    // Required parameters
     name: 'ndzmin001.com'
-    // Non-required parameters
-    location: 'global'
   }
 }
 ```
@@ -74,13 +80,8 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "ndzmin001.com"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "global"
     }
   }
 }
@@ -96,10 +97,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/network/dns-zone:<version>'
 
-// Required parameters
 param name = 'ndzmin001.com'
-// Non-required parameters
-param location = 'global'
 ```
 
 </details>
@@ -109,6 +107,8 @@ param location = 'global'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -116,7 +116,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: 'dnsZoneDeployment'
   params: {
     // Required parameters
     name: 'ndzmax001.com'
@@ -1114,6 +1113,8 @@ param txt = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1121,16 +1122,10 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
-  name: 'dnsZoneDeployment'
   params: {
     // Required parameters
     name: 'ndzwaf001.com'
     // Non-required parameters
-    location: 'global'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1157,15 +1152,6 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       "value": "ndzwaf001.com"
     },
     // Non-required parameters
-    "location": {
-      "value": "global"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1190,11 +1176,6 @@ using 'br/public:avm/res/network/dns-zone:<version>'
 // Required parameters
 param name = 'ndzwaf001.com'
 // Non-required parameters
-param location = 'global'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1276,19 +1257,6 @@ The list of A records in the record set.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipv4Address`](#parameter-aarecordsipv4address) | string | The IPv4 address of this A record. |
-
-### Parameter: `a.aRecords.ipv4Address`
-
-The IPv4 address of this A record.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `a.metadata`
 
@@ -1457,19 +1425,6 @@ The list of AAAA records in the record set.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipv6Address`](#parameter-aaaaaaaarecordsipv6address) | string | The IPv6 address of this AAAA record. |
-
-### Parameter: `aaaa.aaaaRecords.ipv6Address`
-
-The IPv6 address of this AAAA record.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `aaaa.metadata`
 
 The metadata of the record.
@@ -1636,37 +1591,6 @@ The list of CAA records in the record set.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`flags`](#parameter-caacaarecordsflags) | int | The flags for this CAA record as an integer between 0 and 255. |
-| [`tag`](#parameter-caacaarecordstag) | string | The tag for this CAA record.. |
-| [`value`](#parameter-caacaarecordsvalue) | string | The value for this CAA record. |
-
-### Parameter: `caa.caaRecords.flags`
-
-The flags for this CAA record as an integer between 0 and 255.
-
-- Required: Yes
-- Type: int
-- MinValue: 0
-- MaxValue: 255
-
-### Parameter: `caa.caaRecords.tag`
-
-The tag for this CAA record..
-
-- Required: Yes
-- Type: string
-
-### Parameter: `caa.caaRecords.value`
-
-The value for this CAA record.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `caa.metadata`
 
 The metadata of the record.
@@ -1826,19 +1750,6 @@ The CNAME record in the record set.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cname`](#parameter-cnamecnamerecordcname) | string | The canonical name of the CNAME record. |
-
-### Parameter: `cname.cnameRecord.cname`
-
-The canonical name of the CNAME record.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `cname.metadata`
 
@@ -2073,27 +1984,6 @@ The list of MX records in the record set.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`exchange`](#parameter-mxmxrecordsexchange) | string | The domain name of the mail host for this MX record. |
-| [`preference`](#parameter-mxmxrecordspreference) | int | The preference value for this MX record. |
-
-### Parameter: `mx.mxRecords.exchange`
-
-The domain name of the mail host for this MX record.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `mx.mxRecords.preference`
-
-The preference value for this MX record.
-
-- Required: Yes
-- Type: int
-
 ### Parameter: `mx.roleAssignments`
 
 Array of role assignments to create.
@@ -2253,19 +2143,6 @@ The list of NS records in the record set.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`nsdname`](#parameter-nsnsrecordsnsdname) | string | The name server name for this NS record. |
-
-### Parameter: `ns.nsRecords.nsdname`
-
-The name server name for this NS record.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `ns.roleAssignments`
 
 Array of role assignments to create.
@@ -2424,19 +2301,6 @@ The list of PTR records in the record set.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ptrdname`](#parameter-ptrptrrecordsptrdname) | string | The PTR target domain name for this PTR record. |
-
-### Parameter: `ptr.ptrRecords.ptrdname`
-
-The PTR target domain name for this PTR record.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `ptr.roleAssignments`
 
@@ -2815,67 +2679,6 @@ The SOA record in the record set.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`email`](#parameter-soasoarecordemail) | string | The email contact for this SOA record. |
-| [`expireTime`](#parameter-soasoarecordexpiretime) | int | The expire time for this SOA record. |
-| [`host`](#parameter-soasoarecordhost) | string | The domain name of the authoritative name server for this SOA record. |
-| [`minimumTTL`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
-| [`refreshTime`](#parameter-soasoarecordrefreshtime) | int | The refresh value for this SOA record. |
-| [`retryTime`](#parameter-soasoarecordretrytime) | int | The retry time for this SOA record. |
-| [`serialNumber`](#parameter-soasoarecordserialnumber) | int | The serial number for this SOA record. |
-
-### Parameter: `soa.soaRecord.email`
-
-The email contact for this SOA record.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `soa.soaRecord.expireTime`
-
-The expire time for this SOA record.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `soa.soaRecord.host`
-
-The domain name of the authoritative name server for this SOA record.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `soa.soaRecord.minimumTTL`
-
-The minimum value for this SOA record. By convention this is used to determine the negative caching duration.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `soa.soaRecord.refreshTime`
-
-The refresh value for this SOA record.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `soa.soaRecord.retryTime`
-
-The retry time for this SOA record.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `soa.soaRecord.serialNumber`
-
-The serial number for this SOA record.
-
-- Required: Yes
-- Type: int
-
 ### Parameter: `soa.ttl`
 
 The TTL of the record.
@@ -3034,43 +2837,6 @@ The list of SRV records in the record set.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`port`](#parameter-srvsrvrecordsport) | int | The port value for this SRV record. |
-| [`priority`](#parameter-srvsrvrecordspriority) | int | The priority value for this SRV record. |
-| [`target`](#parameter-srvsrvrecordstarget) | string | The target domain name for this SRV record. |
-| [`weight`](#parameter-srvsrvrecordsweight) | int | The weight value for this SRV record. |
-
-### Parameter: `srv.srvRecords.port`
-
-The port value for this SRV record.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `srv.srvRecords.priority`
-
-The priority value for this SRV record.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `srv.srvRecords.target`
-
-The target domain name for this SRV record.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `srv.srvRecords.weight`
-
-The weight value for this SRV record.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `srv.ttl`
 
@@ -3245,19 +3011,6 @@ The list of TXT records in the record set.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`value`](#parameter-txttxtrecordsvalue) | array | The text value of this TXT record. |
-
-### Parameter: `txt.txtRecords.value`
-
-The text value of this TXT record.
-
-- Required: Yes
-- Type: array
-
 ## Outputs
 
 | Output | Type | Description |
@@ -3275,8 +3028,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

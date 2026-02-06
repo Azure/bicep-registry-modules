@@ -11,10 +11,28 @@ param name string?
 param principalId string
 
 @description('Required. The unique identifier of the associated SQL Role Definition.')
-param roleDefinitionId string
+param roleDefinitionIdOrName string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.')
+param scope string?
+
+var builtInDataPlaneRoleNames = {
+  'Cosmos DB Built-in Data Reader': '${databaseAccount.id}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001'
+  'Cosmos DB Built-in Data Contributor': '${databaseAccount.id}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002'
+}
+
+var formattedRoleDefinition = builtInDataPlaneRoleNames[?roleDefinitionIdOrName] ?? (contains(
+    roleDefinitionIdOrName,
+    '/sqlRoleDefinitions/'
+  )
+  ? roleDefinitionIdOrName
+  : '${databaseAccount.id}/sqlRoleDefinitions/${roleDefinitionIdOrName}')
+
+// The internal naming differs from the resource ID
+var formattedScope = replace(replace(scope ?? databaseAccount.id, '/sqlDatabases/', '/dbs/'), '/containers/', '/colls/')
 
 // ============== //
 // Resources      //
@@ -45,11 +63,11 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' exis
 
 resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
   parent: databaseAccount
-  name: name ?? guid(roleDefinitionId, principalId, databaseAccount.id)
+  name: name ?? guid(formattedRoleDefinition, principalId, formattedScope)
   properties: {
     principalId: principalId
-    roleDefinitionId: roleDefinitionId
-    scope: databaseAccount.id
+    roleDefinitionId: formattedRoleDefinition
+    scope: formattedScope
   }
 }
 

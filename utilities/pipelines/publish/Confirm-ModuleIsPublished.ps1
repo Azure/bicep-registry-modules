@@ -22,12 +22,12 @@ Optional. Define how a successful publish should be validated.
 Note: The 'Catalogue' validation method may take longer to complete than the 'Oras' method.
 
 .EXAMPLE
-Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -Verbose
+Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -GitTagName 'avm/res/key-vault/vault/0.2.0' -Verbose
 
 Check if module 'key-vault/vault' has been published with version '0.2.0 using Oras, the default validation method
 
 .EXAMPLE
-Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -ValidationMethod 'Catalogue' -Verbose
+Confirm-ModuleIsPublished -Version '0.2.0' -PublishedModuleName 'avm/res/key-vault/vault' -GitTagName 'avm/res/key-vault/vault/0.2.0' -ValidationMethod 'Catalogue' -Verbose
 
 Check if module 'key-vault/vault' has been published with version '0.2.0 using the 'Catalogue' validation method
 #>
@@ -74,6 +74,11 @@ function Confirm-ModuleIsPublished {
                 oras pull $registryReference --format 'json' 2>$null
 
                 if (Test-Path (Join-Path -Path $PWD 'Compiled ARM template')) {
+                    # Checking if a "main.json" file exist already. If so, delete it
+                    if (Test-Path (Join-Path -Path $PWD 'main.json')){
+                        Write-Verbose "Found 'main.json' file in current path. Removing."
+                        Remove-Item (Join-Path -Path $PWD 'main.json') -Verbose
+                    }
                     # Checking if the file "Compiled ARM template" returned by the oras cmdlet is valid
                     # Rename the file to "main.json", import it and check it has the property $schema
                     $null = Rename-Item 'Compiled ARM template' 'main.json'

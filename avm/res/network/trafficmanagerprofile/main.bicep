@@ -30,14 +30,14 @@ param relativeName string?
 param ttl int = 60
 
 @description('Optional. The endpoint monitoring settings of the Traffic Manager profile.')
-param monitorConfig object = {
+param monitorConfig resourceInput<'Microsoft.Network/trafficmanagerprofiles@2022-04-01'>.properties.monitorConfig = {
   protocol: 'http'
-  port: '80'
+  port: 80
   path: '/'
 }
 
 @description('Optional. The list of endpoints in the Traffic Manager profile.')
-param endpoints array?
+param endpoints resourceInput<'Microsoft.Network/trafficmanagerprofiles@2022-04-01'>.properties.endpoints?
 
 @description('Optional. Indicates whether Traffic View is \'Enabled\' or \'Disabled\' for the Traffic Manager profile. Null, indicates \'Disabled\'. Enabling this feature will increase the cost of the Traffic Manage profile.')
 @allowed([
@@ -62,13 +62,16 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/trafficmanagerprofiles@2022-04-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Location for all resources.')
 param location string = 'global'
+
+@description('Optional. The list of allowed endpoint record types.')
+param allowedEndpointRecordTypes resourceInput<'Microsoft.Network/trafficmanagerprofiles@2022-04-01'>.properties.allowedEndpointRecordTypes?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -122,7 +125,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' = {
+resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2022-04-01' = {
   name: name
   tags: tags
   location: location
@@ -134,6 +137,7 @@ resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08
       ttl: ttl
     }
     monitorConfig: monitorConfig
+    allowedEndpointRecordTypes: allowedEndpointRecordTypes
     endpoints: endpoints
     trafficViewEnrollmentStatus: trafficViewEnrollmentStatus
     maxReturn: maxReturn

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4535882689266523749"
+      "version": "0.36.177.2456",
+      "templateHash": "6467337503543167518"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -183,6 +183,9 @@
       "apiVersion": "2024-11-01",
       "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
       "name": "[parameters('name')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "properties": "[variables('extensionProperties')]"
     },
     "fluxConfiguration": {
@@ -242,7 +245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.37.4.10188",
-              "templateHash": "12539210087808678828"
+              "templateHash": "12743785390507267340"
             },
             "name": "Kubernetes Configuration Flux Configurations",
             "description": "This module deploys a Kubernetes Configuration Flux Configuration."
@@ -370,13 +373,10 @@
             },
             "reconciliationWaitDuration": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KubernetesConfiguration/fluxConfigurations@2025-04-01#properties/properties/properties/reconciliationWaitDuration"
-                },
                 "description": "Optional. Reconciliation wait duration (ISO 8601 format)."
-              },
-              "nullable": true
+              }
             },
             "suspend": {
               "type": "bool",
@@ -406,7 +406,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.7', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.8', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
