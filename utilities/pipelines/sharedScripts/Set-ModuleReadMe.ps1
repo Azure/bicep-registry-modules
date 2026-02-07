@@ -1607,14 +1607,15 @@ function Set-UsageExamplesSection {
         } else {
             $testFilePaths = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
         }
-        $buildTestFileMap = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
+        $compiledTestFiles = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
     } else {
         $testFilePaths = $CompiledTestFiles.Keys | Sort-Object -Culture 'en-US'
-        $buildTestFileMap = @{}
-        foreach ($path in $CompiledTestFiles.Keys) {
-            $folderName = Split-Path (Split-Path -Path $path) -Leaf
-            $buildTestFileMap[$folderName] = ConvertFrom-Json $CompiledTestFiles[$path] -AsHashtable
-        }
+    }
+
+    $buildTestFileMap = @{}
+    foreach ($path in $CompiledTestFiles.Keys) {
+        $folderName = Split-Path (Split-Path -Path $path) -Leaf
+        $buildTestFileMap[$folderName] = ConvertFrom-Json $CompiledTestFiles[$path] -AsHashtable
     }
 
     # Process data

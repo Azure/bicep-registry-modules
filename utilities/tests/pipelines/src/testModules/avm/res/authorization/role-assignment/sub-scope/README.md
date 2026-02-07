@@ -23,9 +23,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment/sub-scope:<version>`.
 
-- [Sub-Scope.Test](#example-1-sub-scopetest)
+- [Test case name](#example-1-test-case-name)
 
-### Example 1: _Sub-Scope.Test_
+### Example 1: _Test case name_
+
+This file deploys the module with some example parameters.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.test]
 
 

@@ -101,7 +101,7 @@ Describe 'Test ReadMe generation' {
             Write-Warning ($diffResponse | Out-String) -Verbose
 
             # Reset readme file to original state
-            # git checkout HEAD -- $readMeFilePath
+            git checkout HEAD -- $readMeFilePath
         }
 
         $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
