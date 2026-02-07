@@ -53,8 +53,17 @@
 .PARAMETER StorageAccountName
     Azure Storage account name for upload.
 
+.PARAMETER ResourceGroupName
+    Resource group containing the storage account (required for key-based auth).
+
+.PARAMETER AdfName
+    Azure Data Factory name for starting triggers.
+
 .PARAMETER Upload
     Upload generated files to Azure Storage.
+
+.PARAMETER StartTriggers
+    Start ADF triggers after upload to process the data.
 
 .EXAMPLE
     .\Generate-MultiCloudTestData.ps1
@@ -65,8 +74,8 @@
     # Generates 6 months of data, $500K total budget
 
 .EXAMPLE
-    .\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName "mystorageaccount"
-    # Generates and uploads data to storage account
+    .\Generate-MultiCloudTestData.ps1 -Upload -StorageAccountName "stfinopshub" -ResourceGroupName "rg-finopshub" -AdfName "adf-finopshub" -StartTriggers
+    # Generates, uploads data, and starts ADF triggers to process it
 
 .NOTES
     FOCUS Specification Reference: https://focus.finops.org/focus-specification/v1-3/
@@ -100,7 +109,13 @@ param(
     
     [string]$StorageAccountName,
     
-    [switch]$Upload
+    [string]$ResourceGroupName,
+    
+    [string]$AdfName,
+    
+    [switch]$Upload,
+    
+    [switch]$StartTriggers
 )
 
 # Calculate StartDate from MonthsOfData if not explicitly provided
@@ -806,6 +821,16 @@ if ($Upload -and $StorageAccountName) {
     Write-Host "Uploading to Azure Storage..." -ForegroundColor Yellow
     Write-Host "=" * 70 -ForegroundColor Cyan
     
+    # Get storage account key for reliable uploads (--auth-mode login often lacks permissions)
+    $storageKey = $null
+    if ($ResourceGroupName) {
+        Write-Host "  Getting storage account key..." -ForegroundColor Gray
+        $storageKey = (az storage account keys list --account-name $StorageAccountName --resource-group $ResourceGroupName --query "[0].value" -o tsv 2>$null)
+        if (-not $storageKey) {
+            Write-Host "  Warning: Could not get storage key, falling back to default auth" -ForegroundColor Yellow
+        }
+    }
+    
     $uploadedCount = 0
     $runId = [guid]::NewGuid().ToString()
     $exportTime = (Get-Date).ToString("yyyyMMddHHmm")
@@ -884,10 +909,18 @@ if ($Upload -and $StorageAccountName) {
             
             # Upload data file
             Write-Host "  Uploading $provider to msexports container..." -ForegroundColor Cyan
-            az storage blob upload --account-name $StorageAccountName --container-name $container --file $dataFilePath --name $blobPath --auth-mode login --overwrite --only-show-errors
+            if ($storageKey) {
+                az storage blob upload --account-name $StorageAccountName --account-key $storageKey --container-name $container --file $dataFilePath --name $blobPath --overwrite --only-show-errors 2>$null
+            } else {
+                az storage blob upload --account-name $StorageAccountName --container-name $container --file $dataFilePath --name $blobPath --overwrite --only-show-errors 2>$null
+            }
             
             # Upload manifest (this triggers the ADF pipeline)
-            az storage blob upload --account-name $StorageAccountName --container-name $container --file $manifestFilePath --name $manifestBlobPath --auth-mode login --overwrite --only-show-errors
+            if ($storageKey) {
+                az storage blob upload --account-name $StorageAccountName --account-key $storageKey --container-name $container --file $manifestFilePath --name $manifestBlobPath --overwrite --only-show-errors 2>$null
+            } else {
+                az storage blob upload --account-name $StorageAccountName --container-name $container --file $manifestFilePath --name $manifestBlobPath --overwrite --only-show-errors 2>$null
+            }
             
         } else {
             # AWS/GCP/DataCenter: Upload directly to ingestion container as FOCUS parquet
@@ -912,10 +945,18 @@ if ($Upload -and $StorageAccountName) {
             
             # Upload data file
             Write-Host "  Uploading $provider to ingestion container..." -ForegroundColor Cyan
-            az storage blob upload --account-name $StorageAccountName --container-name $container --file $dataFilePath --name $blobPath --auth-mode login --overwrite --only-show-errors
+            if ($storageKey) {
+                az storage blob upload --account-name $StorageAccountName --account-key $storageKey --container-name $container --file $dataFilePath --name $blobPath --overwrite --only-show-errors 2>$null
+            } else {
+                az storage blob upload --account-name $StorageAccountName --container-name $container --file $dataFilePath --name $blobPath --overwrite --only-show-errors 2>$null
+            }
             
             # Upload manifest to trigger ADX ingestion
-            az storage blob upload --account-name $StorageAccountName --container-name $container --file $manifestFilePath --name $manifestBlobPath --auth-mode login --overwrite --only-show-errors
+            if ($storageKey) {
+                az storage blob upload --account-name $StorageAccountName --account-key $storageKey --container-name $container --file $manifestFilePath --name $manifestBlobPath --overwrite --only-show-errors 2>$null
+            } else {
+                az storage blob upload --account-name $StorageAccountName --container-name $container --file $manifestFilePath --name $manifestBlobPath --overwrite --only-show-errors 2>$null
+            }
         }
         
         Write-Host "    Uploaded: $blobPath" -ForegroundColor Green
@@ -925,11 +966,41 @@ if ($Upload -and $StorageAccountName) {
     
     Write-Host ""
     Write-Host "Upload Complete! $uploadedCount providers uploaded." -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Next Steps:" -ForegroundColor Yellow
-    Write-Host "  1. Azure data in msexports will be processed by ADF when triggers are started"
-    Write-Host "  2. AWS/GCP/DataCenter data in ingestion will be picked up by ADX ingestion pipeline"
-    Write-Host "  3. Start ADF triggers: az datafactory trigger start --factory-name <adf> --name msexports_ManifestAdded"
+    
+    # Start ADF triggers if requested
+    if ($StartTriggers -and $AdfName -and $ResourceGroupName) {
+        Write-Host ""
+        Write-Host "=" * 70 -ForegroundColor Cyan
+        Write-Host "Starting ADF Triggers..." -ForegroundColor Yellow
+        Write-Host "=" * 70 -ForegroundColor Cyan
+        
+        $triggers = @("msexports_ManifestAdded", "ingestion_ManifestAdded")
+        foreach ($trigger in $triggers) {
+            $state = (az datafactory trigger show --factory-name $AdfName --resource-group $ResourceGroupName --name $trigger --query "properties.runtimeState" -o tsv 2>$null)
+            if ($state -eq "Started") {
+                Write-Host "  $trigger already running" -ForegroundColor Gray
+            } else {
+                Write-Host "  Starting $trigger..." -ForegroundColor Cyan
+                az datafactory trigger start --factory-name $AdfName --resource-group $ResourceGroupName --name $trigger --only-show-errors 2>$null
+                Write-Host "  $trigger started" -ForegroundColor Green
+            }
+        }
+        
+        Write-Host ""
+        Write-Host "ADF triggers are now running. Data will be processed automatically." -ForegroundColor Green
+        Write-Host "Note: Blob triggers are event-based. If data was uploaded before triggers started," -ForegroundColor Yellow
+        Write-Host "      you may need to re-upload the manifest files to trigger processing." -ForegroundColor Yellow
+    } elseif ($StartTriggers) {
+        Write-Host ""
+        Write-Host "Warning: -StartTriggers requires -AdfName and -ResourceGroupName" -ForegroundColor Yellow
+    } else {
+        Write-Host ""
+        Write-Host "Next Steps:" -ForegroundColor Yellow
+        Write-Host "  1. Start ADF triggers to process the uploaded data:"
+        Write-Host "     az datafactory trigger start --factory-name <adf> --resource-group <rg> --name msexports_ManifestAdded"
+        Write-Host "     az datafactory trigger start --factory-name <adf> --resource-group <rg> --name ingestion_ManifestAdded"
+        Write-Host "  2. Or re-run with -StartTriggers -AdfName <name> -ResourceGroupName <rg>"
+    }
 } else {
     Write-Host ""
     Write-Host "Next Steps:" -ForegroundColor Yellow

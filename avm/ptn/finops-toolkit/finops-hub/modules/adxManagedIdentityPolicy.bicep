@@ -50,7 +50,8 @@ param tags object = {}
 
 // Generate a unique storage account name for deployment scripts
 // Name starts with 'dep' to match PSRule suppression rules for dependencies
-var deploymentScriptStorageName = 'dep${take(uniqueString(resourceGroup().id, clusterName), 21)}'
+// Include forceUpdateTag for uniqueness across CI runs that reuse the same RG
+var deploymentScriptStorageName = 'dep${take(uniqueString(resourceGroup().id, clusterName, forceUpdateTag), 21)}'
 
 // Reference the ADX cluster to get its URI
 resource cluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
@@ -239,8 +240,9 @@ try {
 // ============================================================================
 
 // Deployment script to configure the managed identity policy
+// Include forceUpdateTag in name to ensure uniqueness across CI runs that reuse the same RG
 resource policySetupScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: 'adx-managed-identity-policy-${uniqueString(resourceGroup().id, clusterName)}'
+  name: 'adx-mi-policy-${uniqueString(resourceGroup().id, clusterName, forceUpdateTag)}'
   location: location
   kind: 'AzurePowerShell'
   identity: {

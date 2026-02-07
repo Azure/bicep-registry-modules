@@ -58,9 +58,17 @@ Features:
 # Example: Generate all cloud providers, 3 months, $100K total
 .\Generate-MultiCloudTestData.ps1
 
-# Example: Generate and upload to Azure Storage
+# Example: Generate and upload to Azure Storage (full automation)
 .\Generate-MultiCloudTestData.ps1 -Upload `
     -StorageAccountName "stfinopshub123abc" `
+    -ResourceGroupName "rg-finopshub" `
+    -AdfName "adf-finopshub" `
+    -StartTriggers
+
+# Example: Generate 6 months of $500K data
+.\Generate-MultiCloudTestData.ps1 -Upload `
+    -StorageAccountName "stfinopshub123abc" `
+    -ResourceGroupName "rg-finopshub" `
     -MonthsOfData 6 `
     -TotalBudget 500000
 

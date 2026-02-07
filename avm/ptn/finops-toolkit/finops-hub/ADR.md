@@ -2,7 +2,20 @@
 
 This document captures the key architecture and design decisions made for the FinOps Hub AVM module.
 
-> **📚 Documentation**: For comprehensive FinOps Hub documentation, see [Microsoft Learn - FinOps Hubs](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/finops-hubs-overview).
+> **� ADR Format**: This log follows [Microsoft Well-Architected Framework ADR guidance](https://learn.microsoft.com/azure/well-architected/architect-role/architecture-decision-record) and [adr.github.io](https://adr.github.io/) conventions.
+>
+> **📚 FinOps Hub Docs**: [Microsoft Learn - FinOps Hubs](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/finops-hubs-overview)
+
+### ADR Template
+
+Each ADR follows this structure:
+- **Date**: When the decision was made
+- **Status**: `Proposed` | `Accepted` | `Deprecated` | `Superseded by ADR-XXX`
+- **Context**: Problem statement and why a decision is needed
+- **Decision**: What was decided
+- **Options Considered**: Alternatives evaluated (with pros/cons)
+- **Consequences**: Positive and negative implications
+- **Confidence**: `High` | `Medium` | `Low` (optional - for uncertain decisions)
 
 ---
 
