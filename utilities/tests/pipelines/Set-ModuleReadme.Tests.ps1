@@ -25,7 +25,7 @@ Describe 'Test ReadMe generation' {
         # Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -like '*\README.md' }
     }
 
-    It '[Parent module] Should run' {
+    It '[Set-ModuleReadMe] Parent module: Should generate correct readme' {
 
         $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault'
         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
@@ -63,7 +63,7 @@ Describe 'Test ReadMe generation' {
         $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
 
-    It '[Parent module - Prepopulated] Should run' {
+    It '[Set-ModuleReadMe] Parent module: Should generate corrrect readme with pre-populated dependencies' {
 
         $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault'
         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
@@ -101,14 +101,14 @@ Describe 'Test ReadMe generation' {
             Write-Warning ($diffResponse | Out-String) -Verbose
 
             # Reset readme file to original state
-            git checkout HEAD -- $readMeFilePath
+            # git checkout HEAD -- $readMeFilePath
         }
 
         $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
         $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
     }
 
-    It '[Child module] Should run' {
+    It '[Set-ModuleReadMe] Child module: Should generate correct readme' {
 
         $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'secret'
         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
@@ -147,7 +147,7 @@ Describe 'Test ReadMe generation' {
 
     }
 
-    It '[Multi-scope module] Should run' {
+    It '[Set-ModuleReadMe] Multi-scope module: Should generate correct readme' {
 
         $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'authorization' 'role-assignment' 'sub-scope'
         $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
