@@ -34,10 +34,6 @@ on:
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
-      # Exclude documentation-only changes from triggering E2E tests
-      - "!avm/ptn/finops-toolkit/finops-hub/ADR.md"
-      - "!avm/ptn/finops-toolkit/finops-hub/dashboards/**"
-      - "!avm/ptn/finops-toolkit/finops-hub/src/**"
 
 env:
   modulePath: "avm/ptn/finops-toolkit/finops-hub"
