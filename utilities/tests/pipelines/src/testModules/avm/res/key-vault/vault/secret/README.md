@@ -16,6 +16,12 @@ This is a child module for tests.
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requiredParam`](#parameter-requiredparam) | string | An required param. |
+
 ### Parameter: `requiredParam`
 
 An required param.

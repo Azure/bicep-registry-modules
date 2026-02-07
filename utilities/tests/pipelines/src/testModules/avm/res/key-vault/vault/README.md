@@ -28,9 +28,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:<version>`.
 
-- [Testcase](#example-1-testcase)
+- [Test case name](#example-1-test-case-name)
 
-### Example 1: _Testcase_
+### Example 1: _Test case name_
+
+This file deploys the module with some example parameters.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/testCase]
 
 
@@ -54,6 +57,24 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "requiredParam": {
+      "value": "req"
+    },
+    // Non-required parameters
+    "optionalParam": {
+      "value": "opt"
+    }
+  }
+}
+```
 
 </details>
 <p>
