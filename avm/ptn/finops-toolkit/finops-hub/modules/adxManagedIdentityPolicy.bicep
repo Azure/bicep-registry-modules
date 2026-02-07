@@ -165,11 +165,14 @@ function Invoke-KqlCommandWithRetry {
 }
 
 try {
-    # Get access token for Kusto - use the cluster URI as the resource for proper audience
-    # The cluster URI (e.g., https://mycluster.region.kusto.windows.net) is the correct resource
-    Write-Output "Acquiring access token for Kusto cluster..."
-    Write-Output "Target resource: $clusterUri"
-    $kustoToken = (Get-AzAccessToken -ResourceUrl $clusterUri).Token
+    # Get access token for Kusto - use the global Kusto resource for proper audience
+    # The audience must be https://kusto.kusto.windows.net (NOT the cluster-specific URI)
+    # See: https://learn.microsoft.com/en-us/azure/data-explorer/kusto/api/rest/authentication
+    $kustoResource = 'https://kusto.kusto.windows.net'
+    Write-Output "Acquiring access token for Kusto..."
+    Write-Output "Target resource: $kustoResource"
+    Write-Output "Cluster URI: $clusterUri"
+    $kustoToken = (Get-AzAccessToken -ResourceUrl $kustoResource).Token
     Write-Output "Token acquired successfully"
     
     $headers = @{ 

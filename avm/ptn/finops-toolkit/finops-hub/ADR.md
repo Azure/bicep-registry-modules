@@ -369,6 +369,105 @@ HubSetup_Latest.kql  → Symlink to current version
 
 ---
 
+## ADR-011: Adoption of AVM Specification Constraints
+
+**Date**: February 2026  
+**Status**: Accepted  
+**Context**: To publish FinOps Hub in the Azure Verified Modules registry, the module must comply with AVM specifications. These specifications impose architectural constraints on module structure, parameter conventions, and artifact generation that differ from the original FinOps Toolkit implementation.
+
+**Decision**: Adopt all AVM specification requirements as binding constraints for this module.
+
+**AVM-Enforced Constraints**:
+
+| Constraint | AVM Requirement | Impact on Module |
+|------------|-----------------|------------------|
+| Telemetry | `enableTelemetry` parameter must default to `true` | Added parameter, wired to all child modules |
+| ARM Template | `main.json` must be committed and match `main.bicep` | Build step required before every commit |
+| README | Must be auto-generated via `Set-ModuleReadMe` | Cannot use custom README formatting |
+| Line Endings | All files must use LF (Unix-style) | Git config and editor settings enforced |
+| Version Format | Semantic versioning in `version.json` and `main.bicep` metadata | Version must be synchronized across files |
+| Lock Interface | Must support `lockType` from AVM common types | Added lock parameter, applied to all resources |
+| Diagnostic Settings | Must support `diagnosticSettingFullType` | Added diagnosticSettings parameter |
+| Tags | Must support resource tagging | Added tags and tagsByResource parameters |
+| Deployment Scripts | PowerShell scripts must use `#` comments, not `//` | Refactored all inline PowerShell |
+
+**Alternatives Considered**:
+| Option | Pros | Cons |
+|--------|------|------|
+| Publish outside AVM registry | Full control over structure | Less discoverability, no AVM certification |
+| Request AVM spec exceptions | Keep existing patterns | Unlikely to be approved, delays publication |
+| Full AVM compliance | Registry publication, enterprise trust | Refactoring effort, ongoing maintenance burden |
+
+**Consequences**:
+- **Positive**: Module published in official AVM registry with Microsoft support
+- **Positive**: Consistent interface with other AVM modules (familiar to AVM users)
+- **Positive**: Automatic security and reliability validation via PSRule
+- **Negative**: Build workflow required (regenerate main.json, README after changes)
+- **Negative**: Less flexibility in documentation formatting
+- **Negative**: Contributors must learn AVM conventions
+
+---
+
+## ADR-012: Deployment-Unique Resource Naming for CI Idempotency
+
+**Date**: February 2026  
+**Status**: Accepted  
+**Context**: The AVM CI pipeline runs multiple deployment tests in parallel and sequentially. Azure Key Vault enforces a 90-day soft-delete retention period, meaning deleted vaults cannot be purged immediately. When CI runs deploy and tear down resources repeatedly, subsequent runs fail with `VaultAlreadyExists` errors because the Key Vault name is still reserved in the soft-deleted state.
+
+**Decision**: Incorporate a deployment-unique suffix into resource names that are subject to soft-delete or global uniqueness constraints.
+
+**Implementation**:
+```bicep
+var deploymentSuffix = take(uniqueString(deployment().name), 4)
+var keyVaultName = take('kv-${hubName}-${deploymentSuffix}', 24)
+```
+
+**Alternatives Considered**:
+| Option | Pros | Cons |
+|--------|------|------|
+| Static naming | Predictable names | CI failures from soft-delete conflicts |
+| Purge protection disabled | Allows immediate purge | Not allowed for production workloads |
+| Manual purge between runs | Works | Requires CI pipeline changes, adds latency |
+| Deployment-unique suffix | Avoids conflicts entirely | Names less predictable |
+
+**Consequences**:
+- **Positive**: CI runs are idempotent; parallel test executions don't conflict
+- **Positive**: No manual intervention required between CI runs
+- **Negative**: Resource names include random suffix, slightly less readable
+- **Negative**: Cannot predict exact resource names before deployment
+
+---
+
+## ADR-013: Region Selection Strategy for Capacity-Constrained Resources
+
+**Date**: February 2026  
+**Status**: Accepted  
+**Context**: Azure Data Explorer clusters require specific VM SKUs that are not available in all regions. CI deployments frequently failed with `SkuNotAvailable` errors when using default regions like `eastus`, `westeurope`, or `uksouth` due to capacity constraints.
+
+**Decision**: Use `enforcedLocation` parameter in test configurations to target regions with consistent ADX SKU availability, specifically `italynorth` as the primary test region.
+
+**Implementation**:
+```bicep
+// In test .bicepparam files
+param enforcedLocation = 'italynorth'
+```
+
+**Alternatives Considered**:
+| Option | Pros | Cons |
+|--------|------|------|
+| Use resource group location | Simple, conventional | Fails when region lacks capacity |
+| Retry with fallback regions | Resilient | Complex CI logic, longer run times |
+| Dev/Test SKUs only | Always available | Not representative of production |
+| Fixed region with known capacity | Reliable, simple | May need updating if capacity changes |
+
+**Consequences**:
+- **Positive**: CI deployments succeed consistently
+- **Positive**: Tests run against production-representative SKUs
+- **Negative**: Test resources not co-located with CI infrastructure (minor latency)
+- **Negative**: Region selection may need periodic review as Azure capacity changes
+
+---
+
 ## Related Documentation
 
 For detailed implementation guidance, refer to the official Microsoft Learn documentation:
@@ -389,4 +488,5 @@ For detailed implementation guidance, refer to the official Microsoft Learn docu
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 1.1.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-011 (AVM constraints), ADR-012 (CI naming), ADR-013 (region selection) |
 | 1.0.0 | Feb 2026 | FinOps Toolkit Team | Initial ADRs for AVM module |
