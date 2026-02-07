@@ -54,24 +54,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 
 <details>
 
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "requiredParam": {
-      "value": "req"
-    },
-    // Non-required parameters
-    "optionalParam": {
-      "value": "opt"
-    }
-  }
-}
-```
 
 </details>
 <p>
