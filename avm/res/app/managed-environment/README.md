@@ -28,9 +28,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
@@ -311,10 +311,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     certificate: {
       certificateKeyVaultProperties: {
@@ -425,10 +422,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "certificate": {
@@ -567,10 +561,7 @@ param name = 'amemax001'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param certificate = {
   certificateKeyVaultProperties: {
@@ -676,13 +667,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
-    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
@@ -719,15 +703,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
-    "appLogsConfiguration": {
-      "value": {
-        "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
-      }
-    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -776,13 +751,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
-param appLogsConfiguration = {
-  destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
-}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
@@ -822,10 +790,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
@@ -869,10 +834,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "dockerBridgeCidr": {
@@ -928,10 +890,7 @@ param name = 'amewaf001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
@@ -971,7 +930,7 @@ param workloadProfiles = [
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -1029,11 +988,10 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `internal`
 
-Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: bool
@@ -1061,7 +1019,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `appInsightsConnectionString`
 
@@ -1077,61 +1034,70 @@ The AppLogsConfiguration for the Managed Environment.
 
 - Required: No
 - Type: object
+- Discriminator: `destination`
 
-**Conditional parameters**
+<h4>The available variants are:</h4>
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The Log Analytics configuration. Required if `destination` is `log-analytics`. |
+| Variant | Description |
+| :-- | :-- |
+| [`azure-monitor`](#variant-applogsconfigurationdestination-azure-monitor) | The type for the App Logs Configuration if using azure-monitor. |
+| [`log-analytics`](#variant-applogsconfigurationdestination-log-analytics) | The type for the App Logs Configuration if using log-analytics. |
 
-**Optional parameters**
+### Variant: `appLogsConfiguration.destination-azure-monitor`
+The type for the App Logs Configuration if using azure-monitor.
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
-
-The Log Analytics configuration. Required if `destination` is `log-analytics`.
-
-- Required: No
-- Type: object
+To use this variant, set the property `destination` to `azure-monitor`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The Log Analytics Workspace ID. |
-| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
+| [`destination`](#parameter-applogsconfigurationdestination-azure-monitordestination) | string | The destination of the logs. |
 
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
-
-The Log Analytics Workspace ID.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
-
-The shared key of the Log Analytics workspace.
-
-- Required: Yes
-- Type: securestring
-
-### Parameter: `appLogsConfiguration.destination`
+### Parameter: `appLogsConfiguration.destination-azure-monitor.destination`
 
 The destination of the logs.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
     'azure-monitor'
-    'log-analytics'
-    'none'
   ]
   ```
+
+### Variant: `appLogsConfiguration.destination-log-analytics`
+The type for the App Logs Configuration if using log-analytics.
+
+To use this variant, set the property `destination` to `log-analytics`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination-log-analyticsdestination) | string | The destination of the logs. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationdestination-log-analyticsloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.destination`
+
+The destination of the logs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'log-analytics'
+  ]
+  ```
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.logAnalyticsWorkspaceResourceId`
+
+Existing Log Analytics Workspace resource ID.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `certificate`
 
@@ -1148,7 +1114,9 @@ A Managed Environment Certificate.
 | [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
 | [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`location`](#parameter-certificatelocation) | string | The location for the resource. |
 | [`name`](#parameter-certificatename) | string | The name of the certificate. |
+| [`tags`](#parameter-certificatetags) | object | Tags of the resource. |
 
 ### Parameter: `certificate.certificateKeyVaultProperties`
 
@@ -1206,12 +1174,26 @@ The value of the certificate. PFX or PEM blob.
 - Required: No
 - Type: string
 
+### Parameter: `certificate.location`
+
+The location for the resource.
+
+- Required: No
+- Type: string
+
 ### Parameter: `certificate.name`
 
 The name of the certificate.
 
 - Required: No
 - Type: string
+
+### Parameter: `certificate.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `certificatePassword`
 
@@ -1227,7 +1209,6 @@ Certificate to use for the custom domain. PFX or PEM.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `daprAIConnectionString`
 
@@ -1347,7 +1328,6 @@ Open Telemetry configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `peerTrafficEncryption`
 
