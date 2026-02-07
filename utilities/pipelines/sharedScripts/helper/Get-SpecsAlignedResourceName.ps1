@@ -103,7 +103,7 @@ function Get-SpecsAlignedResourceName {
         }
 
         Write-Verbose 'Caching api specs references'
-        $null = Set-Content -Path $cacheFilePath -Value ($specs | ConvertTo-Json)
+        $null = Set-Content -Path $cacheFilePath -Value $apiSpecs
     }
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'

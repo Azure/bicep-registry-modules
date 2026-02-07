@@ -171,7 +171,7 @@ function Build-ViaRPC {
             # Update the progress display.
             $completedBuildsCount++
             [int] $percent = ($completedBuildsCount / $BicepFilePath.Count) * 100
-            Write-Progress -Activity ("Processed [$completedBuildsCount/{0}] files" -f $BicepFilePath.Count) -Status "$percent% complete" -PercentComplete $percent
+            Write-Progress -Activity ("JSON-RPC: Compiled [$completedBuildsCount/{0}] files" -f $BicepFilePath.Count) -Status "$percent% complete" -PercentComplete $percent
 
         }
     } catch {
