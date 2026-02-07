@@ -363,6 +363,7 @@ module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identit
 
 // Effective identity values
 var effectiveIdentityPrincipalId = useExistingIdentity ? existingManagedIdentity!.properties.principalId : managedIdentity!.outputs.principalId
+var effectiveIdentityClientId = useExistingIdentity ? existingManagedIdentity!.properties.clientId : managedIdentity!.outputs.clientId
 var effectiveIdentityResourceId = useExistingIdentity ? existingManagedIdentityResourceId : managedIdentity!.outputs.resourceId
 var effectiveIdentityName = useExistingIdentity ? existingIdentityName : managedIdentity!.outputs.name
 
@@ -677,10 +678,10 @@ module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) 
           tenantId: tenant().tenantId
         }
       ],
-      // Deployment script managed identity
+      // Deployment script managed identity - use clientId (applicationId) for ADX 'App' principalType
       [
         {
-          principalId: effectiveIdentityPrincipalId
+          principalId: effectiveIdentityClientId
           principalType: 'App'
           role: 'AllDatabasesAdmin'
           tenantId: tenant().tenantId
@@ -946,8 +947,11 @@ output managedIdentityName string = effectiveIdentityName
 @description('User-assigned managed identity resource ID.')
 output managedIdentityResourceId string = effectiveIdentityResourceId
 
-@description('User-assigned managed identity principal ID.')
+@description('User-assigned managed identity principal ID (object ID).')
 output managedIdentityPrincipalId string = effectiveIdentityPrincipalId
+
+@description('User-assigned managed identity client ID (application ID).')
+output managedIdentityClientId string = effectiveIdentityClientId
 
 @description('Azure AD tenant ID (for configuring managed exports).')
 output tenantId string = tenant().tenantId

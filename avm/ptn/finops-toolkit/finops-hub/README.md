@@ -1610,8 +1610,9 @@ Resource-specific tags by resource type.
 | `managedExportsEnabled` | bool | Indicates whether managed export pipelines are deployed. Only true for EA/MCA/MPA with scopes. |
 | `managedExportsPipelines` | array | List of managed export pipelines. Empty if not using managed exports. |
 | `managedExportsTriggers` | array | List of managed export triggers. Empty if not using managed exports. |
+| `managedIdentityClientId` | string | User-assigned managed identity client ID (application ID). |
 | `managedIdentityName` | string | User-assigned managed identity name. |
-| `managedIdentityPrincipalId` | string | User-assigned managed identity principal ID. |
+| `managedIdentityPrincipalId` | string | User-assigned managed identity principal ID (object ID). |
 | `managedIdentityResourceId` | string | User-assigned managed identity resource ID. |
 | `networkIsolationMode` | string | Network isolation mode used for this deployment. |
 | `privateEndpointSubnetResourceId` | string | Private endpoint subnet resource ID. Empty when networkIsolationMode is "None". |

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "256619907463342208"
+      "templateHash": "12929371176451299050"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -37315,7 +37315,7 @@
             ]
           },
           "clusterPrincipalAssignments": {
-            "value": "[concat(createArray(createObject('principalId', reference('dataFactory').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), createArray(createObject('principalId', if(variables('useExistingIdentity'), reference('existingManagedIdentity').principalId, reference('managedIdentity').outputs.principalId.value), 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), variables('deployerAdminAssignment'), variables('adxAdminAssignments'))]"
+            "value": "[concat(createArray(createObject('principalId', reference('dataFactory').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), createArray(createObject('principalId', if(variables('useExistingIdentity'), reference('existingManagedIdentity').clientId, reference('managedIdentity').outputs.clientId.value), 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), variables('deployerAdminAssignment'), variables('adxAdminAssignments'))]"
           },
           "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('adxClusterName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'cluster', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneId'))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneId'))))), null())))), createObject('value', createArray()))]",
           "lock": {
@@ -43612,9 +43612,16 @@
     "managedIdentityPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "User-assigned managed identity principal ID."
+        "description": "User-assigned managed identity principal ID (object ID)."
       },
       "value": "[if(variables('useExistingIdentity'), reference('existingManagedIdentity').principalId, reference('managedIdentity').outputs.principalId.value)]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "User-assigned managed identity client ID (application ID)."
+      },
+      "value": "[if(variables('useExistingIdentity'), reference('existingManagedIdentity').clientId, reference('managedIdentity').outputs.clientId.value)]"
     },
     "tenantId": {
       "type": "string",

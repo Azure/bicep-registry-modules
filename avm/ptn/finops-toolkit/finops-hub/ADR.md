@@ -468,6 +468,69 @@ param enforcedLocation = 'italynorth'
 
 ---
 
+## ADR-014: ADX Principal Assignment Identity Format
+
+**Date**: February 2026  
+**Status**: Accepted  
+**Context**: Azure Data Explorer (ADX) cluster principal assignments failed with 401 Unauthorized errors during CI deployments. The deployment script had correct token audience (`https://kusto.kusto.windows.net`) and the managed identity had `AllDatabasesAdmin` role assigned, yet REST API calls to the cluster were rejected.
+
+**Root Cause Discovery**:
+ADX `clusterPrincipalAssignments` with `principalType: 'App'` require the **client ID (application ID)**, not the **principal ID (object ID)** of managed identities.
+
+| Identity Property | ARM/RBAC Term | ADX Term | When to Use |
+|------------------|---------------|----------|-------------|
+| `principalId` | Object ID | Principal ID | Azure RBAC role assignments (`principalType: 'ServicePrincipal'`) |
+| `clientId` | Application ID | Application ID | ADX principal assignments (`principalType: 'App'`) |
+
+**The Bug**:
+```bicep
+// WRONG - Using object ID for ADX App principal
+clusterPrincipalAssignments: [
+  {
+    principalId: managedIdentity.outputs.principalId  // Object ID
+    principalType: 'App'  // Expects Application ID!
+    role: 'AllDatabasesAdmin'
+  }
+]
+```
+
+**The Fix**:
+```bicep
+// CORRECT - Using client ID (application ID) for ADX App principal
+clusterPrincipalAssignments: [
+  {
+    principalId: managedIdentity.outputs.clientId  // Application ID
+    principalType: 'App'
+    role: 'AllDatabasesAdmin'
+  }
+]
+```
+
+**Decision**: 
+1. Add `effectiveIdentityClientId` variable to track managed identity client ID
+2. Use `effectiveIdentityClientId` for ADX `clusterPrincipalAssignments`
+3. Continue using `effectiveIdentityPrincipalId` for Azure RBAC role assignments
+4. Add `managedIdentityClientId` output for external consumers
+
+**Why This Was Hard to Debug**:
+- ARM deployment succeeded (ADX accepted the wrong ID format)
+- Principal assignment showed `provisioningState: Succeeded`
+- Token acquisition succeeded
+- Error only manifested at REST API runtime (401 Unauthorized)
+- 30 retries over 13+ minutes all failed with same error
+- Different identity formats for different Azure services is non-obvious
+
+**References**:
+- [ADX Security Principals](https://learn.microsoft.com/en-us/kusto/management/reference-security-principals): "For App: `aadapp=ApplicationId;TenantId`"
+- [ARM clusterPrincipalAssignments](https://learn.microsoft.com/en-us/azure/templates/microsoft.kusto/clusters/principalassignments): "principalId: user email, **application ID**, or security group name"
+
+**Consequences**:
+- **Positive**: ADX deployment scripts now authenticate successfully
+- **Positive**: Module exposes both `principalId` and `clientId` for flexibility
+- **Negative**: None identified
+
+---
+
 ## Related Documentation
 
 For detailed implementation guidance, refer to the official Microsoft Learn documentation:
@@ -488,5 +551,6 @@ For detailed implementation guidance, refer to the official Microsoft Learn docu
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
+| 1.2.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-014 (ADX principal assignment identity format fix) |
 | 1.1.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-011 (AVM constraints), ADR-012 (CI naming), ADR-013 (region selection) |
 | 1.0.0 | Feb 2026 | FinOps Toolkit Team | Initial ADRs for AVM module |
