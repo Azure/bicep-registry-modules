@@ -25,63 +25,165 @@ Describe 'Test ReadMe generation' {
         # Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -like '*\README.md' }
     }
 
+    It '[Parent module] Should run' {
 
-    # It '[Parent module] Should run' {
+        $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault'
+        $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        $readMeFilePath = Join-Path $moduleFolderPath 'README.md'
 
-    #     $inputObject = @{
-    #         TemplateFilePath = 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\main.bicep'
-    #     }
-    #     Set-ModuleReadMe @inputObject
-    # }
+        # Get current hash
+        $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
-    # It '[Parent module - Prepoulated] Should run' {
+        # Generate ReadMe
+        $inputObject = @{
+            TemplateFilePath = $templateFilePath
+            ErrorAction      = 'Stop'
+            ErrorVariable    = 'InvocationError'
+        }
+        try {
+            Set-ModuleReadMe @inputObject
+        } catch {
+            $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
+        }
 
-    #     $templateFilePath = 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\main.bicep'
-    #     $ModuleRoot = Split-Path $TemplateFilePath -Parent
-    #     $compiledTestFilePaths = Build-ViaRPC -BicepFilePath (Get-ChildItem -Path (Split-Path $ModuleRoot -Parent) -Recurse -File -Filter '*.test.bicep').FullName -PassThru
+        # Get hash after 'update'
+        $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
 
-    #     $inputObject = @{
-    #         TemplateFilePath = $templateFilePath
-    #         PreLoadedContent = @{
-    #             TemplateFileContent       = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-    #             CrossReferencedModuleList = Get-CrossReferencedModuleList
-    #             TelemetryFileContent      = Invoke-WebRequest -Uri 'https://aka.ms/avm/static/telemetry'
-    #             CompiledTestFiles         = $compiledTestFilePaths
-    #         }
-    #     }
-    #     Set-ModuleReadMe @inputObject
-    # }
+        # Compare
+        $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+        if (-not $filesAreTheSame) {
+            $diffResponse = git diff $readMeFilePath
+            Write-Warning ($diffResponse | Out-String) -Verbose
 
-    # It '[Child module] Should run' {
+            # Reset readme file to original state
+            git checkout HEAD -- $readMeFilePath
+        }
 
-    #     $inputObject = @{
-    #         TemplateFilePath = 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\key-vault\vault\secret\main.bicep'
-    #     }
-    #     Set-ModuleReadMe @inputObject
-    # }
+        $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+        $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+    }
 
-    # It '[Parent module] Should run' {
+    It '[Parent module - Prepopulated] Should run' {
 
-    #     $inputObject = @{
-    #         TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'main.bicep')
-    #     }
-    #     Set-ModuleReadMe @inputObject
-    # }
+        $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault'
+        $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        $readMeFilePath = Join-Path $moduleFolderPath 'README.md'
+        $compiledTestFilePaths = Build-ViaRPC -BicepFilePath (Get-ChildItem -Path $moduleFolderPath -Recurse -File -Filter '*.test.bicep').FullName -PassThru
 
-    # It '[Child module] Should run' {
+        # Get current hash
+        $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
-    #     $inputObject = @{
-    #         TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'secret' 'main.bicep')
-    #     }
-    #     Set-ModuleReadMe @inputObject
-    # }
+        # Generate ReadMe
+        $inputObject = @{
+            TemplateFilePath = $templateFilePath
+            PreLoadedContent = @{
+                TemplateFileContent       = ConvertFrom-Json (bicep build $templateFilePath --stdout | Out-String) -ErrorAction 'Stop' -AsHashtable
+                CrossReferencedModuleList = Get-CrossReferencedModuleList
+                TelemetryFileContent      = Invoke-WebRequest -Uri 'https://aka.ms/avm/static/telemetry'
+                CompiledTestFiles         = $compiledTestFilePaths
+            }
+            ErrorAction      = 'Stop'
+            ErrorVariable    = 'InvocationError'
+        }
+        try {
+            Set-ModuleReadMe @inputObject
+        } catch {
+            $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
+        }
+
+        # Get hash after 'update'
+        $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+
+        # Compare
+        $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+        if (-not $filesAreTheSame) {
+            $diffResponse = git diff $readMeFilePath
+            Write-Warning ($diffResponse | Out-String) -Verbose
+
+            # Reset readme file to original state
+            git checkout HEAD -- $readMeFilePath
+        }
+
+        $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+        $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+    }
+
+    It '[Child module] Should run' {
+
+        $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'key-vault' 'vault' 'secret'
+        $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        $readMeFilePath = Join-Path $moduleFolderPath 'README.md'
+
+        # Get current hash
+        $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
+
+        # Generate ReadMe
+        $inputObject = @{
+            TemplateFilePath = $templateFilePath
+            ErrorAction      = 'Stop'
+            ErrorVariable    = 'InvocationError'
+        }
+        try {
+            Set-ModuleReadMe @inputObject
+        } catch {
+            $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
+        }
+
+        # Get hash after 'update'
+        $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+
+        # Compare
+        $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+        if (-not $filesAreTheSame) {
+            $diffResponse = git diff $readMeFilePath
+            Write-Warning ($diffResponse | Out-String) -Verbose
+
+            # Reset readme file to original state
+            git checkout HEAD -- $readMeFilePath
+        }
+
+        $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+        $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+
+    }
 
     It '[Multi-scope module] Should run' {
 
+        $moduleFolderPath = Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'authorization' 'role-assignment' 'sub-scope'
+        $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        $readMeFilePath = Join-Path $moduleFolderPath 'README.md'
+
+        # Get current hash
+        $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
+
+        # Generate ReadMe
         $inputObject = @{
-            TemplateFilePath = (Join-Path $PSScriptRoot 'src' 'testModules' 'avm' 'res' 'authorization' 'role-assignment' 'sub-scope' 'main.bicep')
+            TemplateFilePath = $templateFilePath
+            ErrorAction      = 'Stop'
+            ErrorVariable    = 'InvocationError'
         }
-        Set-ModuleReadMe @inputObject
+        try {
+            Set-ModuleReadMe @inputObject
+        } catch {
+            $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
+        }
+
+        # Get hash after 'update'
+        $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+
+        # Compare
+        $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+        if (-not $filesAreTheSame) {
+            $diffResponse = git diff $readMeFilePath
+            Write-Warning ($diffResponse | Out-String) -Verbose
+
+            # Reset readme file to original state
+            git checkout HEAD -- $readMeFilePath
+        }
+
+        $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
+        $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+
     }
 }
 
