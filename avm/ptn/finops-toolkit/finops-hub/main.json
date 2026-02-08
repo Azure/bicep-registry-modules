@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "17861995486188362477"
+      "templateHash": "9454594490379335895"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -43345,12 +43345,8 @@
           "clusterName": {
             "value": "[reference('dataExplorer').outputs.name.value]"
           },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "managedIdentityResourceId": "[if(variables('useExistingIdentity'), createObject('value', parameters('existingManagedIdentityResourceId')), createObject('value', reference('managedIdentity').outputs.resourceId.value))]",
-          "tags": {
-            "value": "[variables('allTags')]"
+          "databaseName": {
+            "value": "Ingestion"
           }
         },
         "template": {
@@ -43360,7 +43356,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "12413343754642456113"
+              "templateHash": "2623900867940002914"
             }
           },
           "parameters": {
@@ -43370,17 +43366,10 @@
                 "description": "Required. Name of the Azure Data Explorer cluster."
               }
             },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Required. Location for the deployment script resources."
-              }
-            },
-            "managedIdentityResourceId": {
+            "databaseName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Managed identity resource ID for running the script."
+                "description": "Required. Name of an existing database in the cluster (any database works for cluster-level scripts)."
               }
             },
             "forceUpdateTag": {
@@ -43389,117 +43378,45 @@
               "metadata": {
                 "description": "Optional. Force script to run even if nothing changed. Use utcNow() when calling."
               }
-            },
-            "timeout": {
-              "type": "string",
-              "defaultValue": "PT20M",
-              "metadata": {
-                "description": "Optional. Timeout for the script execution. Allows 3 min initial wait + 30 retries × 20s = 13 min."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. Tags to apply to resources."
-              }
             }
           },
           "variables": {
-            "deploymentScriptStorageName": "[format('dep{0}', take(uniqueString(resourceGroup().id, parameters('clusterName'), parameters('forceUpdateTag')), 21))]",
-            "policyScript": "$ErrorActionPreference = 'Stop'\n$clusterUri = $env:CLUSTER_URI\n$subId = $env:SUBSCRIPTION_ID\n\n# Retry configuration - ADX principal assignments can take 5-10 minutes to propagate\n# Increased from 20×15s to 30×20s for better handling of slow AAD propagation in CI\n$maxRetries = 30\n$retryDelaySeconds = 20\n$initialWaitSeconds = 180  # Wait 3 minutes before first attempt for permission propagation\n\nWrite-Output \"=== Configure ADX Managed Identity Policy ===\"\nWrite-Output \"Cluster URI: $clusterUri\"\nWrite-Output \"Subscription: $subId\"\nWrite-Output \"Max retries: $maxRetries (waiting ${retryDelaySeconds}s between attempts)\"\n\n# Initial wait for permission propagation - ADX role assignments can take 2-5 minutes\nWrite-Output \"Waiting ${initialWaitSeconds} seconds for ADX role assignment propagation...\"\nStart-Sleep -Seconds $initialWaitSeconds\nWrite-Output \"Initial wait complete. Starting policy configuration attempts...\"\n\nfunction Invoke-KqlCommandWithRetry {\n    param(\n        [string]$Uri,\n        [hashtable]$Headers,\n        [string]$Body,\n        [string]$CommandDescription\n    )\n    \n    $attempt = 0\n    $lastError = $null\n    \n    while ($attempt -lt $maxRetries) {\n        $attempt++\n        try {\n            Write-Output \"[$CommandDescription] Attempt $attempt of $maxRetries...\"\n            $response = Invoke-RestMethod -Uri $Uri -Method Post -Headers $Headers -Body $Body\n            Write-Output \"[$CommandDescription] Success on attempt $attempt\"\n            return $response\n        }\n        catch {\n            $lastError = $_\n            $statusCode = $_.Exception.Response.StatusCode.value__\n            \n            # Only retry on 401 (Unauthorized) or 403 (Forbidden) - permission propagation issues\n            if ($statusCode -eq 401 -or $statusCode -eq 403) {\n                if ($attempt -lt $maxRetries) {\n                    Write-Output \"[$CommandDescription] Got HTTP $statusCode - permission not yet propagated. Waiting ${retryDelaySeconds}s before retry...\"\n                    Start-Sleep -Seconds $retryDelaySeconds\n                }\n                else {\n                    Write-Output \"[$CommandDescription] Max retries reached. Permission propagation timeout.\"\n                }\n            }\n            else {\n                # Non-permission error, don't retry\n                Write-Output \"[$CommandDescription] Got HTTP $statusCode - not a permission error, failing immediately.\"\n                throw\n            }\n        }\n    }\n    \n    # If we exhausted retries, throw the last error\n    throw $lastError\n}\n\ntry {\n    # Get access token for Kusto - use the global Kusto resource for proper audience\n    # The audience must be https://kusto.kusto.windows.net (NOT the cluster-specific URI)\n    # See: https://learn.microsoft.com/en-us/azure/data-explorer/kusto/api/rest/authentication\n    $kustoResource = 'https://kusto.kusto.windows.net'\n    Write-Output \"Acquiring access token for Kusto...\"\n    Write-Output \"Target resource: $kustoResource\"\n    Write-Output \"Cluster URI: $clusterUri\"\n    $kustoToken = (Get-AzAccessToken -ResourceUrl $kustoResource).Token\n    Write-Output \"Token acquired successfully\"\n    \n    $headers = @{ \n        'Authorization' = \"Bearer $kustoToken\"\n        'Content-Type' = 'application/json; charset=utf-8'\n    }\n    \n    # The policy command allows the cluster's system-assigned managed identity for NativeIngestion\n    # Using \"system\" as ObjectId refers to the cluster's own managed identity\n    # This is required for ADF to use managed_identity=system in ingestion commands\n    $kqlCommand = '.alter-merge cluster policy managed_identity ```[{\"ObjectId\":\"system\",\"AllowedUsages\":\"NativeIngestion\"}]```'\n    \n    $body = @{\n        db = \"Ingestion\"  # Any database works for cluster-level commands\n        csl = $kqlCommand\n    } | ConvertTo-Json -Compress\n    \n    Write-Output \"Executing KQL command: $kqlCommand\"\n    \n    $mgmtUri = \"$clusterUri/v1/rest/mgmt\"\n    $response = Invoke-KqlCommandWithRetry -Uri $mgmtUri -Headers $headers -Body $body -CommandDescription \"Set MI Policy\"\n    \n    Write-Output \"Policy configured successfully\"\n    Write-Output \"Response: $($response | ConvertTo-Json -Depth 5)\"\n    \n    # Verify the policy was applied\n    $verifyCommand = '.show cluster policy managed_identity'\n    $verifyBody = @{\n        db = \"Ingestion\"\n        csl = $verifyCommand\n    } | ConvertTo-Json -Compress\n    \n    $verifyResponse = Invoke-KqlCommandWithRetry -Uri $mgmtUri -Headers $headers -Body $verifyBody -CommandDescription \"Verify Policy\"\n    Write-Output \"Current policy: $($verifyResponse | ConvertTo-Json -Depth 5)\"\n    \n    $DeploymentScriptOutputs = @{ \n        status = \"success\"\n        message = \"Managed identity policy configured for NativeIngestion\"\n    }\n    \n} catch {\n    Write-Error \"Failed to configure managed identity policy: $_\"\n    Write-Error $_.Exception.Message\n    if ($_.Exception.Response) {\n        try {\n            $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())\n            $reader.BaseStream.Position = 0\n            $reader.DiscardBufferedData()\n            Write-Error $reader.ReadToEnd()\n        } catch {\n            Write-Error \"Could not read response body\"\n        }\n    }\n    $DeploymentScriptOutputs = @{ \n        status = \"error\"\n        error = $_.ToString()\n    }\n    throw\n}\n"
+            "kqlCommand": ".alter-merge cluster policy managed_identity ```[{\"ObjectId\":\"system\",\"AllowedUsages\":\"NativeIngestion\"}]```"
           },
           "resources": [
             {
-              "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-05-01",
-              "name": "[variables('deploymentScriptStorageName')]",
-              "location": "[parameters('location')]",
-              "kind": "StorageV2",
-              "sku": {
-                "name": "Standard_LRS"
-              },
-              "tags": "[union(parameters('tags'), createObject('ms-resource-usage', 'azure-deployment-script', 'SecurityControl', 'Ignore'))]",
+              "type": "Microsoft.Kusto/clusters/databases/scripts",
+              "apiVersion": "2024-04-13",
+              "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), 'configure-mi-policy')]",
               "properties": {
-                "allowSharedKeyAccess": true,
-                "minimumTlsVersion": "TLS1_2",
-                "supportsHttpsTrafficOnly": true,
-                "allowBlobPublicAccess": false,
-                "publicNetworkAccess": "Enabled",
-                "networkAcls": {
-                  "defaultAction": "Allow",
-                  "bypass": "AzureServices"
-                }
+                "scriptContent": "[variables('kqlCommand')]",
+                "scriptLevel": "Cluster",
+                "continueOnErrors": false,
+                "forceUpdateTag": "[parameters('forceUpdateTag')]"
               }
-            },
-            {
-              "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2023-08-01",
-              "name": "[format('adx-mi-policy-{0}', uniqueString(resourceGroup().id, parameters('clusterName'), parameters('forceUpdateTag')))]",
-              "location": "[parameters('location')]",
-              "kind": "AzurePowerShell",
-              "identity": {
-                "type": "UserAssigned",
-                "userAssignedIdentities": {
-                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
-                }
-              },
-              "properties": {
-                "azPowerShellVersion": "11.0",
-                "retentionInterval": "PT1H",
-                "timeout": "[parameters('timeout')]",
-                "cleanupPreference": "OnSuccess",
-                "forceUpdateTag": "[parameters('forceUpdateTag')]",
-                "environmentVariables": [
-                  {
-                    "name": "CLUSTER_URI",
-                    "value": "[reference(resourceId('Microsoft.Kusto/clusters', parameters('clusterName')), '2023-08-15').uri]"
-                  },
-                  {
-                    "name": "SUBSCRIPTION_ID",
-                    "value": "[subscription().subscriptionId]"
-                  }
-                ],
-                "scriptContent": "[variables('policyScript')]",
-                "storageAccountSettings": {
-                  "storageAccountName": "[variables('deploymentScriptStorageName')]",
-                  "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('deploymentScriptStorageName')), '2023-05-01').keys[0].value]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('deploymentScriptStorageName'))]"
-              ]
             }
           ],
           "outputs": {
-            "status": {
-              "type": "string",
-              "metadata": {
-                "description": "Status of the managed identity policy configuration."
-              },
-              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('adx-mi-policy-{0}', uniqueString(resourceGroup().id, parameters('clusterName'), parameters('forceUpdateTag')))), '2023-08-01').outputs.status]"
-            },
             "scriptResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Deployment script resource ID."
+                "description": "Script resource ID."
               },
-              "value": "[resourceId('Microsoft.Resources/deploymentScripts', format('adx-mi-policy-{0}', uniqueString(resourceGroup().id, parameters('clusterName'), parameters('forceUpdateTag'))))]"
+              "value": "[resourceId('Microsoft.Kusto/clusters/databases/scripts', parameters('clusterName'), parameters('databaseName'), 'configure-mi-policy')]"
             },
-            "storageAccountName": {
+            "scriptName": {
               "type": "string",
               "metadata": {
-                "description": "Deployment script storage account name."
+                "description": "Script name."
               },
-              "value": "[variables('deploymentScriptStorageName')]"
+              "value": "configure-mi-policy"
             }
           }
         }
       },
       "dependsOn": [
         "adxSchemaSetup",
-        "dataExplorer",
-        "managedIdentity"
+        "dataExplorer"
       ]
     }
   },

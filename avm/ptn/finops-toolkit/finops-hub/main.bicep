@@ -875,22 +875,16 @@ module startTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManage
 
 // --- ADX Managed Identity Policy ---
 // Required for native ingestion (managed_identity=system)
-// Note: This deployment script waits up to 13 minutes for AAD permission propagation
-module adxManagedIdentityPolicy 'modules/adxManagedIdentityPolicy.bicep' = if (createNewAdx) {
+// Uses database script resource with scriptLevel='Cluster' for reliable execution
+module adxManagedIdentityPolicy 'modules/adxManagedIdentityPolicyScript.bicep' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx-mi-policy'
   dependsOn: [
     // Note: dataExplorer is implicitly required via clusterName reference to outputs
-    adxSchemaSetup          // Schema should be deployed first
-    // Identity is granted AllDatabasesAdmin via dataExplorer.clusterPrincipalAssignments
+    adxSchemaSetup          // Schema should be deployed first (creates the Ingestion database)
   ]
   params: {
     clusterName: dataExplorer!.outputs.name
-    location: location
-    managedIdentityResourceId: effectiveIdentityResourceId
-    tags: allTags
-    // Note: The module creates a dedicated storage account with:
-    // - allowSharedKeyAccess: true (required for ACI - platform limitation)
-    // - SecurityControl: 'Ignore' tag (exempt from shared key policies)
+    databaseName: 'Ingestion'  // Use the Ingestion database created by adxSchemaSetup
   }
 }
 
