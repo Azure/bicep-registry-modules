@@ -41,25 +41,25 @@ var hubDbName = 'Hub'
 // Replace the retention placeholder in raw tables script
 var rawTablesScript = replace(loadTextContent('scripts/IngestionSetup_RawTables.kql'), '$$rawRetentionInDays$$', string(rawRetentionInDays))
 
-// NOTE: The managed identity policy is now configured via a separate deployment script module
-// (adxManagedIdentityPolicy.bicep) because cluster-level KQL commands cannot run via database scripts
+// NOTE: The managed identity policy is configured via adxManagedIdentityPolicyScript.bicep
+// using scriptLevel='Cluster' (API 2024-04-13+) for cluster-level KQL commands
 
 // ============================================================================
 // RESOURCES
 // ============================================================================
 
 // Reference the ADX cluster
-resource cluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: clusterName
 }
 
 // Reference the databases
-resource ingestionDb 'Microsoft.Kusto/clusters/databases@2023-08-15' existing = {
+resource ingestionDb 'Microsoft.Kusto/clusters/databases@2024-04-13' existing = {
   parent: cluster
   name: ingestionDbName
 }
 
-resource hubDb 'Microsoft.Kusto/clusters/databases@2023-08-15' existing = {
+resource hubDb 'Microsoft.Kusto/clusters/databases@2024-04-13' existing = {
   parent: cluster
   name: hubDbName
 }

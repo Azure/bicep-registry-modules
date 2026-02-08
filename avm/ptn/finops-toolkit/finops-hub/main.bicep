@@ -345,7 +345,7 @@ var effectiveKustoDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   : byoKustoDnsZoneId
 
 // --- User-Assigned Managed Identity ---
-resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingIdentity) {
+resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (useExistingIdentity) {
   name: existingIdentityName
 }
 
@@ -633,7 +633,7 @@ module managedExportsPipelines 'modules/managedExportsPipelines.bicep' = if (ena
 }
 
 // --- Azure Data Explorer ---
-module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.0' = if (createNewAdx) {
+module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.1' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx'
   dependsOn: effectiveNetworkIsolationMode == 'Managed' ? [managedNetwork] : []
   params: {

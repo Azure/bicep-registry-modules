@@ -1,0 +1,6 @@
+# AVM Spec-Kit (private AI context - do not commit)
+.specify/
+.github/copilot-instructions.md
+
+# error logs
+*.txt

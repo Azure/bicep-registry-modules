@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "13252093941227676578"
+      "templateHash": "8903957340579889209"
     },
     "name": "ADX WAF-aligned",
     "description": "This instance deploys the module with Azure Data Explorer in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints."
@@ -55,7 +55,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2025-03-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[variables('enforcedLocation')]"
     },
@@ -336,7 +336,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "9454594490379335895"
+              "templateHash": "13067323601721046834"
             },
             "name": "FinOps Hub",
             "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
@@ -914,7 +914,7 @@
               "condition": "[variables('useExistingIdentity')]",
               "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2023-01-31",
+              "apiVersion": "2024-11-30",
               "name": "[variables('existingIdentityName')]"
             },
             "managedNetwork": {
@@ -37662,8 +37662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6217257346333231250"
+                      "version": "0.40.2.10011",
+                      "templateHash": "13079404770240234892"
                     },
                     "name": "Kusto Cluster",
                     "description": "This module deploys a Kusto Cluster."
@@ -37789,6 +37789,7 @@
                           "type": "string",
                           "allowedValues": [
                             "AllDatabasesAdmin",
+                            "AllDatabasesMonitor",
                             "AllDatabasesViewer"
                           ],
                           "metadata": {
@@ -38880,7 +38881,7 @@
                         3
                       ],
                       "metadata": {
-                        "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
+                        "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again."
                       }
                     }
                   },
@@ -38915,7 +38916,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.kusto-cluster.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.kusto-cluster.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -38979,7 +38980,7 @@
                         "virtualClusterGraduationProperties": "[parameters('virtualClusterGraduationProperties')]",
                         "virtualNetworkConfiguration": "[if(not(empty(parameters('virtualNetworkConfiguration'))), createObject('dataManagementPublicIpId', parameters('virtualNetworkConfiguration').dataManagementPublicIpResourceId, 'enginePublicIpId', parameters('virtualNetworkConfiguration').enginePublicIpResourceId, 'subnetId', parameters('virtualNetworkConfiguration').subnetResourceId), null())]"
                       },
-                      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+                      "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
                       "dependsOn": [
                         "cMKKeyVault",
                         "cMKKeyVault::cMKKey"
@@ -38992,7 +38993,7 @@
                       },
                       "type": "Microsoft.Insights/diagnosticSettings",
                       "apiVersion": "2021-05-01-preview",
-                      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
                         "copy": [
@@ -39030,7 +39031,7 @@
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -39047,7 +39048,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kusto/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -39098,8 +39099,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "1012223909934891391"
+                              "version": "0.40.2.10011",
+                              "templateHash": "7737164182940842473"
                             },
                             "name": "Kusto Cluster Principal Assignments",
                             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -39872,6 +39873,9 @@
                           "kustoClusterName": {
                             "value": "[parameters('name')]"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "databaseKind": {
                             "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].kind]"
                           },
@@ -39887,8 +39891,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "14255520298720928878"
+                              "version": "0.40.2.10011",
+                              "templateHash": "4679326301457114965"
                             },
                             "name": "Kusto Cluster Databases",
                             "description": "This module deploys a Kusto Cluster Database."
@@ -40112,8 +40116,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "7106563084045148449"
+                                      "version": "0.40.2.10011",
+                                      "templateHash": "6533806870686790278"
                                     },
                                     "name": "Kusto Cluster Database Principal Assignments",
                                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."
@@ -40352,7 +40356,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.40.2.10011",
-                      "templateHash": "3920866551387427449"
+                      "templateHash": "8471779320859794884"
                     }
                   },
                   "parameters": {
@@ -40447,7 +40451,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -40491,7 +40495,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -40564,7 +40568,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -40608,7 +40612,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -40682,7 +40686,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -40726,7 +40730,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -40800,7 +40804,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -40844,7 +40848,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -40918,7 +40922,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -40962,7 +40966,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -41036,7 +41040,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.40.2.10011",
-                              "templateHash": "3139436702434783116"
+                              "templateHash": "12152535787010550020"
                             }
                           },
                           "parameters": {
@@ -41080,7 +41084,7 @@
                                 "count": "[length(items(parameters('scripts')))]"
                               },
                               "type": "Microsoft.Kusto/clusters/databases/scripts",
-                              "apiVersion": "2023-08-15",
+                              "apiVersion": "2024-04-13",
                               "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), items(parameters('scripts'))[copyIndex()].key)]",
                               "properties": {
                                 "scriptContent": "[items(parameters('scripts'))[copyIndex()].value]",
@@ -42589,7 +42593,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.40.2.10011",
-                      "templateHash": "8799473271333711966"
+                      "templateHash": "8488403584356895054"
                     }
                   },
                   "parameters": {
@@ -42615,7 +42619,7 @@
                       },
                       "condition": "[equals(parameters('privateEndpointConnections')[copyIndex()].properties.privateLinkServiceConnectionState.status, 'Pending')]",
                       "type": "Microsoft.Kusto/clusters/privateEndpointConnections",
-                      "apiVersion": "2023-08-15",
+                      "apiVersion": "2024-04-13",
                       "name": "[format('{0}/{1}', parameters('adxClusterName'), last(array(split(parameters('privateEndpointConnections')[copyIndex()].id, '/'))))]",
                       "properties": {
                         "privateLinkServiceConnectionState": {
@@ -42631,7 +42635,7 @@
                       "metadata": {
                         "description": "Current private endpoint connections on the cluster (for chaining get->approve pattern)."
                       },
-                      "value": "[coalesce(reference(resourceId('Microsoft.Kusto/clusters', parameters('adxClusterName')), '2023-08-15').privateEndpointConnections, createArray())]"
+                      "value": "[coalesce(reference(resourceId('Microsoft.Kusto/clusters', parameters('adxClusterName')), '2024-04-13').privateEndpointConnections, createArray())]"
                     }
                   }
                 }
@@ -42666,7 +42670,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.40.2.10011",
-                      "templateHash": "8799473271333711966"
+                      "templateHash": "8488403584356895054"
                     }
                   },
                   "parameters": {
@@ -42692,7 +42696,7 @@
                       },
                       "condition": "[equals(parameters('privateEndpointConnections')[copyIndex()].properties.privateLinkServiceConnectionState.status, 'Pending')]",
                       "type": "Microsoft.Kusto/clusters/privateEndpointConnections",
-                      "apiVersion": "2023-08-15",
+                      "apiVersion": "2024-04-13",
                       "name": "[format('{0}/{1}', parameters('adxClusterName'), last(array(split(parameters('privateEndpointConnections')[copyIndex()].id, '/'))))]",
                       "properties": {
                         "privateLinkServiceConnectionState": {
@@ -42708,7 +42712,7 @@
                       "metadata": {
                         "description": "Current private endpoint connections on the cluster (for chaining get->approve pattern)."
                       },
-                      "value": "[coalesce(reference(resourceId('Microsoft.Kusto/clusters', parameters('adxClusterName')), '2023-08-15').privateEndpointConnections, createArray())]"
+                      "value": "[coalesce(reference(resourceId('Microsoft.Kusto/clusters', parameters('adxClusterName')), '2024-04-13').privateEndpointConnections, createArray())]"
                     }
                   }
                 }

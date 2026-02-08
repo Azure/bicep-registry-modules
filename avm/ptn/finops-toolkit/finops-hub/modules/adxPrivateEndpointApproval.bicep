@@ -17,13 +17,13 @@ param privateEndpointConnections array = []
 // ============================================================================
 
 // Reference the existing ADX cluster
-resource cluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: adxClusterName
 }
 
 // Approve any pending private endpoint connections
 // This resource is deployed in a loop for each pending connection
-resource approveConnection 'Microsoft.Kusto/clusters/privateEndpointConnections@2023-08-15' = [for connection in privateEndpointConnections: if (connection.properties.privateLinkServiceConnectionState.status == 'Pending') {
+resource approveConnection 'Microsoft.Kusto/clusters/privateEndpointConnections@2024-04-13' = [for connection in privateEndpointConnections: if (connection.properties.privateLinkServiceConnectionState.status == 'Pending') {
   name: last(array(split(connection.id, '/')))
   parent: cluster
   properties: {

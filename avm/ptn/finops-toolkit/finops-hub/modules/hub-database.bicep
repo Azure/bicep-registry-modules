@@ -25,7 +25,7 @@ param forceUpdateTag string = utcNow()
 // ============================================================================
 
 // Reference the existing ADX cluster and database
-resource cluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: clusterName
 
   resource database 'databases' existing = {
