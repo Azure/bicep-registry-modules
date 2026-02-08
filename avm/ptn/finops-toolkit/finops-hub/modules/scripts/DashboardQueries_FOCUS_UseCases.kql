@@ -1,0 +1,517 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//======================================================================================================================
+// FinOps Hub Dashboard Queries - FOCUS Use Cases
+// Based on https://focus.finops.org/use-cases/
+//======================================================================================================================
+
+//======================================================================================================================
+// SECTION 1: ANOMALY MANAGEMENT
+// Reference: https://focus.finops.org/use-cases/#identify-anomalous-daily-spending-by-subaccount-and-region
+//======================================================================================================================
+
+// 1.1 Daily Spending by SubAccount and Region (for anomaly detection)
+// Use Case: Track daily spend from various angles to ensure any anomalous cost trends are easily detected
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Identify anomalous daily spending by subaccount and region', folder = 'Dashboard/AnomalyManagement')
+DailySpendingBySubAccountAndRegion(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | summarize 
+        DailyEffectiveCost = round(sum(EffectiveCost), 2)
+        by Day = startofday(ChargePeriodStart), 
+           ProviderName, 
+           SubAccountId, 
+           SubAccountName = coalesce(SubAccountName, SubAccountId),
+           RegionId, 
+           RegionName
+    | order by Day asc, DailyEffectiveCost desc
+}
+
+
+// 1.2 Cost Anomaly Detection with Z-Score
+// Identifies spending that deviates significantly from the mean
+.create-or-alter function
+with (docstring = 'Detect cost anomalies using statistical deviation (Z-score)', folder = 'Dashboard/AnomalyManagement')
+CostAnomalyDetection(lookbackDays: int, zScoreThreshold: real)
+{
+    let costs = Costs()
+        | where ChargePeriodStart >= ago(lookbackDays * 1d)
+        | summarize DailyCost = sum(EffectiveCost) by Day = startofday(ChargePeriodStart);
+    let stats = costs | summarize AvgCost = avg(DailyCost), StdDevCost = stdev(DailyCost);
+    let avgCost = toscalar(stats | project AvgCost);
+    let stdDevCost = toscalar(stats | project StdDevCost);
+    costs
+    | extend 
+        ZScore = iff(stdDevCost > 0, (DailyCost - avgCost) / stdDevCost, 0.0),
+        AvgCost = avgCost,
+        StdDevCost = stdDevCost
+    | extend IsAnomaly = abs(ZScore) > zScoreThreshold
+    | extend AnomalyType = case(
+        ZScore > zScoreThreshold, "Spike",
+        ZScore < -zScoreThreshold, "Drop",
+        "Normal"
+    )
+    | order by Day asc
+}
+
+
+// 1.3 Compare Resource Usage Month over Month
+// Use Case: Compare resource usage month over month
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Compare resource usage month over month', folder = 'Dashboard/AnomalyManagement')
+ResourceUsageMoM()
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -2)
+    | summarize 
+        ConsumedQuantity = sum(ConsumedQuantity),
+        EffectiveCost = sum(EffectiveCost)
+        by Month = startofmonth(ChargePeriodStart),
+           ResourceId,
+           ResourceName,
+           ResourceType = coalesce(ResourceType, x_ResourceType),
+           ConsumedUnit
+    | extend PrevMonth = datetime_add('month', -1, Month)
+    | join kind=leftouter (
+        Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -3) and ChargePeriodStart < startofmonth(now(), -1)
+        | summarize 
+            PrevConsumedQuantity = sum(ConsumedQuantity),
+            PrevEffectiveCost = sum(EffectiveCost)
+            by PrevMonth = startofmonth(ChargePeriodStart),
+               ResourceId
+    ) on PrevMonth, ResourceId
+    | extend 
+        QuantityChange = ConsumedQuantity - coalesce(PrevConsumedQuantity, 0.0),
+        CostChange = EffectiveCost - coalesce(PrevEffectiveCost, 0.0),
+        QuantityChangePct = iff(PrevConsumedQuantity > 0, round((ConsumedQuantity - PrevConsumedQuantity) / PrevConsumedQuantity * 100, 2), 100.0),
+        CostChangePct = iff(PrevEffectiveCost > 0, round((EffectiveCost - PrevEffectiveCost) / PrevEffectiveCost * 100, 2), 100.0)
+    | project Month, ResourceId, ResourceName, ResourceType, ConsumedUnit, ConsumedQuantity, PrevConsumedQuantity, QuantityChange, QuantityChangePct, EffectiveCost, PrevEffectiveCost, CostChange, CostChangePct
+    | order by abs(CostChange) desc
+}
+
+
+// 1.4 Identify Unused Capacity Reservations
+// Use Case: Identify unused capacity reservations
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Identify unused capacity reservations', folder = 'Dashboard/AnomalyManagement')
+UnusedCapacityReservations(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(CommitmentDiscountId)
+    | where CommitmentDiscountStatus == "Unused"
+    | summarize 
+        UnusedCost = round(sum(EffectiveCost), 2),
+        UnusedQuantity = sum(CommitmentDiscountQuantity)
+        by CommitmentDiscountId,
+           CommitmentDiscountName = coalesce(CommitmentDiscountName, CommitmentDiscountId),
+           CommitmentDiscountType,
+           Day = startofday(ChargePeriodStart)
+    | order by Day asc, UnusedCost desc
+}
+
+
+//======================================================================================================================
+// SECTION 2: REPORTING & ANALYTICS - EFFECTIVE SAVINGS RATE (ESR)
+// Reference: https://focus.finops.org/use-cases/#determine-effective-savings-rate
+//======================================================================================================================
+
+// 2.1 Effective Savings Rate (ESR) - Overall
+// KPI: (ListCost - EffectiveCost) / ListCost
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Determine Effective Savings Rate (ESR)', folder = 'Dashboard/RateOptimization')
+EffectiveSavingsRate(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        ContractedCost = sum(ContractedCost),
+        EffectiveCost = sum(EffectiveCost)
+    | extend 
+        TotalSavings = round(ListCost - EffectiveCost, 2),
+        NegotiatedSavings = round(ListCost - ContractedCost, 2),
+        CommitmentSavings = round(ContractedCost - EffectiveCost, 2),
+        ESR_OverList = round(iff(ListCost > 0, (ListCost - EffectiveCost) / ListCost * 100, 0.0), 2),
+        ESR_OverContracted = round(iff(ContractedCost > 0, (ContractedCost - EffectiveCost) / ContractedCost * 100, 0.0), 2)
+    | project ListCost, ContractedCost, EffectiveCost, TotalSavings, NegotiatedSavings, CommitmentSavings, ESR_OverList, ESR_OverContracted
+}
+
+
+// 2.2 Effective Savings Rate by Service
+// Use Case: Determine Effective Savings Rate by Service
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Determine Effective Savings Rate by Service', folder = 'Dashboard/RateOptimization')
+EffectiveSavingsRateByService(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        ContractedCost = sum(ContractedCost),
+        EffectiveCost = sum(EffectiveCost)
+        by ServiceName, ServiceCategory
+    | extend 
+        TotalSavings = round(ListCost - EffectiveCost, 2),
+        ESR = round(iff(ListCost > 0, (ListCost - EffectiveCost) / ListCost * 100, 0.0), 2)
+    | top topN by EffectiveCost desc
+    | project ServiceName, ServiceCategory, ListCost = round(ListCost, 2), ContractedCost = round(ContractedCost, 2), EffectiveCost = round(EffectiveCost, 2), TotalSavings, ESR
+}
+
+
+// 2.3 ESR Trend Over Time
+.create-or-alter function
+with (docstring = 'Track Effective Savings Rate trend over time', folder = 'Dashboard/RateOptimization')
+ESRTrend(numberOfMonths: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths)
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        EffectiveCost = sum(EffectiveCost)
+        by Month = startofmonth(ChargePeriodStart)
+    | extend 
+        Savings = round(ListCost - EffectiveCost, 2),
+        ESR = round(iff(ListCost > 0, (ListCost - EffectiveCost) / ListCost * 100, 0.0), 2)
+    | order by Month asc
+}
+
+
+//======================================================================================================================
+// SECTION 3: RATE OPTIMIZATION - COMMITMENT DISCOUNTS
+// Reference: https://focus.finops.org/use-cases/#identify-unused-commitments
+//======================================================================================================================
+
+// 3.1 Commitment Discount Utilization
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Identify unused commitments and utilization rates', folder = 'Dashboard/RateOptimization')
+CommitmentDiscountUtilization(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(CommitmentDiscountId)
+    | summarize 
+        UsedCost = sumif(EffectiveCost, CommitmentDiscountStatus == "Used"),
+        UnusedCost = sumif(EffectiveCost, CommitmentDiscountStatus == "Unused"),
+        TotalCost = sum(EffectiveCost)
+        by CommitmentDiscountId,
+           CommitmentDiscountName = coalesce(CommitmentDiscountName, CommitmentDiscountId),
+           CommitmentDiscountType
+    | extend UtilizationRate = round(iff(TotalCost > 0, UsedCost / TotalCost * 100, 0.0), 2)
+    | project CommitmentDiscountName, CommitmentDiscountType, UsedCost = round(UsedCost, 2), UnusedCost = round(UnusedCost, 2), TotalCost = round(TotalCost, 2), UtilizationRate
+    | order by UnusedCost desc
+}
+
+
+// 3.2 Commitment Discount Summary by Type
+.create-or-alter function
+with (docstring = 'Summary of commitment discounts by type (Reservation vs Savings Plan)', folder = 'Dashboard/RateOptimization')
+CommitmentDiscountSummary(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(CommitmentDiscountId)
+    | summarize 
+        UsedCost = sumif(EffectiveCost, CommitmentDiscountStatus == "Used"),
+        UnusedCost = sumif(EffectiveCost, CommitmentDiscountStatus == "Unused"),
+        UsedRecords = countif(CommitmentDiscountStatus == "Used"),
+        UnusedRecords = countif(CommitmentDiscountStatus == "Unused")
+        by CommitmentDiscountType
+    | extend 
+        TotalCost = UsedCost + UnusedCost,
+        UtilizationRate = round(iff(UsedCost + UnusedCost > 0, UsedCost / (UsedCost + UnusedCost) * 100, 0.0), 2)
+    | project CommitmentDiscountType, UsedCost = round(UsedCost, 2), UnusedCost = round(UnusedCost, 2), TotalCost = round(UsedCost + UnusedCost, 2), UtilizationRate, UsedRecords, UnusedRecords
+}
+
+
+// 3.3 Report Commitment Discount Purchases
+// Use Case: Report commitment discount purchases
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Report commitment discount purchases', folder = 'Dashboard/RateOptimization')
+CommitmentDiscountPurchases(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Purchase"
+    | where isnotempty(CommitmentDiscountId)
+    | summarize 
+        PurchaseCost = sum(BilledCost),
+        Count = count()
+        by CommitmentDiscountId,
+           CommitmentDiscountName = coalesce(CommitmentDiscountName, CommitmentDiscountId),
+           CommitmentDiscountType,
+           BillingPeriodStart = startofmonth(BillingPeriodStart)
+    | project BillingPeriodStart, CommitmentDiscountName, CommitmentDiscountType, PurchaseCost = round(PurchaseCost, 2), Count
+    | order by BillingPeriodStart desc, PurchaseCost desc
+}
+
+
+//======================================================================================================================
+// SECTION 4: MULTI-CLOUD / PROVIDER ANALYSIS
+// Enhanced for multi-cloud environments (Azure, AWS, GCP, Data Center)
+//======================================================================================================================
+
+// 4.1 Cost by Provider
+.create-or-alter function
+with (docstring = 'Cost breakdown by cloud provider for multi-cloud analysis', folder = 'Dashboard/MultiCloud')
+CostByProvider(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        BilledCost = round(sum(BilledCost), 2),
+        ResourceCount = dcount(ResourceId)
+        by ProviderName
+    | extend CostPct = round(EffectiveCost / toscalar(Costs() | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate | summarize sum(EffectiveCost)) * 100, 2)
+    | order by EffectiveCost desc
+}
+
+
+// 4.2 Cost Trend by Provider
+.create-or-alter function
+with (docstring = 'Monthly cost trend by cloud provider', folder = 'Dashboard/MultiCloud')
+CostTrendByProvider(numberOfMonths: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths)
+    | summarize EffectiveCost = round(sum(EffectiveCost), 2)
+        by Month = startofmonth(ChargePeriodStart), ProviderName
+    | order by Month asc, ProviderName asc
+}
+
+
+// 4.3 Top Services by Provider
+.create-or-alter function
+with (docstring = 'Top services by cost for each cloud provider', folder = 'Dashboard/MultiCloud')
+TopServicesByProvider(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | summarize EffectiveCost = round(sum(EffectiveCost), 2)
+        by ProviderName, ServiceName, ServiceCategory
+    | partition by ProviderName (top topN by EffectiveCost)
+    | order by ProviderName asc, EffectiveCost desc
+}
+
+
+//======================================================================================================================
+// SECTION 5: WORKLOAD OPTIMIZATION
+// Reference: https://focus.finops.org/use-cases/#analyze-cost-per-compute-service-for-a-subaccount
+//======================================================================================================================
+
+// 5.1 Analyze Service Costs by SubAccount
+// Use Case: Analyze service costs by subaccount
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Analyze service costs by subaccount', folder = 'Dashboard/WorkloadOptimization')
+ServiceCostsBySubAccount(startDate: datetime, endDate: datetime, subAccountId: string, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where subAccountId == "*" or SubAccountId == subAccountId
+    | summarize TotalEffectiveCost = round(sum(EffectiveCost), 2)
+        by SubAccountId, SubAccountName = coalesce(SubAccountName, SubAccountId), ServiceName
+    | top topN by TotalEffectiveCost desc
+}
+
+
+// 5.2 Analyze Costs by Availability Zone
+// Use Case: Analyze costs by availability zone for a subaccount
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Analyze costs by availability zone for a subaccount', folder = 'Dashboard/WorkloadOptimization')
+CostsByAvailabilityZone(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(AvailabilityZone)
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        ResourceCount = dcount(ResourceId)
+        by AvailabilityZone, RegionName, SubAccountId
+    | order by EffectiveCost desc
+}
+
+
+// 5.3 Analyze Service Costs Month over Month
+// Use Case: Analyze service costs month over month
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Analyze service costs month over month', folder = 'Dashboard/WorkloadOptimization')
+ServiceCostsMoM(numberOfMonths: int, topN: int)
+{
+    let costs = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths);
+    let topServices = costs 
+        | summarize TotalCost = sum(EffectiveCost) by ServiceName
+        | top topN by TotalCost;
+    costs
+    | where ServiceName in (topServices)
+    | summarize TotalEffectiveCost = round(sum(EffectiveCost), 2)
+        by Month = startofmonth(ChargePeriodStart), ProviderName, ServiceName
+    | order by Month asc, TotalEffectiveCost desc
+}
+
+
+// 5.4 Cost by Region
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Analyze service costs by region', folder = 'Dashboard/WorkloadOptimization')
+CostByRegion(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(RegionName)
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        ResourceCount = dcount(ResourceId)
+        by RegionId, RegionName, ProviderName
+    | order by EffectiveCost desc
+}
+
+
+//======================================================================================================================
+// SECTION 6: ALLOCATION / CHARGEBACK
+// Reference: https://focus.finops.org/use-cases/#analyze-tag-coverage
+//======================================================================================================================
+
+// 6.1 Tag Coverage Analysis
+// Use Case: Analyze tag coverage
+.create-or-alter function
+with (docstring = 'FOCUS Use Case: Analyze tag coverage for allocation', folder = 'Dashboard/Allocation')
+TagCoverageAnalysis(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Usage"
+    | extend HasTags = isnotempty(Tags) and tostring(Tags) != "{}"
+    | summarize 
+        TaggedCost = sumif(EffectiveCost, HasTags),
+        UntaggedCost = sumif(EffectiveCost, not(HasTags)),
+        TaggedResources = dcountif(ResourceId, HasTags),
+        UntaggedResources = dcountif(ResourceId, not(HasTags))
+    | extend 
+        TotalCost = TaggedCost + UntaggedCost,
+        TotalResources = TaggedResources + UntaggedResources,
+        TagCoverageBySpend = round(iff(TaggedCost + UntaggedCost > 0, TaggedCost / (TaggedCost + UntaggedCost) * 100, 0.0), 2),
+        TagCoverageByResources = round(iff(TaggedResources + UntaggedResources > 0, toreal(TaggedResources) / toreal(TaggedResources + UntaggedResources) * 100, 0.0), 2)
+}
+
+
+// 6.2 Cost by SubAccount (Chargeback)
+.create-or-alter function
+with (docstring = 'Cost allocation by SubAccount for chargeback reporting', folder = 'Dashboard/Allocation')
+CostBySubAccount(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | summarize 
+        BilledCost = round(sum(BilledCost), 2),
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        ResourceCount = dcount(ResourceId)
+        by SubAccountId, SubAccountName = coalesce(SubAccountName, SubAccountId)
+    | top topN by EffectiveCost desc
+}
+
+
+// 6.3 Cost Allocation by Resource Group
+.create-or-alter function
+with (docstring = 'Cost allocation by Resource Group', folder = 'Dashboard/Allocation')
+CostByResourceGroup(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(x_ResourceGroupName)
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        ResourceCount = dcount(ResourceId)
+        by SubAccountId, x_ResourceGroupName
+    | top topN by EffectiveCost desc
+}
+
+
+//======================================================================================================================
+// SECTION 7: BUDGETING
+// Reference: https://focus.finops.org/use-cases/#compare-billed-cost-per-subaccount-to-budget
+//======================================================================================================================
+
+// 7.1 Monthly Spend Summary for Budgeting
+.create-or-alter function
+with (docstring = 'Monthly spend summary for budget comparison', folder = 'Dashboard/Budgeting')
+MonthlySpendSummary(numberOfMonths: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths)
+    | summarize 
+        BilledCost = round(sum(BilledCost), 2),
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        ListCost = round(sum(ListCost), 2)
+        by Month = startofmonth(ChargePeriodStart)
+    | extend 
+        PrevMonthCost = prev(EffectiveCost),
+        MoMChange = iff(prev(EffectiveCost) > 0, round((EffectiveCost - prev(EffectiveCost)) / prev(EffectiveCost) * 100, 2), 0.0)
+    | order by Month asc
+}
+
+
+// 7.2 Current Month Burn Rate
+.create-or-alter function
+with (docstring = 'Current month burn rate and projected spend', folder = 'Dashboard/Budgeting')
+CurrentMonthBurnRate()
+{
+    let currentMonth = startofmonth(now());
+    let daysInMonth = datetime_diff('day', startofmonth(datetime_add('month', 1, now())), currentMonth);
+    let daysPassed = datetime_diff('day', now(), currentMonth) + 1;
+    Costs()
+    | where ChargePeriodStart >= currentMonth
+    | summarize SpendToDate = sum(EffectiveCost)
+    | extend 
+        DailyAvgSpend = round(SpendToDate / daysPassed, 2),
+        DaysRemaining = daysInMonth - daysPassed,
+        ProjectedMonthEnd = round(SpendToDate + (SpendToDate / daysPassed * (daysInMonth - daysPassed)), 2),
+        SpendToDate = round(SpendToDate, 2),
+        DaysInMonth = daysInMonth,
+        DaysPassed = daysPassed
+}
+
+
+//======================================================================================================================
+// SECTION 8: DATA QUALITY / INGESTION
+// For monitoring data ingestion health
+//======================================================================================================================
+
+// 8.1 Ingestion Summary by Source
+.create-or-alter function
+with (docstring = 'Data ingestion summary by source and date', folder = 'Dashboard/DataQuality')
+IngestionSummary()
+{
+    Costs()
+    | summarize 
+        RecordCount = count(),
+        FirstRecord = min(ChargePeriodStart),
+        LastRecord = max(ChargePeriodStart),
+        TotalCost = round(sum(EffectiveCost), 2),
+        Providers = dcount(ProviderName),
+        SubAccounts = dcount(SubAccountId)
+        by x_SourceName, x_SourceVersion
+    | order by LastRecord desc
+}
+
+
+// 8.2 Daily Ingestion Volume
+.create-or-alter function
+with (docstring = 'Daily ingestion volume for monitoring', folder = 'Dashboard/DataQuality')
+DailyIngestionVolume(numberOfDays: int)
+{
+    Costs()
+    | where ChargePeriodStart >= ago(numberOfDays * 1d)
+    | summarize 
+        RecordCount = count(),
+        TotalCost = round(sum(EffectiveCost), 2)
+        by Day = startofday(ChargePeriodStart)
+    | order by Day asc
+}

@@ -1,0 +1,346 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//======================================================================================================================
+// Ingestion database - MACC (Microsoft Azure Consumption Commitment) Support
+// Used for tracking MACC commitments, balances, and consumption events.
+// Reference: https://learn.microsoft.com/azure/cost-management-billing/benefits/macc/track-consumption-commitment
+//======================================================================================================================
+
+// For allowed commands, see https://learn.microsoft.com/azure/data-explorer/database-script
+
+//===| MACC_Lots |======================================================================================================
+// MACC Lots represent individual consumption commitment agreements.
+// Data source: Microsoft.Consumption/lots API with filter source eq 'ConsumptionCommitment'
+// API: GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/providers/Microsoft.Consumption/lots?api-version=2021-05-01&$filter=source eq 'ConsumptionCommitment'
+//======================================================================================================================
+
+// MACC_Lots_raw table -- Create the table if it doesn't exist
+.create-merge table MACC_Lots_raw ( ignore: string )
+
+// MACC_Lots_raw table -- Remove all columns to allow changing column types
+.alter table MACC_Lots_raw ( ignore: string )
+
+// MACC_Lots_raw table -- Redefine all columns
+.alter table MACC_Lots_raw (
+    LotId:                 string,    // Unique identifier for the MACC lot (from API 'name' field)
+    BillingAccountId:      string,    // The billing account ID
+    BillingAccountName:    string,    // The billing account display name
+    Status:                string,    // Active, Completed, Expired, Canceled
+    PurchasedDate:         datetime,  // Date the MACC was purchased
+    StartDate:             datetime,  // Date the MACC became effective
+    ExpirationDate:        datetime,  // Date the MACC expires
+    OriginalAmount:        real,      // Original commitment amount
+    OriginalCurrency:      string,    // Currency of the original amount
+    ClosedBalance:         real,      // Remaining balance (as of last invoice)
+    ClosedBalanceCurrency: string,    // Currency of the closed balance
+    ETag:                  string,    // ETag for concurrency control
+    x_SourceName:          string,    // Hubs v1_0+
+    x_SourceProvider:      string,    // Hubs v1_0+
+    x_SourceType:          string,    // Hubs v1_0+
+    x_SourceVersion:       string     // Hubs v1_0+
+)
+
+// MACC_Lots_raw ingestion mapping for JSON data
+.create-or-alter table MACC_Lots_raw ingestion json mapping "MACC_Lots_raw_mapping"
+```
+[
+    { "Column": "LotId",                 "Properties": { "Path": "$.name" } },
+    { "Column": "BillingAccountId",      "Properties": { "Path": "$.billingAccountId" } },
+    { "Column": "BillingAccountName",    "Properties": { "Path": "$.billingAccountName" } },
+    { "Column": "Status",                "Properties": { "Path": "$.properties.status" } },
+    { "Column": "PurchasedDate",         "Properties": { "Path": "$.properties.purchasedDate" } },
+    { "Column": "StartDate",             "Properties": { "Path": "$.properties.startDate" } },
+    { "Column": "ExpirationDate",        "Properties": { "Path": "$.properties.expirationDate" } },
+    { "Column": "OriginalAmount",        "Properties": { "Path": "$.properties.originalAmount.value" } },
+    { "Column": "OriginalCurrency",      "Properties": { "Path": "$.properties.originalAmount.currency" } },
+    { "Column": "ClosedBalance",         "Properties": { "Path": "$.properties.closedBalance.value" } },
+    { "Column": "ClosedBalanceCurrency", "Properties": { "Path": "$.properties.closedBalance.currency" } },
+    { "Column": "ETag",                  "Properties": { "Path": "$.eTag" } },
+    { "Column": "x_SourceName",          "Properties": { "Path": "$.x_SourceName" } },
+    { "Column": "x_SourceProvider",      "Properties": { "Path": "$.x_SourceProvider" } },
+    { "Column": "x_SourceType",          "Properties": { "Path": "$.x_SourceType" } },
+    { "Column": "x_SourceVersion",       "Properties": { "Path": "$.x_SourceVersion" } }
+]
+```
+
+// MACC_Lots_raw retention policy (no automatic cleanup for commitment data)
+.alter-merge table MACC_Lots_raw policy retention softdelete = 365d recoverability = disabled
+
+
+//===| MACC_Events |====================================================================================================
+// MACC Events represent invoice events that decremented the MACC commitment.
+// Data source: Microsoft.Consumption/events API with filter lotsource eq 'ConsumptionCommitment'
+// API: GET https://management.azure.com/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/providers/Microsoft.Consumption/events?api-version=2021-05-01&startDate={startDate}&endDate={endDate}&$filter=lotsource eq 'ConsumptionCommitment'
+//======================================================================================================================
+
+// MACC_Events_raw table -- Create the table if it doesn't exist
+.create-merge table MACC_Events_raw ( ignore: string )
+
+// MACC_Events_raw table -- Remove all columns to allow changing column types
+.alter table MACC_Events_raw ( ignore: string )
+
+// MACC_Events_raw table -- Redefine all columns
+.alter table MACC_Events_raw (
+    EventId:                  string,    // Unique identifier for the event (from API 'name' field)
+    BillingAccountId:         string,    // The billing account ID
+    BillingProfileId:         string,    // The billing profile ID (MCA only)
+    BillingProfileDisplayName: string,   // The billing profile display name (MCA only)
+    LotId:                    string,    // Reference to the MACC lot
+    LotSource:                string,    // Should be 'ConsumptionCommitment' for MACC
+    TransactionDate:          datetime,  // Date when the event occurred
+    Description:              string,    // Description of the event
+    EventType:                string,    // Event type (e.g., 'SettledCharges')
+    InvoiceNumber:            string,    // Invoice number that triggered the decrement
+    Charges:                  real,      // Amount that decremented the MACC (negative value)
+    ChargesCurrency:          string,    // Currency of the charges
+    ClosedBalance:            real,      // Remaining balance after the event
+    ClosedBalanceCurrency:    string,    // Currency of the closed balance
+    ETag:                     string,    // ETag for concurrency control
+    x_SourceName:             string,    // Hubs v1_0+
+    x_SourceProvider:         string,    // Hubs v1_0+
+    x_SourceType:             string,    // Hubs v1_0+
+    x_SourceVersion:          string     // Hubs v1_0+
+)
+
+// MACC_Events_raw ingestion mapping for JSON data
+.create-or-alter table MACC_Events_raw ingestion json mapping "MACC_Events_raw_mapping"
+```
+[
+    { "Column": "EventId",                   "Properties": { "Path": "$.name" } },
+    { "Column": "BillingAccountId",          "Properties": { "Path": "$.billingAccountId" } },
+    { "Column": "BillingProfileId",          "Properties": { "Path": "$.properties.billingProfileId" } },
+    { "Column": "BillingProfileDisplayName", "Properties": { "Path": "$.properties.billingProfileDisplayName" } },
+    { "Column": "LotId",                     "Properties": { "Path": "$.properties.lotId" } },
+    { "Column": "LotSource",                 "Properties": { "Path": "$.properties.lotSource" } },
+    { "Column": "TransactionDate",           "Properties": { "Path": "$.properties.transactionDate" } },
+    { "Column": "Description",               "Properties": { "Path": "$.properties.description" } },
+    { "Column": "EventType",                 "Properties": { "Path": "$.properties.eventType" } },
+    { "Column": "InvoiceNumber",             "Properties": { "Path": "$.properties.invoiceNumber" } },
+    { "Column": "Charges",                   "Properties": { "Path": "$.properties.charges.value" } },
+    { "Column": "ChargesCurrency",           "Properties": { "Path": "$.properties.charges.currency" } },
+    { "Column": "ClosedBalance",             "Properties": { "Path": "$.properties.closedBalance.value" } },
+    { "Column": "ClosedBalanceCurrency",     "Properties": { "Path": "$.properties.closedBalance.currency" } },
+    { "Column": "ETag",                      "Properties": { "Path": "$.eTag" } },
+    { "Column": "x_SourceName",              "Properties": { "Path": "$.x_SourceName" } },
+    { "Column": "x_SourceProvider",          "Properties": { "Path": "$.x_SourceProvider" } },
+    { "Column": "x_SourceType",              "Properties": { "Path": "$.x_SourceType" } },
+    { "Column": "x_SourceVersion",           "Properties": { "Path": "$.x_SourceVersion" } }
+]
+```
+
+// MACC_Events_raw retention policy (keep event history for analysis)
+.alter-merge table MACC_Events_raw policy retention softdelete = 365d recoverability = disabled
+
+
+//===| MACC Transform Functions |=======================================================================================
+// Transform raw MACC data into analysis-ready format
+//======================================================================================================================
+
+// MACC_Lots_transform function
+.create-or-alter function
+with (docstring='Transform MACC lots data into analysis-ready format.', folder='MACC')
+MACC_Lots_transform()
+{
+    MACC_Lots_raw
+    | extend x_IngestionTime = ingestion_time()
+    | extend BillingAccountId = iff(BillingAccountId startswith '/', BillingAccountId, strcat('/providers/Microsoft.Billing/billingAccounts/', BillingAccountId))
+    | project
+        BillingAccountId,
+        BillingAccountName,
+        CommitmentId = LotId,
+        CommitmentType = 'MACC',
+        Status,
+        StartDate,
+        EndDate = ExpirationDate,
+        PurchasedDate,
+        Currency = coalesce(OriginalCurrency, ClosedBalanceCurrency),
+        CommitmentAmount = OriginalAmount,
+        RemainingBalance = ClosedBalance,
+        ConsumedAmount = OriginalAmount - ClosedBalance,
+        ConsumptionPercent = iff(OriginalAmount > 0, round((OriginalAmount - ClosedBalance) / OriginalAmount * 100, 2), real(0)),
+        DaysRemaining = toint(iff(ExpirationDate > now(), datetime_diff('day', ExpirationDate, now()), 0)),
+        DaysTotal = toint(datetime_diff('day', ExpirationDate, StartDate)),
+        IsActive = Status == 'Active',
+        IsExpired = Status == 'Expired',
+        IsComplete = Status == 'Completed',
+        x_IngestionTime,
+        x_SourceName = coalesce(x_SourceName, 'Cost Management'),
+        x_SourceProvider = coalesce(x_SourceProvider, 'Microsoft'),
+        x_SourceType = coalesce(x_SourceType, 'ConsumptionLots'),
+        x_SourceVersion = coalesce(x_SourceVersion, '2021-05-01')
+}
+
+// MACC_Lots_final table
+.create-merge table MACC_Lots_final (
+    BillingAccountId:    string,
+    BillingAccountName:  string,
+    CommitmentId:        string,
+    CommitmentType:      string,
+    Status:              string,
+    StartDate:           datetime,
+    EndDate:             datetime,
+    PurchasedDate:       datetime,
+    Currency:            string,
+    CommitmentAmount:    real,
+    RemainingBalance:    real,
+    ConsumedAmount:      real,
+    ConsumptionPercent:  real,
+    DaysRemaining:       int,
+    DaysTotal:           int,
+    IsActive:            bool,
+    IsExpired:           bool,
+    IsComplete:          bool,
+    x_IngestionTime:     datetime,
+    x_SourceName:        string,
+    x_SourceProvider:    string,
+    x_SourceType:        string,
+    x_SourceVersion:     string
+)
+
+// Update policy for MACC_Lots_raw -> MACC_Lots_final
+.alter table MACC_Lots_final policy update
+```
+[{
+    "IsEnabled": true,
+    "Source": "MACC_Lots_raw",
+    "Query": "MACC_Lots_transform()",
+    "IsTransactional": true,
+    "PropagateIngestionProperties": true
+}]
+```
+
+// MACC_Events_transform function
+.create-or-alter function
+with (docstring='Transform MACC events data into analysis-ready format.', folder='MACC')
+MACC_Events_transform()
+{
+    MACC_Events_raw
+    | extend x_IngestionTime = ingestion_time()
+    | extend BillingAccountId = iff(BillingAccountId startswith '/', BillingAccountId, strcat('/providers/Microsoft.Billing/billingAccounts/', BillingAccountId))
+    | project
+        BillingAccountId,
+        BillingProfileId,
+        BillingProfileName = BillingProfileDisplayName,
+        CommitmentId = extract(@'/lots/(.+)$', 1, LotId),
+        EventId,
+        EventType,
+        EventDate = TransactionDate,
+        Description,
+        InvoiceNumber,
+        Currency = coalesce(ChargesCurrency, ClosedBalanceCurrency),
+        DecrementAmount = abs(Charges),  // Charges are negative, convert to positive
+        RemainingBalance = ClosedBalance,
+        x_IngestionTime,
+        x_SourceName = coalesce(x_SourceName, 'Cost Management'),
+        x_SourceProvider = coalesce(x_SourceProvider, 'Microsoft'),
+        x_SourceType = coalesce(x_SourceType, 'ConsumptionEvents'),
+        x_SourceVersion = coalesce(x_SourceVersion, '2021-05-01')
+}
+
+// MACC_Events_final table
+.create-merge table MACC_Events_final (
+    BillingAccountId:    string,
+    BillingProfileId:    string,
+    BillingProfileName:  string,
+    CommitmentId:        string,
+    EventId:             string,
+    EventType:           string,
+    EventDate:           datetime,
+    Description:         string,
+    InvoiceNumber:       string,
+    Currency:            string,
+    DecrementAmount:     real,
+    RemainingBalance:    real,
+    x_IngestionTime:     datetime,
+    x_SourceName:        string,
+    x_SourceProvider:    string,
+    x_SourceType:        string,
+    x_SourceVersion:     string
+)
+
+// Update policy for MACC_Events_raw -> MACC_Events_final
+.alter table MACC_Events_final policy update
+```
+[{
+    "IsEnabled": true,
+    "Source": "MACC_Events_raw",
+    "Query": "MACC_Events_transform()",
+    "IsTransactional": true,
+    "PropagateIngestionProperties": true
+}]
+```
+
+
+//===| MACC Analysis Functions |========================================================================================
+// Functions for MACC analysis and reporting
+//======================================================================================================================
+
+// MACC_Summary function - Get current MACC status and health
+.create-or-alter function
+with (docstring='Get MACC summary with status and burn rate analysis.', folder='MACC')
+MACC_Summary()
+{
+    MACC_Lots_final
+    | summarize arg_max(x_IngestionTime, *) by CommitmentId
+    | extend 
+        DaysElapsed = DaysTotal - DaysRemaining,
+        ExpectedBurnPercent = iff(DaysTotal > 0, round(toreal(DaysTotal - DaysRemaining) / DaysTotal * 100, 2), real(0))
+    | extend
+        BurnRate = iff(DaysElapsed > 0, round(ConsumedAmount / DaysElapsed, 2), real(0)),
+        ProjectedDailyBurnRequired = iff(DaysRemaining > 0, round(RemainingBalance / DaysRemaining, 2), real(0))
+    | extend
+        ProjectedEndBalance = iff(DaysRemaining > 0, RemainingBalance - (BurnRate * DaysRemaining), RemainingBalance),
+        BurnStatus = case(
+            Status != 'Active', Status,
+            ConsumptionPercent >= ExpectedBurnPercent + 10, 'Ahead of Schedule',
+            ConsumptionPercent >= ExpectedBurnPercent - 10, 'On Track',
+            ConsumptionPercent >= ExpectedBurnPercent - 20, 'Slightly Behind',
+            'Significantly Behind'
+        )
+    | project
+        CommitmentId,
+        BillingAccountId,
+        BillingAccountName,
+        Status,
+        Currency,
+        CommitmentAmount,
+        ConsumedAmount,
+        RemainingBalance,
+        ConsumptionPercent,
+        ExpectedBurnPercent,
+        StartDate,
+        EndDate,
+        DaysTotal,
+        DaysElapsed,
+        DaysRemaining,
+        BurnRate,
+        ProjectedDailyBurnRequired,
+        ProjectedEndBalance,
+        BurnStatus,
+        IsActive,
+        x_IngestionTime
+}
+
+// MACC_MonthlyTrend function - Get monthly MACC consumption trend
+.create-or-alter function
+with (docstring='Get monthly MACC consumption trend from events.', folder='MACC')
+MACC_MonthlyTrend()
+{
+    MACC_Events_final
+    | extend Month = startofmonth(EventDate)
+    | summarize 
+        MonthlyDecrement = sum(DecrementAmount),
+        EventCount = count(),
+        EndBalance = min(RemainingBalance)
+        by Month, CommitmentId, BillingAccountId, Currency
+    | order by CommitmentId, Month asc
+    | project
+        CommitmentId,
+        BillingAccountId,
+        Month,
+        Currency,
+        MonthlyDecrement,
+        EventCount,
+        EndBalance
+}
