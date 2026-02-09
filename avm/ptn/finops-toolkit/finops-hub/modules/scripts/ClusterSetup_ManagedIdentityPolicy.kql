@@ -1,0 +1,23 @@
+// ============================================================================
+// FinOps Hub - Cluster Managed Identity Policy Setup
+// ============================================================================
+// This script configures the cluster-level managed identity policy to allow
+// Azure Data Factory to use native ingestion with its system-assigned managed identity.
+//
+// IMPORTANT: This script uses a placeholder $$adfManagedIdentityObjectId$$ that must be
+// replaced with the actual ADF managed identity Object ID at deployment time.
+//
+// Required for: ADF pipelines using managed_identity=system for ADX ingestion
+// Reference: https://learn.microsoft.com/en-us/azure/data-explorer/ingest-data-managed-identity
+// ============================================================================
+
+// Allow ADF's managed identity for native ingestion
+// The ObjectId must be the ADF's system-assigned managed identity principal ID
+.alter-merge cluster policy managed_identity ```
+[
+  {
+    "ObjectId": "$$adfManagedIdentityObjectId$$",
+    "AllowedUsages": "NativeIngestion"
+  }
+]
+```
