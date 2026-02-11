@@ -1,0 +1,246 @@
+// =====================================================
+// MACC Manual Entry Script
+// =====================================================
+// Use this script to enter your Microsoft Azure Consumption
+// Commitment (MACC) details from your contract.
+//
+// IMPORTANT: You only need to enter the commitment details!
+// Actual Azure consumption is automatically calculated from
+// the FOCUS cost data already being ingested into FinOps Hub.
+//
+// You'll need the following from your MACC agreement:
+//   - Commitment Amount (USD or your currency)
+//   - Start Date (when MACC term begins)
+//   - End Date (when MACC expires)
+//
+// Instructions:
+//   1. Update the values in Step 1 with your MACC contract details
+//   2. Run the command in Azure Data Explorer
+//   3. View the MACC Tracking page in the dashboard
+// =====================================================
+
+// -----------------------------------------------------
+// STEP 1: Enter Your MACC Commitment Details
+// -----------------------------------------------------
+// Modify these values to match your MACC contract:
+
+.set-or-replace MACC_ManualEntry <|
+    print 
+        LotId = "MACC-001",                           // Unique identifier (any string)
+        CommitmentAmount = 100000.00,                 // Total MACC commitment amount
+        Currency = "USD",                             // Currency code (USD, EUR, etc.)
+        StartDate = datetime(2024-01-01),             // MACC start date from contract
+        ExpirationDate = datetime(2026-12-31),        // MACC end date from contract
+        Status = "Active",                            // Active, Complete, or Expired
+        BillingAccountId = "",                        // Optional: Billing account ID
+        Description = "Enterprise MACC Commitment",   // Description for reference
+        EntryDate = now()                             // Timestamp of this entry
+
+// -----------------------------------------------------
+// STEP 2: Verify Your Entry
+// -----------------------------------------------------
+// Run this query to confirm the data was saved:
+
+// MACC_ManualEntry
+
+// -----------------------------------------------------
+// HOW IT WORKS
+// -----------------------------------------------------
+// Once you enter your MACC commitment details above:
+//
+// 1. The dashboard queries the Costs table (FOCUS data)
+// 2. It calculates total spending within your MACC period
+// 3. It compares consumption vs commitment pace
+// 4. It forecasts whether you'll meet your commitment
+//
+// NO NEED to manually enter consumption - it's automatic!
+
+// =====================================================
+// MACC ANALYSIS QUERIES (Using FOCUS Cost Data)
+// =====================================================
+// These queries use your actual Azure spending from the
+// Costs table. Just run them after entering commitment details.
+
+// -----------------------------------------------------
+// Query 1: Current MACC Status
+// -----------------------------------------------------
+// Shows commitment, consumed amount, and remaining balance
+
+/*
+let MACCData = MACC_ManualEntry | take 1;
+let StartDate = toscalar(MACCData | project StartDate);
+let EndDate = toscalar(MACCData | project ExpirationDate);
+let Commitment = toscalar(MACCData | project CommitmentAmount);
+let TotalConsumed = toscalar(
+    Costs 
+    | where ChargePeriodStart >= StartDate and ChargePeriodStart < EndDate
+    | summarize sum(EffectiveCost)
+);
+let RemainingBalance = Commitment - TotalConsumed;
+let DaysTotal = datetime_diff('day', EndDate, StartDate);
+let DaysElapsed = datetime_diff('day', now(), StartDate);
+let DaysRemaining = datetime_diff('day', EndDate, now());
+let PercentComplete = round(100.0 * TotalConsumed / Commitment, 1);
+let PercentTimeElapsed = round(100.0 * DaysElapsed / DaysTotal, 1);
+print 
+    CommitmentAmount = round(Commitment, 0),
+    TotalConsumed = round(TotalConsumed, 0),
+    RemainingBalance = round(RemainingBalance, 0),
+    PercentConsumed = strcat(PercentComplete, "%"),
+    PercentTimeElapsed = strcat(PercentTimeElapsed, "%"),
+    DaysRemaining = DaysRemaining,
+    Status = case(
+        now() > EndDate, "Expired",
+        PercentComplete >= 100, "Complete",
+        PercentComplete < PercentTimeElapsed - 10, "Behind Pace",
+        PercentComplete > PercentTimeElapsed + 10, "Ahead of Pace",
+        "On Track"
+    )
+*/
+
+// -----------------------------------------------------
+// Query 2: Monthly Consumption Trend
+// -----------------------------------------------------
+// Shows actual spending by month with running balance
+
+/*
+let MACCData = MACC_ManualEntry | take 1;
+let StartDate = toscalar(MACCData | project StartDate);
+let EndDate = toscalar(MACCData | project ExpirationDate);
+let Commitment = toscalar(MACCData | project CommitmentAmount);
+Costs
+| where ChargePeriodStart >= StartDate and ChargePeriodStart < EndDate
+| summarize MonthlyConsumption = sum(EffectiveCost) by Month = startofmonth(ChargePeriodStart)
+| order by Month asc
+| extend RunningTotal = row_cumsum(MonthlyConsumption)
+| extend RemainingBalance = Commitment - RunningTotal
+| extend PercentUsed = round(100.0 * RunningTotal / Commitment, 1)
+| project Month, MonthlyConsumption = round(MonthlyConsumption, 0), 
+    RunningTotal = round(RunningTotal, 0), 
+    RemainingBalance = round(RemainingBalance, 0), 
+    PercentUsed
+*/
+
+// -----------------------------------------------------
+// Query 3: Burn Rate and Forecast
+// -----------------------------------------------------
+// Calculates average monthly burn and forecasts completion
+
+/*
+let MACCData = MACC_ManualEntry | take 1;
+let StartDate = toscalar(MACCData | project StartDate);
+let EndDate = toscalar(MACCData | project ExpirationDate);
+let Commitment = toscalar(MACCData | project CommitmentAmount);
+let TotalConsumed = toscalar(
+    Costs 
+    | where ChargePeriodStart >= StartDate and ChargePeriodStart < EndDate
+    | summarize sum(EffectiveCost)
+);
+let MonthsOfData = toscalar(
+    Costs 
+    | where ChargePeriodStart >= StartDate
+    | summarize dcount(startofmonth(ChargePeriodStart))
+);
+let AvgMonthlyBurn = TotalConsumed / max(MonthsOfData, 1);
+let RemainingBalance = Commitment - TotalConsumed;
+let MonthsToComplete = RemainingBalance / max(AvgMonthlyBurn, 1);
+let ForecastedCompletionDate = datetime_add('month', toint(MonthsToComplete), now());
+let MonthsUntilExpiration = datetime_diff('month', EndDate, now());
+let RequiredMonthlySpend = RemainingBalance / max(MonthsUntilExpiration, 1);
+print 
+    AverageMonthlyBurn = round(AvgMonthlyBurn, 0),
+    RemainingBalance = round(RemainingBalance, 0),
+    ForecastedCompletionDate = ForecastedCompletionDate,
+    ExpirationDate = EndDate,
+    WillCompleteBeforeExpiration = ForecastedCompletionDate < EndDate,
+    RequiredMonthlySpend = round(RequiredMonthlySpend, 0),
+    SpendGap = round(RequiredMonthlySpend - AvgMonthlyBurn, 0)
+*/
+
+// -----------------------------------------------------
+// Query 4: MACC Health Score
+// -----------------------------------------------------
+// Overall health assessment of your MACC progress
+
+/*
+let MACCData = MACC_ManualEntry | take 1;
+let StartDate = toscalar(MACCData | project StartDate);
+let EndDate = toscalar(MACCData | project ExpirationDate);
+let Commitment = toscalar(MACCData | project CommitmentAmount);
+let TotalConsumed = toscalar(
+    Costs 
+    | where ChargePeriodStart >= StartDate and ChargePeriodStart < EndDate
+    | summarize sum(EffectiveCost)
+);
+let DaysTotal = datetime_diff('day', EndDate, StartDate);
+let DaysElapsed = datetime_diff('day', now(), StartDate);
+let PercentTimeElapsed = 100.0 * DaysElapsed / DaysTotal;
+let PercentConsumed = 100.0 * TotalConsumed / Commitment;
+let PaceRatio = PercentConsumed / max(PercentTimeElapsed, 1);
+print 
+    HealthStatus = case(
+        PaceRatio >= 0.9 and PaceRatio <= 1.1, "🟢 On Track",
+        PaceRatio > 1.1, "🟢 Ahead of Pace",
+        PaceRatio >= 0.75, "🟡 Slightly Behind",
+        PaceRatio >= 0.5, "🟠 Behind Pace",
+        "🔴 At Risk"
+    ),
+    PercentConsumed = round(PercentConsumed, 1),
+    PercentTimeElapsed = round(PercentTimeElapsed, 1),
+    PaceRatio = round(PaceRatio, 2),
+    RemainingBalance = round(Commitment - TotalConsumed, 0),
+    Recommendation = case(
+        PaceRatio < 0.75, "⚠️ Consider accelerating Azure usage to meet commitment",
+        PaceRatio > 1.2, "✅ Excellent progress - on track to complete early",
+        "✅ Consumption pace is healthy"
+    )
+*/
+
+// =====================================================
+// TABLE CREATION (Run once if table doesn't exist)
+// =====================================================
+// If the MACC_ManualEntry table doesn't exist, run this first:
+
+/*
+.create table MACC_ManualEntry (
+    LotId: string,
+    CommitmentAmount: real,
+    Currency: string,
+    StartDate: datetime,
+    ExpirationDate: datetime,
+    Status: string,
+    BillingAccountId: string,
+    Description: string,
+    EntryDate: datetime
+)
+*/
+
+// =====================================================
+// QUICK REFERENCE: What to Get From Your MACC Contract
+// =====================================================
+// Look for these items in your MACC Amendment document:
+//
+// 1. COMMITMENT AMOUNT
+//    - Listed as "Azure Consumption Commitment" or 
+//      "Minimum Consumption Commitment"
+//    - Example: "$500,000 USD"
+//
+// 2. COMMITMENT PERIOD
+//    - Start Date: When the MACC term begins
+//    - End Date: When the MACC expires (typically 1-3 years)
+//    - Example: "January 1, 2024 through December 31, 2026"
+//
+// 3. BILLING ACCOUNT (Optional)
+//    - Your Enterprise Agreement or MCA billing account ID
+//    - Found in Azure Portal > Cost Management + Billing
+//
+// =====================================================
+// NOTE: Consumption is Automatic!
+// =====================================================
+// You do NOT need to manually enter consumption amounts.
+// The dashboard calculates consumption from your actual
+// Azure spending data (FOCUS costs) automatically.
+//
+// Just enter your commitment details above and refresh
+// the dashboard to see your MACC tracking!
+// =====================================================

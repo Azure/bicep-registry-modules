@@ -1,0 +1,1 @@
+Deployment skipped: ADX + managed network provisioning (~57 min) exceeds the CI OIDC token lifetime (~55 min). PSRule WAF validation still runs and passes. The adx-minimal and managed-network tests validate ADX and managed networking independently.
