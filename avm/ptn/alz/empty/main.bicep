@@ -142,6 +142,8 @@ var formattedRoleAssignments = [
 // Reserve 4 chars for "-<idx>" (supports up to 999 iterations) for wait deployment names to avoid truncating the index (which must remain unique)
 var deploymentNameIndexSuffixReserve = 4
 var deploymentNameBaseMax = 64 - deploymentNameIndexSuffixReserve
+var deploymentNamePerItemSuffixReserve = 14
+var deploymentNamePerItemBaseMax = 64 - deploymentNamePerItemSuffixReserve
 
 var deploymentNames = {
   mg: take('${uniqueString(managementGroupName, location)}-alz-mg-${managementGroupName}', 64)
@@ -150,8 +152,14 @@ var deploymentNames = {
     '${uniqueString(managementGroupName, location)}-alz-sub-place-wait-${managementGroupName}',
     deploymentNameBaseMax
   )
-  mgRoleAssignments: take('${uniqueString(managementGroupName, location)}-alz-mg-rbac-asi-${managementGroupName}', 64)
-  mgRoleDefinitions: take('${uniqueString(managementGroupName, location)}-alz-mg-rbac-def-${managementGroupName}', 64)
+  mgRoleAssignments: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-rbac-asi-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
+  mgRoleDefinitions: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-rbac-def-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
   mgRoleDefinitionsWait: take(
     '${uniqueString(managementGroupName, location)}-alz-rbac-def-wait-${managementGroupName}',
     deploymentNameBaseMax
@@ -173,7 +181,10 @@ var deploymentNames = {
     '${uniqueString(managementGroupName, location)}-alz-mg-pol-init-${managementGroupName}',
     64
   )
-  mgPolicyAssignments: take('${uniqueString(managementGroupName, location)}-alz-mg-pol-asi-${managementGroupName}', 64)
+  mgPolicyAssignments: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-pol-asi-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
   mgPolicyAssignmentsWait: take(
     '${uniqueString(managementGroupName, location)}-alz-pol-asi-wait${managementGroupName}',
     deploymentNameBaseMax
