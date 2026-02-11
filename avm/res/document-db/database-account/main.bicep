@@ -377,19 +377,26 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
               : {})
           }
           enableMultipleWriteLocations: enableMultipleWriteLocations
-          locations: !empty(failoverLocations)
-            ? map(failoverLocations!, failoverLocation => {
-                failoverPriority: failoverLocation.failoverPriority
-                locationName: failoverLocation.locationName
-                isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-              })
-            : [
-                {
-                  failoverPriority: 0
-                  locationName: location
-                  isZoneRedundant: zoneRedundant
-                }
-              ]
+          // locations: !empty(failoverLocations)
+          //   ? map(failoverLocations!, failoverLocation => {
+          //       failoverPriority: failoverLocation.failoverPriority
+          //       locationName: failoverLocation.locationName
+          //       isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
+          //     })
+          //   : [
+          //       {
+          //         failoverPriority: 0
+          //         locationName: location
+          //         isZoneRedundant: zoneRedundant
+          //       }
+          //     ]
+          locations: [
+            {
+              failoverPriority: 0
+              isZoneRedundant: true
+              locationName: location
+            }
+          ]
           ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
             ipAddressOrRange: ipRule
           })
