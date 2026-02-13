@@ -317,7 +317,6 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             }
 
         } else {
-            #  TEST: Using threading to speed up the process
             if ($PSCmdlet.ShouldProcess(('Generatig readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
                 try {
                     $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {

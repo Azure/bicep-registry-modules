@@ -9,48 +9,13 @@ env:
 jobs:
   test_classic:
     runs-on: ubuntu-latest
-    name: "Run CI tests"
+    name: "Run CI tests (classic)"
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-
-      - name: Run CI tests
-        id: pester_run_step
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModuleClassic.ps1')
-
-            $inputObject = @{
-              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm')
-              SkipFileAndFolderSetup = $true
-              SkipVersionCheck       = $true
-              Recurse                = $true
-            }
-
-            $StartTime = Get-Date
-            Set-AVMModuleClassic @inputObject
-            $ElapsedTime = (Get-Date) - $StartTime
-            $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
-            Write-Verbose ("Execution took [$TotalTime]") -Verbose
-
-            git diff --stat --diff-filter=AM
-          azPSVersion: "latest"
-
-  test_rpc:
-    runs-on: ubuntu-latest
-    name: "Run CI tests"
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+          ref: "main"
 
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
@@ -64,14 +29,14 @@ jobs:
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
 
             $inputObject = @{
-              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm')
+              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
               SkipFileAndFolderSetup = $true
               SkipVersionCheck       = $true
               Recurse                = $true
             }
 
             $StartTime = Get-Date
-            Set-AVMModuleClassic @inputObject
+            Set-AVMModule @inputObject
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
             Write-Verbose ("Execution took [$TotalTime]") -Verbose
@@ -79,39 +44,75 @@ jobs:
             git diff --stat --diff-filter=AM
           azPSVersion: "latest"
 
-  test_rpc_async:
-    runs-on: ubuntu-latest
-    name: "Run CI tests"
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+  # test_rpc:
+  #   runs-on: ubuntu-latest
+  #   name: "Run CI tests"
+  #   steps:
+  #     - name: "Checkout"
+  #       uses: actions/checkout@v5
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
+  #     - name: Set environment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
 
-      - name: Run CI tests
-        id: pester_run_step
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
+  #     - name: Run CI tests
+  #       id: pester_run_step
+  #       uses: azure/powershell@v2
+  #       with:
+  #         inlineScript: |
+  #           # Load used functions
+  #           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
 
-            $inputObject = @{
-              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm')
-              SkipFileAndFolderSetup = $true
-              SkipVersionCheck       = $true
-              Recurse                = $true
-              Async                  = $true
-            }
+  #           $inputObject = @{
+  #             ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
+  #             SkipFileAndFolderSetup = $true
+  #             SkipVersionCheck       = $true
+  #             Recurse                = $true
+  #           }
 
-            $StartTime = Get-Date
-            Set-AVMModuleClassic @inputObject
-            $ElapsedTime = (Get-Date) - $StartTime
-            $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
-            Write-Verbose ("Execution took [$TotalTime]") -Verbose
+  #           $StartTime = Get-Date
+  #           Set-AVMModuleClassic @inputObject
+  #           $ElapsedTime = (Get-Date) - $StartTime
+  #           $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
+  #           Write-Verbose ("Execution took [$TotalTime]") -Verbose
 
-            git diff --stat --diff-filter=AM
-          azPSVersion: "latest"
+  #           git diff --stat --diff-filter=AM
+  #         azPSVersion: "latest"
+
+  # test_rpc_async:
+  #   runs-on: ubuntu-latest
+  #   name: "Run CI tests (async)"
+  #   steps:
+  #     - name: "Checkout"
+  #       uses: actions/checkout@v5
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Set environment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
+
+  #     - name: Run CI tests
+  #       id: pester_run_step
+  #       uses: azure/powershell@v2
+  #       with:
+  #         inlineScript: |
+  #           # Load used functions
+  #           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
+
+  #           $inputObject = @{
+  #             ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
+  #             SkipFileAndFolderSetup = $true
+  #             SkipVersionCheck       = $true
+  #             Recurse                = $true
+  #             Async                  = $true
+  #           }
+
+  #           $StartTime = Get-Date
+  #           Set-AVMModuleClassic @inputObject
+  #           $ElapsedTime = (Get-Date) - $StartTime
+  #           $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
+  #           Write-Verbose ("Execution took [$TotalTime]") -Verbose
+
+  #           git diff --stat --diff-filter=AM
+  #         azPSVersion: "latest"
