@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'germanywestcentral' //'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlimax'
+param serviceShort string = 'vmlimax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -83,8 +83,8 @@ module testDeployment '../../../main.bicep' = {
     adminUsername: 'localAdministrator'
     imageReference: {
       publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-focal'
-      sku: '20_04-lts-gen2' // Note: 22.04 does not support OMS extension
+      offer: '0001-com-ubuntu-server-jammy'
+      sku: '22_04-lts-gen2' // '20_04-lts-gen2' // Note: 22.04 does not support OMS extension with the older agent
       version: 'latest'
     }
     nicConfigurations: [
@@ -203,7 +203,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
