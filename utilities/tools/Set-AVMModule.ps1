@@ -108,12 +108,15 @@ function Set-AVMModule {
         [switch] $Async
     )
 
-    # # Load helper scripts
+    # Load helper scripts
+    $readMeFilePath = (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    $buildRpcFilePath = (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
+
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
-    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
-    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    . $buildRpcFilePath
+    . $readMeFilePath
 
     if ($InvokeForDiff) {
         $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
@@ -214,18 +217,18 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                 Build-ViaRPC -BicepFilePath $relevantTemplatePaths
             }
         } else {
-            # TODO: Test if this can be speeded up with multi-threading with chunks of template baths
-            . (Join-Path (Split-Path $PSScriptRoot) 'helper' 'Split-Array.ps1')
+            . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
             $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize 50
-            if ($relevantTemplatePaths.Count -le 100) {
-                $relevantDeploymentChunks = , $compilationChunks
+            if ($relevantTemplatePaths.Count -le 50) {
+                $compilationChunks = , $compilationChunks
             } else {
-                $relevantDeploymentChunks = $compilationChunks
+                $compilationChunks = $compilationChunks
             }
 
             if ($PSCmdlet.ShouldProcess(('Compiling templaes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
                 try {
-                    $job = $relevantDeploymentChunks | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                    $job = $compilationChunks | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                        . $using:buildRpcFilePath
                         Build-ViaRPC -BicepFilePath $_
                     }
 
@@ -241,7 +244,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
 
                         # Update the progress display.
                         [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
-                        Write-Progress -Activity ("Compiled [$completedJobsCount/{0}] template files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+                        Write-Progress -Activity ("Compiled [$completedJobsCount/{0}] template file batches" -f $compilationChunks.Count) -Status "$percent% complete" -PercentComplete $percent
 
                     } while ($completedJobsCount -lt $job.ChildJobs.Count)
 
@@ -255,35 +258,36 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
         }
     }
 
-    # Load recurring information we'll need for the modules
     if (-not $SkipReadMe) {
-        if (-not $Async) {
-            .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
-            # load cross-references
-            $crossReferencedModuleList = Get-CrossReferencedModuleList -ForceCacheRefresh:$ForceCacheRefresh
+        # Load recurring information we'll need for the modules
+        .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+        # load cross-references
+        $crossReferencedModuleList = Get-CrossReferencedModuleList -ForceCacheRefresh:$ForceCacheRefresh
 
-            # load AVM references (done to reduce WebRequests to GitHub repository)
-            # Telemetry
-            $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
-            try {
-                $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
-                if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
-                    $TelemetryFileContent = $rawResponse.Content -split '\n'
-                } else {
-                    Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
-                    $TelemetryFileContent = $null
-                }
-            } catch {
-                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
+        # load AVM references (done to reduce WebRequests to GitHub repository)
+        # Telemetry
+        $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+        try {
+            $rawResponse = Invoke-WebRequest -Uri $telemetryUrl
+            if (($rawResponse.Headers['Content-Type'] | Out-String) -like '*text/plain*') {
+                $TelemetryFileContent = $rawResponse.Content -split '\n'
+            } else {
+                Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Incorrect Url (e.g., points to HTML)
                 $TelemetryFileContent = $null
             }
+        } catch {
+            Write-Warning "Failed to fetch telemetry information from [$telemetryUrl]. NOTE: You should re-run the script again at a later stage to ensure all data is collected and the readme correctly populated." # Invalid url
+            $TelemetryFileContent = $null
+        }
 
-            # Collecting & compiling test file paths for usage examples
-            $testFilePaths = $relevantTemplatePaths | ForEach-Object {
-                if (Test-Path (Join-Path (Split-Path $_ -Parent) 'tests' 'e2e')) {
-                    return (Get-ChildItem -Path (Split-Path $_ -Parent) -Recurse -File -Filter '*.test.bicep').FullName
-                }
+        # Collecting & compiling test file paths for usage examples
+        $testFilePaths = $relevantTemplatePaths | ForEach-Object {
+            if (Test-Path (Join-Path (Split-Path $_ -Parent) 'tests' 'e2e')) {
+                return (Get-ChildItem -Path (Split-Path $_ -Parent) -Recurse -File -Filter '*.test.bicep').FullName
             }
+        }
+
+        if (-not $Async) {
             $compiledTestFilePaths = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
 
             foreach ($TemplateFilePath in $relevantTemplatePaths) {
@@ -317,37 +321,22 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             }
 
         } else {
-            if ($PSCmdlet.ShouldProcess(('Generatig readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            if ($PSCmdlet.ShouldProcess(('Building [{0}] test templates in path [{1}]' -f $testFilePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
                 try {
-                    $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-                        $TemplateFilePath = $_
-                        $moduleRoot = Split-Path $TemplateFilePath -Parent
-
-                        $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
-
-                        $relevantTestFilesContent = @{}
-                        foreach ($filePath in $using:compiledTestFilePaths.Keys) {
-                            $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
-                            if ($filePath -match [regex]::Escape($expectedTestFolderPath)) {
-                                $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
-                            }
-                        }
-
-                        $readmeInputObject = @{
-                            TemplateFilePath  = $TemplateFilePath
-                            ForceCacheRefresh = $using:ForceCacheRefresh
-                            PreLoadedContent  = @{
-                                CrossReferencedModuleList = $using:crossReferencedModuleList
-                                TelemetryFileContent      = $using:telemetryFileContent
-                                CompiledTestFiles         = $relevantTestFilesContent
-                            } + (-not $SkipBuild ? @{
-                                    # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                                    TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-                                } : @{})
-                        }
-                        Set-ModuleReadMe @readmeInputObject
+                    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
+                    $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
+                    if ($relevantTemplatePaths.Count -le 50) {
+                        $compilationChunks = , $compilationChunks
+                    } else {
+                        $compilationChunks = $compilationChunks
                     }
 
+                    $job = $compilationChunks | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                        . $using:buildRpcFilePath
+                        return (Build-ViaRPC -BicepFilePath $_ -PassThru)
+                    }
+
+                    $compiledTestFilePaths = @{}
                     do {
                         # Sleep a bit to allow the threads to run - adjust as desired.
                         Start-Sleep -Seconds 0.5
@@ -356,24 +345,79 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                         $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
 
                         # Relay any pending output from the child jobs.
-                        $job | Receive-Job
+                        $compiled = ($job | Receive-Job -WriteJobInResults -Wait)[1]
+                        $compiledTestFilePaths += $compiled ?? @{}
 
                         # Update the progress display.
                         [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
-                        Write-Progress -Activity ("Generated [$completedJobsCount/{0}] readme files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+                        Write-Progress -Activity ("Generated [$completedJobsCount/{0}] test files batches" -f $compilationChunks.Count) -Status "$percent% complete" -PercentComplete $percent
 
                     } while ($completedJobsCount -lt $job.ChildJobs.Count)
 
-                    # Clean up the job.
-                    $job | Remove-Job
                 } finally {
                     # In case the user cancelled the process, we need to make sure to stop all running jobs
                     $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
                 }
+
+                if ($PSCmdlet.ShouldProcess(('Generatig readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+                    try {
+                        $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                            . $using:readMeFilePath
+
+                            $TemplateFilePath = $_
+                            $moduleRoot = Split-Path $TemplateFilePath -Parent
+
+                            $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
+
+                            $relevantTestFilesContent = @{}
+                            foreach ($filePath in $using:compiledTestFilePaths.Keys) {
+                                $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
+                                if ($filePath -match [regex]::Escape($expectedTestFolderPath)) {
+                                    $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
+                                }
+                            }
+
+                            $readmeInputObject = @{
+                                TemplateFilePath  = $TemplateFilePath
+                                ForceCacheRefresh = $using:ForceCacheRefresh
+                                PreLoadedContent  = @{
+                                    CrossReferencedModuleList = $using:crossReferencedModuleList
+                                    TelemetryFileContent      = $using:telemetryFileContent
+                                    CompiledTestFiles         = $relevantTestFilesContent
+                                } + (-not $using:SkipBuild ? @{
+                                        # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                                        TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+                                    } : @{})
+                            }
+                            Set-ModuleReadMe @readmeInputObject
+                        }
+
+                        do {
+                            # Sleep a bit to allow the threads to run - adjust as desired.
+                            Start-Sleep -Seconds 0.5
+
+                            # Determine how many jobs have completed so far.
+                            $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
+
+                            # Relay any pending output from the child jobs.
+                            $job | Receive-Job
+
+                            # Update the progress display.
+                            [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
+                            Write-Progress -Activity ("Generated [$completedJobsCount/{0}] readme files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+
+                        } while ($completedJobsCount -lt $job.ChildJobs.Count)
+
+                        # Clean up the job.
+                        $job | Remove-Job
+                    } finally {
+                        # In case the user cancelled the process, we need to make sure to stop all running jobs
+                        $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
+                    }
+                }
             }
         }
     }
-
 }
 
 ### ORIGINAL CODE
