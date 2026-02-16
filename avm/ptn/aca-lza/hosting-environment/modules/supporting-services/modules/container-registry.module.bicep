@@ -51,7 +51,7 @@ var acrDnsZoneName = 'privatelink.azurecr.io'
 var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrGeoReplications = [
   for geoLocation in acrGeoReplicationLocations: {
-    name: 'replication-${toLower(replace(geoLocation, ' ', ''))}'
+    name: take('repl${toLower(replace(geoLocation, ' ', ''))}', 50)
     location: geoLocation
   }
 ]
