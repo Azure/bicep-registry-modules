@@ -132,12 +132,26 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     deviceSecurityGroupProperties: {}
     ioTSecuritySolutionProperties: {}
     location: '<location>'
-    securityContactProperties: {
-      alertNotifications: 'Off'
-      alertsToAdmins: 'Off'
-      email: 'foo@contoso.com'
-      phone: '+12345678'
-    }
+      securityContactProperties: {
+        emails: 'foo@contoso.com'
+        isEnabled: true
+        notificationsByRole: {
+          roles: [
+            'owner'
+          ]
+          state: 'On'
+        }
+        notificationsSources: [
+          {
+            sourceType: 'Alert'
+            minimalSeverity: 'High'
+          }
+          {
+            sourceType: 'AttackPath'
+            minimalRiskLevel: 'High'
+          }
+        ]
+      }
   }
 }
 ```
