@@ -5,26 +5,26 @@ metadata description = 'This module deploys a Logic App (Workflow).'
 param name string
 
 @description('Optional. The access control configuration for workflow actions.')
-param actionsAccessControlConfiguration object?
+param actionsAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.actions?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector.')
-param connectorEndpointsConfiguration object?
+param connectorEndpointsConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.endpointsConfiguration.connector?
 
 @description('Optional. The access control configuration for accessing workflow run contents.')
-param contentsAccessControlConfiguration object?
+param contentsAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.contents?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Parameters for the definition template.')
-param definitionParameters object?
+param definitionParameters resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.parameters?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The integration account.')
-param integrationAccount object?
+param integrationAccount resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.integrationAccount?
 
 @description('Optional. The integration service environment settings.')
 param integrationServiceEnvironment integrationServiceEnvironmentType?
@@ -56,19 +56,19 @@ param roleAssignments roleAssignmentType[]?
 param state string = 'Enabled'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.tags?
 
 @description('Optional. The access control configuration for invoking workflow triggers.')
-param triggersAccessControlConfiguration object?
+param triggersAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.triggers?
 
 @description('Optional. The definitions for one or more actions to execute at workflow runtime.')
 param workflowActions object = {}
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.')
-param workflowEndpointsConfiguration object?
+param workflowEndpointsConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.endpointsConfiguration.workflow?
 
 @description('Optional. The access control configuration for workflow management.')
-param workflowManagementAccessControlConfiguration object?
+param workflowManagementAccessControlConfiguration resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.accessControl.workflowManagement?
 
 @description('Optional. The definitions for the outputs to return from a workflow run.')
 param workflowOutputs object = {}

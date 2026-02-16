@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "11224367300955558445"
+      "version": "0.38.5.1644",
+      "templateHash": "15967192989405791644"
     },
     "name": "Public DNS Zone SRV record",
     "description": "This module deploys a Public DNS Zone SRV record."
@@ -103,17 +103,23 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "srvRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/SRV@2018-05-01#properties/properties/properties/SRVRecords"
+        },
         "description": "Optional. The list of SRV records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

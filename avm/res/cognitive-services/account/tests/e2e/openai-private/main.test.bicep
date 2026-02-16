@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -57,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}002'
       kind: 'OpenAI'
-      location: enforcedLocation
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {

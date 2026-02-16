@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
@@ -57,7 +60,37 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+
+  resource blobServices 'blobServices@2025-01-01' = {
+    name: 'default'
+
+    resource container 'containers@2025-01-01' = {
+      name: 'eventhub'
+    }
+  }
 }
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: managedIdentityName
+  location: location
+}
+
+// Assign Storage Blob Data Contributor RBAC role required for the event hub capture feature
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('${storageAccount.id}-${managedIdentity.id}-Storage-Blob-Data-Contributor')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
+    )
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
@@ -67,3 +100,6 @@ output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The name of the created Storage Account Container.')
+output storageAccountContainerName string = storageAccount::blobServices::container.name

@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "9241608749957347525"
+      "templateHash": "8740300349148561856"
     },
     "name": "Consumption Budgets",
-    "description": "This module deploys a Consumption Budget for Resource Groups."
+    "description": "This module deploys a Consumption Budget for a Resource Group."
   },
   "parameters": {
     "name": {

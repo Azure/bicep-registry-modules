@@ -12,7 +12,7 @@ param name string
 param enableTelemetry bool = true
 
 @description('Optional. Gets or sets extensionProperties of the maintenanceConfiguration.')
-param extensionProperties object = {}
+param extensionProperties resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.extensionProperties = {}
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -33,7 +33,7 @@ param lock lockType?
 param maintenanceScope string = 'Host'
 
 @description('Optional. Definition of a MaintenanceWindow.')
-param maintenanceWindow object = {}
+param maintenanceWindow resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.maintenanceWindow = {}
 
 @description('Optional. Gets or sets namespace of the resource.')
 param namespace string = ''
@@ -43,7 +43,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Gets or sets tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.tags?
 
 @description('Optional. Gets or sets the visibility of the configuration. The default value is \'Custom\'.')
 @allowed([
@@ -54,7 +54,7 @@ param tags object?
 param visibility string = ''
 
 @description('Optional. Configuration settings for VM guest patching with Azure Update Manager.')
-param installPatches object = {}
+param installPatches resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.installPatches = {}
 
 // =============== //
 //   Deployments   //

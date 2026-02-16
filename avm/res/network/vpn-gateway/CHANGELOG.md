@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
 
 ### Breaking Changes
 
@@ -16,13 +16,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added bgpPeeringAddress property to bgpSettingsType 
+- Added bgpPeeringAddress property to bgpSettingsType
 - Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 
 - None
- 
+
 ## 0.2.0
 
 ### Changes

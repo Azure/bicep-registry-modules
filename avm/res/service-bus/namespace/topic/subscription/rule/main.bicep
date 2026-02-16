@@ -27,19 +27,19 @@ param filterType filterTypeType
 @description('Conditional. Properties of a SQL filter. Required if \'filterType\' is set to \'SqlFilter\'.')
 param sqlFilter sqlFilterType?
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 
-  resource topic 'topics@2022-10-01-preview' existing = {
+  resource topic 'topics@2024-01-01' existing = {
     name: topicName
 
-    resource subscription 'subscriptions@2021-11-01' existing = {
+    resource subscription 'subscriptions@2024-01-01' existing = {
       name: subscriptionName
     }
   }
 }
 
-resource rule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-10-01-preview' = {
+resource rule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2024-01-01' = {
   name: name
   parent: namespace::topic::subscription
   properties: {

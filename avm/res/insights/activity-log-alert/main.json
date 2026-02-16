@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "18152347145806641934"
+      "version": "0.38.33.27573",
+      "templateHash": "12694510204136877403"
     },
     "name": "Activity Log Alerts",
     "description": "This module deploys an Activity Log Alert."
@@ -155,6 +155,9 @@
     },
     "scopes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "[subscription().id]"
       ],
@@ -172,6 +175,9 @@
     "conditions": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/activityLogAlerts@2020-10-01#properties/properties/properties/condition/properties/allOf"
+        },
         "description": "Required. An Array of objects containing conditions that will cause this alert to activate. Conditions can also be combined with logical operators `allOf` and `anyOf`. Each condition can specify only one field between `equals` and `containsAny`. An alert rule condition must have exactly one category (Administrative, ServiceHealth, ResourceHealth, Alert, Autoscale, Recommendation, Security, or Policy)."
       }
     },
@@ -194,10 +200,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/activityLogAlerts@2020-10-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -209,14 +218,6 @@
   },
   "variables": {
     "copy": [
-      {
-        "name": "actionGroups",
-        "count": "[length(parameters('actions'))]",
-        "input": {
-          "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
-          "webhookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webhookProperties')]"
-        }
-      },
       {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
@@ -264,7 +265,16 @@
           "allOf": "[parameters('conditions')]"
         },
         "actions": {
-          "actionGroups": "[variables('actionGroups')]"
+          "copy": [
+            {
+              "name": "actionGroups",
+              "count": "[length(parameters('actions'))]",
+              "input": {
+                "actionGroupId": "[coalesce(tryGet(parameters('actions')[copyIndex('actionGroups')], 'actionGroupId'), parameters('actions')[copyIndex('actionGroups')])]",
+                "webhookProperties": "[tryGet(parameters('actions')[copyIndex('actionGroups')], 'webhookProperties')]"
+              }
+            }
+          ]
         },
         "enabled": "[parameters('enabled')]",
         "description": "[parameters('alertDescription')]"

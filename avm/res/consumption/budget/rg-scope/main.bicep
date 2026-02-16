@@ -1,5 +1,5 @@
 metadata name = 'Consumption Budgets'
-metadata description = 'This module deploys a Consumption Budget for Resource Groups.'
+metadata description = 'This module deploys a Consumption Budget for a Resource Group.'
 
 @description('Required. The name of the budget.')
 param name string

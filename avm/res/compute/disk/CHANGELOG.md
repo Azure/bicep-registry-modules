@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/disk/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Added support for encryption-at-rest via existing Disk Encryption Set.
+- Updated all 'avm-common-types' references to version `0.6.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes

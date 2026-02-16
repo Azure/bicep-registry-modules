@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualWANName: 'dep-${namePrefix}-vwan-${serviceShort}'
     virtualHubName: 'dep-${namePrefix}-hub-${serviceShort}'
-    location: resourceLocation
   }
 }
 // ============== //
@@ -49,7 +48,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}002'
-    location: resourceLocation
-    virtualHubId: nestedDependencies.outputs.virtualHubResourceId
+    virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
   }
 }

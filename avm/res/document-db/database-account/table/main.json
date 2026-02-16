@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3429971823201332257"
+      "version": "0.38.33.27573",
+      "templateHash": "11768488776074268398"
     },
     "name": "Azure Cosmos DB account tables",
     "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -20,10 +20,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15#properties/tags"
+        },
         "description": "Optional. Tags for the table."
-      }
+      },
+      "nullable": true
     },
     "databaseAccountName": {
       "type": "string",
@@ -50,12 +53,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "table": {
       "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {

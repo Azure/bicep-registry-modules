@@ -17,7 +17,7 @@ param location string = deployment().location
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.mgmtgroup-subplacement.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
@@ -39,6 +39,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module customSubscriptionPlacement './modules/helper.bicep' = [
   for (subscriptionPlacement, index) in parSubscriptionPlacement: if (subscriptionPlacement.?disableSubscriptionPlacement == true) {
     name: 'subPlacment-${uniqueString(subscriptionPlacement.managementGroupId)}${index}'
+    scope: managementGroup(subscriptionPlacement.managementGroupId)
     params: {
       managementGroupId: subscriptionPlacement.managementGroupId
       subscriptionIds: subscriptionPlacement.subscriptionIds

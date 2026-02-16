@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.17.1
+
+### Changes
+
+- Updated child module deployment names to use stable identifiers instead of `deployment().name` to prevent deployment history accumulation when using Azure Deployment Stacks.
+
+### Breaking Changes
+
+- None
+
+## 0.17.0
+
+### Changes
+
+- Added support for the `sourceControlConfigurations` parameter and a type for the same
+
+### Breaking Changes
+
+- None
+
 ## 0.16.1
 
 ### Changes

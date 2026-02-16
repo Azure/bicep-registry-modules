@@ -40,9 +40,10 @@ jobs:
   job_init_psrule_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set input parameters to output variables
@@ -66,7 +67,7 @@ jobs:
       # [Init] task(s)
       # ---------------------------
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment

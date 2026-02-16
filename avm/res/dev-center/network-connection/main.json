@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "555513835456961784"
+      "templateHash": "4868383720739461471"
     },
     "name": "Dev Center Network Connection",
     "description": "This module deploys an Azure Dev Center Network Connection."
@@ -143,10 +143,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/networkConnections@2025-02-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "domainJoinType": {
       "type": "string",

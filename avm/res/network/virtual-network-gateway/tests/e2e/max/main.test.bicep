@@ -95,6 +95,7 @@ module testDeployment '../../../main.bicep' = [
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
       ]
+      domainNameLabelScope: 'TenantReuse'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -182,7 +183,7 @@ output defaultBgpIpAddresses string? = testDeployment[0].outputs.?defaultBgpIpAd
 output ipConfigurations array? = testDeployment[0].outputs.?ipConfigurations
 output location string = testDeployment[0].outputs.location
 output name string = testDeployment[0].outputs.name
-output primaryPublicIpAddress string = testDeployment[0].outputs.primaryPublicIpAddress
+output primaryPublicIpAddress string? = testDeployment[0].outputs.?primaryPublicIpAddress
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
 output resourceId string = testDeployment[0].outputs.resourceId
 output secondaryCustomBgpIpAddress string? = testDeployment[0].outputs.?secondaryCustomBgpIpAddress

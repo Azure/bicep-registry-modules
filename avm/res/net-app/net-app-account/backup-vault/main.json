@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "17170510390783455734"
+      "version": "0.39.26.7824",
+      "templateHash": "10702865910517505500"
     },
     "name": "Azure NetApp Files Volume Backup Vault",
     "description": "This module deploys a NetApp Files Backup Vault."
@@ -107,7 +107,7 @@
         "count": "[length(coalesce(parameters('backups'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ANF-Backup-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -144,8 +144,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17444120099448473770"
+              "version": "0.39.26.7824",
+              "templateHash": "12582804890302222446"
             },
             "name": "Azure NetApp Files Volume Backup",
             "description": "This module deploys a backup of a NetApp Files Volume."

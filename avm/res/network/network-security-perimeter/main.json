@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8689087116258482410"
+      "version": "0.38.33.27573",
+      "templateHash": "12305562570232791269"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -40,6 +40,14 @@
     "resourceAssociationType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Optional. The name of the resource association."
+          }
+        },
         "privateLinkResource": {
           "type": "string",
           "metadata": {
@@ -258,7 +266,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -295,7 +303,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -370,7 +378,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -508,7 +516,7 @@
       },
       "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
       "apiVersion": "2024-07-01",
-      "name": "[format('{0}/{1}', parameters('name'), format('{0}-nsp-ra', guid(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource, parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile)))]",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()], 'name'), format('{0}-nsp-ra', guid(coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource, parameters('name'), coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].profile))))]",
       "properties": {
         "privateLinkResource": {
           "id": "[coalesce(parameters('resourceAssociations'), createArray())[copyIndex()].privateLinkResource]"
@@ -597,7 +605,7 @@
         "count": "[length(coalesce(parameters('profiles'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-nsp-profile-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -622,8 +630,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2698570580676716716"
+              "version": "0.38.33.27573",
+              "templateHash": "3178550593460166182"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -766,7 +774,7 @@
                 "count": "[length(coalesce(parameters('accessRules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-nsp-accessrule-{1}', uniqueString(deployment().name), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -812,8 +820,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "4536438853756942736"
+                      "version": "0.38.33.27573",
+                      "templateHash": "15729882010132355819"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."

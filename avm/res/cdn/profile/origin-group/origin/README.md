@@ -33,7 +33,7 @@ This module deploys a CDN Profile Origin.
 | [`enforceCertificateNameCheck`](#parameter-enforcecertificatenamecheck) | bool | Whether to enable certificate name check at origin level. |
 | [`httpPort`](#parameter-httpport) | int | The value of the HTTP port. Must be between 1 and 65535. |
 | [`httpsPort`](#parameter-httpsport) | int | The value of the HTTPS port. Must be between 1 and 65535. |
-| [`originHostHeader`](#parameter-originhostheader) | string | The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint. |
+| [`originHostHeader`](#parameter-originhostheader) | string | The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. If you don't provide the value (or null), the host name would be used, otherwise the specified value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint. |
 | [`priority`](#parameter-priority) | int | Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5. |
 | [`sharedPrivateLinkResource`](#parameter-sharedprivatelinkresource) | object | The properties of the private link resource for private origin. |
 | [`weight`](#parameter-weight) | int | Weight of the origin in given origin group for load balancing. Must be between 1 and 1000. |
@@ -107,11 +107,10 @@ The value of the HTTPS port. Must be between 1 and 65535.
 
 ### Parameter: `originHostHeader`
 
-The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.
+The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. If you don't provide the value (or null), the host name would be used, otherwise the specified value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `priority`
 

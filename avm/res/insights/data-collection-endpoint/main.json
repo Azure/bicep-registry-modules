@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3455815777211433115"
+      "templateHash": "3496169930403221612"
     },
     "name": "Data Collection Endpoints",
     "description": "This module deploys a Data Collection Endpoint."
@@ -195,10 +195,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/dataCollectionEndpoints@2023-03-11#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {

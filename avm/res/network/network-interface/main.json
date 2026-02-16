@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "13702375911156475056"
+      "version": "0.38.5.1644",
+      "templateHash": "358530844407471525"
     },
     "name": "Network Interface",
     "description": "This module deploys a Network Interface."
@@ -685,10 +685,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkInterfaces@2024-07-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",

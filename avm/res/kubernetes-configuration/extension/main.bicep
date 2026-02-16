@@ -104,11 +104,14 @@ resource managedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-
 
 resource connectedExtension 'Microsoft.KubernetesConfiguration/extensions@2024-11-01' = if (clusterType == 'connectedCluster') {
   name: name
+  identity: {
+    type: 'SystemAssigned'
+  }
   scope: connectedCluster
   properties: extensionProperties
 }
 
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.7' = [
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.8' = [
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-Cluster-FluxConfiguration${index}'
     params: {

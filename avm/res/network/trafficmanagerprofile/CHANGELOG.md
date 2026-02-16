@@ -6,7 +6,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Added type for `monitorConfig`, `endpoints` & `tags` parameters
+- Added support for `allowedEndpointRecordTypes` parameter
 - Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Updated API version to `2022-04-01`
 
 ### Breaking Changes
 

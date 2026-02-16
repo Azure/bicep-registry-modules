@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "5865143572120410576"
+      "templateHash": "5560209125295674196"
     },
     "name": "Azure Arc Gateway",
     "description": "This module deploys a Azure Arc Gateway."
@@ -73,10 +73,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.HybridCompute/gateways@2024-07-31-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "allowedFeatures": {
       "type": "array",

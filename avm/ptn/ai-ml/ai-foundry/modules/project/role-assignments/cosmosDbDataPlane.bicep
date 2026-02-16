@@ -29,7 +29,7 @@ var cosmosDefaultSqlRoleDefinitionId = resourceId(
 resource cosmosDataRoleAssigment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2025-04-15' = [
   for (containerSuffix, i) in cosmosContainerNameSuffixes: {
     parent: cosmosDb
-    name: guid(cosmosDefaultSqlRoleDefinitionId, cosmosDbName, containerSuffix)
+    name: guid(cosmosDefaultSqlRoleDefinitionId, cosmosDbName, containerSuffix, projectIdentityPrincipalId)
     properties: {
       principalId: projectIdentityPrincipalId
       roleDefinitionId: cosmosDefaultSqlRoleDefinitionId

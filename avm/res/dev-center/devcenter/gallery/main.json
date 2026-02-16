@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "11646299707454814454"
+      "version": "0.40.2.10011",
+      "templateHash": "9301648265488236971"
     },
     "name": "Dev Center Gallery",
     "description": "This module deploys a Dev Center Gallery."
@@ -61,7 +61,7 @@
     "computeGallery_roleAssignment": {
       "condition": "[not(equals(parameters('devCenterIdentityPrincipalId'), ''))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Contributor-RoleAssignment', deployment().name)]",
       "resourceGroup": "[split(parameters('galleryResourceId'), '/')[4]]",
       "properties": {
@@ -83,8 +83,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8784163666264837034"
+              "version": "0.40.2.10011",
+              "templateHash": "6438251235950067901"
             }
           },
           "parameters": {
@@ -105,7 +105,7 @@
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Compute/galleries/{0}', last(split(parameters('galleryResourceId'), '/')))]",
+              "scope": "[resourceId('Microsoft.Compute/galleries', last(split(parameters('galleryResourceId'), '/')))]",
               "name": "[guid(parameters('devCenterIdentityPrincipalId'), resourceId('Microsoft.Compute/galleries', last(split(parameters('galleryResourceId'), '/'))), 'Contributor')]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",

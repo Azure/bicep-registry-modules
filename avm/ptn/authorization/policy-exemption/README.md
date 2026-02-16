@@ -1,6 +1,14 @@
 # Policy Exemptions (All scopes) `[Authorization/PolicyExemption]`
 
-This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.
+This module deploys a Policy Exemption at a Management Group, Subscription, Resource Group, or Resource scope.
+
+You can reference the module as follows:
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -14,7 +22,7 @@ This module deploys a Policy Exemption at a Management Group, Subscription or Re
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Authorization/policyExemptions` | 2022-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyexemptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-07-01-preview/policyExemptions)</li></ul> |
+| `Microsoft.Authorization/policyExemptions` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyexemptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2024-12-01-preview/policyExemptions)</li></ul> |
 
 ## Usage examples
 
@@ -26,14 +34,18 @@ The following section provides usage examples for the module, which were used to
 
 - [Policy Exemptions (Management Group scope)](#example-1-policy-exemptions-management-group-scope)
 - [Policy Exemptions (Management Group scope)](#example-2-policy-exemptions-management-group-scope)
-- [Policy Exemption (Resource Group)](#example-3-policy-exemption-resource-group)
-- [Policy Exemption (Resource Group)](#example-4-policy-exemption-resource-group)
-- [Policy Exemption (Subscription)](#example-5-policy-exemption-subscription)
-- [Policy Exemption (Subscription)](#example-6-policy-exemption-subscription)
+- [Policy Exemption (Resource)](#example-3-policy-exemption-resource)
+- [Policy Exemption (Resource)](#example-4-policy-exemption-resource)
+- [Policy Exemption (Resource Group)](#example-5-policy-exemption-resource-group)
+- [Policy Exemption (Resource Group)](#example-6-policy-exemption-resource-group)
+- [Policy Exemption (Subscription)](#example-7-policy-exemption-subscription)
+- [Policy Exemption (Subscription)](#example-8-policy-exemption-subscription)
 
 ### Example 1: _Policy Exemptions (Management Group scope)_
 
 This module deploys a Policy Exemption at a Management Group scope using minimal parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
 
 
 <details>
@@ -42,7 +54,6 @@ This module deploys a Policy Exemption at a Management Group scope using minimal
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -101,6 +112,8 @@ param policyAssignmentId = '<policyAssignmentId>'
 
 This module deploys a Policy Exemption at a Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -108,7 +121,6 @@ This module deploys a Policy Exemption at a Management Group scope using common 
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -269,9 +281,11 @@ param resourceSelectors = [
 </details>
 <p>
 
-### Example 3: _Policy Exemption (Resource Group)_
+### Example 3: _Policy Exemption (Resource)_
 
-This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.
+This module deploys a Policy Exemption at a resource scope using minimal parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/resource.defaults]
 
 
 <details>
@@ -280,7 +294,259 @@ This module deploys a Policy Exemption at a Resource Group scope using minimal p
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
+  params: {
+    // Required parameters
+    exemptionCategory: 'Mitigated'
+    name: 'aperesmin001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    resourceId: '<resourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "exemptionCategory": {
+      "value": "Mitigated"
+    },
+    "name": {
+      "value": "aperesmin001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "resourceId": {
+      "value": "<resourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param exemptionCategory = 'Mitigated'
+param name = 'aperesmin001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param resourceId = '<resourceId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Policy Exemption (Resource)_
+
+This module deploys a Policy Exemption at a resource scope using common parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/resource.max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
+  params: {
+    // Required parameters
+    exemptionCategory: 'Mitigated'
+    name: 'aperesmax001'
+    policyAssignmentId: '<policyAssignmentId>'
+    // Non-required parameters
+    assignmentScopeValidation: 'Default'
+    description: '[Description] Policy Exemption at the resource scope'
+    displayName: '[DisplayName] Policy Exemption at the resource scope'
+    enableTelemetry: true
+    expiresOn: '2030-01-01T00:00:00Z'
+    location: '<location>'
+    metadata: {
+      assignedBy: 'Bicep'
+      category: 'Security'
+    }
+    resourceId: '<resourceId>'
+    resourceSelectors: [
+      {
+        name: 'resourceSelector-test'
+        selectors: [
+          {
+            in: [
+              'Microsoft.Compute/virtualMachines'
+            ]
+            kind: 'resourceType'
+          }
+          {
+            in: [
+              'westeurope'
+            ]
+            kind: 'resourceLocation'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "exemptionCategory": {
+      "value": "Mitigated"
+    },
+    "name": {
+      "value": "aperesmax001"
+    },
+    "policyAssignmentId": {
+      "value": "<policyAssignmentId>"
+    },
+    // Non-required parameters
+    "assignmentScopeValidation": {
+      "value": "Default"
+    },
+    "description": {
+      "value": "[Description] Policy Exemption at the resource scope"
+    },
+    "displayName": {
+      "value": "[DisplayName] Policy Exemption at the resource scope"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "expiresOn": {
+      "value": "2030-01-01T00:00:00Z"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "metadata": {
+      "value": {
+        "assignedBy": "Bicep",
+        "category": "Security"
+      }
+    },
+    "resourceId": {
+      "value": "<resourceId>"
+    },
+    "resourceSelectors": {
+      "value": [
+        {
+          "name": "resourceSelector-test",
+          "selectors": [
+            {
+              "in": [
+                "Microsoft.Compute/virtualMachines"
+              ],
+              "kind": "resourceType"
+            },
+            {
+              "in": [
+                "westeurope"
+              ],
+              "kind": "resourceLocation"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/authorization/policy-exemption:<version>'
+
+// Required parameters
+param exemptionCategory = 'Mitigated'
+param name = 'aperesmax001'
+param policyAssignmentId = '<policyAssignmentId>'
+// Non-required parameters
+param assignmentScopeValidation = 'Default'
+param description = '[Description] Policy Exemption at the resource scope'
+param displayName = '[DisplayName] Policy Exemption at the resource scope'
+param enableTelemetry = true
+param expiresOn = '2030-01-01T00:00:00Z'
+param location = '<location>'
+param metadata = {
+  assignedBy: 'Bicep'
+  category: 'Security'
+}
+param resourceId = '<resourceId>'
+param resourceSelectors = [
+  {
+    name: 'resourceSelector-test'
+    selectors: [
+      {
+        in: [
+          'Microsoft.Compute/virtualMachines'
+        ]
+        kind: 'resourceType'
+      }
+      {
+        in: [
+          'westeurope'
+        ]
+        kind: 'resourceLocation'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _Policy Exemption (Resource Group)_
+
+This module deploys a Policy Exemption at a Resource Group scope using minimal parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -348,9 +614,11 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 4: _Policy Exemption (Resource Group)_
+### Example 6: _Policy Exemption (Resource Group)_
 
 This module deploys a Policy Exemption at a Resource Group scope using common parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
 
 
 <details>
@@ -359,7 +627,6 @@ This module deploys a Policy Exemption at a Resource Group scope using common pa
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -525,9 +792,11 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 5: _Policy Exemption (Subscription)_
+### Example 7: _Policy Exemption (Subscription)_
 
 This module deploys a Policy Exemption at a Subscription scope using minimal parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.defaults]
 
 
 <details>
@@ -536,7 +805,6 @@ This module deploys a Policy Exemption at a Subscription scope using minimal par
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -599,9 +867,11 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 6: _Policy Exemption (Subscription)_
+### Example 8: _Policy Exemption (Subscription)_
 
 This module deploys a Policy Exemption at a Subscription scope using common parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
 
 
 <details>
@@ -610,7 +880,6 @@ This module deploys a Policy Exemption at a Subscription scope using common para
 
 ```bicep
 module policyExemption 'br/public:avm/ptn/authorization/policy-exemption:<version>' = {
-  name: 'policyExemptionDeployment'
   params: {
     // Required parameters
     exemptionCategory: 'Mitigated'
@@ -795,6 +1064,7 @@ param subscriptionId = '<subscriptionId>'
 | [`metadata`](#parameter-metadata) | object | The policy exemption metadata. Metadata is an open ended object and is typically a collection of key-value pairs. |
 | [`policyDefinitionReferenceIds`](#parameter-policydefinitionreferenceids) | array | The policy definition reference ID list when the associated policy assignment is an assignment of a policy set definition. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The Target Scope for the Policy. The name of the resource group for the policy exemption. |
+| [`resourceId`](#parameter-resourceid) | string | The Target Scope for the Policy. The fully qualified resource ID for the policy exemption. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location. |
 | [`subscriptionId`](#parameter-subscriptionid) | string | The Target Scope for the Policy. The subscription ID of the subscription for the policy exemption. |
 
@@ -907,6 +1177,13 @@ The Target Scope for the Policy. The name of the resource group for the policy e
 - Required: No
 - Type: string
 
+### Parameter: `resourceId`
+
+The Target Scope for the Policy. The fully qualified resource ID for the policy exemption.
+
+- Required: No
+- Type: string
+
 ### Parameter: `resourceSelectors`
 
 The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location.
@@ -930,4 +1207,4 @@ The Target Scope for the Policy. The subscription ID of the subscription for the
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

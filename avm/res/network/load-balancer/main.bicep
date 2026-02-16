@@ -18,9 +18,16 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
+@description('Optional. Tier of a load balancer SKU.')
+@allowed([
+  'Regional'
+  'Global'
+])
+param skuTier string = 'Regional'
+
 @description('Required. Array of objects containing all frontend IP configurations.')
 @minLength(1)
-param frontendIPConfigurations array
+param frontendIPConfigurations frontendIPConfigurationType[]
 
 @description('Optional. Collection of backend address pools used by a load balancer.')
 param backendAddressPools array?
@@ -44,7 +51,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/loadBalancers@2024-10-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -59,49 +66,7 @@ param outboundRules array = []
 // Variables   //
 // =========== //
 
-var frontendIPConfigurationsVar = [
-  for (frontendIPConfiguration, index) in frontendIPConfigurations: {
-    name: frontendIPConfiguration.name
-    properties: {
-      subnet: contains(frontendIPConfiguration, 'subnetId') && !empty(frontendIPConfiguration.subnetId)
-        ? {
-            id: frontendIPConfiguration.subnetId
-          }
-        : null
-      publicIPAddress: contains(frontendIPConfiguration, 'publicIPAddressId') && !empty(frontendIPConfiguration.publicIPAddressId)
-        ? {
-            id: frontendIPConfiguration.publicIPAddressId
-          }
-        : null
-      privateIPAddress: contains(frontendIPConfiguration, 'privateIPAddress') && !empty(frontendIPConfiguration.privateIPAddress)
-        ? frontendIPConfiguration.privateIPAddress
-        : null
-      privateIPAddressVersion: frontendIPConfiguration.?privateIPAddressVersion ?? 'IPv4'
-      privateIPAllocationMethod: contains(frontendIPConfiguration, 'subnetId') && !empty(frontendIPConfiguration.subnetId)
-        ? (contains(frontendIPConfiguration, 'privateIPAddress') ? 'Static' : 'Dynamic')
-        : null
-      gatewayLoadBalancer: contains(frontendIPConfiguration, 'gatewayLoadBalancer') && !empty(frontendIPConfiguration.gatewayLoadBalancer)
-        ? {
-            id: frontendIPConfiguration.gatewayLoadBalancer
-          }
-        : null
-      publicIPPrefix: contains(frontendIPConfiguration, 'publicIPPrefix') && !empty(frontendIPConfiguration.publicIPPrefix)
-        ? {
-            id: frontendIPConfiguration.publicIPPrefix
-          }
-        : null
-    }
-    zones: contains(frontendIPConfiguration, 'zones')
-      ? map(frontendIPConfiguration.zones, zone => string(zone))
-      : !empty(frontendIPConfiguration.?subnetResourceId)
-          ? [
-              '1'
-              '2'
-              '3'
-            ]
-          : null
-  }
-]
+var enableReferencedModulesTelemetry = false
 
 var loadBalancingRulesVar = [
   for loadBalancingRule in (loadBalancingRules ?? []): {
@@ -168,11 +133,13 @@ var probesVar = [
   for probe in (probes ?? []): {
     name: probe.name
     properties: {
+      intervalInSeconds: probe.?intervalInSeconds ?? 5
+      noHealthyBackendsBehavior: probe.?noHealthyBackendsBehavior ?? 'AllProbedDown'
+      numberOfProbes: probe.?numberOfProbes ?? 2
+      port: probe.?port ?? 80
+      probeThreshold: probe.?probeThreshold ?? 1
       protocol: probe.?protocol ?? 'Tcp'
       requestPath: toLower(probe.protocol) != 'tcp' ? probe.requestPath : null
-      port: probe.?port ?? 80
-      intervalInSeconds: probe.?intervalInSeconds ?? 5
-      numberOfProbes: probe.?numberOfProbes ?? 2
     }
   }
 ]
@@ -235,31 +202,123 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' = {
+module loadBalancer_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.10.0' = [
+  for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?publicIPAddressConfiguration) && empty(frontendIPConfiguration.?publicIPAddressResourceId)) {
+    name: '${deployment().name}-publicIP-${index}'
+    params: {
+      name: frontendIPConfiguration.?publicIPAddressConfiguration.?name ?? '${name}-pip-${index}'
+      location: location
+      lock: lock
+      diagnosticSettings: frontendIPConfiguration.?publicIPAddressConfiguration.?diagnosticSettings
+      idleTimeoutInMinutes: frontendIPConfiguration.?publicIPAddressConfiguration.?idleTimeoutInMinutes
+      ddosSettings: frontendIPConfiguration.?publicIPAddressConfiguration.?ddosSettings
+      dnsSettings: frontendIPConfiguration.?publicIPAddressConfiguration.?dnsSettings
+      publicIPAddressVersion: frontendIPConfiguration.?publicIPAddressConfiguration.?publicIPAddressVersion
+      publicIPAllocationMethod: frontendIPConfiguration.?publicIPAddressConfiguration.?publicIPAllocationMethod
+      publicIpPrefixResourceId: frontendIPConfiguration.?publicIPAddressConfiguration.?publicIpPrefixResourceId
+      roleAssignments: frontendIPConfiguration.?publicIPAddressConfiguration.?roleAssignments
+      skuName: frontendIPConfiguration.?publicIPAddressConfiguration.?skuName ?? skuName
+      skuTier: frontendIPConfiguration.?publicIPAddressConfiguration.?skuTier
+      tags: frontendIPConfiguration.?tags ?? tags
+      availabilityZones: frontendIPConfiguration.?publicIPAddressConfiguration.?availabilityZones
+      enableTelemetry: enableReferencedModulesTelemetry
+      ipTags: frontendIPConfiguration.?publicIPAddressConfiguration.?ipTags
+    }
+  }
+]
+
+module loadBalancer_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.2' = [
+  for (frontendIPConfiguration, index) in frontendIPConfigurations: if (!empty(frontendIPConfiguration.?publicIPPrefixConfiguration) && empty(frontendIPConfiguration.?publicIPPrefixResourceId)) {
+    name: '${uniqueString(deployment().name, location)}-LoadBalancer-PIPPrefix-${index}'
+    params: {
+      name: frontendIPConfiguration.?publicIPPrefixConfiguration.?name ?? '${name}-pip-prefix-${index}'
+      location: location
+      lock: frontendIPConfiguration.?publicIPPrefixConfiguration.?lock ?? lock
+      prefixLength: frontendIPConfiguration.?publicIPPrefixConfiguration.?prefixLength ?? 28
+      customIPPrefix: frontendIPConfiguration.?publicIPPrefixConfiguration.?customIPPrefix
+      roleAssignments: frontendIPConfiguration.?publicIPPrefixConfiguration.?roleAssignments
+      tags: frontendIPConfiguration.?publicIPPrefixConfiguration.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
+      availabilityZones: frontendIPConfiguration.?publicIPPrefixConfiguration.?availabilityZones
+      ipTags: frontendIPConfiguration.?publicIPPrefixConfiguration.?ipTags
+      publicIPAddressVersion: frontendIPConfiguration.?publicIPPrefixConfiguration.?publicIPAddressVersion
+      tier: frontendIPConfiguration.?publicIPPrefixConfiguration.?tier
+    }
+  }
+]
+
+resource loadBalancer 'Microsoft.Network/loadBalancers@2024-07-01' = {
   name: name
   location: location
   tags: tags
   sku: {
     name: skuName
+    tier: skuTier
   }
   properties: {
-    frontendIPConfigurations: frontendIPConfigurationsVar
+    frontendIPConfigurations: [
+      for (frontendIPConfiguration, index) in frontendIPConfigurations: {
+        name: frontendIPConfiguration.name
+        properties: {
+          privateIPAddress: frontendIPConfiguration.?privateIPAddress
+          privateIPAddressVersion: frontendIPConfiguration.?privateIPAddressVersion ?? 'IPv4'
+          privateIPAllocationMethod: !empty(frontendIPConfiguration.?subnetResourceId)
+            ? (contains(frontendIPConfiguration, 'privateIPAddress') ? 'Static' : 'Dynamic')
+            : null
+          publicIPAddress: !empty(frontendIPConfiguration.?publicIPAddressResourceId)
+            ? { id: frontendIPConfiguration.?publicIPAddressResourceId }
+            : (!empty(frontendIPConfiguration.?publicIPAddressConfiguration)
+                ? { id: loadBalancer_publicIPAddresses[index]!.outputs.resourceId }
+                : null)
+          publicIPPrefix: !empty(frontendIPConfiguration.?publicIPPrefixResourceId)
+            ? { id: frontendIPConfiguration.?publicIPPrefixResourceId }
+            : (!empty(frontendIPConfiguration.?publicIPPrefixConfiguration)
+                ? { id: loadBalancer_publicIPPrefixes[index]!.outputs.resourceId }
+                : null)
+          gatewayLoadBalancer: !empty(frontendIPConfiguration.?gatewayLoadBalancerResourceId)
+            ? {
+                id: frontendIPConfiguration.?gatewayLoadBalancerResourceId
+              }
+            : null
+          subnet: !empty(frontendIPConfiguration.?subnetResourceId)
+            ? {
+                id: frontendIPConfiguration.?subnetResourceId
+              }
+            : null
+        }
+        zones: contains(frontendIPConfiguration, 'availabilityZones')
+          ? map(frontendIPConfiguration.?availabilityZones ?? [], zone => string(zone))
+          : !empty(frontendIPConfiguration.?subnetResourceId)
+              ? [
+                  '1'
+                  '2'
+                  '3'
+                ]
+              : null
+      }
+    ]
     loadBalancingRules: loadBalancingRulesVar
     backendAddressPools: backendAddressPoolNames
     outboundRules: outboundRulesVar
     probes: probesVar
   }
+  dependsOn: [
+    loadBalancer_publicIPAddresses
+    loadBalancer_publicIPPrefixes
+  ]
 }
 
 module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
-  for (backendAddressPool, index) in backendAddressPools ?? []: {
+  for (backendAddressPool, index) in backendAddressPools ?? []: if (backendAddressPool.?backendMembershipMode != 'NIC') {
     name: '${uniqueString(deployment().name, location)}-loadBalancer-backendAddPools-${index}'
     params: {
       loadBalancerName: loadBalancer.name
       name: backendAddressPool.name
+      backendMembershipMode: backendAddressPool.?backendMembershipMode
       tunnelInterfaces: backendAddressPool.?tunnelInterfaces
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
+      virtualNetworkResourceId: backendAddressPool.?virtualNetworkResourceId
     }
   }
 ]
@@ -336,7 +395,7 @@ resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: loadBalancer
@@ -361,3 +420,132 @@ output backendpools array = loadBalancer.properties.backendAddressPools
 
 @description('The location the resource was deployed into.')
 output location string = loadBalancer.location
+
+import { ipTagType as pipIpTagType } from 'br/public:avm/res/network/public-ip-address:0.9.1'
+import { dnsSettingsType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.9.1'
+import { ipTagType as prefixIpTagType } from 'br/public:avm/res/network/public-ip-prefix:0.7.1'
+
+@export()
+@description('The type for a public IP address configuration within a frontend IP configuration.')
+type publicIPAddressConfigurationType = {
+  @description('Optional. The name of the Public IP Address. If not provided, a default name will be generated.')
+  name: string?
+
+  @description('Optional. The public IP address allocation method.')
+  publicIPAllocationMethod: ('Dynamic' | 'Static')?
+
+  @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+  availabilityZones: (1 | 2 | 3)[]?
+
+  @description('Optional. IP address version.')
+  publicIPAddressVersion: ('IPv4' | 'IPv6')?
+
+  @description('Optional. The DNS settings of the public IP address.')
+  dnsSettings: dnsSettingsType?
+
+  @description('Optional. The list of tags associated with the public IP address.')
+  ipTags: pipIpTagType[]?
+
+  @description('Optional. Name of a public IP address SKU.')
+  skuName: ('Basic' | 'Standard')?
+
+  @description('Optional. Tier of a public IP address SKU.')
+  skuTier: ('Global' | 'Regional')?
+
+  @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
+  ddosSettings: ddosSettingsType?
+
+  @description('Optional. Array of role assignments to create for the public IP address.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The idle timeout of the public IP address.')
+  idleTimeoutInMinutes: int?
+
+  @description('Optional. Tags of the public IP address resource.')
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-10-01'>.tags?
+
+  @description('Optional. The diagnostic settings of the public IP address.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Resource ID of the Public IP Prefix. This is only needed if you want your Public IPs created in a PIP Prefix.')
+  publicIpPrefixResourceId: string?
+
+  @description('Optional. Enable/Disable usage telemetry for the public IP address module.')
+  enableTelemetry: bool?
+}
+
+@export()
+@description('The type for a public IP prefix configuration within a frontend IP configuration.')
+type publicIPPrefixConfigurationType = {
+  @description('Optional. The name of the Public IP Prefix. If not provided, a default name will be generated.')
+  name: string?
+
+  @description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
+  tier: ('Global' | 'Regional')?
+
+  @description('Optional. Length of the Public IP Prefix.')
+  @minValue(28)
+  @maxValue(127)
+  prefixLength: int?
+
+  @description('Optional. The public IP address version.')
+  publicIPAddressVersion: ('IPv4' | 'IPv6')?
+
+  @description('Optional. The lock settings of the public IP prefix.')
+  lock: lockType?
+
+  @description('Optional. Array of role assignments to create for the public IP prefix.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Tags of the public IP prefix resource.')
+  tags: resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.tags?
+
+  @description('Optional. The custom IP address prefix that this prefix is associated with. A custom IP address prefix is a contiguous range of IP addresses owned by an external customer and provisioned into a subscription. When a custom IP prefix is in Provisioned, Commissioning, or Commissioned state, a linked public IP prefix can be created. Either as a subset of the custom IP prefix range or the entire range.')
+  customIPPrefix: resourceInput<'Microsoft.Network/publicIPPrefixes@2024-10-01'>.properties.customIPPrefix?
+
+  @description('Optional. The list of tags associated with the public IP prefix.')
+  ipTags: prefixIpTagType[]?
+
+  @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. This is only applicable for regional public IP prefixes and must be empty for global public IP prefixes.')
+  availabilityZones: (1 | 2 | 3)[]?
+
+  @description('Optional. Enable/Disable usage telemetry for the public IP prefix module.')
+  enableTelemetry: bool?
+}
+
+@export()
+@description('The type for a frontend IP configuration.')
+type frontendIPConfigurationType = {
+  @description('Required. The name of the frontend IP configuration.')
+  name: string
+
+  @description('Optional. The resource ID of an existing public IP address to use. Cannot be used together with publicIPAddressConfiguration.')
+  publicIPAddressResourceId: string?
+
+  @description('Optional. The configuration to create a new public IP address. Cannot be used together with publicIPAddressResourceId.')
+  publicIPAddressConfiguration: publicIPAddressConfigurationType?
+
+  @description('Optional. The resource ID of an existing public IP prefix to use. Cannot be used together with publicIPPrefixConfiguration.')
+  publicIPPrefixResourceId: string?
+
+  @description('Optional. The configuration to create a new public IP prefix. Cannot be used together with publicIPPrefixResourceId.')
+  publicIPPrefixConfiguration: publicIPPrefixConfigurationType?
+
+  @description('Optional. The resource ID of the subnet to use for a private frontend IP configuration.')
+  subnetResourceId: string?
+
+  @description('Optional. The private IP address to use for a private frontend IP configuration. Requires subnetResourceId.')
+  privateIPAddress: string?
+
+  @description('Optional. The private IP address version. Only applicable for private frontend IP configurations.')
+  privateIPAddressVersion: ('IPv4' | 'IPv6')?
+
+  @description('Optional. The resource ID of the gateway load balancer.')
+  gatewayLoadBalancerResourceId: string?
+
+  @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+  availabilityZones: (1 | 2 | 3)[]?
+
+  @description('Optional. Tags of the frontend IP configuration.')
+  tags: resourceInput<'Microsoft.Network/loadBalancers@2024-10-01'>.tags?
+}

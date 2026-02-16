@@ -19,7 +19,7 @@ param suffix string?
 // Common Parameters
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkSecurityGroups@2024-10-01'>.tags?
 
 // Network Parameters
 
@@ -33,7 +33,6 @@ param defaultSubnetAddressPrefix string = '192.168.250.0/24'
 param privateEndpointSubnetAddressPrefix string = '192.168.251.0/24'
 
 // Resources
-
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -56,7 +55,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Network Security Groups
 
-module defaultNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module defaultNsg 'br/public:avm/res/network/network-security-group:0.5.2' = {
   name: 'defaultNsg-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-default-nsg-${suffix}'
@@ -67,7 +66,7 @@ module defaultNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   }
 }
 
-module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.2' = {
   name: 'privateEndpointNsg-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-privateendpointsubnet-nsg-${suffix}'
@@ -80,7 +79,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
 
 // Virtual Network
 
-module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
+module vnet 'br/public:avm/res/network/virtual-network:0.7.1' = {
   name: 'vnet-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-vNet-${suffix}'
@@ -112,7 +111,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
 
 // Private DNS Zones
 
-module appServicePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+module appServicePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = {
   name: 'appServicePrivateDnsZone-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}.appserviceenvironment.net'
@@ -129,7 +128,7 @@ module appServicePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module cosmosdbPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+module cosmosdbPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = {
   name: 'cosmosdbPrivateDnsZone-${uniqueString(deployment().name, location)}'
   params: {
     name: 'privatelink.documents.azure.com'
@@ -146,7 +145,7 @@ module cosmosdbPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
   }
 }
 
-module redisPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+module redisPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = {
   name: 'redisPrivateDnsZone-${uniqueString(deployment().name, location)}'
   params: {
     name: 'privatelink.redis.cache.windows.net'
@@ -165,7 +164,7 @@ module redisPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 
 // App Service Environment
 
-module ase 'br/public:avm/res/web/hosting-environment:0.4.0' = {
+module ase 'br/public:avm/res/web/hosting-environment:0.4.1' = {
   name: 'ase-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-${suffix}'
@@ -193,7 +192,7 @@ module ase 'br/public:avm/res/web/hosting-environment:0.4.0' = {
 
 // App Service Plan
 
-module asp 'br/public:avm/res/web/serverfarm:0.4.1' = {
+module asp 'br/public:avm/res/web/serverfarm:0.5.0' = {
   name: 'asp-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-asp-${suffix}'
@@ -201,15 +200,15 @@ module asp 'br/public:avm/res/web/serverfarm:0.4.1' = {
     tags: tags
     kind: 'linux'
     skuName: 'S1'
-    skuCapacity: 1
-    appServiceEnvironmentId: ase.outputs.resourceId
+    skuCapacity: 2 // Required for WAF-reliability
+    appServiceEnvironmentResourceId: ase.outputs.resourceId
     enableTelemetry: enableTelemetry
   }
 }
 
 // CosmosDB Account
 
-module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
+module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.16.0' = {
   name: 'cosmosdbAccount-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-cosmos-${suffix}'
@@ -255,7 +254,7 @@ module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' =
 
 // SQL Private Endpoint
 
-module cosmosdbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
+module cosmosdbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.1' = {
   name: 'cosmosdbPrivateEndpoint-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-CosmosPrivateEndpoint-${suffix}'
@@ -297,7 +296,7 @@ module cosmosdbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.
 
 // Redis Cache
 
-module redis 'br/public:avm/res/cache/redis:0.16.1' = {
+module redis 'br/public:avm/res/cache/redis:0.16.3' = {
   name: 'redis-${uniqueString(deployment().name, location)}'
   params: {
     name: '${name}-redis-${suffix}'

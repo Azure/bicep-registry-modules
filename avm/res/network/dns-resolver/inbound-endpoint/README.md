@@ -12,7 +12,7 @@ This module deploys a DNS Resolver Inbound Endpoint.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/dnsResolvers/inboundEndpoints` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsresolvers_inboundendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers/inboundEndpoints)</li></ul> |
+| `Microsoft.Network/dnsResolvers/inboundEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsresolvers_inboundendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/dnsResolvers/inboundEndpoints)</li></ul> |
 
 ## Parameters
 

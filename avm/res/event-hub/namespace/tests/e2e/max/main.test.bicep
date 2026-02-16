@@ -131,15 +131,23 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          captureDescriptionDestinationBlobContainer: 'eventhub'
-          captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-          captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          captureDescriptionEnabled: true
-          captureDescriptionEncoding: 'Avro'
-          captureDescriptionIntervalInSeconds: 300
-          captureDescriptionSizeLimitInBytes: 314572800
-          captureDescriptionSkipEmptyArchives: true
+          captureDescription: {
+            destination: {
+              name: 'EventHubArchive.AzureBlockBlob'
+              identity: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+              properties: {
+                archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+            }
+            intervalInSeconds: 300
+            sizeLimitInBytes: 314572800
+            skipEmptyArchives: true
+            encoding: 'Avro'
+          }
           consumergroups: [
             {
               name: 'custom'
@@ -230,9 +238,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       managedIdentities: {
         systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
+        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

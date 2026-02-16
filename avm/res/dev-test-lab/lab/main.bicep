@@ -42,6 +42,9 @@ param labStorageType string = 'Premium'
 @description('Optional. The resource ID of the storage account used to store artifacts and images by the lab. Also used for defaultStorageAccount, defaultPremiumStorageAccount and premiumDataDiskStorageAccount properties. If left empty, a default storage account will be created by the lab and used.')
 param artifactsStorageAccount string = ''
 
+@description('Optional. Configure whether the lab uses a User Assigned Managed Identity or a Shared Key to access the storage account. This identity must have at least "Storage Blob Data Reader" role on the storage account. Default is "sas" which uses a Shared Key. If needing to use managed identities, set this property value to the resource ID of the User Assigned Managed Identity. Be sure first to have the "Azure Lab Services" service principal (Application ID: "1a14be2a-e903-4cec-99cf-b2e209259a0f") assigned with at least the "Reader" role on the user identity, resource group or subscription before using this feature. The portal experience automatically performs this role assignment with "Contributor" rights, but template deployments require this to be done programmatically prior using this feature.')
+param storageAccountAccess string = 'sas'
+
 @description('Optional. The ordered list of artifact resource IDs that should be applied on all Linux VM creations by default, prior to the artifacts specified by the user.')
 param mandatoryArtifactsResourceIdsLinux array = []
 
@@ -112,6 +115,9 @@ param artifactsources artifactsourceType[]?
 
 @description('Optional. Costs to create for the lab.')
 param costs costType?
+
+@description('Optional. Secrets to create for the lab. With Lab Secrets, you can store sensitive data once at the lab level and make it available wherever it\'s needed.')
+param secrets secretType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -198,6 +204,7 @@ resource lab 'Microsoft.DevTestLab/labs@2018-10-15-preview' = {
   identity: identity
   properties: {
     artifactsStorageAccount: artifactsStorageAccount
+    storageAccountAccess: storageAccountAccess
     announcement: announcement
     environmentPermission: environmentPermission
     extendedProperties: extendedProperties
@@ -337,6 +344,19 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     thresholdValue125SendNotificationWhenExceeded: costs.?thresholdValue125SendNotificationWhenExceeded ?? 'Disabled'
   }
 }
+
+module lab_secrets 'secret/main.bicep' = [
+  for (secret, index) in (secrets ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Lab-Secrets-${index}'
+    params: {
+      labName: lab.name
+      name: secret.name
+      value: secret.value
+      enabledForArtifacts: secret.?enabledForArtifacts
+      enabledForVmCreation: secret.?enabledForVmCreation
+    }
+  }
+]
 
 resource lab_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -581,4 +601,21 @@ type scheduleType = {
 
   @description('Optional. The notification settings for the schedule.')
   notificationSettings: notificationSettingType?
+}
+
+@export()
+@description('The type for the secret.')
+type secretType = {
+  @description('Required. The name of the secret.')
+  name: string
+
+  @description('Required. The value of the secret.')
+  @secure()
+  value: string
+
+  @sys.description('Optional. Set a secret for your artifacts (e.g., a personal access token to clone your Git repository via an artifact). At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.')
+  enabledForArtifacts: bool?
+
+  @sys.description('Optional. Set a user password or provide an SSH public key to access your Windows or Linux virtual machines. At least one of the following must be true: enabledForArtifacts, enabledForVmCreation.')
+  enabledForVmCreation: bool?
 }

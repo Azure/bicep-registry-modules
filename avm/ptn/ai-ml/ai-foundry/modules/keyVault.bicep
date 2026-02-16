@@ -14,7 +14,7 @@ param privateEndpointSubnetResourceId string?
 @description('Optional. The resource ID of the private DNS zone for the Key Vault to establish private endpoints.')
 param privateDnsZoneResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Specifies the role assignments for the Key Vault.')
 param roleAssignments roleAssignmentType[]?
 
@@ -38,7 +38,7 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (empty(existingResourceId)) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (empty(existingResourceId)) {
   name: take('avm.res.key-vault.vault.${name}', 64)
   params: {
     name: name

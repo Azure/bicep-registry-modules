@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "14635255802868648533"
+      "version": "0.38.5.1644",
+      "templateHash": "15228393793792748444"
     },
     "name": "VPN Sites",
     "description": "This module deploys a VPN Site."
@@ -45,7 +45,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -120,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -132,7 +132,7 @@
         "description": "Required. Name of the VPN Site."
       }
     },
-    "virtualWanId": {
+    "virtualWanResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the virtual WAN to link to."
@@ -147,31 +147,43 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnSites@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "addressPrefixes": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Conditional. An array of IP address ranges that can be used by subnets of the virtual network. Required if no bgpProperties or VPNSiteLinks are configured."
       }
     },
     "bgpProperties": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnSites@2024-07-01#properties/properties/properties/bgpProperties"
+        },
         "description": "Conditional. BGP settings details. Note: This is a deprecated property, please use the corresponding VpnSiteLinks property instead. Required if no addressPrefixes or VPNSiteLinks are configured."
-      }
+      },
+      "nullable": true
     },
     "deviceProperties": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnSites@2024-07-01#properties/properties/properties/deviceProperties"
+        },
         "description": "Optional. List of properties of the device."
-      }
+      },
+      "nullable": true
     },
     "ipAddress": {
       "type": "string",
@@ -189,10 +201,13 @@
     },
     "o365Policy": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnSites@2024-07-01#properties/properties/properties/o365Policy"
+        },
         "description": "Optional. The Office365 breakout policy."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -203,10 +218,13 @@
     },
     "vpnSiteLinks": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnSites@2024-07-01#properties/properties/properties/vpnSiteLinks"
+        },
         "description": "Optional. List of all VPN site links."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -266,21 +284,21 @@
     },
     "vpnSite": {
       "type": "Microsoft.Network/vpnSites",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
         "addressSpace": "[if(not(empty(parameters('addressPrefixes'))), createObject('addressPrefixes', parameters('addressPrefixes')), null())]",
-        "bgpProperties": "[if(not(empty(parameters('bgpProperties'))), parameters('bgpProperties'), null())]",
-        "deviceProperties": "[if(not(empty(parameters('deviceProperties'))), parameters('deviceProperties'), null())]",
-        "ipAddress": "[if(not(empty(parameters('ipAddress'))), parameters('ipAddress'), null())]",
+        "bgpProperties": "[parameters('bgpProperties')]",
+        "deviceProperties": "[parameters('deviceProperties')]",
+        "ipAddress": "[parameters('ipAddress')]",
         "isSecuritySite": "[parameters('isSecuritySite')]",
-        "o365Policy": "[if(not(empty(parameters('o365Policy'))), parameters('o365Policy'), null())]",
+        "o365Policy": "[parameters('o365Policy')]",
         "virtualWan": {
-          "id": "[parameters('virtualWanId')]"
+          "id": "[parameters('virtualWanResourceId')]"
         },
-        "vpnSiteLinks": "[if(not(empty(parameters('vpnSiteLinks'))), parameters('vpnSiteLinks'), null())]"
+        "vpnSiteLinks": "[parameters('vpnSiteLinks')]"
       }
     },
     "vpnSite_lock": {
@@ -347,7 +365,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vpnSite', '2023-04-01', 'full').location]"
+      "value": "[reference('vpnSite', '2024-10-01', 'full').location]"
     }
   }
 }

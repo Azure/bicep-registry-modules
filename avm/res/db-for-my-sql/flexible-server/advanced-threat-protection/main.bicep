@@ -11,11 +11,11 @@ param flexibleServerName string
 ])
 param advancedThreatProtection string = 'Enabled'
 
-resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-01-preview' existing = {
+resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-12-30' existing = {
   name: flexibleServerName
 }
 
-resource advancedThreatProtectionSettings 'Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings@2024-12-01-preview' = {
+resource advancedThreatProtectionSettings 'Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings@2024-12-30' = {
   parent: flexibleServer
   name: 'Default'
   properties: {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2517212374743712090"
+      "version": "0.38.5.1644",
+      "templateHash": "10117401384216168530"
     },
     "name": "Public DNS Zone CNAME record",
     "description": "This module deploys a Public DNS Zone CNAME record."
@@ -103,17 +103,23 @@
     },
     "cnameRecord": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/CNAMERecord"
+        },
         "description": "Optional. A CNAME record. Cannot be used in conjuction with the \"targetResource\" property."
-      }
+      },
+      "nullable": true
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

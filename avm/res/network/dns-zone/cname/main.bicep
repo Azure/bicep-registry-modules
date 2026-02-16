@@ -8,10 +8,10 @@ param dnsZoneName string
 param name string
 
 @description('Optional. A CNAME record. Cannot be used in conjuction with the "targetResource" property.')
-param cnameRecord object?
+param cnameRecord resourceInput<'Microsoft.Network/dnsZones/CNAME@2018-05-01'>.properties.CNAMERecord?
 
 @description('Optional. The metadata attached to the record set.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Network/dnsZones/CNAME@2018-05-01'>.properties.metadata?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600

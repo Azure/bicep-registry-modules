@@ -19,19 +19,18 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     accessTier: 'Hot'
     minimumTlsVersion: 'TLS1_2'
   }
-}
 
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
-  name: 'default'
-  parent: storageAccount
-  properties: {
-    deleteRetentionPolicy: {
-      enabled: true
-      days: 7
-    }
-    containerDeleteRetentionPolicy: {
-      enabled: true
-      days: 7
+  resource blobServices 'blobServices@2024-01-01' = {
+    name: 'default'
+    properties: {
+      deleteRetentionPolicy: {
+        enabled: true
+        days: 7
+      }
+      containerDeleteRetentionPolicy: {
+        enabled: true
+        days: 7
+      }
     }
   }
 }

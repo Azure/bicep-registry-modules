@@ -1,5 +1,5 @@
 metadata name = 'Consumption Budgets'
-metadata description = 'This module deploys a Consumption Budget for Management Groups.'
+metadata description = 'This module deploys a Consumption Budget for a Management Group.'
 
 targetScope = 'managementGroup'
 
