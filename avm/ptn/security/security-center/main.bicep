@@ -239,7 +239,7 @@ resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-previe
   name: 'default'
   properties: {
     emails: securityContactProperties.emails
-    isEnabled: securityContactProperties.?isEnabled! ?? true
+    isEnabled: securityContactProperties.?isEnabled ?? true
     notificationsByRole: securityContactProperties.notificationsByRole
     notificationsSources: securityContactProperties.notificationsSources
   }
