@@ -52,6 +52,40 @@ module testDeployment '../../../main.bicep' = [
       scope: '/subscriptions/${subscription().subscriptionId}'
       workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      securityContactProperties: {
+        emails: 'foo@contoso.com'
+        isEnabled: true
+        notificationsByRole: {
+          roles: [
+            'owner'
+          ]
+          state: 'On'
+        }
+        notificationsSources: [
+          {
+            sourceType: 'Alert'
+            minimalSeverity: 'High'
+          }
+          {
+            sourceType: 'AttackPath'
+            minimalRiskLevel: 'High'
+          }
+        ]
+      }
+      autoProvision: 'On'
+      appServicesPricingTier: 'Standard'
+      armPricingTier: 'Standard'
+      containerRegistryPricingTier: 'Standard'
+      containersTier: 'Standard'
+      cosmosDbsTier: 'Standard'
+      dnsPricingTier: 'Standard'
+      keyVaultsPricingTier: 'Standard'
+      kubernetesServicePricingTier: 'Standard'
+      openSourceRelationalDatabasesTier: 'Standard'
+      sqlServersPricingTier: 'Standard'
+      sqlServerVirtualMachinesPricingTier: 'Standard'
+      storageAccountsPricingTier: 'Standard'
+      virtualMachinesPricingTier: 'Standard'
     }
   }
 ]
