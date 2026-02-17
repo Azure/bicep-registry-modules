@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6119458326371397473"
+      "templateHash": "5474392061589374063"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration."
@@ -50,7 +50,7 @@
     },
     "virtualMachinesPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -61,7 +61,7 @@
     },
     "sqlServersPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -72,7 +72,7 @@
     },
     "appServicesPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -83,7 +83,7 @@
     },
     "storageAccountsPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -94,7 +94,7 @@
     },
     "sqlServerVirtualMachinesPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -105,7 +105,7 @@
     },
     "kubernetesServicePricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -116,7 +116,7 @@
     },
     "containerRegistryPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -127,7 +127,7 @@
     },
     "keyVaultsPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -138,7 +138,7 @@
     },
     "dnsPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -149,7 +149,7 @@
     },
     "armPricingTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -160,7 +160,7 @@
     },
     "openSourceRelationalDatabasesTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -171,7 +171,7 @@
     },
     "containersTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
@@ -182,7 +182,7 @@
     },
     "cosmosDbsTier": {
       "type": "string",
-      "defaultValue": "Standard",
+      "defaultValue": "Free",
       "allowedValues": [
         "Free",
         "Standard"
