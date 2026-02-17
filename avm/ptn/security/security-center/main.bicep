@@ -201,11 +201,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 @batchSize(1)
-resource pricingTiers 'Microsoft.Security/pricings@2018-06-01' = [
+resource pricingTiers 'Microsoft.Security/pricings@2024-01-01' = [
   for (pricing, index) in pricings: {
     name: pricing.name
     properties: {
       pricingTier: pricing.pricingTier
+      subPlan: pricing.name == 'VirtualMachines' && pricing.pricingTier == 'Standard' ? 'P2' : null
     }
   }
 ]
