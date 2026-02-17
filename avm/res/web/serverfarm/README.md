@@ -618,6 +618,7 @@ param zoneRedundant = true
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`hyperV`](#parameter-hyperv) | bool | If Hyper-V container app service plan true, false otherwise. |
 | [`kind`](#parameter-kind) | string | Kind of server OS. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -779,6 +780,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `hyperV`
+
+If Hyper-V container app service plan true, false otherwise.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `kind`
 

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/alz/empty/CHANGELOG.md).
 
+## 0.3.6
+
+### Changes
+
+- Fixes issues in ALZ Bicep Accelerator templates where the `deployment().name` was being used in the `main.bicep` of the `avm/ptn/alz/empty` module, which caused deployment failures when the management group name was long and exceeded the 64 character limit for deployment names. The deployment names have been updated to use a base name with a reserved suffix for uniqueness instead of relying on `deployment().name`.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.5
 
 ### Changes

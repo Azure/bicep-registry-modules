@@ -38,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -54,10 +55,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   params: {
-    // Required parameters
     name: 'npiamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -74,13 +72,8 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "npiamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -96,10 +89,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
 ```bicep-params
 using 'br/public:avm/res/network/public-ip-address:<version>'
 
-// Required parameters
 param name = 'npiamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -366,7 +356,72 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2sku]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
+  params: {
+    // Required parameters
+    name: 'npiav2001'
+    // Non-required parameters
+    skuName: 'StandardV2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npiav2001"
+    },
+    // Non-required parameters
+    "skuName": {
+      "value": "StandardV2"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-address:<version>'
+
+// Required parameters
+param name = 'npiav2001'
+// Non-required parameters
+param skuName = 'StandardV2'
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -400,30 +455,9 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     ]
     dnsSettings: '<dnsSettings>'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     skuName: 'Standard'
     skuTier: 'Regional'
     tags: {
@@ -479,12 +513,6 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIPAddressVersion": {
       "value": "IPv4"
     },
@@ -493,25 +521,6 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     },
     "publicIpPrefixResourceId": {
       "value": "<publicIpPrefixResourceId>"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "skuName": {
       "value": "Standard"
@@ -560,30 +569,9 @@ param diagnosticSettings = [
 ]
 param dnsSettings = '<dnsSettings>'
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param publicIPAddressVersion = 'IPv4'
 param publicIPAllocationMethod = 'Static'
 param publicIpPrefixResourceId = '<publicIpPrefixResourceId>'
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-  }
-]
 param skuName = 'Standard'
 param skuTier = 'Regional'
 param tags = {
@@ -669,13 +657,6 @@ The delete option for the public IP address.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Delete'
-    'Detach'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -912,13 +893,6 @@ IP address version.
 - Required: No
 - Type: string
 - Default: `'IPv4'`
-- Allowed:
-  ```Bicep
-  [
-    'IPv4'
-    'IPv6'
-  ]
-  ```
 
 ### Parameter: `publicIPAllocationMethod`
 
@@ -927,13 +901,6 @@ The public IP address allocation method.
 - Required: No
 - Type: string
 - Default: `'Static'`
-- Allowed:
-  ```Bicep
-  [
-    'Dynamic'
-    'Static'
-  ]
-  ```
 
 ### Parameter: `publicIpPrefixResourceId`
 
@@ -1057,13 +1024,6 @@ Name of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Standard'
-  ]
-  ```
 
 ### Parameter: `skuTier`
 
@@ -1072,13 +1032,6 @@ Tier of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Regional'`
-- Allowed:
-  ```Bicep
-  [
-    'Global'
-    'Regional'
-  ]
-  ```
 
 ### Parameter: `tags`
 

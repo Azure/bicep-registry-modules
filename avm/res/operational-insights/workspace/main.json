@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "2675853336332906061"
+      "templateHash": "7594701320334055285"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -447,7 +447,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+              "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-07-01#properties/tags"
             },
             "description": "Optional. Tags to configure in the resource."
           },
@@ -1108,11 +1108,10 @@
       }
     },
     "dailyQuotaGb": {
-      "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "type": "string",
+      "defaultValue": "-1",
       "metadata": {
-        "description": "Optional. The workspace daily quota for ingestion."
+        "description": "Optional. The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit)."
       }
     },
     "defaultDataCollectionRuleResourceId": {
@@ -1205,7 +1204,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.OperationalInsights/workspaces@2025-02-01#properties/tags"
+          "source": "Microsoft.OperationalInsights/workspaces@2025-07-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1285,7 +1284,7 @@
         },
         "retentionInDays": "[parameters('dataRetention')]",
         "workspaceCapping": {
-          "dailyQuotaGb": "[parameters('dailyQuotaGb')]"
+          "dailyQuotaGb": "[json(parameters('dailyQuotaGb'))]"
         },
         "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
         "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
@@ -1418,7 +1417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "15555486835943827858"
+              "templateHash": "140290971998938797"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -1467,7 +1466,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01#properties/tags"
+                  "source": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-07-01#properties/tags"
                 },
                 "description": "Optional. Tags to configure in the resource."
               },
@@ -1478,18 +1477,18 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
             },
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "storageinsightconfig": {
               "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1497,7 +1496,7 @@
                 "tables": "[parameters('tables')]",
                 "storageAccount": {
                   "id": "[parameters('storageAccountResourceId')]",
-                  "key": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
+                  "key": "[listKeys('storageAccount', '2025-06-01').keys[0].value]"
                 }
               }
             }
@@ -1566,7 +1565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "8517561285031465616"
+              "templateHash": "14482465616812596213"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -1602,7 +1601,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01#properties/tags"
+                  "source": "Microsoft.OperationalInsights/workspaces/linkedServices@2025-07-01#properties/tags"
                 },
                 "description": "Optional. Tags to configure in the resource."
               },
@@ -1613,12 +1612,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "linkedService": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1688,7 +1687,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "3889914477453955601"
+              "templateHash": "14864721709229272590"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -1727,12 +1726,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "linkedStorageAccount": {
               "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "properties": {
                 "storageAccountIds": "[parameters('storageAccountIds')]"
@@ -1821,7 +1820,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "3727577253995784529"
+              "templateHash": "17904092372918022238"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -1861,7 +1860,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01#properties/properties/properties/tags"
+                  "source": "Microsoft.OperationalInsights/workspaces/savedSearches@2025-07-01#properties/properties/properties/tags"
                 },
                 "description": "Optional. Tags to configure in the resource."
               },
@@ -1900,12 +1899,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "savedSearch": {
               "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "properties": {
                 "etag": "[parameters('etag')]",
@@ -1987,7 +1986,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "6434695407713682713"
+              "templateHash": "17943947755417749524"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2069,12 +2068,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('workspaceName')]"
             },
             "dataExport": {
               "type": "Microsoft.OperationalInsights/workspaces/dataExports",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "destination": "[parameters('destination')]",
@@ -2180,7 +2179,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "8636447638029661740"
+              "templateHash": "15360290236166491819"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2219,7 +2218,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-02-01#properties/tags"
+                  "source": "Microsoft.OperationalInsights/workspaces/dataSources@2025-07-01#properties/tags"
                 },
                 "description": "Optional. Tags to configure in the resource."
               },
@@ -2307,12 +2306,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('logAnalyticsWorkspaceName')]"
             },
             "dataSource": {
               "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
               "kind": "[parameters('kind')]",
               "tags": "[parameters('tags')]",
@@ -2410,7 +2409,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "13928174215528939368"
+              "templateHash": "18383178824663161801"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table."
@@ -2759,12 +2758,12 @@
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('workspaceName')]"
             },
             "table": {
               "type": "Microsoft.OperationalInsights/workspaces/tables",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "plan": "[parameters('plan')]",

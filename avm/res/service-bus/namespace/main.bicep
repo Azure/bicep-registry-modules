@@ -313,6 +313,7 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [
       requiresSession: queue.?requiresSession
       roleAssignments: queue.?roleAssignments
       status: queue.?status
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -338,6 +339,7 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [
       supportOrdering: topic.?supportOrdering
       subscriptions: topic.?subscriptions
       maxSizeInMegabytes: topic.?maxSizeInMegabytes
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

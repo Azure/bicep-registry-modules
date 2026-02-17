@@ -42,7 +42,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
+      location: enforcedLocation
       aiServiceLocation: enforcedLocation
+      usecase: 'telecom'
     }
   }
 ]

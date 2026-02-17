@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "4772960740722851772"
+      "version": "0.39.26.7824",
+      "templateHash": "5082885619629238407"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -587,18 +587,18 @@
         "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
       }
     },
-    "authorizationRules": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Authorization Rules for the Service Bus Topic."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
+      }
+    },
+    "authorizationRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Service Bus Topic."
       }
     },
     "roleAssignments": {
@@ -619,6 +619,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The subscriptions of the topic."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -642,6 +649,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.servicebus-namespacetopic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
@@ -726,8 +753,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1167899423117043460"
+              "version": "0.39.26.7824",
+              "templateHash": "16587567666261394583"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -879,8 +906,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17722317559130689691"
+              "version": "0.39.26.7824",
+              "templateHash": "11047735223529370411"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1338,8 +1365,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "13550281176676896741"
+                      "version": "0.39.26.7824",
+                      "templateHash": "10380124336770907492"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."

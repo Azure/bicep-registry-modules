@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "10226887119813429553"
+    },
+    "name": "API Management Workspace Subscriptions",
+    "description": "This module deploys a Subscription in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Subscription name."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "metadata": {
+        "description": "Required. API Management Service Subscriptions name."
+      }
+    },
+    "allowTracing": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Determines whether tracing can be enabled."
+      }
+    },
+    "ownerId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. User (user ID path) for whom subscription is being created in form /users/{userId}."
+      }
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
+      }
+    },
+    "scope": {
+      "type": "string",
+      "defaultValue": "/apis",
+      "metadata": {
+        "description": "Optional. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
+      }
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
+      }
+    },
+    "state": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "active",
+        "cancelled",
+        "expired",
+        "rejected",
+        "submitted",
+        "suspended"
+      ],
+      "metadata": {
+        "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:\n* active - the subscription is active\n* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product\n* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected\n* rejected - the subscription request has been denied by an administrator\n* cancelled - the subscription has been cancelled by the developer or administrator\n* expired - the subscription reached its expiration date and was deactivated."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "subscription": {
+      "type": "Microsoft.ApiManagement/service/workspaces/subscriptions",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "displayName": "[parameters('displayName')]",
+        "allowTracing": "[parameters('allowTracing')]",
+        "ownerId": "[parameters('ownerId')]",
+        "primaryKey": "[parameters('primaryKey')]",
+        "scope": "[parameters('scope')]",
+        "secondaryKey": "[parameters('secondaryKey')]",
+        "state": "[parameters('state')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace subscription."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/subscriptions', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace subscription."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace subscription was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -16,6 +16,13 @@ param availabilityZone int
 @description('Optional. The idle timeout of the NAT gateway.')
 param idleTimeoutInMinutes int = 5
 
+@description('Optional. The SKU of the NAT Gateway.')
+@allowed([
+  'Standard'
+  'StandardV2'
+])
+param natGatewaySku string = 'Standard'
+
 @description('Optional. Existing Public IP Address resource IDs to use for the NAT Gateway.')
 param publicIpResourceIds string[] = []
 
@@ -40,7 +47,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags for the resource.')
-param tags resourceInput<'Microsoft.Network/natGateways@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/natGateways@2025-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -98,7 +105,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.0' = [
+module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.12.0' = [
   for (publicIPAddress, index) in (publicIPAddresses ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
@@ -110,7 +117,7 @@ module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address
       publicIPAllocationMethod: 'Static'
       publicIpPrefixResourceId: publicIPAddress.?publicIPPrefixResourceId
       roleAssignments: publicIPAddress.?roleAssignments
-      skuName: 'Standard' // Must be standard
+      skuName: publicIPAddress.?skuName ?? natGatewaySku
       skuTier: publicIPAddress.?skuTier
       tags: publicIPAddress.?tags ?? tags
       availabilityZones: publicIPAddress.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
@@ -133,7 +140,7 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
-module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.0' = [
+module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.8.0' = [
   for (publicIPPrefix, index) in (publicIPPrefixes ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {
@@ -164,12 +171,12 @@ module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
 
 // NAT GATEWAY
 // ===========
-resource natGateway 'Microsoft.Network/natGateways@2024-07-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2025-05-01' = {
   name: name
   location: location
   tags: tags
   sku: {
-    name: 'Standard'
+    name: natGatewaySku
   }
   properties: {
     idleTimeoutInMinutes: idleTimeoutInMinutes
@@ -253,7 +260,7 @@ type publicIpType = {
   lock: lockType?
 
   @description('Optional. Name of a public IP address SKU.')
-  skuName: ('Basic' | 'Standard')?
+  skuName: ('Basic' | 'Standard' | 'StandardV2')?
 
   @description('Optional. Tier of a public IP address SKU.')
   skuTier: ('Global' | 'Regional')?

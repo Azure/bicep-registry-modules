@@ -21,6 +21,7 @@ env:
 jobs:
   upload-index-data:
     runs-on: ubuntu-latest
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
