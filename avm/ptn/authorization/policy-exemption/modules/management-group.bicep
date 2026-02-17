@@ -45,7 +45,7 @@ param policyDefinitionReferenceIds string[]?
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out Policy exemptions based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array?
 
-resource policyExemption 'Microsoft.Authorization/policyExemptions@2022-07-01-preview' = {
+resource policyExemption 'Microsoft.Authorization/policyExemptions@2024-12-01-preview' = {
   name: name
   properties: {
     description: description

@@ -1,5 +1,5 @@
 metadata name = 'Policy Exemptions (All scopes)'
-metadata description = 'This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.'
+metadata description = 'This module deploys a Policy Exemption at a Management Group, Subscription, Resource Group, or Resource scope.'
 
 targetScope = 'managementGroup'
 
@@ -54,6 +54,9 @@ param subscriptionId string?
 @sys.description('Optional. The Target Scope for the Policy. The name of the resource group for the policy exemption.')
 param resourceGroupName string?
 
+@sys.description('Optional. The Target Scope for the Policy. The fully qualified resource ID for the policy exemption.')
+param resourceId string?
+
 @sys.description('Optional. Location for all Resources.')
 param location string = deployment().location
 
@@ -83,7 +86,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module policyExemption_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
+module policyExemption_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName) && empty(resourceId)) {
   name: '${uniqueString(deployment().name, location)}-PolicyExemption-MG-Module'
   scope: managementGroup(managementGroupId)
   params: {
@@ -100,7 +103,7 @@ module policyExemption_mg 'modules/management-group.bicep' = if (empty(subscript
   }
 }
 
-module policyExemption_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+module policyExemption_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName) && empty(resourceId)) {
   name: '${uniqueString(deployment().name, location)}-PolicyExemption-Sub-Module'
   scope: subscription(subscriptionId ?? '')
   params: {
@@ -117,7 +120,7 @@ module policyExemption_sub 'modules/subscription.bicep' = if (!empty(subscriptio
   }
 }
 
-module policyExemption_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
+module policyExemption_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId) && empty(resourceId)) {
   name: '${uniqueString(deployment().name, location)}-PolicyExemption-RG-Module'
   scope: resourceGroup(subscriptionId ?? '', resourceGroupName ?? '')
   params: {
@@ -134,16 +137,25 @@ module policyExemption_rg 'modules/resource-group.bicep' = if (!empty(resourceGr
   }
 }
 
+module policyExemption_resource 'modules/resource.bicep' = if (!empty(resourceId)) {
+  name: '${uniqueString(deployment().name, location)}-PolicyExemption-Resource-Module'
+  scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
+  params: {
+    name: name
+    description: description
+    displayName: displayName
+    assignmentScopeValidation: assignmentScopeValidation
+    exemptionCategory: exemptionCategory
+    expiresOn: expiresOn
+    metadata: metadata
+    policyAssignmentId: policyAssignmentId
+    policyDefinitionReferenceIds: policyDefinitionReferenceIds
+    resourceSelectors: resourceSelectors
+  }
+}
+
 @sys.description('Policy Exemption Name.')
-output name string = empty(subscriptionId) && empty(resourceGroupName)
-  ? policyExemption_mg.outputs.name
-  : (!empty(subscriptionId) && empty(resourceGroupName)
-      ? policyExemption_sub.outputs.name
-      : policyExemption_rg.outputs.name)
+output name string = policyExemption_resource.?outputs.name ?? policyExemption_rg.?outputs.name ?? policyExemption_sub.?outputs.name ?? policyExemption_mg.?outputs.name ?? ''
 
 @sys.description('Policy Exemption resource ID.')
-output resourceId string = empty(subscriptionId) && empty(resourceGroupName)
-  ? policyExemption_mg.outputs.resourceId
-  : (!empty(subscriptionId) && empty(resourceGroupName)
-      ? policyExemption_sub.outputs.resourceId
-      : policyExemption_rg.outputs.resourceId)
+output resourceId string = policyExemption_resource.?outputs.resourceId ?? policyExemption_rg.?outputs.resourceId ?? policyExemption_sub.?outputs.resourceId ?? policyExemption_mg.?outputs.resourceId ?? ''
