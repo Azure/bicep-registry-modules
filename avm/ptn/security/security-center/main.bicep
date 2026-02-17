@@ -27,91 +27,91 @@ param ioTSecuritySolutionProperties object = {}
   'Free'
   'Standard'
 ])
-param virtualMachinesPricingTier string = 'Free'
+param virtualMachinesPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for SqlServers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param sqlServersPricingTier string = 'Free'
+param sqlServersPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for AppServices. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param appServicesPricingTier string = 'Free'
+param appServicesPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param storageAccountsPricingTier string = 'Free'
+param storageAccountsPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param sqlServerVirtualMachinesPricingTier string = 'Free'
+param sqlServerVirtualMachinesPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for KubernetesService. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param kubernetesServicePricingTier string = 'Free'
+param kubernetesServicePricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for ContainerRegistry. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param containerRegistryPricingTier string = 'Free'
+param containerRegistryPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for KeyVaults. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param keyVaultsPricingTier string = 'Free'
+param keyVaultsPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for DNS. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param dnsPricingTier string = 'Free'
+param dnsPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for ARM. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param armPricingTier string = 'Free'
+param armPricingTier string = 'Standard'
 
 @description('Optional. The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param openSourceRelationalDatabasesTier string = 'Free'
+param openSourceRelationalDatabasesTier string = 'Standard'
 
 @description('Optional. The pricing tier value for containers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param containersTier string = 'Free'
+param containersTier string = 'Standard'
 
 @description('Optional. The pricing tier value for CosmosDbs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
   'Free'
   'Standard'
 ])
-param cosmosDbsTier string = 'Free'
+param cosmosDbsTier string = 'Standard'
 
 @description('Optional. Security contact data.')
 param securityContactProperties object = {}
