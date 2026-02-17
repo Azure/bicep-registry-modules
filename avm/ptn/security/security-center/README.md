@@ -376,7 +376,7 @@ The pricing tier value for AppServices. Azure Security Center is provided in two
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -391,7 +391,7 @@ The pricing tier value for ARM. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -421,7 +421,7 @@ The pricing tier value for ContainerRegistry. Azure Security Center is provided 
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -436,7 +436,7 @@ The pricing tier value for containers. Azure Security Center is provided in two 
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -451,7 +451,7 @@ The pricing tier value for CosmosDbs. Azure Security Center is provided in two p
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -474,7 +474,7 @@ The pricing tier value for DNS. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -505,7 +505,7 @@ The pricing tier value for KeyVaults. Azure Security Center is provided in two p
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -520,7 +520,7 @@ The pricing tier value for KubernetesService. Azure Security Center is provided 
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -543,7 +543,7 @@ The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center 
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -566,7 +566,7 @@ The pricing tier value for SqlServers. Azure Security Center is provided in two 
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -581,7 +581,7 @@ The pricing tier value for SqlServerVirtualMachines. Azure Security Center is pr
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -596,7 +596,7 @@ The pricing tier value for StorageAccounts. Azure Security Center is provided in
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
@@ -611,7 +611,7 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
 
 - Required: No
 - Type: string
-- Default: `'Free'`
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [
