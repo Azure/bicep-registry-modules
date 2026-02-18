@@ -215,6 +215,7 @@ resource uploadScriptsBlob 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
     azCliVersion: '2.63.0'
     retentionInterval: 'PT1H'
     timeout: 'PT10M'
+    forceUpdateTag: uniqueString(deploymentScriptName, resourceGroup().id)
     environmentVariables: [
       {
         name: 'STORAGE_ACCOUNT_NAME'
