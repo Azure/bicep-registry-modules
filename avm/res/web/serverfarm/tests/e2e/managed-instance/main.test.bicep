@@ -103,6 +103,15 @@ module testDeployment '../../../main.bicep' = [
           type: 'LocalStorage'
           destinationPath: 'G:\\'
         }
+        {
+          name: 'h-drive'
+          type: 'AzureFiles'
+          source: '\\\\${nestedDependencies.outputs.storageAccountName}.file.${environment().suffixes.storage}\\${nestedDependencies.outputs.fileShareName}'
+          destinationPath: 'H:\\'
+          credentialsKeyVaultReference: {
+            secretUri: '${nestedDependencies.outputs.keyVaultUri}/secrets/storage-account-key'
+          }
+        }
       ]
       tags: {
         'hidden-title': 'This is visible in the resource name'

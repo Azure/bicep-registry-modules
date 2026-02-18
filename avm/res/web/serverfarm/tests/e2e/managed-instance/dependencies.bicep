@@ -98,8 +98,37 @@ resource scriptsContainer 'Microsoft.Storage/storageAccounts/blobServices/contai
   }
 }
 
+// File share for H: drive AzureFiles storage mount
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2025-01-01' = {
+  name: 'default'
+  parent: storageAccount
+}
+
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-01-01' = {
+  name: 'hshare'
+  parent: fileService
+  properties: {
+    shareQuota: 5
+  }
+}
+
+// Grant managed identity Storage Blob Data Reader on the storage account
+// so the plan can pull install scripts
+resource blobReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, managedIdentity.id, 'Storage Blob Data Reader')
+  scope: storageAccount
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+    )
+  }
+}
+
 // Grant managed identity Storage Blob Data Contributor on the storage account
-// (Contributor includes read for serverfarm + write for deployment script upload)
+// so the deployment script can upload scripts.zip
 resource blobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(storageAccount.id, managedIdentity.id, 'Storage Blob Data Contributor')
   scope: storageAccount
@@ -129,7 +158,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
 }
 
 // Grant managed identity Key Vault Secrets Officer
-// (Officer can create secrets for test setup + read for serverfarm registry adapters)
+// (Officer is needed so the deployment script can create secrets via the MI)
 resource kvSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(keyVault.id, managedIdentity.id, 'Key Vault Secrets Officer')
   scope: keyVault
@@ -143,12 +172,27 @@ resource kvSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments
   }
 }
 
+// Grant managed identity Key Vault Secrets User
+// so the App Service Plan can read secrets for registry adapters and storage mount credentials
+resource kvSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, managedIdentity.id, 'Key Vault Secrets User')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '4633458b-17de-408a-b874-0445c86b69e6'
+    )
+  }
+}
+
 // Key Vault secrets for registry adapter values
 resource registryStringSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
   parent: keyVault
   name: 'registry-string-value'
   properties: {
-    value: 'TestStringValue123'
+    value: 'MyExampleStringValue'
   }
 }
 
@@ -156,7 +200,16 @@ resource registryDwordSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
   parent: keyVault
   name: 'registry-dword-value'
   properties: {
-    value: '42'
+    value: '336'
+  }
+}
+
+// Store the storage account connection string for the H: drive AzureFiles mount
+resource storageAccountKeySecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+  parent: keyVault
+  name: 'storage-account-key'
+  properties: {
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
   }
 }
 
@@ -241,6 +294,9 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The name of the storage account.')
 output storageAccountName string = storageAccount.name
+
+@description('The name of the file share.')
+output fileShareName string = fileShare.name
 
 @description('The name of the Key Vault.')
 output keyVaultName string = keyVault.name

@@ -404,6 +404,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         name: 'g-drive'
         type: 'LocalStorage'
       }
+      {
+        credentialsKeyVaultReference: {
+          secretUri: '<secretUri>'
+        }
+        destinationPath: 'H:\\'
+        name: 'h-drive'
+        source: '<source>'
+        type: 'AzureFiles'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -498,6 +507,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
           "destinationPath": "G:\\",
           "name": "g-drive",
           "type": "LocalStorage"
+        },
+        {
+          "credentialsKeyVaultReference": {
+            "secretUri": "<secretUri>"
+          },
+          "destinationPath": "H:\\",
+          "name": "h-drive",
+          "source": "<source>",
+          "type": "AzureFiles"
         }
       ]
     },
@@ -573,6 +591,15 @@ param storageMounts = [
     destinationPath: 'G:\\'
     name: 'g-drive'
     type: 'LocalStorage'
+  }
+  {
+    credentialsKeyVaultReference: {
+      secretUri: '<secretUri>'
+    }
+    destinationPath: 'H:\\'
+    name: 'h-drive'
+    source: '<source>'
+    type: 'AzureFiles'
   }
 ]
 param tags = {
