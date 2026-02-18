@@ -360,7 +360,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Non-required parameters
     installScripts: [
       {
-        name: 'FontInstaller'
+        name: 'CustomInstaller'
         source: {
           sourceUri: '<sourceUri>'
           type: 'RemoteAzureBlob'
@@ -385,8 +385,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         keyVaultSecretReference: {
           secretUri: '<secretUri>'
         }
-        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config'
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
         type: 'String'
+      }
+      {
+        keyVaultSecretReference: {
+          secretUri: '<secretUri>'
+        }
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+        type: 'DWORD'
       }
     ]
     skuCapacity: 3
@@ -428,7 +435,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "installScripts": {
       "value": [
         {
-          "name": "FontInstaller",
+          "name": "CustomInstaller",
           "source": {
             "sourceUri": "<sourceUri>",
             "type": "RemoteAzureBlob"
@@ -467,8 +474,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
           "keyVaultSecretReference": {
             "secretUri": "<secretUri>"
           },
-          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config",
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString",
           "type": "String"
+        },
+        {
+          "keyVaultSecretReference": {
+            "secretUri": "<secretUri>"
+          },
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD",
+          "type": "DWORD"
         }
       ]
     },
@@ -516,7 +530,7 @@ param name = 'wsfmi001'
 // Non-required parameters
 param installScripts = [
   {
-    name: 'FontInstaller'
+    name: 'CustomInstaller'
     source: {
       sourceUri: '<sourceUri>'
       type: 'RemoteAzureBlob'
@@ -541,8 +555,15 @@ param registryAdapters = [
     keyVaultSecretReference: {
       secretUri: '<secretUri>'
     }
-    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config'
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
     type: 'String'
+  }
+  {
+    keyVaultSecretReference: {
+      secretUri: '<secretUri>'
+    }
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+    type: 'DWORD'
   }
 ]
 param skuCapacity = 3
