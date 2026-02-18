@@ -19,6 +19,9 @@ param bastionName string
 @description('Required. The name of the Bastion Public IP to create.')
 param bastionPublicIpName string
 
+@description('Required. The name of the deployment script to create.')
+param deploymentScriptName string
+
 // User-assigned managed identity for plan default identity
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
@@ -95,16 +98,17 @@ resource scriptsContainer 'Microsoft.Storage/storageAccounts/blobServices/contai
   }
 }
 
-// Grant managed identity Storage Blob Data Reader on the storage account
-resource blobReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(storageAccount.id, managedIdentity.id, 'Storage Blob Data Reader')
+// Grant managed identity Storage Blob Data Contributor on the storage account
+// (Contributor includes read for serverfarm + write for deployment script upload)
+resource blobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, managedIdentity.id, 'Storage Blob Data Contributor')
   scope: storageAccount
   properties: {
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+      'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     )
   }
 }
@@ -124,17 +128,35 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   }
 }
 
-// Grant managed identity Key Vault Secrets User
-resource kvSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVault.id, managedIdentity.id, 'Key Vault Secrets User')
+// Grant managed identity Key Vault Secrets Officer
+// (Officer can create secrets for test setup + read for serverfarm registry adapters)
+resource kvSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, managedIdentity.id, 'Key Vault Secrets Officer')
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '4633458b-17de-408a-b874-0445c86b69e6'
+      'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
     )
+  }
+}
+
+// Key Vault secrets for registry adapter values
+resource registryStringSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+  parent: keyVault
+  name: 'registry-string-value'
+  properties: {
+    value: 'TestStringValue123'
+  }
+}
+
+resource registryDwordSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+  parent: keyVault
+  name: 'registry-dword-value'
+  properties: {
+    value: '42'
   }
 }
 
@@ -175,6 +197,36 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2024-05-01' = {
     ]
     scaleUnits: 2
   }
+}
+
+// Deployment script to create and upload scripts.zip to the blob container
+// Mirrors Terraform's archive_file + azurerm_storage_blob pattern
+resource uploadScriptsBlob 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: deploymentScriptName
+  location: location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azCliVersion: '2.63.0'
+    retentionInterval: 'PT1H'
+    timeout: 'PT10M'
+    environmentVariables: [
+      {
+        name: 'STORAGE_ACCOUNT_NAME'
+        value: storageAccount.name
+      }
+    ]
+    scriptContent: loadTextContent('upload-scripts.sh')
+  }
+  dependsOn: [
+    blobContributorRoleAssignment
+    scriptsContainer
+  ]
 }
 
 @description('The resource ID of the delegated subnet.')
