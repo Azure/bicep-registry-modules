@@ -38,8 +38,11 @@ PWSH
 
 # Create the zip archive
 cd "$TEMP_DIR"
-apt-get update -qq > /dev/null 2>&1 && apt-get install -y -qq zip > /dev/null 2>&1 || true
-zip -j scripts.zip install.ps1
+python3 -c "
+import zipfile, os
+with zipfile.ZipFile('scripts.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+    zf.write('install.ps1', 'install.ps1')
+"
 
 # Upload to blob storage using managed identity
 az storage blob upload \
