@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "10412216932613982313"
+      "version": "0.40.2.10011",
+      "templateHash": "192933490322613000"
     },
     "name": "Event Hub Namespace Event Hub Authorization Rules",
     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."

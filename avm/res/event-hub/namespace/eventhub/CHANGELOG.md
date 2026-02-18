@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/eventhub/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Recompiled templates with latest Bicep version `0.40.2.10011`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

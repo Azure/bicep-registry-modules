@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "11753625464382465575"
+      "version": "0.40.2.10011",
+      "templateHash": "3326739246701694282"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -480,7 +480,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -497,7 +497,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -545,8 +545,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1703588134773580957"
+              "version": "0.40.2.10011",
+              "templateHash": "370516359162372740"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -651,8 +651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10412216932613982313"
+              "version": "0.40.2.10011",
+              "templateHash": "192933490322613000"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
