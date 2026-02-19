@@ -289,6 +289,11 @@ module testDeployment '../../../main.bicep' = [
         imagePullTraffic: true
       }
       publicNetworkAccess: 'Disabled'
+      clientAffinityProxyEnabled: true
+      clientAffinityPartitioningEnabled: false
+      hostNamesDisabled: false
+      reserved: true
+      ipMode: 'IPv4'
     }
   }
 ]

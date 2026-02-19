@@ -8,7 +8,7 @@ param serverFarmName string
 // Resources      //
 // ============== //
 
-resource serverFarm 'Microsoft.Web/serverfarms@2024-04-01' = {
+resource serverFarm 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: serverFarmName
   location: location
   sku: {
