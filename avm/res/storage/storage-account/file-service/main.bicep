@@ -34,11 +34,11 @@ var defaultShareAccessTier = storageAccount.kind == 'FileStorage'
   ? (startsWith(storageAccount.sku.name, 'PremiumV2_') ? null : 'Premium')
   : 'TransactionOptimized'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -92,6 +92,8 @@ module fileServices_shares 'share/main.bicep' = [
       enabledProtocols: share.?enabledProtocols
       rootSquash: share.?rootSquash
       shareQuota: share.?shareQuota
+      provisionedBandwidthMibps: share.?provisionedBandwidthMibps
+      provisionedIops: share.?provisionedIops
       roleAssignments: share.?roleAssignments
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -149,6 +151,14 @@ type fileShareType = {
 
   @description('Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).')
   shareQuota: int?
+
+  @maxValue(10340)
+  @description('Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.')
+  provisionedBandwidthMibps: int?
+
+  @maxValue(102400)
+  @description('Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.')
+  provisionedIops: int?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
