@@ -462,23 +462,23 @@ param upgradeChannel = 'Stable'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessLevel`](#parameter-accesslevel) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution. |
-| [`actionIdentityResourceId`](#parameter-actionidentityresourceid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity. |
-| [`agentMode`](#parameter-agentmode) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only. |
-| [`applicationInsightsAppId`](#parameter-applicationinsightsappid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights App ID for agent telemetry. Required for log configuration. |
-| [`applicationInsightsConnectionString`](#parameter-applicationinsightsconnectionstring) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights connection string for agent telemetry. Required for log configuration. |
+| [`accessLevel`](#parameter-accesslevel) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution. |
+| [`actionIdentityResourceId`](#parameter-actionidentityresourceid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity. |
+| [`agentMode`](#parameter-agentmode) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only. |
+| [`applicationInsightsAppId`](#parameter-applicationinsightsappid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights App ID for agent telemetry. Required for log configuration. |
+| [`applicationInsightsConnectionString`](#parameter-applicationinsightsconnectionstring) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights connection string for agent telemetry. Required for log configuration. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`incidentManagementConfigurationType`](#parameter-incidentmanagementconfigurationtype) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The incident management configuration type for the SRE Agent. |
-| [`knowledgeGraphIdentityResourceId`](#parameter-knowledgegraphidentityresourceid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used. |
-| [`knowledgeGraphManagedResources`](#parameter-knowledgegraphmanagedresources) | array | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The managed resources array for the knowledge graph configuration. |
+| [`incidentManagementConfigurationType`](#parameter-incidentmanagementconfigurationtype) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The incident management configuration type for the SRE Agent. |
+| [`knowledgeGraphIdentityResourceId`](#parameter-knowledgegraphidentityresourceid) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used. |
+| [`knowledgeGraphManagedResources`](#parameter-knowledgegraphmanagedresources) | array | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The managed resources array for the knowledge graph configuration. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The SRE Agent requires a User-Assigned Managed Identity for knowledge graph and action execution. |
-| [`monthlyAgentUnitLimit`](#parameter-monthlyagentunitlimit) | int | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The monthly Agent Activity Unit (AAU) limit for the SRE Agent. |
+| [`monthlyAgentUnitLimit`](#parameter-monthlyagentunitlimit) | int | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The monthly Agent Activity Unit (AAU) limit for the SRE Agent. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`upgradeChannel`](#parameter-upgradechannel) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The upgrade channel for the SRE Agent. |
+| [`upgradeChannel`](#parameter-upgradechannel) | string | THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The upgrade channel for the SRE Agent. |
 
 ### Parameter: `name`
 
@@ -489,7 +489,7 @@ Name of the SRE Agent.
 
 ### Parameter: `accessLevel`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution.
 
 - Required: No
 - Type: string
@@ -504,7 +504,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The access level for the
 
 ### Parameter: `actionIdentityResourceId`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity.
 
 - Required: No
 - Type: string
@@ -512,7 +512,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an ex
 
 ### Parameter: `agentMode`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only.
 
 - Required: No
 - Type: string
@@ -528,7 +528,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The agent execution mode
 
 ### Parameter: `applicationInsightsAppId`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights App ID for agent telemetry. Required for log configuration.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights App ID for agent telemetry. Required for log configuration.
 
 - Required: No
 - Type: string
@@ -536,7 +536,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights
 
 ### Parameter: `applicationInsightsConnectionString`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights connection string for agent telemetry. Required for log configuration.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights connection string for agent telemetry. Required for log configuration.
 
 - Required: No
 - Type: string
@@ -661,7 +661,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `incidentManagementConfigurationType`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The incident management configuration type for the SRE Agent.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The incident management configuration type for the SRE Agent.
 
 - Required: No
 - Type: string
@@ -676,7 +676,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The incident management 
 
 ### Parameter: `knowledgeGraphIdentityResourceId`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used.
 
 - Required: No
 - Type: string
@@ -684,7 +684,7 @@ THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an ex
 
 ### Parameter: `knowledgeGraphManagedResources`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The managed resources array for the knowledge graph configuration.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The managed resources array for the knowledge graph configuration.
 
 - Required: No
 - Type: array
@@ -772,7 +772,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `monthlyAgentUnitLimit`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The monthly Agent Activity Unit (AAU) limit for the SRE Agent.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The monthly Agent Activity Unit (AAU) limit for the SRE Agent.
 
 - Required: No
 - Type: int
@@ -891,7 +891,7 @@ Tags of the resource.
 
 ### Parameter: `upgradeChannel`
 
-THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The upgrade channel for the SRE Agent.
+THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The upgrade channel for the SRE Agent.
 
 - Required: No
 - Type: string

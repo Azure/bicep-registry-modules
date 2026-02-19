@@ -36,14 +36,14 @@ param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
 // --- SRE Agent-specific parameters ---
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution.')
 @allowed([
   'High'
   'Low'
 ])
 param accessLevel string = 'High'
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only.')
 @allowed([
   'Review'
   'Autonomous'
@@ -51,36 +51,36 @@ param accessLevel string = 'High'
 ])
 param agentMode string = 'Review'
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The upgrade channel for the SRE Agent.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The upgrade channel for the SRE Agent.')
 @allowed([
   'Stable'
   'Preview'
 ])
 param upgradeChannel string = 'Stable'
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The monthly Agent Activity Unit (AAU) limit for the SRE Agent.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The monthly Agent Activity Unit (AAU) limit for the SRE Agent.')
 param monthlyAgentUnitLimit int = 10000
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The incident management configuration type for the SRE Agent.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The incident management configuration type for the SRE Agent.')
 @allowed([
   'AzMonitor'
   'None'
 ])
 param incidentManagementConfigurationType string = 'AzMonitor'
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used.')
 param knowledgeGraphIdentityResourceId string = ''
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity.')
 param actionIdentityResourceId string = ''
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The managed resources array for the knowledge graph configuration.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The managed resources array for the knowledge graph configuration.')
 param knowledgeGraphManagedResources array = []
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights App ID for agent telemetry. Required for log configuration.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights App ID for agent telemetry. Required for log configuration.')
 param applicationInsightsAppId string = ''
 
-@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights connection string for agent telemetry. Required for log configuration.')
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights connection string for agent telemetry. Required for log configuration.')
 param applicationInsightsConnectionString string = ''
 
 // ============== //

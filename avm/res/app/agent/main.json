@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "15867695944189841287"
+      "templateHash": "12277936584659294903"
     },
     "name": "SRE Agents",
     "description": "This module deploys an Azure SRE Agent (Microsoft.App/agents).",
@@ -313,7 +313,7 @@
         "Low"
       ],
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution."
       }
     },
     "agentMode": {
@@ -325,7 +325,7 @@
         "ReadOnly"
       ],
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only."
       }
     },
     "upgradeChannel": {
@@ -336,14 +336,14 @@
         "Preview"
       ],
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The upgrade channel for the SRE Agent."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The upgrade channel for the SRE Agent."
       }
     },
     "monthlyAgentUnitLimit": {
       "type": "int",
       "defaultValue": 10000,
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The monthly Agent Activity Unit (AAU) limit for the SRE Agent."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The monthly Agent Activity Unit (AAU) limit for the SRE Agent."
       }
     },
     "incidentManagementConfigurationType": {
@@ -354,42 +354,42 @@
         "None"
       ],
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The incident management configuration type for the SRE Agent."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The incident management configuration type for the SRE Agent."
       }
     },
     "knowledgeGraphIdentityResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used."
       }
     },
     "actionIdentityResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity."
       }
     },
     "knowledgeGraphManagedResources": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The managed resources array for the knowledge graph configuration."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The managed resources array for the knowledge graph configuration."
       }
     },
     "applicationInsightsAppId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights App ID for agent telemetry. Required for log configuration."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights App ID for agent telemetry. Required for log configuration."
       }
     },
     "applicationInsightsConnectionString": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE. The Application Insights connection string for agent telemetry. Required for log configuration."
+        "description": "Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights connection string for agent telemetry. Required for log configuration."
       }
     }
   },
