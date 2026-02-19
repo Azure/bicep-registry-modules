@@ -545,13 +545,13 @@ type projectType = {
     @description('Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box.')
     localAdministrator: ('Enabled' | 'Disabled')
 
-    @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource.')
+    @description('Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource. If "microsoftHostedNetworkEnableStatus" is set to "Disabled" at the Dev Center level, this property must be set to "Unmanaged".')
     virtualNetworkType: ('Managed' | 'Unmanaged')
 
     @description('Conditional. The region of the managed virtual network. Required if virtualNetworkType is "Managed".')
     managedVirtualNetworkRegion: string?
 
-    @description('Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".')
+    @description('Conditional. Name of a Network Connection (Attached Network) in parent Project of this Pool. Required if virtualNetworkType is "Unmanaged". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with "None" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to "managedNetwork" if virtualNetworkType is "Managed".')
     networkConnectionName: string?
 
     @description('Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant. Changing this setting will not affect existing dev boxes.')
