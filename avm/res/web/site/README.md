@@ -156,6 +156,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'scm'
       }
     ]
+    clientAffinityPartitioningEnabled: false
+    clientAffinityProxyEnabled: true
     configs: [
       {
         applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -249,12 +251,14 @@ module site 'br/public:avm/res/web/site:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    hostNamesDisabled: false
     hybridConnectionRelays: [
       {
         hybridConnectionResourceId: '<hybridConnectionResourceId>'
         sendKeyName: 'defaultSender'
       }
     ]
+    ipMode: 'IPv4'
     keyVaultAccessIdentityResourceId: '<keyVaultAccessIdentityResourceId>'
     location: '<location>'
     lock: {
@@ -266,6 +270,11 @@ module site 'br/public:avm/res/web/site:<version>' = {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
+    }
+    outboundVnetRouting: {
+      allTraffic: true
+      contentShareTraffic: true
+      imagePullTraffic: true
     }
     privateEndpoints: [
       {
@@ -294,6 +303,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
@@ -313,6 +323,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    scmSiteAlsoStopped: true
     siteConfig: {
       alwaysOn: true
       use32BitWorkerProcess: false
@@ -451,6 +462,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "clientAffinityPartitioningEnabled": {
+      "value": false
+    },
+    "clientAffinityProxyEnabled": {
+      "value": true
+    },
     "configs": {
       "value": [
         {
@@ -548,6 +565,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "hostNamesDisabled": {
+      "value": false
+    },
     "hybridConnectionRelays": {
       "value": [
         {
@@ -555,6 +575,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "sendKeyName": "defaultSender"
         }
       ]
+    },
+    "ipMode": {
+      "value": "IPv4"
     },
     "keyVaultAccessIdentityResourceId": {
       "value": "<keyVaultAccessIdentityResourceId>"
@@ -574,6 +597,13 @@ module site 'br/public:avm/res/web/site:<version>' = {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
+      }
+    },
+    "outboundVnetRouting": {
+      "value": {
+        "allTraffic": true,
+        "contentShareTraffic": true,
+        "imagePullTraffic": true
       }
     },
     "privateEndpoints": {
@@ -605,6 +635,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -625,6 +658,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "scmSiteAlsoStopped": {
+      "value": true
     },
     "siteConfig": {
       "value": {
@@ -758,6 +794,8 @@ param basicPublishingCredentialsPolicies = [
     name: 'scm'
   }
 ]
+param clientAffinityPartitioningEnabled = false
+param clientAffinityProxyEnabled = true
 param configs = [
   {
     applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -851,12 +889,14 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param hostNamesDisabled = false
 param hybridConnectionRelays = [
   {
     hybridConnectionResourceId: '<hybridConnectionResourceId>'
     sendKeyName: 'defaultSender'
   }
 ]
+param ipMode = 'IPv4'
 param keyVaultAccessIdentityResourceId = '<keyVaultAccessIdentityResourceId>'
 param location = '<location>'
 param lock = {
@@ -868,6 +908,11 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
+}
+param outboundVnetRouting = {
+  allTraffic: true
+  contentShareTraffic: true
+  imagePullTraffic: true
 }
 param privateEndpoints = [
   {
@@ -896,6 +941,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
     name: '9efc9c10-f482-4af0-9acb-03b5a16f947e'
@@ -915,6 +961,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param scmSiteAlsoStopped = true
 param siteConfig = {
   alwaysOn: true
   use32BitWorkerProcess: false
@@ -1162,11 +1209,33 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     httpsOnly: true
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     outboundVnetRouting: {
       allTraffic: true
       contentShareTraffic: true
       imagePullTraffic: true
     }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
     publicNetworkAccess: 'Disabled'
     scmSiteAlsoStopped: true
     siteConfig: {
@@ -1233,12 +1302,40 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "httpsOnly": {
       "value": true
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "outboundVnetRouting": {
       "value": {
         "allTraffic": true,
         "contentShareTraffic": true,
         "imagePullTraffic": true
       }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
     },
     "publicNetworkAccess": {
       "value": "Disabled"
@@ -1298,11 +1395,33 @@ param diagnosticSettings = [
   }
 ]
 param httpsOnly = true
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param outboundVnetRouting = {
   allTraffic: true
   contentShareTraffic: true
   imagePullTraffic: true
 }
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
 param publicNetworkAccess = 'Disabled'
 param scmSiteAlsoStopped = true
 param siteConfig = {
@@ -1844,6 +1963,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'scm'
       }
     ]
+    clientAffinityPartitioningEnabled: false
+    clientAffinityProxyEnabled: true
     configs: [
       {
         applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -1918,6 +2039,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         '168.63.129.16'
       ]
     }
+    hostNamesDisabled: false
     httpsOnly: true
     hybridConnectionRelays: [
       {
@@ -1925,6 +2047,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         sendKeyName: 'defaultSender'
       }
     ]
+    ipMode: 'IPv4'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1969,6 +2092,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
+    reserved: false
     roleAssignments: [
       {
         name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
@@ -2146,6 +2270,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "clientAffinityPartitioningEnabled": {
+      "value": false
+    },
+    "clientAffinityProxyEnabled": {
+      "value": true
+    },
     "configs": {
       "value": [
         {
@@ -2226,6 +2356,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
         ]
       }
     },
+    "hostNamesDisabled": {
+      "value": false
+    },
     "httpsOnly": {
       "value": true
     },
@@ -2236,6 +2369,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "sendKeyName": "defaultSender"
         }
       ]
+    },
+    "ipMode": {
+      "value": "IPv4"
     },
     "location": {
       "value": "<location>"
@@ -2292,6 +2428,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "publicNetworkAccess": {
       "value": "Disabled"
+    },
+    "reserved": {
+      "value": false
     },
     "roleAssignments": {
       "value": [
@@ -2468,6 +2607,8 @@ param basicPublishingCredentialsPolicies = [
     name: 'scm'
   }
 ]
+param clientAffinityPartitioningEnabled = false
+param clientAffinityProxyEnabled = true
 param configs = [
   {
     applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -2542,6 +2683,7 @@ param dnsConfiguration = {
     '168.63.129.16'
   ]
 }
+param hostNamesDisabled = false
 param httpsOnly = true
 param hybridConnectionRelays = [
   {
@@ -2549,6 +2691,7 @@ param hybridConnectionRelays = [
     sendKeyName: 'defaultSender'
   }
 ]
+param ipMode = 'IPv4'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -2593,6 +2736,7 @@ param privateEndpoints = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
+param reserved = false
 param roleAssignments = [
   {
     name: '0c2c82ef-069c-4085-b1bc-01614e0aa5ff'
@@ -2832,6 +2976,8 @@ module site 'br/public:avm/res/web/site:<version>' = {
         name: 'scm'
       }
     ]
+    clientAffinityPartitioningEnabled: false
+    clientAffinityProxyEnabled: true
     configs: [
       {
         applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -2857,6 +3003,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    hostNamesDisabled: false
     httpsOnly: true
     hybridConnectionRelays: [
       {
@@ -2864,6 +3011,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
         sendKeyName: 'defaultSender'
       }
     ]
+    ipMode: 'IPv4'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -2908,6 +3056,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
+    reserved: true
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -3074,6 +3223,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "clientAffinityPartitioningEnabled": {
+      "value": false
+    },
+    "clientAffinityProxyEnabled": {
+      "value": true
+    },
     "configs": {
       "value": [
         {
@@ -3103,6 +3258,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
         }
       ]
     },
+    "hostNamesDisabled": {
+      "value": false
+    },
     "httpsOnly": {
       "value": true
     },
@@ -3113,6 +3271,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "sendKeyName": "defaultSender"
         }
       ]
+    },
+    "ipMode": {
+      "value": "IPv4"
     },
     "location": {
       "value": "<location>"
@@ -3169,6 +3330,9 @@ module site 'br/public:avm/res/web/site:<version>' = {
     },
     "publicNetworkAccess": {
       "value": "Disabled"
+    },
+    "reserved": {
+      "value": true
     },
     "roleAssignments": {
       "value": [
@@ -3334,6 +3498,8 @@ param basicPublishingCredentialsPolicies = [
     name: 'scm'
   }
 ]
+param clientAffinityPartitioningEnabled = false
+param clientAffinityProxyEnabled = true
 param configs = [
   {
     applicationInsightResourceId: '<applicationInsightResourceId>'
@@ -3359,6 +3525,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param hostNamesDisabled = false
 param httpsOnly = true
 param hybridConnectionRelays = [
   {
@@ -3366,6 +3533,7 @@ param hybridConnectionRelays = [
     sendKeyName: 'defaultSender'
   }
 ]
+param ipMode = 'IPv4'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -3410,6 +3578,7 @@ param privateEndpoints = [
   }
 ]
 param publicNetworkAccess = 'Disabled'
+param reserved = true
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -9283,6 +9452,8 @@ Configuration for deployment slots for an app.
 | [`autoGeneratedDomainNameLabelScope`](#parameter-slotsautogenerateddomainnamelabelscope) | string | Specifies the scope of uniqueness for the default hostname during resource creation. |
 | [`basicPublishingCredentialsPolicies`](#parameter-slotsbasicpublishingcredentialspolicies) | array | The site publishing credential policy names which are associated with the site slot. |
 | [`clientAffinityEnabled`](#parameter-slotsclientaffinityenabled) | bool | If client affinity is enabled. |
+| [`clientAffinityPartitioningEnabled`](#parameter-slotsclientaffinitypartitioningenabled) | bool | To enable client affinity partitioning using CHIPS cookies. |
+| [`clientAffinityProxyEnabled`](#parameter-slotsclientaffinityproxyenabled) | bool | To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance. |
 | [`clientCertEnabled`](#parameter-slotsclientcertenabled) | bool | To enable client certificate authentication (TLS mutual authentication). |
 | [`clientCertExclusionPaths`](#parameter-slotsclientcertexclusionpaths) | string | Client certificate authentication comma-separated exclusion paths. |
 | [`clientCertMode`](#parameter-slotsclientcertmode) | string | This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted. |
@@ -9309,6 +9480,7 @@ Configuration for deployment slots for an app.
 | [`lock`](#parameter-slotslock) | object | The lock settings of the service. |
 | [`managedEnvironmentResourceId`](#parameter-slotsmanagedenvironmentresourceid) | string | Azure Resource Manager ID of the customers selected Managed Environment on which to host this app. |
 | [`managedIdentities`](#parameter-slotsmanagedidentities) | object | The managed identity definition for this resource. |
+| [`outboundVnetRouting`](#parameter-slotsoutboundvnetrouting) | object | The outbound VNET routing configuration for the slot. |
 | [`privateEndpoints`](#parameter-slotsprivateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-slotspublicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-slotsredundancymode) | string | Site redundancy mode. |
@@ -9322,9 +9494,6 @@ Configuration for deployment slots for an app.
 | [`storageAccountRequired`](#parameter-slotsstorageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-slotstags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-slotsvirtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
-| [`vnetContentShareEnabled`](#parameter-slotsvnetcontentshareenabled) | bool | To enable accessing content over virtual network. |
-| [`vnetImagePullEnabled`](#parameter-slotsvnetimagepullenabled) | bool | To enable pulling image over Virtual Network. |
-| [`vnetRouteAllEnabled`](#parameter-slotsvnetrouteallenabled) | bool | Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied. |
 | [`workloadProfileName`](#parameter-slotsworkloadprofilename) | string | Workload profile name for function app to execute on. |
 
 ### Parameter: `slots.name`
@@ -9408,6 +9577,20 @@ Location for all Resources.
 ### Parameter: `slots.clientAffinityEnabled`
 
 If client affinity is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `slots.clientAffinityPartitioningEnabled`
+
+To enable client affinity partitioning using CHIPS cookies.
+
+- Required: No
+- Type: bool
+
+### Parameter: `slots.clientAffinityProxyEnabled`
+
+To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance.
 
 - Required: No
 - Type: bool
@@ -14206,6 +14389,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
+### Parameter: `slots.outboundVnetRouting`
+
+The outbound VNET routing configuration for the slot.
+
+- Required: No
+- Type: object
+
 ### Parameter: `slots.privateEndpoints`
 
 Configuration details for private endpoints.
@@ -14806,27 +14996,6 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 - Required: No
 - Type: string
 
-### Parameter: `slots.vnetContentShareEnabled`
-
-To enable accessing content over virtual network.
-
-- Required: No
-- Type: bool
-
-### Parameter: `slots.vnetImagePullEnabled`
-
-To enable pulling image over Virtual Network.
-
-- Required: No
-- Type: bool
-
-### Parameter: `slots.vnetRouteAllEnabled`
-
-Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `slots.workloadProfileName`
 
 Workload profile name for function app to execute on.
@@ -14892,7 +15061,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes

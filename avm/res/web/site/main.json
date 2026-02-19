@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "2634339679153560285"
+      "version": "0.40.2.10011",
+      "templateHash": "2872237559008674864"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5126,7 +5126,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -5143,7 +5143,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -5184,7 +5184,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/sites', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -5243,8 +5243,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16124139069157539363"
+              "version": "0.40.2.10011",
+              "templateHash": "969813378635033216"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5439,8 +5439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "2567074492740486128"
+              "version": "0.40.2.10011",
+              "templateHash": "129553615477279948"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -5702,8 +5702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16299445562969215745"
+              "version": "0.40.2.10011",
+              "templateHash": "4123338630425523223"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -10307,7 +10307,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -10324,7 +10324,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -10365,7 +10365,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -10416,8 +10416,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "7311831232712089460"
+                      "version": "0.40.2.10011",
+                      "templateHash": "13092463903978918984"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -10540,8 +10540,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "14360425333519402869"
+                      "version": "0.40.2.10011",
+                      "templateHash": "12095674050134269466"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -10663,8 +10663,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "17470444826106751301"
+                      "version": "0.40.2.10011",
+                      "templateHash": "15603385201464692720"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -10852,8 +10852,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "3249838634190928450"
+                      "version": "0.40.2.10011",
+                      "templateHash": "7485006155767796037"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -11709,8 +11709,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "5636834100438238760"
+              "version": "0.40.2.10011",
+              "templateHash": "5646529427697319373"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -11824,8 +11824,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1692102649645640087"
+              "version": "0.40.2.10011",
+              "templateHash": "6068106773876377899"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
