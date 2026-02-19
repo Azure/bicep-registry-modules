@@ -23,7 +23,7 @@ resource namespace 'Microsoft.Relay/namespaces@2024-01-01' existing = {
   }
 }
 
-resource hybridConnectionRelay 'Microsoft.Web/sites/hybridConnectionNamespaces/relays@2024-04-01' = {
+resource hybridConnectionRelay 'Microsoft.Web/sites/hybridConnectionNamespaces/relays@2025-03-01' = {
   name: '${appName}/${namespace.name}/${namespace::hybridConnection.name}'
   properties: {
     serviceBusNamespace: namespace.name
