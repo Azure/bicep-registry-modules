@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "11336004102861863001"
+      "version": "0.40.2.10011",
+      "templateHash": "16287203735681794152"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -4290,7 +4290,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/siteConfig"
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/siteConfig"
         },
         "description": "Optional. The site config object."
       },
@@ -4300,10 +4300,13 @@
     },
     "functionAppConfig": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/functionAppConfig"
+        },
         "description": "Optional. The Function App config object."
-      }
+      },
+      "nullable": true
     },
     "configs": {
       "type": "array",
@@ -4346,7 +4349,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites/slots@2024-04-01#properties/tags"
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -4400,10 +4403,13 @@
     },
     "cloningInfo": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/cloningInfo"
+        },
         "description": "Optional. If specified during app creation, the app is cloned from a source app."
-      }
+      },
+      "nullable": true
     },
     "containerSize": {
       "type": "int",
@@ -4437,7 +4443,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/hostNameSslStates"
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/hostNameSslStates"
         },
         "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
       },
@@ -4489,7 +4495,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/outboundVnetRouting"
         },
         "description": "Optional. The outbound VNET routing configuration for the site."
       },
@@ -4509,7 +4515,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/dnsConfiguration"
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/dnsConfiguration"
         },
         "description": "Optional. Property to configure various DNS related settings for a site."
       },
@@ -4533,6 +4539,73 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Whether to enable SSH access."
+      }
+    },
+    "daprConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/daprConfig"
+        },
+        "description": "Optional. Dapr configuration of the app."
+      },
+      "nullable": true
+    },
+    "ipMode": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "IPv4",
+        "IPv4AndIPv6",
+        "IPv6"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the IP mode of the app."
+      }
+    },
+    "resourceConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/resourceConfig"
+        },
+        "description": "Optional. Function app resource requirements."
+      },
+      "nullable": true
+    },
+    "workloadProfileName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Workload profile name for function app to execute on."
+      }
+    },
+    "hostNamesDisabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process."
+      }
+    },
+    "reserved": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. True if reserved (Linux); otherwise, false (Windows)."
+      }
+    },
+    "scmSiteAlsoStopped": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Stop SCM (KUDU) site when the app is stopped."
+      }
+    },
+    "e2eEncryptionEnabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. End to End Encryption Setting."
       }
     },
     "enableTelemetry": {
@@ -4631,7 +4704,15 @@
         "dnsConfiguration": "[parameters('dnsConfiguration')]",
         "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
         "outboundVnetRouting": "[parameters('outboundVnetRouting')]",
-        "sshEnabled": "[parameters('sshEnabled')]"
+        "sshEnabled": "[parameters('sshEnabled')]",
+        "daprConfig": "[parameters('daprConfig')]",
+        "ipMode": "[parameters('ipMode')]",
+        "resourceConfig": "[parameters('resourceConfig')]",
+        "workloadProfileName": "[parameters('workloadProfileName')]",
+        "hostNamesDisabled": "[parameters('hostNamesDisabled')]",
+        "reserved": "[parameters('reserved')]",
+        "scmSiteAlsoStopped": "[parameters('scmSiteAlsoStopped')]",
+        "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]"
       },
       "dependsOn": [
         "app"
@@ -4641,7 +4722,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -4658,7 +4739,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -4699,7 +4780,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -4750,8 +4831,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7311831232712089460"
+              "version": "0.40.2.10011",
+              "templateHash": "13092463903978918984"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -4874,8 +4955,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "14360425333519402869"
+              "version": "0.40.2.10011",
+              "templateHash": "12095674050134269466"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -4997,8 +5078,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17470444826106751301"
+              "version": "0.40.2.10011",
+              "templateHash": "15603385201464692720"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5186,8 +5267,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "3249838634190928450"
+              "version": "0.40.2.10011",
+              "templateHash": "7485006155767796037"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."

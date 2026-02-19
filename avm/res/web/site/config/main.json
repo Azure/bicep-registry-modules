@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "16561346787989985828"
+      "version": "0.40.2.10011",
+      "templateHash": "969813378635033216"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -121,7 +121,7 @@
       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2025-06-01",
       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -134,9 +134,9 @@
     },
     "config": {
       "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), shallowMerge(createArray(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), if(not(contains(parameters('properties'), 'ApplicationInsightsAgent_EXTENSION_VERSION')), createObject('ApplicationInsightsAgent_EXTENSION_VERSION', if(contains(createArray('functionapp,linux', 'functionapp,workflowapp,linux', 'functionapp,linux,container', 'functionapp,linux,container,azurecontainerapps', 'app,linux', 'linux,api', 'app,linux,container'), reference('app', '2025-03-01', 'full').kind), '~3', '~2')), createObject()))), createObject()))]",
+      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-06-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), shallowMerge(createArray(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), if(not(contains(parameters('properties'), 'ApplicationInsightsAgent_EXTENSION_VERSION')), createObject('ApplicationInsightsAgent_EXTENSION_VERSION', if(contains(createArray('functionapp,linux', 'functionapp,workflowapp,linux', 'functionapp,linux,container', 'functionapp,linux,container,azurecontainerapps', 'app,linux', 'linux,api', 'app,linux,container'), reference('app', '2025-03-01', 'full').kind), '~3', '~2')), createObject()))), createObject()))]",
       "dependsOn": [
         "app",
         "applicationInsights",
