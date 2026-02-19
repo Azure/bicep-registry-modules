@@ -3930,15 +3930,6 @@ Specifies the scope of uniqueness for the default hostname during resource creat
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'NoReuse'
-    'ResourceGroupReuse'
-    'SubscriptionReuse'
-    'TenantReuse'
-  ]
-  ```
 
 ### Parameter: `basicPublishingCredentialsPolicies`
 
@@ -4034,14 +4025,6 @@ This composes with ClientCertEnabled setting.<li>ClientCertEnabled=false means C
 - Required: No
 - Type: string
 - Default: `'Optional'`
-- Allowed:
-  ```Bicep
-  [
-    'Optional'
-    'OptionalInteractiveUser'
-    'Required'
-  ]
-  ```
 
 ### Parameter: `cloningInfo`
 
@@ -8738,14 +8721,6 @@ Specifies the IP mode of the app.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IPv4'
-    'IPv4AndIPv6'
-    'IPv6'
-  ]
-  ```
 
 ### Parameter: `keyVaultAccessIdentityResourceId`
 
@@ -9262,13 +9237,6 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `redundancyMode`
 
@@ -9277,16 +9245,6 @@ Site redundancy mode.
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'ActiveActive'
-    'Failover'
-    'GeoRedundant'
-    'Manual'
-    'None'
-  ]
-  ```
 
 ### Parameter: `reserved`
 
@@ -9516,15 +9474,6 @@ Specifies the scope of uniqueness for the default hostname during resource creat
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'NoReuse'
-    'ResourceGroupReuse'
-    'SubscriptionReuse'
-    'TenantReuse'
-  ]
-  ```
 
 ### Parameter: `slots.basicPublishingCredentialsPolicies`
 
@@ -14287,14 +14236,6 @@ Specifies the IP mode of the app.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IPv4'
-    'IPv4AndIPv6'
-    'IPv6'
-  ]
-  ```
 
 ### Parameter: `slots.keyVaultAccessIdentityResourceId`
 
