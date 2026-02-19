@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "2081770411981076430"
+      "templateHash": "2883104302707402020"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -1150,9 +1150,7 @@
         },
         "description": "Optional. Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units."
       },
-      "defaultValue": 1,
-      "minValue": 0,
-      "maxValue": 20
+      "defaultValue": 1
     },
     "authorizationRules": {
       "type": "array",
