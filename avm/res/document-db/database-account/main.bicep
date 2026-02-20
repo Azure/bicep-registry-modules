@@ -319,7 +319,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: 'https://dep-avmxal-kv-dddaenc-01.vault.azure.net/keys/keyEncryptionKey'
+    keyVaultKeyUri: 'https://dep-avmxal-kv-dddaenc-02.vault.azure.net/keys/keyEncryptionKey'
     // keyVaultKeyUri: ''
     // keyVaultKeyUri: !empty(customerManagedKey)
     //   ? !isHSMManagedCMK
