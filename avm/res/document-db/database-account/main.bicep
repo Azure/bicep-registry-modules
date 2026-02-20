@@ -573,6 +573,7 @@ module databaseAccount_tables 'table/main.bicep' = [
       tags: table.?tags ?? tags
       maxThroughput: table.?maxThroughput
       throughput: table.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
