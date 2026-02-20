@@ -10,12 +10,12 @@ param keyVaultName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -33,7 +33,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -54,7 +54,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -65,10 +65,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     isHnsEnabled: true
   }
 
-  resource blobService 'blobServices@2022-09-01' = {
+  resource blobService 'blobServices@2025-01-01' = {
     name: 'default'
 
-    resource container 'containers@2022-09-01' = {
+    resource container 'containers@2025-01-01' = {
       name: 'synapsews'
     }
   }

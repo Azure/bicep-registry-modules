@@ -33,9 +33,12 @@ param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 @description('Optional. The Entra ID administrator for the synapse workspace.')
 param administrator administratorType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
+
+@description('Optional. Assign permissions for the customer managed key to the workspace\'s system-assigned identity. Only supports key stored in Azure Key Vaults.')
+param customerManagedKeyGrantSysAssignedAccess bool = true
 
 @description('Optional. Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace.')
 param encryptionActivateWorkspace bool = false
@@ -91,7 +94,7 @@ param accountUrl string = 'https://${last(split(defaultDataLakeStorageAccountRes
 @description('Optional. Git integration settings.')
 param workspaceRepositoryConfiguration object?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -99,7 +102,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -107,7 +110,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -115,22 +118,23 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var enableReferencedModulesTelemetry = false
 
-var cmkUserAssignedIdentityAsArray = !empty(customerManagedKey.?userAssignedIdentityResourceId ?? [])
-  ? [customerManagedKey.?userAssignedIdentityResourceId]
-  : []
-
-var userAssignedIdentitiesUnion = !empty(managedIdentities)
-  ? union(managedIdentities.?userAssignedResourceIds ?? [], cmkUserAssignedIdentityAsArray)
-  : cmkUserAssignedIdentityAsArray
-
 var formattedUserAssignedIdentities = reduce(
-  map((userAssignedIdentitiesUnion ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
+// The resource must always be deployed with at least a system-assigned identity
 var identity = {
-  type: !empty(userAssignedIdentitiesUnion) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
+  type: !empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned'
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 }
 
@@ -182,15 +186,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey!.keyVaultResourceId), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.keyVaultResourceId, '/')[2],
+    split(customerManagedKey!.keyVaultResourceId, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey!.keyName
   }
 }
 
@@ -231,7 +236,9 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
                   useSystemAssignedIdentity: empty(customerManagedKey.?userAssignedIdentityResourceId)
                 }
             key: {
-              keyVaultUrl: cMKKeyVault::cMKKey!.properties.keyUri
+              keyVaultUrl: !isHSMManagedCMK
+                ? cMKKeyVault::cMKKey!.properties.keyUri
+                : 'https://${last(split((customerManagedKey!.?keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
               name: customerManagedKey!.keyName
             }
           }
@@ -272,29 +279,24 @@ module synapse_integrationRuntimes 'integration-runtime/main.bicep' = [
 ]
 
 // Workspace encryption with customer managed keys
-// - Assign Synapse Workspace MSI access to encryption key
-module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivateWorkspace) {
+// - Assign Synapse Workspace's (mandatory) system-assigned identity access to encryption key
+module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (customerManagedKeyGrantSysAssignedAccess && !empty(customerManagedKey) && !isHSMManagedCMK) {
   name: '${workspace.name}-cmk-rbac'
   params: {
     workspaceIndentityPrincipalId: workspace.identity.principalId
-    keyvaultName: !empty(customerManagedKey!.keyVaultResourceId) ? cMKKeyVault.name : ''
-    usesRbacAuthorization: !empty(customerManagedKey!.keyVaultResourceId)
-      ? cMKKeyVault!.properties.enableRbacAuthorization
-      : true
+    usesRbacAuthorization: cMKKeyVault!.properties.enableRbacAuthorization
+    keyName: customerManagedKey!.keyName
+    keyVaultName: last(split(customerManagedKey!.keyVaultResourceId, '/'))
   }
-  scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
-  )
 }
 
 // - Workspace encryption - Activate Workspace
-module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
+module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace && !empty(customerManagedKey)) {
   name: take('${workspace.name}-cmk-activation', 64)
   params: {
+    keyVaultResourceId: customerManagedKey!.keyVaultResourceId
     name: customerManagedKey!.keyName
     isActiveCMK: true
-    keyVaultResourceId: cMKKeyVault.id
     workspaceName: workspace.name
   }
   dependsOn: [
@@ -410,7 +412,7 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
 ]
 
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -579,7 +581,7 @@ type firewallRuleType = {
 }
 
 import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType } from 'big-data-pool/main.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @export()
 @description('The synapse workspace Big Data Pool definition.')
 type bigDataPoolType = {
