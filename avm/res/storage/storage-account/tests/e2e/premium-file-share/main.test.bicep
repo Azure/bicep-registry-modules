@@ -53,6 +53,11 @@ module testDeployment '../../../main.bicep' = [
         shares: [
           {
             name: 'fileshare01'
+            provisionedBandwidthMibps: 200
+            provisionedIops: 5000
+          }
+          {
+            name: 'fileshare02'
           }
         ]
       }
