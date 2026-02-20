@@ -326,7 +326,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
           ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
           : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
       : null
-    cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
     backupPolicy: {
@@ -379,9 +378,9 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     //     ]
     locations: [
       {
+        locationName: location
         failoverPriority: 0
         isZoneRedundant: zoneRedundant
-        locationName: location
       }
     ]
     // ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
