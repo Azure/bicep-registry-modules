@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "1885940166874672887"
+      "templateHash": "12483225145327721269"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5208,7 +5208,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "16561346787989985828"
+              "templateHash": "15929337263430312411"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5248,9 +5248,9 @@
             },
             "storageAccountUseIdentityAuthentication": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
-                "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+                "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. Defaults to true for secure deployments. When set to false, storage account keys are exposed in deployment templates which triggers Azure Defender for Cloud security alerts."
               }
             },
             "storageAccountResourceId": {
@@ -5637,7 +5637,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "11336004102861863001"
+              "templateHash": "12105471030657414692"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -10629,7 +10629,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "17470444826106751301"
+                      "templateHash": "13423975752420962629"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -10688,9 +10688,9 @@
                     },
                     "storageAccountUseIdentityAuthentication": {
                       "type": "bool",
-                      "defaultValue": false,
+                      "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'."
+                        "description": "Optional. If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. Defaults to true for secure deployments. When set to false, storage account keys are exposed in deployment templates which triggers Azure Defender for Cloud security alerts."
                       }
                     },
                     "storageAccountResourceId": {
