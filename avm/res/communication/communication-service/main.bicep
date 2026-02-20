@@ -14,7 +14,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.Communication/communicationServices@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/communicationServices@2025-09-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -86,7 +86,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.communication-communicationservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -104,7 +104,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource communicationService 'Microsoft.Communication/communicationServices@2023-04-01' = {
+resource communicationService 'Microsoft.Communication/communicationServices@2025-09-01' = {
   name: name
   location: location
   identity: identity
