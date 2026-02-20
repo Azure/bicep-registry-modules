@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     bastionName: 'dep-${namePrefix}-bas-${serviceShort}'
     bastionPublicIpName: 'dep-${namePrefix}-pip-${serviceShort}'
+    deploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -73,7 +74,7 @@ module testDeployment '../../../main.bicep' = [
       }
       installScripts: [
         {
-          name: 'FontInstaller'
+          name: 'CustomInstaller'
           source: {
             type: 'RemoteAzureBlob'
             sourceUri: 'https://${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}/scripts/scripts.zip'
@@ -82,10 +83,17 @@ module testDeployment '../../../main.bicep' = [
       ]
       registryAdapters: [
         {
-          registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config'
+          registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
           type: 'String'
           keyVaultSecretReference: {
             secretUri: '${nestedDependencies.outputs.keyVaultUri}secrets/registry-string-value'
+          }
+        }
+        {
+          registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+          type: 'DWORD'
+          keyVaultSecretReference: {
+            secretUri: '${nestedDependencies.outputs.keyVaultUri}secrets/registry-dword-value'
           }
         }
       ]
@@ -94,6 +102,15 @@ module testDeployment '../../../main.bicep' = [
           name: 'g-drive'
           type: 'LocalStorage'
           destinationPath: 'G:\\'
+        }
+        {
+          name: 'h-drive'
+          type: 'AzureFiles'
+          source: '\\\\${nestedDependencies.outputs.storageAccountName}.file.${environment().suffixes.storage}\\${nestedDependencies.outputs.fileShareName}'
+          destinationPath: 'H:\\'
+          credentialsKeyVaultReference: {
+            secretUri: '${nestedDependencies.outputs.keyVaultUri}/secrets/storage-account-key'
+          }
         }
       ]
       tags: {
@@ -104,3 +121,31 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// Web App running .NET 10 on Windows, hosted on the Managed Instance plan
+// NOTE: If the web app is not deployed and running, you will not be able to RDP onto the instances
+module webApp 'br/public:avm/res/web/site:0.21.0' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-webapp-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}app001'
+    location: enforcedLocation
+    kind: 'app'
+    serverFarmResourceId: testDeployment[1].outputs.resourceId
+    siteConfig: {
+      alwaysOn: true
+      netFrameworkVersion: 'v10.0'
+      metadata: [
+        {
+          name: 'CURRENT_STACK'
+          value: 'dotnet'
+        }
+      ]
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
