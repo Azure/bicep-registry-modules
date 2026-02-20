@@ -133,10 +133,24 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     ioTSecuritySolutionProperties: {}
     location: '<location>'
     securityContactProperties: {
-      alertNotifications: 'Off'
-      alertsToAdmins: 'Off'
-      email: 'foo@contoso.com'
-      phone: '+12345678'
+      emails: 'foo@contoso.com'
+      isEnabled: true
+      notificationsByRole: {
+        roles: [
+          'owner'
+        ]
+        state: 'On'
+      }
+      notificationsSources: [
+        {
+          sourceType: 'Alert'
+          minimalSeverity: 'High'
+        }
+        {
+          sourceType: 'AttackPath'
+          minimalRiskLevel: 'High'
+        }
+      ]
     }
   }
 }
@@ -173,10 +187,24 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
     },
     "securityContactProperties": {
       "value": {
-        "alertNotifications": "Off",
-        "alertsToAdmins": "Off",
-        "email": "foo@contoso.com",
-        "phone": "+12345678"
+        "emails": "foo@contoso.com",
+        "isEnabled": true,
+        "notificationsByRole": {
+          "roles": [
+            "owner"
+          ],
+          "state": "On"
+        },
+        "notificationsSources": [
+          {
+            "sourceType": "Alert",
+            "minimalSeverity": "High"
+          },
+          {
+            "sourceType": "AttackPath",
+            "minimalRiskLevel": "High"
+          }
+        ]
       }
     }
   }
@@ -201,10 +229,24 @@ param deviceSecurityGroupProperties = {}
 param ioTSecuritySolutionProperties = {}
 param location = '<location>'
 param securityContactProperties = {
-  alertNotifications: 'Off'
-  alertsToAdmins: 'Off'
-  email: 'foo@contoso.com'
-  phone: '+12345678'
+emails: 'foo@contoso.com'
+isEnabled: true
+notificationsByRole: {
+  roles: [
+    'owner'
+  ]
+  state: 'On'
+}
+notificationsSources: [
+  {
+    sourceType: 'Alert'
+    minimalSeverity: 'High'
+  }
+  {
+    sourceType: 'AttackPath'
+    minimalRiskLevel: 'High'
+  }
+]
 }
 ```
 
