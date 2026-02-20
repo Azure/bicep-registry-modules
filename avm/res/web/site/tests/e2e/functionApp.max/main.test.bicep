@@ -345,6 +345,17 @@ module testDeployment '../../../main.bicep' = [
           sendKeyName: 'defaultSender'
         }
       ]
+      scmSiteAlsoStopped: true
+      publicNetworkAccess: 'Disabled'
+      outboundVnetRouting: {
+        allTraffic: true
+        contentShareTraffic: true
+        imagePullTraffic: true
+      }
+      clientAffinityProxyEnabled: true
+      clientAffinityPartitioningEnabled: false
+      hostNamesDisabled: false
+      ipMode: 'IPv4'
     }
   }
 ]

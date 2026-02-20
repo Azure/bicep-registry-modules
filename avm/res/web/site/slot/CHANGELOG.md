@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/slot/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Upgraded all `Microsoft.Web/sites/slots/*` resource API versions to `2025-03-01`
+- Added new parameters: `daprConfig`, `ipMode`, `resourceConfig`, `workloadProfileName`, `hostNamesDisabled`, `reserved`, `scmSiteAlsoStopped`, `e2eEncryptionEnabled`
+- Added `clientAffinityProxyEnabled` and `clientAffinityPartitioningEnabled` parameters
+- Added `outboundVnetRouting` parameter for consolidated VNet routing control
+- Upgraded `functionAppConfig`, `cloningInfo`, and `siteConfig` to resource-derived types
+- Unified all `avm-common-types` imports to `0.6.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes
