@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16098269805793528146"
+      "version": "0.39.26.7824",
+      "templateHash": "11842660099387271962"
     },
     "name": "Management Groups",
     "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group"
@@ -70,7 +70,7 @@
     },
     {
       "type": "Microsoft.Management/managementGroups",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2023-04-01",
       "scope": "/",
       "name": "[parameters('name')]",
       "properties": {
