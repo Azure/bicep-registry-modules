@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "10411947595066907075"
+      "version": "0.39.26.7824",
+      "templateHash": "976488551026733082"
     },
     "name": "Static Web App Site Config",
     "description": "This module deploys a Static Web App Site Config."
@@ -37,7 +37,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/staticSites/config",
-      "apiVersion": "2022-03-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('{0}/{1}', parameters('staticSiteName'), parameters('kind'))]",
       "properties": "[parameters('properties')]"
     }
