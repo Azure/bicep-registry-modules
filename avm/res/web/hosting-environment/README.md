@@ -187,10 +187,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
-    userWhitelistedIpRanges: [
-      '10.0.0.0/24'
-      '192.168.1.0/24'
-    ]
     zoneRedundant: true
   }
 }
@@ -314,12 +310,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "upgradePreference": {
       "value": "Late"
     },
-    "userWhitelistedIpRanges": {
-      "value": [
-        "10.0.0.0/24",
-        "192.168.1.0/24"
-      ]
-    },
     "zoneRedundant": {
       "value": true
     }
@@ -407,10 +397,6 @@ param tags = {
   resourceType: 'App Service Environment'
 }
 param upgradePreference = 'Late'
-param userWhitelistedIpRanges = [
-  '10.0.0.0/24'
-  '192.168.1.0/24'
-]
 param zoneRedundant = true
 ```
 
@@ -668,7 +654,6 @@ param zoneRedundant = true
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradePreference`](#parameter-upgradepreference) | string | Specify preference for when and how the planned maintenance is applied. |
-| [`userWhitelistedIpRanges`](#parameter-userwhitelistedipranges) | array | User added IP ranges to whitelist on ASE db. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`. |
 
 ### Parameter: `name`
@@ -1104,13 +1089,6 @@ Specify preference for when and how the planned maintenance is applied.
 - Required: No
 - Type: string
 - Default: `'None'`
-
-### Parameter: `userWhitelistedIpRanges`
-
-User added IP ranges to whitelist on ASE db.
-
-- Required: No
-- Type: array
 
 ### Parameter: `zoneRedundant`
 

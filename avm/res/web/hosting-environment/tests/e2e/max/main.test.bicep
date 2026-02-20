@@ -120,10 +120,6 @@ module testDeployment '../../../main.bicep' = [
       upgradePreference: 'Late'
       ipsslAddressCount: 0
       multiSize: 'Standard_D2_v2'
-      userWhitelistedIpRanges: [
-        '10.0.0.0/24'
-        '192.168.1.0/24'
-      ]
       diagnosticSettings: [
         {
           name: 'customSetting'

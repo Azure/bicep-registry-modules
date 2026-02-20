@@ -15,7 +15,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated `tags` and `clusterSettings` RDT references to `2025-03-01`
 - Added new parameter `ipsslAddressCount` for IP SSL address reservation
 - Added new parameter `multiSize` for front-end VM size configuration
-- Added new parameter `userWhitelistedIpRanges` for IP range whitelisting on ASE
 - Added `location` output per AVM best practices
 
 ### Breaking Changes

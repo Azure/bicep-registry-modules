@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14849872074166334738"
+      "templateHash": "6495478728319351396"
     },
     "name": "App Service Environments",
     "description": "This module deploys an App Service Environment."
@@ -422,16 +422,6 @@
         "description": "Optional. Front-end VM size, e.g. \"Medium\", \"Large\"."
       }
     },
-    "userWhitelistedIpRanges": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. User added IP ranges to whitelist on ASE db."
-      }
-    },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
       "nullable": true,
@@ -507,7 +497,6 @@
         "multiSize": "[parameters('multiSize')]",
         "upgradePreference": "[parameters('upgradePreference')]",
         "networkingConfiguration": "[parameters('networkConfiguration')]",
-        "userWhitelistedIpRanges": "[parameters('userWhitelistedIpRanges')]",
         "virtualNetwork": {
           "id": "[parameters('subnetResourceId')]",
           "subnet": "[last(split(parameters('subnetResourceId'), '/'))]"

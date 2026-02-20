@@ -74,9 +74,6 @@ param ipsslAddressCount int?
 @description('Optional. Front-end VM size, e.g. "Medium", "Large".')
 param multiSize string?
 
-@description('Optional. User added IP ranges to whitelist on ASE db.')
-param userWhitelistedIpRanges string[]?
-
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
@@ -164,7 +161,6 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2025-03-01' = 
     multiSize: multiSize
     upgradePreference: upgradePreference
     networkingConfiguration: networkConfiguration
-    userWhitelistedIpRanges: userWhitelistedIpRanges
     virtualNetwork: {
       id: subnetResourceId
       subnet: last(split(subnetResourceId, '/'))
