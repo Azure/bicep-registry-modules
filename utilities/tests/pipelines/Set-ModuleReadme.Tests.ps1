@@ -193,7 +193,7 @@ Describe 'Test ReadMe generation' {
         Mock Invoke-WebRequest { return @{ Content = (Get-Content -Path 'C:\Users\alsehr\OneDrive - Microsoft\Docs\Code\temp\SetAVMModuleCache\apiSpecsBackup.json' -Raw) } } -ParameterFilter { $Uri -eq 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json' }
 
         $cStartTime = Get-Date
-        Set-avmModule -ModuleFolderPath 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\network' -SkipBuild -Recurse -SkipVersionCheck -Async
+        Set-avmModule -ModuleFolderPath 'C:\dev\ip\bicep-registry-modules\Upstream-Azure\avm\res\compute' -SkipBuild -Recurse -SkipVersionCheck #-Async
         $cElapsedTime = (Get-Date) - $cStartTime
         $cTotalTime = '{0:HH:mm:ss}' -f ([datetime]$cElapsedTime.Ticks)
         Write-Verbose ("Execution took [$cTotalTime]") -Verbose
