@@ -373,13 +373,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
             isZoneRedundant: zoneRedundant
           }
         ]
-    // locations: [
-    //   {
-    //     locationName: location
-    //     failoverPriority: 0
-    //     isZoneRedundant: zoneRedundant
-    //   }
-    // ]
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
       ? {
           // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
