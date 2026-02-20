@@ -2,7 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/application-gateway/CHANGELOG.md).
 
-## 0.8.0
+## 0.9.0
+
+### Changes
+
+- Updated API version to `2025-05-01`
+- Added 'entraJWTValidationConfig' resource-devrived paramater to populate new property in API version '2025-03-01'.
+- Changed the maxvalue for 'capacity' parameter from 10 to 125.
+
+### Breaking Changes
+
+- None
 
 ### Changes
 

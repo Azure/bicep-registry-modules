@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "10886403308191724682"
+      "version": "0.40.2.10011",
+      "templateHash": "11225258184210153619"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -611,7 +611,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/authenticationCertificates"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/authenticationCertificates"
         },
         "description": "Optional. Authentication certificates of the application gateway resource."
       },
@@ -635,7 +635,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/backendAddressPools"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendAddressPools"
         },
         "description": "Optional. Backend address pool of the application gateway resource."
       },
@@ -645,7 +645,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/backendHttpSettingsCollection"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendHttpSettingsCollection"
         },
         "description": "Optional. Backend http settings of the application gateway resource."
       },
@@ -655,7 +655,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/customErrorConfigurations"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/customErrorConfigurations"
         },
         "description": "Optional. Custom error configurations of the application gateway resource."
       },
@@ -686,7 +686,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/frontendIPConfigurations"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/frontendIPConfigurations"
         },
         "description": "Optional. Frontend IP addresses of the application gateway resource."
       },
@@ -696,7 +696,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/frontendPorts"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/frontendPorts"
         },
         "description": "Optional. Frontend ports of the application gateway resource."
       },
@@ -706,7 +706,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/gatewayIPConfigurations"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/gatewayIPConfigurations"
         },
         "description": "Optional. Subnets of the application gateway resource."
       },
@@ -726,11 +726,21 @@
         "description": "Optional. Enable response buffering."
       }
     },
+    "entraJWTValidationConfigs": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/entraJWTValidationConfigs"
+        },
+        "description": "Optional. Entra JWT validation configurations."
+      },
+      "defaultValue": []
+    },
     "httpListeners": {
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/httpListeners"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/httpListeners"
         },
         "description": "Optional. Http listeners of the application gateway resource."
       },
@@ -740,7 +750,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/loadDistributionPolicies"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/loadDistributionPolicies"
         },
         "description": "Optional. Load distribution policies of the application gateway resource."
       },
@@ -760,7 +770,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/privateLinkConfigurations"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/privateLinkConfigurations"
         },
         "description": "Optional. PrivateLink configurations on application gateway."
       },
@@ -770,7 +780,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/probes"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/probes"
         },
         "description": "Optional. Probes of the application gateway resource."
       },
@@ -780,7 +790,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/redirectConfigurations"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/redirectConfigurations"
         },
         "description": "Optional. Redirect configurations of the application gateway resource."
       },
@@ -790,7 +800,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/requestRoutingRules"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/requestRoutingRules"
         },
         "description": "Optional. Request routing rules of the application gateway resource."
       },
@@ -800,7 +810,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/rewriteRuleSets"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/rewriteRuleSets"
         },
         "description": "Optional. Rewrite rules for the application gateway resource."
       },
@@ -822,7 +832,7 @@
       "type": "int",
       "defaultValue": 2,
       "minValue": 0,
-      "maxValue": 10,
+      "maxValue": 125,
       "metadata": {
         "description": "Optional. The number of Application instances to be configured."
       }
@@ -831,7 +841,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/sslCertificates"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslCertificates"
         },
         "description": "Optional. SSL certificates of the application gateway resource."
       },
@@ -841,7 +851,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/sslPolicy/properties/cipherSuites"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslPolicy/properties/cipherSuites"
         },
         "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
       },
@@ -894,7 +904,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/sslProfiles"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslProfiles"
         },
         "description": "Optional. SSL profiles of the application gateway resource."
       },
@@ -904,7 +914,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/trustedClientCertificates"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/trustedClientCertificates"
         },
         "description": "Optional. Trusted client certificates of the application gateway resource."
       },
@@ -914,7 +924,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/trustedRootCertificates"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/trustedRootCertificates"
         },
         "description": "Optional. Trusted Root certificates of the application gateway resource."
       },
@@ -924,7 +934,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/urlPathMaps"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/urlPathMaps"
         },
         "description": "Optional. URL path map of the application gateway resource."
       },
@@ -980,7 +990,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/tags"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/tags"
         },
         "description": "Optional. Resource tags."
       },
@@ -990,7 +1000,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/backendSettingsCollection"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendSettingsCollection"
         },
         "description": "Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
       },
@@ -1000,7 +1010,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/listeners"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/listeners"
         },
         "description": "Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
       },
@@ -1010,7 +1020,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/applicationGateways@2025-01-01#properties/properties/properties/routingRules"
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/routingRules"
         },
         "description": "Optional. Routing rules of the application gateway resource."
       },
@@ -1066,19 +1076,19 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', if(and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', parameters('sku'), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
+      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'entraJWTValidationConfigs', parameters('entraJWTValidationConfigs'), 'firewallPolicy', if(and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', parameters('sku'), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
       "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]"
     },
     "applicationGateway_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1095,7 +1105,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1136,7 +1146,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/applicationGateways', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1839,7 +1849,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2025-01-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2025-05-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
