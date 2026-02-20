@@ -319,13 +319,13 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
-    keyVaultKeyUri: 'https://dep-avmxal-kv-dddaenc-02.vault.azure.net/keys/keyEncryptionKey'
+    // keyVaultKeyUri: 'https://dep-avmxal-kv-dddaenc-02.vault.azure.net/keys/keyEncryptionKey'
     // keyVaultKeyUri: ''
-    // keyVaultKeyUri: !empty(customerManagedKey)
-    //   ? !isHSMManagedCMK
-    //       ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
-    //       : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
-    //   : null
+    keyVaultKeyUri: !empty(customerManagedKey)
+      ? !isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
+      : null
     cors: cors
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
@@ -364,73 +364,73 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-    locations: !empty(failoverLocations)
-      ? map(failoverLocations!, failoverLocation => {
-          failoverPriority: failoverLocation.failoverPriority
-          locationName: failoverLocation.locationName
-          isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-        })
-      : [
-          {
-            failoverPriority: 0
-            locationName: location
-            isZoneRedundant: zoneRedundant
-          }
-        ]
-    // locations: [
-    //   {
-    //     failoverPriority: 0
-    //     isZoneRedundant: true
-    //     locationName: location
-    //   }
-    // ]
-    ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
-      ? {
-          // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
-          consistencyPolicy: {
-            defaultConsistencyLevel: defaultConsistencyLevel
-            ...(defaultConsistencyLevel == 'BoundedStaleness'
-              ? {
-                  maxStalenessPrefix: maxStalenessPrefix
-                  maxIntervalInSeconds: maxIntervalInSeconds
-                }
-              : {})
-          }
-          enableMultipleWriteLocations: enableMultipleWriteLocations
-          ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
-            ipAddressOrRange: ipRule
-          })
-          virtualNetworkRules: map(networkRestrictions.?virtualNetworkRules ?? [], rule => {
-            id: rule.subnetResourceId
-            ignoreMissingVNetServiceEndpoint: false
-          })
-          networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
-          networkAclBypassResourceIds: networkRestrictions.?networkAclBypassResourceIds
-          isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
-          enableFreeTier: enableFreeTier
-          enableAutomaticFailover: enableAutomaticFailover
-          enableAnalyticalStorage: enableAnalyticalStorage
-        }
-      : {})
-    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))
-      ? {
-          // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU, Apache Gremlin, and Apache Cassandra.
-          disableLocalAuth: false
-          disableKeyBasedMetadataWriteAccess: false
-        }
-      : {
-          // Microsoft Entra authentication is supported for Azure Cosmos DB for NoSQL and Table. Disable key-based authentication by default.
-          disableLocalAuth: disableLocalAuthentication
-          disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-        })
-    ...(!empty(mongodbDatabases)
-      ? {
-          // MongoDB RU properties
-          apiProperties: {
-            serverVersion: serverVersion
-          }
-        }
-      : {})
+    // locations: !empty(failoverLocations)
+    //   ? map(failoverLocations!, failoverLocation => {
+    //       failoverPriority: failoverLocation.failoverPriority
+    //       locationName: failoverLocation.locationName
+    //       isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
+    //     })
+    //   : [
+    //       {
+    //         failoverPriority: 0
+    //         locationName: location
+    //         isZoneRedundant: zoneRedundant
+    //       }
+    //     ]
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: zoneRedundant
+        locationName: location
+      }
+    ]
+    // ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
+    //   ? {
+    //       // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
+    //       consistencyPolicy: {
+    //         defaultConsistencyLevel: defaultConsistencyLevel
+    //         ...(defaultConsistencyLevel == 'BoundedStaleness'
+    //           ? {
+    //               maxStalenessPrefix: maxStalenessPrefix
+    //               maxIntervalInSeconds: maxIntervalInSeconds
+    //             }
+    //           : {})
+    //       }
+    //       enableMultipleWriteLocations: enableMultipleWriteLocations
+    //       ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
+    //         ipAddressOrRange: ipRule
+    //       })
+    //       virtualNetworkRules: map(networkRestrictions.?virtualNetworkRules ?? [], rule => {
+    //         id: rule.subnetResourceId
+    //         ignoreMissingVNetServiceEndpoint: false
+    //       })
+    //       networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+    //       networkAclBypassResourceIds: networkRestrictions.?networkAclBypassResourceIds
+    //       isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
+    //       enableFreeTier: enableFreeTier
+    //       enableAutomaticFailover: enableAutomaticFailover
+    //       enableAnalyticalStorage: enableAnalyticalStorage
+    //     }
+    //   : {})
+    // ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))
+    //   ? {
+    //       // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU, Apache Gremlin, and Apache Cassandra.
+    //       disableLocalAuth: false
+    //       disableKeyBasedMetadataWriteAccess: false
+    //     }
+    //   : {
+    //       // Microsoft Entra authentication is supported for Azure Cosmos DB for NoSQL and Table. Disable key-based authentication by default.
+    //       disableLocalAuth: disableLocalAuthentication
+    //       disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+    //     })
+    // ...(!empty(mongodbDatabases)
+    //   ? {
+    //       // MongoDB RU properties
+    //       apiProperties: {
+    //         serverVersion: serverVersion
+    //       }
+    //     }
+    //   : {})
   }
 }
 
