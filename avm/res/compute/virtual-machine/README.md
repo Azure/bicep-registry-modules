@@ -76,7 +76,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinatmg'
+    name: 'vmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -103,7 +103,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdminUser'
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -142,7 +142,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmlinatmg"
+      "value": "vmlinatmg"
     },
     "nicConfigurations": {
       "value": [
@@ -177,7 +177,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -224,7 +224,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinatmg'
+param name = 'vmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -251,7 +251,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -290,7 +290,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinmin'
+    name: 'vmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -310,7 +310,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdminUser'
     disablePasswordAuthentication: true
@@ -347,7 +347,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmlinmin"
+      "value": "vmlinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -375,7 +375,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -416,7 +416,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinmin'
+param name = 'vmlinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -436,7 +436,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param disablePasswordAuthentication = true
@@ -473,7 +473,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmlimax'
+    name: 'vmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -584,7 +584,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdministrator'
     backupPolicyName: '<backupPolicyName>'
@@ -704,7 +704,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     imageReference: {
-      offer: '0001-com-ubuntu-server-focal'
+      offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
       sku: '<sku>'
       version: 'latest'
@@ -773,7 +773,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "cvmlimax"
+      "value": "vmlimax"
     },
     "nicConfigurations": {
       "value": [
@@ -892,7 +892,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -1046,7 +1046,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "imageReference": {
       "value": {
-        "offer": "0001-com-ubuntu-server-focal",
+        "offer": "0001-com-ubuntu-server-jammy",
         "publisher": "Canonical",
         "sku": "<sku>",
         "version": "latest"
@@ -1127,7 +1127,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmlimax'
+param name = 'vmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1238,7 +1238,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdministrator'
 param backupPolicyName = '<backupPolicyName>'
@@ -1358,7 +1358,7 @@ param extensionNetworkWatcherAgentConfig = {
   }
 }
 param imageReference = {
-  offer: '0001-com-ubuntu-server-focal'
+  offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
   sku: '<sku>'
   version: 'latest'
@@ -1427,7 +1427,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinwaf'
+    name: 'vmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1543,9 +1543,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
-      settings: {
-        mdmId: ''
-      }
+      settings: {}
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1707,7 +1705,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinwaf"
+      "value": "vmwinwaf"
     },
     "nicConfigurations": {
       "value": [
@@ -1853,9 +1851,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
-        "settings": {
-          "mdmId": ""
-        },
+        "settings": {},
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -2041,7 +2037,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinwaf'
+param name = 'vmwinwaf'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -2157,9 +2153,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
-  settings: {
-    mdmId: ''
-  }
+  settings: {}
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -2321,7 +2315,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinmin'
+    name: 'vmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2341,7 +2335,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -2372,7 +2366,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinmin"
+      "value": "vmwinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -2400,7 +2394,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2433,7 +2427,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinmin'
+param name = 'vmwinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2453,7 +2447,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -2484,7 +2478,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmwindisk02'
+    name: 'vmwindisk02'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2502,7 +2496,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: '<osType>'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_E2s_v3'
     // Non-required parameters
     dataDisks: [
       {
@@ -2547,7 +2541,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "cvmwindisk02"
+      "value": "vmwindisk02"
     },
     "nicConfigurations": {
       "value": [
@@ -2573,7 +2567,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_E2s_v3"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2620,7 +2614,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmwindisk02'
+param name = 'vmwindisk02'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2638,7 +2632,7 @@ param osDisk = {
   }
 }
 param osType = '<osType>'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_E2s_v3'
 // Non-required parameters
 param dataDisks = [
   {
@@ -2707,7 +2701,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -2799,7 +2793,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2891,7 +2885,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -2971,7 +2965,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -3056,7 +3050,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3141,7 +3135,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -3198,7 +3192,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinmax'
+    name: 'vmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -3541,7 +3535,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinmax"
+      "value": "vmwinmax"
     },
     "nicConfigurations": {
       "value": [
@@ -3944,7 +3938,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinmax'
+param name = 'vmwinmax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -4287,7 +4281,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinnv'
+    name: 'vmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4343,7 +4337,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinnv"
+      "value": "vmwinnv"
     },
     "nicConfigurations": {
       "value": [
@@ -4415,7 +4409,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinnv'
+param name = 'vmwinnv'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4471,7 +4465,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinvmss'
+    name: 'vmwinvmss'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4491,7 +4485,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -4523,7 +4517,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinvmss"
+      "value": "vmwinvmss"
     },
     "nicConfigurations": {
       "value": [
@@ -4551,7 +4545,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4587,7 +4581,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinvmss'
+param name = 'vmwinvmss'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4607,7 +4601,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -4639,7 +4633,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinzrs'
+    name: 'vmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4699,7 +4693,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinzrs"
+      "value": "vmwinzrs"
     },
     "nicConfigurations": {
       "value": [
@@ -4771,7 +4765,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinzrs'
+param name = 'vmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [

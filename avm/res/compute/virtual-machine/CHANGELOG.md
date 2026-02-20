@@ -2,11 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.0
+
+### Changes
+
+- Skip pre-creating managedDataDisks when createOption is 'FromImage'
+- Preserve 'FromImage' createOption instead of overriding to 'Attach'
+- Don't set managedDisk.id for 'FromImage' disks (only storageAccountType)
+- Fixed typo: createoption → createOption
+
+### Breaking Changes
+- The settings property support to the extensionMonitoringAgentConfig parameter for the Azure Monitor Agent extension.
+- Added settings parameter support to the Azure Monitor Agent extension, enabling configuration of user-assigned managed identity authentication.
+- Fixed the AADLoginForWindows extension failing when no settings are provided by passing null instead of an empty object when settings are empty.
+- Fixed deployment failures for marketplace images that include preset data disks (e.g., Dell EMC DataDomain) by properly handling createOption: 'FromImage'.
+
 ## 0.21.0
 
 ### Changes
 
-- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk
+- Added support for `resourceId` parameter in `osDisk` parameter to allow creating a VM from an osDisk.
 - Fixed incorrect implementation of the `dataDisks.managedDisk.diskEncryptionSetResourceId` parameter, now correctly passing the value thru
 
 ### Breaking Changes
@@ -69,7 +84,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Renamed `zone` parameter to `availabilityZone`
 - Changed 'availabilityZone' allowed set from [0,1,2,3] to [-1,1,2,3]. -1 works in the same way as the previous 0 to specify that no zone is to be set
-
 
 ## 0.15.1
 

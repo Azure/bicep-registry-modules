@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinvmss'
+param serviceShort string = 'vmwinvmss'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2s_v6'
       adminPassword: password
       virtualMachineScaleSetResourceId: nestedDependencies.outputs.vmssResourceId
     }
