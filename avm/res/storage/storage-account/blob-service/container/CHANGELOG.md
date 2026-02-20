@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/blob-service/container/CHANGELOG.md).
 
+## 0.3.3
+
+### Changes
+
+- Updated API Versions
+
+### Breaking Changes
+
+- None
+
 ## 0.3.2
 
 ### Changes

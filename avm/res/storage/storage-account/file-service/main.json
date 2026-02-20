@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "4022171727419342153"
+      "version": "0.40.2.10011",
+      "templateHash": "5326764376212152469"
     },
     "name": "Storage Account File Share Services",
     "description": "This module deploys a Storage Account File Share Service."
@@ -122,6 +122,22 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+          }
+        },
+        "provisionedBandwidthMibps": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 10340,
+          "metadata": {
+            "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+          }
+        },
+        "provisionedIops": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 102400,
+          "metadata": {
+            "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
           }
         },
         "roleAssignments": {
@@ -414,12 +430,12 @@
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('storageAccountName')]"
     },
     "fileServices": {
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
       "properties": {
         "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
@@ -434,7 +450,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/fileServices/{1}', parameters('storageAccountName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccountName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -492,7 +508,7 @@
             "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
           },
           "accessTier": {
-            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2024-01-01', 'full').kind, 'FileStorage'), if(startsWith(reference('storageAccount', '2024-01-01', 'full').sku.name, 'PremiumV2_'), null(), 'Premium'), 'TransactionOptimized'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2025-06-01', 'full').kind, 'FileStorage'), if(startsWith(reference('storageAccount', '2025-06-01', 'full').sku.name, 'PremiumV2_'), null(), 'Premium'), 'TransactionOptimized'))]"
           },
           "enabledProtocols": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
@@ -502,6 +518,12 @@
           },
           "shareQuota": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'shareQuota')]"
+          },
+          "provisionedBandwidthMibps": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'provisionedBandwidthMibps')]"
+          },
+          "provisionedIops": {
+            "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'provisionedIops')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -517,8 +539,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "142663650829722942"
+              "version": "0.40.2.10011",
+              "templateHash": "9473592490163430991"
             },
             "name": "Storage Account File Shares",
             "description": "This module deploys a Storage Account File Share."
@@ -664,6 +686,24 @@
                 "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
               }
             },
+            "provisionedBandwidthMibps": {
+              "type": "int",
+              "nullable": true,
+              "minValue": 0,
+              "maxValue": 10340,
+              "metadata": {
+                "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+              }
+            },
+            "provisionedIops": {
+              "type": "int",
+              "nullable": true,
+              "minValue": 0,
+              "maxValue": 102400,
+              "metadata": {
+                "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -746,8 +786,13 @@
                 "accessTier": "[parameters('accessTier')]",
                 "shareQuota": "[parameters('shareQuota')]",
                 "rootSquash": "[if(equals(parameters('enabledProtocols'), 'NFS'), parameters('rootSquash'), null())]",
-                "enabledProtocols": "[parameters('enabledProtocols')]"
-              }
+                "enabledProtocols": "[parameters('enabledProtocols')]",
+                "provisionedBandwidthMibps": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedBandwidthMibps'), null())]",
+                "provisionedIops": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedIops'), null())]"
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
             },
             "fileShare_roleAssignments": {
               "copy": {
