@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}002'
     zoneRedundant: false
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
@@ -66,12 +66,12 @@ module testDeployment '../../../main.bicep' = {
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    // Explicit 1
-    networkRestrictions: {
-      publicNetworkAccess: 'Enabled'
-    }
-    // Explicit 2
-    disableKeyBasedMetadataWriteAccess: false
+    // // Explicit 1
+    // networkRestrictions: {
+    //   publicNetworkAccess: 'Enabled'
+    // }
+    // // Explicit 2
+    // disableKeyBasedMetadataWriteAccess: false
   }
 }
 
