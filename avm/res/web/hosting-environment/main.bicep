@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Web/hostingEnvironments@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.Web/hostingEnvironments@2025-03-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -28,7 +28,7 @@ param roleAssignments roleAssignmentType[]?
 param kind string = 'ASEv3'
 
 @description('Optional. Custom settings for changing the behavior of the App Service Environment.')
-param clusterSettings resourceInput<'Microsoft.Web/hostingEnvironments@2024-11-01'>.properties.clusterSettings = [
+param clusterSettings resourceInput<'Microsoft.Web/hostingEnvironments@2025-03-01'>.properties.clusterSettings = [
   {
     name: 'DisableTls1.0'
     value: '1'
@@ -36,43 +36,31 @@ param clusterSettings resourceInput<'Microsoft.Web/hostingEnvironments@2024-11-0
 ]
 
 @description('Optional. Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required.')
-param customDnsSuffix string = ''
+param customDnsSuffix string?
 
 @description('Optional. The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty.')
-param customDnsSuffixCertificateUrl string = ''
+param customDnsSuffixCertificateUrl string?
 
 @description('Optional. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty.')
-param customDnsSuffixKeyVaultReferenceIdentity string = ''
+param customDnsSuffixKeyVaultReferenceIdentity string?
 
 @description('Optional. The Dedicated Host Count. If `zoneRedundant` is false, and you want physical hardware isolation enabled, set to 2. Otherwise 0.')
-param dedicatedHostCount int = 0
+param dedicatedHostCount int?
 
 @description('Optional. DNS suffix of the App Service Environment.')
-param dnsSuffix string = ''
+param dnsSuffix string?
 
 @description('Optional. Scale factor for frontends.')
 param frontEndScaleFactor int = 15
 
 @description('Optional. Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. "None" Exposes the ASE-hosted apps on an internet-accessible IP address.')
-@allowed([
-  'None'
-  'Web'
-  'Publishing'
-  'Web, Publishing'
-])
-param internalLoadBalancingMode string = 'None'
+param internalLoadBalancingMode resourceInput<'Microsoft.Web/hostingEnvironments@2025-03-01'>.properties.internalLoadBalancingMode = 'None'
 
 @description('Optional. Properties to configure additional networking features.')
-param networkConfiguration object?
+param networkConfiguration resourceInput<'Microsoft.Web/hostingEnvironments@2025-03-01'>.properties.networkingConfiguration?
 
 @description('Optional. Specify preference for when and how the planned maintenance is applied.')
-@allowed([
-  'Early'
-  'Late'
-  'Manual'
-  'None'
-])
-param upgradePreference string = 'None'
+param upgradePreference resourceInput<'Microsoft.Web/hostingEnvironments@2025-03-01'>.properties.upgradePreference = 'None'
 
 @description('Required. ResourceId for the subnet.')
 param subnetResourceId string
@@ -80,11 +68,17 @@ param subnetResourceId string
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
 param zoneRedundant bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+@description('Optional. Number of IP SSL addresses reserved for the App Service Environment.')
+param ipsslAddressCount int?
+
+@description('Optional. Front-end VM size, e.g. "Medium", "Large".')
+param multiSize string?
+
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -151,7 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = {
+resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2025-03-01' = {
   name: name
   kind: kind
   location: location
@@ -159,10 +153,12 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = 
   identity: identity
   properties: {
     clusterSettings: clusterSettings
-    dedicatedHostCount: dedicatedHostCount != 0 ? dedicatedHostCount : null
-    dnsSuffix: !empty(dnsSuffix) ? dnsSuffix : null
+    dedicatedHostCount: dedicatedHostCount
+    dnsSuffix: dnsSuffix
     frontEndScaleFactor: frontEndScaleFactor
     internalLoadBalancingMode: internalLoadBalancingMode
+    ipsslAddressCount: ipsslAddressCount
+    multiSize: multiSize
     upgradePreference: upgradePreference
     networkingConfiguration: networkConfiguration
     virtualNetwork: {
@@ -173,13 +169,13 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2023-12-01' = 
   }
 }
 
-module appServiceEnvironment_configurations_customDnsSuffix 'configuration--customdnssuffix/main.bicep' = if (!empty(customDnsSuffix)) {
+module appServiceEnvironment_configurations_customDnsSuffix 'configuration--customdnssuffix/main.bicep' = if (!empty(customDnsSuffix ?? '')) {
   name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-CustomDnsSuffix'
   params: {
     hostingEnvironmentName: appServiceEnvironment.name
-    certificateUrl: customDnsSuffixCertificateUrl
-    keyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity
-    dnsSuffix: customDnsSuffix
+    certificateUrl: customDnsSuffixCertificateUrl ?? ''
+    keyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity ?? ''
+    dnsSuffix: customDnsSuffix ?? ''
   }
 }
 
@@ -194,6 +190,7 @@ resource appServiceEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' =
   scope: appServiceEnvironment
 }
 
+#disable-next-line use-recent-api-versions // This is the most recent API version at the time of development.
 resource appServiceEnvironment_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -229,7 +226,7 @@ resource appServiceEnvironment_roleAssignments 'Microsoft.Authorization/roleAssi
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: appServiceEnvironment
