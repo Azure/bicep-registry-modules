@@ -363,6 +363,16 @@ type peeringType = {
   remotePeeringUseRemoteGateways: bool?
 }
 
+type ipamPoolPrefixAllocationsType = {
+  @description('Required. The IPAM pool.')
+  pool: {
+    @description('Required. The Resource ID of the IPAM pool.')
+    id: string
+  }
+  @description('Required. Number of IP addresses allocated from the pool.')
+  numberOfIpAddresses: string
+}
+
 @export()
 type subnetType = {
   @description('Required. The Name of the subnet resource.')
@@ -375,17 +385,7 @@ type subnetType = {
   addressPrefixes: string[]?
 
   @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.')
-  ipamPoolPrefixAllocations: [
-    {
-      @description('Required. The Resource ID of the IPAM pool.')
-      pool: {
-        @description('Required. The Resource ID of the IPAM pool.')
-        id: string
-      }
-      @description('Required. Number of IP addresses allocated from the pool.')
-      numberOfIpAddresses: string
-    }
-  ]?
+  ipamPoolPrefixAllocations: ipamPoolPrefixAllocationsType[]?
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
