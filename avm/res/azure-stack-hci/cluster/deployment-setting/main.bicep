@@ -7,7 +7,7 @@ metadata description = 'This module deploys an Azure Stack HCI Cluster Deploymen
 ])
 param name string = 'default'
 
-@description('Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. Required if the template is used in a standalone deployment.')
+@description('Conditional. The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure and must not match any of the clusterNodeNames (physical node names). Required if the template is used in a standalone deployment.')
 @maxLength(40)
 @minLength(4)
 param clusterName string
@@ -138,6 +138,27 @@ param cloudId string?
 ])
 param operationType string = 'ClusterProvisioning'
 
+@description('Optional. Solution builder extension (SBE) version.')
+param sbeVersion string = ''
+
+@description('Optional. Solution builder extension (SBE) family value.')
+param sbeFamily string = ''
+
+@description('Optional. Solution builder extension (SBE) publisher name.')
+param sbePublisher string = ''
+
+@description('Optional. Solution builder extension (SBE) manifest source.')
+param sbeManifestSource string = ''
+
+@description('Optional. Solution builder extension (SBE) creation date.')
+param sbeManifestCreationDate string = ''
+
+@description('Optional. Solution builder extension (SBE) partner properties.')
+param partnerProperties array = []
+
+@description('Optional. Solution builder extension (SBE) partner credential properties.')
+param partnerCredentialList array = []
+
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
 ]
@@ -151,7 +172,7 @@ var storageNetworksArray = [
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2025-09-15-preview' existing = {
   name: clusterName
 }
 
@@ -163,7 +184,15 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-09-01-preview' = {
+var answerfileSBESecrets = [
+  for credential in partnerCredentialList: {
+    secretName: credential.secretName
+    eceSecretName: credential.secretName
+    secretLocation: 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${credential.secretName}'
+  }
+]
+
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2025-09-15-preview' = {
   name: name
   parent: cluster
   properties: {
@@ -254,6 +283,17 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                   : 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${clusterName}-${secretName}-${cloudId}'
               }
             ]
+          }
+          sbePartnerInfo: {
+            sbeDeploymentInfo: {
+              version: sbeVersion
+              family: sbeFamily
+              publisher: sbePublisher
+              sbeManifestSource: sbeManifestSource
+              sbeManifestCreationDate: empty(sbeManifestCreationDate) ? null : sbeManifestCreationDate
+            }
+            partnerProperties: partnerProperties
+            credentialList: answerfileSBESecrets
           }
         }
       ]

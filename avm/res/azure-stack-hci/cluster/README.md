@@ -24,9 +24,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.AzureStackHCI/clusters` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-04-01/clusters)</li></ul> |
-| `Microsoft.AzureStackHCI/edgeDevices` | 2024-02-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-02-15-preview/edgeDevices)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters` | 2025-09-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-09-15-preview/clusters)</li></ul> |
+| `Microsoft.AzureStackHCI/edgeDevices` | 2025-09-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-09-15-preview/edgeDevices)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2021-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-06-01-preview/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
@@ -878,6 +878,13 @@ The deployment settings of the cluster.
 | [`episodicDataUpload`](#parameter-deploymentsettingsepisodicdataupload) | bool | The diagnostic data for deploying a HCI cluster. |
 | [`hvciProtection`](#parameter-deploymentsettingshvciprotection) | bool | The Hypervisor-protected Code Integrity setting. |
 | [`isEuropeanUnionLocation`](#parameter-deploymentsettingsiseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
+| [`partnerCredentialList`](#parameter-deploymentsettingspartnercredentiallist) | array | Solution builder extension (SBE) partner credential properties. |
+| [`partnerProperties`](#parameter-deploymentsettingspartnerproperties) | array | Solution builder extension (SBE) partner properties. |
+| [`sbeFamily`](#parameter-deploymentsettingssbefamily) | string | Solution builder extension (SBE) family value. |
+| [`sbeManifestCreationDate`](#parameter-deploymentsettingssbemanifestcreationdate) | string | Solution builder extension (SBE) creation date. |
+| [`sbeManifestSource`](#parameter-deploymentsettingssbemanifestsource) | string | Solution builder extension (SBE) manifest source. |
+| [`sbePublisher`](#parameter-deploymentsettingssbepublisher) | string | Solution builder extension (SBE) publisher name. |
+| [`sbeVersion`](#parameter-deploymentsettingssbeversion) | string | Solution builder extension (SBE) version. |
 | [`sideChannelMitigationEnforced`](#parameter-deploymentsettingssidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-deploymentsettingssmbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-deploymentsettingssmbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
@@ -1316,6 +1323,55 @@ The location data for deploying a HCI cluster.
 
 - Required: No
 - Type: bool
+
+### Parameter: `deploymentSettings.partnerCredentialList`
+
+Solution builder extension (SBE) partner credential properties.
+
+- Required: No
+- Type: array
+
+### Parameter: `deploymentSettings.partnerProperties`
+
+Solution builder extension (SBE) partner properties.
+
+- Required: No
+- Type: array
+
+### Parameter: `deploymentSettings.sbeFamily`
+
+Solution builder extension (SBE) family value.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentSettings.sbeManifestCreationDate`
+
+Solution builder extension (SBE) creation date.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentSettings.sbeManifestSource`
+
+Solution builder extension (SBE) manifest source.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentSettings.sbePublisher`
+
+Solution builder extension (SBE) publisher name.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentSettings.sbeVersion`
+
+Solution builder extension (SBE) version.
+
+- Required: No
+- Type: string
 
 ### Parameter: `deploymentSettings.sideChannelMitigationEnforced`
 

@@ -77,6 +77,13 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
       needArbSecret: needArbSecret
+      sbeVersion: deploymentSettings!.?sbeVersion ?? ''
+      sbeFamily: deploymentSettings!.?sbeFamily ?? ''
+      sbePublisher: deploymentSettings!.?sbePublisher ?? ''
+      sbeManifestSource: deploymentSettings!.?sbeManifestSource ?? ''
+      sbeManifestCreationDate: deploymentSettings!.?sbeManifestCreationDate ?? ''
+      partnerProperties: deploymentSettings!.?partnerProperties ?? []
+      partnerCredentialList: deploymentSettings!.?partnerCredentialList ?? []
     }
   }
 ]
@@ -178,4 +185,25 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
+
+  @description('Optional. Solution builder extension (SBE) version.')
+  sbeVersion: string?
+
+  @description('Optional. Solution builder extension (SBE) family value.')
+  sbeFamily: string?
+
+  @description('Optional. Solution builder extension (SBE) publisher name.')
+  sbePublisher: string?
+
+  @description('Optional. Solution builder extension (SBE) manifest source.')
+  sbeManifestSource: string?
+
+  @description('Optional. Solution builder extension (SBE) creation date.')
+  sbeManifestCreationDate: string?
+
+  @description('Optional. Solution builder extension (SBE) partner properties.')
+  partnerProperties: array?
+
+  @description('Optional. Solution builder extension (SBE) partner credential properties.')
+  partnerCredentialList: array?
 }

@@ -266,7 +266,7 @@ resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
   }
 ]
 
-resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2025-09-15-preview' = [
   for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
     name: 'default'
     scope: arcMachines[index]
@@ -280,7 +280,7 @@ resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = 
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2025-09-15-preview' = {
   name: name
   identity: {
     type: 'SystemAssigned'
@@ -322,6 +322,7 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
     hciResourceProviderObjectId: hciResourceProviderObjectId
     arcNodeResourceIds: arcNodeResourceIds
+    partnerCredentialList: deploymentSettings!.?partnerCredentialList ?? []
   }
 }
 
@@ -700,4 +701,25 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
+
+  @description('Optional. Solution builder extension (SBE) version.')
+  sbeVersion: string?
+
+  @description('Optional. Solution builder extension (SBE) family value.')
+  sbeFamily: string?
+
+  @description('Optional. Solution builder extension (SBE) publisher name.')
+  sbePublisher: string?
+
+  @description('Optional. Solution builder extension (SBE) manifest source.')
+  sbeManifestSource: string?
+
+  @description('Optional. Solution builder extension (SBE) creation date.')
+  sbeManifestCreationDate: string?
+
+  @description('Optional. Solution builder extension (SBE) partner properties.')
+  partnerProperties: array?
+
+  @description('Optional. Solution builder extension (SBE) partner credential properties.')
+  partnerCredentialList: array?
 }
