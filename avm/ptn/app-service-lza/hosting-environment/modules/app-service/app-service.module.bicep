@@ -187,7 +187,7 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
 module webApp 'br/public:avm/res/web/site:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-webapp'
   params: {
-    kind: !empty(kind) ? 'app,linux' : 'app'
+    kind: kind
     name: webAppName
     location: location
     enableTelemetry: enableTelemetry
