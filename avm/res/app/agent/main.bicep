@@ -1,0 +1,277 @@
+metadata name = 'SRE Agents'
+metadata description = 'This module deploys an Azure SRE Agent (Microsoft.App/agents).'
+metadata owner = 'Azure/avm-res-app-agent-module-owners-bicep'
+
+// ============== //
+//   Parameters   //
+// ============== //
+
+@description('Required. Name of the SRE Agent.')
+param name string
+
+@description('Optional. Location for all resources.')
+param location string = resourceGroup().location
+
+@description('Optional. Tags of the resource.')
+param tags object?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The managed identity definition for this resource. The SRE Agent requires a User-Assigned Managed Identity for knowledge graph and action execution.')
+param managedIdentities managedIdentityAllType?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
+
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
+
+// --- SRE Agent-specific parameters ---
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The access level for the SRE Agent managed identity. Determines which RBAC roles are available for tool execution.')
+@allowed([
+  'High'
+  'Low'
+])
+param accessLevel string = 'High'
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The agent execution mode. Review requires human approval, Autonomous auto-executes, ReadOnly is observation-only.')
+@allowed([
+  'Review'
+  'Autonomous'
+  'ReadOnly'
+])
+param agentMode string = 'Review'
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The upgrade channel for the SRE Agent.')
+@allowed([
+  'Stable'
+  'Preview'
+])
+param upgradeChannel string = 'Stable'
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The monthly Agent Activity Unit (AAU) limit for the SRE Agent.')
+param monthlyAgentUnitLimit int = 10000
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The incident management configuration type for the SRE Agent.')
+@allowed([
+  'AzMonitor'
+  'None'
+])
+param incidentManagementConfigurationType string = 'AzMonitor'
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for the knowledge graph and action configuration. If not provided and a user-assigned identity is specified in managedIdentities, the first one will be used.')
+param knowledgeGraphIdentityResourceId string = ''
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The resource ID of an existing User-Assigned Managed Identity to use for action execution. If not provided, falls back to knowledgeGraphIdentityResourceId or the first user-assigned identity.')
+param actionIdentityResourceId string = ''
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The managed resources array for the knowledge graph configuration.')
+param knowledgeGraphManagedResources array = []
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights App ID for agent telemetry. Required for log configuration.')
+param applicationInsightsAppId string = ''
+
+@description('Optional. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. The Application Insights connection string for agent telemetry. Required for log configuration.')
+param applicationInsightsConnectionString string = ''
+
+// ============== //
+//   Variables    //
+// ============== //
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+)
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
+// Determine which identity to use for knowledge graph and action configuration
+var firstUserAssignedId = !empty(managedIdentities.?userAssignedResourceIds ?? [])
+  ? managedIdentities.?userAssignedResourceIds[0] ?? ''
+  : ''
+var resolvedKnowledgeGraphIdentity = !empty(knowledgeGraphIdentityResourceId)
+  ? knowledgeGraphIdentityResourceId
+  : firstUserAssignedId
+var resolvedActionIdentity = !empty(actionIdentityResourceId)
+  ? actionIdentityResourceId
+  : resolvedKnowledgeGraphIdentity
+
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'SRE Agent Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e79298df-d852-4c6d-84f9-5d13249d1e55'
+  )
+}
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+// ============== //
+//   Resources    //
+// ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-agent.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+#disable-next-line BCP081
+resource agent 'Microsoft.App/agents@2025-05-01-preview' = {
+  name: name
+  location: location
+  tags: tags
+  identity: identity
+  properties: {
+    monthlyAgentUnitLimit: monthlyAgentUnitLimit
+    upgradeChannel: upgradeChannel
+    incidentManagementConfiguration: {
+      type: incidentManagementConfigurationType
+    }
+    knowledgeGraphConfiguration: !empty(resolvedKnowledgeGraphIdentity)
+      ? {
+          identity: resolvedKnowledgeGraphIdentity
+          managedResources: knowledgeGraphManagedResources
+        }
+      : null
+    actionConfiguration: !empty(resolvedActionIdentity)
+      ? {
+          accessLevel: accessLevel
+          identity: resolvedActionIdentity
+          mode: agentMode
+        }
+      : null
+    logConfiguration: !empty(applicationInsightsAppId) && !empty(applicationInsightsConnectionString)
+      ? {
+          applicationInsightsConfiguration: {
+            appId: applicationInsightsAppId
+            connectionString: applicationInsightsConnectionString
+          }
+        }
+      : null
+  }
+}
+
+resource agent_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
+  }
+  scope: agent
+}
+
+resource agent_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(agent.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: agent
+  }
+]
+
+#disable-next-line use-recent-api-versions
+resource agent_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: agent
+  }
+]
+
+// ============== //
+//    Outputs     //
+// ============== //
+
+@description('The resource ID of the SRE Agent.')
+output resourceId string = agent.id
+
+@description('The name of the SRE Agent.')
+output name string = agent.name
+
+@description('The name of the resource group the SRE Agent was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = agent.location
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = agent.?identity.?principalId
+
+@description('The endpoint of the SRE Agent.')
+output agentEndpoint string = agent.properties.?agentEndpoint ?? 'pending'
+
+@description('The provisioning state of the SRE Agent.')
+output provisioningState string = agent.properties.?provisioningState ?? 'Unknown'
