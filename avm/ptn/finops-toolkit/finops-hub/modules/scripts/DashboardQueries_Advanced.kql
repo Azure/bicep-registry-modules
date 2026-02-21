@@ -1,0 +1,432 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//======================================================================================================================
+// FinOps Hub - Additional Dashboard Visualizations
+// Advanced analytics for cost optimization, forecasting, and anomaly detection
+//======================================================================================================================
+
+
+//======================================================================================================================
+// SECTION 1: FORECASTING
+// Predict future costs based on historical trends
+//======================================================================================================================
+
+// 1.1 Simple Linear Forecast
+// Projects future costs based on recent trend
+.create-or-alter function
+with (docstring = 'Simple linear cost forecast based on historical data', folder = 'Dashboard/Forecasting')
+CostForecast(historicalDays: int, forecastDays: int)
+{
+    let historical = Costs()
+        | where ChargePeriodStart >= ago(historicalDays * 1d)
+        | summarize DailyCost = sum(EffectiveCost) by Day = startofday(ChargePeriodStart)
+        | order by Day asc;
+    let avgDaily = toscalar(historical | summarize avg(DailyCost));
+    let trend = toscalar(
+        historical 
+        | extend DayNum = datetime_diff('day', Day, ago(historicalDays * 1d))
+        | summarize slope = (count() * sum(DayNum * DailyCost) - sum(DayNum) * sum(DailyCost)) / 
+                           (count() * sum(DayNum * DayNum) - sum(DayNum) * sum(DayNum))
+    );
+    let lastDay = toscalar(historical | summarize max(Day));
+    let lastCost = toscalar(historical | where Day == lastDay | project DailyCost);
+    // Historical data
+    historical
+    | extend Type = "Historical", ForecastCost = real(null)
+    | union (
+        // Forecast data
+        range i from 1 to forecastDays step 1
+        | extend Day = datetime_add('day', i, lastDay)
+        | extend ForecastCost = lastCost + (trend * i)
+        | extend DailyCost = real(null), Type = "Forecast"
+        | project Day, DailyCost, Type, ForecastCost
+    )
+    | project Day, DailyCost, ForecastCost, Type
+}
+
+
+// 1.2 Monthly Cost Forecast
+.create-or-alter function
+with (docstring = 'Monthly cost forecast with confidence intervals', folder = 'Dashboard/Forecasting')
+MonthlyCostForecast(historicalMonths: int, forecastMonths: int)
+{
+    let historical = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -historicalMonths)
+        | summarize MonthlyCost = sum(EffectiveCost) by Month = startofmonth(ChargePeriodStart)
+        | order by Month asc;
+    let avgMonthly = toscalar(historical | summarize avg(MonthlyCost));
+    let stdDev = toscalar(historical | summarize stdev(MonthlyCost));
+    let lastMonth = toscalar(historical | summarize max(Month));
+    let lastCost = toscalar(historical | where Month == lastMonth | project MonthlyCost);
+    // Calculate growth rate
+    let growthRate = toscalar(
+        historical 
+        | extend PrevCost = prev(MonthlyCost)
+        | where isnotempty(PrevCost)
+        | summarize avg((MonthlyCost - PrevCost) / PrevCost)
+    );
+    // Historical
+    historical
+    | extend Type = "Historical", LowerBound = real(null), UpperBound = real(null)
+    | union (
+        // Forecast with confidence bands
+        range i from 1 to forecastMonths step 1
+        | extend Month = datetime_add('month', i, lastMonth)
+        | extend ForecastCost = lastCost * pow(1 + coalesce(growthRate, 0.0), i)
+        | extend LowerBound = ForecastCost - (1.96 * stdDev * sqrt(toreal(i)))
+        | extend UpperBound = ForecastCost + (1.96 * stdDev * sqrt(toreal(i)))
+        | extend MonthlyCost = real(null), Type = "Forecast"
+        | project Month, MonthlyCost, Type, LowerBound, UpperBound
+    )
+}
+
+
+//======================================================================================================================
+// SECTION 2: RESOURCE OPTIMIZATION
+// Identify optimization opportunities
+//======================================================================================================================
+
+// 2.1 Top Growing Resources (Cost Increase)
+.create-or-alter function
+with (docstring = 'Identify resources with the highest cost growth', folder = 'Dashboard/Optimization')
+TopGrowingResources(topN: int)
+{
+    let currentPeriod = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -1)
+        | summarize CurrentCost = sum(EffectiveCost) by ResourceId, ResourceName = coalesce(ResourceName, ResourceId), ResourceType = coalesce(ResourceType, x_ResourceType);
+    let previousPeriod = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -2) and ChargePeriodStart < startofmonth(now(), -1)
+        | summarize PreviousCost = sum(EffectiveCost) by ResourceId;
+    currentPeriod
+    | join kind=leftouter previousPeriod on ResourceId
+    | extend 
+        CostChange = CurrentCost - coalesce(PreviousCost, 0.0),
+        GrowthPct = round(iff(PreviousCost > 0, (CurrentCost - PreviousCost) / PreviousCost * 100, 100.0), 2)
+    | where CostChange > 0
+    | top topN by CostChange desc
+    | project ResourceName, ResourceType, CurrentCost = round(CurrentCost, 2), PreviousCost = round(coalesce(PreviousCost, 0.0), 2), CostChange = round(CostChange, 2), GrowthPct
+}
+
+
+// 2.2 Top Shrinking Resources (Cost Decrease)
+.create-or-alter function
+with (docstring = 'Identify resources with the largest cost decrease', folder = 'Dashboard/Optimization')
+TopShrinkingResources(topN: int)
+{
+    let currentPeriod = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -1)
+        | summarize CurrentCost = sum(EffectiveCost) by ResourceId, ResourceName = coalesce(ResourceName, ResourceId), ResourceType = coalesce(ResourceType, x_ResourceType);
+    let previousPeriod = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -2) and ChargePeriodStart < startofmonth(now(), -1)
+        | summarize PreviousCost = sum(EffectiveCost) by ResourceId;
+    currentPeriod
+    | join kind=inner previousPeriod on ResourceId
+    | extend 
+        CostChange = CurrentCost - PreviousCost,
+        ChangePct = round((CurrentCost - PreviousCost) / PreviousCost * 100, 2)
+    | where CostChange < 0
+    | top topN by CostChange asc
+    | project ResourceName, ResourceType, CurrentCost = round(CurrentCost, 2), PreviousCost = round(PreviousCost, 2), CostChange = round(CostChange, 2), ChangePct
+}
+
+
+// 2.3 Low Utilization Resources (potential rightsizing)
+.create-or-alter function
+with (docstring = 'Identify resources with low cost relative to similar resources', folder = 'Dashboard/Optimization')
+LowCostResources(threshold: real)
+{
+    let resourceTypeCosts = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -1)
+        | where isnotempty(ResourceId)
+        | summarize Cost = sum(EffectiveCost) by ResourceId, ResourceName = coalesce(ResourceName, ResourceId), ResourceType = coalesce(ResourceType, x_ResourceType);
+    let avgByType = resourceTypeCosts
+        | summarize AvgCost = avg(Cost), StdDev = stdev(Cost) by ResourceType;
+    resourceTypeCosts
+    | join kind=inner avgByType on ResourceType
+    | extend Ratio = Cost / AvgCost
+    | where Ratio < threshold and Cost > 0
+    | project ResourceName, ResourceType, Cost = round(Cost, 2), AvgCostForType = round(AvgCost, 2), PercentOfAvg = round(Ratio * 100, 2)
+    | order by PercentOfAvg asc
+}
+
+
+// 2.4 Idle/Zero Cost Resources (potential cleanup)
+.create-or-alter function
+with (docstring = 'Identify resources with zero or near-zero cost (potentially idle)', folder = 'Dashboard/Optimization')
+IdleResources(maxCost: real)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -1)
+    | where isnotempty(ResourceId)
+    | summarize 
+        TotalCost = sum(EffectiveCost), 
+        DaysWithCost = dcount(startofday(ChargePeriodStart)),
+        LastSeen = max(ChargePeriodStart)
+        by ResourceId, ResourceName = coalesce(ResourceName, ResourceId), ResourceType = coalesce(ResourceType, x_ResourceType), SubAccountName = coalesce(SubAccountName, SubAccountId)
+    | where TotalCost <= maxCost
+    | project ResourceName, ResourceType, SubAccountName, TotalCost = round(TotalCost, 2), DaysWithCost, LastSeen
+    | order by TotalCost asc
+    | take 100
+}
+
+
+//======================================================================================================================
+// SECTION 3: SAVINGS ANALYSIS
+// Detailed savings breakdown and waterfall
+//======================================================================================================================
+
+// 3.1 Savings Waterfall (by type)
+.create-or-alter function
+with (docstring = 'Savings waterfall showing how different discounts reduce cost', folder = 'Dashboard/Savings')
+SavingsWaterfall(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        ContractedCost = sum(ContractedCost),
+        EffectiveCost = sum(EffectiveCost)
+    | extend
+        Step1_ListCost = ListCost,
+        Step2_NegotiatedDiscount = ListCost - ContractedCost,
+        Step3_AfterNegotiated = ContractedCost,
+        Step4_CommitmentDiscount = ContractedCost - EffectiveCost,
+        Step5_FinalCost = EffectiveCost
+    | project 
+        pack_array(
+            pack("Step", "1. List Cost", "Amount", round(Step1_ListCost, 2), "Type", "Starting"),
+            pack("Step", "2. Negotiated Discount", "Amount", round(-Step2_NegotiatedDiscount, 2), "Type", "Savings"),
+            pack("Step", "3. After Negotiated", "Amount", round(Step3_AfterNegotiated, 2), "Type", "Subtotal"),
+            pack("Step", "4. Commitment Discount", "Amount", round(-Step4_CommitmentDiscount, 2), "Type", "Savings"),
+            pack("Step", "5. Final Cost", "Amount", round(Step5_FinalCost, 2), "Type", "Final")
+        )
+    | mv-expand todynamic(Column1)
+    | project Step = tostring(Column1.Step), Amount = toreal(Column1.Amount), Type = tostring(Column1.Type)
+}
+
+
+// 3.2 Savings by Service
+.create-or-alter function
+with (docstring = 'Savings breakdown by service showing optimization opportunities', folder = 'Dashboard/Savings')
+SavingsByService(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        ContractedCost = sum(ContractedCost),
+        EffectiveCost = sum(EffectiveCost)
+        by ServiceName, ServiceCategory
+    | extend 
+        NegotiatedSavings = round(ListCost - ContractedCost, 2),
+        CommitmentSavings = round(ContractedCost - EffectiveCost, 2),
+        TotalSavings = round(ListCost - EffectiveCost, 2),
+        ESR = round(iff(ListCost > 0, (ListCost - EffectiveCost) / ListCost * 100, 0.0), 2)
+    | top topN by TotalSavings desc
+    | project ServiceName, ServiceCategory, ListCost = round(ListCost, 2), EffectiveCost = round(EffectiveCost, 2), NegotiatedSavings, CommitmentSavings, TotalSavings, ESR
+}
+
+
+// 3.3 Savings Trend
+.create-or-alter function
+with (docstring = 'Monthly savings trend over time', folder = 'Dashboard/Savings')
+SavingsTrend(numberOfMonths: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths)
+    | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId)
+    | summarize 
+        ListCost = sum(ListCost),
+        ContractedCost = sum(ContractedCost),
+        EffectiveCost = sum(EffectiveCost)
+        by Month = startofmonth(ChargePeriodStart)
+    | extend 
+        NegotiatedSavings = round(ListCost - ContractedCost, 2),
+        CommitmentSavings = round(ContractedCost - EffectiveCost, 2),
+        TotalSavings = round(ListCost - EffectiveCost, 2),
+        ESR = round(iff(ListCost > 0, (ListCost - EffectiveCost) / ListCost * 100, 0.0), 2)
+    | order by Month asc
+}
+
+
+//======================================================================================================================
+// SECTION 4: YEAR-OVER-YEAR & MONTH-OVER-MONTH
+// Time comparison analytics
+//======================================================================================================================
+
+// 4.1 Year over Year Comparison
+.create-or-alter function
+with (docstring = 'Compare current year costs to previous year', folder = 'Dashboard/Comparison')
+YearOverYearComparison()
+{
+    let currentYear = Costs()
+        | where ChargePeriodStart >= startofyear(now())
+        | summarize CurrentYearCost = sum(EffectiveCost) by Month = monthofyear(ChargePeriodStart);
+    let previousYear = Costs()
+        | where ChargePeriodStart >= startofyear(datetime_add('year', -1, now())) and ChargePeriodStart < startofyear(now())
+        | summarize PreviousYearCost = sum(EffectiveCost) by Month = monthofyear(ChargePeriodStart);
+    currentYear
+    | join kind=fullouter previousYear on Month
+    | extend 
+        Month = coalesce(Month, Month1),
+        CurrentYearCost = round(coalesce(CurrentYearCost, 0.0), 2),
+        PreviousYearCost = round(coalesce(PreviousYearCost, 0.0), 2)
+    | extend 
+        Change = round(CurrentYearCost - PreviousYearCost, 2),
+        ChangePct = round(iff(PreviousYearCost > 0, (CurrentYearCost - PreviousYearCost) / PreviousYearCost * 100, 0.0), 2)
+    | project Month, CurrentYearCost, PreviousYearCost, Change, ChangePct
+    | order by Month asc
+}
+
+
+// 4.2 Month over Month by Service
+.create-or-alter function
+with (docstring = 'Compare current month costs to previous month by service', folder = 'Dashboard/Comparison')
+MonthOverMonthByService(topN: int)
+{
+    let currentMonth = Costs()
+        | where ChargePeriodStart >= startofmonth(now())
+        | summarize CurrentCost = sum(EffectiveCost) by ServiceName;
+    let previousMonth = Costs()
+        | where ChargePeriodStart >= startofmonth(now(), -1) and ChargePeriodStart < startofmonth(now())
+        | summarize PreviousCost = sum(EffectiveCost) by ServiceName;
+    currentMonth
+    | join kind=fullouter previousMonth on ServiceName
+    | extend 
+        ServiceName = coalesce(ServiceName, ServiceName1),
+        CurrentCost = round(coalesce(CurrentCost, 0.0), 2),
+        PreviousCost = round(coalesce(PreviousCost, 0.0), 2)
+    | extend 
+        Change = round(CurrentCost - PreviousCost, 2),
+        ChangePct = round(iff(PreviousCost > 0, (CurrentCost - PreviousCost) / PreviousCost * 100, 0.0), 2)
+    | top topN by abs(Change) desc
+    | project ServiceName, CurrentCost, PreviousCost, Change, ChangePct
+}
+
+
+//======================================================================================================================
+// SECTION 5: COST BREAKDOWN DETAILS
+// Detailed cost breakdowns for deep analysis
+//======================================================================================================================
+
+// 5.1 Cost by Charge Category
+.create-or-alter function
+with (docstring = 'Cost breakdown by charge category (Usage, Purchase, etc.)', folder = 'Dashboard/Breakdown')
+CostByChargeCategory(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | summarize 
+        BilledCost = round(sum(BilledCost), 2),
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        RecordCount = count()
+        by ChargeCategory
+    | extend CostPct = round(EffectiveCost / toscalar(Costs() | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate | summarize sum(EffectiveCost)) * 100, 2)
+    | order by EffectiveCost desc
+}
+
+
+// 5.2 Cost by Pricing Category
+.create-or-alter function
+with (docstring = 'Cost breakdown by pricing category (On-Demand, Spot, Committed)', folder = 'Dashboard/Breakdown')
+CostByPricingCategory(startDate: datetime, endDate: datetime)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | extend PricingCategory = case(
+        isnotempty(CommitmentDiscountId), "Committed",
+        PricingCategory == "Spot" or PricingCategory == "Dynamic", "Spot",
+        "On-Demand"
+    )
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        UsageQuantity = sum(ConsumedQuantity)
+        by PricingCategory
+    | order by EffectiveCost desc
+}
+
+
+// 5.3 Cost by SKU (Top N)
+.create-or-alter function
+with (docstring = 'Top SKUs by cost', folder = 'Dashboard/Breakdown')
+CostBySKU(startDate: datetime, endDate: datetime, topN: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startDate and ChargePeriodEnd <= endDate
+    | where isnotempty(SkuId) or isnotempty(x_SkuDescription)
+    | summarize 
+        EffectiveCost = round(sum(EffectiveCost), 2),
+        Quantity = sum(ConsumedQuantity),
+        ResourceCount = dcount(ResourceId)
+        by SKU = coalesce(x_SkuDescription, SkuId), ServiceName
+    | top topN by EffectiveCost desc
+}
+
+
+// 5.4 Daily Heatmap Data (for calendar heatmap)
+.create-or-alter function
+with (docstring = 'Daily cost data formatted for calendar heatmap visualization', folder = 'Dashboard/Breakdown')
+DailyHeatmapData(numberOfMonths: int)
+{
+    Costs()
+    | where ChargePeriodStart >= startofmonth(now(), -numberOfMonths)
+    | summarize DailyCost = sum(EffectiveCost) by Day = startofday(ChargePeriodStart)
+    | extend 
+        DayOfWeek = dayofweek(Day) / 1d,
+        WeekOfYear = week_of_year(Day),
+        Month = monthofyear(Day),
+        DayOfMonth = dayofmonth(Day)
+    | project Day, DailyCost = round(DailyCost, 2), DayOfWeek, WeekOfYear, Month, DayOfMonth
+    | order by Day asc
+}
+
+
+//======================================================================================================================
+// SECTION 6: EXECUTIVE SUMMARY METRICS
+// High-level KPIs for executive dashboards
+//======================================================================================================================
+
+// 6.1 Executive Summary KPIs
+.create-or-alter function
+with (docstring = 'Executive-level KPIs for dashboard summary', folder = 'Dashboard/Executive')
+ExecutiveSummaryKPIs()
+{
+    let costs = Costs() | where ChargePeriodStart >= startofmonth(now(), -1);
+    let totalCost = toscalar(costs | summarize sum(EffectiveCost));
+    let prevMonthCost = toscalar(Costs() | where ChargePeriodStart >= startofmonth(now(), -2) and ChargePeriodStart < startofmonth(now(), -1) | summarize sum(EffectiveCost));
+    let listCost = toscalar(costs | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId) | summarize sum(ListCost));
+    let effectiveCost = toscalar(costs | where ChargeCategory == "Usage" or isempty(CommitmentDiscountId) | summarize sum(EffectiveCost));
+    let commitmentUsed = toscalar(costs | where isnotempty(CommitmentDiscountId) | where CommitmentDiscountStatus == "Used" | summarize sum(EffectiveCost));
+    let commitmentTotal = toscalar(costs | where isnotempty(CommitmentDiscountId) | summarize sum(EffectiveCost));
+    print 
+        TotalCost = round(totalCost, 2),
+        MoMChange = round((totalCost - prevMonthCost) / prevMonthCost * 100, 2),
+        TotalSavings = round(listCost - effectiveCost, 2),
+        ESR = round(iff(listCost > 0, (listCost - effectiveCost) / listCost * 100, 0.0), 2),
+        CommitmentUtilization = round(iff(commitmentTotal > 0, commitmentUsed / commitmentTotal * 100, 0.0), 2),
+        Providers = toscalar(costs | summarize dcount(ProviderName)),
+        SubAccounts = toscalar(costs | summarize dcount(SubAccountId)),
+        Resources = toscalar(costs | summarize dcount(ResourceId))
+}
+
+
+// 6.2 Quick Stats
+.create-or-alter function
+with (docstring = 'Quick statistics for dashboard header', folder = 'Dashboard/Executive')
+QuickStats()
+{
+    let costs = Costs() | where ChargePeriodStart >= startofmonth(now(), -3);
+    costs
+    | summarize 
+        TotalCost = round(sum(EffectiveCost), 0),
+        AvgDailyCost = round(sum(EffectiveCost) / dcount(startofday(ChargePeriodStart)), 0),
+        Providers = dcount(ProviderName),
+        Subscriptions = dcount(SubAccountId),
+        ResourceGroups = dcount(strcat(SubAccountId, x_ResourceGroupName)),
+        Resources = dcount(ResourceId),
+        Services = dcount(ServiceName),
+        Regions = dcount(RegionName)
+}
