@@ -208,6 +208,9 @@ param defaultIdentity defaultIdentityType = {
   name: 'FirstPartyIdentity'
 }
 
+@description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
+param customerManagedKey customerManagedKeyType?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -219,8 +222,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -289,6 +292,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
   }
 }
 
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey!.keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey!.keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey!.keyName
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   name: name
   location: location
@@ -297,13 +313,18 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
   kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     enableBurstCapacity: !contains((capabilitiesToAdd ?? []), 'EnableServerless') ? enableBurstCapacity : false
+    databaseAccountOfferType: databaseAccountOfferType
     analyticalStorageConfiguration: analyticalStorageConfiguration
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
+    keyVaultKeyUri: !empty(customerManagedKey)
+      ? !isHSMManagedCMK
+          ? '${cMKKeyVault::cMKKey!.properties.keyUri}'
+          : 'https://${last(split((customerManagedKey!.keyVaultResourceId), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}'
+      : null
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
-    databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
@@ -339,6 +360,19 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    locations: !empty(failoverLocations)
+      ? map(failoverLocations!, failoverLocation => {
+          failoverPriority: failoverLocation.failoverPriority
+          locationName: failoverLocation.locationName
+          isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
+        })
+      : [
+          {
+            failoverPriority: 0
+            locationName: location
+            isZoneRedundant: zoneRedundant
+          }
+        ]
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables) || !empty(cassandraKeyspaces))
       ? {
           // NoSQL, MongoDB RU, Table, Apache Gremlin, and Apache Cassandra common properties
@@ -352,19 +386,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
               : {})
           }
           enableMultipleWriteLocations: enableMultipleWriteLocations
-          locations: !empty(failoverLocations)
-            ? map(failoverLocations!, failoverLocation => {
-                failoverPriority: failoverLocation.failoverPriority
-                locationName: failoverLocation.locationName
-                isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-              })
-            : [
-                {
-                  failoverPriority: 0
-                  locationName: location
-                  isZoneRedundant: zoneRedundant
-                }
-              ]
           ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
             ipAddressOrRange: ipRule
           })
@@ -711,6 +732,16 @@ output secondaryReadOnlyConnectionString string = databaseAccount.listConnection
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('The type of a customer-managed key configuration.')
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+}
 
 @export()
 @description('The type for the private endpoint output.')
