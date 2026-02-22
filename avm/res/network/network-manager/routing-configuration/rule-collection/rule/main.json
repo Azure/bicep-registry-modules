@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6901970573709708349"
+      "version": "0.40.2.10011",
+      "templateHash": "7269872342288614102"
     },
     "name": "Network Manager Routing configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -118,24 +118,24 @@
     "networkManager::routingConfiguration::ruleCollection": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'))]"
     },
     "networkManager::routingConfiguration": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers/routingConfigurations",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
     },
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "rule": {
       "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",

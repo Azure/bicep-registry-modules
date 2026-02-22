@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9448507251759075685"
+      "version": "0.40.2.10011",
+      "templateHash": "13573896748782530857"
     },
     "name": "Network Manager Security Admin Configuration Rule Collections",
     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -239,18 +239,18 @@
     "networkManager::securityAdminConfiguration": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
     },
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "ruleCollection": {
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
@@ -263,7 +263,7 @@
         "count": "[length(coalesce(parameters('rules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RuleCollections-Rules-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -318,8 +318,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "9580534553660704472"
+              "version": "0.40.2.10011",
+              "templateHash": "14959581279371058693"
             },
             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -498,24 +498,24 @@
             "networkManager::securityAdminConfiguration::ruleCollection": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]"
             },
             "networkManager::securityAdminConfiguration": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
             },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "rule": {
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
               "kind": "Custom",
               "properties": {

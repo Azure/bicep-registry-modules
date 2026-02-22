@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "17690996819040450542"
+      "version": "0.40.2.10011",
+      "templateHash": "7230676021955278433"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager."
@@ -153,6 +153,13 @@
             "description": "Required. The connectivity topology to apply the configuration to."
           }
         },
+        "connectivityCapabilities": {
+          "$ref": "#/definitions/connectivityCapabilitiesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement."
+          }
+        },
         "hubs": {
           "type": "array",
           "items": {
@@ -238,6 +245,17 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. A description of the routing configuration."
+          }
+        },
+        "routeTableUsageMode": {
+          "type": "string",
+          "allowedValues": [
+            "ManagedOnly",
+            "UseExisting"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to \"ManagedOnly\" if not specified."
           }
         },
         "ruleCollections": {
@@ -597,6 +615,47 @@
         }
       }
     },
+    "connectivityCapabilitiesType": {
+      "type": "object",
+      "properties": {
+        "connectedGroupAddressOverlap": {
+          "type": "string",
+          "allowedValues": [
+            "Allowed",
+            "Disallowed"
+          ],
+          "metadata": {
+            "description": "Required. Behavior to handle overlapped IP address space among members of the connected group."
+          }
+        },
+        "connectedGroupPrivateEndpointsScale": {
+          "type": "string",
+          "allowedValues": [
+            "HighScale",
+            "Standard"
+          ],
+          "metadata": {
+            "description": "Required. Option indicating the scale of private endpoints allowed in the connected group."
+          }
+        },
+        "peeringEnforcement": {
+          "type": "string",
+          "allowedValues": [
+            "Enforced",
+            "Unenforced"
+          ],
+          "metadata": {
+            "description": "Required. Option indicating enforcement of peerings created by the connectivity configuration."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of connectivity capabilities.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "connectivity-configuration/main.bicep"
+        }
+      }
+    },
     "hubType": {
       "type": "object",
       "properties": {
@@ -656,7 +715,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -731,7 +790,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -889,7 +948,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/networkManagers@2024-07-01#properties/tags"
+          "source": "Microsoft.Network/networkManagers@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1022,7 +1081,7 @@
     },
     "networkManager": {
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1036,7 +1095,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/networkManagers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/networkManagers', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1053,7 +1112,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/networkManagers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/networkManagers', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/networkManagers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1105,8 +1164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "17140702782328735431"
+              "version": "0.40.2.10011",
+              "templateHash": "6794054713293049235"
             },
             "name": "Network Manager Network Groups",
             "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
@@ -1182,12 +1241,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "networkGroup": {
               "type": "Microsoft.Network/networkManagers/networkGroups",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -1227,8 +1286,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "10637880052921094562"
+                      "version": "0.40.2.10011",
+                      "templateHash": "634711295004021807"
                     },
                     "name": "Network Manager Network Group Static Members",
                     "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."
@@ -1262,7 +1321,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]",
                       "properties": {
                         "resourceId": "[parameters('resourceId')]"
@@ -1357,6 +1416,9 @@
           "connectivityTopology": {
             "value": "[coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()].connectivityTopology]"
           },
+          "connectivityCapabilities": {
+            "value": "[tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'connectivityCapabilities')]"
+          },
           "hubs": {
             "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'hubs'), createArray())]"
           },
@@ -1374,8 +1436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "17582532818037736765"
+              "version": "0.40.2.10011",
+              "templateHash": "1319587387316443277"
             },
             "name": "Network Manager Connectivity Configurations",
             "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -1443,6 +1505,45 @@
                 "__bicep_export!": true,
                 "description": "The type of a hub."
               }
+            },
+            "connectivityCapabilitiesType": {
+              "type": "object",
+              "properties": {
+                "connectedGroupAddressOverlap": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allowed",
+                    "Disallowed"
+                  ],
+                  "metadata": {
+                    "description": "Required. Behavior to handle overlapped IP address space among members of the connected group."
+                  }
+                },
+                "connectedGroupPrivateEndpointsScale": {
+                  "type": "string",
+                  "allowedValues": [
+                    "HighScale",
+                    "Standard"
+                  ],
+                  "metadata": {
+                    "description": "Required. Option indicating the scale of private endpoints allowed in the connected group."
+                  }
+                },
+                "peeringEnforcement": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Enforced",
+                    "Unenforced"
+                  ],
+                  "metadata": {
+                    "description": "Required. Option indicating enforcement of peerings created by the connectivity configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of connectivity capabilities."
+              }
             }
           },
           "parameters": {
@@ -1496,6 +1597,13 @@
                 "description": "Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type \"HubAndSpoke\"."
               }
             },
+            "connectivityCapabilities": {
+              "$ref": "#/definitions/connectivityCapabilitiesType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement."
+              }
+            },
             "deleteExistingPeering": {
               "type": "bool",
               "defaultValue": false,
@@ -1515,15 +1623,16 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "connectivityConfiguration": {
               "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', string(coalesce(tryGet(lambdaVariables('group'), 'isGlobal'), false())), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', string(coalesce(tryGet(lambdaVariables('group'), 'useHubGateway'), false())))))]",
+                "connectivityCapabilities": "[parameters('connectivityCapabilities')]",
                 "connectivityTopology": "[parameters('connectivityTopology')]",
                 "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
                 "description": "[parameters('description')]",
@@ -1598,8 +1707,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "15775052392189775145"
+              "version": "0.40.2.10011",
+              "templateHash": "6596203303583606886"
             },
             "name": "Network Manager Scope Connections",
             "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
@@ -1642,7 +1751,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/networkManagers/scopeConnections",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -1717,8 +1826,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "11474877862567988264"
+              "version": "0.40.2.10011",
+              "templateHash": "11957019916954076230"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -2012,12 +2121,12 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "securityAdminConfigurations": {
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -2065,8 +2174,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "9834191033720208679"
+                      "version": "0.40.2.10011",
+                      "templateHash": "13573896748782530857"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -2299,18 +2408,18 @@
                     "networkManager::securityAdminConfiguration": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
                     },
                     "networkManager": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('networkManagerName')]"
                     },
                     "ruleCollection": {
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
                       "properties": {
                         "description": "[parameters('description')]",
@@ -2378,8 +2487,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.5.1644",
-                              "templateHash": "4417454877934913672"
+                              "version": "0.40.2.10011",
+                              "templateHash": "14959581279371058693"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -2558,24 +2667,24 @@
                             "networkManager::securityAdminConfiguration::ruleCollection": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]"
                             },
                             "networkManager::securityAdminConfiguration": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
                             },
                             "networkManager": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('networkManagerName')]"
                             },
                             "rule": {
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                               "kind": "Custom",
                               "properties": {
@@ -2704,6 +2813,9 @@
           "description": {
             "value": "[tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'description')]"
           },
+          "routeTableUsageMode": {
+            "value": "[tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'routeTableUsageMode')]"
+          },
           "ruleCollections": {
             "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
           }
@@ -2715,8 +2827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "3692062265709846828"
+              "version": "0.40.2.10011",
+              "templateHash": "2994600191503037926"
             },
             "name": "Network Manager Routing Configurations",
             "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -2902,6 +3014,17 @@
                 "description": "Optional. A description of the routing configuration."
               }
             },
+            "routeTableUsageMode": {
+              "type": "string",
+              "defaultValue": "ManagedOnly",
+              "allowedValues": [
+                "ManagedOnly",
+                "UseExisting"
+              ],
+              "metadata": {
+                "description": "Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to \"ManagedOnly\" if not specified."
+              }
+            },
             "ruleCollections": {
               "type": "array",
               "items": {
@@ -2917,15 +3040,16 @@
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "routingConfigurations": {
               "type": "Microsoft.Network/networkManagers/routingConfigurations",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
               "properties": {
-                "description": "[parameters('description')]"
+                "description": "[parameters('description')]",
+                "routeTableUsageMode": "[parameters('routeTableUsageMode')]"
               }
             },
             "routingConfigurations_ruleCollections": {
@@ -2971,8 +3095,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "16457134040944594317"
+                      "version": "0.40.2.10011",
+                      "templateHash": "15327481441544180728"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -3143,18 +3267,18 @@
                     "networkManager::routingConfiguration": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/routingConfigurations",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
                     },
                     "networkManager": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('networkManagerName')]"
                     },
                     "ruleCollection": {
                       "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]",
                       "properties": {
                         "description": "[parameters('description')]",
@@ -3205,8 +3329,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.5.1644",
-                              "templateHash": "5490992273320485582"
+                              "version": "0.40.2.10011",
+                              "templateHash": "7269872342288614102"
                             },
                             "name": "Network Manager Routing configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -3318,24 +3442,24 @@
                             "networkManager::routingConfiguration::ruleCollection": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'))]"
                             },
                             "networkManager::routingConfiguration": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers/routingConfigurations",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
                             },
                             "networkManager": {
                               "existing": true,
                               "type": "Microsoft.Network/networkManagers",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('networkManagerName')]"
                             },
                             "rule": {
                               "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                               "properties": {
                                 "description": "[parameters('description')]",
@@ -3462,7 +3586,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkManager', '2024-05-01', 'full').location]"
+      "value": "[reference('networkManager', '2025-05-01', 'full').location]"
     }
   }
 }
