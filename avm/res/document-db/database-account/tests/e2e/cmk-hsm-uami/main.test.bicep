@@ -20,6 +20,10 @@ param namePrefix string = '#_namePrefix_#'
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
+@description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
+@secure()
+param deploymentMSIResourceId string = ''
+
 @description('Required. The resource ID of the managed HSM used for encryption. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-managedHSMResourceId\'.')
 @secure()
 param managedHSMResourceId string = ''
@@ -38,14 +42,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-  }
-}
-
 module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
   name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
@@ -53,6 +49,18 @@ module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    deploymentMSIResourceId: deploymentMSIResourceId
+    managedHSMResourceId: managedHSMResourceId
+    deploymentScriptName: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
+    hSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
+  }
 }
 
 // ============== //
