@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "6617803098467821091"
+      "version": "0.38.33.27573",
+      "templateHash": "14021794949328228224"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
