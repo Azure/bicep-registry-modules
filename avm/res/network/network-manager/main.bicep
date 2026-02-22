@@ -9,16 +9,15 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/networkManagers@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkManagers@2025-05-01'>.tags?
 
 @maxLength(500)
 @sys.description('Optional. A description of the Network Manager.')
@@ -108,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -141,6 +140,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
       description: connectivityConfiguration.?description
       appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
+      connectivityCapabilities: connectivityConfiguration.?connectivityCapabilities
       hubs: connectivityConfiguration.?hubs ?? []
       deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering ?? false
       isGlobal: connectivityConfiguration.?isGlobal ?? false
@@ -183,6 +183,7 @@ module networkManager_routingConfigurations 'routing-configuration/main.bicep' =
       name: routingConfiguration.name
       networkManagerName: networkManager.name
       description: routingConfiguration.?description
+      routeTableUsageMode: routingConfiguration.?routeTableUsageMode
       ruleCollections: routingConfiguration.?ruleCollections ?? []
     }
     dependsOn: networkManager_networkGroups
@@ -275,7 +276,7 @@ type scopeConnectionType = {
   tenantId: string
 }
 
-import { appliesToGroupType, hubType } from 'connectivity-configuration/main.bicep'
+import { appliesToGroupType, hubType, connectivityCapabilitiesType } from 'connectivity-configuration/main.bicep'
 @export()
 @sys.description('The type of a connectivity configuration.')
 type connectivityConfigurationType = {
@@ -290,6 +291,9 @@ type connectivityConfigurationType = {
 
   @sys.description('Required. The connectivity topology to apply the configuration to.')
   connectivityTopology: ('HubAndSpoke' | 'Mesh')
+
+  @sys.description('Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.')
+  connectivityCapabilities: connectivityCapabilitiesType?
 
   @sys.description('Optional. The hubs to apply the configuration to.')
   hubs: hubType[]?
@@ -327,6 +331,9 @@ type routingConfigurationType = {
 
   @sys.description('Optional. A description of the routing configuration.')
   description: string?
+
+  @sys.description('Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified.')
+  routeTableUsageMode: ('ManagedOnly' | 'UseExisting')?
 
   @sys.description('Optional. Rule collections to create for the routing configuration.')
   ruleCollections: routingConfigurationRuleCollectionType[]?

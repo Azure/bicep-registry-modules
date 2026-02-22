@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -146,6 +146,11 @@ module testDeployment '../../../main.bicep' = [
           name: 'hubSpokeConnectivity'
           description: 'hubSpokeConnectivity description'
           connectivityTopology: 'HubAndSpoke'
+          connectivityCapabilities: {
+            connectedGroupAddressOverlap: 'Allowed'
+            connectedGroupPrivateEndpointsScale: 'Standard'
+            peeringEnforcement: 'Enforced'
+          }
           hubs: [
             {
               resourceId: nestedDependencies.outputs.virtualNetworkHubId
@@ -167,6 +172,11 @@ module testDeployment '../../../main.bicep' = [
           name: 'MeshConnectivity-1'
           description: 'MeshConnectivity description'
           connectivityTopology: 'Mesh'
+          connectivityCapabilities: {
+            connectedGroupAddressOverlap: 'Disallowed'
+            connectedGroupPrivateEndpointsScale: 'HighScale'
+            peeringEnforcement: 'Unenforced'
+          }
           deleteExistingPeering: true
           isGlobal: true
           appliesToGroups: [
@@ -310,9 +320,11 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'test-routing-config-1'
           description: 'description of the routing config'
+          routeTableUsageMode: 'ManagedOnly'
         }
         {
           name: 'test-routing-config-2'
+          routeTableUsageMode: 'UseExisting'
           ruleCollections: [
             {
               name: 'test-routing-rule-collection-1-subnet'
