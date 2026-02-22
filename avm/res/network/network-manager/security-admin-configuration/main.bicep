@@ -26,11 +26,11 @@ param networkGroupAddressSpaceAggregationOption string = 'None'
 @sys.description('Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules.')
 param ruleCollections securityAdminConfigurationRuleCollectionType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 }
 
-resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2024-05-01' = {
+resource securityAdminConfigurations 'Microsoft.Network/networkManagers/securityAdminConfigurations@2025-05-01' = {
   name: name
   parent: networkManager
   properties: {

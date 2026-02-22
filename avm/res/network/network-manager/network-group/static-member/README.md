@@ -13,7 +13,7 @@ Static membership allows you to explicitly add virtual networks to a group by ma
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
 
 ## Parameters
 

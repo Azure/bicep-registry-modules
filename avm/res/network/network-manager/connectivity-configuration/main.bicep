@@ -26,17 +26,20 @@ param connectivityTopology string
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
 param hubs hubType[]?
 
+@sys.description('Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.')
+param connectivityCapabilities connectivityCapabilitiesType?
+
 @sys.description('Optional. Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke".')
 param deleteExistingPeering bool = false
 
 @sys.description('Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions.')
 param isGlobal bool = false
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 }
 
-resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2024-05-01' = {
+resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01' = {
   name: name
   parent: networkManager
   properties: {
@@ -46,6 +49,7 @@ resource connectivityConfiguration 'Microsoft.Network/networkManagers/connectivi
       networkGroupId: any(group.networkGroupResourceId)
       useHubGateway: string(group.?useHubGateway ?? false)
     })
+    connectivityCapabilities: connectivityCapabilities
     connectivityTopology: connectivityTopology
     deleteExistingPeering: connectivityTopology == 'HubAndSpoke' ? string(deleteExistingPeering) : 'false'
     description: description
@@ -91,4 +95,17 @@ type hubType = {
 
   @sys.description('Required. Resource type of the hub.')
   resourceType: 'Microsoft.Network/virtualNetworks'
+}
+
+@export()
+@sys.description('The type of connectivity capabilities.')
+type connectivityCapabilitiesType = {
+  @sys.description('Required. Behavior to handle overlapped IP address space among members of the connected group.')
+  connectedGroupAddressOverlap: 'Allowed' | 'Disallowed'
+
+  @sys.description('Required. Option indicating the scale of private endpoints allowed in the connected group.')
+  connectedGroupPrivateEndpointsScale: 'HighScale' | 'Standard'
+
+  @sys.description('Required. Option indicating enforcement of peerings created by the connectivity configuration.')
+  peeringEnforcement: 'Enforced' | 'Unenforced'
 }

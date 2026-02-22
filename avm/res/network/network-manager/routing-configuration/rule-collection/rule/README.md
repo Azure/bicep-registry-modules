@@ -13,7 +13,7 @@ A Routing configuration contains a set of rule collections. Each rule collection
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
 
 ## Parameters
 
