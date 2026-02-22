@@ -763,6 +763,8 @@ param tags = {
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -774,7 +776,6 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
     name: 'dddamhsm001'
@@ -876,6 +877,8 @@ param zoneRedundant = false
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -883,10 +886,9 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
   params: {
     // Required parameters
-    name: 'dddaenc001'
+    name: 'dddaenc002'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -896,14 +898,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       name: 'UserAssignedIdentity'
       resourceId: '<resourceId>'
     }
-    disableKeyBasedMetadataWriteAccess: false
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    networkRestrictions: {
-      publicNetworkAccess: 'Enabled'
     }
     zoneRedundant: false
   }
@@ -924,7 +922,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddaenc001"
+      "value": "dddaenc002"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -939,19 +937,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         "resourceId": "<resourceId>"
       }
     },
-    "disableKeyBasedMetadataWriteAccess": {
-      "value": false
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "networkRestrictions": {
-      "value": {
-        "publicNetworkAccess": "Enabled"
       }
     },
     "zoneRedundant": {
@@ -972,7 +962,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddaenc001'
+param name = 'dddaenc002'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -982,14 +972,10 @@ param defaultIdentity = {
   name: 'UserAssignedIdentity'
   resourceId: '<resourceId>'
 }
-param disableKeyBasedMetadataWriteAccess = false
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
-}
-param networkRestrictions = {
-  publicNetworkAccess: 'Enabled'
 }
 param zoneRedundant = false
 ```

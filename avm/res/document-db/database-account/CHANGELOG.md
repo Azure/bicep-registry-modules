@@ -6,8 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for customer-managed keys through a combination of the added parameters `defaultIdentity` & `keyVaultKeyUri`
-- Added support for the parameters
+- Added support for customer-managed keys via the parameters `defaultIdentity` & `customerManagedKey` (including managed HSM support)
 
 ### Breaking Changes
 

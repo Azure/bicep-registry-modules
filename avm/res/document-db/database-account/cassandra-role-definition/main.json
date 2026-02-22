@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "17859939500809924517"
+      "version": "0.40.2.10011",
+      "templateHash": "10787709019875067397"
     },
     "name": "DocumentDB Database Account Cassandra Role Definitions.",
     "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -162,8 +162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "552115240340341941"
+              "version": "0.40.2.10011",
+              "templateHash": "14764024820910071147"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."

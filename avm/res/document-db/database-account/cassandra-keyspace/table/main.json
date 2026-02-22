@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "785607874724829202"
+      "version": "0.40.2.10011",
+      "templateHash": "15998065591386988132"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
