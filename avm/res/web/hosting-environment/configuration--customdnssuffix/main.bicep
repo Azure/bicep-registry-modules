@@ -13,11 +13,11 @@ param certificateUrl string
 @description('Required. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available.')
 param keyVaultReferenceIdentity string
 
-resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2022-03-01' existing = {
+resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2025-03-01' existing = {
   name: hostingEnvironmentName
 }
 
-resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2023-12-01' = {
+resource configuration 'Microsoft.Web/hostingEnvironments/configurations@2025-03-01' = {
   name: 'customdnssuffix'
   parent: appServiceEnvironment
   properties: {
