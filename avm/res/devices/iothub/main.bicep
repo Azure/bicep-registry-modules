@@ -323,6 +323,9 @@ output name string = iotHub.name
 @description('The location the resource was deployed into.')
 output location string = iotHub.location
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = iotHub.?identity.?principalId
+
 @description('The private endpoints of the iotHub.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
