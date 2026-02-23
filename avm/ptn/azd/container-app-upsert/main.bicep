@@ -12,6 +12,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. Allowed origins.')
+param allowedOrigins string[]?
+
 @description('Required. Name of the environment for container apps.')
 param containerAppsEnvironmentName string
 
@@ -124,6 +127,7 @@ module app 'br/public:avm/ptn/azd/acr-container-app:0.2.0' = {
     tags: tags
     identityType: identityType
     identityName: identityName
+    allowedOrigins: allowedOrigins
     ingressEnabled: ingressEnabled
     containerName: containerName
     containerAppsEnvironmentName: containerAppsEnvironmentName

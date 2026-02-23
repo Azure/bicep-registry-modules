@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3147345432559843017"
+      "version": "0.38.5.1644",
+      "templateHash": "16609098849679399522"
     },
     "name": "Public DNS Zone PTR record",
     "description": "This module deploys a Public DNS Zone PTR record."
@@ -103,17 +103,23 @@
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ptrRecords": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/PTR@2018-05-01#properties/properties/properties/PTRRecords"
+        },
         "description": "Optional. The list of PTR records in the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",

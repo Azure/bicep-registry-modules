@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "13328250072949974950"
+      "version": "0.38.33.27573",
+      "templateHash": "9499030178049388265"
     },
     "name": "Data Factory Linked Service",
     "description": "This module deploys a Data Factory Linked Service."
@@ -26,7 +26,7 @@
     "type": {
       "type": "string",
       "metadata": {
-        "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
+        "description": "Required. The type of Linked Service. See [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects) for more information."
       }
     },
     "typeProperties": {

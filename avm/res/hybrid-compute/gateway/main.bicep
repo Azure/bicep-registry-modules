@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.HybridCompute/gateways@2024-07-31-preview'>.tags?
 
 @description('Optional. Specifies the list of features that are enabled for this Gateway.')
 param allowedFeatures string[] = ['*']

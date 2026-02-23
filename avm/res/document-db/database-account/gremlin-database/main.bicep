@@ -5,13 +5,13 @@ metadata description = 'This module deploys a Gremlin Database within a CosmosDB
 param name string
 
 @description('Optional. Tags of the Gremlin database resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15'>.tags?
 
 @description('Conditional. The name of the parent Gremlin database. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
 
 @description('Optional. Array of graphs to deploy in the Gremlin database.')
-param graphs array = []
+param graphs graphType[]?
 
 @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
 param maxThroughput int = 4000
@@ -19,7 +19,7 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
 param throughput int?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 }
 
@@ -34,7 +34,7 @@ var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 
       throughput: throughput
     }
 
-resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15' = {
+resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2025-04-15' = {
   name: name
   tags: tags
   parent: databaseAccount
@@ -47,14 +47,14 @@ resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases
 }
 
 module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [
-  for graph in graphs: {
+  for graph in (graphs ?? []): {
     name: '${uniqueString(deployment().name, gremlinDatabase.name)}-gremlindb-${graph.name}'
     params: {
       name: graph.name
       gremlinDatabaseName: name
       databaseAccountName: databaseAccountName
       indexingPolicy: graph.?indexingPolicy
-      partitionKeyPaths: !empty(graph.partitionKeyPaths) ? graph.partitionKeyPaths : []
+      partitionKeyPaths: graph.?partitionKeyPaths
     }
   }
 ]
@@ -67,3 +67,23 @@ output resourceId string = gremlinDatabase.id
 
 @description('The name of the resource group the Gremlin database was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a graph.')
+type graphType = {
+  @description('Required. Name of the graph.')
+  name: string
+
+  @description('Optional. Tags of the Gremlin graph resource.')
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.tags?
+
+  @description('Optional. Indexing policy of the graph.')
+  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.properties.resource.indexingPolicy?
+
+  @description('Optional. List of paths using which data within the container can be partitioned.')
+  partitionKeyPaths: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15'>.properties.resource.partitionKey.paths?
+}

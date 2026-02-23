@@ -8,7 +8,7 @@ var resourceType = '${split(resourceId, '/')[6]}/${split(resourceId, '/')[7]}'
 
 // Azure Blob Storage Backup
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: last(split(resourceId, '/'))
 }
 

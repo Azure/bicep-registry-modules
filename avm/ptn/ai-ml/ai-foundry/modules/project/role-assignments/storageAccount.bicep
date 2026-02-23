@@ -17,7 +17,7 @@ resource blobStorageContributorRole 'Microsoft.Authorization/roleDefinitions@202
 // NOTE: using resource module over AVM due to resource possibly existing out of the current scope
 resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: storageAccount
-  name: guid(storageAccount.id, blobStorageContributorRole.id, storageAccountName)
+  name: guid(storageAccount.id, blobStorageContributorRole.id, storageAccountName, projectIdentityPrincipalId)
   properties: {
     principalId: projectIdentityPrincipalId
     roleDefinitionId: blobStorageContributorRole.id

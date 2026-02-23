@@ -2,6 +2,14 @@
 
 This module deploys a SQL Role Definision in a CosmosDB Account.
 
+You can reference the module as follows:
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account/sql-role-definition:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -23,6 +31,7 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
 | [`roleName`](#parameter-rolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
 
 **Conditional parameters**
@@ -36,10 +45,16 @@ This module deploys a SQL Role Definision in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-assignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
-| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | The unique identifier of the Role Definition. |
 | [`sqlRoleAssignments`](#parameter-sqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
+
+### Parameter: `dataActions`
+
+An array of data actions that are allowed.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `roleName`
 
@@ -61,14 +76,6 @@ A set of fully qualified Scopes at or below which Role Assignments may be create
 
 - Required: No
 - Type: array
-
-### Parameter: `dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -103,6 +110,7 @@ An array of SQL Role Assignments to be created for the SQL Role Definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-sqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`scope`](#parameter-sqlroleassignmentsscope) | string | The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level. |
 
 ### Parameter: `sqlRoleAssignments.principalId`
 
@@ -114,6 +122,13 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 ### Parameter: `sqlRoleAssignments.name`
 
 Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlRoleAssignments.scope`
+
+The data plane resource id for which access is being granted through this Role Assignment. Defaults to the root of the database account, but can also be scoped to e.g., the container and database level.
 
 - Required: No
 - Type: string
@@ -137,4 +152,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

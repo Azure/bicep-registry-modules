@@ -2,6 +2,14 @@
 
 This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.
 
+You can reference the module as follows:
+```bicep
+module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -15,7 +23,7 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/jobs` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_jobs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/jobs)</li></ul> |
+| `Microsoft.App/jobs` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_jobs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/jobs)</li></ul> |
 | `Microsoft.App/managedEnvironments` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments)</li></ul> |
 | `Microsoft.App/managedEnvironments/certificates` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates)</li></ul> |
 | `Microsoft.App/managedEnvironments/storages` | 2024-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages)</li></ul> |
@@ -45,9 +53,7 @@ This module deploys self-hosted agents and runners for Azure DevOps and GitHub o
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
@@ -100,6 +106,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances and Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/aca-aci]
+
 
 <details>
 
@@ -107,7 +115,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -220,6 +227,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults.azuredevops.aci]
+
 
 <details>
 
@@ -227,7 +236,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -342,6 +350,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults.github.aca]
+
 
 <details>
 
@@ -349,7 +359,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -482,6 +491,8 @@ param privateNetworking = false
 
 This instance deploys the module with most of its features enabled for Azure DevOps self-hosted agents using Azure Container Apps.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max.azuredevops.aca]
+
 
 <details>
 
@@ -489,7 +500,6 @@ This instance deploys the module with most of its features enabled for Azure Dev
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -632,6 +642,8 @@ param privateNetworking = false
 
 This instance deploys the module with most of its features enabled for GitHub self-hosted runners using Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max.github.aci]
+
 
 <details>
 
@@ -639,7 +651,6 @@ This instance deploys the module with most of its features enabled for GitHub se
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -785,6 +796,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/org-scope-github-aca]
+
 
 <details>
 
@@ -792,7 +805,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -902,6 +914,8 @@ param privateNetworking = false
 
 This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-devops-existing-vnet-aci]
+
 
 <details>
 
@@ -909,7 +923,6 @@ This instance deploys the module with the minimum set of required parameters Azu
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -1055,6 +1068,8 @@ param privateNetworking = true
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-github-existing-vnet-aca]
+
 
 <details>
 
@@ -1062,7 +1077,6 @@ This instance deploys the module with the minimum set of required parameters Git
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -1205,6 +1219,8 @@ param privateNetworking = true
 
 This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-github-new-vnet]
+
 
 <details>
 
@@ -1212,7 +1228,6 @@ This instance deploys the module with the minimum set of required parameters Git
 
 ```bicep
 module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>' = {
-  name: 'cicdAgentsAndRunnersDeployment'
   params: {
     // Required parameters
     computeTypes: [
@@ -2310,19 +2325,19 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/app/job:0.6.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/app/job:0.7.1` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
 | `br/public:avm/res/container-instance/container-group:0.6.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.4.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.25.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

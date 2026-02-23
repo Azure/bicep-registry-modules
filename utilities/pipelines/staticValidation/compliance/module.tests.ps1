@@ -544,7 +544,6 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
     }
 
-
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [customLocation] runtime parameter should not have a default value.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
@@ -616,6 +615,30 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         }
 
         $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should include a condition to run automatically only on upstream `main` changes.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [string] $WorkflowPath
+        )
+
+        $workflowContent = ConvertFrom-Yaml -Yaml (Get-Content $WorkflowPath -Raw)
+        $initalizeConditions = $workflowContent.jobs['job_initialize_pipeline'].if
+
+        $expectedConditions = @(
+            '!cancelled()',
+            "!(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch')"
+        )
+
+        $missingConditions = @()
+        foreach ($condition in $expectedConditions) {
+            if ($initalizeConditions -notlike "*$condition*") {
+                $missingConditions += $condition
+            }
+        }
+
+        $missingConditions.Count | Should -Be 0 -Because ('the number of missing conditions of the `job_initialize_pipeline` step should be 0, but got [{0}] ([ref](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/#4-implement-your-contribution)).' -f ($missingConditions -join ', '))
     }
 }
 
@@ -969,7 +992,7 @@ Describe 'Module tests' -Tag 'Module' {
                         }
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('the description of conditional parameters in the template file must contain a sentence that starts with "Required if", explaining when the parameter is mandatory. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
@@ -2173,11 +2196,21 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
         BeforeDiscovery {
             $deploymentTestFileTestCases = @()
+            # Collecting content of test files that are loaded only once
+            $allTestFiles = (Get-ChildItem -Path $repoRootPath -Recurse -Include 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | ForEach-Object {
+                return @{
+                    Path    = $_
+                    Content = Get-Content -Path $_
+                }
+            }
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
                     $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US'
+
                     foreach ($testFilePath in $testFilePaths) {
+                        $otherTestFiles = $allTestFiles | Where-Object { $_.Path -ne $testFilePath }
+
                         $testFileContent = Get-Content $testFilePath
                         $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                         $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
@@ -2189,6 +2222,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
                             compiledTestFileContent  = $builtTestFileMap[$testFilePath]
                             moduleFolderName         = $resourceTypeIdentifier
                             moduleType               = $moduleType
+                            otherTestFiles           = $otherTestFiles
                             isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         }
                     }
@@ -2337,6 +2371,31 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
             $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
         }
+
+        It '[<moduleFolderName>] `serviceShort` should be unique across repository' -TestCases $deploymentTestFileTestCases {
+
+            param(
+                [object[]] $testFileContent,
+                [string] $testFilePath,
+                [object[]] $otherTestFiles
+            )
+
+            $testFileShortMatch = [regex]::Match(($testFileContent | Out-String), "param serviceShort string = '(.*)'")
+            if ($testFileShortMatch.Success) {
+                $serviceShort = $testFileShortMatch.Captures.Groups[1].Value
+                foreach ($otherTestFile in $otherTestFiles) {
+                    $otherTestFileShortMatch = [regex]::Match(($otherTestFile.Content | Out-String), "param serviceShort string = '(.*)'")
+                    if ($otherTestFileShortMatch.Success) {
+                        $otherServiceShort = $otherTestFileShortMatch.Captures.Groups[1].Value
+                        $shortendTestPath = $testFilePath -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath"))
+                        $shortedOtherTestPath = ($otherTestFile.Path -replace ('{0}[\\|\/]' -f [regex]::Escape("$repoRootPath")), '')
+                        $serviceShort | Should -Not -Be $otherServiceShort -Because "the serviceShort value [$serviceShort] in test file [$shortendTestPath] should be unique across the repository but is also used by [$shortedOtherTestPath]."
+                    }
+                }
+            } else {
+                Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] but it doesn''t.'
+            }
+        }
     }
 }
 
@@ -2368,7 +2427,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             foreach ($resource in $nestedResources) {
 
                 switch ($resource.type) {
-                    { $PSItem -like '*diagnosticsettings*' } {
+                    { $PSItem -match '[\\|\/]diagnosticSettings$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'diagnosticSettings'
@@ -2379,7 +2438,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*locks' } {
+                    { $PSItem -match '[\\|\/]locks$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'locks'
@@ -2390,7 +2449,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*roleAssignments' } {
+                    { $PSItem -match '[\\|\/]roleAssignments$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'roleAssignments'
@@ -2401,7 +2460,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                         }
                         break
                     }
-                    { $PSItem -like '*privateEndpoints' -and ($PSItem -notlike '*managedPrivateEndpoints') } {
+                    { $PSItem -match '[\\|\/]privateEndpoints$' } {
                         $testCases += @{
                             moduleName                     = $moduleFolderName
                             resourceType                   = 'privateEndpoints'

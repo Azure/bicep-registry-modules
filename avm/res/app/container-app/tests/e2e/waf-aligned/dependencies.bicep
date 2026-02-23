@@ -7,7 +7,7 @@ param managedEnvironmentName string
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: managedEnvironmentName
   location: location
   properties: {

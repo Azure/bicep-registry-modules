@@ -12,7 +12,7 @@ This module deploys a Service Bus Namespace Migration Configuration.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | 2022-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_migrationconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/migrationConfigurations)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_migrationconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/migrationConfigurations)</li></ul> |
 
 ## Parameters
 

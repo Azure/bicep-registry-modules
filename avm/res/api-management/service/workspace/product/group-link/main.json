@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "9816498973930744055"
+    },
+    "name": "API Management Workspace Product Group Links",
+    "description": "This module deploys a Product Group Link in an API Management Workspace."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "productName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Product Group link."
+      }
+    },
+    "groupResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Full resource Id of a Group."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/workspaces/products/groupLinks",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+      "properties": {
+        "groupId": "[parameters('groupResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace product group link."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/groupLinks', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace product group link."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace product group link was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

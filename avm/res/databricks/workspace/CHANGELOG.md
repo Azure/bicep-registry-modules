@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/databricks/workspace/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Adding support for managed HSM customer-managed key encryption
+- Added the output `managedDiskIdentityPrincipalId` which is available if CMK for the managed disk is configured
+- Updated all 'avm-common-types' references to version `0.6.1`
+
+### Breaking Changes
+
+- None
+
+## 0.11.5
+
+### Changes
+
+- Fixed an issue where having separate keys for encryption & disk-encryption in the same vault would not work as expected.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.4
 
 ### Changes

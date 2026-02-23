@@ -8,11 +8,7 @@ param name string
 param publicIpPrefixResourceId string?
 
 @description('Optional. The public IP address allocation method.')
-@allowed([
-  'Dynamic'
-  'Static'
-])
-param publicIPAllocationMethod string = 'Static'
+param publicIPAllocationMethod resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.publicIPAllocationMethod = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
 @allowed([
@@ -27,43 +23,34 @@ param availabilityZones int[] = [
 ]
 
 @description('Optional. IP address version.')
-@allowed([
-  'IPv4'
-  'IPv6'
-])
-param publicIPAddressVersion string = 'IPv4'
+param publicIPAddressVersion resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.publicIPAddressVersion = 'IPv4'
 
 @description('Optional. The DNS settings of the public IP address.')
-param dnsSettings dnsSettingsType?
+param dnsSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.dnsSettings?
 
 @description('Optional. The list of tags associated with the public IP address.')
-param ipTags ipTagType[]?
+param ipTags resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ipTags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Name of a public IP address SKU.')
-@allowed([
-  'Basic'
-  'Standard'
-])
-param skuName string = 'Standard'
+param skuName resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.sku.name = 'Standard'
 
 @description('Optional. Tier of a public IP address SKU.')
-@allowed([
-  'Global'
-  'Regional'
-])
-param skuTier string = 'Regional'
+param skuTier resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.sku.tier = 'Regional'
 
 @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
-param ddosSettings ddosSettingsType?
+param ddosSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ddosSettings?
+
+@description('Optional. The delete option for the public IP address.')
+param deleteOption resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.deleteOption?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -74,9 +61,9 @@ param enableTelemetry bool = true
 param idleTimeoutInMinutes int = 4
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.tags?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -144,7 +131,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -165,6 +152,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
       : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: ipTags
+    deleteOption: deleteOption
   }
 }
 
@@ -238,42 +226,3 @@ output ipAddress string = publicIpAddress.properties.?ipAddress ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = publicIpAddress.location
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@export()
-type dnsSettingsType = {
-  @description('Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.')
-  domainNameLabel: string
-
-  @description('Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.')
-  domainNameLabelScope: ('NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse')?
-
-  @description('Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone.')
-  fqdn: string?
-
-  @description('Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.')
-  reverseFqdn: string?
-}
-
-@export()
-type ddosSettingsType = {
-  @description('Optional. The DDoS protection plan associated with the public IP address.')
-  ddosProtectionPlan: {
-    @description('Required. The resource ID of the DDOS protection plan associated with the public IP address.')
-    id: string
-  }?
-  @description('Required. The DDoS protection policy customizations.')
-  protectionMode: 'Enabled'
-}
-
-@export()
-type ipTagType = {
-  @description('Required. The IP tag type.')
-  ipTagType: string
-
-  @description('Required. The IP tag.')
-  tag: string
-}

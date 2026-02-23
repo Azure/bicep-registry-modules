@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2321178038283517825"
+      "version": "0.39.26.7824",
+      "templateHash": "4681878954827475819"
     },
     "name": "API Management Service APIs Operations",
     "description": "This module deploys an API Management Service API Operation."
@@ -17,8 +17,9 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the policy."
+            "description": "Optional. The name of the policy."
           }
         },
         "format": {
@@ -29,8 +30,9 @@
             "xml",
             "xml-link"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Format of the policyContent."
+            "description": "Optional. Format of the policyContent."
           }
         },
         "value": {
@@ -89,6 +91,8 @@
     },
     "urlTemplate": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
       "metadata": {
         "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
       }
@@ -96,8 +100,9 @@
     "description": {
       "type": "string",
       "nullable": true,
+      "maxLength": 1000,
       "metadata": {
-        "description": "Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters."
+        "description": "Optional. Description of the operation. May include HTML formatting tags."
       }
     },
     "request": {
@@ -158,14 +163,14 @@
         "templateParameters": "[parameters('templateParameters')]"
       }
     },
-    "policy": {
+    "operation_policies": {
       "copy": {
-        "name": "policy",
+        "name": "operation_policies",
         "count": "[length(coalesce(parameters('policies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -182,10 +187,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
           },
           "format": {
-            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].format]"
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
@@ -197,8 +202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "17700550507187528779"
+              "version": "0.39.26.7824",
+              "templateHash": "18389382180802111163"
             },
             "name": "API Management Service API Operation Policies",
             "description": "This module deploys an API Management Service API Operation Policy."
@@ -224,12 +229,14 @@
             },
             "name": {
               "type": "string",
+              "defaultValue": "policy",
               "metadata": {
-                "description": "Required. The name of the policy."
+                "description": "Optional. The name of the policy."
               }
             },
             "format": {
               "type": "string",
+              "defaultValue": "xml",
               "allowedValues": [
                 "rawxml",
                 "rawxml-link",
@@ -237,7 +244,7 @@
                 "xml-link"
               ],
               "metadata": {
-                "description": "Required. Format of the policyContent."
+                "description": "Optional. Format of the policyContent."
               }
             },
             "value": {

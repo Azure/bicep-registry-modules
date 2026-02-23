@@ -1,6 +1,11 @@
 metadata name = 'API Management Service APIs'
 metadata description = 'This module deploys an API Management Service API.'
 
+@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
+param apiManagementServiceName string
+
+@minLength(1)
+@maxLength(256)
 @sys.description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
 param name string
 
@@ -13,16 +18,20 @@ param diagnostics diagnosticType[]?
 @sys.description('Optional. The operations of the api.')
 param operations operationType[]?
 
-@sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
-param apiManagementServiceName string
-
+@minLength(1)
+@maxLength(100)
 @sys.description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
 param apiRevision string?
 
+@maxLength(256)
 @sys.description('Optional. Description of the API Revision.')
 param apiRevisionDescription string?
 
-@sys.description('Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.')
+@sys.description('''Optional. Type of API to create.
+* `http` creates a REST API
+* `soap` creates a SOAP pass-through API
+* `websocket` creates websocket API
+* `graphql` creates GraphQL API.''')
 @allowed([
   'graphql'
   'http'
@@ -31,9 +40,11 @@ param apiRevisionDescription string?
 ])
 param apiType string = 'http'
 
+@maxLength(100)
 @sys.description('Optional. Indicates the Version identifier of the API if the API is versioned.')
 param apiVersion string?
 
+@maxLength(256)
 @sys.description('Optional. Description of the API Version.')
 param apiVersionDescription string?
 
@@ -43,37 +54,49 @@ param authenticationSettings resourceInput<'Microsoft.ApiManagement/service/apis
 @sys.description('Optional. Description of the API. May include HTML formatting tags.')
 param description string?
 
-@sys.description('Required. API name. Must be 1 to 300 characters long.')
+@sys.description('Required. API display name.')
 @maxLength(300)
 param displayName string
 
 @sys.description('Optional. Format of the Content in which the API is getting imported.')
 @allowed([
-  'wadl-xml'
-  'wadl-link-json'
-  'swagger-json'
-  'swagger-link-json'
-  'wsdl'
-  'wsdl-link'
+  'graphql-link'
+  'grpc'
+  'grpc-link'
+  'odata'
+  'odata-link'
   'openapi'
   'openapi+json'
-  'openapi-link'
   'openapi+json-link'
+  'openapi-link'
+  'swagger-json'
+  'swagger-link-json'
+  'wadl-link-json'
+  'wadl-xml'
+  'wsdl'
+  'wsdl-link'
 ])
 param format string = 'openapi'
 
 @sys.description('Optional. Indicates if API revision is current API revision.')
 param isCurrent bool = true
 
+@maxLength(400)
 @sys.description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
 param path string
 
-@sys.description('Optional. Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.')
+@allowed([
+  'http'
+  'https'
+  'ws'
+  'wss'
+])
+@sys.description('Optional. Describes on which protocols the operations in this API can be invoked.')
 param protocols string[] = [
   'https'
 ]
 
-@sys.description('Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.')
+@sys.description('Optional. Absolute URL of the backend service implementing this API.')
 @maxLength(2000)
 param serviceUrl string?
 
@@ -92,7 +115,9 @@ param subscriptionRequired bool = false
 @sys.description('Optional. Type of API.')
 @allowed([
   'graphql'
+  'grpc'
   'http'
+  'odata'
   'soap'
   'websocket'
 ])
@@ -164,12 +189,12 @@ resource api 'Microsoft.ApiManagement/service/apis@2024-05-01' = {
 }
 
 module api_policies 'policy/main.bicep' = [
-  for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
+  for (policy, index) in (policies ?? []): {
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
-      format: policy.?format ?? 'xml'
+      format: policy.?format
       value: policy.value
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -177,8 +202,8 @@ module api_policies 'policy/main.bicep' = [
 ]
 
 module api_diagnostics 'diagnostics/main.bicep' = [
-  for (diagnostic, index) in diagnostics ?? []: {
-    name: '${deployment().name}-diagnostics-${index}'
+  for (diagnostic, index) in (diagnostics ?? []): {
+    name: '${deployment().name}-Diag-${index}'
     params: {
       name: diagnostic.?name
       apiManagementServiceName: apiManagementServiceName
@@ -200,13 +225,13 @@ module api_diagnostics 'diagnostics/main.bicep' = [
 
 module api_operations 'operation/main.bicep' = [
   for (operation, index) in (operations ?? []): {
-    name: '${deployment().name}-operation-${index}'
+    name: '${deployment().name}-Opr-${index}'
     params: {
+      name: operation.name
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
       displayName: operation.displayName
       method: operation.method
-      name: operation.name
       urlTemplate: operation.urlTemplate
       description: operation.?description
       policies: operation.?policies
@@ -235,7 +260,7 @@ import * as operationTypes from 'operation/main.bicep'
 @export()
 @sys.description('The type of an operation.')
 type operationType = {
-  @sys.description('Required. The name of the policy.')
+  @sys.description('Required. The name of the operation.')
   name: string
 
   @sys.description('Required. The display name of the operation.')
@@ -247,16 +272,19 @@ type operationType = {
   @sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
   method: string
 
+  @minLength(1)
+  @maxLength(1000)
   @sys.description('Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
   urlTemplate: string
 
+  @maxLength(1000)
   @sys.description('Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.')
   description: string?
 
   @sys.description('Optional. An entity containing request details.')
   request: resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.request?
 
-  @sys.description('Optional. An entity containing request details.')
+  @sys.description('Optional. Array of Operation responses.')
   responses: resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.responses?
 
   @sys.description('Optional. Collection of URL template parameters.')
@@ -279,14 +307,14 @@ type policyType = {
 @export()
 @sys.description('The type of a diagnostic configuration.')
 type diagnosticType = {
-  @sys.description('Required. The name of the logger.')
+  @sys.description('Required. The name of the target logger.')
   loggerName: string
 
-  @sys.description('Optional. Type of diagnostic resource.')
+  @sys.description('Optional. The identifier of the Diagnostic.')
   name: ('azuremonitor' | 'applicationinsights' | 'local')?
 
   @sys.description('Optional. Specifies for what type of messages sampling settings should not apply.')
-  alwaysLog: string?
+  alwaysLog: ('allErrors')?
 
   @sys.description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
   backend: resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.backend?
@@ -304,9 +332,11 @@ type diagnosticType = {
   metrics: bool?
 
   @sys.description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
-  operationNameFormat: ('Name' | 'URI')?
+  operationNameFormat: ('Name' | 'Url')?
 
-  @sys.description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
+  @sys.description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
+  @minValue(0)
+  @maxValue(100)
   samplingPercentage: int?
 
   @sys.description('Optional. The verbosity level applied to traces emitted by trace policies.')

@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-ids-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
 }
@@ -66,6 +67,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       skuName: 'Standard'
       skuCapacity: 2
+      managedIdentities: {
+        userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
       authorizationRules: [
         {
           name: 'RootManageSharedAccessKey'
@@ -120,15 +124,23 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
           ]
-          captureDescriptionDestinationArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-          captureDescriptionDestinationBlobContainer: 'eventhub'
-          captureDescriptionDestinationName: 'EventHubArchive.AzureBlockBlob'
-          captureDescriptionDestinationStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          captureDescriptionEnabled: true
-          captureDescriptionEncoding: 'Avro'
-          captureDescriptionIntervalInSeconds: 300
-          captureDescriptionSizeLimitInBytes: 314572800
-          captureDescriptionSkipEmptyArchives: true
+          captureDescription: {
+            destination: {
+              name: 'EventHubArchive.AzureBlockBlob'
+              identity: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+              properties: {
+                archiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+                blobContainer: nestedDependencies.outputs.storageAccountContainerName
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              }
+            }
+            intervalInSeconds: 300
+            sizeLimitInBytes: 314572800
+            skipEmptyArchives: true
+            encoding: 'Avro'
+          }
           consumergroups: [
             {
               name: 'custom'

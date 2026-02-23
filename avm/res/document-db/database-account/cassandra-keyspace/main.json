@@ -1,0 +1,576 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.38.33.27573",
+      "templateHash": "63327155428300562"
+    },
+    "name": "DocumentDB Database Account Cassandra Keyspaces",
+    "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
+  },
+  "definitions": {
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the table."
+          }
+        },
+        "schema": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+            },
+            "description": "Required. Schema definition for the table."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+            },
+            "description": "Optional. Tags for the table."
+          },
+          "nullable": true
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default TTL (Time To Live) in seconds for data in the table."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Analytical TTL for the table."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a Cassandra table."
+      }
+    },
+    "viewType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the view."
+          }
+        },
+        "viewDefinition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. View definition (CQL statement)."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+            },
+            "description": "Optional. Tags for the view."
+          },
+          "nullable": true
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+          }
+        },
+        "autoscaleSettingsMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a Cassandra view (materialized view)."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Cassandra keyspace."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15#properties/tags"
+        },
+        "description": "Optional. Tags of the Cassandra keyspace resource."
+      },
+      "nullable": true
+    },
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Cosmos DB account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/tableType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of Cassandra tables to deploy in the keyspace."
+      }
+    },
+    "views": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/viewType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of Cassandra views (materialized views) to deploy in the keyspace."
+      }
+    },
+    "autoscaleSettingsMaxThroughput": {
+      "type": "int",
+      "defaultValue": 4000,
+      "metadata": {
+        "description": "Optional. Maximum autoscale throughput for the keyspace. If not set, autoscale will be disabled. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
+      }
+    }
+  },
+  "resources": {
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2024-11-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "cassandraKeyspace": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+      "apiVersion": "2024-11-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "resource": {
+          "id": "[parameters('name')]"
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "cassandraKeyspace_tables": {
+      "copy": {
+        "name": "cassandraKeyspace_tables",
+        "count": "[length(parameters('tables'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cassandradb-{1}', uniqueString(deployment().name, parameters('name')), parameters('tables')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('tables')[copyIndex()].name]"
+          },
+          "cassandraKeyspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "schema": {
+            "value": "[parameters('tables')[copyIndex()].schema]"
+          },
+          "analyticalStorageTtl": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'analyticalStorageTtl')]"
+          },
+          "throughput": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'throughput')]"
+          },
+          "autoscaleSettingsMaxThroughput": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+          },
+          "defaultTtl": {
+            "value": "[tryGet(parameters('tables')[copyIndex()], 'defaultTtl')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "785607874724829202"
+            },
+            "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
+            "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Cassandra table."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+                },
+                "description": "Optional. Tags of the Cassandra table resource."
+              },
+              "nullable": true
+            },
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "cassandraKeyspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Cassandra Keyspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "schema": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+                },
+                "description": "Required. Schema definition for the Cassandra table."
+              }
+            },
+            "analyticalStorageTtl": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. If not specified, the table will inherit throughput from the keyspace."
+              }
+            },
+            "autoscaleSettingsMaxThroughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum autoscale throughput for the table. Cannot be used with throughput. If not specified, the table will inherit throughput from the keyspace."
+              }
+            },
+            "defaultTtl": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount::cassandraKeyspace": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraTable": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('name')]",
+                  "schema": "[parameters('schema')]",
+                  "defaultTtl": "[parameters('defaultTtl')]",
+                  "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]"
+                },
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+              },
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Cassandra table."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cassandra table."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Cassandra table was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cassandraKeyspace"
+      ]
+    },
+    "cassandraKeyspace_views": {
+      "copy": {
+        "name": "cassandraKeyspace_views",
+        "count": "[length(parameters('views'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-cassandraview-{1}', uniqueString(deployment().name, parameters('name')), parameters('views')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('views')[copyIndex()].name]"
+          },
+          "cassandraKeyspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "viewDefinition": {
+            "value": "[parameters('views')[copyIndex()].viewDefinition]"
+          },
+          "throughput": {
+            "value": "[tryGet(parameters('views')[copyIndex()], 'throughput')]"
+          },
+          "autoscaleSettingsMaxThroughput": {
+            "value": "[tryGet(parameters('views')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('views')[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.38.33.27573",
+              "templateHash": "14021794949328228224"
+            },
+            "name": "DocumentDB Database Account Cassandra Keyspaces Views",
+            "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Cassandra view."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+                },
+                "description": "Optional. Tags of the Cassandra view resource."
+              },
+              "nullable": true
+            },
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "cassandraKeyspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Cassandra Keyspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "viewDefinition": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. View definition of the Cassandra view. This is the CQL statement that defines the materialized view."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput."
+              }
+            },
+            "autoscaleSettingsMaxThroughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum autoscale throughput for the view. Cannot be used with throughput."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount::cassandraKeyspace": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "cassandraView": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views",
+              "apiVersion": "2025-05-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('name')]",
+                  "viewDefinition": "[parameters('viewDefinition')]"
+                },
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+              },
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Cassandra view."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Cassandra view."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Cassandra view was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cassandraKeyspace"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cassandra keyspace."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Cassandra keyspace."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces', parameters('databaseAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Cassandra keyspace was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

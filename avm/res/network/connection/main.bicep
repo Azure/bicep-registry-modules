@@ -73,7 +73,7 @@ param customIPSecPolicy customIPSecPolicyType = {
 @description('Optional. The weight added to routes learned from this BGP speaker.')
 param routingWeight int?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 

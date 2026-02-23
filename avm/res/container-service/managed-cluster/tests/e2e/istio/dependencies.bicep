@@ -22,7 +22,7 @@ param cacertDeploymentScriptName string
 @description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
 param utcValue string = utcNow()
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -40,7 +40,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -58,7 +58,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource cacertDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource cacertDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: cacertDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'

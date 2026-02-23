@@ -2,15 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/vpn-site/CHANGELOG.md).
 
-## 0.3.2
+## 0.4.0
 
 ### Changes
 
-- Updated LockType to 'avm-common-types version' `0.6.0`, enabling custom notes for locks.
+- Added types for
+  - `tags`
+  - `addressPrefixes`
+  - `bgpProperties`
+  - `deviceProperties`
+  - `o365Policy`
+  - `vpnSiteLinks`
+  <p>parameters
+- Updated LockType to 'avm-common-types version' `0.6.1`, enabling custom notes for locks.
 
 ### Breaking Changes
 
-- None
+- Renamed `virtualWanId` to `virtualWanResourceId`
 
 ## 0.3.1
 

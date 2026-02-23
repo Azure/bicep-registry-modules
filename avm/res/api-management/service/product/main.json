@@ -5,11 +5,48 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "16064108269009620660"
+      "version": "0.39.26.7824",
+      "templateHash": "7904502469527808938"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
+  },
+  "definitions": {
+    "productPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a product policy."
+      }
+    }
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -18,23 +55,33 @@
         "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Required. Product Name."
+      }
+    },
     "displayName": {
       "type": "string",
+      "minLength": 1,
       "maxLength": 300,
       "metadata": {
-        "description": "Required. API Management Service Products name. Must be 1 to 300 characters long."
+        "description": "Required. Product display name."
       }
     },
     "approvalRequired": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
       }
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "maxLength": 1000,
       "metadata": {
         "description": "Optional. Product description. May include HTML formatting tags."
       }
@@ -59,17 +106,25 @@
         "description": "Optional. Names of Product Groups."
       }
     },
-    "name": {
-      "type": "string",
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/productPolicyType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Required. Product Name."
+        "description": "Optional. Array of Policies to apply to the Service Product."
       }
     },
     "state": {
       "type": "string",
       "defaultValue": "published",
+      "allowedValues": [
+        "notPublished",
+        "published"
+      ],
       "metadata": {
-        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published."
+        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
       }
     },
     "subscriptionRequired": {
@@ -151,7 +206,7 @@
         "count": "[length(coalesce(parameters('apis'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Api-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -178,8 +233,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "5465704654489665391"
+              "version": "0.39.26.7824",
+              "templateHash": "13118216367966284643"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -262,7 +317,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "product"
+      ]
     },
     "product_groups": {
       "copy": {
@@ -270,8 +328,8 @@
         "count": "[length(coalesce(parameters('groups'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Group-{1}', deployment().name, copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Grp-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -297,8 +355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13523839423669576454"
+              "version": "0.39.26.7824",
+              "templateHash": "1904337369189182505"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -381,7 +439,132 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "product"
+      ]
+    },
+    "product_policies": {
+      "copy": {
+        "name": "product_policies",
+        "count": "[length(coalesce(parameters('policies'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+          },
+          "format": {
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
+          },
+          "value": {
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "16879011987124410005"
+            },
+            "name": "API Management Service Product Policies",
+            "description": "This module deploys an API Management Service Product Policy."
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "policy",
+              "metadata": {
+                "description": "Optional. The name of the policy."
+              }
+            },
+            "format": {
+              "type": "string",
+              "defaultValue": "xml",
+              "allowedValues": [
+                "rawxml",
+                "rawxml-link",
+                "xml",
+                "xml-link"
+              ],
+              "metadata": {
+                "description": "Optional. Format of the policyContent."
+              }
+            },
+            "value": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Contents of the Policy as defined by the format."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/products/policies",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]",
+              "properties": {
+                "format": "[parameters('format')]",
+                "value": "[parameters('value')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Product policy."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/products/policies', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Product policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the Product policy was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "product"
+      ]
     }
   },
   "outputs": {
@@ -424,6 +607,19 @@
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('groups'), createArray()))))]",
         "input": "[reference(format('product_groups[{0}]', range(0, length(coalesce(parameters('groups'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
+    },
+    "policyResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The Resources IDs of the API management service product policies."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('policies'), createArray()))))]",
+        "input": "[reference(format('product_policies[{0}]', range(0, length(coalesce(parameters('policies'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     }
   }

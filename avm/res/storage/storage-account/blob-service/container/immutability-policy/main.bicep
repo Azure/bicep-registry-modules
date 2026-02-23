@@ -11,14 +11,11 @@ param containerName string
 @description('Optional. The immutability period for the blobs in the container since the policy creation, in days.')
 param immutabilityPeriodSinceCreationInDays int = 365
 
-@description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
-param allowProtectedAppendWrites bool = true
+@description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.')
+param allowProtectedAppendWrites bool = false
 
-@description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
-param allowProtectedAppendWritesAll bool = true
-
-// The name of the policy. MUST be 'default'
-var name = 'default'
+@description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.')
+param allowProtectedAppendWritesAll bool = false
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
@@ -33,7 +30,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
 }
 
 resource immutabilityPolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2025-01-01' = {
-  name: name
+  name: 'default' // policy name MUST be 'default'
   parent: storageAccount::blobServices::container
   properties: {
     immutabilityPeriodSinceCreationInDays: immutabilityPeriodSinceCreationInDays

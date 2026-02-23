@@ -18,12 +18,12 @@ param location string = resourceGroup().location
 ])
 param kind string
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Resources/deploymentScripts@2021-12-01'>.tags?
 
 @description('Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list.')
 param azPowerShellVersion string?
@@ -41,7 +41,7 @@ param primaryScriptUri string?
 param environmentVariables environmentVariableType[]?
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
-param supportingScriptUris array?
+param supportingScriptUris string[]?
 
 @description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. When using a private network, the `Storage File Data Privileged Contributor` role needs to be assigned to the user-assigned managed identity and the deployment principal needs to have permissions to list the storage account keys. Also, Shared-Keys must not be disabled on the used storage account [ref](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet).')
 param subnetResourceIds string[]?
@@ -75,11 +75,11 @@ param storageAccountResourceId string = ''
 @description('Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; \'PT30M\' - 30 minutes; \'P5D\' - 5 days; \'P1Y\' 1 year.')
 param timeout string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -139,7 +139,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split((!empty(storageAccountResourceId) ? storageAccountResourceId : 'dummyAccount'), '/'))!
   scope: resourceGroup(
     split((!empty(storageAccountResourceId) ? storageAccountResourceId : '//'), '/')[2],
@@ -149,7 +149,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
 
 var storageAccountSettings = !empty(storageAccountResourceId)
   ? {
-      storageAccountKey: empty(subnetResourceIds) ? listKeys(storageAccount.id, '2023-01-01').keys[0].value : null
+      storageAccountKey: empty(subnetResourceIds) ? storageAccount!.listKeys().keys[0].value : null
       storageAccountName: last(split(storageAccountResourceId, '/'))
     }
   : null
@@ -190,9 +190,9 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
     environmentVariables: environmentVariables
-    scriptContent: !empty(scriptContent) ? scriptContent : null
-    primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
-    supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
+    scriptContent: scriptContent
+    primaryScriptUri: primaryScriptUri
+    supportingScriptUris: supportingScriptUris
     cleanupPreference: cleanupPreference
     forceUpdateTag: runOnce ? resourceGroup().name : baseTime
     retentionInterval: retentionInterval

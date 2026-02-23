@@ -12,7 +12,7 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
 #disable-next-line no-hardcoded-location
-import { enforcedLocation, tags } from '../../shared/constants.bicep'
+var enforcedLocation = 'australiaeast'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrymin'
@@ -34,7 +34,9 @@ var workloadName = take(padLeft('${namePrefix}${serviceShort}', 12), 12)
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
-  tags: tags
+  tags: {
+    SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
+  }
 }
 
 // ============== //

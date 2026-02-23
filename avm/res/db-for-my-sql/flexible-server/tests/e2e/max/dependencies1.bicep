@@ -7,8 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-#disable-next-line use-recent-api-versions
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -25,8 +24,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-#disable-next-line use-recent-api-versions
-resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: pairedRegionScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -37,7 +35,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '14.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
@@ -45,6 +43,10 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
   dependsOn: [
     roleAssignment
   ]
+  tags: {
+    // SFI policies would prevent key based authentication to the storage account
+    SecurityControl: 'Ignore'
+  }
 }
 
 @description('The name of the paired region.')

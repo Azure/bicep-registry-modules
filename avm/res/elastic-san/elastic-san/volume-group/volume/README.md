@@ -13,8 +13,8 @@ This module deploys an Elastic SAN Volume.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.elasticsan_elasticsans_volumegroups_snapshots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/snapshots)</li></ul> |
-| `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.elasticsan_elasticsans_volumegroups_volumes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2023-01-01/elasticSans/volumegroups/volumes)</li></ul> |
+| `Microsoft.ElasticSan/elasticSans/volumegroups/snapshots` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.elasticsan_elasticsans_volumegroups_snapshots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2024-05-01/elasticSans/volumegroups/snapshots)</li></ul> |
+| `Microsoft.ElasticSan/elasticSans/volumegroups/volumes` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.elasticsan_elasticsans_volumegroups_volumes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ElasticSan/2024-05-01/elasticSans/volumegroups/volumes)</li></ul> |
 
 ## Parameters
 

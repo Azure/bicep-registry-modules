@@ -57,6 +57,10 @@ module testDeployment '../../../main.bicep' = [
       availabilityZone: -1
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      authConfig: {
+        activeDirectoryAuth: 'Enabled'
+        passwordAuth: 'Enabled'
+      }
       skuName: 'Standard_D2ds_v5'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'

@@ -56,7 +56,43 @@ An array of managed private endpoints objects created in the Data Factory manage
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Fully qualified domain names. |
+| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | The groupId to which the managed private endpoint is created. |
+| [`name`](#parameter-managedprivateendpointsname) | string | The managed private endpoint resource name. |
+| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | The ARM resource ID of the resource to which the managed private endpoint is created. |
+
+### Parameter: `managedPrivateEndpoints.fqdns`
+
+Fully qualified domain names.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `managedPrivateEndpoints.groupId`
+
+The groupId to which the managed private endpoint is created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.name`
+
+The managed private endpoint resource name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+
+The ARM resource ID of the resource to which the managed private endpoint is created.
+
+- Required: Yes
+- Type: string
 
 ## Outputs
 

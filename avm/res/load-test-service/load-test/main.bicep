@@ -20,7 +20,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.LoadTestService/loadTests@2022-12-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
