@@ -52,19 +52,19 @@ param messagingEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.p
 @description('Optional. Specifies the minimum TLS version to support for this hub. Can be set to "1.2" to have clients that use a TLS version below 1.2 to be rejected.')
 param minTlsVersion resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.minTlsVersion = '1.2'
 
-@description('Optional. Network Rule Set Properties of IotHub')
+@description('Optional. Network Rule Set Properties of IotHub.')
 param networkRuleSets resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.networkRuleSets?
 
-@description('Optional. Whether requests from Public Network are allowed')
+@description('Optional. Whether requests from Public Network are allowed.')
 param publicNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.publicNetworkAccess = 'Disabled'
 
-@description('Optional. Private endpoint connections created on this IotHub')
+@description('Optional. Private endpoint connections created on this IotHub.')
 param privateEndpointConnections resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.privateEndpointConnections?
 
-@description('Optional. The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging')
+@description('Optional. If true, egress from IotHub will be restricted to only the allowed FQDNs that are configured via allowedFqdnList.')
 param restrictOutboundNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.restrictOutboundNetworkAccess = true
 
-@description('Optional. ')
+@description('Optional. The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging.')
 param routing resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.routing?
 
 @description('Optional. The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown.')
