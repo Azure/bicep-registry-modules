@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "2932353698954326597"
+      "templateHash": "10753853927121324082"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -19423,7 +19423,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16951811495232834076"
+              "templateHash": "3748136006160654595"
             }
           },
           "parameters": {
@@ -19558,7 +19558,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.40.2.10011",
-                      "templateHash": "3617673313251898265"
+                      "templateHash": "10186417596010209648"
                     }
                   },
                   "parameters": {
@@ -19654,7 +19654,7 @@
                         "name": "acrGeoReplications",
                         "count": "[length(parameters('acrGeoReplicationLocations'))]",
                         "input": {
-                          "name": "[format('replication-{0}', toLower(replace(parameters('acrGeoReplicationLocations')[copyIndex('acrGeoReplications')], ' ', '')))]",
+                          "name": "[take(format('repl{0}', toLower(replace(parameters('acrGeoReplicationLocations')[copyIndex('acrGeoReplications')], ' ', ''))), 50)]",
                           "location": "[parameters('acrGeoReplicationLocations')[copyIndex('acrGeoReplications')]]"
                         }
                       }

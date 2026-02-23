@@ -72,15 +72,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 
-  resource queueServices 'queueServices@2024-01-01' existing = {
+  resource queueServices 'queueServices@2025-06-01' existing = {
     name: 'default'
   }
 }
 
-resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01' = {
+resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2025-06-01' = {
   name: name
   parent: storageAccount::queueServices
   properties: {

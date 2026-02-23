@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "142663650829722942"
+      "version": "0.40.2.10011",
+      "templateHash": "9473592490163430991"
     },
     "name": "Storage Account File Shares",
     "description": "This module deploys a Storage Account File Share."
@@ -152,6 +152,24 @@
         "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
       }
     },
+    "provisionedBandwidthMibps": {
+      "type": "int",
+      "nullable": true,
+      "minValue": 0,
+      "maxValue": 10340,
+      "metadata": {
+        "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+      }
+    },
+    "provisionedIops": {
+      "type": "int",
+      "nullable": true,
+      "minValue": 0,
+      "maxValue": 102400,
+      "metadata": {
+        "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -234,8 +252,13 @@
         "accessTier": "[parameters('accessTier')]",
         "shareQuota": "[parameters('shareQuota')]",
         "rootSquash": "[if(equals(parameters('enabledProtocols'), 'NFS'), parameters('rootSquash'), null())]",
-        "enabledProtocols": "[parameters('enabledProtocols')]"
-      }
+        "enabledProtocols": "[parameters('enabledProtocols')]",
+        "provisionedBandwidthMibps": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedBandwidthMibps'), null())]",
+        "provisionedIops": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedIops'), null())]"
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
     },
     "fileShare_roleAssignments": {
       "copy": {

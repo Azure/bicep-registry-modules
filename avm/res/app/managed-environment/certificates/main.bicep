@@ -20,18 +20,18 @@ param certificateType string?
 @description('Optional. The value of the certificate. PFX or PEM blob.')
 param certificateValue string?
 
-@secure()
 @description('Optional. The password of the certificate.')
+@secure()
 param certificatePassword string?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview'>.tags?
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' existing = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' existing = {
   name: managedEnvironmentName
 }
 
-resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2024-10-02-preview' = {
+resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview' = {
   parent: managedEnvironment
   location: location
   name: name
