@@ -63,7 +63,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   properties: {
     maintenanceScope: 'Resource'
     extensionProperties: {
-      maintenanceSubScope: 'AzureFirewallMaintenance'
+      maintenanceSubScope: 'NetworkSecurity'
     }
     maintenanceWindow: {
       startDateTime: '2025-03-01 00:00'
