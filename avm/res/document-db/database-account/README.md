@@ -903,6 +903,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         '<managedIdentityResourceId>'
       ]
     }
+    zoneRedundant: false
   }
 }
 ```
@@ -942,6 +943,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -973,6 +977,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param zoneRedundant = false
 ```
 
 </details>
@@ -992,10 +997,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
-    // Required parameters
     name: 'dddamin001'
-    // Non-required parameters
-    zoneRedundant: false
   }
 }
 ```
@@ -1012,13 +1014,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dddamin001"
-    },
-    // Non-required parameters
-    "zoneRedundant": {
-      "value": false
     }
   }
 }
@@ -1034,10 +1031,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 ```bicep-params
 using 'br/public:avm/res/document-db/database-account:<version>'
 
-// Required parameters
 param name = 'dddamin001'
-// Non-required parameters
-param zoneRedundant = false
 ```
 
 </details>
