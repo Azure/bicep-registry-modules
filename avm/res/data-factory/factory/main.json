@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "11613732360010144120"
+      "version": "0.38.33.27573",
+      "templateHash": "13909063908261293390"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -1099,7 +1099,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[resourceId('Microsoft.DataFactory/factories', parameters('name'))]",
+      "scope": "[format('Microsoft.DataFactory/factories/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1116,7 +1116,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[resourceId('Microsoft.DataFactory/factories', parameters('name'))]",
+      "scope": "[format('Microsoft.DataFactory/factories/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1157,7 +1157,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.DataFactory/factories', parameters('name'))]",
+      "scope": "[format('Microsoft.DataFactory/factories/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DataFactory/factories', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1200,8 +1200,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "7439802211643503447"
+              "version": "0.38.33.27573",
+              "templateHash": "10862604787894198331"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -1321,8 +1321,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.40.2.10011",
-                      "templateHash": "18115204633394294909"
+                      "version": "0.38.33.27573",
+                      "templateHash": "2828746739230020064"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -1490,8 +1490,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "16805290344610613422"
+              "version": "0.38.33.27573",
+              "templateHash": "127419371745742377"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -1621,8 +1621,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "16238681525181422041"
+              "version": "0.38.33.27573",
+              "templateHash": "9499030178049388265"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service."
