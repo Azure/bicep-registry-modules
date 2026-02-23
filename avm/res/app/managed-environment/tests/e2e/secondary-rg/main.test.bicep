@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -50,7 +51,7 @@ module secondaryDependencies 'dependencies.secondary.bicep' = {
   scope: secondaryResourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -85,7 +86,7 @@ module testDeployment '../../../main.bicep' = [
       certificate: {
         name: 'dep-${namePrefix}-cert-${serviceShort}'
         certificateKeyVaultProperties: {
-          identityResourceId: secondaryDependencies.outputs.managedIdentityResourceId
+          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
           keyVaultUrl: '${secondaryDependencies.outputs.keyVaultUri}secrets/${split(secondaryDependencies.outputs.certificateSecretUrl, '/')[4]}'
         }
       }

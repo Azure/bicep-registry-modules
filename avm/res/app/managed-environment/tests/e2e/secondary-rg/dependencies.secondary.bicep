@@ -1,8 +1,8 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
+@description('Required. The resource id of the Managed Identity to assign permissions to.')
+param managedIdentityResourceId string
 
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
@@ -17,9 +17,9 @@ param certname string
 var certPWSecretName = 'pfxCertificatePassword'
 var certSecretName = 'pfxBase64Certificate'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
-  name: managedIdentityName
-  location: location
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
+  name: last(split(managedIdentityResourceId, '/'))
+  scope: resourceGroup(split(managedIdentityResourceId, '/')[4])
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
@@ -73,9 +73,6 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
