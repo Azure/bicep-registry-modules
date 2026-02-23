@@ -28,9 +28,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
@@ -946,12 +946,16 @@ param workloadProfiles = [
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
+| [`daprConfiguration`](#parameter-daprconfiguration) | object | The configuration of Dapr component. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ingressConfiguration`](#parameter-ingressconfiguration) | object | Ingress configuration for the Managed Environment. |
+| [`kedaConfiguration`](#parameter-kedaconfiguration) | object | The configuration of Keda component. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerAuthentication`](#parameter-peerauthentication) | object | Peer authentication settings for the Managed Environment. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1111,7 +1115,7 @@ A Managed Environment Certificate.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
-| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
 | [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
 | [`location`](#parameter-certificatelocation) | string | The location for the resource. |
@@ -1151,7 +1155,7 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 The password of the certificate.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `certificate.certificateType`
 
@@ -1226,6 +1230,13 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 - Type: securestring
 - Default: `''`
 
+### Parameter: `daprConfiguration`
+
+The configuration of Dapr component.
+
+- Required: No
+- Type: object
+
 ### Parameter: `dnsSuffix`
 
 DNS suffix for the environment domain.
@@ -1241,6 +1252,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `ingressConfiguration`
+
+Ingress configuration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+### Parameter: `kedaConfiguration`
+
+The configuration of Keda component.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -1325,6 +1350,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 ### Parameter: `openTelemetryConfiguration`
 
 Open Telemetry configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `peerAuthentication`
+
+Peer authentication settings for the Managed Environment.
 
 - Required: No
 - Type: object

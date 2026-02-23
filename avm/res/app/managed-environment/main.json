@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "16873538368053983220"
+      "templateHash": "2370974685452865933"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -41,7 +41,7 @@
           }
         },
         "certificatePassword": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. The password of the certificate."
@@ -65,7 +65,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.App/managedEnvironments/certificates@2025-02-02-preview#properties/tags"
+              "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
             },
             "description": "Optional. Tags of the resource."
           },
@@ -358,7 +358,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-02-02-preview#properties/tags"
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -394,6 +394,46 @@
       "metadata": {
         "description": "Optional. Application Insights connection string."
       }
+    },
+    "daprConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/daprConfiguration"
+        },
+        "description": "Optional. The configuration of Dapr component."
+      },
+      "nullable": true
+    },
+    "ingressConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/ingressConfiguration"
+        },
+        "description": "Optional. Ingress configuration for the Managed Environment."
+      },
+      "nullable": true
+    },
+    "kedaConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/kedaConfiguration"
+        },
+        "description": "Optional. The configuration of Keda component."
+      },
+      "nullable": true
+    },
+    "peerAuthentication": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/peerAuthentication"
+        },
+        "description": "Optional. Peer authentication settings for the Managed Environment."
+      },
+      "nullable": true
     },
     "daprAIConnectionString": {
       "type": "securestring",
@@ -511,7 +551,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-02-02-preview#properties/properties/properties/workloadProfiles"
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/workloadProfiles"
         },
         "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
       },
@@ -568,22 +608,6 @@
     }
   },
   "resources": {
-    "managedEnvironment::storage": {
-      "copy": {
-        "name": "managedEnvironment::storage",
-        "count": "[length(coalesce(parameters('storages'), createArray()))]"
-      },
-      "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2025-02-02-preview",
-      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
-      "properties": {
-        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
-        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'SMB'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2025-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
-      },
-      "dependsOn": [
-        "managedEnvironment"
-      ]
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -615,7 +639,7 @@
     },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2025-02-02-preview",
+      "apiVersion": "2025-10-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -624,6 +648,10 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
+        "daprConfiguration": "[parameters('daprConfiguration')]",
+        "ingressConfiguration": "[parameters('ingressConfiguration')]",
+        "kedaConfiguration": "[parameters('kedaConfiguration')]",
+        "peerAuthentication": "[parameters('peerAuthentication')]",
         "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), shallowMerge(createArray(createObject('destination', parameters('appLogsConfiguration').destination), if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey)), createObject()))), null())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
@@ -654,6 +682,19 @@
       "dependsOn": [
         "logAnalyticsWorkspace"
       ]
+    },
+    "managedEnvironment_storage": {
+      "copy": {
+        "name": "managedEnvironment_storage",
+        "count": "[length(coalesce(parameters('storages'), createArray()))]"
+      },
+      "type": "Microsoft.App/managedEnvironments/storages",
+      "apiVersion": "2025-10-02-preview",
+      "name": "[coalesce(parameters('storages'), createArray())[copyIndex()].shareName]",
+      "properties": {
+        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
+        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'SMB'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2025-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
+      }
     },
     "managedEnvironment_roleAssignments": {
       "copy": {
@@ -735,7 +776,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "13266006115182691961"
+              "templateHash": "17644855387305716147"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -819,7 +860,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/managedEnvironments/certificates@2025-02-02-preview#properties/tags"
+                  "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -830,12 +871,12 @@
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2025-02-02-preview",
+              "apiVersion": "2025-10-02-preview",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "managedEnvironmentCertificate": {
               "type": "Microsoft.App/managedEnvironments/certificates",
-              "apiVersion": "2025-02-02-preview",
+              "apiVersion": "2025-10-02-preview",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -890,7 +931,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedEnvironment', '2025-02-02-preview', 'full').location]"
+      "value": "[reference('managedEnvironment', '2025-10-02-preview', 'full').location]"
     },
     "name": {
       "type": "string",
@@ -912,7 +953,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedEnvironment', '2025-02-02-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedEnvironment', '2025-10-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "defaultDomain": {
       "type": "string",
