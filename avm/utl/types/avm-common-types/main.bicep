@@ -380,7 +380,7 @@ type customerManagedKeyType = {
 }
 
 @export()
-@description('An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified..')
+@description('An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified.')
 type customerManagedKeyAndVaultOnlyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
