@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.14.1
+
+### Changes
+
+- Fixed: Adds pass-through of product.policies from the APIM service module to the product child module
+- Recompiled templates with latest Bicep version `0.40.2.10011`
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes
