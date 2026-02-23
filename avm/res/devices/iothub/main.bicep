@@ -261,31 +261,6 @@ output privateEndpoints privateEndpointOutputType[] = [
 // ================ //
 
 @export()
-@description('The type for rules governing the accessibility of the iotHub from specific network locations.')
-type networkAclsType = {
-  @description('Optional. The bypass options for traffic for the network ACLs.')
-  bypass: ('AzureServices' | 'None')?
-
-  @description('Optional. The default action for the network ACLs, when no rule matches.')
-  defaultAction: ('Allow' | 'Deny')?
-
-  @description('Optional. A list of IP rules.')
-  ipRules: {
-    @description('Required. An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24".')
-    value: string
-  }[]?
-
-  @description('Optional. A list of virtual network rules.')
-  virtualNetworkRules: {
-    @description('Required. The resource ID of the virtual network subnet.')
-    id: string
-
-    @description('Optional. Whether NRP will ignore the check if parent subnet has serviceEndpoints configured.')
-    ignoreMissingVnetServiceEndpoint: bool?
-  }[]?
-}
-
-@export()
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
@@ -307,17 +282,4 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
-}
-
-@export()
-@description('The type for a credential output.')
-type credentialOutputType = {
-  @description('The item\'s resourceId.')
-  resourceId: string
-
-  @description('The item\'s uri.')
-  uri: string
-
-  @description('The item\'s uri with version.')
-  uriWithVersion: string
 }
