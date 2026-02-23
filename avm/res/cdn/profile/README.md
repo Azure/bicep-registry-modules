@@ -122,7 +122,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               {
                 name: 'UrlRedirect'
                 parameters: {
-                  customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+                  customHostname: 'dev-contoso.azurewebsites.net'
                   customPath: '/test123'
                   destinationProtocol: 'Https'
                   redirectType: 'PermanentRedirect'
@@ -240,7 +240,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 {
                   "name": "UrlRedirect",
                   "parameters": {
-                    "customHostname": "dev-etradefd.trade.azure.defra.cloud",
+                    "customHostname": "dev-contoso.azurewebsites.net",
                     "customPath": "/test123",
                     "destinationProtocol": "Https",
                     "redirectType": "PermanentRedirect",
@@ -344,7 +344,7 @@ param ruleSets = [
           {
             name: 'UrlRedirect'
             parameters: {
-              customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+              customHostname: 'dev-contoso.azurewebsites.net'
               customPath: '/test123'
               destinationProtocol: 'Https'
               redirectType: 'PermanentRedirect'
@@ -475,7 +475,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               {
                 name: 'UrlRedirect'
                 parameters: {
-                  customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+                  customHostname: 'dev-contoso.azurewebsites.net'
                   customPath: '/test123'
                   destinationProtocol: 'Https'
                   redirectType: 'PermanentRedirect'
@@ -602,7 +602,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 {
                   "name": "UrlRedirect",
                   "parameters": {
-                    "customHostname": "dev-etradefd.trade.azure.defra.cloud",
+                    "customHostname": "dev-contoso.azurewebsites.net",
                     "customPath": "/test123",
                     "destinationProtocol": "Https",
                     "redirectType": "PermanentRedirect",
@@ -711,7 +711,7 @@ param ruleSets = [
           {
             name: 'UrlRedirect'
             parameters: {
-              customHostname: 'dev-etradefd.trade.azure.defra.cloud'
+              customHostname: 'dev-contoso.azurewebsites.net'
               customPath: '/test123'
               destinationProtocol: 'Https'
               redirectType: 'PermanentRedirect'

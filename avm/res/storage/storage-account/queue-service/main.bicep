@@ -18,11 +18,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the queue services
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 }
 
-resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
+resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2025-06-01' = {
   name: name
   parent: storageAccount
   properties: {
