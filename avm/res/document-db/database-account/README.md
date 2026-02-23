@@ -903,7 +903,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         '<managedIdentityResourceId>'
       ]
     }
-    zoneRedundant: false
   }
 }
 ```
@@ -943,9 +942,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "zoneRedundant": {
-      "value": false
     }
   }
 }
@@ -977,7 +973,6 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param zoneRedundant = false
 ```
 
 </details>
