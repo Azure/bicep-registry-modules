@@ -10,44 +10,64 @@ param location string = resourceGroup().location
 @description('Required. The name of the IoT Hub SKU.')
 param skuName resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.sku.name
 
+@description('Optional. List of allowed FQDNs(Fully Qualified Domain Name) for egress from Iot Hub.')
 param allowedFqdnList resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.allowedFqdnList?
 
+@description('Optional. The shared access policies you can use to secure a connection to the IoT hub.')
 param authorizationPolicies resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.authorizationPolicies?
 
+@description('Optional. The IoT hub cloud-to-device messaging properties.')
 param cloudToDevice resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.cloudToDevice?
 
+@description('Optional. IoT hub comments.')
 param comments resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.comments?
 
+@description('Optional. If true, all device(including Edge devices but excluding modules) scoped SAS keys cannot be used for authentication.')
 param disableDeviceSAS resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableDeviceSAS = true
 
+@description('Optional. If true, SAS tokens with Iot hub scoped SAS keys cannot be used for authentication.')
 param disableLocalAuth resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableLocalAuth = true
 
+@description('Optional. If true, all module scoped SAS keys cannot be used for authentication.')
 param disableModuleSAS resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableModuleSAS = true
 
+@description('Optional. This property when set to true, will enable data residency, thus, disabling disaster recovery.')
 param enableDataResidency resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.enableDataResidency = false
 
+@description('Optional. If True, file upload notifications are enabled.')
 param enableFileUploadNotifications resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.enableFileUploadNotifications = false
 
+@description('Optional. The Event Hub-compatible endpoint properties. The only possible keys to this dictionary is events. This key has to be present in the dictionary while making create or update calls for the IoT hub.')
 param eventHubEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.eventHubEndpoints?
 
+@description('Optional. The capabilities and features enabled for the IoT hub.')
 param features resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.features = 'None'
 
+@description('Optional. The IP filter rules.')
 param ipFilterRules resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.ipFilterRules?
 
+@description('Optional. The messaging endpoint properties for the file upload notification queue.')
 param messagingEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.messagingEndpoints?
 
+@description('Optional. Specifies the minimum TLS version to support for this hub. Can be set to "1.2" to have clients that use a TLS version below 1.2 to be rejected.')
 param minTlsVersion resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.minTlsVersion = '1.2'
 
+@description('Optional. Network Rule Set Properties of IotHub')
 param networkRuleSets resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.networkRuleSets?
 
+@description('Optional. Whether requests from Public Network are allowed')
 param publicNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.publicNetworkAccess = 'Disabled'
 
+@description('Optional. Private endpoint connections created on this IotHub')
 param privateEndpointConnections resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.privateEndpointConnections?
 
+@description('Optional. The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging')
 param restrictOutboundNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.restrictOutboundNetworkAccess = true
 
+@description('Optional. ')
 param routing resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.routing?
 
+@description('Optional. The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown.')
 param storageEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.storageEndpoints?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
