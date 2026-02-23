@@ -509,6 +509,7 @@ module service_products 'product/main.bicep' = [
       apis: product.?apis
       approvalRequired: product.?approvalRequired
       groups: product.?groups
+      policies: product.?policies
       name: product.name
       description: product.?description
       state: product.?state
