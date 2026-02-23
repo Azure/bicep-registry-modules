@@ -1307,27 +1307,6 @@ Scope of Network Manager. Contains a list of management groups or a list of subs
 - Required: Yes
 - Type: object
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`managementGroups`](#parameter-networkmanagerscopesmanagementgroups) | array |  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'. |
-| [`subscriptions`](#parameter-networkmanagerscopessubscriptions) | array | List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'. |
-
-### Parameter: `networkManagerScopes.managementGroups`
-
- List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkManagerScopes.subscriptions`
-
-List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'.
-
-- Required: No
-- Type: array
-
 ### Parameter: `networkGroups`
 
 Network Groups and static members to create for the network manager. Required if using "connectivityConfigurations" or "securityAdminConfigurations" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details.
@@ -1369,13 +1348,6 @@ The type of the group member. Subnet member type is used for routing configurati
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Subnet'
-    'VirtualNetwork'
-  ]
-  ```
 
 ### Parameter: `networkGroups.staticMembers`
 
@@ -1492,13 +1464,6 @@ The connectivity topology to apply the configuration to.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HubAndSpoke'
-    'Mesh'
-  ]
-  ```
 
 ### Parameter: `connectivityConfigurations.name`
 
@@ -1513,56 +1478,6 @@ Collection of additional settings to enhance specific topology behaviors of the 
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`connectedGroupAddressOverlap`](#parameter-connectivityconfigurationsconnectivitycapabilitiesconnectedgroupaddressoverlap) | string | Behavior to handle overlapped IP address space among members of the connected group. |
-| [`connectedGroupPrivateEndpointsScale`](#parameter-connectivityconfigurationsconnectivitycapabilitiesconnectedgroupprivateendpointsscale) | string | Option indicating the scale of private endpoints allowed in the connected group. |
-| [`peeringEnforcement`](#parameter-connectivityconfigurationsconnectivitycapabilitiespeeringenforcement) | string | Option indicating enforcement of peerings created by the connectivity configuration. |
-
-### Parameter: `connectivityConfigurations.connectivityCapabilities.connectedGroupAddressOverlap`
-
-Behavior to handle overlapped IP address space among members of the connected group.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allowed'
-    'Disallowed'
-  ]
-  ```
-
-### Parameter: `connectivityConfigurations.connectivityCapabilities.connectedGroupPrivateEndpointsScale`
-
-Option indicating the scale of private endpoints allowed in the connected group.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HighScale'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `connectivityConfigurations.connectivityCapabilities.peeringEnforcement`
-
-Option indicating enforcement of peerings created by the connectivity configuration.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Enforced'
-    'Unenforced'
-  ]
-  ```
 
 ### Parameter: `connectivityConfigurations.deleteExistingPeering`
 
@@ -1693,14 +1608,6 @@ Scope Access (Also known as features). String array containing any of "Connectiv
 
 - Required: No
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Connectivity'
-    'Routing'
-    'SecurityAdmin'
-  ]
-  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1850,13 +1757,6 @@ Route table usage mode defines which route table will be used by the configurati
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ManagedOnly'
-    'UseExisting'
-  ]
-  ```
 
 ### Parameter: `routingConfigurations.ruleCollections`
 
@@ -2110,14 +2010,6 @@ Apply on network intent policy based services.
 
 - Required: Yes
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'All'
-    'AllowRulesOnly'
-    'None'
-  ]
-  ```
 
 ### Parameter: `securityAdminConfigurations.name`
 

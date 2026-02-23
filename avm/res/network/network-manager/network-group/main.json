@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6794054713293049235"
+      "templateHash": "4154526672221875423"
     },
     "name": "Network Manager Network Groups",
     "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
@@ -58,14 +58,13 @@
     },
     "memberType": {
       "type": "string",
-      "defaultValue": "VirtualNetwork",
-      "allowedValues": [
-        "Subnet",
-        "VirtualNetwork"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/networkGroups@2025-05-01#properties/properties/properties/memberType"
+        },
         "description": "Optional. The type of the group member. Subnet member type is used for routing configurations."
-      }
+      },
+      "defaultValue": "VirtualNetwork"
     },
     "staticMembers": {
       "type": "array",

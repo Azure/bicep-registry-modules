@@ -46,14 +46,6 @@ Enum list of network intent policy based services.
 
 - Required: Yes
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'All'
-    'AllowRulesOnly'
-    'None'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -84,13 +76,6 @@ Determine update behavior for changes to network groups referenced within the ru
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'Manual'
-    'None'
-  ]
-  ```
 
 ### Parameter: `ruleCollections`
 

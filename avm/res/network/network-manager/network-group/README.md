@@ -67,13 +67,6 @@ The type of the group member. Subnet member type is used for routing configurati
 - Required: No
 - Type: string
 - Default: `'VirtualNetwork'`
-- Allowed:
-  ```Bicep
-  [
-    'Subnet'
-    'VirtualNetwork'
-  ]
-  ```
 
 ### Parameter: `staticMembers`
 

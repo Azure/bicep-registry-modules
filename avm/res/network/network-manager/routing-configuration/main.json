@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "2994600191503037926"
+      "templateHash": "2420260740688338831"
     },
     "name": "Network Manager Routing Configurations",
     "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -194,14 +194,13 @@
     },
     "routeTableUsageMode": {
       "type": "string",
-      "defaultValue": "ManagedOnly",
-      "allowedValues": [
-        "ManagedOnly",
-        "UseExisting"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/routingConfigurations@2025-05-01#properties/properties/properties/routeTableUsageMode"
+        },
         "description": "Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to \"ManagedOnly\" if not specified."
-      }
+      },
+      "defaultValue": "ManagedOnly"
     },
     "ruleCollections": {
       "type": "array",

@@ -16,18 +16,14 @@ param description string = ''
 @sys.description('Required. Network Groups for the configuration. A connectivity configuration must be associated to at least one network group.')
 param appliesToGroups appliesToGroupType[]
 
-@allowed([
-  'HubAndSpoke'
-  'Mesh'
-])
 @sys.description('Required. Connectivity topology type.')
-param connectivityTopology string
+param connectivityTopology resourceInput<'Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01'>.properties.connectivityTopology
 
 @sys.description('Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type "HubAndSpoke".')
 param hubs hubType[]?
 
 @sys.description('Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.')
-param connectivityCapabilities connectivityCapabilitiesType?
+param connectivityCapabilities resourceInput<'Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01'>.properties.connectivityCapabilities?
 
 @sys.description('Optional. Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke".')
 param deleteExistingPeering bool = false
@@ -97,15 +93,3 @@ type hubType = {
   resourceType: 'Microsoft.Network/virtualNetworks'
 }
 
-@export()
-@sys.description('The type of connectivity capabilities.')
-type connectivityCapabilitiesType = {
-  @sys.description('Required. Behavior to handle overlapped IP address space among members of the connected group.')
-  connectedGroupAddressOverlap: 'Allowed' | 'Disallowed'
-
-  @sys.description('Required. Option indicating the scale of private endpoints allowed in the connected group.')
-  connectedGroupPrivateEndpointsScale: 'HighScale' | 'Standard'
-
-  @sys.description('Required. Option indicating enforcement of peerings created by the connectivity configuration.')
-  peeringEnforcement: 'Enforced' | 'Unenforced'
-}

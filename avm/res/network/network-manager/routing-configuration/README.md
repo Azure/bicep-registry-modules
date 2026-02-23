@@ -68,13 +68,6 @@ Route table usage mode defines which route table will be used by the configurati
 - Required: No
 - Type: string
 - Default: `'ManagedOnly'`
-- Allowed:
-  ```Bicep
-  [
-    'ManagedOnly'
-    'UseExisting'
-  ]
-  ```
 
 ### Parameter: `ruleCollections`
 

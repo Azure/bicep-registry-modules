@@ -103,13 +103,6 @@ Connectivity topology type.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HubAndSpoke'
-    'Mesh'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -165,56 +158,6 @@ Collection of additional settings to enhance specific topology behaviors of the 
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`connectedGroupAddressOverlap`](#parameter-connectivitycapabilitiesconnectedgroupaddressoverlap) | string | Behavior to handle overlapped IP address space among members of the connected group. |
-| [`connectedGroupPrivateEndpointsScale`](#parameter-connectivitycapabilitiesconnectedgroupprivateendpointsscale) | string | Option indicating the scale of private endpoints allowed in the connected group. |
-| [`peeringEnforcement`](#parameter-connectivitycapabilitiespeeringenforcement) | string | Option indicating enforcement of peerings created by the connectivity configuration. |
-
-### Parameter: `connectivityCapabilities.connectedGroupAddressOverlap`
-
-Behavior to handle overlapped IP address space among members of the connected group.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allowed'
-    'Disallowed'
-  ]
-  ```
-
-### Parameter: `connectivityCapabilities.connectedGroupPrivateEndpointsScale`
-
-Option indicating the scale of private endpoints allowed in the connected group.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HighScale'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `connectivityCapabilities.peeringEnforcement`
-
-Option indicating enforcement of peerings created by the connectivity configuration.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Enforced'
-    'Unenforced'
-  ]
-  ```
 
 ### Parameter: `deleteExistingPeering`
 

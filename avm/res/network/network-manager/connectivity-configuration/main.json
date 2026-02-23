@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "1319587387316443277"
+      "templateHash": "12215633104601932822"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -74,45 +74,6 @@
         "__bicep_export!": true,
         "description": "The type of a hub."
       }
-    },
-    "connectivityCapabilitiesType": {
-      "type": "object",
-      "properties": {
-        "connectedGroupAddressOverlap": {
-          "type": "string",
-          "allowedValues": [
-            "Allowed",
-            "Disallowed"
-          ],
-          "metadata": {
-            "description": "Required. Behavior to handle overlapped IP address space among members of the connected group."
-          }
-        },
-        "connectedGroupPrivateEndpointsScale": {
-          "type": "string",
-          "allowedValues": [
-            "HighScale",
-            "Standard"
-          ],
-          "metadata": {
-            "description": "Required. Option indicating the scale of private endpoints allowed in the connected group."
-          }
-        },
-        "peeringEnforcement": {
-          "type": "string",
-          "allowedValues": [
-            "Enforced",
-            "Unenforced"
-          ],
-          "metadata": {
-            "description": "Required. Option indicating enforcement of peerings created by the connectivity configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of connectivity capabilities."
-      }
     }
   },
   "parameters": {
@@ -148,11 +109,10 @@
     },
     "connectivityTopology": {
       "type": "string",
-      "allowedValues": [
-        "HubAndSpoke",
-        "Mesh"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01#properties/properties/properties/connectivityTopology"
+        },
         "description": "Required. Connectivity topology type."
       }
     },
@@ -167,11 +127,14 @@
       }
     },
     "connectivityCapabilities": {
-      "$ref": "#/definitions/connectivityCapabilitiesType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01#properties/properties/properties/connectivityCapabilities"
+        },
         "description": "Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement."
-      }
+      },
+      "nullable": true
     },
     "deleteExistingPeering": {
       "type": "bool",

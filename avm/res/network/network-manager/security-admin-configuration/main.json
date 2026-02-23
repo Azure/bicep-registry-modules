@@ -6,23 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "11957019916954076230"
+      "templateHash": "8766848124886084357"
     },
     "name": "Network Manager Security Admin Configurations",
     "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
   },
   "definitions": {
-    "applyOnNetworkIntentPolicyBasedServicesType": {
-      "type": "string",
-      "allowedValues": [
-        "All",
-        "AllowRulesOnly",
-        "None"
-      ],
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
     "securityAdminConfigurationRuleCollectionType": {
       "type": "object",
       "properties": {
@@ -267,23 +256,22 @@
     },
     "applyOnNetworkIntentPolicyBasedServices": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/applyOnNetworkIntentPolicyBasedServicesType"
-      },
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/securityAdminConfigurations@2025-05-01#properties/properties/properties/applyOnNetworkIntentPolicyBasedServices"
+        },
         "description": "Required. Enum list of network intent policy based services."
       }
     },
     "networkGroupAddressSpaceAggregationOption": {
       "type": "string",
-      "defaultValue": "None",
-      "allowedValues": [
-        "None",
-        "Manual"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/securityAdminConfigurations@2025-05-01#properties/properties/properties/networkGroupAddressSpaceAggregationOption"
+        },
         "description": "Optional. Determine update behavior for changes to network groups referenced within the rules in this configuration."
-      }
+      },
+      "defaultValue": "None"
     },
     "ruleCollections": {
       "type": "array",
