@@ -6,86 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "7921792335131396907"
+      "templateHash": "17124427536234280736"
     },
     "name": "Azure Iot hubs",
     "description": "This module deploys a Iot Hub."
   },
   "definitions": {
-    "networkAclsType": {
-      "type": "object",
-      "properties": {
-        "bypass": {
-          "type": "string",
-          "allowedValues": [
-            "AzureServices",
-            "None"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The bypass options for traffic for the network ACLs."
-          }
-        },
-        "defaultAction": {
-          "type": "string",
-          "allowedValues": [
-            "Allow",
-            "Deny"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The default action for the network ACLs, when no rule matches."
-          }
-        },
-        "ipRules": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. An IPv4 address range in CIDR notation, such as \"124.56.78.91\" (simple IP address) or \"124.56.78.0/24\"."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A list of IP rules."
-          }
-        },
-        "virtualNetworkRules": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The resource ID of the virtual network subnet."
-                }
-              },
-              "ignoreMissingVnetServiceEndpoint": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Whether NRP will ignore the check if parent subnet has serviceEndpoints configured."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A list of virtual network rules."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for rules governing the accessibility of the iotHub from specific network locations."
-      }
-    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -147,33 +73,6 @@
       },
       "metadata": {
         "__bicep_export!": true
-      }
-    },
-    "credentialOutputType": {
-      "type": "object",
-      "properties": {
-        "resourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The item's resourceId."
-          }
-        },
-        "uri": {
-          "type": "string",
-          "metadata": {
-            "description": "The item's uri."
-          }
-        },
-        "uriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The item's uri with version."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a credential output."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -716,13 +615,203 @@
         "description": "Required. The name of the IoT Hub SKU."
       }
     },
-    "iotHubProperties": {
+    "allowedFqdnList": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/allowedFqdnList"
+        },
+        "description": "Optional. List of allowed FQDNs(Fully Qualified Domain Name) for egress from Iot Hub."
+      },
+      "nullable": true
+    },
+    "authorizationPolicies": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/authorizationPolicies"
+        },
+        "description": "Optional. The shared access policies you can use to secure a connection to the IoT hub."
+      },
+      "nullable": true
+    },
+    "cloudToDevice": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties"
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/cloudToDevice"
         },
-        "description": "Optional. The properties of the IoT Hub."
+        "description": "Optional. The IoT hub cloud-to-device messaging properties."
+      },
+      "nullable": true
+    },
+    "comments": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/comments"
+        },
+        "description": "Optional. IoT hub comments."
+      },
+      "nullable": true
+    },
+    "disableDeviceSAS": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/disableDeviceSAS"
+        },
+        "description": "Optional. If true, all device(including Edge devices but excluding modules) scoped SAS keys cannot be used for authentication."
+      },
+      "defaultValue": true
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/disableLocalAuth"
+        },
+        "description": "Optional. If true, SAS tokens with Iot hub scoped SAS keys cannot be used for authentication."
+      },
+      "defaultValue": true
+    },
+    "disableModuleSAS": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/disableModuleSAS"
+        },
+        "description": "Optional. If true, all module scoped SAS keys cannot be used for authentication."
+      },
+      "defaultValue": true
+    },
+    "enableDataResidency": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/enableDataResidency"
+        },
+        "description": "Optional. This property when set to true, will enable data residency, thus, disabling disaster recovery."
+      },
+      "defaultValue": false
+    },
+    "enableFileUploadNotifications": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/enableFileUploadNotifications"
+        },
+        "description": "Optional. If True, file upload notifications are enabled."
+      },
+      "defaultValue": false
+    },
+    "eventHubEndpoints": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/eventHubEndpoints"
+        },
+        "description": "Optional. The Event Hub-compatible endpoint properties. The only possible keys to this dictionary is events. This key has to be present in the dictionary while making create or update calls for the IoT hub."
+      },
+      "nullable": true
+    },
+    "features": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/features"
+        },
+        "description": "Optional. The capabilities and features enabled for the IoT hub."
+      },
+      "defaultValue": "None"
+    },
+    "ipFilterRules": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/ipFilterRules"
+        },
+        "description": "Optional. The IP filter rules."
+      },
+      "nullable": true
+    },
+    "messagingEndpoints": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/messagingEndpoints"
+        },
+        "description": "Optional. The messaging endpoint properties for the file upload notification queue."
+      },
+      "nullable": true
+    },
+    "minTlsVersion": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/minTlsVersion"
+        },
+        "description": "Optional. Specifies the minimum TLS version to support for this hub. Can be set to \"1.2\" to have clients that use a TLS version below 1.2 to be rejected."
+      },
+      "defaultValue": "1.2"
+    },
+    "networkRuleSets": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/networkRuleSets"
+        },
+        "description": "Optional. Network Rule Set Properties of IotHub."
+      },
+      "nullable": true
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/publicNetworkAccess"
+        },
+        "description": "Optional. Whether requests from Public Network are allowed."
+      },
+      "defaultValue": "Disabled"
+    },
+    "privateEndpointConnections": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/privateEndpointConnections"
+        },
+        "description": "Optional. Private endpoint connections created on this IotHub."
+      },
+      "nullable": true
+    },
+    "restrictOutboundNetworkAccess": {
+      "type": "bool",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/restrictOutboundNetworkAccess"
+        },
+        "description": "Optional. If true, egress from IotHub will be restricted to only the allowed FQDNs that are configured via allowedFqdnList."
+      },
+      "defaultValue": true
+    },
+    "routing": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/routing"
+        },
+        "description": "Optional. The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging."
+      },
+      "nullable": true
+    },
+    "storageEndpoints": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/properties/properties/storageEndpoints"
+        },
+        "description": "Optional. The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown."
       },
       "nullable": true
     },
@@ -838,7 +927,28 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[parameters('iotHubProperties')]"
+      "properties": {
+        "allowedFqdnList": "[parameters('allowedFqdnList')]",
+        "authorizationPolicies": "[parameters('authorizationPolicies')]",
+        "cloudToDevice": "[parameters('cloudToDevice')]",
+        "comments": "[parameters('comments')]",
+        "disableDeviceSAS": "[parameters('disableDeviceSAS')]",
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "disableModuleSAS": "[parameters('disableModuleSAS')]",
+        "enableDataResidency": "[parameters('enableDataResidency')]",
+        "enableFileUploadNotifications": "[parameters('enableFileUploadNotifications')]",
+        "eventHubEndpoints": "[parameters('eventHubEndpoints')]",
+        "features": "[parameters('features')]",
+        "ipFilterRules": "[parameters('ipFilterRules')]",
+        "messagingEndpoints": "[parameters('messagingEndpoints')]",
+        "minTlsVersion": "[parameters('minTlsVersion')]",
+        "networkRuleSets": "[parameters('networkRuleSets')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "privateEndpointConnections": "[parameters('privateEndpointConnections')]",
+        "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
+        "routing": "[parameters('routing')]",
+        "storageEndpoints": "[parameters('storageEndpoints')]"
+      }
     },
     "iothub_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1606,6 +1716,14 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('iotHub', '2023-06-30', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('iotHub', '2023-06-30', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",

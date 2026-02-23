@@ -58,8 +58,6 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
     // Required parameters
     name: 'dihmin001'
     skuName: 'S1'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -82,10 +80,6 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
     },
     "skuName": {
       "value": "S1"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -104,8 +98,6 @@ using 'br/public:avm/res/devices/iothub:<version>'
 // Required parameters
 param name = 'dihmin001'
 param skuName = 'S1'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -129,7 +121,43 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
     name: 'dihwaf001'
     skuName: 'S1'
     // Non-required parameters
-    location: '<location>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'iotHub'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'iotHub'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -154,8 +182,48 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
       "value": "S1"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "iotHub",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "iotHub",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -175,7 +243,43 @@ using 'br/public:avm/res/devices/iothub:<version>'
 param name = 'dihwaf001'
 param skuName = 'S1'
 // Non-required parameters
-param location = '<location>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'iotHub'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'iotHub'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
@@ -194,14 +298,33 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDNs(Fully Qualified Domain Name) for egress from Iot Hub. |
+| [`authorizationPolicies`](#parameter-authorizationpolicies) | array | The shared access policies you can use to secure a connection to the IoT hub. |
+| [`cloudToDevice`](#parameter-cloudtodevice) | object | The IoT hub cloud-to-device messaging properties. |
+| [`comments`](#parameter-comments) | string | IoT hub comments. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disableDeviceSAS`](#parameter-disabledevicesas) | bool | If true, all device(including Edge devices but excluding modules) scoped SAS keys cannot be used for authentication. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | If true, SAS tokens with Iot hub scoped SAS keys cannot be used for authentication. |
+| [`disableModuleSAS`](#parameter-disablemodulesas) | bool | If true, all module scoped SAS keys cannot be used for authentication. |
+| [`enableDataResidency`](#parameter-enabledataresidency) | bool | This property when set to true, will enable data residency, thus, disabling disaster recovery. |
+| [`enableFileUploadNotifications`](#parameter-enablefileuploadnotifications) | bool | If True, file upload notifications are enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`iotHubProperties`](#parameter-iothubproperties) | object | The properties of the IoT Hub. |
+| [`eventHubEndpoints`](#parameter-eventhubendpoints) | object | The Event Hub-compatible endpoint properties. The only possible keys to this dictionary is events. This key has to be present in the dictionary while making create or update calls for the IoT hub. |
+| [`features`](#parameter-features) | string | The capabilities and features enabled for the IoT hub. |
+| [`ipFilterRules`](#parameter-ipfilterrules) | array | The IP filter rules. |
 | [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`messagingEndpoints`](#parameter-messagingendpoints) | object | The messaging endpoint properties for the file upload notification queue. |
+| [`minTlsVersion`](#parameter-mintlsversion) | string | Specifies the minimum TLS version to support for this hub. Can be set to "1.2" to have clients that use a TLS version below 1.2 to be rejected. |
+| [`networkRuleSets`](#parameter-networkrulesets) | object | Network Rule Set Properties of IotHub. |
+| [`privateEndpointConnections`](#parameter-privateendpointconnections) | array | Private endpoint connections created on this IotHub. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether requests from Public Network are allowed. |
+| [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | If true, egress from IotHub will be restricted to only the allowed FQDNs that are configured via allowedFqdnList. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`routing`](#parameter-routing) | object | The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging. |
+| [`storageEndpoints`](#parameter-storageendpoints) | object | The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
 ### Parameter: `name`
@@ -216,6 +339,34 @@ The name of the IoT Hub.
 The name of the IoT Hub SKU.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `allowedFqdnList`
+
+List of allowed FQDNs(Fully Qualified Domain Name) for egress from Iot Hub.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationPolicies`
+
+The shared access policies you can use to secure a connection to the IoT hub.
+
+- Required: No
+- Type: array
+
+### Parameter: `cloudToDevice`
+
+The IoT hub cloud-to-device messaging properties.
+
+- Required: No
+- Type: object
+
+### Parameter: `comments`
+
+IoT hub comments.
+
+- Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings`
@@ -364,6 +515,46 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disableDeviceSAS`
+
+If true, all device(including Edge devices but excluding modules) scoped SAS keys cannot be used for authentication.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `disableLocalAuth`
+
+If true, SAS tokens with Iot hub scoped SAS keys cannot be used for authentication.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `disableModuleSAS`
+
+If true, all module scoped SAS keys cannot be used for authentication.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `enableDataResidency`
+
+This property when set to true, will enable data residency, thus, disabling disaster recovery.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableFileUploadNotifications`
+
+If True, file upload notifications are enabled.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -372,12 +563,27 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `iotHubProperties`
+### Parameter: `eventHubEndpoints`
 
-The properties of the IoT Hub.
+The Event Hub-compatible endpoint properties. The only possible keys to this dictionary is events. This key has to be present in the dictionary while making create or update calls for the IoT hub.
 
 - Required: No
 - Type: object
+
+### Parameter: `features`
+
+The capabilities and features enabled for the IoT hub.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+
+### Parameter: `ipFilterRules`
+
+The IP filter rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `location`
 
@@ -455,6 +661,35 @@ Enables system assigned managed identity on the resource.
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
+### Parameter: `messagingEndpoints`
+
+The messaging endpoint properties for the file upload notification queue.
+
+- Required: No
+- Type: object
+
+### Parameter: `minTlsVersion`
+
+Specifies the minimum TLS version to support for this hub. Can be set to "1.2" to have clients that use a TLS version below 1.2 to be rejected.
+
+- Required: No
+- Type: string
+- Default: `'1.2'`
+
+### Parameter: `networkRuleSets`
+
+Network Rule Set Properties of IotHub.
+
+- Required: No
+- Type: object
+
+### Parameter: `privateEndpointConnections`
+
+Private endpoint connections created on this IotHub.
 
 - Required: No
 - Type: array
@@ -878,6 +1113,22 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
+### Parameter: `publicNetworkAccess`
+
+Whether requests from Public Network are allowed.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+
+### Parameter: `restrictOutboundNetworkAccess`
+
+If true, egress from IotHub will be restricted to only the allowed FQDNs that are configured via allowedFqdnList.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -981,6 +1232,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `routing`
+
+The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging.
+
+- Required: No
+- Type: object
+
+### Parameter: `storageEndpoints`
+
+The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown.
+
+- Required: No
+- Type: object
+
 ### Parameter: `tags`
 
 Resource tags.
@@ -997,6 +1262,7 @@ Resource tags.
 | `privateEndpoints` | array | The private endpoints of the iotHub. |
 | `resourceGroupName` | string | The name of the resource group the iotHub was created in. |
 | `resourceId` | string | The resource ID of the iotHub. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
