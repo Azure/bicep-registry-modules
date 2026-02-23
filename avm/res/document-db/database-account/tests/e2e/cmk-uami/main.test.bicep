@@ -54,7 +54,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}002'
-    zoneRedundant: false
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
