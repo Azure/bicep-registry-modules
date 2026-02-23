@@ -76,5 +76,3 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
-output tempOuterOutput object? = testDeployment[0].outputs.?tempOutput

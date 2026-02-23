@@ -315,20 +315,6 @@ output staticIp string = managedEnvironment.properties.staticIp
 @description('The domain verification id for custom domains.')
 output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
 
-output tempOutput object? = !empty(appLogsConfiguration)
-  ? {
-      destination: appLogsConfiguration!.destination
-      ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
-        ? {
-            logAnalyticsConfiguration: {
-              customerId: logAnalyticsWorkspace!.properties.customerId
-              sharedKey: logAnalyticsWorkspace!.listKeys().primarySharedKey
-            }
-          }
-        : {})
-    }
-  : null
-
 // =============== //
 //   Definitions   //
 // =============== //
