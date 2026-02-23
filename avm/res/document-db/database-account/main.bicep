@@ -208,8 +208,9 @@ param defaultIdentity defaultIdentityType = {
   name: 'FirstPartyIdentity'
 }
 
+import { customerManagedKeyAndVaultOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyAndVaultOnlyType?
 
 var enableReferencedModulesTelemetry = false
 
@@ -732,16 +733,6 @@ output secondaryReadOnlyConnectionString string = databaseAccount.listConnection
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-@description('The type of a customer-managed key configuration.')
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-}
 
 @export()
 @description('The type for the private endpoint output.')

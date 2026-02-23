@@ -888,7 +888,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddaenc002'
+    name: 'dddaenc001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -922,7 +922,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddaenc002"
+      "value": "dddaenc001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -962,7 +962,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddaenc002'
+param name = 'dddaenc001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -6138,6 +6138,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

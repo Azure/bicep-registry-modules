@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}002'
+    name: '${namePrefix}${serviceShort}001'
     zoneRedundant: false
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
