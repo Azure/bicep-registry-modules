@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "8627306097038622921"
+      "version": "0.40.2.10011",
+      "templateHash": "1339932503748311229"
     },
     "name": "API Management Workspace API Operations",
     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -217,8 +217,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16589306317113419029"
+              "version": "0.40.2.10011",
+              "templateHash": "932749514063519149"
             },
             "name": "API Management Workspace API Operation Policies",
             "description": "This module deploys an API Operation Policy in an API Management Workspace."

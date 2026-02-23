@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12078706820434986202"
+      "version": "0.40.2.10011",
+      "templateHash": "16956403933690641547"
     },
     "name": "API Management Workspace APIs",
     "description": "This module deploys an API in an API Management Workspace."
@@ -615,8 +615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7389406741103376997"
+              "version": "0.40.2.10011",
+              "templateHash": "15545563898620965357"
             },
             "name": "API Management Workspace APIs Policies",
             "description": "This module deploys an API Policy in an API Management Workspace."
@@ -771,8 +771,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "15670376638740090520"
+              "version": "0.40.2.10011",
+              "templateHash": "7454920104134498052"
             },
             "name": "API Management Workspace APIs Diagnostics",
             "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -1031,8 +1031,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8627306097038622921"
+              "version": "0.40.2.10011",
+              "templateHash": "1339932503748311229"
             },
             "name": "API Management Workspace API Operations",
             "description": "This module deploys an API Operation under an API Management Workspace."
@@ -1243,8 +1243,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "16589306317113419029"
+                      "version": "0.40.2.10011",
+                      "templateHash": "932749514063519149"
                     },
                     "name": "API Management Workspace API Operation Policies",
                     "description": "This module deploys an API Operation Policy in an API Management Workspace."

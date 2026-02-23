@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "992724811961463931"
+      "version": "0.40.2.10011",
+      "templateHash": "14777184609609431871"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
