@@ -10,8 +10,45 @@ param location string = resourceGroup().location
 @description('Required. The name of the IoT Hub SKU.')
 param skuName resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.sku.name
 
-@description('Optional. The properties of the IoT Hub.')
-param iotHubProperties resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties?
+param allowedFqdnList resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.allowedFqdnList?
+
+param authorizationPolicies resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.authorizationPolicies?
+
+param cloudToDevice resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.cloudToDevice?
+
+param comments resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.comments?
+
+param disableDeviceSAS resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableDeviceSAS = true
+
+param disableLocalAuth resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableLocalAuth = true
+
+param disableModuleSAS resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.disableModuleSAS = true
+
+param enableDataResidency resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.enableDataResidency = false
+
+param enableFileUploadNotifications resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.enableFileUploadNotifications = false
+
+param eventHubEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.eventHubEndpoints?
+
+param features resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.features = 'None'
+
+param ipFilterRules resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.ipFilterRules?
+
+param messagingEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.messagingEndpoints?
+
+param minTlsVersion resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.minTlsVersion = '1.2'
+
+param networkRuleSets resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.networkRuleSets?
+
+param publicNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.publicNetworkAccess = 'Disabled'
+
+param privateEndpointConnections resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.privateEndpointConnections?
+
+param restrictOutboundNetworkAccess resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.restrictOutboundNetworkAccess = true
+
+param routing resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.routing?
+
+param storageEndpoints resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.storageEndpoints?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -116,7 +153,28 @@ resource iotHub 'Microsoft.Devices/IotHubs@2023-06-30' = {
   sku: {
     name: skuName
   }
-  properties: iotHubProperties
+  properties: {
+    allowedFqdnList: allowedFqdnList
+    authorizationPolicies: authorizationPolicies
+    cloudToDevice: cloudToDevice
+    comments: comments
+    disableDeviceSAS: disableDeviceSAS
+    disableLocalAuth: disableLocalAuth
+    disableModuleSAS: disableModuleSAS
+    enableDataResidency: enableDataResidency
+    enableFileUploadNotifications: enableFileUploadNotifications
+    eventHubEndpoints: eventHubEndpoints
+    features: features
+    ipFilterRules: ipFilterRules
+    messagingEndpoints: messagingEndpoints
+    minTlsVersion: minTlsVersion
+    networkRuleSets: networkRuleSets
+    publicNetworkAccess: publicNetworkAccess
+    privateEndpointConnections: privateEndpointConnections
+    restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
+    routing: routing
+    storageEndpoints: storageEndpoints
+  }
 }
 
 resource iothub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
