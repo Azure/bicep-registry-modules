@@ -339,7 +339,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     scopeMaps: [
       {
         actions: [
-          'repositories/myrepo/content/read'
+          'repositories/*/content/read'
         ]
         description: 'A test scope map'
         name: 'crrmaxScopeMap'
@@ -511,7 +511,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "actions": [
-            "repositories/myrepo/content/read"
+            "repositories/*/content/read"
           ],
           "description": "A test scope map",
           "name": "crrmaxScopeMap"
@@ -661,7 +661,7 @@ param roleAssignments = [
 param scopeMaps = [
   {
     actions: [
-      'repositories/myrepo/content/read'
+      'repositories/*/content/read'
     ]
     description: 'A test scope map'
     name: 'crrmaxScopeMap'
