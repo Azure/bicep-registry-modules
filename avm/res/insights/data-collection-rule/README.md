@@ -34,20 +34,275 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Agent Settings](#example-1-agent-settings)
-- [Collecting custom text logs with ingestion-time transformation](#example-2-collecting-custom-text-logs-with-ingestion-time-transformation)
-- [Collecting custom text logs](#example-3-collecting-custom-text-logs)
-- [Collecting IIS logs](#example-4-collecting-iis-logs)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Send data to Azure Monitor Logs with Logs ingestion API](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
-- [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [Collecting metrics from Azure resources using Platform Telemetry DCR](#example-9-collecting-metrics-from-azure-resources-using-platform-telemetry-dcr)
-- [WAF-aligned](#example-10-waf-aligned)
-- [Collecting Windows-specific information](#example-11-collecting-windows-specific-information)
-- [Collecting custom text logs with ingestion-time transformation](#example-12-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Send data to Azure Storage or Event Hub (Preview)](#example-1-send-data-to-azure-storage-or-event-hub-preview)
+- [Agent Settings](#example-2-agent-settings)
+- [Collecting custom text logs with ingestion-time transformation](#example-3-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Collecting custom text logs](#example-4-collecting-custom-text-logs)
+- [Collecting IIS logs](#example-5-collecting-iis-logs)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Send data to Azure Monitor Logs with Logs ingestion API](#example-7-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
+- [Collecting Linux-specific information](#example-8-collecting-linux-specific-information)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Collecting metrics from Azure resources using Platform Telemetry DCR](#example-10-collecting-metrics-from-azure-resources-using-platform-telemetry-dcr)
+- [WAF-aligned](#example-11-waf-aligned)
+- [Collecting Windows-specific information](#example-12-collecting-windows-specific-information)
+- [Collecting custom text logs with ingestion-time transformation](#example-13-collecting-custom-text-logs-with-ingestion-time-transformation)
 
-### Example 1: _Agent Settings_
+### Example 1: _Send data to Azure Storage or Event Hub (Preview)_
+
+This instance deploys the module to setup sending data to Azure Storage or Event Hub with Logs ingestion API using the AgentDirectToStore kind
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/agent-direct]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataFlows: [
+        {
+          destinations: [
+            'blobNamedPerf'
+            'myEh1'
+            'tableNamedPerf'
+          ]
+          streams: [
+            'Microsoft-Perf'
+          ]
+        }
+        {
+          destinations: [
+            'blobNamedPerf'
+            'myEh1'
+            'tableNamedPerf'
+          ]
+          streams: [
+            'Microsoft-Event'
+          ]
+        }
+      ]
+      dataSources: {
+        performanceCounters: [
+          {
+            counterSpecifiers: [
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Process(_Total)\\Working Set - Private'
+            ]
+            name: 'perfCounterDataSource10'
+            samplingFrequencyInSeconds: 10
+            streams: [
+              'Microsoft-Perf'
+            ]
+          }
+        ]
+      }
+      description: 'Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage'
+      destinations: {
+        eventHubsDirect: [
+          {
+            eventHubResourceId: '<eventHubResourceId>'
+            name: 'myEh1'
+          }
+        ]
+        storageBlobsDirect: [
+          {
+            containerName: '<containerName>'
+            name: 'blobNamedPerf'
+            storageAccountResourceId: '<storageAccountResourceId>'
+          }
+        ]
+        storageTablesDirect: [
+          {
+            name: 'tableNamedPerf'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            tableName: '<tableName>'
+          }
+        ]
+      }
+      kind: 'AgentDirectToStore'
+    }
+    name: 'idcrad001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataFlows": [
+          {
+            "destinations": [
+              "blobNamedPerf",
+              "myEh1",
+              "tableNamedPerf"
+            ],
+            "streams": [
+              "Microsoft-Perf"
+            ]
+          },
+          {
+            "destinations": [
+              "blobNamedPerf",
+              "myEh1",
+              "tableNamedPerf"
+            ],
+            "streams": [
+              "Microsoft-Event"
+            ]
+          }
+        ],
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "counterSpecifiers": [
+                "\\LogicalDisk(_Total)\\% Free Space",
+                "\\Memory\\% Committed Bytes In Use",
+                "\\Network Interface(*)\\Bytes Total/sec",
+                "\\Process(_Total)\\Working Set - Private"
+              ],
+              "name": "perfCounterDataSource10",
+              "samplingFrequencyInSeconds": 10,
+              "streams": [
+                "Microsoft-Perf"
+              ]
+            }
+          ]
+        },
+        "description": "Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage",
+        "destinations": {
+          "eventHubsDirect": [
+            {
+              "eventHubResourceId": "<eventHubResourceId>",
+              "name": "myEh1"
+            }
+          ],
+          "storageBlobsDirect": [
+            {
+              "containerName": "<containerName>",
+              "name": "blobNamedPerf",
+              "storageAccountResourceId": "<storageAccountResourceId>"
+            }
+          ],
+          "storageTablesDirect": [
+            {
+              "name": "tableNamedPerf",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "tableName": "<tableName>"
+            }
+          ]
+        },
+        "kind": "AgentDirectToStore"
+      }
+    },
+    "name": {
+      "value": "idcrad001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataFlows: [
+    {
+      destinations: [
+        'blobNamedPerf'
+        'myEh1'
+        'tableNamedPerf'
+      ]
+      streams: [
+        'Microsoft-Perf'
+      ]
+    }
+    {
+      destinations: [
+        'blobNamedPerf'
+        'myEh1'
+        'tableNamedPerf'
+      ]
+      streams: [
+        'Microsoft-Event'
+      ]
+    }
+  ]
+  dataSources: {
+    performanceCounters: [
+      {
+        counterSpecifiers: [
+          '\\LogicalDisk(_Total)\\% Free Space'
+          '\\Memory\\% Committed Bytes In Use'
+          '\\Network Interface(*)\\Bytes Total/sec'
+          '\\Process(_Total)\\Working Set - Private'
+        ]
+        name: 'perfCounterDataSource10'
+        samplingFrequencyInSeconds: 10
+        streams: [
+          'Microsoft-Perf'
+        ]
+      }
+    ]
+  }
+  description: 'Send data to Agent Direct Storage. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/vm/send-event-hubs-storage'
+  destinations: {
+    eventHubsDirect: [
+      {
+        eventHubResourceId: '<eventHubResourceId>'
+        name: 'myEh1'
+      }
+    ]
+    storageBlobsDirect: [
+      {
+        containerName: '<containerName>'
+        name: 'blobNamedPerf'
+        storageAccountResourceId: '<storageAccountResourceId>'
+      }
+    ]
+    storageTablesDirect: [
+      {
+        name: 'tableNamedPerf'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        tableName: '<tableName>'
+      }
+    ]
+  }
+  kind: 'AgentDirectToStore'
+}
+param name = 'idcrad001'
+```
+
+</details>
+<p>
+
+### Example 2: _Agent Settings_
 
 This instance deploys the module AMA (Azure Monitor Agent) Settings DCR.
 
@@ -150,7 +405,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Collecting custom text logs with ingestion-time transformation_
+### Example 3: _Collecting custom text logs with ingestion-time transformation_
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
@@ -470,7 +725,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Collecting custom text logs_
+### Example 4: _Collecting custom text logs_
 
 This instance deploys the module to setup collection of custom logs.
 
@@ -731,7 +986,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Collecting IIS logs_
+### Example 5: _Collecting IIS logs_
 
 This instance deploys the module to setup the collection of IIS logs.
 
@@ -929,7 +1184,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using only defaults_
+### Example 6: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1119,7 +1374,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API_
+### Example 7: _Send data to Azure Monitor Logs with Logs ingestion API_
 
 This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
 
@@ -1332,7 +1587,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Collecting Linux-specific information_
+### Example 8: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
@@ -1869,7 +2124,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -2223,9 +2478,11 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Collecting metrics from Azure resources using Platform Telemetry DCR_
+### Example 10: _Collecting metrics from Azure resources using Platform Telemetry DCR_
 
 This instance collects metrics from Azure resources using Platform Telemetry and sends them to a Log Analytics workspace.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plat-tele]
 
 
 <details>
@@ -2234,7 +2491,6 @@ This instance collects metrics from Azure resources using Platform Telemetry and
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -2391,7 +2647,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2790,7 +3046,7 @@ param tags = {
 </details>
 <p>
 
-### Example 11: _Collecting Windows-specific information_
+### Example 12: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
@@ -3189,9 +3445,11 @@ param tags = {
 </details>
 <p>
 
-### Example 12: _Collecting custom text logs with ingestion-time transformation_
+### Example 13: _Collecting custom text logs with ingestion-time transformation_
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/wksp-trans]
 
 
 <details>
@@ -3200,7 +3458,6 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -3388,6 +3645,7 @@ The kind of data collection rule.
 | [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
 | [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
+| [`AgentDirectToStore`](#variant-datacollectionrulepropertieskind-agentdirecttostore) | The type for the properties of the 'AgentDirectToStore' data collection rule. |
 | [`WorkspaceTransforms`](#variant-datacollectionrulepropertieskind-workspacetransforms) | The type for the properties of the 'WorkspaceTransforms' data collection rule. |
 | [`PlatformTelemetry`](#variant-datacollectionrulepropertieskind-platformtelemetry) | The type for the properties of the 'PlatformTelemetry' data collection rule. |
 
@@ -3771,6 +4029,67 @@ The resource ID of the data collection endpoint that this rule can be used with.
 - Type: string
 
 ### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-AgentDirectToStore`
+The type for the properties of the 'AgentDirectToStore' data collection rule.
+
+To use this variant, set the property `kind` to `AgentDirectToStore`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredataflows) | array | The specification of data flows. |
+| [`dataSources`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredatasources) | object | Specification of data sources that will be collected. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-agentdirecttostorekind) | string | The platform type specifies the type of resources this rule can apply to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-datacollectionrulepropertieskind-agentdirecttostoredescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.dataSources`
+
+Specification of data sources that will be collected.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AgentDirectToStore'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-AgentDirectToStore.description`
 
 Description of the data collection rule.
 

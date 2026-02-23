@@ -31,16 +31,16 @@ param location string = resourceGroup().location
 param logAnalytics logAnalyticsType?
 
 @description('Optional. The DNS config information for a container group.')
-param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.dnsConfig?
+param dnsConfig resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.dnsConfig?
 
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
-param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.initContainers?
+param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.initContainers?
 
 @description('Optional. The subnets to use by the container group.')
 param subnets containerGroupSubnetType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
-param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.volumes?
+param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.volumes?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -51,7 +51,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.tags?
+param tags resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -63,7 +63,7 @@ param enableTelemetry bool = true
 ])
 param sku string = 'Standard'
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -78,6 +78,21 @@ param availabilityZone int
 
 @description('Optional. The priority of the container group.')
 param priority 'Regular' | 'Spot' = 'Regular'
+
+@description('Optional. The properties for confidential container group.')
+param confidentialComputeProperties resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.confidentialComputeProperties?
+
+@description('Optional. The reference container group profile properties.')
+param containerGroupProfile containerGroupProfileType?
+
+@description('Optional. The extensions used by virtual kubelet.')
+param extensions resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.extensions?
+
+@description('Optional. The access control levels of the identities.')
+param identityAcls resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.identityAcls?
+
+@description('Optional. The reference standby pool profile properties.')
+param standbyPoolProfile standbyPoolProfileType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -142,7 +157,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
+resource containergroup 'Microsoft.ContainerInstance/containerGroups@2025-09-01' = {
   name: name
   location: location
   identity: identity
@@ -157,30 +172,33 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       for (container, index) in containers: {
         name: container.name
         properties: {
+          configMap: container.properties.?configMap
           command: container.properties.?command
           environmentVariables: container.properties.?environmentVariables
           image: container.properties.?image
           livenessProbe: container.properties.?livenessProbe
           ports: container.properties.?ports
           readinessProbe: container.properties.?readinessProbe
-          resources: {
-            requests: {
-              cpu: container.properties.resources.requests.cpu
-              gpu: container.properties.resources.requests.?gpu
-              memoryInGB: json(container.properties.resources.requests.?memoryInGB)
-            }
-            limits: !empty(container.properties.resources.?limits)
-              ? {
-                  cpu: container.properties.resources.?limits.?cpu
-                  gpu: container.properties.resources.?limits.?gpu
-                  memoryInGB: !empty(container.properties.resources.?limits.?memoryInGB)
-                    ? json(container.properties.resources.?limits.?memoryInGB!)
-                    : null
-                }
-              : null
-          }
           securityContext: container.properties.?securityContext
           volumeMounts: container.properties.?volumeMounts
+          resources: !empty(container.properties.?resources)
+            ? {
+                requests: {
+                  cpu: container.properties.resources!.requests.cpu
+                  gpu: container.properties.resources!.requests.?gpu
+                  memoryInGB: json(container.properties.resources!.requests.?memoryInGB)
+                }
+                limits: !empty(container.properties.resources!.?limits)
+                  ? {
+                      cpu: container.properties.resources!.?limits.?cpu
+                      gpu: container.properties.resources!.?limits.?gpu
+                      memoryInGB: !empty(container.properties.resources!.?limits.?memoryInGB)
+                        ? json(container.properties.resources!.?limits.?memoryInGB!)
+                        : null
+                    }
+                  : null
+              }
+            : null
         }
       }
     ]
@@ -207,10 +225,25 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
             : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
         }
       : null
+    restartPolicy: empty(containerGroupProfile) ? restartPolicy : null
+    sku: empty(containerGroupProfile) ? sku : null
+    osType: empty(containerGroupProfile) ? osType : null
+    priority: empty(containerGroupProfile) ? priority : null
+    containerGroupProfile: !empty(containerGroupProfile)
+      ? {
+          id: containerGroupProfile!.resourceId
+          revision: containerGroupProfile!.revision
+        }
+      : null
+    standbyPoolProfile: !empty(standbyPoolProfile)
+      ? {
+          failContainerGroupCreateOnReuseFailure: standbyPoolProfile!.?failContainerGroupCreateOnReuseFailure
+          id: standbyPoolProfile!.resourceId
+        }
+      : null
     imageRegistryCredentials: imageRegistryCredentials
     initContainers: initContainers
-    restartPolicy: restartPolicy
-    osType: osType
+    volumes: volumes
     ipAddress: !empty(ipAddress)
       ? {
           autoGeneratedDomainNameLabelScope: !empty(dnsConfig.?nameServers)
@@ -222,20 +255,16 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           type: ipAddress.?type ?? 'Public'
         }
       : null
-    sku: sku
     subnetIds: [
       for subnet in subnets ?? []: {
         id: subnet.subnetResourceId
         name: subnet.?name
       }
     ]
-    volumes: volumes
     dnsConfig: dnsConfig
-    priority: priority
-
-    // TODO Add support for the following properties:
-    // confidentialComputeProperties:
-    // extensions:
+    confidentialComputeProperties: confidentialComputeProperties
+    extensions: extensions
+    identityAcls: identityAcls
   }
 }
 
@@ -260,7 +289,7 @@ output resourceId string = containergroup.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The IPv4 address of the container group.')
-output iPv4Address string = containergroup.properties.ipAddress.ip
+output iPv4Address string? = containergroup.properties.?ipAddress.?ip
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = containergroup.?identity.?principalId
@@ -326,8 +355,11 @@ type containerType = {
 
   @description('Required. The properties of the container instance.')
   properties: {
-    @description('Required. The name of the container source image.')
-    image: string
+    @description('Optional. The config map.')
+    configMap: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.configMap?
+
+    @description('Conditional. The name of the container source image. Required if no containerGroupProfile is provided.')
+    image: string?
 
     @description('Optional. The liveness probe.')
     livenessProbe: containerProbeType?
@@ -336,15 +368,9 @@ type containerType = {
     readinessProbe: containerProbeType?
 
     @description('Optional. The exposed ports on the container instance.')
-    ports: {
-      @description('Required. The port number exposed on the container instance.')
-      port: int
+    ports: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.containers[*].properties.ports?
 
-      @description('Required. The protocol associated with the port number.')
-      protocol: string
-    }[]?
-
-    @description('Required. The resource requirements of the container instance.')
+    @description('Conditional. The resource requirements of the container instance. Required if no containerGroupProfile is provided.')
     resources: {
       @description('Required. The resource requests of this container instance.')
       requests: {
@@ -369,7 +395,7 @@ type containerType = {
         @description('Optional. The memory limit in GB of this container instance.')
         memoryInGB: string?
       }?
-    }
+    }?
 
     @description('Optional. The security context of the container instance.')
     securityContext: {
@@ -438,7 +464,7 @@ type logAnalyticsType = {
   workspaceResourceId: string
 
   @description('Optional. Metadata for log analytics.')
-  metadata: resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.diagnostics.logAnalytics.metadata?
+  metadata: resourceInput<'Microsoft.ContainerInstance/containerGroups@2025-09-01'>.properties.diagnostics.logAnalytics.metadata?
 }
 
 @export()
@@ -515,4 +541,24 @@ type containerGpuType = {
 
   @description('Required. The SKU of the GPU resource.')
   sku: ('K80' | 'P100' | 'V100')
+}
+
+@export()
+@description('The type of a container group profile.')
+type containerGroupProfileType = {
+  @description('Required. The container group profile reference resourceid.')
+  resourceId: string
+
+  @description('Required. The container group profile reference revision.')
+  revision: int
+}
+
+@export()
+@description('The type of a container group profile.')
+type standbyPoolProfileType = {
+  @description('Required. The standby pool profile reference resource id.')
+  resourceId: string
+
+  @description('Optional. The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool.')
+  failContainerGroupCreateOnReuseFailure: bool?
 }

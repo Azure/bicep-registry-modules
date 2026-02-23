@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.11.1'
 @description('Optional. Settigs for the Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
@@ -39,7 +39,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module aks 'br/public:avm/res/container-service/managed-cluster:0.9.0' = {
+module aks 'br/public:avm/res/container-service/managed-cluster:0.11.1' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -50,7 +50,7 @@ module aks 'br/public:avm/res/container-service/managed-cluster:0.9.0' = {
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     kedaAddon: true
-    kubernetesVersion: '1.31'
+    kubernetesVersion: '1.33'
     maintenanceConfigurations: [
       {
         name: 'aksManagedAutoUpgradeSchedule'

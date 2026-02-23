@@ -1,0 +1,608 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.39.26.7824",
+      "templateHash": "17739451536850644299"
+    },
+    "name": "API Management Workspace Products",
+    "description": "This module deploys a Product in an API Management Workspace."
+  },
+  "definitions": {
+    "productPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the policy."
+          }
+        },
+        "format": {
+          "type": "string",
+          "allowedValues": [
+            "rawxml",
+            "rawxml-link",
+            "xml",
+            "xml-link"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Format of the policyContent."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Contents of the Policy as defined by the format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a product policy."
+      }
+    },
+    "apiLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the API link."
+          }
+        },
+        "apiResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Full resource Id of an API."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a product API link."
+      }
+    },
+    "groupLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Product Group link."
+          }
+        },
+        "groupResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Full resource Id of a Group."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a product group link."
+      }
+    }
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "metadata": {
+        "description": "Required. Product Name."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "metadata": {
+        "description": "Required. Product display name."
+      }
+    },
+    "approvalRequired": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 1000,
+      "metadata": {
+        "description": "Optional. Product description. May include HTML formatting tags."
+      }
+    },
+    "apiLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/apiLinkType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Names of Product API Links."
+      }
+    },
+    "groupLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/groupLinkType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Names of Product Group Links."
+      }
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/productPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of Policies to apply to the Product."
+      }
+    },
+    "state": {
+      "type": "string",
+      "defaultValue": "published",
+      "allowedValues": [
+        "notPublished",
+        "published"
+      ],
+      "metadata": {
+        "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
+      }
+    },
+    "subscriptionRequired": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
+      }
+    },
+    "subscriptionsLimit": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+      }
+    },
+    "terms": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "product": {
+      "type": "Microsoft.ApiManagement/service/workspaces/products",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "displayName": "[parameters('displayName')]",
+        "terms": "[parameters('terms')]",
+        "subscriptionRequired": "[parameters('subscriptionRequired')]",
+        "approvalRequired": "[if(parameters('subscriptionRequired'), parameters('approvalRequired'), null())]",
+        "subscriptionsLimit": "[if(parameters('subscriptionRequired'), parameters('subscriptionsLimit'), null())]",
+        "state": "[parameters('state')]"
+      }
+    },
+    "product_apiLinks": {
+      "copy": {
+        "name": "product_apiLinks",
+        "count": "[length(coalesce(parameters('apiLinks'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-ApiLnk-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].name]"
+          },
+          "apiResourceId": {
+            "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].apiResourceId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "10398416687685575846"
+            },
+            "name": "API Management Workspace Product API Links",
+            "description": "This module deploys an Product API Link in an API Management Workspace."
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Product API link."
+              }
+            },
+            "apiResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Full resource Id of an API."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/workspaces/products/apiLinks",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+              "properties": {
+                "apiId": "[parameters('apiResourceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the workspace product API link."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/apiLinks', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the workspace product API link."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the workspace product API link was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "product"
+      ]
+    },
+    "product_groupLinks": {
+      "copy": {
+        "name": "product_groupLinks",
+        "count": "[length(coalesce(parameters('groupLinks'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-GrpLnk-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].name]"
+          },
+          "groupResourceId": {
+            "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].groupResourceId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "9816498973930744055"
+            },
+            "name": "API Management Workspace Product Group Links",
+            "description": "This module deploys a Product Group Link in an API Management Workspace."
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Product Group link."
+              }
+            },
+            "groupResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Full resource Id of a Group."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/workspaces/products/groupLinks",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+              "properties": {
+                "groupId": "[parameters('groupResourceId')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the workspace product group link."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/groupLinks', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the workspace product group link."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the workspace product group link was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "product"
+      ]
+    },
+    "product_policies": {
+      "copy": {
+        "name": "product_policies",
+        "count": "[length(coalesce(parameters('policies'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Pol-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('workspaceName')]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
+          },
+          "format": {
+            "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"
+          },
+          "value": {
+            "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.39.26.7824",
+              "templateHash": "10248235472065827019"
+            },
+            "name": "API Management Workspace Product Policies",
+            "description": "This module deploys a Policy for a Product in an API Management Workspace."
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "policy",
+              "metadata": {
+                "description": "Optional. The name of the policy."
+              }
+            },
+            "format": {
+              "type": "string",
+              "defaultValue": "xml",
+              "allowedValues": [
+                "rawxml",
+                "rawxml-link",
+                "xml",
+                "xml-link"
+              ],
+              "metadata": {
+                "description": "Optional. Format of the policyContent."
+              }
+            },
+            "value": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Contents of the Policy as defined by the format."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ApiManagement/service/workspaces/products/policies",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]",
+              "properties": {
+                "format": "[parameters('format')]",
+                "value": "[parameters('value')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the workspace product policy."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products/policies', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the workspace product policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the workspace product policy was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "product"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace product."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/workspaces/products', parameters('apiManagementServiceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace product."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the workspace product was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "12979914515638992236"
+      "version": "0.40.2.10011",
+      "templateHash": "17672322658025763564"
     },
     "name": "CDN Profiles Security Policy",
     "description": "This module deploys a CDN Profile Security Policy."

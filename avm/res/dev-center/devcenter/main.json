@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8596204990774204850"
+      "version": "0.40.2.10011",
+      "templateHash": "2214735564501478590"
     },
     "name": "Dev Center",
     "description": "This module deploys an Azure Dev Center."
@@ -440,7 +440,7 @@
                   "Unmanaged"
                 ],
                 "metadata": {
-                  "description": "Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource."
+                  "description": "Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource. If \"microsoftHostedNetworkEnableStatus\" is set to \"Disabled\" at the Dev Center level, this property must be set to \"Unmanaged\"."
                 }
               },
               "managedVirtualNetworkRegion": {
@@ -454,7 +454,7 @@
                 "type": "string",
                 "nullable": true,
                 "metadata": {
-                  "description": "Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is \"Unmanaged\". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with \"None\" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to \"managedNetwork\" if virtualNetworkType is \"Managed\"."
+                  "description": "Conditional. Name of a Network Connection (Attached Network) in parent Project of this Pool. Required if virtualNetworkType is \"Unmanaged\". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with \"None\" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to \"managedNetwork\" if virtualNetworkType is \"Managed\"."
                 }
               },
               "singleSignOnStatus": {
@@ -1513,7 +1513,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.DevCenter/devcenters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DevCenter/devcenters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1530,7 +1530,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.DevCenter/devcenters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DevCenter/devcenters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DevCenter/devcenters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1552,7 +1552,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.DevCenter/devcenters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DevCenter/devcenters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1592,7 +1592,7 @@
         "count": "[length(coalesce(parameters('catalogs'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-Catalog-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1629,8 +1629,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "18245259676468216470"
+              "version": "0.40.2.10011",
+              "templateHash": "15903858360543519155"
             },
             "name": "Dev Center Catalog",
             "description": "This module deploys a Dev Center Catalog."
@@ -1792,7 +1792,7 @@
         "count": "[length(coalesce(parameters('environmentTypes'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-EnvironmentType-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1820,8 +1820,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "10415940441436901762"
+              "version": "0.40.2.10011",
+              "templateHash": "16869542831265039271"
             },
             "name": "Dev Center Environment Type",
             "description": "This module deploys a Dev Center Environment Type."
@@ -1909,7 +1909,7 @@
         "count": "[length(coalesce(parameters('galleries'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-Gallery-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1937,8 +1937,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2952573156750747271"
+              "version": "0.40.2.10011",
+              "templateHash": "9301648265488236971"
             },
             "name": "Dev Center Gallery",
             "description": "This module deploys a Dev Center Gallery."
@@ -1993,7 +1993,7 @@
             "computeGallery_roleAssignment": {
               "condition": "[not(equals(parameters('devCenterIdentityPrincipalId'), ''))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-Contributor-RoleAssignment', deployment().name)]",
               "resourceGroup": "[split(parameters('galleryResourceId'), '/')[4]]",
               "properties": {
@@ -2015,8 +2015,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "6836388936764744479"
+                      "version": "0.40.2.10011",
+                      "templateHash": "6438251235950067901"
                     }
                   },
                   "parameters": {
@@ -2037,7 +2037,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Compute/galleries/{0}', last(split(parameters('galleryResourceId'), '/')))]",
+                      "scope": "[resourceId('Microsoft.Compute/galleries', last(split(parameters('galleryResourceId'), '/')))]",
                       "name": "[guid(parameters('devCenterIdentityPrincipalId'), resourceId('Microsoft.Compute/galleries', last(split(parameters('galleryResourceId'), '/'))), 'Contributor')]",
                       "properties": {
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2085,7 +2085,7 @@
         "count": "[length(coalesce(parameters('attachedNetworks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-AttachedNetwork-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2109,8 +2109,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "17913352460190099971"
+              "version": "0.40.2.10011",
+              "templateHash": "10678599787681696574"
             },
             "name": "Dev Center Attached Network",
             "description": "This module deploys a Dev Center Attached Network."
@@ -2182,7 +2182,7 @@
         "count": "[length(coalesce(parameters('devboxDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-DevboxDefinition-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2219,8 +2219,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "5117821767269847647"
+              "version": "0.40.2.10011",
+              "templateHash": "1494447500289742008"
             },
             "name": "Dev Center DevBox Definition",
             "description": "This module deploys a Dev Center DevBox Definition."
@@ -2386,7 +2386,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-ProjectPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2414,8 +2414,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "14438372478533139124"
+              "version": "0.40.2.10011",
+              "templateHash": "7077009816687180928"
             },
             "name": "Dev Center Project Policy",
             "description": "This module deploys a Dev Center Project Policy."
@@ -2566,7 +2566,7 @@
         "count": "[length(coalesce(parameters('projects'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Devcenter-Project-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",

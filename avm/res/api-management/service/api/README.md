@@ -33,7 +33,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | API name. Must be 1 to 300 characters long. |
+| [`displayName`](#parameter-displayname) | string | API display name. |
 | [`name`](#parameter-name) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
 | [`path`](#parameter-path) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 
@@ -49,7 +49,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`apiRevision`](#parameter-apirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
 | [`apiRevisionDescription`](#parameter-apirevisiondescription) | string | Description of the API Revision. |
-| [`apiType`](#parameter-apitype) | string | Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API. |
+| [`apiType`](#parameter-apitype) | string | Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API. |
 | [`apiVersion`](#parameter-apiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetName`](#parameter-apiversionsetname) | string | The name of the API version set to link. |
@@ -61,8 +61,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
 | [`operations`](#parameter-operations) | array | The operations of the api. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
-| [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
-| [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
+| [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. |
+| [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. |
 | [`sourceApiId`](#parameter-sourceapiid) | string | API identifier of the source API. |
 | [`subscriptionKeyParameterNames`](#parameter-subscriptionkeyparameternames) | object | Protocols over which API is made available. |
 | [`subscriptionRequired`](#parameter-subscriptionrequired) | bool | Specifies whether an API or Product subscription is required for accessing the API. |
@@ -72,7 +72,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ### Parameter: `displayName`
 
-API name. Must be 1 to 300 characters long.
+API display name.
 
 - Required: Yes
 - Type: string
@@ -114,7 +114,7 @@ Description of the API Revision.
 
 ### Parameter: `apiType`
 
-Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.
+Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API.
 
 - Required: No
 - Type: string
@@ -175,7 +175,7 @@ Array of diagnostics to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerName`](#parameter-diagnosticsloggername) | string | The name of the logger. |
+| [`loggerName`](#parameter-diagnosticsloggername) | string | The name of the target logger. |
 
 **Conditional parameters**
 
@@ -193,13 +193,13 @@ Array of diagnostics to apply to the Service API.
 | [`backend`](#parameter-diagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
 | [`frontend`](#parameter-diagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-diagnosticslogclientip) | bool | Log the ClientIP. |
-| [`name`](#parameter-diagnosticsname) | string | Type of diagnostic resource. |
-| [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`name`](#parameter-diagnosticsname) | string | The identifier of the Diagnostic. |
+| [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-diagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
 ### Parameter: `diagnostics.loggerName`
 
-The name of the logger.
+The name of the target logger.
 
 - Required: Yes
 - Type: string
@@ -236,7 +236,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
 
@@ -246,6 +246,12 @@ Specifies for what type of messages sampling settings should not apply.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'allErrors'
+  ]
+  ```
 
 ### Parameter: `diagnostics.backend`
 
@@ -270,7 +276,7 @@ Log the ClientIP.
 
 ### Parameter: `diagnostics.name`
 
-Type of diagnostic resource.
+The identifier of the Diagnostic.
 
 - Required: No
 - Type: string
@@ -285,10 +291,12 @@ Type of diagnostic resource.
 
 ### Parameter: `diagnostics.samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `diagnostics.verbosity`
 
@@ -323,6 +331,11 @@ Format of the Content in which the API is getting imported.
 - Allowed:
   ```Bicep
   [
+    'graphql-link'
+    'grpc'
+    'grpc-link'
+    'odata'
+    'odata-link'
     'openapi'
     'openapi-link'
     'openapi+json'
@@ -357,7 +370,7 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-operationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-operationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
-| [`name`](#parameter-operationsname) | string | The name of the policy. |
+| [`name`](#parameter-operationsname) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-operationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Optional parameters**
@@ -367,7 +380,7 @@ The operations of the api.
 | [`description`](#parameter-operationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
 | [`policies`](#parameter-operationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-operationsrequest) | object | An entity containing request details. |
-| [`responses`](#parameter-operationsresponses) | array | An entity containing request details. |
+| [`responses`](#parameter-operationsresponses) | array | Array of Operation responses. |
 | [`templateParameters`](#parameter-operationstemplateparameters) | array | Collection of URL template parameters. |
 
 ### Parameter: `operations.displayName`
@@ -386,7 +399,7 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 
 ### Parameter: `operations.name`
 
-The name of the policy.
+The name of the operation.
 
 - Required: Yes
 - Type: string
@@ -416,15 +429,27 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`value`](#parameter-operationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`format`](#parameter-operationspoliciesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-operationspoliciesname) | string | The name of the policy. |
-| [`value`](#parameter-operationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+### Parameter: `operations.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `operations.policies.format`
 
 Format of the policyContent.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -440,14 +465,7 @@ Format of the policyContent.
 
 The name of the policy.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `operations.policies.value`
-
-Contents of the Policy as defined by the format.
-
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `operations.request`
@@ -459,7 +477,7 @@ An entity containing request details.
 
 ### Parameter: `operations.responses`
 
-An entity containing request details.
+Array of Operation responses.
 
 - Required: No
 - Type: array
@@ -523,7 +541,7 @@ The name of the policy.
 
 ### Parameter: `protocols`
 
-Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.
+Describes on which protocols the operations in this API can be invoked.
 
 - Required: No
 - Type: array
@@ -533,10 +551,19 @@ Describes on which protocols the operations in this API can be invoked. - HTTP o
     'https'
   ]
   ```
+- Allowed:
+  ```Bicep
+  [
+    'http'
+    'https'
+    'ws'
+    'wss'
+  ]
+  ```
 
 ### Parameter: `serviceUrl`
 
-Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.
+Absolute URL of the backend service implementing this API.
 
 - Required: No
 - Type: string
@@ -574,7 +601,9 @@ Type of API.
   ```Bicep
   [
     'graphql'
+    'grpc'
     'http'
+    'odata'
     'soap'
     'websocket'
   ]

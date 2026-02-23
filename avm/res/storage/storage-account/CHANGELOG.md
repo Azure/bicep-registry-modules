@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.31.1
+
+### Changes
+
+- Added `provisionedBandwidthMibps` and `provisionedIops` parameters to `file-service/share` for FileStorage (premium file share) accounts
+- Updated e2e test `premium-file-share` to cover new provisioned IOPS and bandwidth properties
+
+### Breaking Changes
+
+- None
+
+## 0.31.0
+
+### Changes
+
+- Updated `file-service/share` property `accessTier` to allow for `null`
+- Updated default `file-service/share accessTier` to default to `null` when Storage Account sku is in `PremiumV2` family
+
+### Breaking Changes
+
+- Updated `blob-service/container/immutabilityPolicy` write access flags `allowProtectedAppendWrites` and `allowProtectedAppendWritesAll` to default to `false` instead of `true`
+
 ## 0.30.0
 
 ### Changes

@@ -22,7 +22,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
+| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -59,7 +59,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpmin001'
+    name: 'nagwafptstmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -90,7 +90,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpmin001"
+      "value": "nagwafptstmin001"
     },
     // Non-required parameters
     "location": {
@@ -119,7 +119,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpmin001'
+param name = 'nagwafptstmin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -156,7 +156,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpmax001'
+    name: 'nagwafptstmax001'
     // Non-required parameters
     location: '<location>'
     policySettings: {
@@ -206,7 +206,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpmax001"
+      "value": "nagwafptstmax001"
     },
     // Non-required parameters
     "location": {
@@ -258,7 +258,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpmax001'
+param name = 'nagwafptstmax001'
 // Non-required parameters
 param location = '<location>'
 param policySettings = {
@@ -307,7 +307,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         }
       ]
     }
-    name: 'nagwafpwaf001'
+    name: 'nagwafptstwaf001'
     // Non-required parameters
     location: '<location>'
     policySettings: {
@@ -354,7 +354,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     },
     "name": {
-      "value": "nagwafpwaf001"
+      "value": "nagwafptstwaf001"
     },
     // Non-required parameters
     "location": {
@@ -403,7 +403,7 @@ param managedRules = {
     }
   ]
 }
-param name = 'nagwafpwaf001'
+param name = 'nagwafptstwaf001'
 // Non-required parameters
 param location = '<location>'
 param policySettings = {

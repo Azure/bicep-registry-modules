@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/container-app/CHANGELOG.md).
 
+## 0.20.0
+
+### Changes
+
+- Update API versions to v2025-10-02-preview for enhanced features and capabilities.
+- Updated `avm-common-types` references to latest `0.6.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.3.11034",
-      "templateHash": "8943275705446718462"
+      "version": "0.39.26.7824",
+      "templateHash": "14698387200466332797"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules."

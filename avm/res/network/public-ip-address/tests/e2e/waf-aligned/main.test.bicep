@@ -65,34 +65,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      lock: {
-        name: 'myCustomLockName'
-        kind: 'CanNotDelete'
-      }
       dnsSettings: null
       ddosSettings: null
       publicIPAllocationMethod: 'Static'
       publicIpPrefixResourceId: null
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
       skuName: 'Standard'
       skuTier: 'Regional'
       publicIPAddressVersion: 'IPv4'

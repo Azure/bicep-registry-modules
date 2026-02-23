@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10202559695628197530"
+      "version": "0.39.26.7824",
+      "templateHash": "12027243415220231866"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -143,10 +143,21 @@
         "properties": {
           "type": "object",
           "properties": {
+            "configMap": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/containers/items/properties/properties/properties/configMap"
+                },
+                "description": "Optional. The config map."
+              },
+              "nullable": true
+            },
             "image": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The name of the container source image."
+                "description": "Conditional. The name of the container source image. Required if no containerGroupProfile is provided."
               }
             },
             "livenessProbe": {
@@ -165,27 +176,13 @@
             },
             "ports": {
               "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "port": {
-                    "type": "int",
-                    "metadata": {
-                      "description": "Required. The port number exposed on the container instance."
-                    }
-                  },
-                  "protocol": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The protocol associated with the port number."
-                    }
-                  }
-                }
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/containers/items/properties/properties/properties/ports"
+                },
                 "description": "Optional. The exposed ports on the container instance."
-              }
+              },
+              "nullable": true
             },
             "resources": {
               "type": "object",
@@ -247,8 +244,9 @@
                   }
                 }
               },
+              "nullable": true,
               "metadata": {
-                "description": "Required. The resource requirements of the container instance."
+                "description": "Conditional. The resource requirements of the container instance. Required if no containerGroupProfile is provided."
               }
             },
             "securityContext": {
@@ -431,7 +429,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/diagnostics/properties/logAnalytics/properties/metadata"
+              "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/diagnostics/properties/logAnalytics/properties/metadata"
             },
             "description": "Optional. Metadata for log analytics."
           },
@@ -612,6 +610,49 @@
         "description": "The type of a container GPU."
       }
     },
+    "containerGroupProfileType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The container group profile reference resourceid."
+          }
+        },
+        "revision": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The container group profile reference revision."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a container group profile."
+      }
+    },
+    "standbyPoolProfileType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The standby pool profile reference resource id."
+          }
+        },
+        "failContainerGroupCreateOnReuseFailure": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The flag to determine whether ACI should fail the create request if the container group can not be obtained from standby pool."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a container group profile."
+      }
+    },
     "customerManagedKeyWithAutoRotateType": {
       "type": "object",
       "properties": {
@@ -652,7 +693,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -792,7 +833,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/dnsConfig"
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/dnsConfig"
         },
         "description": "Optional. The DNS config information for a container group."
       },
@@ -802,7 +843,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/initContainers"
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/initContainers"
         },
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
       },
@@ -822,7 +863,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/volumes"
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/volumes"
         },
         "description": "Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup."
       },
@@ -846,7 +887,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/tags"
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -898,6 +939,50 @@
       "defaultValue": "Regular",
       "metadata": {
         "description": "Optional. The priority of the container group."
+      }
+    },
+    "confidentialComputeProperties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/confidentialComputeProperties"
+        },
+        "description": "Optional. The properties for confidential container group."
+      },
+      "nullable": true
+    },
+    "containerGroupProfile": {
+      "$ref": "#/definitions/containerGroupProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The reference container group profile properties."
+      }
+    },
+    "extensions": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/extensions"
+        },
+        "description": "Optional. The extensions used by virtual kubelet."
+      },
+      "nullable": true
+    },
+    "identityAcls": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2025-09-01#properties/properties/properties/identityAcls"
+        },
+        "description": "Optional. The access control levels of the identities."
+      },
+      "nullable": true
+    },
+    "standbyPoolProfile": {
+      "$ref": "#/definitions/standbyPoolProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The reference standby pool profile properties."
       }
     }
   },
@@ -964,7 +1049,7 @@
     },
     "containergroup": {
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -978,22 +1063,16 @@
             "input": {
               "name": "[parameters('containers')[copyIndex('containers')].name]",
               "properties": {
+                "configMap": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'configMap')]",
                 "command": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'command')]",
                 "environmentVariables": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'environmentVariables')]",
                 "image": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'image')]",
                 "livenessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'livenessProbe')]",
                 "ports": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'ports')]",
                 "readinessProbe": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'readinessProbe')]",
-                "resources": {
-                  "requests": {
-                    "cpu": "[parameters('containers')[copyIndex('containers')].properties.resources.requests.cpu]",
-                    "gpu": "[tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'gpu')]",
-                    "memoryInGB": "[json(tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'memoryInGB'))]"
-                  },
-                  "limits": "[if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'))), createObject('cpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'cpu'), 'gpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'gpu'), 'memoryInGB', if(not(empty(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB'))), json(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB')), null())), null())]"
-                },
                 "securityContext": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'securityContext')]",
-                "volumeMounts": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'volumeMounts')]"
+                "volumeMounts": "[tryGet(parameters('containers')[copyIndex('containers')].properties, 'volumeMounts')]",
+                "resources": "[if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties, 'resources'))), createObject('requests', createObject('cpu', parameters('containers')[copyIndex('containers')].properties.resources.requests.cpu, 'gpu', tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'gpu'), 'memoryInGB', json(tryGet(parameters('containers')[copyIndex('containers')].properties.resources.requests, 'memoryInGB'))), 'limits', if(not(empty(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'))), createObject('cpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'cpu'), 'gpu', tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'gpu'), 'memoryInGB', if(not(empty(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB'))), json(tryGet(tryGet(parameters('containers')[copyIndex('containers')].properties.resources, 'limits'), 'memoryInGB')), null())), null())), null())]"
               }
             }
           },
@@ -1008,15 +1087,20 @@
         ],
         "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', reference('law').customerId, 'workspaceKey', listKeys('law', '2025-02-01').primarySharedKey, 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
         "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
+        "restartPolicy": "[if(empty(parameters('containerGroupProfile')), parameters('restartPolicy'), null())]",
+        "sku": "[if(empty(parameters('containerGroupProfile')), parameters('sku'), null())]",
+        "osType": "[if(empty(parameters('containerGroupProfile')), parameters('osType'), null())]",
+        "priority": "[if(empty(parameters('containerGroupProfile')), parameters('priority'), null())]",
+        "containerGroupProfile": "[if(not(empty(parameters('containerGroupProfile'))), createObject('id', parameters('containerGroupProfile').resourceId, 'revision', parameters('containerGroupProfile').revision), null())]",
+        "standbyPoolProfile": "[if(not(empty(parameters('standbyPoolProfile'))), createObject('failContainerGroupCreateOnReuseFailure', tryGet(parameters('standbyPoolProfile'), 'failContainerGroupCreateOnReuseFailure'), 'id', parameters('standbyPoolProfile').resourceId), null())]",
         "imageRegistryCredentials": "[parameters('imageRegistryCredentials')]",
         "initContainers": "[parameters('initContainers')]",
-        "restartPolicy": "[parameters('restartPolicy')]",
-        "osType": "[parameters('osType')]",
-        "ipAddress": "[if(not(empty(parameters('ipAddress'))), createObject('autoGeneratedDomainNameLabelScope', if(not(empty(tryGet(parameters('dnsConfig'), 'nameServers'))), tryGet(parameters('ipAddress'), 'autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', tryGet(parameters('ipAddress'), 'dnsNameLabel'), 'ip', tryGet(parameters('ipAddress'), 'ip'), 'ports', coalesce(tryGet(parameters('ipAddress'), 'ports'), createArray()), 'type', coalesce(tryGet(parameters('ipAddress'), 'type'), 'Public')), null())]",
-        "sku": "[parameters('sku')]",
         "volumes": "[parameters('volumes')]",
+        "ipAddress": "[if(not(empty(parameters('ipAddress'))), createObject('autoGeneratedDomainNameLabelScope', if(not(empty(tryGet(parameters('dnsConfig'), 'nameServers'))), tryGet(parameters('ipAddress'), 'autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', tryGet(parameters('ipAddress'), 'dnsNameLabel'), 'ip', tryGet(parameters('ipAddress'), 'ip'), 'ports', coalesce(tryGet(parameters('ipAddress'), 'ports'), createArray()), 'type', coalesce(tryGet(parameters('ipAddress'), 'type'), 'Public')), null())]",
         "dnsConfig": "[parameters('dnsConfig')]",
-        "priority": "[parameters('priority')]"
+        "confidentialComputeProperties": "[parameters('confidentialComputeProperties')]",
+        "extensions": "[parameters('extensions')]",
+        "identityAcls": "[parameters('identityAcls')]"
       },
       "dependsOn": [
         "cMKKeyVault",
@@ -1063,10 +1147,11 @@
     },
     "iPv4Address": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The IPv4 address of the container group."
       },
-      "value": "[reference('containergroup').ipAddress.ip]"
+      "value": "[tryGet(tryGet(reference('containergroup'), 'ipAddress'), 'ip')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1074,14 +1159,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('containergroup', '2023-05-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('containergroup', '2025-09-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containergroup', '2023-05-01', 'full').location]"
+      "value": "[reference('containergroup', '2025-09-01', 'full').location]"
     }
   }
 }

@@ -3403,9 +3403,11 @@ The storage accounts for this resource.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
+| `primaryKey` | securestring | The primary access key. |
 | `privateEndpoints` | array | The private endpoints of the congitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
 | `resourceId` | string | The resource ID of the cognitive services account. |
+| `secondaryKey` | securestring | The secondary access key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

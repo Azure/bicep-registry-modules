@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "5147595129875175959"
+      "version": "0.40.2.10011",
+      "templateHash": "4120195043487080384"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -220,6 +220,20 @@
             "description": "Optional. If client affinity is enabled."
           }
         },
+        "clientAffinityProxyEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance."
+          }
+        },
+        "clientAffinityPartitioningEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. To enable client affinity partitioning using CHIPS cookies."
+          }
+        },
         "appServiceEnvironmentResourceId": {
           "type": "string",
           "nullable": true,
@@ -259,7 +273,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/siteConfig"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/siteConfig"
             },
             "description": "Optional. The site config object."
           },
@@ -269,7 +283,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/functionAppConfig"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/functionAppConfig"
             },
             "description": "Optional. The Function App config object."
           },
@@ -288,7 +302,12 @@
         "extensions": {
           "type": "array",
           "items": {
-            "type": "object"
+            "type": "object",
+            "metadata": {
+              "__bicep_resource_derived_type!": {
+                "source": "Microsoft.Web/sites/extensions@2025-03-01#properties/properties"
+              }
+            }
           },
           "nullable": true,
           "metadata": {
@@ -314,10 +333,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "roleAssignments": {
           "type": "array",
@@ -357,7 +379,7 @@
           "type": "string",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/clientCertMode"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/clientCertMode"
             },
             "description": "Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted."
           },
@@ -367,7 +389,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/cloningInfo"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/cloningInfo"
             },
             "description": "Optional. If specified during app creation, the app is cloned from a source app."
           },
@@ -405,7 +427,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/hostNameSslStates"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/hostNameSslStates"
             },
             "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
           },
@@ -422,7 +444,7 @@
           "type": "string",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/publicNetworkAccess"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/publicNetworkAccess"
             },
             "description": "Optional. Allow or block all public traffic."
           },
@@ -432,7 +454,7 @@
           "type": "string",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/redundancyMode"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/redundancyMode"
             },
             "description": "Optional. Site redundancy mode."
           },
@@ -448,26 +470,15 @@
             "description": "Optional. The site publishing credential policy names which are associated with the site slot."
           }
         },
-        "vnetContentShareEnabled": {
-          "type": "bool",
-          "nullable": true,
+        "outboundVnetRouting": {
+          "type": "object",
           "metadata": {
-            "description": "Optional. To enable accessing content over virtual network."
-          }
-        },
-        "vnetImagePullEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. To enable pulling image over Virtual Network."
-          }
-        },
-        "vnetRouteAllEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied."
-          }
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/outboundVnetRouting"
+            },
+            "description": "Optional. The outbound VNET routing configuration for the slot."
+          },
+          "nullable": true
         },
         "hybridConnectionRelays": {
           "type": "array",
@@ -483,7 +494,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/dnsConfiguration"
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/dnsConfiguration"
             },
             "description": "Optional. Property to configure various DNS related settings for a site."
           },
@@ -491,15 +502,84 @@
         },
         "autoGeneratedDomainNameLabelScope": {
           "type": "string",
-          "allowedValues": [
-            "NoReuse",
-            "ResourceGroupReuse",
-            "SubscriptionReuse",
-            "TenantReuse"
-          ],
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/autoGeneratedDomainNameLabelScope"
+            },
+            "description": "Optional. Specifies the scope of uniqueness for the default hostname during resource creation."
+          },
+          "nullable": true
+        },
+        "sshEnabled": {
+          "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the scope of uniqueness for the default hostname during resource creation."
+            "description": "Optional. Whether to enable SSH access."
+          }
+        },
+        "daprConfig": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/daprConfig"
+            },
+            "description": "Optional. Dapr configuration of the app."
+          },
+          "nullable": true
+        },
+        "ipMode": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/ipMode"
+            },
+            "description": "Optional. Specifies the IP mode of the app."
+          },
+          "nullable": true
+        },
+        "resourceConfig": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/resourceConfig"
+            },
+            "description": "Optional. Function app resource requirements."
+          },
+          "nullable": true
+        },
+        "workloadProfileName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Workload profile name for function app to execute on."
+          }
+        },
+        "hostNamesDisabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process."
+          }
+        },
+        "reserved": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. True if reserved (Linux); otherwise, false (Windows)."
+          }
+        },
+        "scmSiteAlsoStopped": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Stop SCM (KUDU) site when the app is stopped."
+          }
+        },
+        "e2eEncryptionEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. End to End Encryption Setting."
           }
         }
       },
@@ -515,7 +595,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Web/sites/extensions@2024-04-01#properties/properties"
+              "source": "Microsoft.Web/sites/extensions@2025-03-01#properties/properties"
             },
             "description": "Optional. Sets the properties."
           },
@@ -576,43 +656,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a hybrid connection relay."
-      }
-    },
-    "_1.lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        },
-        "notes": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the notes of the lock."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -719,81 +762,6 @@
         }
       },
       "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-        }
-      }
-    },
-    "_1.roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
@@ -2793,7 +2761,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -2830,7 +2798,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -3087,7 +3055,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -3229,7 +3197,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/_1.lockType",
+          "$ref": "#/definitions/lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -3238,7 +3206,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.roleAssignmentType"
+            "$ref": "#/definitions/roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -3396,7 +3364,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -4722,7 +4690,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/siteConfig"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/siteConfig"
         },
         "description": "Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: '1.2', ftpsState: 'FtpsOnly'."
       },
@@ -4736,7 +4704,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-11-01#properties/properties/properties/outboundVnetRouting"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/outboundVnetRouting"
         },
         "description": "Optional. The outbound VNET routing configuration for the site."
       },
@@ -4756,7 +4724,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/functionAppConfig"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/functionAppConfig"
         },
         "description": "Optional. The Function App configuration object."
       },
@@ -4803,7 +4771,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-11-01#properties/tags"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -4852,21 +4820,19 @@
     },
     "clientCertMode": {
       "type": "string",
-      "defaultValue": "Optional",
-      "allowedValues": [
-        "Optional",
-        "OptionalInteractiveUser",
-        "Required"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/clientCertMode"
+        },
         "description": "Optional. This composes with ClientCertEnabled setting.\n- ClientCertEnabled=false means ClientCert is ignored.\n- ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.\n- ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.\n"
-      }
+      },
+      "defaultValue": "Optional"
     },
     "cloningInfo": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/cloningInfo"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/cloningInfo"
         },
         "description": "Optional. If specified during app creation, the app is cloned from a source app."
       },
@@ -4897,7 +4863,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/hostNameSslStates"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/hostNameSslStates"
         },
         "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
       },
@@ -4912,17 +4878,13 @@
     },
     "redundancyMode": {
       "type": "string",
-      "defaultValue": "None",
-      "allowedValues": [
-        "ActiveActive",
-        "Failover",
-        "GeoRedundant",
-        "Manual",
-        "None"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/redundancyMode"
+        },
         "description": "Optional. Site redundancy mode."
-      }
+      },
+      "defaultValue": "None"
     },
     "basicPublishingCredentialsPolicies": {
       "type": "array",
@@ -4946,14 +4908,13 @@
     },
     "publicNetworkAccess": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/publicNetworkAccess"
+        },
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
-      }
+      },
+      "nullable": true
     },
     "e2eEncryptionEnabled": {
       "type": "bool",
@@ -4966,7 +4927,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/dnsConfiguration"
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/dnsConfiguration"
         },
         "description": "Optional. Property to configure various DNS related settings for a site."
       },
@@ -4974,16 +4935,81 @@
     },
     "autoGeneratedDomainNameLabelScope": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "NoReuse",
-        "ResourceGroupReuse",
-        "SubscriptionReuse",
-        "TenantReuse"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/autoGeneratedDomainNameLabelScope"
+        },
         "description": "Optional. Specifies the scope of uniqueness for the default hostname during resource creation."
+      },
+      "nullable": true
+    },
+    "sshEnabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Whether to enable SSH access."
       }
+    },
+    "daprConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/daprConfig"
+        },
+        "description": "Optional. Dapr configuration of the app."
+      },
+      "nullable": true
+    },
+    "ipMode": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/ipMode"
+        },
+        "description": "Optional. Specifies the IP mode of the app."
+      },
+      "nullable": true
+    },
+    "resourceConfig": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/properties/properties/resourceConfig"
+        },
+        "description": "Optional. Function app resource requirements."
+      },
+      "nullable": true
+    },
+    "workloadProfileName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Workload profile name for function app to execute on."
+      }
+    },
+    "hostNamesDisabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process."
+      }
+    },
+    "reserved": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. True if reserved (Linux); otherwise, false (Windows)."
+      }
+    },
+    "extendedLocation": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2025-03-01#properties/extendedLocation"
+        },
+        "description": "Optional. Extended location of the resource."
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -5034,12 +5060,13 @@
     },
     "app": {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2025-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
+      "extendedLocation": "[parameters('extendedLocation')]",
       "properties": {
         "managedEnvironmentId": "[parameters('managedEnvironmentResourceId')]",
         "serverFarmId": "[if(and(contains(variables('managedEnvironmentSupportedKinds'), parameters('kind')), not(empty(parameters('managedEnvironmentResourceId')))), null(), parameters('serverFarmResourceId'))]",
@@ -5068,14 +5095,21 @@
         "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]",
         "dnsConfiguration": "[parameters('dnsConfiguration')]",
         "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
-        "outboundVnetRouting": "[parameters('outboundVnetRouting')]"
+        "outboundVnetRouting": "[parameters('outboundVnetRouting')]",
+        "sshEnabled": "[parameters('sshEnabled')]",
+        "daprConfig": "[parameters('daprConfig')]",
+        "ipMode": "[parameters('ipMode')]",
+        "resourceConfig": "[parameters('resourceConfig')]",
+        "workloadProfileName": "[parameters('workloadProfileName')]",
+        "hostNamesDisabled": "[parameters('hostNamesDisabled')]",
+        "reserved": "[parameters('reserved')]"
       }
     },
     "app_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -5092,7 +5126,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -5133,7 +5167,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/sites/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/sites', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -5192,8 +5226,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "2900641372418853042"
+              "version": "0.40.2.10011",
+              "templateHash": "969813378635033216"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5308,7 +5342,7 @@
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-06-01",
               "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
               "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -5316,15 +5350,16 @@
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2023-12-01",
+              "apiVersion": "2025-03-01",
               "name": "[parameters('appName')]"
             },
             "config": {
               "type": "Microsoft.Web/sites/config",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-06-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), shallowMerge(createArray(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), if(not(contains(parameters('properties'), 'ApplicationInsightsAgent_EXTENSION_VERSION')), createObject('ApplicationInsightsAgent_EXTENSION_VERSION', if(contains(createArray('functionapp,linux', 'functionapp,workflowapp,linux', 'functionapp,linux,container', 'functionapp,linux,container,azurecontainerapps', 'app,linux', 'linux,api', 'app,linux,container'), reference('app', '2025-03-01', 'full').kind), '~3', '~2')), createObject()))), createObject()))]",
               "dependsOn": [
+                "app",
                 "applicationInsights",
                 "storageAccount"
               ]
@@ -5387,8 +5422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9453431890115970799"
+              "version": "0.40.2.10011",
+              "templateHash": "129553615477279948"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -5424,7 +5459,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/extensions@2024-04-01#properties/properties"
+                  "source": "Microsoft.Web/sites/extensions@2025-03-01#properties/properties"
                 },
                 "description": "Optional. Sets the properties."
               },
@@ -5435,12 +5470,12 @@
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2025-03-01",
               "name": "[parameters('appName')]"
             },
             "msdeploy": {
               "type": "Microsoft.Web/sites/extensions",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
               "kind": "[parameters('kind')]",
               "properties": "[parameters('properties')]"
@@ -5515,6 +5550,12 @@
           },
           "clientAffinityEnabled": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityEnabled'), parameters('clientAffinityEnabled'))]"
+          },
+          "clientAffinityProxyEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityProxyEnabled'), parameters('clientAffinityProxyEnabled'))]"
+          },
+          "clientAffinityPartitioningEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'clientAffinityPartitioningEnabled'), parameters('clientAffinityPartitioningEnabled'))]"
           },
           "managedIdentities": {
             "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'managedIdentities'), parameters('managedIdentities'))]"
@@ -5604,7 +5645,34 @@
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'autoGeneratedDomainNameLabelScope')]"
           },
           "outboundVnetRouting": {
-            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'outboundVnetRouting')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'outboundVnetRouting'), parameters('outboundVnetRouting'))]"
+          },
+          "sshEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'sshEnabled')]"
+          },
+          "daprConfig": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'daprConfig')]"
+          },
+          "ipMode": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'ipMode')]"
+          },
+          "resourceConfig": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'resourceConfig')]"
+          },
+          "workloadProfileName": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'workloadProfileName')]"
+          },
+          "hostNamesDisabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hostNamesDisabled')]"
+          },
+          "reserved": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'reserved')]"
+          },
+          "scmSiteAlsoStopped": {
+            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'scmSiteAlsoStopped'), parameters('scmSiteAlsoStopped'))]"
+          },
+          "e2eEncryptionEnabled": {
+            "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'e2eEncryptionEnabled')]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -5617,8 +5685,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "5352348962724051045"
+              "version": "0.40.2.10011",
+              "templateHash": "14052272888861733713"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -9152,43 +9220,6 @@
                 "description": "The type of a hybrid connection relay."
               }
             },
-            "_1.lockType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the name of lock."
-                  }
-                },
-                "kind": {
-                  "type": "string",
-                  "allowedValues": [
-                    "CanNotDelete",
-                    "None",
-                    "ReadOnly"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the type of lock."
-                  }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a lock.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                }
-              }
-            },
             "_1.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
@@ -9293,81 +9324,6 @@
                 }
               },
               "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
-                }
-              }
-            },
-            "_1.roleAssignmentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                  }
-                },
-                "roleDefinitionIdOrName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                  }
-                },
-                "principalId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                  }
-                },
-                "principalType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Device",
-                    "ForeignGroup",
-                    "Group",
-                    "ServicePrincipal",
-                    "User"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The principal type of the assigned principal ID."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The description of the role assignment."
-                  }
-                },
-                "condition": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                  }
-                },
-                "conditionVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "2.0"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Version of the condition."
-                  }
-                },
-                "delegatedManagedIdentityResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
@@ -9491,7 +9447,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -9528,7 +9484,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -9556,7 +9512,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -9664,7 +9620,7 @@
                   }
                 },
                 "lock": {
-                  "$ref": "#/definitions/_1.lockType",
+                  "$ref": "#/definitions/lockType",
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
@@ -9673,7 +9629,7 @@
                 "roleAssignments": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/_1.roleAssignmentType"
+                    "$ref": "#/definitions/roleAssignmentType"
                   },
                   "nullable": true,
                   "metadata": {
@@ -9776,7 +9732,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -9902,7 +9858,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/siteConfig"
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/siteConfig"
                 },
                 "description": "Optional. The site config object."
               },
@@ -9912,10 +9868,13 @@
             },
             "functionAppConfig": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/functionAppConfig"
+                },
                 "description": "Optional. The Function App config object."
-              }
+              },
+              "nullable": true
             },
             "configs": {
               "type": "array",
@@ -9958,7 +9917,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/slots@2024-04-01#properties/tags"
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -10000,22 +9959,23 @@
             },
             "clientCertMode": {
               "type": "string",
-              "defaultValue": "Optional",
-              "allowedValues": [
-                "Optional",
-                "OptionalInteractiveUser",
-                "Required"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/clientCertMode"
+                },
                 "description": "Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted."
-              }
+              },
+              "defaultValue": "Optional"
             },
             "cloningInfo": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/cloningInfo"
+                },
                 "description": "Optional. If specified during app creation, the app is cloned from a source app."
-              }
+              },
+              "nullable": true
             },
             "containerSize": {
               "type": "int",
@@ -10049,7 +10009,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/hostNameSslStates"
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/hostNameSslStates"
                 },
                 "description": "Optional. Hostname SSL states are used to manage the SSL bindings for app's hostnames."
               },
@@ -10064,28 +10024,23 @@
             },
             "publicNetworkAccess": {
               "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "Enabled",
-                "Disabled"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/publicNetworkAccess"
+                },
                 "description": "Optional. Allow or block all public traffic."
-              }
+              },
+              "nullable": true
             },
             "redundancyMode": {
               "type": "string",
-              "defaultValue": "None",
-              "allowedValues": [
-                "ActiveActive",
-                "Failover",
-                "GeoRedundant",
-                "Manual",
-                "None"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/redundancyMode"
+                },
                 "description": "Optional. Site redundancy mode."
-              }
+              },
+              "defaultValue": "None"
             },
             "basicPublishingCredentialsPolicies": {
               "type": "array",
@@ -10101,7 +10056,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/slots@2024-11-01#properties/properties/properties/outboundVnetRouting"
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/outboundVnetRouting"
                 },
                 "description": "Optional. The outbound VNET routing configuration for the site."
               },
@@ -10121,7 +10076,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/dnsConfiguration"
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/dnsConfiguration"
                 },
                 "description": "Optional. Property to configure various DNS related settings for a site."
               },
@@ -10129,15 +10084,84 @@
             },
             "autoGeneratedDomainNameLabelScope": {
               "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "NoReuse",
-                "ResourceGroupReuse",
-                "SubscriptionReuse",
-                "TenantReuse"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/autoGeneratedDomainNameLabelScope"
+                },
                 "description": "Optional. Specifies the scope of uniqueness for the default hostname during resource creation."
+              },
+              "nullable": true
+            },
+            "sshEnabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether to enable SSH access."
+              }
+            },
+            "daprConfig": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/daprConfig"
+                },
+                "description": "Optional. Dapr configuration of the app."
+              },
+              "nullable": true
+            },
+            "ipMode": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/ipMode"
+                },
+                "description": "Optional. Specifies the IP mode of the app."
+              },
+              "nullable": true
+            },
+            "resourceConfig": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2025-03-01#properties/properties/properties/resourceConfig"
+                },
+                "description": "Optional. Function app resource requirements."
+              },
+              "nullable": true
+            },
+            "workloadProfileName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Workload profile name for function app to execute on."
+              }
+            },
+            "hostNamesDisabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process."
+              }
+            },
+            "reserved": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. True if reserved (Linux); otherwise, false (Windows)."
+              }
+            },
+            "scmSiteAlsoStopped": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Stop SCM (KUDU) site when the app is stopped."
+              }
+            },
+            "e2eEncryptionEnabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. End to End Encryption Setting."
               }
             },
             "enableTelemetry": {
@@ -10197,12 +10221,12 @@
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2025-03-01",
               "name": "[parameters('appName')]"
             },
             "slot": {
               "type": "Microsoft.Web/sites/slots",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "kind": "[parameters('kind')]",
@@ -10235,7 +10259,16 @@
                 "redundancyMode": "[parameters('redundancyMode')]",
                 "dnsConfiguration": "[parameters('dnsConfiguration')]",
                 "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
-                "outboundVnetRouting": "[parameters('outboundVnetRouting')]"
+                "outboundVnetRouting": "[parameters('outboundVnetRouting')]",
+                "sshEnabled": "[parameters('sshEnabled')]",
+                "daprConfig": "[parameters('daprConfig')]",
+                "ipMode": "[parameters('ipMode')]",
+                "resourceConfig": "[parameters('resourceConfig')]",
+                "workloadProfileName": "[parameters('workloadProfileName')]",
+                "hostNamesDisabled": "[parameters('hostNamesDisabled')]",
+                "reserved": "[parameters('reserved')]",
+                "scmSiteAlsoStopped": "[parameters('scmSiteAlsoStopped')]",
+                "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]"
               },
               "dependsOn": [
                 "app"
@@ -10245,7 +10278,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -10262,7 +10295,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -10303,7 +10336,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Web/sites/{0}/slots/{1}', parameters('appName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -10354,8 +10387,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "9520384490976470495"
+                      "version": "0.40.2.10011",
+                      "templateHash": "13092463903978918984"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -10401,7 +10434,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
-                      "apiVersion": "2024-04-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
@@ -10436,7 +10469,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2024-04-01', 'full').location]"
+                      "value": "[reference(resourceId('Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies', parameters('appName'), parameters('slotName'), parameters('name')), '2025-03-01', 'full').location]"
                     }
                   }
                 }
@@ -10478,8 +10511,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "307622046233357160"
+                      "version": "0.40.2.10011",
+                      "templateHash": "12095674050134269466"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -10601,8 +10634,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "7059571560505656207"
+                      "version": "0.40.2.10011",
+                      "templateHash": "15603385201464692720"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -10685,7 +10718,7 @@
                     "app::slot": {
                       "existing": true,
                       "type": "Microsoft.Web/sites/slots",
-                      "apiVersion": "2023-12-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
                     },
                     "applicationInsights": {
@@ -10709,15 +10742,16 @@
                     "app": {
                       "existing": true,
                       "type": "Microsoft.Web/sites",
-                      "apiVersion": "2023-12-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[parameters('appName')]"
                     },
                     "config": {
                       "type": "Microsoft.Web/sites/slots/config",
-                      "apiVersion": "2024-04-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), shallowMerge(createArray(createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), if(not(contains(parameters('properties'), 'ApplicationInsightsAgent_EXTENSION_VERSION')), createObject('ApplicationInsightsAgent_EXTENSION_VERSION', if(contains(createArray('functionapp,linux', 'functionapp,workflowapp,linux', 'functionapp,linux,container', 'functionapp,linux,container,azurecontainerapps', 'app,linux', 'linux,api', 'app,linux,container'), reference('app::slot', '2025-03-01', 'full').kind), '~3', '~2')), createObject()))), createObject()))]",
                       "dependsOn": [
+                        "app::slot",
                         "applicationInsights",
                         "storageAccount"
                       ]
@@ -10789,8 +10823,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "17242231160594939754"
+                      "version": "0.40.2.10011",
+                      "templateHash": "7485006155767796037"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -10843,13 +10877,13 @@
                     "app::slot": {
                       "existing": true,
                       "type": "Microsoft.Web/sites/slots",
-                      "apiVersion": "2024-04-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
                     },
                     "app": {
                       "existing": true,
                       "type": "Microsoft.Web/sites",
-                      "apiVersion": "2024-04-01",
+                      "apiVersion": "2025-03-01",
                       "name": "[parameters('appName')]"
                     },
                     "msdeploy": {
@@ -10951,8 +10985,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "12389807800450456797"
+                      "version": "0.38.5.1644",
+                      "templateHash": "16604612898799598358"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -10979,115 +11013,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
-                    "ipConfigurationType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The name of the resource that is unique within a resource group."
-                          }
-                        },
-                        "properties": {
-                          "type": "object",
-                          "properties": {
-                            "groupId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                              }
-                            },
-                            "memberName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                              }
-                            },
-                            "privateIPAddress": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                              }
-                            }
-                          },
-                          "metadata": {
-                            "description": "Required. Properties of private endpoint IP configurations."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
-                    "privateLinkServiceConnectionType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The name of the private link service connection."
-                          }
-                        },
-                        "properties": {
-                          "type": "object",
-                          "properties": {
-                            "groupIds": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "metadata": {
-                                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                              }
-                            },
-                            "privateLinkServiceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The resource id of private link service."
-                              }
-                            },
-                            "requestMessage": {
-                              "type": "string",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                              }
-                            }
-                          },
-                          "metadata": {
-                            "description": "Required. Properties of private link service connection."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
-                    "customDnsConfigType": {
-                      "type": "object",
-                      "properties": {
-                        "fqdn": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. FQDN that resolves to private endpoint IP address."
-                          }
-                        },
-                        "ipAddresses": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "metadata": {
-                            "description": "Required. A list of private IP addresses of the private endpoint."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private dns zone group."
                       }
                     },
                     "lockType": {
@@ -11111,12 +11038,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -11138,6 +11072,7 @@
                         }
                       },
                       "metadata": {
+                        "description": "The type of a private DNS zone group configuration.",
                         "__bicep_imported_from!": {
                           "sourceTemplate": "private-dns-zone-group/main.bicep"
                         }
@@ -11214,7 +11149,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -11251,13 +11186,13 @@
                     },
                     "ipConfigurations": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/ipConfigurationType"
-                      },
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                        },
                         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-                      }
+                      },
+                      "nullable": true
                     },
                     "privateDnsZoneGroup": {
                       "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -11292,40 +11227,43 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                        },
                         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-                      }
+                      },
+                      "nullable": true
                     },
                     "customDnsConfigs": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/customDnsConfigType"
-                      },
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                        },
                         "description": "Optional. Custom DNS configurations."
-                      }
+                      },
+                      "nullable": true
                     },
                     "manualPrivateLinkServiceConnections": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/privateLinkServiceConnectionType"
-                      },
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                        },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-                      }
+                      },
+                      "nullable": true
                     },
                     "privateLinkServiceConnections": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/privateLinkServiceConnectionType"
-                      },
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                        },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -11360,8 +11298,8 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -11379,7 +11317,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -11411,7 +11349,7 @@
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
                       },
                       "dependsOn": [
                         "privateEndpoint"
@@ -11442,7 +11380,7 @@
                     "privateEndpoint_privateDnsZoneGroup": {
                       "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -11467,8 +11405,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.34.44.8038",
-                              "templateHash": "13997305779829540948"
+                              "version": "0.38.5.1644",
+                              "templateHash": "24141742673128945"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -11492,7 +11430,8 @@
                                 }
                               },
                               "metadata": {
-                                "__bicep_export!": true
+                                "__bicep_export!": true,
+                                "description": "The type of a private DNS zone group configuration."
                               }
                             }
                           },
@@ -11522,33 +11461,30 @@
                               }
                             }
                           },
-                          "variables": {
-                            "copy": [
-                              {
-                                "name": "privateDnsZoneConfigsVar",
-                                "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                                "input": {
-                                  "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                                  "properties": {
-                                    "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                                  }
-                                }
-                              }
-                            ]
-                          },
                           "resources": {
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2024-10-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2024-10-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
-                                "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                                "copy": [
+                                  {
+                                    "name": "privateDnsZoneConfigs",
+                                    "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                                    "input": {
+                                      "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                                      "properties": {
+                                        "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                                      }
+                                    }
+                                  }
+                                ]
                               }
                             }
                           },
@@ -11609,14 +11545,15 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/customDnsConfigType"
-                      },
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                          "output": true
+                        },
                         "description": "The custom DNS configurations of the private endpoint."
                       },
                       "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -11675,14 +11612,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('slot', '2024-11-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('slot', '2025-03-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('slot', '2024-11-01', 'full').location]"
+              "value": "[reference('slot', '2025-03-01', 'full').location]"
             },
             "privateEndpoints": {
               "type": "array",
@@ -11743,8 +11680,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "11895236129808234207"
+              "version": "0.40.2.10011",
+              "templateHash": "5646529427697319373"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -11784,7 +11721,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}', parameters('webAppName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -11819,7 +11756,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2024-04-01', 'full').location]"
+              "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2025-03-01', 'full').location]"
             }
           }
         }
@@ -11858,8 +11795,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16651933749930671790"
+              "version": "0.40.2.10011",
+              "templateHash": "6068106773876377899"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -11888,7 +11825,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/sites/hybridConnectionNamespaces/relays",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}/{2}', parameters('appName'), split(parameters('hybridConnectionResourceId'), '/')[8], split(parameters('hybridConnectionResourceId'), '/')[10])]",
               "properties": {
                 "serviceBusNamespace": "[split(parameters('hybridConnectionResourceId'), '/')[8]]",
@@ -11993,8 +11930,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "12389807800450456797"
+              "version": "0.38.5.1644",
+              "templateHash": "16604612898799598358"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -12021,115 +11958,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -12153,12 +11983,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -12180,6 +12017,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -12256,7 +12094,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -12293,13 +12131,13 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -12334,40 +12172,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -12402,8 +12243,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -12421,7 +12262,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -12453,7 +12294,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -12484,7 +12325,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -12509,8 +12350,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13997305779829540948"
+                      "version": "0.38.5.1644",
+                      "templateHash": "24141742673128945"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -12534,7 +12375,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -12564,33 +12406,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -12651,14 +12490,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -12717,14 +12557,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('app', '2024-11-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('app', '2025-03-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('app', '2024-11-01', 'full').location]"
+      "value": "[reference('app', '2025-03-01', 'full').location]"
     },
     "defaultHostname": {
       "type": "string",

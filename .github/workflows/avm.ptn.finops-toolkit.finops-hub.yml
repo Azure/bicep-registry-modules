@@ -45,6 +45,7 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5

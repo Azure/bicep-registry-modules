@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Update to the newest API versions.
+
+### Breaking Changes
+
+- Parameter `dailyQuotaGb` now expects a `string` value. Existing deployments that pass an integer (e.g., `10`) must be updated to pass a string (e.g., `'10'`). Fractional values like `'0.5'` are now supported.
+
 ## 0.14.1
 
 ### Changes
