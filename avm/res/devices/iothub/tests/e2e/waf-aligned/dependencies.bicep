@@ -25,7 +25,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
           serviceEndpoints: [
             {
-              service: 'Microsoft.KeyVault'
+              service: 'Microsoft.Devices'
             }
           ]
         }
