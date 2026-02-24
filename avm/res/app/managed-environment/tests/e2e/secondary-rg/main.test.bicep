@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -51,7 +50,7 @@ module secondaryDependencies 'dependencies.secondary.bicep' = {
   scope: secondaryResourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    managedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
@@ -77,6 +76,11 @@ module testDeployment '../../../main.bicep' = [
           maximumCount: 3
         }
       ]
+      managedIdentities: {
+        userAssignedResourceIds: [
+          secondaryDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       internal: true
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
@@ -86,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       certificate: {
         name: 'dep-${namePrefix}-cert-${serviceShort}'
         certificateKeyVaultProperties: {
-          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          identityResourceId: secondaryDependencies.outputs.managedIdentityResourceId
           keyVaultUrl: '${secondaryDependencies.outputs.keyVaultUri}secrets/${split(secondaryDependencies.outputs.certificateSecretUrl, '/')[4]}'
         }
       }
