@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Tags for the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2024-11-15'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -97,11 +97,11 @@ param enableTelemetry bool = true
 @description('Optional. The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.')
 param totalThroughputLimit int = -1
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. An array of control plane Azure role-based access control assignments.')
 param roleAssignments roleAssignmentType[]?
 
@@ -117,7 +117,7 @@ param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
 @description('Optional. Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier.')
 param cassandraRoleAssignments cassandraStandaloneRoleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings for the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -168,7 +168,7 @@ param backupRetentionIntervalInHours int = 8
 @description('Optional. Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local".')
 param backupStorageRedundancy string = 'Local'
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
