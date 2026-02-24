@@ -339,6 +339,11 @@ module testDeployment '../../../main.bicep' = [
         contentShareTraffic: true
         imagePullTraffic: true
       }
+      clientAffinityProxyEnabled: true
+      clientAffinityPartitioningEnabled: false
+      hostNamesDisabled: false
+      reserved: false
+      ipMode: 'IPv4'
     }
   }
 ]

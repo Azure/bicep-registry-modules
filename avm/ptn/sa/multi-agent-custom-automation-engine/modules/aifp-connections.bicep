@@ -7,7 +7,7 @@ param aiFoundryProjectName string
 @secure()
 param searchApiKey string
 
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = {
   name: '${aiFoundryName}/${aiFoundryProjectName}/${aifSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'

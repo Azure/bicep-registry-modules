@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/disk-encryption-set/CHANGELOG.md).
 
+## 0.6.1
+
+### Changes
+
+- Small bugfix that ensures the module works if the DiskEncryptionSet and the Key Vault it uses are in different subscriptions. If the case, the `sourceVault` property is not passed into the deployment.
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes
