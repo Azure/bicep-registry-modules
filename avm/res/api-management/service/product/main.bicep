@@ -118,7 +118,7 @@ module product_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: apiManagementServiceName
       productName: product.name
-      name: policy.name
+      name: policy.?name
       format: policy.?format
       value: policy.value
     }
