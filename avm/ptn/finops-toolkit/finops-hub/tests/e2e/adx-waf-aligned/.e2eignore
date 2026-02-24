@@ -1,0 +1,1 @@
+Deployment skipped: Log Analytics workspace replication (AZR-000425 compliance) cannot provision in the CI environment. PSRule WAF validation still runs and passes. The adx-minimal test validates the core ADX deployment end-to-end.
