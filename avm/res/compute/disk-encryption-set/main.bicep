@@ -162,9 +162,14 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   identity: identity
   properties: {
     activeKey: {
-      sourceVault: {
-        id: customerManagedKey!.keyVaultResourceId
-      }
+      // Can only be used if vault & disk encryption set are in the same subscription
+      ...(split(customerManagedKey!.keyVaultResourceId, '/')[2] == subscription().id
+        ? {
+            sourceVault: {
+              id: customerManagedKey!.keyVaultResourceId
+            }
+          }
+        : {})
       keyUrl: !empty(customerManagedKey!.?keyVersion)
         ? (!isHSMManagedCMK
             ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
