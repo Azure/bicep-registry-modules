@@ -11,7 +11,7 @@ param desc string = name
 param aiServicesName string
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags object?
 
 // Reference to cognitive service in current resource group for new projects
 resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
