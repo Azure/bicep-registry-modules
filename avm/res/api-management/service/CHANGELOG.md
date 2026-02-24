@@ -7,7 +7,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Fixed: Adds pass-through of product.policies from the APIM service module to the product child module
-- Recompiled templates with latest Bicep version `0.40.2.10011`
+- Updated the product policy name parameter to handle optional values correctly by using the safe navigation operator
+- Recompiled the template with latest Bicep version `0.40.2.10011`
 
 ### Breaking Changes
 

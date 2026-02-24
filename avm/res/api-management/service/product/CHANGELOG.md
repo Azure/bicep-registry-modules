@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled templates with latest Bicep version `0.40.2.10011`
+- Recompiled the template with latest Bicep version `0.40.2.10011`
+- Updated the policy name parameter to handle optional values correctly by using the safe navigation operator
 
 ### Breaking Changes
 
