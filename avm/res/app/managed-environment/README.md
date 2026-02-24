@@ -800,6 +800,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -852,6 +857,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -896,6 +908,11 @@ param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param workloadProfiles = [
