@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6151861635631030213"
+      "templateHash": "16344914859150125393"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -7753,7 +7753,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "11257192462042216230"
+              "templateHash": "10392997600215964396"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
@@ -8212,7 +8212,7 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].name]"
+                    "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'name')]"
                   },
                   "format": {
                     "value": "[tryGet(coalesce(parameters('policies'), createArray())[copyIndex()], 'format')]"

@@ -2270,7 +2270,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         name: 'Starter'
         policies: [
           {
-            format: 'xml'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -2560,7 +2559,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "name": "Starter",
           "policies": [
             {
-              "format": "xml",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -2830,7 +2828,6 @@ param products = [
     name: 'Starter'
     policies: [
       {
-        format: 'xml'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
