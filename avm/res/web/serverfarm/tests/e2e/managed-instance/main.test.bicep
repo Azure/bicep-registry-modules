@@ -109,6 +109,9 @@ module testDeployment '../../../main.bicep' = [
           source: '\\\\${nestedDependencies.outputs.storageAccountName}.file.${environment().suffixes.storage}\\${nestedDependencies.outputs.fileShareName}'
           destinationPath: 'H:\\'
           credentialsKeyVaultReference: {
+            // NOTE: the extra slash before /secrets/ is intentional — vaultUri ends with '/'
+            // so this produces a double slash (e.g. https://kv.vault.azure.net//secrets/...).
+            // The API requires this format for storage mount credential references.
             secretUri: '${nestedDependencies.outputs.keyVaultUri}/secrets/storage-account-key'
           }
         }

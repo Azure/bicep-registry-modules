@@ -275,7 +275,7 @@ resource uploadScriptsBlob 'Microsoft.Resources/deploymentScripts@2023-08-01' = 
         value: storageAccount.name
       }
     ]
-    scriptContent: loadTextContent('upload-scripts.sh')
+    scriptContent: loadTextContent('scripts/upload-scripts.sh')
   }
   dependsOn: [
     blobContributorRoleAssignment
