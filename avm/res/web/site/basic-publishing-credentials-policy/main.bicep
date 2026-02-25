@@ -21,7 +21,7 @@ resource webApp 'Microsoft.Web/sites@2025-03-01' existing = {
   name: webAppName
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2025-03-01' = {
   #disable-next-line BCP225 // False-positive. Value is required.
   name: name
   location: location
