@@ -1,4 +1,4 @@
-name: "avm.res.devices.iothub"
+name: "avm.res.devices.iot-hub"
 
 on:
   workflow_dispatch:
