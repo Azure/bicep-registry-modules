@@ -9,7 +9,7 @@ This module deploys a Iot Hub.
 
 You can reference the module as follows:
 ```bicep
-module iothub 'br/public:avm/res/devices/iothub:<version>' = {
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: { (...) }
 }
 ```
@@ -41,7 +41,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/devices/iothub:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/devices/iot-hub:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [WAF-aligned](#example-2-waf-aligned)
@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-module iothub 'br/public:avm/res/devices/iothub:<version>' = {
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: {
     // Required parameters
     name: 'dihmin001'
@@ -98,7 +98,7 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/devices/iothub:<version>'
+using 'br/public:avm/res/devices/iot-hub:<version>'
 
 // Required parameters
 param name = 'dihmin001'
@@ -120,7 +120,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-module iothub 'br/public:avm/res/devices/iothub:<version>' = {
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: {
     // Required parameters
     name: 'dihwaf001'
@@ -242,7 +242,7 @@ module iothub 'br/public:avm/res/devices/iothub:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/devices/iothub:<version>'
+using 'br/public:avm/res/devices/iot-hub:<version>'
 
 // Required parameters
 param name = 'dihwaf001'
