@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6153241505823426214"
+      "version": "0.40.2.10011",
+      "templateHash": "12215633104601932822"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -109,11 +109,10 @@
     },
     "connectivityTopology": {
       "type": "string",
-      "allowedValues": [
-        "HubAndSpoke",
-        "Mesh"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01#properties/properties/properties/connectivityTopology"
+        },
         "description": "Required. Connectivity topology type."
       }
     },
@@ -126,6 +125,16 @@
       "metadata": {
         "description": "Conditional. List of hub items. This will create peerings between the specified hub and the virtual networks in the network group specified. Required if connectivityTopology is of type \"HubAndSpoke\"."
       }
+    },
+    "connectivityCapabilities": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01#properties/properties/properties/connectivityCapabilities"
+        },
+        "description": "Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement."
+      },
+      "nullable": true
     },
     "deleteExistingPeering": {
       "type": "bool",
@@ -146,15 +155,16 @@
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "connectivityConfiguration": {
       "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
         "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('groupConnectivity', lambdaVariables('group').groupConnectivity, 'isGlobal', string(coalesce(tryGet(lambdaVariables('group'), 'isGlobal'), false())), 'networkGroupId', lambdaVariables('group').networkGroupResourceId, 'useHubGateway', string(coalesce(tryGet(lambdaVariables('group'), 'useHubGateway'), false())))))]",
+        "connectivityCapabilities": "[parameters('connectivityCapabilities')]",
         "connectivityTopology": "[parameters('connectivityTopology')]",
         "deleteExistingPeering": "[if(equals(parameters('connectivityTopology'), 'HubAndSpoke'), string(parameters('deleteExistingPeering')), 'false')]",
         "description": "[parameters('description')]",

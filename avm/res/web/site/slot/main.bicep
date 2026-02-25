@@ -48,7 +48,7 @@ param clientAffinityPartitioningEnabled bool = false
 @description('Optional. The resource ID of the app service environment to use for this resource.')
 param appServiceEnvironmentResourceId string?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -62,12 +62,12 @@ param storageAccountRequired bool = false
 param virtualNetworkSubnetResourceId string?
 
 @description('Optional. The site config object.')
-param siteConfig resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.siteConfig = {
+param siteConfig resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.siteConfig = {
   alwaysOn: true
 }
 
 @description('Optional. The Function App config object.')
-param functionAppConfig object?
+param functionAppConfig resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.functionAppConfig?
 
 @description('Optional. The web site config.')
 param configs configType[]?
@@ -75,7 +75,7 @@ param configs configType[]?
 @description('Optional. The extensions configuration.')
 param extensions object[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -84,13 +84,13 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.tags?
+param tags resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.tags?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -101,15 +101,10 @@ param clientCertEnabled bool = false
 param clientCertExclusionPaths string?
 
 @description('Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted.')
-@allowed([
-  'Optional'
-  'OptionalInteractiveUser'
-  'Required'
-])
-param clientCertMode string = 'Optional'
+param clientCertMode resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.clientCertMode = 'Optional'
 
 @description('Optional. If specified during app creation, the app is cloned from a source app.')
-param cloningInfo object?
+param cloningInfo resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.cloningInfo?
 
 @description('Optional. Size of the function container.')
 param containerSize int?
@@ -124,51 +119,58 @@ param dailyMemoryTimeQuota int?
 param enabled bool = true
 
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-param hostNameSslStates resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.hostNameSslStates?
+param hostNameSslStates resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.hostNameSslStates?
 
 @description('Optional. Hyper-V sandbox.')
 param hyperV bool = false
 
 @description('Optional. Allow or block all public traffic.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string?
+param publicNetworkAccess resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.publicNetworkAccess?
 
 @description('Optional. Site redundancy mode.')
-@allowed([
-  'ActiveActive'
-  'Failover'
-  'GeoRedundant'
-  'Manual'
-  'None'
-])
-param redundancyMode string = 'None'
+param redundancyMode resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.redundancyMode = 'None'
 
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
 param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
 @description('Optional. The outbound VNET routing configuration for the site.')
-param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2024-11-01'>.properties.outboundVnetRouting?
+param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.outboundVnetRouting?
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
 @description('Optional. Property to configure various DNS related settings for a site.')
-param dnsConfiguration resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.dnsConfiguration?
+param dnsConfiguration resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.dnsConfiguration?
 
 @description('Optional. Specifies the scope of uniqueness for the default hostname during resource creation.')
-@allowed([
-  'NoReuse'
-  'ResourceGroupReuse'
-  'SubscriptionReuse'
-  'TenantReuse'
-])
-param autoGeneratedDomainNameLabelScope string?
+param autoGeneratedDomainNameLabelScope resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.autoGeneratedDomainNameLabelScope?
 
 @description('Optional. Whether to enable SSH access.')
 param sshEnabled bool?
+
+@description('Optional. Dapr configuration of the app.')
+param daprConfig resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.daprConfig?
+
+@description('Optional. Specifies the IP mode of the app.')
+param ipMode resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.ipMode?
+
+@description('Optional. Function app resource requirements.')
+param resourceConfig resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.resourceConfig?
+
+@description('Optional. Workload profile name for function app to execute on.')
+param workloadProfileName string?
+
+@description('Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.')
+param hostNamesDisabled bool?
+
+@description('Optional. True if reserved (Linux); otherwise, false (Windows).')
+param reserved bool?
+
+@description('Optional. Stop SCM (KUDU) site when the app is stopped.')
+param scmSiteAlsoStopped bool = false
+
+@description('Optional. End to End Encryption Setting.')
+param e2eEncryptionEnabled bool?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -297,6 +299,14 @@ resource slot 'Microsoft.Web/sites/slots@2025-03-01' = {
     autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
     outboundVnetRouting: outboundVnetRouting
     sshEnabled: sshEnabled
+    daprConfig: daprConfig
+    ipMode: ipMode
+    resourceConfig: resourceConfig
+    workloadProfileName: workloadProfileName
+    hostNamesDisabled: hostNamesDisabled
+    reserved: reserved
+    scmSiteAlsoStopped: scmSiteAlsoStopped
+    endToEndEncryptionEnabled: e2eEncryptionEnabled
   }
 }
 
@@ -366,6 +376,7 @@ resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock 
   scope: slot
 }
 
+#disable-next-line use-recent-api-versions // This is the latest API version for this resource as of the time of development.
 resource slot_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

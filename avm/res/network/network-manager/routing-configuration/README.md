@@ -13,9 +13,9 @@ Routing configurations are the building blocks of UDR management. They're used t
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/routingConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations)</li></ul> |
-| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections)</li></ul> |
-| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations/ruleCollections)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ Routing configurations are the building blocks of UDR management. They're used t
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | A description of the routing configuration. |
+| [`routeTableUsageMode`](#parameter-routetableusagemode) | string | Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified. |
 | [`ruleCollections`](#parameter-rulecollections) | array | A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules. |
 
 ### Parameter: `name`
@@ -59,6 +60,14 @@ A description of the routing configuration.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `routeTableUsageMode`
+
+Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified.
+
+- Required: No
+- Type: string
+- Default: `'ManagedOnly'`
 
 ### Parameter: `ruleCollections`
 

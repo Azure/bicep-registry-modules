@@ -17,12 +17,12 @@ param name string = 'MSDeploy'
 param kind string = 'MSDeploy'
 
 @description('Optional. Sets the properties.')
-param properties resourceInput<'Microsoft.Web/sites/extensions@2024-04-01'>.properties?
+param properties resourceInput<'Microsoft.Web/sites/extensions@2025-03-01'>.properties?
 
 resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   name: appName
 }
-resource msdeploy 'Microsoft.Web/sites/extensions@2024-04-01' = {
+resource msdeploy 'Microsoft.Web/sites/extensions@2025-03-01' = {
   name: name
   kind: kind
   parent: app

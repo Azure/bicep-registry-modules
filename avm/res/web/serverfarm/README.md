@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Web/serverfarms` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_serverfarms.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/serverfarms)</li></ul> |
+| `Microsoft.Web/serverfarms` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_serverfarms.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/serverfarms)</li></ul> |
 
 ## Usage examples
 
@@ -38,8 +38,11 @@ The following section provides usage examples for the module, which were used to
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
 - [Flexible Consumption](#example-2-flexible-consumption)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Linux App Service Plan](#example-3-linux-app-service-plan)
+- [Windows Managed Instance App Service Plan](#example-4-windows-managed-instance-app-service-plan)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
+- [Windows Container App Service Plan](#example-7-windows-container-app-service-plan)
 
 ### Example 1: _Using default parameter set_
 
@@ -231,7 +234,386 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Linux App Service Plan_
+
+This instance deploys a Linux App Service Plan.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/linux]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  params: {
+    // Required parameters
+    name: 'wsflnx001'
+    // Non-required parameters
+    kind: 'linux'
+    location: '<location>'
+    reserved: true
+    skuCapacity: 3
+    skuName: 'P1v3'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    zoneRedundant: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsflnx001"
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "linux"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "reserved": {
+      "value": true
+    },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "zoneRedundant": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsflnx001'
+// Non-required parameters
+param kind = 'linux'
+param location = '<location>'
+param reserved = true
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
+```
+
+</details>
+<p>
+
+### Example 4: _Windows Managed Instance App Service Plan_
+
+This instance deploys a Windows Managed Instance App Service Plan with install scripts, registry adapters, storage mounts, and RDP enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managed-instance]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  params: {
+    // Required parameters
+    name: 'wsfmi001'
+    // Non-required parameters
+    installScripts: [
+      {
+        name: 'CustomInstaller'
+        source: {
+          sourceUri: '<sourceUri>'
+          type: 'RemoteAzureBlob'
+        }
+      }
+    ]
+    isCustomMode: true
+    kind: 'app'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    planDefaultIdentity: {
+      identityType: 'UserAssigned'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    rdpEnabled: true
+    registryAdapters: [
+      {
+        keyVaultSecretReference: {
+          secretUri: '<secretUri>'
+        }
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
+        type: 'String'
+      }
+      {
+        keyVaultSecretReference: {
+          secretUri: '<secretUri>'
+        }
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+        type: 'DWORD'
+      }
+    ]
+    skuCapacity: 3
+    skuName: 'P1v4'
+    storageMounts: [
+      {
+        destinationPath: 'G:\\'
+        name: 'g-drive'
+        type: 'LocalStorage'
+      }
+      {
+        credentialsKeyVaultReference: {
+          secretUri: '<secretUri>'
+        }
+        destinationPath: 'H:\\'
+        name: 'h-drive'
+        source: '<source>'
+        type: 'AzureFiles'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsfmi001"
+    },
+    // Non-required parameters
+    "installScripts": {
+      "value": [
+        {
+          "name": "CustomInstaller",
+          "source": {
+            "sourceUri": "<sourceUri>",
+            "type": "RemoteAzureBlob"
+          }
+        }
+      ]
+    },
+    "isCustomMode": {
+      "value": true
+    },
+    "kind": {
+      "value": "app"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "planDefaultIdentity": {
+      "value": {
+        "identityType": "UserAssigned",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "rdpEnabled": {
+      "value": true
+    },
+    "registryAdapters": {
+      "value": [
+        {
+          "keyVaultSecretReference": {
+            "secretUri": "<secretUri>"
+          },
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString",
+          "type": "String"
+        },
+        {
+          "keyVaultSecretReference": {
+            "secretUri": "<secretUri>"
+          },
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD",
+          "type": "DWORD"
+        }
+      ]
+    },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v4"
+    },
+    "storageMounts": {
+      "value": [
+        {
+          "destinationPath": "G:\\",
+          "name": "g-drive",
+          "type": "LocalStorage"
+        },
+        {
+          "credentialsKeyVaultReference": {
+            "secretUri": "<secretUri>"
+          },
+          "destinationPath": "H:\\",
+          "name": "h-drive",
+          "source": "<source>",
+          "type": "AzureFiles"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "virtualNetworkSubnetId": {
+      "value": "<virtualNetworkSubnetId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfmi001'
+// Non-required parameters
+param installScripts = [
+  {
+    name: 'CustomInstaller'
+    source: {
+      sourceUri: '<sourceUri>'
+      type: 'RemoteAzureBlob'
+    }
+  }
+]
+param isCustomMode = true
+param kind = 'app'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param planDefaultIdentity = {
+  identityType: 'UserAssigned'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param rdpEnabled = true
+param registryAdapters = [
+  {
+    keyVaultSecretReference: {
+      secretUri: '<secretUri>'
+    }
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
+    type: 'String'
+  }
+  {
+    keyVaultSecretReference: {
+      secretUri: '<secretUri>'
+    }
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+    type: 'DWORD'
+  }
+]
+param skuCapacity = 3
+param skuName = 'P1v4'
+param storageMounts = [
+  {
+    destinationPath: 'G:\\'
+    name: 'g-drive'
+    type: 'LocalStorage'
+  }
+  {
+    credentialsKeyVaultReference: {
+      secretUri: '<secretUri>'
+    }
+    destinationPath: 'H:\\'
+    name: 'h-drive'
+    source: '<source>'
+    type: 'AzureFiles'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkSubnetId = '<virtualNetworkSubnetId>'
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -455,7 +837,7 @@ param zoneRedundant = true
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -596,6 +978,113 @@ param zoneRedundant = true
 </details>
 <p>
 
+### Example 7: _Windows Container App Service Plan_
+
+This instance deploys a Windows Container (Hyper-V) App Service Plan.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows-container]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  params: {
+    // Required parameters
+    name: 'wsfwcn001'
+    // Non-required parameters
+    hyperV: true
+    kind: 'xenon'
+    location: '<location>'
+    skuCapacity: 3
+    skuName: 'P1v3'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    zoneRedundant: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsfwcn001"
+    },
+    // Non-required parameters
+    "hyperV": {
+      "value": true
+    },
+    "kind": {
+      "value": "xenon"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "skuCapacity": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "P1v3"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "zoneRedundant": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/serverfarm:<version>'
+
+// Required parameters
+param name = 'wsfwcn001'
+// Non-required parameters
+param hyperV = true
+param kind = 'xenon'
+param location = '<location>'
+param skuCapacity = 3
+param skuName = 'P1v3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param zoneRedundant = true
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -619,17 +1108,25 @@ param zoneRedundant = true
 | [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Enable/Disable ElasticScaleEnabled App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hyperV`](#parameter-hyperv) | bool | If Hyper-V container app service plan true, false otherwise. |
+| [`installScripts`](#parameter-installscripts) | array | A list of install scripts for Managed Instance plans. Only applicable when isCustomMode is true. |
+| [`isCustomMode`](#parameter-iscustommode) | bool | Set to true to enable Managed Instance custom mode. Required for App Service Managed Instance plans. |
 | [`kind`](#parameter-kind) | string | Kind of server OS. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maximumElasticWorkerCount`](#parameter-maximumelasticworkercount) | int | Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. |
 | [`perSiteScaling`](#parameter-persitescaling) | bool | If true, apps assigned to this App Service plan can be scaled independently. If false, apps assigned to this App Service plan will scale to all instances of the plan. |
+| [`planDefaultIdentity`](#parameter-plandefaultidentity) | object | The default identity configuration for Managed Instance plans. Only applicable when isCustomMode is true. |
+| [`rdpEnabled`](#parameter-rdpenabled) | bool | Whether RDP is enabled for Managed Instance plans. Only applicable when isCustomMode is true. Requires a Bastion host deployed in the VNet. |
+| [`registryAdapters`](#parameter-registryadapters) | array | A list of registry adapters for Managed Instance plans. Only applicable when isCustomMode is true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuCapacity`](#parameter-skucapacity) | int | Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones. |
 | [`skuName`](#parameter-skuname) | string | The name of the SKU will Determine the tier, size, family of the App Service Plan. This defaults to P1v3 to leverage availability zones. |
+| [`storageMounts`](#parameter-storagemounts) | array | A list of storage mounts for Managed Instance plans. Only applicable when isCustomMode is true. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
 | [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
+| [`virtualNetworkSubnetId`](#parameter-virtualnetworksubnetid) | string | The resource ID of the subnet to integrate the App Service Plan with for VNet integration. |
 | [`workerTierName`](#parameter-workertiername) | string | Target worker tier assigned to the App Service plan. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone Redundant server farms can only be used on Premium or ElasticPremium SKU tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs). |
 
@@ -654,7 +1151,6 @@ The Resource ID of the App Service Environment to use for the App Service Plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -788,6 +1284,21 @@ If Hyper-V container app service plan true, false otherwise.
 - Required: No
 - Type: bool
 
+### Parameter: `installScripts`
+
+A list of install scripts for Managed Instance plans. Only applicable when isCustomMode is true.
+
+- Required: No
+- Type: array
+
+### Parameter: `isCustomMode`
+
+Set to true to enable Managed Instance custom mode. Required for App Service Managed Instance plans.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `kind`
 
 Kind of server OS.
@@ -795,16 +1306,6 @@ Kind of server OS.
 - Required: No
 - Type: string
 - Default: `'app'`
-- Allowed:
-  ```Bicep
-  [
-    'app'
-    'elastic'
-    'functionapp'
-    'linux'
-    'windows'
-  ]
-  ```
 
 ### Parameter: `location`
 
@@ -858,6 +1359,34 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `maximumElasticWorkerCount`
 
 Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
@@ -873,6 +1402,27 @@ If true, apps assigned to this App Service plan can be scaled independently. If 
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `planDefaultIdentity`
+
+The default identity configuration for Managed Instance plans. Only applicable when isCustomMode is true.
+
+- Required: No
+- Type: object
+
+### Parameter: `rdpEnabled`
+
+Whether RDP is enabled for Managed Instance plans. Only applicable when isCustomMode is true. Requires a Bastion host deployed in the VNet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `registryAdapters`
+
+A list of registry adapters for Managed Instance plans. Only applicable when isCustomMode is true.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -1003,6 +1553,13 @@ The name of the SKU will Determine the tier, size, family of the App Service Pla
   'FC1'
   ```
 
+### Parameter: `storageMounts`
+
+A list of storage mounts for Managed Instance plans. Only applicable when isCustomMode is true.
+
+- Required: No
+- Type: array
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -1034,13 +1591,19 @@ The instance size of the hosting plan (small, medium, or large).
   ]
   ```
 
+### Parameter: `virtualNetworkSubnetId`
+
+The resource ID of the subnet to integrate the App Service Plan with for VNet integration.
+
+- Required: No
+- Type: string
+
 ### Parameter: `workerTierName`
 
 Target worker tier assigned to the App Service plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `zoneRedundant`
 
@@ -1058,6 +1621,7 @@ Zone Redundant server farms can only be used on Premium or ElasticPremium SKU ti
 | `name` | string | The name of the app service plan. |
 | `resourceGroupName` | string | The resource group the app service plan was deployed into. |
 | `resourceId` | string | The resource ID of the app service plan. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
@@ -1065,7 +1629,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
