@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework'
 
 // ========== //
 // Parameters //

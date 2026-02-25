@@ -118,7 +118,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/customer-chatbot:<version>`.
 
 - [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+- [WAF-aligned](#example-2-waf-aligned)
 
 ### Example 1: _Sandbox configuration with default parameter values_
 
@@ -190,9 +190,9 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 2: _WAF-aligned configuration with default parameter values_
+### Example 2: _WAF-aligned_
 
-This instance deploys the [Customer Chat bot Solution Accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for WAF-aligned environments.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
