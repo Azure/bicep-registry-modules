@@ -396,7 +396,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         type: 'DWORD'
       }
     ]
-    skuCapacity: 3
+    skuCapacity: 1
     skuName: 'P1v4'
     storageMounts: [
       {
@@ -496,7 +496,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "skuCapacity": {
-      "value": 3
+      "value": 1
     },
     "skuName": {
       "value": "P1v4"
@@ -584,7 +584,7 @@ param registryAdapters = [
     type: 'DWORD'
   }
 ]
-param skuCapacity = 3
+param skuCapacity = 1
 param skuName = 'P1v4'
 param storageMounts = [
   {
