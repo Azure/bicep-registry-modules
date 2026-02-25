@@ -28,9 +28,7 @@ param zoneRedundant bool = true
 param isAutoInflateEnabled bool = false
 
 @description('Optional. Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units.')
-@minValue(0)
-@maxValue(20)
-param maximumThroughputUnits int = 1
+param maximumThroughputUnits resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.properties.maximumThroughputUnits = 1
 
 @description('Optional. Authorization Rules for the Event Hub namespace.')
 param authorizationRules array = [

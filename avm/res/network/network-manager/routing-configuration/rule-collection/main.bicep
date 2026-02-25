@@ -25,7 +25,7 @@ param disableBgpRoutePropagation bool = true
 @sys.description('Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.')
 param rules ruleType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 
   resource routingConfiguration 'routingConfigurations' existing = {
@@ -33,7 +33,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing 
   }
 }
 
-resource ruleCollection 'Microsoft.Network/networkManagers/routingConfigurations/ruleCollections@2024-05-01' = {
+resource ruleCollection 'Microsoft.Network/networkManagers/routingConfigurations/ruleCollections@2025-05-01' = {
   name: name
   parent: networkManager::routingConfiguration
   properties: {

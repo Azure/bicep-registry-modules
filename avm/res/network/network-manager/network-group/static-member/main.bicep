@@ -14,7 +14,7 @@ param name string
 @description('Required. Resource ID of the virtual network.')
 param resourceId string
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 
   resource networkGroup 'networkGroups' existing = {
@@ -22,7 +22,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing 
   }
 }
 
-resource staticMember 'Microsoft.Network/networkManagers/networkGroups/staticMembers@2024-05-01' = {
+resource staticMember 'Microsoft.Network/networkManagers/networkGroups/staticMembers@2025-05-01' = {
   name: name
   parent: networkManager::networkGroup
   properties: {
