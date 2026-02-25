@@ -8,7 +8,7 @@ metadata description = 'This test deploys an Azure VM to host a 2 node switched 
 param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.cluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashcmin'
+param serviceShort string = '#_namePrefix_#min'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -32,7 +32,7 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the Microsoft.AzureStackHCI provider was registered in the subscription.')
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''

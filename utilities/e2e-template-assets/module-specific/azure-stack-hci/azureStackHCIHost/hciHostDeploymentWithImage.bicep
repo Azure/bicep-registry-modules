@@ -2,7 +2,7 @@
 param location string
 
 @description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
-param hostVMSize string = 'Standard_E32s_v5'
+param hostVMSize string = 'Standard_E32ps_v5'
 
 @description('Optional. The local admin user name.')
 param localAdminUsername string = 'admin-hci'
@@ -52,6 +52,18 @@ param virtualMachineName string
 
 @description('Required. The name of the Maintenance Configuration Assignment for the proxy server.')
 param maintenanceConfigurationAssignmentName string
+
+@description('Optional. Publisher of the marketplace image to use for the HCI host VM. Defaults to a Windows Server 2022 Datacenter Azure Edition image in southeastasia.')
+param imagePublisher string = 'MicrosoftWindowsServer'
+
+@description('Optional. Offer of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageOffer string = 'WindowsServer'
+
+@description('Optional. SKU of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageSku string = '2022-datacenter-azure-edition'
+
+@description('Optional. Version of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageVersion string = '20348.4773.260206'
 
 // =================================//
 // Deploy Host VM Infrastructure    //
@@ -201,7 +213,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
       ]
     }
     storageProfile: {
-      imageReference: {
+      imageReference: !empty(imagePublisher) ? {
+        publisher: imagePublisher
+        offer: imageOffer
+        sku: imageSku
+        version: imageVersion
+      } : {
         sharedGalleryImageId: imageReferenceId
       }
       osDisk: {

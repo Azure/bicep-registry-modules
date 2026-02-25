@@ -59,7 +59,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     deploymentSettings: {
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-      customLocationName: 'ashcmin-location'
+      customLocationName: '#_namePrefix_#min-location'
       defaultGateway: '192.168.1.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
@@ -173,7 +173,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       "value": {
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
-        "customLocationName": "ashcmin-location",
+        "customLocationName": "#_namePrefix_#min-location",
         "defaultGateway": "192.168.1.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
@@ -301,7 +301,7 @@ using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 param deploymentSettings = {
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-  customLocationName: 'ashcmin-location'
+  customLocationName: '#_namePrefix_#min-location'
   defaultGateway: '192.168.1.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [
@@ -419,7 +419,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       bitlockerDataVolumes: true
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-      customLocationName: 'ashcwaf-location'
+      customLocationName: '#_namePrefix_#waf-location'
       defaultGateway: '192.168.1.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
@@ -544,7 +544,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "bitlockerDataVolumes": true,
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
-        "customLocationName": "ashcwaf-location",
+        "customLocationName": "#_namePrefix_#waf-location",
         "defaultGateway": "192.168.1.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
@@ -685,7 +685,7 @@ param deploymentSettings = {
   bitlockerDataVolumes: true
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-  customLocationName: 'ashcwaf-location'
+  customLocationName: '#_namePrefix_#waf-location'
   defaultGateway: '192.168.1.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [

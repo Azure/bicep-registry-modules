@@ -55,7 +55,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeploymentWithImage.bicep'
     domainOUPath: domainOUPath
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hostVMSize: 'Standard_E32s_v5'
+    hostVMSize: 'Standard_E32ps_v5'
     localAdminPassword: localAdminPassword
     domainAdminPassword: domainAdminPassword
     location: location
