@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = [
 
 // Web App running .NET 10 on Windows, hosted on the Managed Instance plan
 // NOTE: If the web app is not deployed and running, you will not be able to RDP onto the instances
-module webApp 'br/public:avm/res/web/site:0.21.0' = {
+module webApp 'br/public:avm/res/web/site:0.22.0' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-webapp-${serviceShort}'
   params: {
