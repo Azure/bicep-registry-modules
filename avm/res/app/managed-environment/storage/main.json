@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "2522013366389354671"
+    },
+    "name": "App ManagedEnvironments Certificates",
+    "description": "This module deploys a App Managed Environment Certificate."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the file share."
+      }
+    },
+    "managedEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
+      }
+    },
+    "accessMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The access mode for the storage."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "NFS",
+        "SMB"
+      ],
+      "metadata": {
+        "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Storage account name."
+      }
+    }
+  },
+  "resources": {
+    "managedEnvironment": {
+      "existing": true,
+      "type": "Microsoft.App/managedEnvironments",
+      "apiVersion": "2025-10-02-preview",
+      "name": "[parameters('managedEnvironmentName')]"
+    },
+    "storage": {
+      "type": "Microsoft.App/managedEnvironments/storages",
+      "apiVersion": "2025-10-02-preview",
+      "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
+      "properties": {
+        "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",
+        "azureFile": "[if(equals(parameters('kind'), 'SMB'), createObject('accessMode', parameters('accessMode'), 'accountName', parameters('storageAccountName'), 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-01-01').keys[0].value, 'shareName', parameters('name')), null())]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the file share."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the file share."
+      },
+      "value": "[resourceId('Microsoft.App/managedEnvironments/storages', parameters('managedEnvironmentName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the file share was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

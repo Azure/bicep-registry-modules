@@ -62,7 +62,7 @@ param sourcePortRanges string[]?
 @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
 param sources sourceType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 
   resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
@@ -74,7 +74,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing 
   }
 }
 
-resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2024-05-01' = {
+resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2025-05-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration::ruleCollection
   kind: 'Custom'

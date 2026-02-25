@@ -12,7 +12,7 @@ This module deploys a App Managed Environment Certificate.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
 
 ## Parameters
 
@@ -129,5 +129,5 @@ Tags of the resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the key values. |
-| `resourceGroupName` | string | The resource group the batch account was deployed into. |
+| `resourceGroupName` | string | The resource group the certificate was deployed into. |
 | `resourceId` | string | The resource ID of the key values. |
