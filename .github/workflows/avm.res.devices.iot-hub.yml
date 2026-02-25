@@ -28,7 +28,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.devices.iothub.yml"
+      - ".github/workflows/avm.res.devices.iot-hub.yml"
       - "avm/res/devices/iot-hub/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
@@ -37,7 +37,7 @@ on:
 
 env:
   modulePath: "avm/res/devices/iot-hub"
-  workflowPath: ".github/workflows/avm.res.devices.iothub.yml"
+  workflowPath: ".github/workflows/avm.res.devices.iot-hub.yml"
 
 concurrency:
   group: ${{ github.workflow }}
