@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8937430648481358947"
+      "version": "0.40.2.10011",
+      "templateHash": "2420260740688338831"
     },
     "name": "Network Manager Routing Configurations",
     "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -192,6 +192,16 @@
         "description": "Optional. A description of the routing configuration."
       }
     },
+    "routeTableUsageMode": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/networkManagers/routingConfigurations@2025-05-01#properties/properties/properties/routeTableUsageMode"
+        },
+        "description": "Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to \"ManagedOnly\" if not specified."
+      },
+      "defaultValue": "ManagedOnly"
+    },
     "ruleCollections": {
       "type": "array",
       "items": {
@@ -207,15 +217,16 @@
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "routingConfigurations": {
       "type": "Microsoft.Network/networkManagers/routingConfigurations",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "description": "[parameters('description')]"
+        "description": "[parameters('description')]",
+        "routeTableUsageMode": "[parameters('routeTableUsageMode')]"
       }
     },
     "routingConfigurations_ruleCollections": {
@@ -224,7 +235,7 @@
         "count": "[length(coalesce(parameters('ruleCollections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RoutingConfig-RuleCollections-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -261,8 +272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4079432994771742579"
+              "version": "0.40.2.10011",
+              "templateHash": "15327481441544180728"
             },
             "name": "Network Manager Routing Configuration Rule Collections",
             "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -433,18 +444,18 @@
             "networkManager::routingConfiguration": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers/routingConfigurations",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
             },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "ruleCollection": {
               "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -458,7 +469,7 @@
                 "count": "[length(coalesce(parameters('rules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-RuleCollections-Rules-{1}', uniqueString(deployment().name), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -495,8 +506,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6901970573709708349"
+                      "version": "0.40.2.10011",
+                      "templateHash": "7269872342288614102"
                     },
                     "name": "Network Manager Routing configuration Rule Collection Rules",
                     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -608,24 +619,24 @@
                     "networkManager::routingConfiguration::ruleCollection": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'))]"
                     },
                     "networkManager::routingConfiguration": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/routingConfigurations",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
                     },
                     "networkManager": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('networkManagerName')]"
                     },
                     "rule": {
                       "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('routingConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                       "properties": {
                         "description": "[parameters('description')]",
