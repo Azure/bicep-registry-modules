@@ -236,28 +236,15 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-previe
   }
 }
 
-resource managedEnvironment_storage 'Microsoft.App/managedEnvironments/storages@2025-10-02-preview' = [
-  for storage in (storages ?? []): {
-    name: storage.shareName
-    properties: {
-      nfsAzureFile: storage.kind == 'NFS'
-        ? {
-            accessMode: storage.accessMode
-            server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
-            shareName: '/${storage.storageAccountName}/${storage.shareName}'
-          }
-        : null
-      azureFile: storage.kind == 'SMB'
-        ? {
-            accessMode: storage.accessMode
-            accountName: storage.storageAccountName
-            accountKey: listkeys(
-              resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
-              '2025-01-01'
-            ).keys[0].value
-            shareName: storage.shareName
-          }
-        : null
+module managedEnvironment_storage 'storage/main.bicep' = [
+  for (storage, index) in (storages ?? []): {
+    name: '${uniqueString(deployment().name)}-Managed-Environment-Storage-${index}'
+    params: {
+      name: storage.name
+      managedEnvironmentName: managedEnvironment.name
+      kind: storage.kind
+      accessMode: storage.accessMode
+      storageAccountName: storage.storageAccountName
     }
   }
 ]
@@ -376,7 +363,7 @@ type storageType = {
   storageAccountName: string
 
   @description('Required. File share name.')
-  shareName: string
+  name: string
 }
 
 @export()

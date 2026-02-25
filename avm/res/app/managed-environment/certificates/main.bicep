@@ -55,7 +55,7 @@ output name string = managedEnvironmentCertificate.name
 @description('The resource ID of the key values.')
 output resourceId string = managedEnvironmentCertificate.id
 
-@description('The resource group the batch account was deployed into.')
+@description('The resource group the certificate was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 // =============== //

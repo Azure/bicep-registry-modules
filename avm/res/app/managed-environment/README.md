@@ -374,13 +374,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       {
         accessMode: 'ReadWrite'
         kind: 'SMB'
-        shareName: 'smbfileshare'
+        name: 'smbfileshare'
         storageAccountName: '<storageAccountName>'
       }
       {
         accessMode: 'ReadWrite'
         kind: 'NFS'
-        shareName: 'nfsfileshare'
+        name: 'nfsfileshare'
         storageAccountName: '<storageAccountName>'
       }
     ]
@@ -515,13 +515,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         {
           "accessMode": "ReadWrite",
           "kind": "SMB",
-          "shareName": "smbfileshare",
+          "name": "smbfileshare",
           "storageAccountName": "<storageAccountName>"
         },
         {
           "accessMode": "ReadWrite",
           "kind": "NFS",
-          "shareName": "nfsfileshare",
+          "name": "nfsfileshare",
           "storageAccountName": "<storageAccountName>"
         }
       ]
@@ -624,13 +624,13 @@ param storages = [
   {
     accessMode: 'ReadWrite'
     kind: 'SMB'
-    shareName: 'smbfileshare'
+    name: 'smbfileshare'
     storageAccountName: '<storageAccountName>'
   }
   {
     accessMode: 'ReadWrite'
     kind: 'NFS'
-    shareName: 'nfsfileshare'
+    name: 'nfsfileshare'
     storageAccountName: '<storageAccountName>'
   }
 ]
@@ -1657,7 +1657,7 @@ The list of storages to mount on the environment.
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
 | [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
-| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`name`](#parameter-storagesname) | string | File share name. |
 | [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
 
 ### Parameter: `storages.accessMode`
@@ -1688,7 +1688,7 @@ Type of storage: "SMB" or "NFS".
   ]
   ```
 
-### Parameter: `storages.shareName`
+### Parameter: `storages.name`
 
 File share name.
 
