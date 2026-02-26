@@ -11,7 +11,7 @@ param primaryStorageAccountName string
 param secondaryStorageAccountName string
 
 // Server farm for the web app
-resource serverFarm 'Microsoft.Web/serverfarms@2024-11-01' = {
+resource serverFarm 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: serverFarmName
   location: location
   sku: {
@@ -25,7 +25,7 @@ resource serverFarm 'Microsoft.Web/serverfarms@2024-11-01' = {
 }
 
 // Primary storage account with file shares for Azure Files mounting
-resource primaryStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+resource primaryStorageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: primaryStorageAccountName
   location: location
   sku: {
@@ -56,7 +56,7 @@ resource primaryStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = 
 }
 
 // Secondary storage account for additional storage mounting scenarios
-resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: secondaryStorageAccountName
   location: location
   sku: {

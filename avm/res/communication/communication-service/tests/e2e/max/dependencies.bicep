@@ -7,19 +7,19 @@ param managedIdentityName string
 @description('Required. The name of the Email Service to create.')
 param emailServiceName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource emailService 'Microsoft.Communication/emailServices@2023-04-01' = {
+resource emailService 'Microsoft.Communication/emailServices@2025-09-01' = {
   name: emailServiceName
   location: 'global'
   properties: {
     dataLocation: 'Germany'
   }
 
-  resource domain 'domains@2023-04-01' = {
+  resource domain 'domains@2025-09-01' = {
     name: 'AzureManagedDomain'
     location: 'global'
     properties: {

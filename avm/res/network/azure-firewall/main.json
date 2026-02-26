@@ -5,499 +5,32 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "7454254615834503225"
+      "version": "0.40.2.10011",
+      "templateHash": "1269671834091212758"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
   },
   "definitions": {
-    "natRuleCollectionType": {
+    "maintenanceConfigurationType": {
       "type": "object",
       "properties": {
-        "name": {
+        "assignmentName": {
           "type": "string",
           "metadata": {
-            "description": "Required. Name of the NAT rule collection."
+            "description": "Required. The name of the maintenance configuration assignment."
           }
         },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "action": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Dnat",
-                    "Snat"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of action."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. The action type of a NAT rule collection."
-              }
-            },
-            "priority": {
-              "type": "int",
-              "minValue": 100,
-              "maxValue": 65000,
-              "metadata": {
-                "description": "Required. Priority of the NAT rule collection."
-              }
-            },
-            "rules": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Name of the NAT rule."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Description of the rule."
-                    }
-                  },
-                  "protocols": {
-                    "type": "array",
-                    "allowedValues": [
-                      "Any",
-                      "ICMP",
-                      "TCP",
-                      "UDP"
-                    ],
-                    "metadata": {
-                      "description": "Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule."
-                    }
-                  },
-                  "destinationAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
-                    }
-                  },
-                  "destinationPorts": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination ports."
-                    }
-                  },
-                  "sourceAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IP addresses for this rule."
-                    }
-                  },
-                  "sourceIpGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IpGroups for this rule."
-                    }
-                  },
-                  "translatedAddress": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The translated address for this NAT rule."
-                    }
-                  },
-                  "translatedFqdn": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The translated FQDN for this NAT rule."
-                    }
-                  },
-                  "translatedPort": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The translated port for this NAT rule."
-                    }
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. Collection of rules used by a NAT rule collection."
-              }
-            }
-          },
+        "maintenanceConfigurationResourceId": {
+          "type": "string",
           "metadata": {
-            "description": "Required. Properties of the azure firewall NAT rule collection."
+            "description": "Required. The resource ID of the maintenance configuration to assign to the Azure Firewall."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for a NAT rule collection."
-      }
-    },
-    "applicationRuleCollectionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the application rule collection."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "action": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Allow",
-                    "Deny"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of action."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. The action type of a rule collection."
-              }
-            },
-            "priority": {
-              "type": "int",
-              "minValue": 100,
-              "maxValue": 65000,
-              "metadata": {
-                "description": "Required. Priority of the application rule collection."
-              }
-            },
-            "rules": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Name of the application rule."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Description of the rule."
-                    }
-                  },
-                  "protocols": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "port": {
-                          "type": "int",
-                          "nullable": true,
-                          "maxValue": 64000,
-                          "metadata": {
-                            "description": "Optional. Port number for the protocol."
-                          }
-                        },
-                        "protocolType": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Http",
-                            "Https",
-                            "Mssql"
-                          ],
-                          "metadata": {
-                            "description": "Required. Protocol type."
-                          }
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Array of ApplicationRuleProtocols."
-                    }
-                  },
-                  "fqdnTags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of FQDN Tags for this rule."
-                    }
-                  },
-                  "targetFqdns": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of FQDNs for this rule."
-                    }
-                  },
-                  "sourceAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IP addresses for this rule."
-                    }
-                  },
-                  "sourceIpGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IpGroups for this rule."
-                    }
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. Collection of rules used by a application rule collection."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Properties of the azure firewall application rule collection."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for an application rule collection."
-      }
-    },
-    "networkRuleCollectionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Name of the network rule collection."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "action": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Allow",
-                    "Deny"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of action."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. The action type of a rule collection."
-              }
-            },
-            "priority": {
-              "type": "int",
-              "minValue": 100,
-              "maxValue": 65000,
-              "metadata": {
-                "description": "Required. Priority of the network rule collection."
-              }
-            },
-            "rules": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Name of the network rule."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Description of the rule."
-                    }
-                  },
-                  "protocols": {
-                    "type": "array",
-                    "allowedValues": [
-                      "Any",
-                      "ICMP",
-                      "TCP",
-                      "UDP"
-                    ],
-                    "metadata": {
-                      "description": "Required. Array of AzureFirewallNetworkRuleProtocols."
-                    }
-                  },
-                  "destinationAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination IP addresses."
-                    }
-                  },
-                  "destinationFqdns": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination FQDNs."
-                    }
-                  },
-                  "destinationIpGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination IP groups for this rule."
-                    }
-                  },
-                  "destinationPorts": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of destination ports."
-                    }
-                  },
-                  "sourceAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IP addresses for this rule."
-                    }
-                  },
-                  "sourceIpGroups": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. List of source IpGroups for this rule."
-                    }
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Required. Collection of rules used by a network rule collection."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. Properties of the azure firewall network rule collection."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a network rule collection."
-      }
-    },
-    "hubIPAddressesType": {
-      "type": "object",
-      "properties": {
-        "privateIPAddress": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Private IP Address associated with AzureFirewall."
-          }
-        },
-        "publicIPs": {
-          "type": "object",
-          "properties": {
-            "addresses": {
-              "type": "array",
-              "prefixItems": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "address": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Public IP."
-                      }
-                    }
-                  }
-                }
-              ],
-              "items": false,
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained."
-              }
-            },
-            "count": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Public IP address count."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of public IP addresses associated with AzureFirewall."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the hub IP addresses."
+        "description": "The type of a maintenance configuration."
       }
     },
     "diagnosticSettingFullType": {
@@ -738,21 +271,21 @@
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 56,
       "metadata": {
         "description": "Required. Name of the Azure Firewall."
       }
     },
     "azureSkuTier": {
       "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard",
-        "Premium"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/sku/properties/tier"
+        },
         "description": "Optional. Tier of an Azure Firewall."
-      }
+      },
+      "defaultValue": "Standard"
     },
     "virtualNetworkResourceId": {
       "type": "string",
@@ -770,10 +303,13 @@
     },
     "additionalPublicIpConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/ipConfigurations"
+        },
         "description": "Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration."
-      }
+      },
+      "defaultValue": []
     },
     "publicIPAddressObject": {
       "type": "object",
@@ -800,33 +336,33 @@
     },
     "applicationRuleCollections": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/applicationRuleCollectionType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/applicationRuleCollections"
+        },
         "description": "Optional. Collection of application rule collections used by Azure Firewall."
-      }
+      },
+      "nullable": true
     },
     "networkRuleCollections": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/networkRuleCollectionType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/networkRuleCollections"
+        },
         "description": "Optional. Collection of network rule collections used by Azure Firewall."
-      }
+      },
+      "nullable": true
     },
     "natRuleCollections": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/natRuleCollectionType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/natRuleCollections"
+        },
         "description": "Optional. Collection of NAT rule collections used by Azure Firewall."
-      }
+      },
+      "nullable": true
     },
     "firewallPolicyId": {
       "type": "string",
@@ -836,11 +372,14 @@
       }
     },
     "hubIPAddresses": {
-      "$ref": "#/definitions/hubIPAddressesType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/hubIPAddresses"
+        },
         "description": "Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied & `publicIPResourceID` is empty."
-      }
+      },
+      "nullable": true
     },
     "virtualHubResourceId": {
       "type": "string",
@@ -851,29 +390,33 @@
     },
     "threatIntelMode": {
       "type": "string",
-      "defaultValue": "Deny",
-      "allowedValues": [
-        "Alert",
-        "Deny",
-        "Off"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/threatIntelMode"
+        },
         "description": "Optional. The operation mode for Threat Intel."
-      }
+      },
+      "defaultValue": "Deny"
     },
     "autoscaleMaxCapacity": {
       "type": "int",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/autoscaleConfiguration/properties/maxCapacity"
+        },
         "description": "Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default."
-      }
+      },
+      "nullable": true
     },
     "autoscaleMinCapacity": {
       "type": "int",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/autoscaleConfiguration/properties/minCapacity"
+        },
         "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default."
-      }
+      },
+      "nullable": true
     },
     "availabilityZones": {
       "type": "array",
@@ -939,11 +482,38 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/azureFirewalls@2024-05-01#properties/tags"
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the Azure Firewall resource."
       },
       "nullable": true
+    },
+    "additionalProperties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/additionalProperties"
+        },
+        "description": "Optional. The additional properties used to further config this azure firewall. Used for DNS proxy configuration (e.g., `Network.DNS.EnableProxy`)."
+      },
+      "nullable": true
+    },
+    "extendedLocation": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/extendedLocation"
+        },
+        "description": "Optional. The extended location of type local virtual network gateway."
+      },
+      "nullable": true
+    },
+    "maintenanceConfiguration": {
+      "$ref": "#/definitions/maintenanceConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maintenance configuration to assign to the Azure Firewall."
+      }
     },
     "enableTelemetry": {
       "type": "bool",
@@ -955,16 +525,6 @@
   },
   "variables": {
     "copy": [
-      {
-        "name": "additionalPublicIpConfigurationsVar",
-        "count": "[length(parameters('additionalPublicIpConfigurations'))]",
-        "input": {
-          "name": "[parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')].name]",
-          "properties": {
-            "publicIPAddress": "[if(contains(parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')], 'publicIPAddressResourceId'), createObject('id', parameters('additionalPublicIpConfigurations')[copyIndex('additionalPublicIpConfigurationsVar')].publicIPAddressResourceId), null())]"
-          }
-        }
-      },
       {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
@@ -1006,22 +566,37 @@
     },
     "azureFirewall": {
       "type": "Microsoft.Network/azureFirewalls",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
       "tags": "[parameters('tags')]",
-      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), variables('additionalPublicIpConfigurationsVar')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), variables('additionalPublicIpConfigurationsVar')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
+      "extendedLocation": "[parameters('extendedLocation')]",
+      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
       "dependsOn": [
         "managementIPAddress",
         "publicIPAddress"
+      ]
+    },
+    "azureFirewall_configurationAssignment": {
+      "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "scope": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]",
+      "name": "[parameters('maintenanceConfiguration').assignmentName]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "maintenanceConfigurationId": "[parameters('maintenanceConfiguration').maintenanceConfigurationResourceId]"
+      },
+      "dependsOn": [
+        "azureFirewall"
       ]
     },
     "azureFirewall_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/azureFirewalls/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1038,7 +613,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/azureFirewalls/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1079,7 +654,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/azureFirewalls/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/azureFirewalls', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/azureFirewalls', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1154,106 +729,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7550528442771433353"
+              "version": "0.39.26.7824",
+              "templateHash": "5349747633189946992"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
           },
           "definitions": {
-            "dnsSettingsType": {
-              "type": "object",
-              "properties": {
-                "domainNameLabel": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-                  }
-                },
-                "domainNameLabelScope": {
-                  "type": "string",
-                  "allowedValues": [
-                    "NoReuse",
-                    "ResourceGroupReuse",
-                    "SubscriptionReuse",
-                    "TenantReuse"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
-                  }
-                },
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-                  }
-                },
-                "reverseFqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ddosSettingsType": {
-              "type": "object",
-              "properties": {
-                "ddosProtectionPlan": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The DDoS protection plan associated with the public IP address."
-                  }
-                },
-                "protectionMode": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Enabled"
-                  ],
-                  "metadata": {
-                    "description": "Required. The DDoS protection policy customizations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipTagType": {
-              "type": "object",
-              "properties": {
-                "ipTagType": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag type."
-                  }
-                },
-                "tag": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -1372,7 +854,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1409,7 +891,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1484,7 +966,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1505,14 +987,13 @@
             },
             "publicIPAllocationMethod": {
               "type": "string",
-              "defaultValue": "Static",
-              "allowedValues": [
-                "Dynamic",
-                "Static"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAllocationMethod"
+                },
                 "description": "Optional. The public IP address allocation method."
-              }
+              },
+              "defaultValue": "Static"
             },
             "availabilityZones": {
               "type": "array",
@@ -1535,31 +1016,33 @@
             },
             "publicIPAddressVersion": {
               "type": "string",
-              "defaultValue": "IPv4",
-              "allowedValues": [
-                "IPv4",
-                "IPv6"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAddressVersion"
+                },
                 "description": "Optional. IP address version."
-              }
+              },
+              "defaultValue": "IPv4"
             },
             "dnsSettings": {
-              "$ref": "#/definitions/dnsSettingsType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/dnsSettings"
+                },
                 "description": "Optional. The DNS settings of the public IP address."
-              }
+              },
+              "nullable": true
             },
             "ipTags": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipTagType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ipTags"
+                },
                 "description": "Optional. The list of tags associated with the public IP address."
-              }
+              },
+              "nullable": true
             },
             "lock": {
               "$ref": "#/definitions/lockType",
@@ -1570,32 +1053,43 @@
             },
             "skuName": {
               "type": "string",
-              "defaultValue": "Standard",
-              "allowedValues": [
-                "Basic",
-                "Standard"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/name"
+                },
                 "description": "Optional. Name of a public IP address SKU."
-              }
+              },
+              "defaultValue": "Standard"
             },
             "skuTier": {
               "type": "string",
-              "defaultValue": "Regional",
-              "allowedValues": [
-                "Global",
-                "Regional"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/tier"
+                },
                 "description": "Optional. Tier of a public IP address SKU."
-              }
+              },
+              "defaultValue": "Regional"
             },
             "ddosSettings": {
-              "$ref": "#/definitions/ddosSettingsType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ddosSettings"
+                },
                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
-              }
+              },
+              "nullable": true
+            },
+            "deleteOption": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/deleteOption"
+                },
+                "description": "Optional. The delete option for the public IP address."
+              },
+              "nullable": true
             },
             "location": {
               "type": "string",
@@ -1632,7 +1126,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -1675,7 +1169,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1693,7 +1187,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1709,7 +1203,8 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": "[parameters('ipTags')]"
+                "ipTags": "[parameters('ipTags')]",
+                "deleteOption": "[parameters('deleteOption')]"
               }
             },
             "publicIpAddress_lock": {
@@ -1824,7 +1319,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -1888,106 +1383,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "7550528442771433353"
+              "version": "0.39.26.7824",
+              "templateHash": "5349747633189946992"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
           },
           "definitions": {
-            "dnsSettingsType": {
-              "type": "object",
-              "properties": {
-                "domainNameLabel": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-                  }
-                },
-                "domainNameLabelScope": {
-                  "type": "string",
-                  "allowedValues": [
-                    "NoReuse",
-                    "ResourceGroupReuse",
-                    "SubscriptionReuse",
-                    "TenantReuse"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
-                  }
-                },
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-                  }
-                },
-                "reverseFqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ddosSettingsType": {
-              "type": "object",
-              "properties": {
-                "ddosProtectionPlan": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The DDoS protection plan associated with the public IP address."
-                  }
-                },
-                "protectionMode": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Enabled"
-                  ],
-                  "metadata": {
-                    "description": "Required. The DDoS protection policy customizations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipTagType": {
-              "type": "object",
-              "properties": {
-                "ipTagType": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag type."
-                  }
-                },
-                "tag": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The IP tag."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
             "diagnosticSettingFullType": {
               "type": "object",
               "properties": {
@@ -2106,7 +1508,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -2143,7 +1545,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -2218,7 +1620,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -2239,14 +1641,13 @@
             },
             "publicIPAllocationMethod": {
               "type": "string",
-              "defaultValue": "Static",
-              "allowedValues": [
-                "Dynamic",
-                "Static"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAllocationMethod"
+                },
                 "description": "Optional. The public IP address allocation method."
-              }
+              },
+              "defaultValue": "Static"
             },
             "availabilityZones": {
               "type": "array",
@@ -2269,31 +1670,33 @@
             },
             "publicIPAddressVersion": {
               "type": "string",
-              "defaultValue": "IPv4",
-              "allowedValues": [
-                "IPv4",
-                "IPv6"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAddressVersion"
+                },
                 "description": "Optional. IP address version."
-              }
+              },
+              "defaultValue": "IPv4"
             },
             "dnsSettings": {
-              "$ref": "#/definitions/dnsSettingsType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/dnsSettings"
+                },
                 "description": "Optional. The DNS settings of the public IP address."
-              }
+              },
+              "nullable": true
             },
             "ipTags": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipTagType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ipTags"
+                },
                 "description": "Optional. The list of tags associated with the public IP address."
-              }
+              },
+              "nullable": true
             },
             "lock": {
               "$ref": "#/definitions/lockType",
@@ -2304,32 +1707,43 @@
             },
             "skuName": {
               "type": "string",
-              "defaultValue": "Standard",
-              "allowedValues": [
-                "Basic",
-                "Standard"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/name"
+                },
                 "description": "Optional. Name of a public IP address SKU."
-              }
+              },
+              "defaultValue": "Standard"
             },
             "skuTier": {
               "type": "string",
-              "defaultValue": "Regional",
-              "allowedValues": [
-                "Global",
-                "Regional"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/tier"
+                },
                 "description": "Optional. Tier of a public IP address SKU."
-              }
+              },
+              "defaultValue": "Regional"
             },
             "ddosSettings": {
-              "$ref": "#/definitions/ddosSettingsType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ddosSettings"
+                },
                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
-              }
+              },
+              "nullable": true
+            },
+            "deleteOption": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/deleteOption"
+                },
+                "description": "Optional. The delete option for the public IP address."
+              },
+              "nullable": true
             },
             "location": {
               "type": "string",
@@ -2366,7 +1780,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -2409,7 +1823,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2427,7 +1841,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2443,7 +1857,8 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": "[parameters('ipTags')]"
+                "ipTags": "[parameters('ipTags')]",
+                "deleteOption": "[parameters('deleteOption')]"
               }
             },
             "publicIpAddress_lock": {
@@ -2558,7 +1973,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -2604,6 +2019,9 @@
     "applicationRuleCollections": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/applicationRuleCollections"
+        },
         "description": "List of Application Rule Collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('applicationRuleCollections'), createArray())]"
@@ -2611,6 +2029,9 @@
     "networkRuleCollections": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/networkRuleCollections"
+        },
         "description": "List of Network Rule Collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('networkRuleCollections'), createArray())]"
@@ -2618,6 +2039,9 @@
     "natRuleCollections": {
       "type": "array",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2025-05-01#properties/properties/properties/natRuleCollections"
+        },
         "description": "List of NAT rule collections used by Azure Firewall."
       },
       "value": "[coalesce(parameters('natRuleCollections'), createArray())]"
@@ -2627,7 +2051,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('azureFirewall', '2024-10-01', 'full').location]"
+      "value": "[reference('azureFirewall', '2025-05-01', 'full').location]"
     }
   }
 }

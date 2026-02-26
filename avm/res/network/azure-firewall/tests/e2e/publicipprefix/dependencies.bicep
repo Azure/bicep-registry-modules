@@ -9,7 +9,7 @@ param publicIPPrefixName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -35,7 +35,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource publicIPPrefix 'Microsoft.Network/publicIPPrefixes@2023-11-01' = {
+resource publicIPPrefix 'Microsoft.Network/publicIPPrefixes@2025-05-01' = {
   name: publicIPPrefixName
   location: location
   sku: {

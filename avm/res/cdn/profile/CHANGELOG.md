@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.17.2
+
+### Changes
+
+- Fixed `identity` variable to check `formattedUserAssignedIdentities` instead of `formattedRoleAssignments` when determining identity type. This bug was introduced in v0.17.0 and led to unintended logical behavior. (#6538)
+
+### Breaking Changes
+
+- None
+
 ## 0.17.1
 
 ### Changes

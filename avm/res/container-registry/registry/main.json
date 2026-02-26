@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6755658659845490685"
+      "templateHash": "14778343237161992365"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -1291,13 +1291,13 @@
     },
     "azureADAuthenticationAsArmPolicyStatus": {
       "type": "string",
-      "defaultValue": "enabled",
+      "defaultValue": "disabled",
       "allowedValues": [
         "disabled",
         "enabled"
       ],
       "metadata": {
-        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled."
+        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is disabled."
       }
     },
     "softDeletePolicyStatus": {
@@ -1731,7 +1731,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "11801951783121357607"
+              "templateHash": "3682192101428312634"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -1854,7 +1854,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "2091377699273142845"
+              "templateHash": "6203055754640559519"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -1998,7 +1998,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "8510191128461945537"
+              "templateHash": "1109033040938418439"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
@@ -2182,7 +2182,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16033434815765796598"
+              "templateHash": "8673443188586925506"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -2555,7 +2555,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "5732884074105079918"
+              "templateHash": "16315456009528098654"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."

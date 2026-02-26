@@ -2,11 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
-## 0.10.1
+## 0.11.0
 
 ### Changes
 
-- Updated API versions for container registry resources to latest preview versions.
+- Updated `azureADAuthenticationAsArmPolicy` setting to `disabled` by default to address Microsoft Defender Low Severity level finding.
 
 ### Breaking Changes
 

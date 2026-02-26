@@ -10,9 +10,12 @@ param publicIPName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Maintenance Configuration to create.')
+param maintenanceConfigurationName string
+
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -32,7 +35,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIPName
   location: location
   sku: {
@@ -54,6 +57,24 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
+  name: maintenanceConfigurationName
+  location: location
+  properties: {
+    maintenanceScope: 'Resource'
+    extensionProperties: {
+      maintenanceSubScope: 'NetworkSecurity'
+    }
+    maintenanceWindow: {
+      startDateTime: '2025-03-01 00:00'
+      expirationDateTime: null
+      duration: '05:00'
+      timeZone: 'Pacific Standard Time'
+      recurEvery: 'Day'
+    }
+  }
+}
+
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
 
@@ -62,3 +83,6 @@ output publicIPResourceId string = publicIP.id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The resource ID of the created Maintenance Configuration.')
+output maintenanceConfigurationResourceId string = maintenanceConfiguration.id

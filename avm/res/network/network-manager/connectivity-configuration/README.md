@@ -13,7 +13,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/connectivityConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_connectivityconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/connectivityConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/connectivityConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_connectivityconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/connectivityConfigurations)</li></ul> |
 
 ## Parameters
 
@@ -36,6 +36,7 @@ Connectivity configurations define hub-and-spoke or mesh topologies applied to o
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectivityCapabilities`](#parameter-connectivitycapabilities) | object | Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement. |
 | [`deleteExistingPeering`](#parameter-deleteexistingpeering) | bool | Flag if need to remove current existing peerings. If set to "True", all peerings on virtual networks in selected network groups will be removed and replaced with the peerings defined by this configuration. Optional when connectivityTopology is of type "HubAndSpoke". |
 | [`description`](#parameter-description) | string | A description of the connectivity configuration. |
 | [`isGlobal`](#parameter-isglobal) | bool | Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to "True", a global mesh enables connectivity across regions. |
@@ -102,13 +103,6 @@ Connectivity topology type.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HubAndSpoke'
-    'Mesh'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -157,6 +151,13 @@ The name of the parent network manager. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `connectivityCapabilities`
+
+Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.
+
+- Required: No
+- Type: object
 
 ### Parameter: `deleteExistingPeering`
 

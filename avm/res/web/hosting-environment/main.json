@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "5051943203961398060"
+      "version": "0.40.2.10011",
+      "templateHash": "6495478728319351396"
     },
     "name": "App Service Environments",
     "description": "This module deploys an App Service Environment."
@@ -105,7 +105,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -170,7 +170,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -275,7 +275,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/hostingEnvironments@2024-11-01#properties/tags"
+          "source": "Microsoft.Web/hostingEnvironments@2025-03-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -312,7 +312,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Web/hostingEnvironments@2024-11-01#properties/properties/properties/clusterSettings"
+          "source": "Microsoft.Web/hostingEnvironments@2025-03-01#properties/properties/properties/clusterSettings"
         },
         "description": "Optional. Custom settings for changing the behavior of the App Service Environment."
       },
@@ -325,35 +325,35 @@
     },
     "customDnsSuffix": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required."
       }
     },
     "customDnsSuffixCertificateUrl": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty."
       }
     },
     "customDnsSuffixKeyVaultReferenceIdentity": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The user-assigned identity to use for resolving the key vault certificate reference. If not specified, the system-assigned ASE identity will be used if available. Required if customDnsSuffix is not empty."
       }
     },
     "dedicatedHostCount": {
       "type": "int",
-      "defaultValue": 0,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Dedicated Host Count. If `zoneRedundant` is false, and you want physical hardware isolation enabled, set to 2. Otherwise 0."
       }
     },
     "dnsSuffix": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. DNS suffix of the App Service Environment."
       }
@@ -367,36 +367,33 @@
     },
     "internalLoadBalancingMode": {
       "type": "string",
-      "defaultValue": "None",
-      "allowedValues": [
-        "None",
-        "Web",
-        "Publishing",
-        "Web, Publishing"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/hostingEnvironments@2025-03-01#properties/properties/properties/internalLoadBalancingMode"
+        },
         "description": "Optional. Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. \"None\" Exposes the ASE-hosted apps on an internet-accessible IP address."
-      }
+      },
+      "defaultValue": "None"
     },
     "networkConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/hostingEnvironments@2025-03-01#properties/properties/properties/networkingConfiguration"
+        },
         "description": "Optional. Properties to configure additional networking features."
-      }
+      },
+      "nullable": true
     },
     "upgradePreference": {
       "type": "string",
-      "defaultValue": "None",
-      "allowedValues": [
-        "Early",
-        "Late",
-        "Manual",
-        "None"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/hostingEnvironments@2025-03-01#properties/properties/properties/upgradePreference"
+        },
         "description": "Optional. Specify preference for when and how the planned maintenance is applied."
-      }
+      },
+      "defaultValue": "None"
     },
     "subnetResourceId": {
       "type": "string",
@@ -409,6 +406,20 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`."
+      }
+    },
+    "ipsslAddressCount": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Number of IP SSL addresses reserved for the App Service Environment."
+      }
+    },
+    "multiSize": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Front-end VM size, e.g. \"Medium\", \"Large\"."
       }
     },
     "managedIdentities": {
@@ -470,7 +481,7 @@
     },
     "appServiceEnvironment": {
       "type": "Microsoft.Web/hostingEnvironments",
-      "apiVersion": "2023-12-01",
+      "apiVersion": "2025-03-01",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "location": "[parameters('location')]",
@@ -478,10 +489,12 @@
       "identity": "[variables('identity')]",
       "properties": {
         "clusterSettings": "[parameters('clusterSettings')]",
-        "dedicatedHostCount": "[if(not(equals(parameters('dedicatedHostCount'), 0)), parameters('dedicatedHostCount'), null())]",
-        "dnsSuffix": "[if(not(empty(parameters('dnsSuffix'))), parameters('dnsSuffix'), null())]",
+        "dedicatedHostCount": "[parameters('dedicatedHostCount')]",
+        "dnsSuffix": "[parameters('dnsSuffix')]",
         "frontEndScaleFactor": "[parameters('frontEndScaleFactor')]",
         "internalLoadBalancingMode": "[parameters('internalLoadBalancingMode')]",
+        "ipsslAddressCount": "[parameters('ipsslAddressCount')]",
+        "multiSize": "[parameters('multiSize')]",
         "upgradePreference": "[parameters('upgradePreference')]",
         "networkingConfiguration": "[parameters('networkConfiguration')]",
         "virtualNetwork": {
@@ -495,7 +508,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Web/hostingEnvironments/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/hostingEnvironments', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -512,7 +525,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Web/hostingEnvironments/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/hostingEnvironments', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -544,7 +557,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Web/hostingEnvironments/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Web/hostingEnvironments', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Web/hostingEnvironments', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -560,7 +573,7 @@
       ]
     },
     "appServiceEnvironment_configurations_customDnsSuffix": {
-      "condition": "[not(empty(parameters('customDnsSuffix')))]",
+      "condition": "[not(empty(coalesce(parameters('customDnsSuffix'), '')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-AppServiceEnv-Configurations-CustomDnsSuffix', uniqueString(deployment().name, parameters('location')))]",
@@ -574,13 +587,13 @@
             "value": "[parameters('name')]"
           },
           "certificateUrl": {
-            "value": "[parameters('customDnsSuffixCertificateUrl')]"
+            "value": "[coalesce(parameters('customDnsSuffixCertificateUrl'), '')]"
           },
           "keyVaultReferenceIdentity": {
-            "value": "[parameters('customDnsSuffixKeyVaultReferenceIdentity')]"
+            "value": "[coalesce(parameters('customDnsSuffixKeyVaultReferenceIdentity'), '')]"
           },
           "dnsSuffix": {
-            "value": "[parameters('customDnsSuffix')]"
+            "value": "[coalesce(parameters('customDnsSuffix'), '')]"
           }
         },
         "template": {
@@ -589,8 +602,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "11637564412237269522"
+              "version": "0.40.2.10011",
+              "templateHash": "3480320488272565329"
             },
             "name": "Hosting Environment Custom DNS Suffix Configuration",
             "description": "This module deploys a Hosting Environment Custom DNS Suffix Configuration."
@@ -624,7 +637,7 @@
           "resources": [
             {
               "type": "Microsoft.Web/hostingEnvironments/configurations",
-              "apiVersion": "2023-12-01",
+              "apiVersion": "2025-03-01",
               "name": "[format('{0}/{1}', parameters('hostingEnvironmentName'), 'customdnssuffix')]",
               "properties": {
                 "certificateUrl": "[parameters('certificateUrl')]",
@@ -690,7 +703,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('appServiceEnvironment', '2023-12-01', 'full').location]"
+      "value": "[reference('appServiceEnvironment', '2025-03-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -698,7 +711,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('appServiceEnvironment', '2023-12-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('appServiceEnvironment', '2025-03-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
