@@ -15,6 +15,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -43,6 +44,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`agentConfiguration`](#parameter-agentconfiguration) | object | The machine configuration of the run agent. |
 | [`agentPoolName`](#parameter-agentpoolname) | string | The dedicated agent pool for the task. |
 | [`credentials`](#parameter-credentials) | object | The properties that describe the credentials that will be used when the task is invoked. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isSystemTask`](#parameter-issystemtask) | bool | The value of this property indicates whether the task resource is system task or not. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logTemplate`](#parameter-logtemplate) | string | The template that describes the repository and tag information for run log artifact. |
@@ -142,6 +144,14 @@ The authentication mode which determines the source registry login scope.
     'None'
   ]
   ```
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `isSystemTask`
 
@@ -899,3 +909,7 @@ The current status of trigger.
 | `resourceGroupName` | string | The name of the resource group the task was deployed into. |
 | `resourceId` | string | The resource ID of the task. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

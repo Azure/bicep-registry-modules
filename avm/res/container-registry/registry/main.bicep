@@ -374,6 +374,7 @@ module registry_scopeMaps 'scope-map/main.bicep' = [
       actions: scopeMap.actions
       description: scopeMap.?description
       registryName: registry.name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -388,6 +389,7 @@ module registry_replications 'replication/main.bicep' = [
       regionEndpointEnabled: replication.?regionEndpointEnabled
       zoneRedundancy: replication.?zoneRedundancy
       tags: replication.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -401,6 +403,7 @@ module registry_credentialSets 'credential-set/main.bicep' = [
       managedIdentities: credentialSet.managedIdentities
       authCredentials: credentialSet.authCredentials
       loginServer: credentialSet.loginServer
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -414,6 +417,7 @@ module registry_cacheRules 'cache-rule/main.bicep' = [
       name: cacheRule.?name
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       registry_credentialSets
@@ -430,6 +434,7 @@ module registry_tokens 'token/main.bicep' = [
       scopeMapId: token.scopeMapId
       status: token.?status
       credentials: token.?credentials
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       registry_scopeMaps
@@ -456,6 +461,7 @@ module registry_tasks 'task/main.bicep' = [
       isSystemTask: task.?isSystemTask
       logTemplate: task.?logTemplate
       managedIdentities: task.?managedIdentities
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -473,6 +479,7 @@ module registry_webhooks 'webhook/main.bicep' = [
       status: webhook.?status
       serviceUri: webhook.serviceUri
       tags: webhook.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

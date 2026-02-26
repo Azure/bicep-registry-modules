@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14300970713020299880"
+      "templateHash": "1861223037561733681"
     },
     "name": "Container Registries Tasks",
     "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
@@ -733,6 +733,13 @@
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -741,6 +748,26 @@
     "stepProperties": "[if(not(equals(tryGet(parameters('step'), 'dockerBuild'), null())), createObject('type', 'Docker', 'dockerFilePath', parameters('step').dockerBuild.dockerFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextAccessToken'), 'imageNames', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'imageNames'), 'isPushEnabled', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'isPushEnabled'), 'noCache', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'noCache'), 'target', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'target'), 'arguments', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'arguments')), if(not(equals(tryGet(parameters('step'), 'encodedTask'), null())), createObject('type', 'EncodedTask', 'encodedTaskContent', parameters('step').encodedTask.encodedTaskContent, 'encodedValuesContent', tryGet(tryGet(parameters('step'), 'encodedTask'), 'encodedValuesContent'), 'contextPath', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'encodedTask'), 'values')), if(not(equals(tryGet(parameters('step'), 'fileTask'), null())), createObject('type', 'FileTask', 'taskFilePath', parameters('step').fileTask.taskFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'fileTask'), 'values'), 'valuesFilePath', tryGet(tryGet(parameters('step'), 'fileTask'), 'valuesFilePath')), null())))]"
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.containerregistry-task.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",

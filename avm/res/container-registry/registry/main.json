@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "12619236434266088217"
+      "templateHash": "9739119138157535954"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -2492,6 +2492,9 @@
           },
           "registryName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2502,7 +2505,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "11801951783121357607"
+              "templateHash": "16737459938591445525"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -2536,9 +2539,36 @@
               "metadata": {
                 "description": "Optional. The user friendly description of the scope map."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-scopemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -2615,6 +2645,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('replications'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2625,7 +2658,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "2091377699273142845"
+              "templateHash": "16684370129088694769"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -2674,9 +2707,36 @@
               "metadata": {
                 "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-replication.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -2759,6 +2819,9 @@
           },
           "loginServer": {
             "value": "[coalesce(parameters('credentialSets'), createArray())[copyIndex()].loginServer]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2769,7 +2832,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "8510191128461945537"
+              "templateHash": "16254313849620345942"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
@@ -2855,12 +2918,39 @@
               "metadata": {
                 "description": "Required. The credentials are stored for this upstream or login server."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]"
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-credentialset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -2943,6 +3033,9 @@
           },
           "credentialSetResourceId": {
             "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2953,7 +3046,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "10128891141125607696"
+              "templateHash": "8813413118104745796"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -2991,9 +3084,36 @@
               "metadata": {
                 "description": "Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com)."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-cacherule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -3069,6 +3189,9 @@
           },
           "credentials": {
             "value": "[tryGet(coalesce(parameters('tokens'), createArray())[copyIndex()], 'credentials')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3079,7 +3202,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "15199080444040262638"
+              "templateHash": "225756475527560417"
             },
             "name": "Container Registries Tokens",
             "description": "This module deploys an Azure Container Registry (ACR) Token."
@@ -3226,9 +3349,36 @@
               "metadata": {
                 "description": "Optional. The credentials associated with the token for authentication."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-token.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -3334,6 +3484,9 @@
           },
           "managedIdentities": {
             "value": "[tryGet(coalesce(parameters('tasks'), createArray())[copyIndex()], 'managedIdentities')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3344,7 +3497,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "14300970713020299880"
+              "templateHash": "1861223037561733681"
             },
             "name": "Container Registries Tasks",
             "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
@@ -4071,6 +4224,13 @@
               "metadata": {
                 "description": "Optional. The managed identity definition for this resource."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -4079,6 +4239,26 @@
             "stepProperties": "[if(not(equals(tryGet(parameters('step'), 'dockerBuild'), null())), createObject('type', 'Docker', 'dockerFilePath', parameters('step').dockerBuild.dockerFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextAccessToken'), 'imageNames', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'imageNames'), 'isPushEnabled', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'isPushEnabled'), 'noCache', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'noCache'), 'target', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'target'), 'arguments', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'arguments')), if(not(equals(tryGet(parameters('step'), 'encodedTask'), null())), createObject('type', 'EncodedTask', 'encodedTaskContent', parameters('step').encodedTask.encodedTaskContent, 'encodedValuesContent', tryGet(tryGet(parameters('step'), 'encodedTask'), 'encodedValuesContent'), 'contextPath', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'encodedTask'), 'values')), if(not(equals(tryGet(parameters('step'), 'fileTask'), null())), createObject('type', 'FileTask', 'taskFilePath', parameters('step').fileTask.taskFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'fileTask'), 'values'), 'valuesFilePath', tryGet(tryGet(parameters('step'), 'fileTask'), 'valuesFilePath')), null())))]"
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-task.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
@@ -4190,6 +4370,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4200,7 +4383,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "5732884074105079918"
+              "templateHash": "1281849176523641259"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -4281,9 +4464,36 @@
               "metadata": {
                 "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.containerregistry-webhook.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "registry": {
               "existing": true,
               "type": "Microsoft.ContainerRegistry/registries",
