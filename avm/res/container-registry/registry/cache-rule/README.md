@@ -32,7 +32,7 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`credentialSetResourceId`](#parameter-credentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
+| [`credentialSetResourceId`](#parameter-credentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com). |
 | [`name`](#parameter-name) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
 | [`targetRepository`](#parameter-targetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
 
@@ -52,7 +52,7 @@ The name of the parent registry. Required if the template is used in a standalon
 
 ### Parameter: `credentialSetResourceId`
 
-The resource ID of the credential store which is associated with the cache rule.
+The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com).
 
 - Required: No
 - Type: string

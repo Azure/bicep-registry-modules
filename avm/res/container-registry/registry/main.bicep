@@ -170,6 +170,9 @@ param scopeMaps scopeMapsType[]?
 @description('Optional. Tokens to create for the container registry.')
 param tokens tokenType[]?
 
+@description('Optional. Array of ACR Tasks to create.')
+param tasks taskType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -434,6 +437,29 @@ module registry_tokens 'token/main.bicep' = [
   }
 ]
 
+module registry_tasks 'task/main.bicep' = [
+  for (task, index) in (tasks ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Task-${index}'
+    params: {
+      registryName: registry.name
+      name: task.name
+      location: task.?location ?? location
+      tags: task.?tags ?? tags
+      platform: task.?platform
+      step: task.?step
+      trigger: task.?trigger
+      status: task.?status
+      timeout: task.?timeout
+      agentConfiguration: task.?agentConfiguration
+      agentPoolName: task.?agentPoolName
+      credentials: task.?credentials
+      isSystemTask: task.?isSystemTask
+      logTemplate: task.?logTemplate
+      managedIdentities: task.?managedIdentities
+    }
+  }
+]
+
 module registry_webhooks 'webhook/main.bicep' = [
   for (webhook, index) in (webhooks ?? []): {
     name: '${uniqueString(deployment().name, location)}-Registry-Webhook-${index}'
@@ -658,7 +684,7 @@ type cacheRuleType = {
   @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
   targetRepository: string?
 
-  @description('Optional. The resource ID of the credential store which is associated with the cache rule.')
+  @description('Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com).')
   credentialSetResourceId: string?
 }
 
@@ -745,4 +771,62 @@ type webhookType = {
 
   @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
   scope: string?
+}
+
+import {
+  platformType
+  taskStepType
+  triggerType
+  agentPropertiesType
+  credentialsType
+  managedIdentitiesType as taskManagedIdentitiesType
+} from 'task/main.bicep'
+@export()
+@description('The type for a task.')
+type taskType = {
+  @description('Required. The name of the task.')
+  @minLength(5)
+  @maxLength(50)
+  name: string
+
+  @description('Optional. Location for the task resource.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The platform properties against which the task has to run.')
+  platform: platformType?
+
+  @description('Optional. The task step properties. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.')
+  step: taskStepType?
+
+  @description('Optional. The properties that describe all triggers for the task.')
+  trigger: triggerType?
+
+  @description('Optional. The current status of task.')
+  status: ('Disabled' | 'Enabled')?
+
+  @description('Optional. Run timeout in seconds.')
+  @minValue(300)
+  @maxValue(28800)
+  timeout: int?
+
+  @description('Optional. The machine configuration of the run agent.')
+  agentConfiguration: agentPropertiesType?
+
+  @description('Optional. The dedicated agent pool for the task.')
+  agentPoolName: string?
+
+  @description('Optional. The properties that describe the credentials that will be used when the task is invoked.')
+  credentials: credentialsType?
+
+  @description('Optional. The value of this property indicates whether the task resource is system task or not.')
+  isSystemTask: bool?
+
+  @description('Optional. The template that describes the repository and tag information for run log artifact.')
+  logTemplate: string?
+
+  @description('Optional. The managed identity definition for this resource.')
+  managedIdentities: taskManagedIdentitiesType?
 }

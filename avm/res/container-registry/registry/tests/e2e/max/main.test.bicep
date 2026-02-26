@@ -186,7 +186,41 @@ module testDeployment '../../../main.bicep' = [
           status: 'enabled'
         }
       ]
+      cacheRules: [
+        {
+          sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+        }
+        {
+          name: '${namePrefix}${serviceShort}CacheRule'
+          sourceRepository: 'mcr.microsoft.com/hello-world'
+          targetRepository: 'cached-hello-world'
+        }
+      ]
       trustPolicyStatus: 'enabled'
+      tasks: [
+        {
+          name: '${namePrefix}${serviceShort}Task1'
+          platform: {
+            os: 'Linux'
+            architecture: 'amd64'
+          }
+          step: {
+            encodedTask: {
+              encodedTaskContent: base64('version: v1.1.0\nsteps:\n  - cmd: mcr.microsoft.com/acr/acr-cli:0.14 --help\n')
+            }
+          }
+          trigger: {
+            timerTriggers: [
+              {
+                name: 'dailyTimer'
+                schedule: '0 12 * * *'
+                status: 'Disabled'
+              }
+            ]
+          }
+          status: 'Disabled'
+        }
+      ]
       webhooks: [
         {
           name: '${namePrefix}acrx001webhook'
