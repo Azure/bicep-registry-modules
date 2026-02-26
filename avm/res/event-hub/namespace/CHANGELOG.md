@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.14.1
+
+### Changes
+
+- Enhanced `maximumThroughputUnits` parameter type to use resource schema type reference
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes

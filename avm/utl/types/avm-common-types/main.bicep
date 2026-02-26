@@ -380,6 +380,16 @@ type customerManagedKeyType = {
 }
 
 @export()
+@description('An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified.')
+type customerManagedKeyAndVaultOnlyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+}
+
+@export()
 @description('An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.')
 type customerManagedKeyWithAutoRotateType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')

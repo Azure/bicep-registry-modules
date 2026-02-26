@@ -13,6 +13,7 @@ Note: In your module you would import only the types you need.
 
 import {
   customerManagedKeyType
+  customerManagedKeyAndVaultOnlyType
   customerManagedKeyWithAutoRotateType
   diagnosticSettingFullType
   diagnosticSettingLogsOnlyType
@@ -271,6 +272,12 @@ param customerManagedKeyWithAutoRotate customerManagedKeyWithAutoRotateType = {
   userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
 }
 output customerManagedKeyWithAutoRotateOutput customerManagedKeyWithAutoRotateType = customerManagedKeyWithAutoRotate
+
+param customerManagedKeyAndVaultOnly customerManagedKeyAndVaultOnlyType = {
+  keyName: 'myKey'
+  keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
+}
+output customerManagedKeyAndVaultOnly customerManagedKeyAndVaultOnlyType = customerManagedKeyAndVaultOnly
 
 // ================== //
 //   Secrets Export   //

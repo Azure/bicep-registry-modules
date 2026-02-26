@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "16244445864312901329"
+      "version": "0.40.2.10011",
+      "templateHash": "18151514056414654356"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1274,6 +1274,22 @@
             "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
           }
         },
+        "provisionedBandwidthMibps": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 10340,
+          "metadata": {
+            "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+          }
+        },
+        "provisionedIops": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 102400,
+          "metadata": {
+            "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
+          }
+        },
         "roleAssignments": {
           "type": "array",
           "items": {
@@ -2385,7 +2401,7 @@
     },
     "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "extendedLocation": "[if(not(empty(parameters('extendedLocationZone'))), createObject('name', parameters('extendedLocationZone'), 'type', 'EdgeZone'), null())]",
@@ -2408,7 +2424,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -2437,7 +2453,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -2454,7 +2470,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3153,8 +3169,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "4538661605890101674"
+              "version": "0.40.2.10011",
+              "templateHash": "10458708345324133836"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -3171,7 +3187,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Storage/storageAccounts/managementPolicies@2024-01-01#properties/properties/properties/policy/properties/rules"
+                  "source": "Microsoft.Storage/storageAccounts/managementPolicies@2025-06-01#properties/properties/properties/policy/properties/rules"
                 },
                 "description": "Required. The Storage Account ManagementPolicies Rules."
               }
@@ -3180,7 +3196,7 @@
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts/managementPolicies",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
               "properties": {
                 "policy": {
@@ -3265,8 +3281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17421429164012186211"
+              "version": "0.40.2.10011",
+              "templateHash": "18432545368646748336"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -3384,12 +3400,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "localUsers": {
               "type": "Microsoft.Storage/storageAccounts/localUsers",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
               "properties": {
                 "hasSharedKey": "[parameters('hasSharedKey')]",
@@ -3503,8 +3519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "13547770714849624777"
+              "version": "0.40.2.10011",
+              "templateHash": "7934012853796139082"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -4078,7 +4094,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}', parameters('storageAccountName'), variables('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), variables('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
               "properties": {
                 "copy": [
@@ -4173,8 +4189,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "12486801807235356029"
+                      "version": "0.40.2.10011",
+                      "templateHash": "4241057620439751267"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -4467,7 +4483,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -4515,8 +4531,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.39.26.7824",
-                              "templateHash": "9405311609774409339"
+                              "version": "0.40.2.10011",
+                              "templateHash": "7095313291458772891"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -4695,8 +4711,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "4022171727419342153"
+              "version": "0.40.2.10011",
+              "templateHash": "5326764376212152469"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -4812,6 +4828,22 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB)."
+                  }
+                },
+                "provisionedBandwidthMibps": {
+                  "type": "int",
+                  "nullable": true,
+                  "maxValue": 10340,
+                  "metadata": {
+                    "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+                  }
+                },
+                "provisionedIops": {
+                  "type": "int",
+                  "nullable": true,
+                  "maxValue": 102400,
+                  "metadata": {
+                    "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
                   }
                 },
                 "roleAssignments": {
@@ -5104,12 +5136,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "fileServices": {
               "type": "Microsoft.Storage/storageAccounts/fileServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
               "properties": {
                 "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]",
@@ -5124,7 +5156,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/fileServices/{1}', parameters('storageAccountName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccountName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -5182,7 +5214,7 @@
                     "value": "[coalesce(parameters('shares'), createArray())[copyIndex()].name]"
                   },
                   "accessTier": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2024-01-01', 'full').kind, 'FileStorage'), if(startsWith(reference('storageAccount', '2024-01-01', 'full').sku.name, 'PremiumV2_'), null(), 'Premium'), 'TransactionOptimized'))]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'accessTier'), if(equals(reference('storageAccount', '2025-06-01', 'full').kind, 'FileStorage'), if(startsWith(reference('storageAccount', '2025-06-01', 'full').sku.name, 'PremiumV2_'), null(), 'Premium'), 'TransactionOptimized'))]"
                   },
                   "enabledProtocols": {
                     "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'enabledProtocols')]"
@@ -5192,6 +5224,12 @@
                   },
                   "shareQuota": {
                     "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'shareQuota')]"
+                  },
+                  "provisionedBandwidthMibps": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'provisionedBandwidthMibps')]"
+                  },
+                  "provisionedIops": {
+                    "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'provisionedIops')]"
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('shares'), createArray())[copyIndex()], 'roleAssignments')]"
@@ -5207,8 +5245,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "142663650829722942"
+                      "version": "0.40.2.10011",
+                      "templateHash": "9473592490163430991"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -5354,6 +5392,24 @@
                         "description": "Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares."
                       }
                     },
+                    "provisionedBandwidthMibps": {
+                      "type": "int",
+                      "nullable": true,
+                      "minValue": 0,
+                      "maxValue": 10340,
+                      "metadata": {
+                        "description": "Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340."
+                      }
+                    },
+                    "provisionedIops": {
+                      "type": "int",
+                      "nullable": true,
+                      "minValue": 0,
+                      "maxValue": 102400,
+                      "metadata": {
+                        "description": "Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400."
+                      }
+                    },
                     "enableTelemetry": {
                       "type": "bool",
                       "defaultValue": true,
@@ -5436,8 +5492,13 @@
                         "accessTier": "[parameters('accessTier')]",
                         "shareQuota": "[parameters('shareQuota')]",
                         "rootSquash": "[if(equals(parameters('enabledProtocols'), 'NFS'), parameters('rootSquash'), null())]",
-                        "enabledProtocols": "[parameters('enabledProtocols')]"
-                      }
+                        "enabledProtocols": "[parameters('enabledProtocols')]",
+                        "provisionedBandwidthMibps": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedBandwidthMibps'), null())]",
+                        "provisionedIops": "[if(equals(reference('storageAccount', '2025-01-01', 'full').kind, 'FileStorage'), parameters('provisionedIops'), null())]"
+                      },
+                      "dependsOn": [
+                        "storageAccount"
+                      ]
                     },
                     "fileShare_roleAssignments": {
                       "copy": {
@@ -5669,8 +5730,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "762865197442503763"
+              "version": "0.40.2.10011",
+              "templateHash": "4565703002375249410"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -6015,12 +6076,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "queueServices": {
               "type": "Microsoft.Storage/storageAccounts/queueServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
               "properties": {
                 "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
@@ -6033,7 +6094,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}', parameters('storageAccountName'), variables('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccountName'), variables('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
               "properties": {
                 "copy": [
@@ -6101,8 +6162,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "2653192815476217627"
+                      "version": "0.40.2.10011",
+                      "templateHash": "7074748362797990420"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -6247,18 +6308,18 @@
                     "storageAccount::queueServices": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts/queueServices",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
                     },
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[parameters('storageAccountName')]"
                     },
                     "queue": {
                       "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
                       "properties": {
                         "metadata": "[parameters('metadata')]"
@@ -6271,7 +6332,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}/queues/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -6374,8 +6435,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17140438874562378925"
+              "version": "0.40.2.10011",
+              "templateHash": "6375163985707233003"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -6710,12 +6771,12 @@
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "tableServices": {
               "type": "Microsoft.Storage/storageAccounts/tableServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
               "properties": {
                 "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
@@ -6728,7 +6789,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/tableServices/{1}', parameters('storageAccountName'), variables('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName'), variables('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
               "properties": {
                 "copy": [
@@ -6793,8 +6854,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "11466809443516053137"
+                      "version": "0.40.2.10011",
+                      "templateHash": "5944147787326354061"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -6927,18 +6988,18 @@
                     "storageAccount::tableServices": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts/tableServices",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
                     },
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[parameters('storageAccountName')]"
                     },
                     "table": {
                       "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2025-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]"
                     },
                     "table_roleAssignments": {
@@ -6948,7 +7009,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/tableServices/{1}/tables/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -7037,7 +7098,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2025-01-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('storageAccount', '2025-06-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-06-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('storageAccount', '2025-06-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-06-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
           }
         },
         "template": {
@@ -7047,8 +7108,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "13614544361780789643"
+              "version": "0.40.2.10011",
+              "templateHash": "16028661694229002815"
             }
           },
           "definitions": {
@@ -7201,8 +7262,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "3528396711847214833"
+              "version": "0.40.2.10011",
+              "templateHash": "10883422529455341146"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -7355,8 +7416,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4325417308313318683"
+                      "version": "0.40.2.10011",
+                      "templateHash": "28895254110549746"
                     },
                     "name": "Storage Account Object Replication Policy",
                     "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -7572,8 +7633,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4325417308313318683"
+                      "version": "0.40.2.10011",
+                      "templateHash": "28895254110549746"
                     },
                     "name": "Storage Account Object Replication Policy",
                     "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -7817,14 +7878,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('storageAccount', '2025-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('storageAccount', '2025-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('storageAccount', '2025-01-01', 'full').location]"
+      "value": "[reference('storageAccount', '2025-06-01', 'full').location]"
     },
     "serviceEndpoints": {
       "type": "object",
@@ -7864,28 +7925,28 @@
       "metadata": {
         "description": "The primary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2025-01-01').keys[0].value]"
+      "value": "[listKeys('storageAccount', '2025-06-01').keys[0].value]"
     },
     "secondaryAccessKey": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary access key of the storage account."
       },
-      "value": "[listKeys('storageAccount', '2025-01-01').keys[1].value]"
+      "value": "[listKeys('storageAccount', '2025-06-01').keys[1].value]"
     },
     "primaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The primary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[0].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-06-01').keys[0].value, environment().suffixes.storage)]"
     },
     "secondaryConnectionString": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary connection string of the storage account."
       },
-      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-01-01').keys[1].value, environment().suffixes.storage)]"
+      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys('storageAccount', '2025-06-01').keys[1].value, environment().suffixes.storage)]"
     }
   }
 }

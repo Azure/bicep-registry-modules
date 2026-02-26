@@ -2414,8 +2414,6 @@ Upper limit of throughput units when AutoInflate is enabled, value should be wit
 - Required: No
 - Type: int
 - Default: `1`
-- MinValue: 0
-- MaxValue: 20
 
 ### Parameter: `minimumTlsVersion`
 

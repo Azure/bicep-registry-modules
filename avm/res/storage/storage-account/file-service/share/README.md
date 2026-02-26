@@ -47,6 +47,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`enabledProtocols`](#parameter-enabledprotocols) | string | The authentication protocol that is used for the file share. Can only be specified when creating a share. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`provisionedBandwidthMibps`](#parameter-provisionedbandwidthmibps) | int | The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340. |
+| [`provisionedIops`](#parameter-provisionediops) | int | The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`rootSquash`](#parameter-rootsquash) | string | Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares. |
 | [`shareQuota`](#parameter-sharequota) | int | The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB). |
@@ -111,6 +113,24 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `provisionedBandwidthMibps`
+
+The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 10340
+
+### Parameter: `provisionedIops`
+
+The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 102400
 
 ### Parameter: `roleAssignments`
 

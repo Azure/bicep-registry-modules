@@ -20,13 +20,16 @@ param serviceShort string = 'ccsmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A timestamp used to generate unique names for test resources.')
+param baseTime string = utcNow()
+
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -47,7 +50,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}${substring(uniqueString(baseTime), 0, 4)}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'

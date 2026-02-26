@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "16552693844533718428"
+      "version": "0.40.2.10011",
+      "templateHash": "10386404929253365859"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -696,7 +696,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -738,7 +738,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -779,7 +779,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1089,6 +1089,29 @@
         }
       }
     },
+    "customerManagedKeyAndVaultOnlyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -1207,7 +1230,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1291,7 +1314,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1319,7 +1342,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1495,7 +1518,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1570,7 +1593,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -2015,6 +2038,13 @@
       "metadata": {
         "description": "Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users."
       }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyAndVaultOnlyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well."
+      }
     }
   },
   "variables": {
@@ -2027,7 +2057,7 @@
     ],
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInControlPlaneRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -2039,9 +2069,19 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2024-11-01",
+      "subscriptionId": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -2062,6 +2102,15 @@
         }
       }
     },
+    "cMKKeyVault": {
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2024-11-01",
+      "subscriptionId": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[4]]",
+      "name": "[last(split(parameters('customerManagedKey').keyVaultResourceId, '/'))]"
+    },
     "databaseAccount": {
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2025-04-15",
@@ -2070,13 +2119,16 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB')]",
-      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled')), if(or(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), not(empty(parameters('cassandraKeyspaces')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant')))), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('cassandraKeyspaces')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'keyVaultKeyUri', if(not(empty(parameters('customerManagedKey'))), if(not(variables('isHSMManagedCMK')), format('{0}', reference('cMKKeyVault::cMKKey').keyUri), format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), null()), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant'))))), if(or(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), not(empty(parameters('cassandraKeyspaces')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('cassandraKeyspaces')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]",
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "databaseAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -2093,7 +2145,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -2134,7 +2186,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2186,8 +2238,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1549250134356326406"
+              "version": "0.40.2.10011",
+              "templateHash": "3972888645334640168"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2442,8 +2494,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "1005439058963058082"
+                      "version": "0.40.2.10011",
+                      "templateHash": "4781880351108045502"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2710,8 +2762,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "8600771348637416058"
+              "version": "0.40.2.10011",
+              "templateHash": "8514367433037227852"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -2887,8 +2939,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "17007224102611744259"
+                      "version": "0.40.2.10011",
+                      "templateHash": "11817543900771838380"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3086,8 +3138,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17007224102611744259"
+              "version": "0.40.2.10011",
+              "templateHash": "11817543900771838380"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3253,8 +3305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "17859939500809924517"
+              "version": "0.40.2.10011",
+              "templateHash": "10787709019875067397"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -3410,8 +3462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "552115240340341941"
+                      "version": "0.40.2.10011",
+                      "templateHash": "14764024820910071147"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3564,8 +3616,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "552115240340341941"
+              "version": "0.40.2.10011",
+              "templateHash": "14764024820910071147"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3693,8 +3745,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "7289795303297936310"
+              "version": "0.40.2.10011",
+              "templateHash": "13897098552792121791"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -3853,8 +3905,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "4317369978166598876"
+                      "version": "0.40.2.10011",
+                      "templateHash": "16151461445994734468"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -4018,8 +4070,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14708982296215631776"
+              "version": "0.40.2.10011",
+              "templateHash": "11959636451300474346"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -4178,8 +4230,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "15097132107382000570"
+                      "version": "0.40.2.10011",
+                      "templateHash": "10487122333182352122"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -4359,8 +4411,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "11768488776074268398"
+              "version": "0.40.2.10011",
+              "templateHash": "1787500858429182824"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -4498,8 +4550,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "63327155428300562"
+              "version": "0.40.2.10011",
+              "templateHash": "15257396763463366586"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -4742,8 +4794,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "785607874724829202"
+                      "version": "0.40.2.10011",
+                      "templateHash": "15998065591386988132"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -4919,8 +4971,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "14021794949328228224"
+                      "version": "0.40.2.10011",
+                      "templateHash": "6617803098467821091"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
