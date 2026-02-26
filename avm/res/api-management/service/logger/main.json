@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "12653943354268019102"
+      "templateHash": "992724811961463931"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -21,14 +21,15 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Resource Name."
+        "description": "Required. Logger name."
       }
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "maxLength": 256,
       "metadata": {
-        "description": "Optional. Logger description."
+        "description": "Optional. Description of the logger."
       }
     },
     "isBuffered": {
@@ -101,7 +102,7 @@
         }
       }
     },
-    "loggers": {
+    "logger": {
       "type": "Microsoft.ApiManagement/service/loggers",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -126,7 +127,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the named value was deployed into."
+        "description": "The resource group the logger was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

@@ -19,10 +19,13 @@ param policies policyType[]?
 @sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
 param method string
 
+@minLength(1)
+@maxLength(1000)
 @sys.description('Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
 param urlTemplate string
 
-@sys.description('Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.')
+@maxLength(1000)
+@sys.description('Optional. Description of the operation. May include HTML formatting tags.')
 param description string?
 
 @sys.description('Optional. An entity containing request details.')
@@ -56,15 +59,15 @@ resource operation 'Microsoft.ApiManagement/service/apis/operations@2024-05-01' 
   }
 }
 
-module policy 'policy/main.bicep' = [
+module operation_policies 'policy/main.bicep' = [
   for (policy, index) in policies ?? []: {
-    name: '${deployment().name}-Policy-${index}'
+    name: '${deployment().name}-Pol-${index}'
     params: {
       apiManagementServiceName: apiManagementServiceName
       apiName: apiName
       operationName: operation.name
-      name: policy.name
-      format: policy.format
+      name: policy.?name
+      format: policy.?format
       value: policy.value
     }
   }
@@ -86,11 +89,11 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @sys.description('The type of a policy.')
 type policyType = {
-  @sys.description('Required. The name of the policy.')
-  name: string
+  @sys.description('Optional. The name of the policy.')
+  name: string?
 
-  @sys.description('Required. Format of the policyContent.')
-  format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')
+  @sys.description('Optional. Format of the policyContent.')
+  format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?
 
   @sys.description('Required. Contents of the Policy as defined by the format.')
   value: string

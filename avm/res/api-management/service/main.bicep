@@ -72,21 +72,22 @@ param roleAssignments roleAssignmentType[]?
   'Basic'
   'Standard'
   'Premium'
-  'StandardV2'
   'BasicV2'
+  'StandardV2'
+  'PremiumV2'
 ])
 param sku string = 'Premium'
 
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 3
 
-@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and StandardV2 SKUs only.')
+@description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only.')
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
-@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and StandardV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
+@description('Conditional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`.')
 @allowed([
   'None'
   'External'
@@ -132,8 +133,8 @@ param backends backendType[]?
 @description('Optional. Caches.')
 param caches cacheType[]?
 
-@description('Optional. API Diagnostics.')
-param apiDiagnostics apiDiagnosticType[]?
+@description('Optional. API Management Service Diagnostics.')
+param serviceDiagnostics serviceDiagnosticType[]?
 
 @description('Optional. Identity providers.')
 param identityProviders identityProviderType[]?
@@ -155,6 +156,9 @@ param products productType[]?
 
 @description('Optional. Subscriptions.')
 param subscriptions subscriptionType[]?
+
+@description('Optional. Workspaces. Only supported with Premium and PremiumV2 SKUs.')
+param workspaces workspaceType[]?
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKUs when deployed in Virtual Network.')
 param publicIpAddressResourceId string?
@@ -327,13 +331,14 @@ module service_apis 'api/main.bicep' = [
     }
     dependsOn: [
       service_apiVersionSets
+      service_loggers
     ]
   }
 ]
 
 module service_apiVersionSets 'api-version-set/main.bicep' = [
   for (apiVersionSet, index) in (apiVersionSets ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-ApiVersionSet-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-ApiVerSet-${index}'
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
@@ -349,7 +354,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
 
 module service_authorizationServers 'authorization-server/main.bicep' = [
   for (authorizationServer, index) in (authorizationServers ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-AuthorizationServer-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-AuthSrv-${index}'
     params: {
       apiManagementServiceName: service.name
       name: authorizationServer.name
@@ -377,7 +382,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
 @batchSize(1)
 module service_backends 'backend/main.bicep' = [
   for (backend, index) in (backends ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Bcknd-${index}'
     params: {
       apiManagementServiceName: service.name
       url: backend.?url
@@ -413,35 +418,9 @@ module service_caches 'cache/main.bicep' = [
   }
 ]
 
-module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
-  for (apidiagnostic, index) in (apiDiagnostics ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
-    params: {
-      apiManagementServiceName: service.name
-      apiName: apidiagnostic.apiName
-      loggerName: apidiagnostic.?loggerName
-      name: apidiagnostic.?name
-      alwaysLog: apidiagnostic.?alwaysLog
-      backend: apidiagnostic.?backend
-      frontend: apidiagnostic.?frontend
-      httpCorrelationProtocol: apidiagnostic.?httpCorrelationProtocol
-      logClientIp: apidiagnostic.?logClientIp
-      metrics: apidiagnostic.?metrics
-      operationNameFormat: apidiagnostic.?operationNameFormat
-      samplingPercentage: apidiagnostic.?samplingPercentage
-      verbosity: apidiagnostic.?verbosity
-      enableTelemetry: enableReferencedModulesTelemetry
-    }
-    dependsOn: [
-      service_apis
-      service_loggers
-    ]
-  }
-]
-
 module service_identityProviders 'identity-provider/main.bicep' = [
   for (identityProvider, index) in (identityProviders ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-IdProvdr-${index}'
     params: {
       apiManagementServiceName: service.name
       name: identityProvider.name
@@ -463,7 +442,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
 
 module service_loggers 'logger/main.bicep' = [
   for (logger, index) in (loggers ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Logg-${index}'
     params: {
       name: logger.name
       apiManagementServiceName: service.name
@@ -482,7 +461,7 @@ module service_loggers 'logger/main.bicep' = [
 
 module service_namedValues 'named-value/main.bicep' = [
   for (namedValue, index) in (namedValues ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-NamedValue-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-NamVal-${index}'
     params: {
       apiManagementServiceName: service.name
       displayName: namedValue.displayName
@@ -498,7 +477,7 @@ module service_namedValues 'named-value/main.bicep' = [
 
 module service_portalsettings 'portalsetting/main.bicep' = [
   for (portalsetting, index) in (portalsettings ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-PortalSetting-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-PrtSet-${index}'
     params: {
       apiManagementServiceName: service.name
       name: portalsetting.name
@@ -510,8 +489,9 @@ module service_portalsettings 'portalsetting/main.bicep' = [
 
 module service_policies 'policy/main.bicep' = [
   for (policy, index) in (policies ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Policy-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Pol-${index}'
     params: {
+      name: policy.?name
       apiManagementServiceName: service.name
       value: policy.value
       format: policy.?format
@@ -522,7 +502,7 @@ module service_policies 'policy/main.bicep' = [
 
 module service_products 'product/main.bicep' = [
   for (product, index) in (products ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Prd-${index}'
     params: {
       displayName: product.displayName
       apiManagementServiceName: service.name
@@ -545,7 +525,7 @@ module service_products 'product/main.bicep' = [
 
 module service_subscriptions 'subscription/main.bicep' = [
   for (subscription, index) in (subscriptions ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Apim-Subscription-${index}'
+    name: '${uniqueString(deployment().name, location)}-Apim-Subscr-${index}'
     params: {
       apiManagementServiceName: service.name
       name: subscription.name
@@ -557,6 +537,57 @@ module service_subscriptions 'subscription/main.bicep' = [
       secondaryKey: subscription.?secondaryKey
       state: subscription.?state
       enableTelemetry: enableReferencedModulesTelemetry
+    }
+    dependsOn: [
+      service_apis
+      service_products
+    ]
+  }
+]
+
+module service_diagnostics 'diagnostic/main.bicep' = [
+  for (diagnostic, index) in (serviceDiagnostics ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Apim-SvcDiag-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      name: diagnostic.name
+      loggerResourceId: diagnostic.loggerResourceId
+      alwaysLog: diagnostic.?alwaysLog
+      backend: diagnostic.?backend
+      frontend: diagnostic.?frontend
+      httpCorrelationProtocol: diagnostic.?httpCorrelationProtocol
+      logClientIp: diagnostic.?logClientIp
+      metrics: diagnostic.?metrics
+      operationNameFormat: diagnostic.?operationNameFormat
+      samplingPercentage: diagnostic.?samplingPercentage
+      verbosity: diagnostic.?verbosity
+    }
+    dependsOn: [
+      service_loggers
+    ]
+  }
+]
+
+module service_workspaces 'workspace/main.bicep' = [
+  for (workspace, index) in (workspaces ?? []): if (contains(['Premium', 'PremiumV2'], sku)) {
+    name: '${uniqueString(deployment().name, location)}-Apim-Wksp-${index}'
+    params: {
+      apiManagementServiceName: service.name
+      name: workspace.name
+      displayName: workspace.displayName
+      description: workspace.?description
+      apis: workspace.?apis
+      apiVersionSets: workspace.?apiVersionSets
+      backends: workspace.?backends
+      products: workspace.?products
+      diagnostics: workspace.?diagnostics
+      loggers: workspace.?loggers
+      namedValues: workspace.?namedValues
+      policies: workspace.?policies
+      subscriptions: workspace.?subscriptions
+      gateway: workspace.gateway
+      diagnosticSettings: workspace.?diagnosticSettings
+      roleAssignments: workspace.?roleAssignments
     }
   }
 ]
@@ -715,14 +746,14 @@ type authorizationServerType = {
   @description('Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.')
   authorizationEndpoint: string
 
-  @description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.')
-  authorizationMethods: string[]?
+  @description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present.')
+  authorizationMethods: resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.authorizationMethods?
 
   @description('Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.')
-  bearerTokenSendingMethods: string[]?
+  bearerTokenSendingMethods: resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.bearerTokenSendingMethods?
 
   @description('Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.')
-  clientAuthenticationMethod: string[]?
+  clientAuthenticationMethod: resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.clientAuthenticationMethod?
 
   @description('Required. Client or app ID registered with this authorization server.')
   @secure()
@@ -742,7 +773,12 @@ type authorizationServerType = {
   serverDescription: string?
 
   @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
-  grantTypes: ('authorizationCode' | 'clientCredentials' | 'implicit' | 'resourceOwnerPassword')[]
+  grantTypes: (
+    | 'authorizationCode'
+    | 'authorizationCodeWithPkce'
+    | 'clientCredentials'
+    | 'implicit'
+    | 'resourceOwnerPassword')[]
 
   @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.')
   @secure()
@@ -754,7 +790,7 @@ type authorizationServerType = {
   @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
   supportState: bool?
 
-  @description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.')
+  @description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}.')
   tokenBodyParameters: resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.tokenBodyParameters?
 
   @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
@@ -766,6 +802,8 @@ import * as apiTypes from 'api/main.bicep'
 @export()
 @description('The type of an API Management service API.')
 type apiType = {
+  @minLength(1)
+  @maxLength(256)
   @description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
   name: string
 
@@ -778,21 +816,27 @@ type apiType = {
   @description('Optional. The operations of the api.')
   operations: apiTypes.operationType[]?
 
+  @minLength(1)
+  @maxLength(100)
   @description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
   apiRevision: string?
 
+  @maxLength(256)
   @description('Optional. Description of the API Revision.')
   apiRevisionDescription: string?
 
-  @description('Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.')
+  @description('''Optional. Type of API to create.
+* `http` creates a REST API
+* `soap` creates a SOAP pass-through API
+* `websocket` creates websocket API
+* `graphql` creates GraphQL API.''')
   apiType: ('graphql' | 'http' | 'soap' | 'websocket')?
 
+  @maxLength(100)
   @description('Optional. Indicates the Version identifier of the API if the API is versioned.')
   apiVersion: string?
 
-  @description('Optional. The name of the API version set to link.')
-  apiVersionSetName: string?
-
+  @maxLength(256)
   @description('Optional. Description of the API Version.')
   apiVersionDescription: string?
 
@@ -808,29 +852,38 @@ type apiType = {
 
   @description('Optional. Format of the Content in which the API is getting imported.')
   format: (
-    | 'wadl-xml'
-    | 'wadl-link-json'
-    | 'swagger-json'
-    | 'swagger-link-json'
-    | 'wsdl'
-    | 'wsdl-link'
+    | 'graphql-link'
+    | 'grpc'
+    | 'grpc-link'
+    | 'odata'
+    | 'odata-link'
     | 'openapi'
     | 'openapi+json'
+    | 'openapi+json-link'
     | 'openapi-link'
-    | 'openapi+json-link')?
+    | 'swagger-json'
+    | 'swagger-link-json'
+    | 'wadl-link-json'
+    | 'wadl-xml'
+    | 'wsdl'
+    | 'wsdl-link')?
 
   @description('Optional. Indicates if API revision is current API revision.')
   isCurrent: bool?
 
+  @maxLength(400)
   @description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
   path: string
 
-  @description('Optional. Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.')
-  protocols: string[]?
+  @description('Optional. Describes on which protocols the operations in this API can be invoked.')
+  protocols: ('http' | 'https' | 'ws' | 'wss')[]?
 
   @description('Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.')
   @maxLength(2000)
   serviceUrl: string?
+
+  @description('Optional. The name of the API version set to link.')
+  apiVersionSetName: string?
 
   @description('Optional. API identifier of the source API.')
   sourceApiId: string?
@@ -842,10 +895,13 @@ type apiType = {
   subscriptionRequired: bool?
 
   @description('Optional. Type of API.')
-  type: ('graphql' | 'http' | 'soap' | 'websocket')?
+  type: ('graphql' | 'grpc' | 'http' | 'odata' | 'soap' | 'websocket')?
 
   @description('Optional. Content value when Importing an API.')
   value: string?
+
+  @description('Optional. Criteria to limit import of WSDL to a subset of the document.')
+  wsdlSelector: resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-01'>.properties.wsdlSelector?
 }
 
 @export()
@@ -897,7 +953,16 @@ type additionalLocationType = {
     capacity: int
 
     @description('Required. Name of the Sku.')
-    name: ('Basic' | 'BasicV2' | 'Consumption' | 'Developer' | 'Isolated' | 'Premium' | 'Standard' | 'StandardV2')
+    name: (
+      | 'Basic'
+      | 'BasicV2'
+      | 'Consumption'
+      | 'Developer'
+      | 'Isolated'
+      | 'Premium'
+      | 'PremiumV2'
+      | 'Standard'
+      | 'StandardV2')
   }
 
   @description('Optional. Virtual network configuration for the location.')
@@ -934,6 +999,7 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
+@export()
 @description('The type of a backend configuration.')
 type backendType = {
   @description('Required. Backend Name.')
@@ -945,7 +1011,7 @@ type backendType = {
   @description('Optional. Backend Description.')
   description: string?
 
-  @description('Optional. Backend communication protocol, http or soap. Not supported for Backend Pools.')
+  @description('Optional. Backend communication protocol. http or soap. Not supported for Backend Pools.')
   protocol: string?
 
   @description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
@@ -960,13 +1026,15 @@ type backendType = {
   @description('Optional. Backend Title.')
   title: string?
 
-  @description('Optional. Backend TLS Properties. Not supported for Backend Pools.')
+  @description('Optional. Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true.')
   tls: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.tls?
 
+  @minLength(1)
+  @maxLength(2000)
   @description('Conditional. Runtime URL of the Backend. Required if type is Single and not supported if type is Pool.')
   url: string?
 
-  @description('Optional. Backend Circuit Breaker Properties. Not supported for Backend Pools.')
+  @description('Optional. Backend Circuit Breaker Configuration. Not supported for Backend Pools.')
   circuitBreaker: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.circuitBreaker?
 
   @description('Conditional. Backend pool configuration for load balancing. Required if type is Pool and not supported if type is Single.')
@@ -993,46 +1061,6 @@ type cacheType = {
 
   @description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
   useFromLocation: string
-}
-
-@export()
-@description('The type of an API diagnostic setting.')
-type apiDiagnosticType = {
-  @description('Required. The name of the parent API.')
-  apiName: string
-
-  @description('Required. The name of the logger.')
-  loggerName: string
-
-  @description('Optional. Type of diagnostic resource.')
-  name: ('azuremonitor' | 'applicationinsights' | 'local')?
-
-  @description('Optional. Specifies for what type of messages sampling settings should not apply.')
-  alwaysLog: string?
-
-  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-  backend: resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.backend?
-
-  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-  frontend: resourceInput<'Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01'>.properties.frontend?
-
-  @description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
-  httpCorrelationProtocol: ('Legacy' | 'None' | 'W3C')?
-
-  @description('Optional. Log the ClientIP.')
-  logClientIp: bool?
-
-  @description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
-  metrics: bool?
-
-  @description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
-  operationNameFormat: ('Name' | 'URI')?
-
-  @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
-  samplingPercentage: int?
-
-  @description('Optional. The verbosity level applied to traces emitted by trace policies.')
-  verbosity: ('error' | 'information' | 'verbose')?
 }
 
 @export()
@@ -1080,10 +1108,11 @@ type identityProviderType = {
 @export()
 @description('The type of a logger.')
 type loggerType = {
-  @description('Required. Resource Name.')
+  @description('Required. Logger name.')
   name: string
 
-  @description('Optional. Logger description.')
+  @maxLength(256)
+  @description('Optional. Description of the logger.')
   description: string?
 
   @description('Optional. Whether records are buffered in the logger before publishing.')
@@ -1103,6 +1132,8 @@ type loggerType = {
 @export()
 @description('The type of a named-value.')
 type namedValueType = {
+  @minLength(1)
+  @maxLength(256)
   @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
   displayName: string
 
@@ -1112,15 +1143,15 @@ type namedValueType = {
   @description('Required. The name of the named value.')
   name: string
 
-  @description('Optional. Tags that when provided can be used to filter the NamedValue list. - string.')
+  @description('Optional. Tags that when provided can be used to filter the NamedValue list.')
   tags: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.tags?
 
-  @description('Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false.')
-  #disable-next-line secure-secrets-in-params // Not a secret
+  @description('Optional. Determines whether the value is a secret and should be encrypted or not.')
   secret: bool?
 
-  @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
   @secure()
+  @maxLength(4096)
+  @description('Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
   value: string?
 }
 
@@ -1138,32 +1169,131 @@ type policyType = {
 }
 
 @export()
+@description('The type of a service diagnostic.')
+type serviceDiagnosticType = {
+  @description('Required. Diagnostic Name.')
+  name: string
+
+  @description('Required. Logger resource ID.')
+  loggerResourceId: string
+
+  @description('Optional. Specifies for what type of messages sampling settings should not apply.')
+  alwaysLog: string?
+
+  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
+  backend: resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.backend?
+
+  @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
+  frontend: resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.frontend?
+
+  @description('Conditional. Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.')
+  httpCorrelationProtocol: ('Legacy' | 'None' | 'W3C')?
+
+  @description('Optional. Log the ClientIP.')
+  logClientIp: bool?
+
+  @description('Conditional. Emit custom metrics via emit-metric policy. Required if using Application Insights.')
+  metrics: bool?
+
+  @description('Optional. The format of the Operation Name for Application Insights telemetries.')
+  operationNameFormat: ('Name' | 'Url')?
+
+  @description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
+  samplingPercentage: int?
+
+  @description('Optional. The verbosity level applied to traces emitted by trace policies.')
+  verbosity: ('error' | 'information' | 'verbose')?
+}
+
+@export()
 @description('The type of a subscription.')
 type subscriptionType = {
+  @description('Required. Subscription name.')
+  name: string
+
+  @minLength(1)
+  @maxLength(100)
+  @description('Required. API Management Service Subscriptions name.')
+  displayName: string
+
   @description('Optional. Determines whether tracing can be enabled.')
   allowTracing: bool?
-
-  @description('Required. API Management Service Subscriptions name. Must be 1 to 100 characters long.')
-  @maxLength(100)
-  displayName: string
 
   @description('Optional. User (user ID path) for whom subscription is being created in form /users/{userId}.')
   ownerId: string?
 
+  @minLength(1)
+  @maxLength(256)
   @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
   primaryKey: string?
 
-  @description('Optional. Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
+  @description('Optional. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
   scope: string?
 
+  @minLength(1)
+  @maxLength(256)
   @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
   secondaryKey: string?
 
-  @description('Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are "*" active "?" the subscription is active, "*" suspended "?" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled.')
-  state: string?
+  @description('''Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are:
+* active - the subscription is active
+* suspended - the subscription is blocked, and the subscriber cannot call any APIs of the product
+* submitted - the subscription request has been made by the developer, but has not yet been approved or rejected
+* rejected - the subscription request has been denied by an administrator
+* cancelled - the subscription has been cancelled by the developer or administrator
+* expired - the subscription reached its expiration date and was deactivated.''')
+  state: ('active' | 'cancelled' | 'expired' | 'rejected' | 'submitted' | 'suspended')?
+}
 
-  @description('Required. Subscription name.')
+import * as workspaceTypes from 'workspace/main.bicep'
+
+@export()
+@description('The type for API Management Workspaces.')
+type workspaceType = {
+  @description('Required. Workspace Name.')
   name: string
+
+  @description('Required. Name of the workspace.')
+  displayName: string
+
+  @description('Optional. Description of the workspace.')
+  description: string?
+
+  @description('Optional. APIs to deploy in this workspace.')
+  apis: workspaceTypes.apiType[]?
+
+  @description('Optional. API Version Sets to deploy in this workspace.')
+  apiVersionSets: workspaceTypes.apiVersionSetType[]?
+
+  @description('Optional. Backends to deploy in this workspace.')
+  backends: workspaceTypes.backendType[]?
+
+  @description('Optional. Diagnostics to deploy in this workspace.')
+  diagnostics: workspaceTypes.diagnosticType[]?
+
+  @description('Optional. Loggers to deploy in this workspace.')
+  loggers: workspaceTypes.loggerType[]?
+
+  @description('Optional. Named values to deploy in this workspace.')
+  namedValues: workspaceTypes.namedValueType[]?
+
+  @description('Optional. Policies to deploy in this workspace.')
+  policies: workspaceTypes.policyType[]?
+
+  @description('Optional. Products to deploy in this workspace.')
+  products: workspaceTypes.productType[]?
+
+  @description('Optional. Subscriptions to deploy in this workspace.')
+  subscriptions: workspaceTypes.subscriptionType[]?
+
+  @description('Required. Gateway configuration for this workspace.')
+  gateway: workspaceTypes.gatewayConfigType
+
+  @description('Optional. Diagnostic settings for the workspace.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Role assignments for the workspace.')
+  roleAssignments: roleAssignmentType[]?
 }
 
 import { productPolicyType } from 'product/main.bicep'
@@ -1171,13 +1301,20 @@ import { productPolicyType } from 'product/main.bicep'
 @export()
 @description('The type of a product.')
 type productType = {
-  @description('Required. API Management Service Products name. Must be 1 to 300 characters long.')
+  @minLength(1)
+  @maxLength(256)
+  @description('Required. Product Name.')
+  name: string
+
+  @minLength(1)
   @maxLength(300)
+  @description('Required. Product display name.')
   displayName: string
 
-  @description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
+  @description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product\'s APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product\'s APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
   approvalRequired: bool?
 
+  @maxLength(1000)
   @description('Optional. Product description. May include HTML formatting tags.')
   description: string?
 
@@ -1190,11 +1327,8 @@ type productType = {
   @description('Optional. Array of Policies to apply to the Service Product.')
   policies: productPolicyType[]?
 
-  @description('Required. Product Name.')
-  name: string
-
-  @description('Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published.')
-  state: string?
+  @description('Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators.')
+  state: ('notPublished' | 'published')?
 
   @description('Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it\'s value is assumed to be true.')
   subscriptionRequired: bool?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "13434987165594337456"
+      "templateHash": "11754524888577846069"
     },
     "name": "Public IP Prefixes",
     "description": "This module deploys a Public IP Prefix."
@@ -151,6 +151,17 @@
       "minLength": 1,
       "metadata": {
         "description": "Required. The name of the Public IP Prefix."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "StandardV2"
+      ],
+      "metadata": {
+        "description": "Optional. Name of the Public IP Prefix SKU."
       }
     },
     "tier": {
@@ -309,7 +320,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "Standard",
+        "name": "[parameters('skuName')]",
         "tier": "[parameters('tier')]"
       },
       "zones": "[map(parameters('availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))]",

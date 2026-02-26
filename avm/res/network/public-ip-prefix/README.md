@@ -38,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [IPv6 Public IP Prefix](#example-2-ipv6-public-ip-prefix)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [StandardV2 SKU](#example-4-standardv2-sku)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -379,7 +380,77 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _StandardV2 SKU_
+
+This instance deploys the module using the StandardV2 SKU.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v2sku]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module publicIpPrefix 'br/public:avm/res/network/public-ip-prefix:<version>' = {
+  params: {
+    // Required parameters
+    name: 'npipv2001'
+    prefixLength: 28
+    // Non-required parameters
+    skuName: 'StandardV2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "npipv2001"
+    },
+    "prefixLength": {
+      "value": 28
+    },
+    // Non-required parameters
+    "skuName": {
+      "value": "StandardV2"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/public-ip-prefix:<version>'
+
+// Required parameters
+param name = 'npipv2001'
+param prefixLength = 28
+// Non-required parameters
+param skuName = 'StandardV2'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -487,6 +558,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuName`](#parameter-skuname) | string | Name of the Public IP Prefix SKU. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tier`](#parameter-tier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
 
@@ -740,6 +812,21 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `skuName`
+
+Name of the Public IP Prefix SKU.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+    'StandardV2'
   ]
   ```
 

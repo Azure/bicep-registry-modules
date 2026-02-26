@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Updates Resource Provider version to `2025-06-01`
+- Adds `syncOnPremSamAccountName` property
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

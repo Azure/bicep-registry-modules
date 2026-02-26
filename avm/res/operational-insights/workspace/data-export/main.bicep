@@ -27,11 +27,11 @@ param tableNames string[]
 //   Deployments   //
 // =============== //
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' existing = {
   name: workspaceName
 }
 
-resource dataExport 'Microsoft.OperationalInsights/workspaces/dataExports@2025-02-01' = {
+resource dataExport 'Microsoft.OperationalInsights/workspaces/dataExports@2025-07-01' = {
   parent: workspace
   name: name
   properties: {

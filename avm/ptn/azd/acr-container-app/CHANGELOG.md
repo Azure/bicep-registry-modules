@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/azd/acr-container-app/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Update module version of container app
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

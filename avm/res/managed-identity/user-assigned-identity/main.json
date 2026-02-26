@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12911678071512934577"
+      "version": "0.35.1.17967",
+      "templateHash": "17469067232115827796"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -218,6 +218,17 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "isolationScope": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "None",
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
+      }
     }
   },
   "variables": {
@@ -264,7 +275,8 @@
       "apiVersion": "2024-11-30",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "tags": "[parameters('tags')]",
+      "properties": "[if(not(equals(parameters('isolationScope'), null())), createObject('isolationScope', parameters('isolationScope')), createObject())]"
     },
     "userAssignedIdentity_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -310,7 +322,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -340,8 +352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1387931959101373036"
+              "version": "0.35.1.17967",
+              "templateHash": "7574045237116541062"
             },
             "name": "User Assigned Identity Federated Identity Credential",
             "description": "This module deploys a User Assigned Identity Federated Identity Credential."

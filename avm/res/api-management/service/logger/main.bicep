@@ -4,11 +4,12 @@ metadata description = 'This module deploys an API Management Service Logger.'
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@sys.description('Required. Resource Name.')
+@sys.description('Required. Logger name.')
 param name string
 
-@sys.description('Optional. Logger description.')
-param description string = ''
+@sys.description('Optional. Description of the logger.')
+@maxLength(256)
+param description string?
 
 @sys.description('Optional. Whether records are buffered in the logger before publishing.')
 param isBuffered bool = true
@@ -54,7 +55,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
+resource logger 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
   name: name
   parent: service
   properties: {
@@ -67,10 +68,10 @@ resource loggers 'Microsoft.ApiManagement/service/loggers@2024-05-01' = {
 }
 
 @sys.description('The resource ID of the logger.')
-output resourceId string = loggers.id
+output resourceId string = logger.id
 
 @sys.description('The name of the logger.')
-output name string = loggers.name
+output name string = logger.name
 
-@sys.description('The resource group the named value was deployed into.')
+@sys.description('The resource group the logger was deployed into.')
 output resourceGroupName string = resourceGroup().name

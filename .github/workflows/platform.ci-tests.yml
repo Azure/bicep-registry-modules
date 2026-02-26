@@ -2,6 +2,24 @@ name: ".Platform - Run CI tests"
 
 on:
   workflow_dispatch:
+<<<<<<< HEAD
+=======
+    inputs:
+      testFileRegex:
+        type: string
+        description: "The regex of the test file(s) to run"
+        required: false
+        default: ".*"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/platform.ci-tests.yml"
+      - "utilities/**"
+      - "!*/**/README.md"
+  schedule:
+    - cron: "0 0 * * Sun" # Every Sunday
+>>>>>>> main
 
 env:
   workflowPath: ".github/workflows/platform.ci-tests.yml"
@@ -9,7 +27,33 @@ env:
 jobs:
   test_classic:
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     name: "Run CI tests (classic)"
+=======
+    name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+
+  ###############
+  #   Removal   #
+  ###############
+  job_run_tests:
+    runs-on: ubuntu-latest
+    name: "Run CI tests"
+    needs:
+      - job_initialize_pipeline
+>>>>>>> main
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/public-ip-prefix/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Removed hardcoded `Standard` SKU value and added `skuName` parameter to support configurable SKU selection.
+- Added support for `StandardV2` SKU.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.2
 
 ### Changes

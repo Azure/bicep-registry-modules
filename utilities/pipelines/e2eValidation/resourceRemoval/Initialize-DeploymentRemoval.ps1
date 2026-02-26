@@ -110,6 +110,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.KeyVault/managedHSMs/keys', # Should be deleted before e.g. a SQL server that is associated with it to avoid issues with access token expiration
             'Microsoft.Sql/servers/databases', # Should be deleted before its parent SQL server to save time during removal
             'Microsoft.Sql/servers',
+            'Microsoft.Cdn/profiles',
             'Microsoft.Resources/resourceGroups'
         )
 
