@@ -20,7 +20,6 @@ This module deploys an Azure Container Registry (ACR) Task that can be used to a
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | The location of the resource. |
 | [`name`](#parameter-name) | string | The name of the task. |
 
 **Conditional parameters**
@@ -37,6 +36,7 @@ This module deploys an Azure Container Registry (ACR) Task that can be used to a
 | [`agentPoolName`](#parameter-agentpoolname) | string | The dedicated agent pool for the task. |
 | [`credentials`](#parameter-credentials) | object | The properties that describe the credentials that will be used when the task is invoked. |
 | [`isSystemTask`](#parameter-issystemtask) | bool | The value of this property indicates whether the task resource is system task or not. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`logTemplate`](#parameter-logtemplate) | string | The template that describes the repository and tag information for run log artifact. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`platform`](#parameter-platform) | object | The platform properties against which the task has to run. |
@@ -45,13 +45,6 @@ This module deploys an Azure Container Registry (ACR) Task that can be used to a
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeout`](#parameter-timeout) | int | Run timeout in seconds. |
 | [`trigger`](#parameter-trigger) | object | The properties that describe all triggers for the task. |
-
-### Parameter: `location`
-
-The location of the resource.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
@@ -148,6 +141,14 @@ The value of this property indicates whether the task resource is system task or
 
 - Required: No
 - Type: bool
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `logTemplate`
 

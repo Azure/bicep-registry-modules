@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "9165304169019286459"
+      "templateHash": "14300970713020299880"
     },
     "name": "Container Registries Tasks",
     "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
@@ -639,8 +639,9 @@
     },
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. The location of the resource."
+        "description": "Optional. Location for all resources."
       }
     },
     "tags": {

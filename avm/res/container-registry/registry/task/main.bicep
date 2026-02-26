@@ -9,8 +9,8 @@ param registryName string
 @maxLength(50)
 param name string
 
-@description('Required. The location of the resource.')
-param location string
+@description('Optional. Location for all resources.')
+param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
 param tags object?
