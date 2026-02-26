@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fixed `identity` variable to check `managedIdentities.?userAssignedResourceIds` instead of `formattedRoleAssignments` when determining identity type. This bug was introduced in v0.17.0 and could cause incorrect identity type assignment when role assignments and user-assigned identities were not both present. (#6538)
+- Fixed `identity` variable to check `formattedUserAssignedIdentities` instead of `formattedRoleAssignments` when determining identity type. This bug was introduced in v0.17.0 and led to unintended logical behavior. (#6538)
 
 ### Breaking Changes
 
