@@ -41,6 +41,7 @@ jobs:
               SkipFileAndFolderSetup = $true
               SkipVersionCheck       = $true
               Recurse                = $true
+              SkipBuild              = $true
             }
 
             $StartTime = Get-Date
@@ -85,6 +86,7 @@ jobs:
               SkipFileAndFolderSetup = $true
               SkipVersionCheck       = $true
               Recurse                = $true
+              SkipBuild              = $true
             }
 
             $StartTime = Get-Date
@@ -122,6 +124,7 @@ jobs:
               SkipVersionCheck       = $true
               Recurse                = $true
               Async                  = $true
+              SkipBuild              = $true
             }
 
             $StartTime = Get-Date
