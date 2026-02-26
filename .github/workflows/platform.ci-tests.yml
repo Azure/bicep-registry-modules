@@ -23,6 +23,7 @@ jobs:
           inlineScript: |
             git branch --show-current
             git rev-parse --short HEAD
+          azPSVersion: "latest"
 
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
@@ -66,6 +67,8 @@ jobs:
           inlineScript: |
             git branch --show-current
             git rev-parse --short HEAD
+          azPSVersion: "latest"
+
   #     - name: Set environment
   #       uses: ./.github/actions/templates/avm-setEnvironment
 
