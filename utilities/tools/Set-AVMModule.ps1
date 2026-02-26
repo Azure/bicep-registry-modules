@@ -321,16 +321,16 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             }
 
         } else {
+            . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
+            $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
+            if ($relevantTemplatePaths.Count -le 50) {
+                $compilationChunks = , $compilationChunks
+            } else {
+                $compilationChunks = $compilationChunks
+            }
+
             if ($PSCmdlet.ShouldProcess(('Building [{0}] test templates in path [{1}]' -f $testFilePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
                 try {
-                    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
-                    $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
-                    if ($relevantTemplatePaths.Count -le 50) {
-                        $compilationChunks = , $compilationChunks
-                    } else {
-                        $compilationChunks = $compilationChunks
-                    }
-
                     $job = $compilationChunks | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
                         . $using:buildRpcFilePath
                         return (Build-ViaRPC -BicepFilePath $_ -PassThru)
