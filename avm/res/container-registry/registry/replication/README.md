@@ -2,6 +2,14 @@
 
 This module deploys an Azure Container Registry (ACR) Replication.
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/container-registry/registry/replication:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

@@ -2,6 +2,14 @@
 
 This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/container-registry/registry/task:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
