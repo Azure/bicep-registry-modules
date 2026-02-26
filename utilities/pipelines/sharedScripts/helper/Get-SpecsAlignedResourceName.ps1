@@ -74,7 +74,13 @@ function Get-SpecsAlignedResourceName {
     $cacheExists = Test-Path $cacheFilePath
 
     if (-not $cacheExists) {
-        $null = New-Item $cacheFilePath -ItemType 'File'
+        try {
+            $null = New-Item $cacheFilePath -ItemType 'File' -ErrorAction 'Stop'
+        } catch {
+            if ($_.Exception.Message -notlike '*already exists*') {
+                throw $_
+            }
+        }
     }
 
     if ($ForceCacheRefresh) {
