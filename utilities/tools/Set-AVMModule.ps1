@@ -299,7 +299,6 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                 foreach ($filePath in $compiledTestFilePaths.Keys) {
                     $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
                     if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($expectedTestFolderPath))) {
-                        # TODO: Not filtering correcty
                         $relevantTestFilesContent[$filePath] = $compiledTestFilePaths[$filePath]
                     }
                 }
