@@ -47,8 +47,9 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using restricted network access with empty IP ranges](#example-4-using-restricted-network-access-with-empty-ip-ranges)
+- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -693,7 +694,92 @@ param webhooks = [
 </details>
 <p>
 
-### Example 4: _Using `scopeMaps` in parameter set_
+### Example 4: _Using restricted network access with empty IP ranges_
+
+This instance validates restricted network access with explicit empty IP ACL rules.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/restricted-empty-ip]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrempty001'
+    // Non-required parameters
+    acrSku: 'Premium'
+    location: '<location>'
+    networkRuleSetDefaultAction: 'Deny'
+    networkRuleSetIpRules: []
+    publicNetworkAccess: 'Enabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrempty001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Premium"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkRuleSetDefaultAction": {
+      "value": "Deny"
+    },
+    "networkRuleSetIpRules": {
+      "value": []
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrempty001'
+// Non-required parameters
+param acrSku = 'Premium'
+param location = '<location>'
+param networkRuleSetDefaultAction = 'Deny'
+param networkRuleSetIpRules = []
+param publicNetworkAccess = 'Enabled'
+```
+
+</details>
+<p>
+
+### Example 5: _Using `scopeMaps` in parameter set_
 
 This instance deploys the module with the scopeMaps feature.
 
@@ -792,7 +878,7 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1037,7 +1123,7 @@ param trustPolicyStatus = 'enabled'
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkRuleBypassOptions`](#parameter-networkrulebypassoptions) | string | Whether to allow trusted Azure services to access a network restricted registry. |
 | [`networkRuleSetDefaultAction`](#parameter-networkrulesetdefaultaction) | string | The default action of allow or deny when no other rules match. |
-| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
+| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
 | [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
@@ -1612,7 +1698,7 @@ The default action of allow or deny when no other rules match.
 
 ### Parameter: `networkRuleSetIpRules`
 
-The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
+The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs.
 
 - Required: No
 - Type: array

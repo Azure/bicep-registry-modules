@@ -113,7 +113,7 @@ param networkRuleBypassOptions string = 'AzureServices'
 @description('Optional. The default action of allow or deny when no other rules match.')
 param networkRuleSetDefaultAction string = 'Deny'
 
-@description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'.')
+@description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'. Set to an empty array to explicitly configure no allowed IPs.')
 param networkRuleSetIpRules array?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -243,6 +243,14 @@ var formattedRoleAssignments = [
   })
 ]
 
+var networkRuleSetIpRulesOrEmpty = networkRuleSetIpRules ?? []
+
+var publicNetworkAccessMode = !empty(publicNetworkAccess)
+  ? any(publicNetworkAccess)
+  : (!empty(privateEndpoints) && empty(networkRuleSetIpRulesOrEmpty) ? 'Disabled' : null)
+
+var shouldConfigureNetworkRuleSet = networkRuleSetIpRules != null || (publicNetworkAccessMode == 'Enabled' && networkRuleSetDefaultAction == 'Deny')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -343,14 +351,12 @@ resource registry 'Microsoft.ContainerRegistry/registries@2025-06-01-preview' = 
       }
     }
     dataEndpointEnabled: dataEndpointEnabled
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
-      : (!empty(privateEndpoints) && empty(networkRuleSetIpRules) ? 'Disabled' : null)
+    publicNetworkAccess: publicNetworkAccessMode
     networkRuleBypassOptions: networkRuleBypassOptions
-    networkRuleSet: !empty(networkRuleSetIpRules)
+    networkRuleSet: shouldConfigureNetworkRuleSet
       ? {
           defaultAction: networkRuleSetDefaultAction
-          ipRules: networkRuleSetIpRules
+          ipRules: networkRuleSetIpRulesOrEmpty
         }
       : null
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null

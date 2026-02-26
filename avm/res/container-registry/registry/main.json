@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14778343237161992365"
+      "templateHash": "80765154885738417"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -1362,7 +1362,7 @@
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'."
+        "description": "Optional. The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs."
       }
     },
     "privateEndpoints": {
@@ -1529,7 +1529,10 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "networkRuleSetIpRulesOrEmpty": "[coalesce(parameters('networkRuleSetIpRules'), createArray())]",
+    "publicNetworkAccessMode": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(variables('networkRuleSetIpRulesOrEmpty'))), 'Disabled', null()))]",
+    "shouldConfigureNetworkRuleSet": "[or(not(equals(parameters('networkRuleSetIpRules'), null())), and(equals(variables('publicNetworkAccessMode'), 'Enabled'), equals(parameters('networkRuleSetDefaultAction'), 'Deny')))]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -1609,9 +1612,9 @@
           }
         },
         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSetIpRules'))), 'Disabled', null()))]",
+        "publicNetworkAccess": "[variables('publicNetworkAccessMode')]",
         "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
-        "networkRuleSet": "[if(not(empty(parameters('networkRuleSetIpRules'))), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', parameters('networkRuleSetIpRules')), null())]",
+        "networkRuleSet": "[if(variables('shouldConfigureNetworkRuleSet'), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', variables('networkRuleSetIpRulesOrEmpty')), null())]",
         "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
       },
       "dependsOn": [
@@ -1731,7 +1734,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "3682192101428312634"
+              "templateHash": "11801951783121357607"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -1854,7 +1857,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "6203055754640559519"
+              "templateHash": "2091377699273142845"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -1998,7 +2001,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "1109033040938418439"
+              "templateHash": "8510191128461945537"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
@@ -2182,7 +2185,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "8673443188586925506"
+              "templateHash": "16033434815765796598"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -2555,7 +2558,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16315456009528098654"
+              "templateHash": "5732884074105079918"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
