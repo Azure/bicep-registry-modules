@@ -60,6 +60,7 @@ module testDeployment '../../../main.bicep' = [
       kind: 'app'
       skuName: 'P1v4'
       skuCapacity: 1
+      zoneRedundant: false
       isCustomMode: true
       rdpEnabled: true
       virtualNetworkSubnetId: nestedDependencies.outputs.subnetResourceId

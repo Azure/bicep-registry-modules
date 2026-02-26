@@ -420,6 +420,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    zoneRedundant: false
   }
 }
 ```
@@ -528,6 +529,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "virtualNetworkSubnetId": {
       "value": "<virtualNetworkSubnetId>"
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -608,6 +612,7 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkSubnetId = '<virtualNetworkSubnetId>'
+param zoneRedundant = false
 ```
 
 </details>
