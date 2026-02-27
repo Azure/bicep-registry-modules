@@ -735,6 +735,7 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
 resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' = if (!empty(autoShutdownConfig)) {
   name: 'shutdown-computevm-${vm.name}'
   location: location
+  #disable-next-line BCP187
   tags: autoShutdownConfig.?tags ?? tags
   properties: {
     status: autoShutdownConfig.?status ?? 'Disabled'
