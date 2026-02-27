@@ -644,6 +644,7 @@ module storageAccount_localUsers 'local-user/main.bicep' = [
       hasSharedKey: localUser.?hasSharedKey
       homeDirectory: localUser.?homeDirectory
       sshAuthorizedKeys: localUser.?sshAuthorizedKeys
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
