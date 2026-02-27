@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "15421654306547502566"
+      "templateHash": "17623078570495419003"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -3013,7 +3013,7 @@
       },
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-      "apiVersion": "2023-03-11",
+      "apiVersion": "2024-03-11",
       "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].name]",
       "properties": {

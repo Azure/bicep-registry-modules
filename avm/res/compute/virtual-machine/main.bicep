@@ -862,7 +862,8 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
-resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
+#disable-next-line BCP081
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
     scope: vm
