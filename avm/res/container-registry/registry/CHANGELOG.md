@@ -11,10 +11,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added new `task` child module (`registries/tasks`) to support ACR Tasks for automating container image builds and workflows. Supports Docker build, encoded task, and file task step types, along with timer, source, and base image triggers. ([#3156](https://github.com/Azure/bicep-registry-modules/issues/3156))
 - Added new `token` and `webhook` child modules (`registries/tokens` and `registries/webhooks`) and wired them into the parent registry module deployment flow.
 - Added independent child-module packaging metadata (`version.json`, `CHANGELOG.md`) for `cache-rule`, `credential-set`, `replication`, `scope-map`, `task`, `token`, and `webhook`.
-- Added AVM telemetry support to child modules and passed `enableTelemetry` from the parent module via `enableReferencedModulesTelemetry` to align cross-module telemetry behavior.
-- Added e2e test for restricted network access with empty IP ranges.
-- Added e2e test coverage for cache rules with anonymous public upstream registries.
-- Added e2e test coverage for ACR Tasks in the `max` test scenario.
 
 ### Breaking Changes
 

@@ -246,11 +246,9 @@ var formattedRoleAssignments = [
   })
 ]
 
-var networkRuleSetIpRulesOrEmpty = networkRuleSetIpRules ?? []
-
 var publicNetworkAccessMode = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
-  : (!empty(privateEndpoints) && empty(networkRuleSetIpRulesOrEmpty) ? 'Disabled' : null)
+  : (!empty(privateEndpoints) && empty(networkRuleSetIpRules) ? 'Disabled' : null)
 
 var shouldConfigureNetworkRuleSet = networkRuleSetIpRules != null || (publicNetworkAccessMode == 'Enabled' && networkRuleSetDefaultAction == 'Deny')
 
@@ -359,7 +357,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2025-06-01-preview' = 
     networkRuleSet: shouldConfigureNetworkRuleSet
       ? {
           defaultAction: networkRuleSetDefaultAction
-          ipRules: networkRuleSetIpRulesOrEmpty
+          ipRules: networkRuleSetIpRules ?? []
         }
       : null
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
@@ -431,7 +429,7 @@ module registry_tokens 'token/main.bicep' = [
     params: {
       name: token.name
       registryName: registry.name
-      scopeMapId: token.scopeMapId
+      scopeMapResourceId: token.scopeMapResourceId
       status: token.?status
       credentials: token.?credentials
       enableTelemetry: enableReferencedModulesTelemetry
@@ -697,7 +695,6 @@ type cacheRuleType = {
 
 import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 import { authCredentialsType } from 'credential-set/main.bicep'
-import { credentialType } from 'token/main.bicep'
 @export()
 @description('The type for a credential set.')
 type credentialSetType = {
@@ -741,13 +738,13 @@ type tokenType = {
   name: string
 
   @description('Required. The resource ID of the scope map to which the token will be associated with.')
-  scopeMapId: string
+  scopeMapResourceId: string
 
   @description('Optional. The status of the token.')
   status: ('disabled' | 'enabled')?
 
   @description('Optional. The credentials of the token, such as certificates and passwords.')
-  credentials: credentialType?
+  credentials: resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties.credentials?
 }
 
 @export()
@@ -781,12 +778,8 @@ type webhookType = {
 }
 
 import {
-  platformType
   taskStepType
   triggerType
-  agentPropertiesType
-  credentialsType
-  managedIdentitiesType as taskManagedIdentitiesType
 } from 'task/main.bicep'
 @export()
 @description('The type for a task.')
@@ -803,7 +796,7 @@ type taskType = {
   tags: object?
 
   @description('Optional. The platform properties against which the task has to run.')
-  platform: platformType?
+  platform: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
 
   @description('Optional. The task step properties. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.')
   step: taskStepType?
@@ -820,13 +813,13 @@ type taskType = {
   timeout: int?
 
   @description('Optional. The machine configuration of the run agent.')
-  agentConfiguration: agentPropertiesType?
+  agentConfiguration: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.agentConfiguration?
 
   @description('Optional. The dedicated agent pool for the task.')
   agentPoolName: string?
 
   @description('Optional. The properties that describe the credentials that will be used when the task is invoked.')
-  credentials: credentialsType?
+  credentials: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.credentials?
 
   @description('Optional. The value of this property indicates whether the task resource is system task or not.')
   isSystemTask: bool?
@@ -835,5 +828,5 @@ type taskType = {
   logTemplate: string?
 
   @description('Optional. The managed identity definition for this resource.')
-  managedIdentities: taskManagedIdentitiesType?
+  managedIdentities: managedIdentityAllType?
 }

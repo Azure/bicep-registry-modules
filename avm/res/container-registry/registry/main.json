@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14556170881790827430"
+      "templateHash": "1713663571323272850"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -238,7 +238,7 @@
             "description": "Required. The name of the token."
           }
         },
-        "scopeMapId": {
+        "scopeMapResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The resource ID of the scope map to which the token will be associated with."
@@ -256,11 +256,14 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/credentialType",
-          "nullable": true,
+          "type": "object",
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/credentials"
+            },
             "description": "Optional. The credentials of the token, such as certificates and passwords."
-          }
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -366,11 +369,14 @@
           }
         },
         "platform": {
-          "$ref": "#/definitions/platformType",
-          "nullable": true,
+          "type": "object",
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
+            },
             "description": "Optional. The platform properties against which the task has to run."
-          }
+          },
+          "nullable": true
         },
         "step": {
           "$ref": "#/definitions/taskStepType",
@@ -407,11 +413,14 @@
           }
         },
         "agentConfiguration": {
-          "$ref": "#/definitions/agentPropertiesType",
-          "nullable": true,
+          "type": "object",
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
+            },
             "description": "Optional. The machine configuration of the run agent."
-          }
+          },
+          "nullable": true
         },
         "agentPoolName": {
           "type": "string",
@@ -421,11 +430,14 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/credentialsType",
-          "nullable": true,
+          "type": "object",
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/credentials"
+            },
             "description": "Optional. The properties that describe the credentials that will be used when the task is invoked."
-          }
+          },
+          "nullable": true
         },
         "isSystemTask": {
           "type": "bool",
@@ -442,7 +454,7 @@
           }
         },
         "managedIdentities": {
-          "$ref": "#/definitions/taskManagedIdentitiesType",
+          "$ref": "#/definitions/managedIdentityAllType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The managed identity definition for this resource."
@@ -918,28 +930,6 @@
         }
       }
     },
-    "_2.sourceRegistryCredentialsType": {
-      "type": "object",
-      "properties": {
-        "loginMode": {
-          "type": "string",
-          "allowedValues": [
-            "Default",
-            "None"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The authentication mode which determines the source registry login scope."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for source registry credentials.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
     "_2.sourceTriggerType": {
       "type": "object",
       "properties": {
@@ -1018,101 +1008,6 @@
         }
       }
     },
-    "_3.tokenCertificateType": {
-      "type": "object",
-      "properties": {
-        "encodedPemCertificate": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token."
-          }
-        },
-        "expiry": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The expiry datetime of the certificate."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "certificate1",
-            "certificate2"
-          ],
-          "metadata": {
-            "description": "Required. The certificate name."
-          }
-        },
-        "thumbprint": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The thumbprint of the certificate."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a token certificate.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "token/main.bicep"
-        }
-      }
-    },
-    "_3.tokenPasswordType": {
-      "type": "object",
-      "properties": {
-        "creationTime": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The creation datetime of the password."
-          }
-        },
-        "expiry": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The expiry datetime of the password."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "password1",
-            "password2"
-          ],
-          "metadata": {
-            "description": "Required. The password name."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a token password.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "token/main.bicep"
-        }
-      }
-    },
-    "agentPropertiesType": {
-      "type": "object",
-      "properties": {
-        "cpu": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The CPU configuration in terms of number of cores required for the run."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the agent properties.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
     "authCredentialsType": {
       "type": "object",
       "properties": {
@@ -1139,62 +1034,6 @@
         "description": "The type for auth credentials.",
         "__bicep_imported_from!": {
           "sourceTemplate": "credential-set/main.bicep"
-        }
-      }
-    },
-    "credentialsType": {
-      "type": "object",
-      "properties": {
-        "sourceRegistry": {
-          "$ref": "#/definitions/_2.sourceRegistryCredentialsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Describes the credential parameters for accessing the source registry."
-          }
-        },
-        "customRegistries": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Describes the credential parameters for accessing other custom registries."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the credentials used during task invocation.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "credentialType": {
-      "type": "object",
-      "properties": {
-        "certificates": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_3.tokenCertificateType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The certificates associated with the token for authentication."
-          }
-        },
-        "passwords": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_3.tokenPasswordType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The passwords associated with the token for authentication."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the token credentials, which can be either certificates or passwords.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "token/main.bicep"
         }
       }
     },
@@ -1447,53 +1286,6 @@
         }
       }
     },
-    "platformType": {
-      "type": "object",
-      "properties": {
-        "os": {
-          "type": "string",
-          "allowedValues": [
-            "Linux",
-            "Windows"
-          ],
-          "metadata": {
-            "description": "Required. The operating system type required for the run."
-          }
-        },
-        "architecture": {
-          "type": "string",
-          "allowedValues": [
-            "386",
-            "amd64",
-            "arm",
-            "arm64",
-            "x86"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The OS architecture."
-          }
-        },
-        "variant": {
-          "type": "string",
-          "allowedValues": [
-            "v6",
-            "v7",
-            "v8"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Variant of the CPU."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the platform properties.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
     "privateEndpointSingleServiceType": {
       "type": "object",
       "properties": {
@@ -1711,35 +1503,6 @@
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
-        }
-      }
-    },
-    "taskManagedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for managed identities on a task.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep",
-          "originalIdentifier": "managedIdentitiesType"
         }
       }
     },
@@ -2186,8 +1949,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "networkRuleSetIpRulesOrEmpty": "[coalesce(parameters('networkRuleSetIpRules'), createArray())]",
-    "publicNetworkAccessMode": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(variables('networkRuleSetIpRulesOrEmpty'))), 'Disabled', null()))]",
+    "publicNetworkAccessMode": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSetIpRules'))), 'Disabled', null()))]",
     "shouldConfigureNetworkRuleSet": "[or(not(equals(parameters('networkRuleSetIpRules'), null())), and(equals(variables('publicNetworkAccessMode'), 'Enabled'), equals(parameters('networkRuleSetDefaultAction'), 'Deny')))]"
   },
   "resources": {
@@ -2270,7 +2032,7 @@
         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
         "publicNetworkAccess": "[variables('publicNetworkAccessMode')]",
         "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
-        "networkRuleSet": "[if(variables('shouldConfigureNetworkRuleSet'), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', variables('networkRuleSetIpRulesOrEmpty')), null())]",
+        "networkRuleSet": "[if(variables('shouldConfigureNetworkRuleSet'), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', coalesce(parameters('networkRuleSetIpRules'), createArray())), null())]",
         "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
       },
       "dependsOn": [
@@ -3069,8 +2831,8 @@
           "registryName": {
             "value": "[parameters('name')]"
           },
-          "scopeMapId": {
-            "value": "[coalesce(parameters('tokens'), createArray())[copyIndex()].scopeMapId]"
+          "scopeMapResourceId": {
+            "value": "[coalesce(parameters('tokens'), createArray())[copyIndex()].scopeMapResourceId]"
           },
           "status": {
             "value": "[tryGet(coalesce(parameters('tokens'), createArray())[copyIndex()], 'status')]"
@@ -3090,114 +2852,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "225756475527560417"
+              "templateHash": "16711563961281893405"
             },
             "name": "Container Registries Tokens",
             "description": "This module deploys an Azure Container Registry (ACR) Token."
-          },
-          "definitions": {
-            "tokenCertificateType": {
-              "type": "object",
-              "properties": {
-                "encodedPemCertificate": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token."
-                  }
-                },
-                "expiry": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The expiry datetime of the certificate."
-                  }
-                },
-                "name": {
-                  "type": "string",
-                  "allowedValues": [
-                    "certificate1",
-                    "certificate2"
-                  ],
-                  "metadata": {
-                    "description": "Required. The certificate name."
-                  }
-                },
-                "thumbprint": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The thumbprint of the certificate."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a token certificate."
-              }
-            },
-            "tokenPasswordType": {
-              "type": "object",
-              "properties": {
-                "creationTime": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The creation datetime of the password."
-                  }
-                },
-                "expiry": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The expiry datetime of the password."
-                  }
-                },
-                "name": {
-                  "type": "string",
-                  "allowedValues": [
-                    "password1",
-                    "password2"
-                  ],
-                  "metadata": {
-                    "description": "Required. The password name."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a token password."
-              }
-            },
-            "credentialType": {
-              "type": "object",
-              "properties": {
-                "certificates": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/tokenCertificateType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The certificates associated with the token for authentication."
-                  }
-                },
-                "passwords": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/tokenPasswordType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The passwords associated with the token for authentication."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the token credentials, which can be either certificates or passwords."
-              }
-            }
           },
           "parameters": {
             "registryName": {
@@ -3214,7 +2872,7 @@
                 "description": "Required. The name of the token."
               }
             },
-            "scopeMapId": {
+            "scopeMapResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Required. The resource ID of the scope map to which the token will be associated with."
@@ -3232,11 +2890,14 @@
               }
             },
             "credentials": {
-              "$ref": "#/definitions/credentialType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/credentials"
+                },
                 "description": "Optional. The credentials associated with the token for authentication."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -3278,7 +2939,7 @@
               "apiVersion": "2025-11-01",
               "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
               "properties": {
-                "scopeMapId": "[parameters('scopeMapId')]",
+                "scopeMapId": "[parameters('scopeMapResourceId')]",
                 "status": "[parameters('status')]",
                 "credentials": "[if(not(empty(coalesce(parameters('credentials'), createArray()))), createObject('certificates', tryGet(parameters('credentials'), 'certificates'), 'passwords', tryGet(parameters('credentials'), 'passwords')), null())]"
               }
@@ -3385,83 +3046,12 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "1861223037561733681"
+              "templateHash": "15458270304500128647"
             },
             "name": "Container Registries Tasks",
             "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
           },
           "definitions": {
-            "managedIdentitiesType": {
-              "type": "object",
-              "properties": {
-                "systemAssigned": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enables system assigned managed identity on the resource."
-                  }
-                },
-                "userAssignedResourceIds": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource ID(s) to assign to the resource."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for managed identities on a task."
-              }
-            },
-            "platformType": {
-              "type": "object",
-              "properties": {
-                "os": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Linux",
-                    "Windows"
-                  ],
-                  "metadata": {
-                    "description": "Required. The operating system type required for the run."
-                  }
-                },
-                "architecture": {
-                  "type": "string",
-                  "allowedValues": [
-                    "386",
-                    "amd64",
-                    "arm",
-                    "arm64",
-                    "x86"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The OS architecture."
-                  }
-                },
-                "variant": {
-                  "type": "string",
-                  "allowedValues": [
-                    "v6",
-                    "v7",
-                    "v8"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Variant of the CPU."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the platform properties."
-              }
-            },
             "taskStepType": {
               "type": "object",
               "properties": {
@@ -3941,63 +3531,32 @@
                 "description": "The type for an overridable value."
               }
             },
-            "agentPropertiesType": {
+            "managedIdentityAllType": {
               "type": "object",
               "properties": {
-                "cpu": {
-                  "type": "int",
+                "systemAssigned": {
+                  "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The CPU configuration in terms of number of cores required for the run."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the agent properties."
-              }
-            },
-            "credentialsType": {
-              "type": "object",
-              "properties": {
-                "sourceRegistry": {
-                  "$ref": "#/definitions/sourceRegistryCredentialsType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Describes the credential parameters for accessing the source registry."
+                    "description": "Optional. Enables system assigned managed identity on the resource."
                   }
                 },
-                "customRegistries": {
-                  "type": "object",
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Describes the credential parameters for accessing other custom registries."
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
                   }
                 }
               },
               "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the credentials used during task invocation."
-              }
-            },
-            "sourceRegistryCredentialsType": {
-              "type": "object",
-              "properties": {
-                "loginMode": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Default",
-                    "None"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The authentication mode which determines the source registry login scope."
-                  }
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for source registry credentials."
               }
             }
           },
@@ -4025,17 +3584,23 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "platform": {
-              "$ref": "#/definitions/platformType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
+                },
                 "description": "Optional. The platform properties against which the task has to run."
-              }
+              },
+              "nullable": true
             },
             "step": {
               "$ref": "#/definitions/taskStepType",
@@ -4072,11 +3637,14 @@
               }
             },
             "agentConfiguration": {
-              "$ref": "#/definitions/agentPropertiesType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
+                },
                 "description": "Optional. The machine configuration of the run agent."
-              }
+              },
+              "nullable": true
             },
             "agentPoolName": {
               "type": "string",
@@ -4086,11 +3654,14 @@
               }
             },
             "credentials": {
-              "$ref": "#/definitions/credentialsType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/credentials"
+                },
                 "description": "Optional. The properties that describe the credentials that will be used when the task is invoked."
-              }
+              },
+              "nullable": true
             },
             "isSystemTask": {
               "type": "bool",
@@ -4107,7 +3678,7 @@
               }
             },
             "managedIdentities": {
-              "$ref": "#/definitions/managedIdentitiesType",
+              "$ref": "#/definitions/managedIdentityAllType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The managed identity definition for this resource."

@@ -15,6 +15,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -77,19 +78,6 @@ The machine configuration of the run agent.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cpu`](#parameter-agentconfigurationcpu) | int | The CPU configuration in terms of number of cores required for the run. |
-
-### Parameter: `agentConfiguration.cpu`
-
-The CPU configuration in terms of number of cores required for the run.
-
-- Required: No
-- Type: int
-
 ### Parameter: `agentPoolName`
 
 The dedicated agent pool for the task.
@@ -103,47 +91,6 @@ The properties that describe the credentials that will be used when the task is 
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customRegistries`](#parameter-credentialscustomregistries) | object | Describes the credential parameters for accessing other custom registries. |
-| [`sourceRegistry`](#parameter-credentialssourceregistry) | object | Describes the credential parameters for accessing the source registry. |
-
-### Parameter: `credentials.customRegistries`
-
-Describes the credential parameters for accessing other custom registries.
-
-- Required: No
-- Type: object
-
-### Parameter: `credentials.sourceRegistry`
-
-Describes the credential parameters for accessing the source registry.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`loginMode`](#parameter-credentialssourceregistryloginmode) | string | The authentication mode which determines the source registry login scope. |
-
-### Parameter: `credentials.sourceRegistry.loginMode`
-
-The authentication mode which determines the source registry login scope.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Default'
-    'None'
-  ]
-  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -187,7 +134,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -198,7 +145,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -209,65 +156,6 @@ The platform properties against which the task has to run.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`os`](#parameter-platformos) | string | The operating system type required for the run. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`architecture`](#parameter-platformarchitecture) | string | The OS architecture. |
-| [`variant`](#parameter-platformvariant) | string | Variant of the CPU. |
-
-### Parameter: `platform.os`
-
-The operating system type required for the run.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
-
-### Parameter: `platform.architecture`
-
-The OS architecture.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '386'
-    'amd64'
-    'arm'
-    'arm64'
-    'x86'
-  ]
-  ```
-
-### Parameter: `platform.variant`
-
-Variant of the CPU.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'v6'
-    'v7'
-    'v8'
-  ]
-  ```
 
 ### Parameter: `status`
 
@@ -909,6 +797,14 @@ The current status of trigger.
 | `resourceGroupName` | string | The name of the resource group the task was deployed into. |
 | `resourceId` | string | The resource ID of the task. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

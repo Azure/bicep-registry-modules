@@ -6,114 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "225756475527560417"
+      "templateHash": "16711563961281893405"
     },
     "name": "Container Registries Tokens",
     "description": "This module deploys an Azure Container Registry (ACR) Token."
-  },
-  "definitions": {
-    "tokenCertificateType": {
-      "type": "object",
-      "properties": {
-        "encodedPemCertificate": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token."
-          }
-        },
-        "expiry": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The expiry datetime of the certificate."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "certificate1",
-            "certificate2"
-          ],
-          "metadata": {
-            "description": "Required. The certificate name."
-          }
-        },
-        "thumbprint": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The thumbprint of the certificate."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a token certificate."
-      }
-    },
-    "tokenPasswordType": {
-      "type": "object",
-      "properties": {
-        "creationTime": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The creation datetime of the password."
-          }
-        },
-        "expiry": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The expiry datetime of the password."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "password1",
-            "password2"
-          ],
-          "metadata": {
-            "description": "Required. The password name."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a token password."
-      }
-    },
-    "credentialType": {
-      "type": "object",
-      "properties": {
-        "certificates": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tokenCertificateType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The certificates associated with the token for authentication."
-          }
-        },
-        "passwords": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/tokenPasswordType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The passwords associated with the token for authentication."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the token credentials, which can be either certificates or passwords."
-      }
-    }
   },
   "parameters": {
     "registryName": {
@@ -130,7 +26,7 @@
         "description": "Required. The name of the token."
       }
     },
-    "scopeMapId": {
+    "scopeMapResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The resource ID of the scope map to which the token will be associated with."
@@ -148,11 +44,14 @@
       }
     },
     "credentials": {
-      "$ref": "#/definitions/credentialType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/credentials"
+        },
         "description": "Optional. The credentials associated with the token for authentication."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -194,7 +93,7 @@
       "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
-        "scopeMapId": "[parameters('scopeMapId')]",
+        "scopeMapId": "[parameters('scopeMapResourceId')]",
         "status": "[parameters('status')]",
         "credentials": "[if(not(empty(coalesce(parameters('credentials'), createArray()))), createObject('certificates', tryGet(parameters('credentials'), 'certificates'), 'passwords', tryGet(parameters('credentials'), 'passwords')), null())]"
       }

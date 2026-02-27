@@ -6,83 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "1861223037561733681"
+      "templateHash": "15458270304500128647"
     },
     "name": "Container Registries Tasks",
     "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for managed identities on a task."
-      }
-    },
-    "platformType": {
-      "type": "object",
-      "properties": {
-        "os": {
-          "type": "string",
-          "allowedValues": [
-            "Linux",
-            "Windows"
-          ],
-          "metadata": {
-            "description": "Required. The operating system type required for the run."
-          }
-        },
-        "architecture": {
-          "type": "string",
-          "allowedValues": [
-            "386",
-            "amd64",
-            "arm",
-            "arm64",
-            "x86"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The OS architecture."
-          }
-        },
-        "variant": {
-          "type": "string",
-          "allowedValues": [
-            "v6",
-            "v7",
-            "v8"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Variant of the CPU."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the platform properties."
-      }
-    },
     "taskStepType": {
       "type": "object",
       "properties": {
@@ -562,63 +491,32 @@
         "description": "The type for an overridable value."
       }
     },
-    "agentPropertiesType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
-        "cpu": {
-          "type": "int",
+        "systemAssigned": {
+          "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The CPU configuration in terms of number of cores required for the run."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the agent properties."
-      }
-    },
-    "credentialsType": {
-      "type": "object",
-      "properties": {
-        "sourceRegistry": {
-          "$ref": "#/definitions/sourceRegistryCredentialsType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Describes the credential parameters for accessing the source registry."
+            "description": "Optional. Enables system assigned managed identity on the resource."
           }
         },
-        "customRegistries": {
-          "type": "object",
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Describes the credential parameters for accessing other custom registries."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the credentials used during task invocation."
-      }
-    },
-    "sourceRegistryCredentialsType": {
-      "type": "object",
-      "properties": {
-        "loginMode": {
-          "type": "string",
-          "allowedValues": [
-            "Default",
-            "None"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The authentication mode which determines the source registry login scope."
-          }
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for source registry credentials."
       }
     }
   },
@@ -646,17 +544,23 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "platform": {
-      "$ref": "#/definitions/platformType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
+        },
         "description": "Optional. The platform properties against which the task has to run."
-      }
+      },
+      "nullable": true
     },
     "step": {
       "$ref": "#/definitions/taskStepType",
@@ -693,11 +597,14 @@
       }
     },
     "agentConfiguration": {
-      "$ref": "#/definitions/agentPropertiesType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
+        },
         "description": "Optional. The machine configuration of the run agent."
-      }
+      },
+      "nullable": true
     },
     "agentPoolName": {
       "type": "string",
@@ -707,11 +614,14 @@
       }
     },
     "credentials": {
-      "$ref": "#/definitions/credentialsType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/credentials"
+        },
         "description": "Optional. The properties that describe the credentials that will be used when the task is invoked."
-      }
+      },
+      "nullable": true
     },
     "isSystemTask": {
       "type": "bool",
@@ -728,7 +638,7 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."

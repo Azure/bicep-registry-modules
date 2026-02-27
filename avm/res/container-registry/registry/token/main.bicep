@@ -10,7 +10,7 @@ param registryName string
 param name string
 
 @description('Required. The resource ID of the scope map to which the token will be associated with.')
-param scopeMapId string
+param scopeMapResourceId string
 
 @allowed([
   'disabled'
@@ -20,7 +20,7 @@ param scopeMapId string
 param status string = 'enabled'
 
 @description('Optional. The credentials associated with the token for authentication.')
-param credentials credentialType?
+param credentials resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties.credentials?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -52,7 +52,7 @@ resource token 'Microsoft.ContainerRegistry/registries/tokens@2025-11-01' = {
   name: name
   parent: registry
   properties: {
-    scopeMapId: scopeMapId
+    scopeMapId: scopeMapResourceId
     status: status
     credentials: !empty(credentials ?? [])
       ? {
@@ -72,45 +72,4 @@ output resourceGroupName string = resourceGroup().name
 @description('The resource ID of the token.')
 output resourceId string = token.id
 
-// =============== //
-//   Definitions   //
-// =============== //
 
-@export()
-@description('The type for a token certificate.')
-type tokenCertificateType = {
-  @description('Optional. Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token.')
-  encodedPemCertificate: string?
-
-  @description('Optional. The expiry datetime of the certificate.')
-  expiry: string?
-
-  @description('Required. The certificate name.')
-  name: 'certificate1' | 'certificate2'
-
-  @description('Optional. The thumbprint of the certificate.')
-  thumbprint: string?
-}
-
-@export()
-@description('The type for a token password.')
-type tokenPasswordType = {
-  @description('Optional. The creation datetime of the password.')
-  creationTime: string?
-
-  @description('Optional. The expiry datetime of the password.')
-  expiry: string?
-
-  @description('Required. The password name.')
-  name: 'password1' | 'password2'
-}
-
-@export()
-@description('The type for the token credentials, which can be either certificates or passwords.')
-type credentialType = {
-  @description('Optional. The certificates associated with the token for authentication.')
-  certificates: tokenCertificateType[]?
-
-  @description('Optional. The passwords associated with the token for authentication.')
-  passwords: tokenPasswordType[]?
-}

@@ -391,7 +391,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     tokens: [
       {
         name: 'crrmaxToken'
-        scopeMapId: '<scopeMapId>'
+        scopeMapResourceId: '<scopeMapResourceId>'
         status: 'enabled'
       }
     ]
@@ -609,7 +609,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": [
         {
           "name": "crrmaxToken",
-          "scopeMapId": "<scopeMapId>",
+          "scopeMapResourceId": "<scopeMapResourceId>",
           "status": "enabled"
         }
       ]
@@ -785,7 +785,7 @@ param tasks = [
 param tokens = [
   {
     name: 'crrmaxToken'
-    scopeMapId: '<scopeMapId>'
+    scopeMapResourceId: '<scopeMapResourceId>'
     status: 'enabled'
   }
 ]
@@ -2589,19 +2589,6 @@ The machine configuration of the run agent.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cpu`](#parameter-tasksagentconfigurationcpu) | int | The CPU configuration in terms of number of cores required for the run. |
-
-### Parameter: `tasks.agentConfiguration.cpu`
-
-The CPU configuration in terms of number of cores required for the run.
-
-- Required: No
-- Type: int
-
 ### Parameter: `tasks.agentPoolName`
 
 The dedicated agent pool for the task.
@@ -2615,47 +2602,6 @@ The properties that describe the credentials that will be used when the task is 
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customRegistries`](#parameter-taskscredentialscustomregistries) | object | Describes the credential parameters for accessing other custom registries. |
-| [`sourceRegistry`](#parameter-taskscredentialssourceregistry) | object | Describes the credential parameters for accessing the source registry. |
-
-### Parameter: `tasks.credentials.customRegistries`
-
-Describes the credential parameters for accessing other custom registries.
-
-- Required: No
-- Type: object
-
-### Parameter: `tasks.credentials.sourceRegistry`
-
-Describes the credential parameters for accessing the source registry.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`loginMode`](#parameter-taskscredentialssourceregistryloginmode) | string | The authentication mode which determines the source registry login scope. |
-
-### Parameter: `tasks.credentials.sourceRegistry.loginMode`
-
-The authentication mode which determines the source registry login scope.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Default'
-    'None'
-  ]
-  ```
 
 ### Parameter: `tasks.isSystemTask`
 
@@ -2690,7 +2636,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-tasksmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-tasksmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-tasksmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `tasks.managedIdentities.systemAssigned`
 
@@ -2701,7 +2647,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `tasks.managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2712,65 +2658,6 @@ The platform properties against which the task has to run.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`os`](#parameter-tasksplatformos) | string | The operating system type required for the run. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`architecture`](#parameter-tasksplatformarchitecture) | string | The OS architecture. |
-| [`variant`](#parameter-tasksplatformvariant) | string | Variant of the CPU. |
-
-### Parameter: `tasks.platform.os`
-
-The operating system type required for the run.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Linux'
-    'Windows'
-  ]
-  ```
-
-### Parameter: `tasks.platform.architecture`
-
-The OS architecture.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '386'
-    'amd64'
-    'arm'
-    'arm64'
-    'x86'
-  ]
-  ```
-
-### Parameter: `tasks.platform.variant`
-
-Variant of the CPU.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'v6'
-    'v7'
-    'v8'
-  ]
-  ```
 
 ### Parameter: `tasks.status`
 
@@ -3413,7 +3300,7 @@ Tokens to create for the container registry.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-tokensname) | string | The name of the token. |
-| [`scopeMapId`](#parameter-tokensscopemapid) | string | The resource ID of the scope map to which the token will be associated with. |
+| [`scopeMapResourceId`](#parameter-tokensscopemapresourceid) | string | The resource ID of the scope map to which the token will be associated with. |
 
 **Optional parameters**
 
@@ -3429,7 +3316,7 @@ The name of the token.
 - Required: Yes
 - Type: string
 
-### Parameter: `tokens.scopeMapId`
+### Parameter: `tokens.scopeMapResourceId`
 
 The resource ID of the scope map to which the token will be associated with.
 
@@ -3442,117 +3329,6 @@ The credentials of the token, such as certificates and passwords.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`certificates`](#parameter-tokenscredentialscertificates) | array | The certificates associated with the token for authentication. |
-| [`passwords`](#parameter-tokenscredentialspasswords) | array | The passwords associated with the token for authentication. |
-
-### Parameter: `tokens.credentials.certificates`
-
-The certificates associated with the token for authentication.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-tokenscredentialscertificatesname) | string | The certificate name. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`encodedPemCertificate`](#parameter-tokenscredentialscertificatesencodedpemcertificate) | string | Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token. |
-| [`expiry`](#parameter-tokenscredentialscertificatesexpiry) | string | The expiry datetime of the certificate. |
-| [`thumbprint`](#parameter-tokenscredentialscertificatesthumbprint) | string | The thumbprint of the certificate. |
-
-### Parameter: `tokens.credentials.certificates.name`
-
-The certificate name.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'certificate1'
-    'certificate2'
-  ]
-  ```
-
-### Parameter: `tokens.credentials.certificates.encodedPemCertificate`
-
-Base 64 encoded string of the public certificate in PEM format that will be used for authenticating the token.
-
-- Required: No
-- Type: string
-
-### Parameter: `tokens.credentials.certificates.expiry`
-
-The expiry datetime of the certificate.
-
-- Required: No
-- Type: string
-
-### Parameter: `tokens.credentials.certificates.thumbprint`
-
-The thumbprint of the certificate.
-
-- Required: No
-- Type: string
-
-### Parameter: `tokens.credentials.passwords`
-
-The passwords associated with the token for authentication.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-tokenscredentialspasswordsname) | string | The password name. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`creationTime`](#parameter-tokenscredentialspasswordscreationtime) | string | The creation datetime of the password. |
-| [`expiry`](#parameter-tokenscredentialspasswordsexpiry) | string | The expiry datetime of the password. |
-
-### Parameter: `tokens.credentials.passwords.name`
-
-The password name.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'password1'
-    'password2'
-  ]
-  ```
-
-### Parameter: `tokens.credentials.passwords.creationTime`
-
-The creation datetime of the password.
-
-- Required: No
-- Type: string
-
-### Parameter: `tokens.credentials.passwords.expiry`
-
-The expiry datetime of the password.
-
-- Required: No
-- Type: string
 
 ### Parameter: `tokens.status`
 

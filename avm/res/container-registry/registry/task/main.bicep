@@ -13,10 +13,10 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.tags?
 
 @description('Optional. The platform properties against which the task has to run.')
-param platform platformType?
+param platform resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
 
 @description('Optional. The task step properties. Exactly one of dockerBuildStep, encodedTaskStep, or fileTaskStep must be provided.')
 param step taskStepType?
@@ -37,13 +37,13 @@ param status string = 'Enabled'
 param timeout int = 3600
 
 @description('Optional. The machine configuration of the run agent.')
-param agentConfiguration agentPropertiesType?
+param agentConfiguration resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.agentConfiguration?
 
 @description('Optional. The dedicated agent pool for the task.')
 param agentPoolName string?
 
 @description('Optional. The properties that describe the credentials that will be used when the task is invoked.')
-param credentials credentialsType?
+param credentials resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.credentials?
 
 @description('Optional. The value of this property indicates whether the task resource is system task or not.')
 param isSystemTask bool?
@@ -51,8 +51,9 @@ param isSystemTask bool?
 @description('Optional. The template that describes the repository and tag information for run log artifact.')
 param logTemplate string?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -165,29 +166,6 @@ output systemAssignedMIPrincipalId string? = task.?identity.?principalId
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-@description('The type for managed identities on a task.')
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}
-
-@export()
-@description('The type for the platform properties.')
-type platformType = {
-  @description('Required. The operating system type required for the run.')
-  os: 'Linux' | 'Windows'
-
-  @description('Optional. The OS architecture.')
-  architecture: ('amd64' | 'arm' | 'arm64' | 'x86' | '386')?
-
-  @description('Optional. Variant of the CPU.')
-  variant: ('v6' | 'v7' | 'v8')?
-}
 
 @export()
 @description('The type for the task step. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.')
@@ -387,28 +365,4 @@ type setValueType = {
 
   @description('Optional. Flag to indicate whether the value represents a secret or not.')
   isSecret: bool?
-}
-
-@export()
-@description('The type for the agent properties.')
-type agentPropertiesType = {
-  @description('Optional. The CPU configuration in terms of number of cores required for the run.')
-  cpu: int?
-}
-
-@export()
-@description('The type for the credentials used during task invocation.')
-type credentialsType = {
-  @description('Optional. Describes the credential parameters for accessing the source registry.')
-  sourceRegistry: sourceRegistryCredentialsType?
-
-  @description('Optional. Describes the credential parameters for accessing other custom registries.')
-  customRegistries: object?
-}
-
-@export()
-@description('The type for source registry credentials.')
-type sourceRegistryCredentialsType = {
-  @description('Optional. The authentication mode which determines the source registry login scope.')
-  loginMode: ('Default' | 'None')?
 }
