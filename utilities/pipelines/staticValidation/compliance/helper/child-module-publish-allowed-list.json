@@ -45,6 +45,7 @@
     "avm/res/sql/server/database",
     "avm/res/storage/storage-account/blob-service/container",
     "avm/res/storage/storage-account/file-service/share",
+    "avm/res/storage/storage-account/table-service/table",
     "avm/res/web/site/config",
     "avm/res/web/site/slot"
   ]
