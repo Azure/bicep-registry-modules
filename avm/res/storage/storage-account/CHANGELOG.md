@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Enabling child module `avm/res/storage/storage-account/table-service/table` for publishing (added telemetry option)
 - Enabling child module `avm/res/storage/storage-account/management-policy` for publishing (added telemetry option)
 - Enabling child module `avm/res/storage/storage-account/local-user` for publishing (added telemetry option)
+- Enabling child module `avm/res/storage/storage-account/queue-service/queue` for publishing (added telemetry option)
 
 ### Breaking Changes
 
