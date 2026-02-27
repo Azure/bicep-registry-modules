@@ -10,6 +10,11 @@ param location string = resourceGroup().location
 @description('Required. The name of the IoT Hub SKU.')
 param skuName resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.sku.name
 
+@description('Optional. The number of provisioned IoT Hub units. Restricted to 1 unit for the F1 SKU. Can be set up to 200 units for S1, S2, S3, B1, B2, B3 SKUs.')
+@minValue(1)
+@maxValue(200)
+param skuCapacity resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.sku.capacity = 1
+
 @description('Optional. List of allowed FQDNs(Fully Qualified Domain Name) for egress from Iot Hub.')
 param allowedFqdnList resourceInput<'Microsoft.Devices/IotHubs@2023-06-30'>.properties.allowedFqdnList?
 
@@ -172,6 +177,7 @@ resource iotHub 'Microsoft.Devices/IotHubs@2023-06-30' = {
   identity: identity
   sku: {
     name: skuName
+    capacity: skuCapacity
   }
   properties: {
     allowedFqdnList: allowedFqdnList

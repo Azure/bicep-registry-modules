@@ -23,11 +23,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Devices'
-            }
-          ]
         }
       }
     ]
