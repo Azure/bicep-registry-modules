@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}crrempty001'
       location: resourceLocation
       acrSku: 'Premium'
-      publicNetworkAccess: 'Enabled'
+      publicNetworkAccess: 'Disabled'
       networkRuleSetDefaultAction: 'Deny'
       networkRuleSetIpRules: []
     }

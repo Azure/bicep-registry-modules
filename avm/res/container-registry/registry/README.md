@@ -822,7 +822,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     location: '<location>'
     networkRuleSetDefaultAction: 'Deny'
     networkRuleSetIpRules: []
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
   }
 }
 ```
@@ -857,7 +857,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       "value": []
     },
     "publicNetworkAccess": {
-      "value": "Enabled"
+      "value": "Disabled"
     }
   }
 }
@@ -880,7 +880,7 @@ param acrSku = 'Premium'
 param location = '<location>'
 param networkRuleSetDefaultAction = 'Deny'
 param networkRuleSetIpRules = []
-param publicNetworkAccess = 'Enabled'
+param publicNetworkAccess = 'Disabled'
 ```
 
 </details>
