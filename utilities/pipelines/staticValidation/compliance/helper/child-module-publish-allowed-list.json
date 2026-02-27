@@ -44,6 +44,7 @@
     "avm/res/service-bus/namespace/topic",
     "avm/res/sql/server/database",
     "avm/res/storage/storage-account/blob-service/container",
+    "avm/res/storage/storage-account/blob-service/container/immutability-policy",
     "avm/res/storage/storage-account/file-service/share",
     "avm/res/storage/storage-account/local-user",
     "avm/res/storage/storage-account/management-policy",
