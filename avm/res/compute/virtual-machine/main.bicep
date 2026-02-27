@@ -765,7 +765,13 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
     typeHandlerVersion: extensionDomainJoinConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionDomainJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionDomainJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionDomainJoinConfig.settings
+    settings: extensionDomainJoinConfig.?settings ?? {
+      Name: extensionDomainJoinConfig.?domainName
+      OUPath: extensionDomainJoinConfig.?ouPath
+      User: extensionDomainJoinConfig.?user
+      Restart: extensionDomainJoinConfig.?restart
+      Options: extensionDomainJoinConfig.?options
+    }
     supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
     tags: extensionDomainJoinConfig.?tags ?? tags
     protectedSettings: {

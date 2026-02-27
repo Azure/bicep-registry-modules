@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "3801661418554975084"
+      "templateHash": "7444306470710563363"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -6079,7 +6079,7 @@
             "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
           },
           "settings": {
-            "value": "[parameters('extensionDomainJoinConfig').settings]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'settings'), createObject('Name', tryGet(parameters('extensionDomainJoinConfig'), 'domainName'), 'OUPath', tryGet(parameters('extensionDomainJoinConfig'), 'ouPath'), 'User', tryGet(parameters('extensionDomainJoinConfig'), 'user'), 'Restart', tryGet(parameters('extensionDomainJoinConfig'), 'restart'), 'Options', tryGet(parameters('extensionDomainJoinConfig'), 'options')))]"
           },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'supressFailures'), false())]"
