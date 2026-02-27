@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Enabling child module `avm/res/storage/storage-account/blob-service/container/immutability-policy` for publishing (added telemetry option)
+- Enabling child module `avm/res/storage/storage-account/blob-service/container/immutability-policy` for publishing
 
 ### Breaking Changes
 
