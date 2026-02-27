@@ -152,7 +152,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
         {
-          roleDefinitionIdOrName: subscriptionResourceId(
+          roleDefinitionIdOrName: az.subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'
           )
@@ -178,7 +178,8 @@ module testDeployment '../../../main.bicep' = [
       tokens: [
         {
           name: '${namePrefix}${serviceShort}Token'
-          scopeMapId: resourceId(
+          scopeMapId: az.resourceId(
+            resourceGroupName,
             'Microsoft.ContainerRegistry/registries/scopeMaps',
             '${namePrefix}${serviceShort}001',
             '${namePrefix}${serviceShort}ScopeMap'
