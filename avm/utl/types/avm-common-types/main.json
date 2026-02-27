@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4786376631151649274"
+      "version": "0.40.2.10011",
+      "templateHash": "15180421612793324069"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n"
@@ -895,6 +895,27 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key."
+      }
+    },
+    "customerManagedKeyAndVaultOnlyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified."
       }
     },
     "customerManagedKeyWithAutoRotateType": {

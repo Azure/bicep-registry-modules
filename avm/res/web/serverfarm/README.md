@@ -360,7 +360,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     // Non-required parameters
     installScripts: [
       {
-        name: 'FontInstaller'
+        name: 'CustomInstaller'
         source: {
           sourceUri: '<sourceUri>'
           type: 'RemoteAzureBlob'
@@ -385,17 +385,33 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         keyVaultSecretReference: {
           secretUri: '<secretUri>'
         }
-        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config'
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
         type: 'String'
       }
+      {
+        keyVaultSecretReference: {
+          secretUri: '<secretUri>'
+        }
+        registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+        type: 'DWORD'
+      }
     ]
-    skuCapacity: 3
+    skuCapacity: 1
     skuName: 'P1v4'
     storageMounts: [
       {
         destinationPath: 'G:\\'
         name: 'g-drive'
         type: 'LocalStorage'
+      }
+      {
+        credentialsKeyVaultReference: {
+          secretUri: '<secretUri>'
+        }
+        destinationPath: 'H:\\'
+        name: 'h-drive'
+        source: '<source>'
+        type: 'AzureFiles'
       }
     ]
     tags: {
@@ -404,6 +420,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    zoneRedundant: false
   }
 }
 ```
@@ -428,7 +445,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     "installScripts": {
       "value": [
         {
-          "name": "FontInstaller",
+          "name": "CustomInstaller",
           "source": {
             "sourceUri": "<sourceUri>",
             "type": "RemoteAzureBlob"
@@ -467,13 +484,20 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
           "keyVaultSecretReference": {
             "secretUri": "<secretUri>"
           },
-          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config",
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString",
           "type": "String"
+        },
+        {
+          "keyVaultSecretReference": {
+            "secretUri": "<secretUri>"
+          },
+          "registryKey": "HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD",
+          "type": "DWORD"
         }
       ]
     },
     "skuCapacity": {
-      "value": 3
+      "value": 1
     },
     "skuName": {
       "value": "P1v4"
@@ -484,6 +508,15 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
           "destinationPath": "G:\\",
           "name": "g-drive",
           "type": "LocalStorage"
+        },
+        {
+          "credentialsKeyVaultReference": {
+            "secretUri": "<secretUri>"
+          },
+          "destinationPath": "H:\\",
+          "name": "h-drive",
+          "source": "<source>",
+          "type": "AzureFiles"
         }
       ]
     },
@@ -496,6 +529,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "virtualNetworkSubnetId": {
       "value": "<virtualNetworkSubnetId>"
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -516,7 +552,7 @@ param name = 'wsfmi001'
 // Non-required parameters
 param installScripts = [
   {
-    name: 'FontInstaller'
+    name: 'CustomInstaller'
     source: {
       sourceUri: '<sourceUri>'
       type: 'RemoteAzureBlob'
@@ -541,17 +577,33 @@ param registryAdapters = [
     keyVaultSecretReference: {
       secretUri: '<secretUri>'
     }
-    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp/Config'
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterString'
     type: 'String'
   }
+  {
+    keyVaultSecretReference: {
+      secretUri: '<secretUri>'
+    }
+    registryKey: 'HKEY_LOCAL_MACHINE/SOFTWARE/MyApp1/RegistryAdapterDWORD'
+    type: 'DWORD'
+  }
 ]
-param skuCapacity = 3
+param skuCapacity = 1
 param skuName = 'P1v4'
 param storageMounts = [
   {
     destinationPath: 'G:\\'
     name: 'g-drive'
     type: 'LocalStorage'
+  }
+  {
+    credentialsKeyVaultReference: {
+      secretUri: '<secretUri>'
+    }
+    destinationPath: 'H:\\'
+    name: 'h-drive'
+    source: '<source>'
+    type: 'AzureFiles'
   }
 ]
 param tags = {
@@ -560,6 +612,7 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkSubnetId = '<virtualNetworkSubnetId>'
+param zoneRedundant = false
 ```
 
 </details>
