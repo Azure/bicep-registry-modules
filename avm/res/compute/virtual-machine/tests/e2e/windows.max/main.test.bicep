@@ -58,6 +58,7 @@ module nestedDependencies 'dependencies.bicep' = {
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     preCreatedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
   }
 }
 

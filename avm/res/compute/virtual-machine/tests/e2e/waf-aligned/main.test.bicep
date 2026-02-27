@@ -57,6 +57,7 @@ module nestedDependencies 'dependencies.bicep' = {
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
   }
 }
 

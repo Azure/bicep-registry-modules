@@ -52,6 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
@@ -83,8 +84,8 @@ module testDeployment '../../../main.bicep' = {
     adminUsername: 'localAdministrator'
     imageReference: {
       publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2' // '20_04-lts-gen2' // Note: 22.04 does not support OMS extension with the older agent
+      offer: '0001-com-ubuntu-server-focal'
+      sku: '20_04-lts-gen2' // Note: 22.04 does not support DependencyAgent
       version: 'latest'
     }
     nicConfigurations: [

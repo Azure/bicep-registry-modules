@@ -1,0 +1,676 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "512555457968659089"
+    }
+  },
+  "parameters": {
+    "virtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Virtual Network to create."
+      }
+    },
+    "applicationSecurityGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Application Security Group to create."
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Managed Identity to create."
+      }
+    },
+    "loadBalancerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Load Balancer to create."
+      }
+    },
+    "recoveryServicesVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Recovery Services Vault to create."
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Key Vault to create."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Storage Account to create."
+      }
+    },
+    "storageUploadDeploymentScriptName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Deployment Script used to upload data to the Storage Account."
+      }
+    },
+    "sshDeploymentScriptName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Deployment Script to create for the SSH Key generation."
+      }
+    },
+    "sshKeyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the SSH Key to create."
+      }
+    },
+    "dcrName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the data collection rule."
+      }
+    },
+    "waitDeploymentScriptName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the deployment script used to wait for backup role propagation."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy to."
+      }
+    },
+    "backupManagementServiceApplicationObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The object ID of the Backup Management Service Enterprise Application."
+      }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent."
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": "<#\n.SYNOPSIS\nUpload a test file to the given Storage Account Container.\n\n.DESCRIPTION\nUpload a test file to the given Storage Account Container.\n\n.PARAMETER StorageAccountName\nMandatory. The name of the Storage Account to upload the file to\n\n.PARAMETER ResourceGroupName\nMandatory. The name of the Resource Group containing the Storage Account to upload the file to\n\n.PARAMETER ContainerName\nMandatory. The name of the Storage Account Container to upload the file to\n\n.PARAMETER FileName\nMandatory. The name of the file of the file to create in the container\n\n.EXAMPLE\n./Set-BlobContent.ps1 -StorageAccountName 'mystorage' -ResourceGroupName 'storage-rg' -ContainerName 'mycontainer' -FileName 'testCSE.ps1'\n\nGenerate a dummy file 'testCSE.ps1' to the Storage Account 'mystorage' Container 'mycontainer' in Resource Group 'storage-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $StorageAccountName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ContainerName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $FileName\n)\n\nWrite-Verbose \"Create file [$FileName]\" -Verbose\n$file = New-Item -Value \"echo 'I am content'\" -Path $FileName -Force\n\nWrite-Verbose \"Getting storage account [$StorageAccountName|$ResourceGroupName] context.\" -Verbose\n$storageAccount = Get-AzStorageAccount -ResourceGroupName $ResourceGroupName -StorageAccountName $StorageAccountName -ErrorAction 'Stop'\n\nWrite-Verbose 'Uploading file [$fileName]' -Verbose\nSet-AzStorageBlobContent -File $file.FullName -Container $ContainerName -Context $storageAccount.Context -Force -ErrorAction 'Stop' | Out-Null\n",
+    "$fxv#1": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
+    "storageAccountCSEFileName": "scriptExtensionMasterInstaller.sh",
+    "addressPrefix": "10.0.0.0/16"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('recoveryServicesVaultName'), 'backupPolicy')]",
+      "properties": {
+        "backupManagementType": "AzureIaasVM",
+        "instantRPDetails": {},
+        "schedulePolicy": {
+          "schedulePolicyType": "SimpleSchedulePolicy",
+          "scheduleRunFrequency": "Daily",
+          "scheduleRunTimes": [
+            "2019-11-07T07:00:00Z"
+          ],
+          "scheduleWeeklyFrequency": 0
+        },
+        "retentionPolicy": {
+          "retentionPolicyType": "LongTermRetentionPolicy",
+          "dailySchedule": {
+            "retentionTimes": [
+              "2019-11-07T07:00:00Z"
+            ],
+            "retentionDuration": {
+              "count": 180,
+              "durationType": "Days"
+            }
+          },
+          "weeklySchedule": {
+            "daysOfTheWeek": [
+              "Sunday"
+            ],
+            "retentionTimes": [
+              "2019-11-07T07:00:00Z"
+            ],
+            "retentionDuration": {
+              "count": 12,
+              "durationType": "Weeks"
+            }
+          },
+          "monthlySchedule": {
+            "retentionScheduleFormatType": "Weekly",
+            "retentionScheduleWeekly": {
+              "daysOfTheWeek": [
+                "Sunday"
+              ],
+              "weeksOfTheMonth": [
+                "First"
+              ]
+            },
+            "retentionTimes": [
+              "2019-11-07T07:00:00Z"
+            ],
+            "retentionDuration": {
+              "count": 60,
+              "durationType": "Months"
+            }
+          },
+          "yearlySchedule": {
+            "retentionScheduleFormatType": "Weekly",
+            "monthsOfYear": [
+              "January"
+            ],
+            "retentionScheduleWeekly": {
+              "daysOfTheWeek": [
+                "Sunday"
+              ],
+              "weeksOfTheMonth": [
+                "First"
+              ]
+            },
+            "retentionTimes": [
+              "2019-11-07T07:00:00Z"
+            ],
+            "retentionDuration": {
+              "count": 10,
+              "durationType": "Years"
+            }
+          }
+        },
+        "instantRpRetentionRangeInDays": 2,
+        "timeZone": "UTC",
+        "protectedItemsCount": 0
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.RecoveryServices/vaults', parameters('recoveryServicesVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2025-05-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), 'encryptionKey')]",
+      "properties": {
+        "kty": "RSA"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'scripts')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('virtualNetworkName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "defaultSubnet",
+            "properties": {
+              "addressPrefix": "[cidrSubnet(variables('addressPrefix'), 16, 0)]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/applicationSecurityGroups",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('applicationSecurityGroupName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]",
+      "properties": {
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('loadBalancerName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "privateIPConfig1",
+            "properties": {
+              "subnet": {
+                "id": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '2024-07-01').subnets[0].id]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "servers"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.RecoveryServices/vaults",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('recoveryServicesVaultName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "RS0",
+        "tier": "Standard"
+      },
+      "properties": {
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2025-05-01",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "[tenant().tenantId]",
+        "enablePurgeProtection": null,
+        "enabledForTemplateDeployment": true,
+        "enabledForDiskEncryption": true,
+        "enabledForDeployment": true,
+        "enableRbacAuthorization": true,
+        "accessPolicies": []
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('backupManagementServiceApplicationObjectId')))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+      "name": "[guid(format('{0}-{1}-BackupManagementService-KeyVault-KeyVaultAdministrator-RoleAssignment', parameters('keyVaultName'), parameters('location')))]",
+      "properties": {
+        "principalId": "[parameters('backupManagementServiceApplicationObjectId')]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('backupManagementServiceApplicationObjectId')))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('waitDeploymentScriptName')]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]": {}
+        }
+      },
+      "properties": {
+        "retentionInterval": "PT1H",
+        "azPowerShellVersion": "11.0",
+        "cleanupPreference": "Always",
+        "scriptContent": "write-output \"Sleeping for 15 seconds to allow role propagation\"; start-sleep -Seconds 15"
+      },
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), 'Microsoft.Authorization/roleAssignments', guid(format('{0}-{1}-BackupManagementService-KeyVault-KeyVaultAdministrator-RoleAssignment', parameters('keyVaultName'), parameters('location'))))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), 'encryptionKey')]",
+      "name": "[guid(format('msi-{0}-{1}-{2}-KeyVault-Key-Read-RoleAssignment', resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), 'encryptionKey'), parameters('location'), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "properties": {
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), 'encryptionKey')]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "allowSharedKeyAccess": true
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('storageUploadDeploymentScriptName')]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]": {}
+        }
+      },
+      "properties": {
+        "azPowerShellVersion": "11.0",
+        "retentionInterval": "P1D",
+        "arguments": "[format('-StorageAccountName \"{0}\" -ResourceGroupName \"{1}\" -ContainerName \"{2}\" -FileName \"{3}\"', parameters('storageAccountName'), resourceGroup().name, 'scripts', variables('storageAccountCSEFileName'))]",
+        "scriptContent": "[variables('$fxv#0')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', 'scripts')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', 'scripts')]",
+      "name": "[guid(resourceGroup().id, 'Storage Blob Data Reader', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]",
+      "properties": {
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', 'scripts')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[parameters('sshDeploymentScriptName')]",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]": {}
+        }
+      },
+      "properties": {
+        "azPowerShellVersion": "11.0",
+        "retentionInterval": "P1D",
+        "arguments": "[format('-SSHKeyName \"{0}\" -ResourceGroupName \"{1}\"', parameters('sshKeyName'), resourceGroup().name)]",
+        "scriptContent": "[variables('$fxv#1')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, 'Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Compute/sshPublicKeys",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('sshKeyName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicKey": "[reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('sshDeploymentScriptName')), '2023-08-01').outputs.publicKey]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', parameters('sshDeploymentScriptName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2024-03-11",
+      "name": "[parameters('dcrName')]",
+      "location": "[parameters('location')]",
+      "kind": "Linux",
+      "properties": {
+        "dataSources": {
+          "performanceCounters": [
+            {
+              "streams": [
+                "Microsoft-Perf"
+              ],
+              "samplingFrequencyInSeconds": 60,
+              "counterSpecifiers": [
+                "\\Processor Information(_Total)\\% Processor Time",
+                "\\Processor Information(_Total)\\% Privileged Time",
+                "\\Processor Information(_Total)\\% User Time",
+                "\\Processor Information(_Total)\\Processor Frequency",
+                "\\System\\Processes",
+                "\\Process(_Total)\\Thread Count",
+                "\\Process(_Total)\\Handle Count",
+                "\\System\\System Up Time",
+                "\\System\\Context Switches/sec",
+                "\\System\\Processor Queue Length",
+                "\\Memory\\% Committed Bytes In Use",
+                "\\Memory\\Available Bytes",
+                "\\Memory\\Committed Bytes",
+                "\\Memory\\Cache Bytes",
+                "\\Memory\\Pool Paged Bytes",
+                "\\Memory\\Pool Nonpaged Bytes",
+                "\\Memory\\Pages/sec",
+                "\\Memory\\Page Faults/sec",
+                "\\Process(_Total)\\Working Set",
+                "\\Process(_Total)\\Working Set - Private",
+                "\\LogicalDisk(_Total)\\% Disk Time",
+                "\\LogicalDisk(_Total)\\% Disk Read Time",
+                "\\LogicalDisk(_Total)\\% Disk Write Time",
+                "\\LogicalDisk(_Total)\\% Idle Time",
+                "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+                "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+                "\\LogicalDisk(_Total)\\Disk Reads/sec",
+                "\\LogicalDisk(_Total)\\Disk Writes/sec",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+                "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+                "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+                "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                "\\LogicalDisk(_Total)\\% Free Space",
+                "\\LogicalDisk(_Total)\\Free Megabytes",
+                "\\Network Interface(*)\\Bytes Total/sec",
+                "\\Network Interface(*)\\Bytes Sent/sec",
+                "\\Network Interface(*)\\Bytes Received/sec",
+                "\\Network Interface(*)\\Packets/sec",
+                "\\Network Interface(*)\\Packets Sent/sec",
+                "\\Network Interface(*)\\Packets Received/sec",
+                "\\Network Interface(*)\\Packets Outbound Errors",
+                "\\Network Interface(*)\\Packets Received Errors"
+              ],
+              "name": "perfCounterDataSource60"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+              "name": "la--1264800308"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Microsoft-Perf"
+            ],
+            "destinations": [
+              "la--1264800308"
+            ],
+            "transformKql": "source",
+            "outputStream": "Microsoft-Perf"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "subnetResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Virtual Network Subnet."
+      },
+      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '2024-07-01').subnets[0].id]"
+    },
+    "applicationSecurityGroupResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Application Security Group."
+      },
+      "value": "[resourceId('Microsoft.Network/applicationSecurityGroups', parameters('applicationSecurityGroupName'))]"
+    },
+    "managedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the created Managed Identity."
+      },
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]"
+    },
+    "managedIdentityResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Managed Identity."
+      },
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+    },
+    "loadBalancerBackendPoolResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Load Balancer Backend Pool."
+      },
+      "value": "[reference(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '2024-07-01').backendAddressPools[0].id]"
+    },
+    "recoveryServicesVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the created Recovery Services Vault."
+      },
+      "value": "[parameters('recoveryServicesVaultName')]"
+    },
+    "recoveryServicesVaultResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group, the Recovery Services Vault was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "recoveryServicesVaultBackupPolicyName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy created in the Backup Recovery Vault."
+      },
+      "value": "backupPolicy"
+    },
+    "keyVaultResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Key Vault."
+      },
+      "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+    },
+    "keyVaultUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL of the created Key Vault."
+      },
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2025-05-01').vaultUri]"
+    },
+    "keyVaultEncryptionKeyUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL of the created Key Vault Encryption Key."
+      },
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), 'encryptionKey'), '2025-05-01').keyUriWithVersion]"
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Storage Account."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+    },
+    "storageAccountCSEFileUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL of the Custom Script Extension in the created Storage Account."
+      },
+      "value": "[format('{0}{1}/{2}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-01-01').primaryEndpoints.blob, 'scripts', variables('storageAccountCSEFileName'))]"
+    },
+    "storageAccountCSEFileName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Custom Script Extension in the created Storage Account."
+      },
+      "value": "[variables('storageAccountCSEFileName')]"
+    },
+    "SSHKeyPublicKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The Public Key of the created SSH Key."
+      },
+      "value": "[reference(resourceId('Microsoft.Compute/sshPublicKeys', parameters('sshKeyName')), '2024-11-01').publicKey]"
+    },
+    "dataCollectionRuleResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created data collection rule."
+      },
+      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dcrName'))]"
+    }
+  }
+}

@@ -31,6 +31,9 @@ param sshKeyName string
 @description('Required. The name of the data collection rule.')
 param dcrName string
 
+@description('Required. The name of the deployment script used to wait for backup role propagation.')
+param waitDeploymentScriptName string
+
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
@@ -240,6 +243,26 @@ resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignmen
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'
     ) // Key Vault Administrator
     principalType: 'ServicePrincipal'
+  }
+}
+
+// Wait for backup management service KV role assignment to propagate before VM backup registration
+resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (!empty(backupManagementServiceApplicationObjectId)) {
+  dependsOn: [backupServiceKeyVaultPermissions]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
   }
 }
 
