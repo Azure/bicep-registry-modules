@@ -329,6 +329,7 @@ param tags = {
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | If true, egress from IotHub will be restricted to only the allowed FQDNs that are configured via allowedFqdnList. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`routing`](#parameter-routing) | object | The routing related properties of the IoT hub. See: https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messaging. |
+| [`skuCapacity`](#parameter-skucapacity) | int | The number of provisioned IoT Hub units. Restricted to 1 unit for the F1 SKU. Can be set up to 200 units for S1, S2, S3, B1, B2, B3 SKUs. |
 | [`storageEndpoints`](#parameter-storageendpoints) | object | The list of Azure Storage endpoints where you can upload files. Currently you can configure only one Azure Storage account and that MUST have its key as $default. Specifying more than one storage account causes an error to be thrown. Not specifying a value for this property when the enableFileUploadNotifications property is set to True, causes an error to be thrown. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -1243,6 +1244,16 @@ The routing related properties of the IoT hub. See: https://docs.microsoft.com/a
 
 - Required: No
 - Type: object
+
+### Parameter: `skuCapacity`
+
+The number of provisioned IoT Hub units. Restricted to 1 unit for the F1 SKU. Can be set up to 200 units for S1, S2, S3, B1, B2, B3 SKUs.
+
+- Required: No
+- Type: int
+- Default: `1`
+- MinValue: 1
+- MaxValue: 200
 
 ### Parameter: `storageEndpoints`
 

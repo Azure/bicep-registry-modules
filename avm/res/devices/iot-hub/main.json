@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "145520763202085550"
+      "templateHash": "9767782143921222460"
     },
     "name": "Azure Iot hubs",
     "description": "This module deploys a Iot Hub."
@@ -615,6 +615,18 @@
         "description": "Required. The name of the IoT Hub SKU."
       }
     },
+    "skuCapacity": {
+      "type": "int",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Devices/IotHubs@2023-06-30#properties/sku/properties/capacity"
+        },
+        "description": "Optional. The number of provisioned IoT Hub units. Restricted to 1 unit for the F1 SKU. Can be set up to 200 units for S1, S2, S3, B1, B2, B3 SKUs."
+      },
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 200
+    },
     "allowedFqdnList": {
       "type": "array",
       "metadata": {
@@ -925,7 +937,8 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "sku": {
-        "name": "[parameters('skuName')]"
+        "name": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
       },
       "properties": {
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
