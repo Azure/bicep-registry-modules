@@ -129,7 +129,7 @@ param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
 
-@description('Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.')
+@description('Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again.')
 @allowed([
   1
   2
@@ -264,9 +264,10 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
         }
       : null
   }
-  zones: map(availabilityZones, zone => '${zone}')
+  zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
 }
 
+#disable-next-line use-recent-api-versions
 resource kustoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -398,6 +399,7 @@ module kustoCluster_databases 'database/main.bicep' = [
     params: {
       name: database.name
       kustoClusterName: kustoCluster.name
+      location: location
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
       databasePrincipalAssignments: database.databasePrincipalAssignments
@@ -499,7 +501,7 @@ type clusterPrincipalAssignmentType = {
   principalType: 'App' | 'Group' | 'User'
 
   @description('Required. The Kusto Cluster role to be assigned to the principal id.')
-  role: 'AllDatabasesAdmin' | 'AllDatabasesViewer'
+  role: 'AllDatabasesAdmin' | 'AllDatabasesViewer' | 'AllDatabasesMonitor'
 
   @description('Optional. The tenant id of the principal.')
   tenantId: string?

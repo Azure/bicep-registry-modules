@@ -131,6 +131,8 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
 
 var devcenterName = '${namePrefix}${serviceShort}001'
 var devcenterExpectedResourceID = '${resourceGroup1.id}/providers/Microsoft.DevCenter/devcenters/${devcenterName}'
+var devcenterDevboxDefinitionCustomName = 'test-devbox-definition-custom-gallery-image'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -209,7 +211,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'test-devbox-definition-custom-gallery-image'
+          name: devcenterDevboxDefinitionCustomName
           imageResourceId: '${devcenterExpectedResourceID}/galleries/computegallery/images/dep-${namePrefix}-galid-dcdcmax'
           sku: {
             name: 'general_i_8c32gb256ssd_v2'
@@ -304,17 +306,17 @@ module testDeployment '../../../main.bicep' = [
           pools: [
             {
               name: 'sandbox-pool'
-              displayName: 'My Sandbox Pool - Managed Network'
+              displayName: 'My Sandbox Pool - Unmanaged Network'
               devBoxDefinitionType: 'Reference'
-              devBoxDefinitionName: 'test-devbox-definition-builtin-gallery-image'
+              devBoxDefinitionName: devcenterDevboxDefinitionCustomName
               localAdministrator: 'Disabled'
-              virtualNetworkType: 'Managed'
+              virtualNetworkType: 'Unmanaged'
               singleSignOnStatus: 'Enabled'
               stopOnDisconnect: {
                 gracePeriodMinutes: 60
                 status: 'Enabled'
               }
-              managedVirtualNetworkRegion: 'westeurope'
+              networkConnectionName: 'test-attached-network'
             }
           ]
         }
@@ -355,8 +357,7 @@ module testDeployment '../../../main.bicep' = [
               resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
             }
             {
-              action: 'Deny'
-              resourceType: 'AttachedNetworks'
+              resources: '${devcenterExpectedResourceID}/attachednetworks/test-attached-network'
             }
           ]
           projectsResourceIdOrName: [

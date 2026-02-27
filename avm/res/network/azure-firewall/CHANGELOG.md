@@ -2,6 +2,33 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/azure-firewall/CHANGELOG.md).
 
+## 0.10.0
+
+### New Features
+
+- Added `maintenanceConfiguration` parameter to support scheduling maintenance windows for Azure Firewall via `Microsoft.Maintenance/configurationAssignments` extension resource. Closes [#6570](https://github.com/Azure/bicep-registry-modules/issues/6570).
+- Added `additionalProperties` parameter for DNS proxy configuration (e.g., `Network.DNS.EnableProxy`).
+- Added `extendedLocation` parameter to support extended location scenarios.
+- Added `@minLength(1)` and `@maxLength(56)` constraints on the `name` parameter.
+
+### Changes
+
+- Upgraded Azure Firewall API version from `2024-10-01` to `2025-05-01`.
+- Upgraded Public IP Address module reference from `0.9.1` to `0.12.0`.
+- Migrated 12+ parameters to Bicep resource-derived types (`resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>`) for schema-accurate type validation, including: `azureSkuTier`, `threatIntelMode`, `autoscaleMaxCapacity`, `autoscaleMinCapacity`, `applicationRuleCollections`, `networkRuleCollections`, `natRuleCollections`, `hubIPAddresses`, `additionalPublicIpConfigurations`, `additionalProperties`, `extendedLocation`, and `tags`.
+- Updated rule collection outputs (`applicationRuleCollections`, `networkRuleCollections`, `natRuleCollections`) to use resource-derived types instead of untyped `array`.
+- Removed ~200 lines of hand-written user-defined types (`natRuleCollectionType`, `applicationRuleCollectionType`, `networkRuleCollectionType`, `hubIPAddressesType`) in favor of resource-derived types.
+- Removed the `additionalPublicIpConfigurationsVar` transform variable; input is now passed directly in schema-aligned shape.
+- Updated all test dependency networking resource API versions from `2024-05-01` to `2025-05-01` across all 11 e2e test scenarios (virtualNetworks, publicIPAddresses, virtualWans, virtualHubs, firewallPolicies, publicIPPrefixes).
+- Updated `publicIPPrefixes` API version in `publicipprefix` test from `2023-11-01` to `2025-05-01`.
+- Updated `managedIdentity` API version in `waf-aligned` test from `2023-01-31` to `2024-11-30`.
+- Added maintenance configuration test coverage in `max` test scenario.
+
+### Breaking Changes
+
+- **Parameter type changes**: Multiple parameters now use resource-derived types instead of manual type definitions. While values remain compatible, consumers importing exported types (`natRuleCollectionType`, `applicationRuleCollectionType`, `networkRuleCollectionType`, `hubIPAddressesType`) will need to update their references as these types have been removed.
+- **`additionalPublicIpConfigurations` shape change**: The parameter now expects the schema-aligned shape `{ name, properties: { publicIPAddress: { id } } }` instead of the previous `{ name, publicIPAddressResourceId }`.
+
 ## 0.9.2
 
 ### Changes

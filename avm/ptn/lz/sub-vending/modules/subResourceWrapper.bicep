@@ -683,6 +683,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.2' = if (virt
             delegation: subnet.?delegation
             serviceEndpoints: subnet.?serviceEndpoints
             privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+            defaultOutboundAccess: subnet.?defaultOutboundAccess
           }
         : {}
     ]
@@ -1775,6 +1776,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.2' =
           delegation: subnet.?delegation
           serviceEndpoints: subnet.?serviceEndpoints
           privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+          defaultOutboundAccess: subnet.?defaultOutboundAccess
         }
       ]
       location: vnet.?location ?? deployment().location
