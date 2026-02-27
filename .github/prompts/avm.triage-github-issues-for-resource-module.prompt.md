@@ -1,7 +1,9 @@
 ---
-agent: agent
+name: Triage-GitHub-Issues-for-Resource-Module
 description: 'Triage Open GitHub Issues related to the specific resource module.'
-tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'Azure MCP/documentation', 'search', 'get_issue', 'get_issue_comments', 'get_pull_request', 'get_pull_request_comments', 'github/github-mcp-server/list_issues', 'github/github-mcp-server/search_issues', 'github/github-mcp-server/search_pull_requests', 'Bicep (EXPERIMENTAL)/list_avm_metadata']
+agent: agent
+model: Auto (copilot)
+tools: ['search', 'runCommands', 'runTasks', 'github/*', 'github/github-mcp-server/list_issues', 'github/github-mcp-server/search_issues', 'github/github-mcp-server/search_pull_requests', 'Azure MCP/documentation', 'Azure MCP/search', 'Bicep (EXPERIMENTAL)/list_avm_metadata', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos']
 ---
 
 # Triage Open GitHub Issues for Resource Module

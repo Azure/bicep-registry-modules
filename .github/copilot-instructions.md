@@ -1,5 +1,6 @@
 ---
-description: "Instructions for working with Azure Verified Modules (AVM) Bicep repository"
+name: Global-Instructions
+description: Instructions for working with Azure Verified Modules (AVM) Bicep repository
 ---
 
 # Azure Verified Modules (AVM) - General Instructions

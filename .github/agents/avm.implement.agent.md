@@ -51,7 +51,7 @@ Execute plans systematically, implementing changes to existing modules or creati
 ### Documentation Phase
 
 4. **Generate Documentation**
-   - Run `Set-AVMModule.ps1` to generate README.md (never edit manually)
+   - Run `Set-AVMModule.ps1` to generate `README.md` (never edit manually)
    - Verify generated documentation completeness
 
 ### Validation Phase

@@ -1,4 +1,5 @@
 ---
+name: AVM-Bicep-Instructions
 description: "Rules of generating and maintaining Bicep modules with AVM best practices and formatting guidelines with GitHub Copilot"
 applyTo: "avm/**/*.bicep"
 ---

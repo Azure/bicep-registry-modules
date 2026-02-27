@@ -1,6 +1,9 @@
 ---
-agent: agent
+name: Tech-debt-analysis
 description: 'Analyze Azure Verified Module (AVM) Bicep files and examples for technical debt, inconsistencies, documentation gaps, and quality issues.'
+argument-hint: Provide the name of the module your want to analyze
+agent: agent
+model: Auto (copilot)
 tools: ['search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'todos', 'runTests', 'Azure MCP/documentation', 'search']
 ---
 
