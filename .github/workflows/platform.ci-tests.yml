@@ -45,7 +45,11 @@ jobs:
             }
 
             $StartTime = Get-Date
-            Set-AVMModule @inputObject
+            try {
+              Set-AVMModule @inputObject
+            } catch {
+              $_.Exception
+            }
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
             Write-Verbose ("Execution took [$TotalTime]") -Verbose
@@ -90,7 +94,11 @@ jobs:
             }
 
             $StartTime = Get-Date
-            Set-AVMModule @inputObject
+            try {
+              Set-AVMModule @inputObject
+            } catch {
+              $_.Exception
+            }
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
             Write-Verbose ("Execution took [$TotalTime]") -Verbose
@@ -128,7 +136,11 @@ jobs:
             }
 
             $StartTime = Get-Date
-            Set-AVMModule @inputObject
+            try {
+              Set-AVMModule @inputObject
+            } catch {
+              $_.Exception
+            }
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
             Write-Verbose ("Execution took [$TotalTime]") -Verbose
