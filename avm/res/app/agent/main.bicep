@@ -96,19 +96,16 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(managedIdentities.?userAssignedResourceIds) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
 // Determine which identity to use for knowledge graph and action configuration
-var firstUserAssignedId = !empty(managedIdentities.?userAssignedResourceIds ?? [])
-  ? managedIdentities.?userAssignedResourceIds[0] ?? ''
-  : ''
 var resolvedKnowledgeGraphIdentity = !empty(knowledgeGraphIdentityResourceId)
   ? knowledgeGraphIdentityResourceId
-  : firstUserAssignedId
+  : (managedIdentities.?userAssignedResourceIds[?0] ?? '')
 var resolvedActionIdentity = !empty(actionIdentityResourceId)
   ? actionIdentityResourceId
   : resolvedKnowledgeGraphIdentity

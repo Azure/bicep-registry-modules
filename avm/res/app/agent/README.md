@@ -17,6 +17,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -923,6 +924,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Notes
+
+- **Azure SRE Agent service is GA**, but ARM/Bicep deployment for `Microsoft.App/agents` is currently published as **`2025-05-01-preview`**.
+- This AVM module intentionally keeps the preview API version until Microsoft publishes a stable (non-preview) API version for `Microsoft.App/agents`.
+- This aligns with current SRE Agent Bicep samples in the official repository, which also use `Microsoft.App/agents@2025-05-01-preview`.
 
 ## Data Collection
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "12277936584659294903"
+      "version": "0.41.2.15936",
+      "templateHash": "3847411148773855983"
     },
     "name": "SRE Agents",
     "description": "This module deploys an Azure SRE Agent (Microsoft.App/agents).",
@@ -402,9 +402,8 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "firstUserAssignedId": "[if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds', 0), ''), '')]",
-    "resolvedKnowledgeGraphIdentity": "[if(not(empty(parameters('knowledgeGraphIdentityResourceId'))), parameters('knowledgeGraphIdentityResourceId'), variables('firstUserAssignedId'))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "resolvedKnowledgeGraphIdentity": "[if(not(empty(parameters('knowledgeGraphIdentityResourceId'))), parameters('knowledgeGraphIdentityResourceId'), coalesce(tryGet(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), 0), ''))]",
     "resolvedActionIdentity": "[if(not(empty(parameters('actionIdentityResourceId'))), parameters('actionIdentityResourceId'), variables('resolvedKnowledgeGraphIdentity'))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",

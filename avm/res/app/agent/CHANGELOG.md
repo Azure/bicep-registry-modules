@@ -15,6 +15,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Supports incident management configuration (`AzMonitor`).
 - Supports monthly Agent Activity Unit (AAU) limit and upgrade channel.
 
+### Notes
+
+- Azure SRE Agent product is generally available (GA), but ARM/Bicep deployment for `Microsoft.App/agents` is still published as `2025-05-01-preview`.
+- This module intentionally continues to use the preview API version until a stable (non-preview) API version is published.
+
 ### Breaking Changes
 
 - None

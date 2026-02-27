@@ -11,9 +11,6 @@ metadata description = 'This instance deploys the module with the minimum set of
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-app.agent-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 // Enforcing location as Microsoft.App/agents is only available in limited regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'swedencentral'
