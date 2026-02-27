@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.33.27573",
-      "templateHash": "7444306470710563363"
+      "templateHash": "752476544217356336"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2898,7 +2898,7 @@
               }
             }
           ],
-          "imageReference": "[if(contains(parameters('imageReference'), 'id'), createObject('id', tryGet(parameters('imageReference'), 'id')), parameters('imageReference'))]",
+          "imageReference": "[if(contains(parameters('imageReference'), 'id'), createObject('id', parameters('imageReference').id), parameters('imageReference'))]",
           "osDisk": {
             "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
             "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
@@ -2991,6 +2991,7 @@
       "apiVersion": "2018-09-15",
       "name": "[format('shutdown-computevm-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
+      "tags": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'tags'), parameters('tags'))]",
       "properties": {
         "status": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'status'), 'Disabled')]",
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
@@ -3012,7 +3013,7 @@
       },
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-      "apiVersion": "2024-03-11",
+      "apiVersion": "2023-03-11",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
       "name": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].name]",
       "properties": {
@@ -3143,7 +3144,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.38.33.27573",
-              "templateHash": "13141471515959954560"
+              "templateHash": "4953089004258985037"
             }
           },
           "definitions": {
@@ -4275,106 +4276,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "7550528442771433353"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5349747633189946992"
                     },
                     "name": "Public IP Addresses",
                     "description": "This module deploys a Public IP Address."
                   },
                   "definitions": {
-                    "dnsSettingsType": {
-                      "type": "object",
-                      "properties": {
-                        "domainNameLabel": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
-                          }
-                        },
-                        "domainNameLabelScope": {
-                          "type": "string",
-                          "allowedValues": [
-                            "NoReuse",
-                            "ResourceGroupReuse",
-                            "SubscriptionReuse",
-                            "TenantReuse"
-                          ],
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN."
-                          }
-                        },
-                        "fqdn": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone."
-                          }
-                        },
-                        "reverseFqdn": {
-                          "type": "string",
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
-                    "ddosSettingsType": {
-                      "type": "object",
-                      "properties": {
-                        "ddosProtectionPlan": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The resource ID of the DDOS protection plan associated with the public IP address."
-                              }
-                            }
-                          },
-                          "nullable": true,
-                          "metadata": {
-                            "description": "Optional. The DDoS protection plan associated with the public IP address."
-                          }
-                        },
-                        "protectionMode": {
-                          "type": "string",
-                          "allowedValues": [
-                            "Enabled"
-                          ],
-                          "metadata": {
-                            "description": "Required. The DDoS protection policy customizations."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
-                    "ipTagType": {
-                      "type": "object",
-                      "properties": {
-                        "ipTagType": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The IP tag type."
-                          }
-                        },
-                        "tag": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The IP tag."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "__bicep_export!": true
-                      }
-                    },
                     "diagnosticSettingFullType": {
                       "type": "object",
                       "properties": {
@@ -4493,7 +4401,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4530,7 +4438,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -4605,7 +4513,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -4626,14 +4534,13 @@
                     },
                     "publicIPAllocationMethod": {
                       "type": "string",
-                      "defaultValue": "Static",
-                      "allowedValues": [
-                        "Dynamic",
-                        "Static"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAllocationMethod"
+                        },
                         "description": "Optional. The public IP address allocation method."
-                      }
+                      },
+                      "defaultValue": "Static"
                     },
                     "availabilityZones": {
                       "type": "array",
@@ -4656,31 +4563,33 @@
                     },
                     "publicIPAddressVersion": {
                       "type": "string",
-                      "defaultValue": "IPv4",
-                      "allowedValues": [
-                        "IPv4",
-                        "IPv6"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/publicIPAddressVersion"
+                        },
                         "description": "Optional. IP address version."
-                      }
+                      },
+                      "defaultValue": "IPv4"
                     },
                     "dnsSettings": {
-                      "$ref": "#/definitions/dnsSettingsType",
-                      "nullable": true,
+                      "type": "object",
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/dnsSettings"
+                        },
                         "description": "Optional. The DNS settings of the public IP address."
-                      }
+                      },
+                      "nullable": true
                     },
                     "ipTags": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/ipTagType"
-                      },
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ipTags"
+                        },
                         "description": "Optional. The list of tags associated with the public IP address."
-                      }
+                      },
+                      "nullable": true
                     },
                     "lock": {
                       "$ref": "#/definitions/lockType",
@@ -4691,32 +4600,43 @@
                     },
                     "skuName": {
                       "type": "string",
-                      "defaultValue": "Standard",
-                      "allowedValues": [
-                        "Basic",
-                        "Standard"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/name"
+                        },
                         "description": "Optional. Name of a public IP address SKU."
-                      }
+                      },
+                      "defaultValue": "Standard"
                     },
                     "skuTier": {
                       "type": "string",
-                      "defaultValue": "Regional",
-                      "allowedValues": [
-                        "Global",
-                        "Regional"
-                      ],
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/sku/properties/tier"
+                        },
                         "description": "Optional. Tier of a public IP address SKU."
-                      }
+                      },
+                      "defaultValue": "Regional"
                     },
                     "ddosSettings": {
-                      "$ref": "#/definitions/ddosSettingsType",
-                      "nullable": true,
+                      "type": "object",
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/ddosSettings"
+                        },
                         "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
-                      }
+                      },
+                      "nullable": true
+                    },
+                    "deleteOption": {
+                      "type": "string",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/properties/properties/deleteOption"
+                        },
+                        "description": "Optional. The delete option for the public IP address."
+                      },
+                      "nullable": true
                     },
                     "location": {
                       "type": "string",
@@ -4753,7 +4673,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/publicIPAddresses@2024-10-01#properties/tags"
+                          "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
                         },
                         "description": "Optional. Tags of the resource."
                       },
@@ -4796,7 +4716,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -4814,7 +4734,7 @@
                     },
                     "publicIpAddress": {
                       "type": "Microsoft.Network/publicIPAddresses",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -4830,7 +4750,8 @@
                         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                         "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                        "ipTags": "[parameters('ipTags')]"
+                        "ipTags": "[parameters('ipTags')]",
+                        "deleteOption": "[parameters('deleteOption')]"
                       }
                     },
                     "publicIpAddress_lock": {
@@ -4945,7 +4866,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+                      "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
                     }
                   }
                 }

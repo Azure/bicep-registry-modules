@@ -561,11 +561,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
+      #disable-next-line BCP321
       imageReference: contains(imageReference, 'id')
         ? {
-            id: imageReference.?id
+            id: imageReference!.id!
           }
-        : imageReference
+        : imageReference!
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))
@@ -734,6 +735,7 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
 resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' = if (!empty(autoShutdownConfig)) {
   name: 'shutdown-computevm-${vm.name}'
   location: location
+  tags: autoShutdownConfig.?tags ?? tags
   properties: {
     status: autoShutdownConfig.?status ?? 'Disabled'
     targetResourceId: vm.id
@@ -859,7 +861,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
-resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
+resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
     scope: vm
