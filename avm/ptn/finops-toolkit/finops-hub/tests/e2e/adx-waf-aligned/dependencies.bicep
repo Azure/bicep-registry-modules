@@ -194,19 +194,19 @@ resource dataFactoryVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 // ============================================================================
 
 @description('The resource ID of the private endpoint subnet.')
-output privateEndpointSubnetId string = virtualNetwork.properties.subnets[0].id
+output privateEndpointSubnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the blob storage private DNS zone.')
-output storageBlobPrivateDnsZoneId string = blobPrivateDnsZone.id
+output storageBlobPrivateDnsZoneResourceId string = blobPrivateDnsZone.id
 
 @description('The resource ID of the DFS storage private DNS zone.')
-output storageDfsPrivateDnsZoneId string = dfsPrivateDnsZone.id
+output storageDfsPrivateDnsZoneResourceId string = dfsPrivateDnsZone.id
 
 @description('The resource ID of the Key Vault private DNS zone.')
-output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZone.id
+output keyVaultPrivateDnsZoneResourceId string = keyVaultPrivateDnsZone.id
 
 @description('The resource ID of the Data Factory private DNS zone.')
-output dataFactoryPrivateDnsZoneId string = dataFactoryPrivateDnsZone.id
+output dataFactoryPrivateDnsZoneResourceId string = dataFactoryPrivateDnsZone.id
 
 @description('The resource ID of the Log Analytics workspace for diagnostic settings.')
 output logAnalyticsWorkspaceId string = logAnalyticsWorkspace.id

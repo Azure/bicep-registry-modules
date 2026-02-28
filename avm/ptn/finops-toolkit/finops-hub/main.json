@@ -6,11 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "15331043875911018948"
+      "templateHash": "7311233541837418575"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
-    "version": "0.0.12",
+    "version": "0.12.0",
     "owner": "FinOps Team"
   },
   "definitions": {
@@ -278,6 +278,9 @@
     },
     "adxAdminPrincipalIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Array of additional ADX admin principal IDs (users or groups) to grant AllDatabasesAdmin role."
@@ -366,35 +369,35 @@
         "description": "Conditional. Subnet resource ID for private endpoints. Required if networkIsolationMode is \"BringYourOwn\"."
       }
     },
-    "byoBlobDnsZoneId": {
+    "byoBlobDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
-    "byoDfsDnsZoneId": {
+    "byoDfsDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
-    "byoVaultDnsZoneId": {
+    "byoVaultDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
-    "byoDataFactoryDnsZoneId": {
+    "byoDataFactoryDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is \"BringYourOwn\" and enablePrivateDnsZoneGroups is true."
       }
     },
-    "byoKustoDnsZoneId": {
+    "byoKustoDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -422,39 +425,39 @@
         "description": "Optional. Create DNS zone groups for private endpoints. Set false when Azure Policy manages DNS records (ESLZ pattern)."
       }
     },
-    "privateEndpointSubnetId": {
+    "privateEndpointSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Note: This is a deprecated property, please use `networkIsolationMode=\"BringYourOwn\"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints."
       }
     },
-    "storageBlobPrivateDnsZoneId": {
+    "storageBlobPrivateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneResourceId` instead."
       }
     },
-    "storageDfsPrivateDnsZoneId": {
+    "storageDfsPrivateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneResourceId` instead."
       }
     },
-    "keyVaultPrivateDnsZoneId": {
+    "keyVaultPrivateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneResourceId` instead."
       }
     },
-    "dataFactoryPrivateDnsZoneId": {
+    "dataFactoryPrivateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead."
+        "description": "Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneResourceId` instead."
       }
     },
     "tags": {
@@ -533,7 +536,7 @@
     "effectivePurgeProtection": "[if(equals(parameters('deploymentConfiguration'), 'waf-aligned'), true(), parameters('enablePurgeProtection'))]",
     "effectivePublicAccess": "[if(equals(parameters('deploymentConfiguration'), 'waf-aligned'), false(), parameters('enablePublicAccess'))]",
     "enableManagedExports": "[and(contains(createArray('ea', 'mca', 'mpa'), parameters('billingAccountType')), not(empty(parameters('scopesToMonitor'))))]",
-    "effectiveNetworkIsolationMode": "[if(and(equals(parameters('deploymentConfiguration'), 'waf-aligned'), equals(parameters('networkIsolationMode'), 'None')), 'Managed', if(and(not(empty(parameters('privateEndpointSubnetId'))), equals(parameters('networkIsolationMode'), 'None')), 'BringYourOwn', parameters('networkIsolationMode')))]",
+    "effectiveNetworkIsolationMode": "[if(and(equals(parameters('deploymentConfiguration'), 'waf-aligned'), equals(parameters('networkIsolationMode'), 'None')), 'Managed', if(and(not(empty(parameters('privateEndpointSubnetResourceId'))), equals(parameters('networkIsolationMode'), 'None')), 'BringYourOwn', parameters('networkIsolationMode')))]",
     "enablePrivateEndpoints": "[not(equals(variables('effectiveNetworkIsolationMode'), 'None'))]",
     "effectiveAdfManagedVnet": "[or(parameters('enableAdfManagedVnet'), variables('enablePrivateEndpoints'))]",
     "uniqueSuffix": "[uniqueString(resourceGroup().id, parameters('hubName'))]",
@@ -20555,7 +20558,7 @@
               }
             ]
           },
-          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-blob-pe', variables('storageAccountName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'blob', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.blobDnsZoneId.value, if(not(empty(parameters('byoBlobDnsZoneId'))), parameters('byoBlobDnsZoneId'), parameters('storageBlobPrivateDnsZoneId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.blobDnsZoneId.value, if(not(empty(parameters('byoBlobDnsZoneId'))), parameters('byoBlobDnsZoneId'), parameters('storageBlobPrivateDnsZoneId')))))), null())), createObject('name', format('{0}-dfs-pe', variables('storageAccountName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'dfs', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dfsDnsZoneId.value, if(not(empty(parameters('byoDfsDnsZoneId'))), parameters('byoDfsDnsZoneId'), parameters('storageDfsPrivateDnsZoneId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dfsDnsZoneId.value, if(not(empty(parameters('byoDfsDnsZoneId'))), parameters('byoDfsDnsZoneId'), parameters('storageDfsPrivateDnsZoneId')))))), null())))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-blob-pe', variables('storageAccountName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), '')), 'service', 'blob', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.blobDnsZoneId.value, if(not(empty(parameters('byoBlobDnsZoneResourceId'))), parameters('byoBlobDnsZoneResourceId'), parameters('storageBlobPrivateDnsZoneResourceId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.blobDnsZoneId.value, if(not(empty(parameters('byoBlobDnsZoneResourceId'))), parameters('byoBlobDnsZoneResourceId'), parameters('storageBlobPrivateDnsZoneResourceId')))))), null())), createObject('name', format('{0}-dfs-pe', variables('storageAccountName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), '')), 'service', 'dfs', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dfsDnsZoneId.value, if(not(empty(parameters('byoDfsDnsZoneResourceId'))), parameters('byoDfsDnsZoneResourceId'), parameters('storageDfsPrivateDnsZoneResourceId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dfsDnsZoneId.value, if(not(empty(parameters('byoDfsDnsZoneResourceId'))), parameters('byoDfsDnsZoneResourceId'), parameters('storageDfsPrivateDnsZoneResourceId')))))), null())))), createObject('value', createArray()))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -28499,7 +28502,7 @@
           },
           "roleAssignments": "[if(parameters('enableRbacAuthorization'), createObject('value', createArray(createObject('principalId', if(variables('useExistingIdentity'), reference('existingManagedIdentity').principalId, reference('managedIdentity').outputs.principalId.value), 'roleDefinitionIdOrName', 'Key Vault Secrets User', 'principalType', 'ServicePrincipal'))), createObject('value', createArray()))]",
           "accessPolicies": "[if(not(parameters('enableRbacAuthorization')), createObject('value', createArray(createObject('objectId', if(variables('useExistingIdentity'), reference('existingManagedIdentity').principalId, reference('managedIdentity').outputs.principalId.value), 'permissions', createObject('secrets', createArray('get', 'list'))))), createObject('value', createArray()))]",
-          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('keyVaultName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'vault', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.vaultDnsZoneId.value, if(not(empty(parameters('byoVaultDnsZoneId'))), parameters('byoVaultDnsZoneId'), parameters('keyVaultPrivateDnsZoneId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.vaultDnsZoneId.value, if(not(empty(parameters('byoVaultDnsZoneId'))), parameters('byoVaultDnsZoneId'), parameters('keyVaultPrivateDnsZoneId')))))), null())))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('keyVaultName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), '')), 'service', 'vault', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.vaultDnsZoneId.value, if(not(empty(parameters('byoVaultDnsZoneResourceId'))), parameters('byoVaultDnsZoneResourceId'), parameters('keyVaultPrivateDnsZoneResourceId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.vaultDnsZoneId.value, if(not(empty(parameters('byoVaultDnsZoneResourceId'))), parameters('byoVaultDnsZoneResourceId'), parameters('keyVaultPrivateDnsZoneResourceId')))))), null())))), createObject('value', createArray()))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -31946,7 +31949,7 @@
               }
             }
           },
-          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('dataFactoryName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'dataFactory', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dataFactoryDnsZoneId.value, if(not(empty(parameters('byoDataFactoryDnsZoneId'))), parameters('byoDataFactoryDnsZoneId'), parameters('dataFactoryPrivateDnsZoneId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dataFactoryDnsZoneId.value, if(not(empty(parameters('byoDataFactoryDnsZoneId'))), parameters('byoDataFactoryDnsZoneId'), parameters('dataFactoryPrivateDnsZoneId')))))), null())))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('dataFactoryName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), '')), 'service', 'dataFactory', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dataFactoryDnsZoneId.value, if(not(empty(parameters('byoDataFactoryDnsZoneResourceId'))), parameters('byoDataFactoryDnsZoneResourceId'), parameters('dataFactoryPrivateDnsZoneResourceId')))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.dataFactoryDnsZoneId.value, if(not(empty(parameters('byoDataFactoryDnsZoneResourceId'))), parameters('byoDataFactoryDnsZoneResourceId'), parameters('dataFactoryPrivateDnsZoneResourceId')))))), null())))), createObject('value', createArray()))]",
           "managedVirtualNetwork": "[if(variables('effectiveAdfManagedVnet'), createObject('value', createObject('name', 'default', 'managedPrivateEndpoints', createArray(createObject('name', format('{0}-blob-mpe', variables('storageAccountName')), 'groupId', 'blob', 'fqdns', createArray(format('{0}.blob.{1}', variables('storageAccountName'), environment().suffixes.storage)), 'privateLinkResourceId', reference('storageAccount').outputs.resourceId.value), createObject('name', format('{0}-vault-mpe', variables('keyVaultName')), 'groupId', 'vault', 'fqdns', createArray(format('{0}{1}', variables('keyVaultName'), environment().suffixes.keyvaultDns)), 'privateLinkResourceId', reference('keyVault').outputs.resourceId.value)))), createObject('value', null()))]",
           "integrationRuntimes": "[if(variables('effectiveAdfManagedVnet'), createObject('value', createArray(createObject('name', 'FinOpsHubManagedIR', 'type', 'Managed', 'managedVirtualNetworkName', 'default', 'typeProperties', createObject('computeProperties', createObject('location', 'AutoResolve'))))), createObject('value', null()))]",
           "lock": {
@@ -37320,7 +37323,7 @@
           "clusterPrincipalAssignments": {
             "value": "[concat(createArray(createObject('principalId', reference('dataFactory').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), createArray(createObject('principalId', if(variables('useExistingIdentity'), reference('existingManagedIdentity').clientId, reference('managedIdentity').outputs.clientId.value), 'principalType', 'App', 'role', 'AllDatabasesAdmin', 'tenantId', tenant().tenantId)), variables('deployerAdminAssignment'), variables('adxAdminAssignments'))]"
           },
-          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('adxClusterName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), '')), 'service', 'cluster', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneId'))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneId'))))), null())))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(variables('enablePrivateEndpoints'), createObject('value', createArray(createObject('name', format('{0}-pe', variables('adxClusterName')), 'subnetResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), '')), 'service', 'cluster', 'privateDnsZoneGroup', if(and(parameters('enablePrivateDnsZoneGroups'), not(empty(if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneResourceId'))))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.kustoDnsZoneId.value, parameters('byoKustoDnsZoneResourceId'))))), null())))), createObject('value', createArray()))]",
           "lock": {
             "value": "[parameters('lock')]"
           },
@@ -43367,7 +43370,7 @@
       },
       "value": "[reference('storageAccount').outputs.name.value]"
     },
-    "storageAccountId": {
+    "storageAccountResourceId": {
       "type": "string",
       "metadata": {
         "description": "Storage account resource ID."
@@ -43395,7 +43398,7 @@
       },
       "value": "[reference('keyVault').outputs.name.value]"
     },
-    "keyVaultId": {
+    "keyVaultResourceId": {
       "type": "string",
       "metadata": {
         "description": "Key Vault resource ID."
@@ -43416,7 +43419,7 @@
       },
       "value": "[reference('dataFactory').outputs.name.value]"
     },
-    "dataFactoryId": {
+    "dataFactoryResourceId": {
       "type": "string",
       "metadata": {
         "description": "Data Factory resource ID."
@@ -43589,7 +43592,7 @@
       "metadata": {
         "description": "Private endpoint subnet resource ID. Empty when networkIsolationMode is \"None\"."
       },
-      "value": "[if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetId')), ''))]"
+      "value": "[if(equals(variables('effectiveNetworkIsolationMode'), 'Managed'), reference('managedNetwork').outputs.subnetResourceId.value, if(equals(variables('effectiveNetworkIsolationMode'), 'BringYourOwn'), if(not(empty(parameters('byoSubnetResourceId'))), parameters('byoSubnetResourceId'), parameters('privateEndpointSubnetResourceId')), ''))]"
     },
     "billingAccountTypeHint": {
       "type": "string",
@@ -43632,7 +43635,7 @@
         "description": "Cost Management export configuration."
       },
       "value": {
-        "storageAccountId": "[reference('storageAccount').outputs.resourceId.value]",
+        "storageAccountResourceId": "[reference('storageAccount').outputs.resourceId.value]",
         "storageAccountName": "[reference('storageAccount').outputs.name.value]",
         "msexportsContainer": "msexports",
         "ingestionContainer": "ingestion",

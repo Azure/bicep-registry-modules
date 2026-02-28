@@ -370,11 +370,11 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     hubName: '<hubName>'
     // Non-required parameters
     adxAdminPrincipalIds: []
-    byoBlobDnsZoneId: '<byoBlobDnsZoneId>'
-    byoDataFactoryDnsZoneId: '<byoDataFactoryDnsZoneId>'
-    byoDfsDnsZoneId: '<byoDfsDnsZoneId>'
+    byoBlobDnsZoneResourceId: '<byoBlobDnsZoneResourceId>'
+    byoDataFactoryDnsZoneResourceId: '<byoDataFactoryDnsZoneResourceId>'
+    byoDfsDnsZoneResourceId: '<byoDfsDnsZoneResourceId>'
     byoSubnetResourceId: '<byoSubnetResourceId>'
-    byoVaultDnsZoneId: '<byoVaultDnsZoneId>'
+    byoVaultDnsZoneResourceId: '<byoVaultDnsZoneResourceId>'
     dataExplorerClusterName: '<dataExplorerClusterName>'
     deployerPrincipalId: '<deployerPrincipalId>'
     deploymentConfiguration: 'waf-aligned'
@@ -419,20 +419,20 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "adxAdminPrincipalIds": {
       "value": []
     },
-    "byoBlobDnsZoneId": {
-      "value": "<byoBlobDnsZoneId>"
+    "byoBlobDnsZoneResourceId": {
+      "value": "<byoBlobDnsZoneResourceId>"
     },
-    "byoDataFactoryDnsZoneId": {
-      "value": "<byoDataFactoryDnsZoneId>"
+    "byoDataFactoryDnsZoneResourceId": {
+      "value": "<byoDataFactoryDnsZoneResourceId>"
     },
-    "byoDfsDnsZoneId": {
-      "value": "<byoDfsDnsZoneId>"
+    "byoDfsDnsZoneResourceId": {
+      "value": "<byoDfsDnsZoneResourceId>"
     },
     "byoSubnetResourceId": {
       "value": "<byoSubnetResourceId>"
     },
-    "byoVaultDnsZoneId": {
-      "value": "<byoVaultDnsZoneId>"
+    "byoVaultDnsZoneResourceId": {
+      "value": "<byoVaultDnsZoneResourceId>"
     },
     "dataExplorerClusterName": {
       "value": "<dataExplorerClusterName>"
@@ -492,11 +492,11 @@ using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 param hubName = '<hubName>'
 // Non-required parameters
 param adxAdminPrincipalIds = []
-param byoBlobDnsZoneId = '<byoBlobDnsZoneId>'
-param byoDataFactoryDnsZoneId = '<byoDataFactoryDnsZoneId>'
-param byoDfsDnsZoneId = '<byoDfsDnsZoneId>'
+param byoBlobDnsZoneResourceId = '<byoBlobDnsZoneResourceId>'
+param byoDataFactoryDnsZoneResourceId = '<byoDataFactoryDnsZoneResourceId>'
+param byoDfsDnsZoneResourceId = '<byoDfsDnsZoneResourceId>'
 param byoSubnetResourceId = '<byoSubnetResourceId>'
-param byoVaultDnsZoneId = '<byoVaultDnsZoneId>'
+param byoVaultDnsZoneResourceId = '<byoVaultDnsZoneResourceId>'
 param dataExplorerClusterName = '<dataExplorerClusterName>'
 param deployerPrincipalId = '<deployerPrincipalId>'
 param deploymentConfiguration = 'waf-aligned'
@@ -651,18 +651,18 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     // Required parameters
     hubName: '<hubName>'
     // Non-required parameters
-    dataFactoryPrivateDnsZoneId: '<dataFactoryPrivateDnsZoneId>'
+    dataFactoryPrivateDnsZoneResourceId: '<dataFactoryPrivateDnsZoneResourceId>'
     deploymentConfiguration: 'waf-aligned'
     deploymentType: 'fabric'
     enableTelemetry: true
     fabricDatabaseName: 'finops'
     fabricIngestionUri: '<fabricIngestionUri>'
     fabricQueryUri: '<fabricQueryUri>'
-    keyVaultPrivateDnsZoneId: '<keyVaultPrivateDnsZoneId>'
+    keyVaultPrivateDnsZoneResourceId: '<keyVaultPrivateDnsZoneResourceId>'
     location: '<location>'
-    privateEndpointSubnetId: '<privateEndpointSubnetId>'
-    storageBlobPrivateDnsZoneId: '<storageBlobPrivateDnsZoneId>'
-    storageDfsPrivateDnsZoneId: '<storageDfsPrivateDnsZoneId>'
+    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
+    storageBlobPrivateDnsZoneResourceId: '<storageBlobPrivateDnsZoneResourceId>'
+    storageDfsPrivateDnsZoneResourceId: '<storageDfsPrivateDnsZoneResourceId>'
     tags: {
       CostCenter: 'FinOps'
       Criticality: 'High'
@@ -691,8 +691,8 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "<hubName>"
     },
     // Non-required parameters
-    "dataFactoryPrivateDnsZoneId": {
-      "value": "<dataFactoryPrivateDnsZoneId>"
+    "dataFactoryPrivateDnsZoneResourceId": {
+      "value": "<dataFactoryPrivateDnsZoneResourceId>"
     },
     "deploymentConfiguration": {
       "value": "waf-aligned"
@@ -712,20 +712,20 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     "fabricQueryUri": {
       "value": "<fabricQueryUri>"
     },
-    "keyVaultPrivateDnsZoneId": {
-      "value": "<keyVaultPrivateDnsZoneId>"
+    "keyVaultPrivateDnsZoneResourceId": {
+      "value": "<keyVaultPrivateDnsZoneResourceId>"
     },
     "location": {
       "value": "<location>"
     },
-    "privateEndpointSubnetId": {
-      "value": "<privateEndpointSubnetId>"
+    "privateEndpointSubnetResourceId": {
+      "value": "<privateEndpointSubnetResourceId>"
     },
-    "storageBlobPrivateDnsZoneId": {
-      "value": "<storageBlobPrivateDnsZoneId>"
+    "storageBlobPrivateDnsZoneResourceId": {
+      "value": "<storageBlobPrivateDnsZoneResourceId>"
     },
-    "storageDfsPrivateDnsZoneId": {
-      "value": "<storageDfsPrivateDnsZoneId>"
+    "storageDfsPrivateDnsZoneResourceId": {
+      "value": "<storageDfsPrivateDnsZoneResourceId>"
     },
     "tags": {
       "value": {
@@ -753,18 +753,18 @@ using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 // Required parameters
 param hubName = '<hubName>'
 // Non-required parameters
-param dataFactoryPrivateDnsZoneId = '<dataFactoryPrivateDnsZoneId>'
+param dataFactoryPrivateDnsZoneResourceId = '<dataFactoryPrivateDnsZoneResourceId>'
 param deploymentConfiguration = 'waf-aligned'
 param deploymentType = 'fabric'
 param enableTelemetry = true
 param fabricDatabaseName = 'finops'
 param fabricIngestionUri = '<fabricIngestionUri>'
 param fabricQueryUri = '<fabricQueryUri>'
-param keyVaultPrivateDnsZoneId = '<keyVaultPrivateDnsZoneId>'
+param keyVaultPrivateDnsZoneResourceId = '<keyVaultPrivateDnsZoneResourceId>'
 param location = '<location>'
-param privateEndpointSubnetId = '<privateEndpointSubnetId>'
-param storageBlobPrivateDnsZoneId = '<storageBlobPrivateDnsZoneId>'
-param storageDfsPrivateDnsZoneId = '<storageDfsPrivateDnsZoneId>'
+param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
+param storageBlobPrivateDnsZoneResourceId = '<storageBlobPrivateDnsZoneResourceId>'
+param storageDfsPrivateDnsZoneResourceId = '<storageDfsPrivateDnsZoneResourceId>'
 param tags = {
   CostCenter: 'FinOps'
   Criticality: 'High'
@@ -1002,12 +1002,12 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`byoBlobDnsZoneId`](#parameter-byoblobdnszoneid) | string | Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
-| [`byoDataFactoryDnsZoneId`](#parameter-byodatafactorydnszoneid) | string | Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
-| [`byoDfsDnsZoneId`](#parameter-byodfsdnszoneid) | string | Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
-| [`byoKustoDnsZoneId`](#parameter-byokustodnszoneid) | string | Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true. |
+| [`byoBlobDnsZoneResourceId`](#parameter-byoblobdnszoneresourceid) | string | Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
+| [`byoDataFactoryDnsZoneResourceId`](#parameter-byodatafactorydnszoneresourceid) | string | Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
+| [`byoDfsDnsZoneResourceId`](#parameter-byodfsdnszoneresourceid) | string | Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
+| [`byoKustoDnsZoneResourceId`](#parameter-byokustodnszoneresourceid) | string | Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true. |
 | [`byoSubnetResourceId`](#parameter-byosubnetresourceid) | string | Subnet resource ID for private endpoints. Required if networkIsolationMode is "BringYourOwn". |
-| [`byoVaultDnsZoneId`](#parameter-byovaultdnszoneid) | string | Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
+| [`byoVaultDnsZoneResourceId`](#parameter-byovaultdnszoneresourceid) | string | Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true. |
 | [`dataExplorerClusterName`](#parameter-dataexplorerclustername) | string | Azure Data Explorer cluster name. Required if deploymentType is "adx" and not using existing cluster. |
 | [`fabricQueryUri`](#parameter-fabricqueryuri) | string | Microsoft Fabric eventhouse Query URI. Required if deploymentType is "fabric". |
 
@@ -1020,7 +1020,7 @@ param tags = {
 | [`billingAccountType`](#parameter-billingaccounttype) | string | Billing type hint: "ea", "mca", "mpa" support exports; "paygo", "csp" use demo mode. See README for export support matrix. |
 | [`dataExplorerCapacity`](#parameter-dataexplorercapacity) | int | Number of instances in the Data Explorer cluster. Set to 0 to use configuration default (minimal: 1, waf-aligned: 2). |
 | [`dataExplorerSku`](#parameter-dataexplorersku) | string | Azure Data Explorer SKU. Leave empty to use configuration default (minimal: Dev SKU, waf-aligned: Standard SKU). |
-| [`dataFactoryPrivateDnsZoneId`](#parameter-datafactoryprivatednszoneid) | string | Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead. |
+| [`dataFactoryPrivateDnsZoneResourceId`](#parameter-datafactoryprivatednszoneresourceid) | string | Note: This is a deprecated property, please use `byoDataFactoryDnsZoneResourceId` instead. |
 | [`deployerPrincipalId`](#parameter-deployerprincipalid) | string | Principal ID of the deployer. Grants Storage Blob Data Contributor (for test data upload) and ADX AllDatabasesAdmin (for cluster management and troubleshooting). |
 | [`deploymentConfiguration`](#parameter-deploymentconfiguration) | string | Deployment configuration profile. "minimal" for lowest cost dev/test, "waf-aligned" for production with HA/DR. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Deployment type: "adx" for Azure Data Explorer, "fabric" for Microsoft Fabric, "storage-only" for basic deployment. |
@@ -1037,16 +1037,16 @@ param tags = {
 | [`existingManagedIdentityResourceId`](#parameter-existingmanagedidentityresourceid) | string | Resource ID of an existing user-assigned managed identity. When provided, no new identity is created. Use this for strict security policies where identities must be pre-created. |
 | [`fabricDatabaseName`](#parameter-fabricdatabasename) | string | Microsoft Fabric database name in the eventhouse. |
 | [`fabricIngestionUri`](#parameter-fabricingestionuri) | string | Microsoft Fabric eventhouse ingestion URI. Used for data ingestion pipelines. |
-| [`keyVaultPrivateDnsZoneId`](#parameter-keyvaultprivatednszoneid) | string | Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead. |
+| [`keyVaultPrivateDnsZoneResourceId`](#parameter-keyvaultprivatednszoneresourceid) | string | Note: This is a deprecated property, please use `byoVaultDnsZoneResourceId` instead. |
 | [`location`](#parameter-location) | string | Azure region for all resources. Default: resource group location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedSubnetAddressPrefix`](#parameter-managedsubnetaddressprefix) | string | Address prefix for the private endpoints subnet. Only used when networkIsolationMode is "Managed". Default: 10.0.0.0/26. |
 | [`managedVnetAddressPrefix`](#parameter-managedvnetaddressprefix) | string | Address prefix for the managed VNet. Only used when networkIsolationMode is "Managed". Default: 10.0.0.0/24. |
 | [`networkIsolationMode`](#parameter-networkisolationmode) | string | Network isolation: "None" (public), "Managed" (module creates VNet/PEs), or "BringYourOwn" (you provide subnet/DNS). |
-| [`privateEndpointSubnetId`](#parameter-privateendpointsubnetid) | string | Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints. |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints. |
 | [`scopesToMonitor`](#parameter-scopestomonitor) | array | Billing scopes to monitor. See README for scope types and export support matrix. |
-| [`storageBlobPrivateDnsZoneId`](#parameter-storageblobprivatednszoneid) | string | Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead. |
-| [`storageDfsPrivateDnsZoneId`](#parameter-storagedfsprivatednszoneid) | string | Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead. |
+| [`storageBlobPrivateDnsZoneResourceId`](#parameter-storageblobprivatednszoneresourceid) | string | Note: This is a deprecated property, please use `byoBlobDnsZoneResourceId` instead. |
+| [`storageDfsPrivateDnsZoneResourceId`](#parameter-storagedfsprivatednszoneresourceid) | string | Note: This is a deprecated property, please use `byoDfsDnsZoneResourceId` instead. |
 | [`tags`](#parameter-tags) | object | Tags to apply to all resources. |
 | [`tagsByResource`](#parameter-tagsbyresource) | object | Resource-specific tags by resource type. |
 
@@ -1057,7 +1057,7 @@ Name of the FinOps Hub instance. Used for resource naming.
 - Required: Yes
 - Type: string
 
-### Parameter: `byoBlobDnsZoneId`
+### Parameter: `byoBlobDnsZoneResourceId`
 
 Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.
 
@@ -1065,7 +1065,7 @@ Resource ID of the private DNS zone for blob storage (privatelink.blob.core.wind
 - Type: string
 - Default: `''`
 
-### Parameter: `byoDataFactoryDnsZoneId`
+### Parameter: `byoDataFactoryDnsZoneResourceId`
 
 Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.
 
@@ -1073,7 +1073,7 @@ Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.az
 - Type: string
 - Default: `''`
 
-### Parameter: `byoDfsDnsZoneId`
+### Parameter: `byoDfsDnsZoneResourceId`
 
 Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.
 
@@ -1081,7 +1081,7 @@ Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.window
 - Type: string
 - Default: `''`
 
-### Parameter: `byoKustoDnsZoneId`
+### Parameter: `byoKustoDnsZoneResourceId`
 
 Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true.
 
@@ -1097,7 +1097,7 @@ Subnet resource ID for private endpoints. Required if networkIsolationMode is "B
 - Type: string
 - Default: `''`
 
-### Parameter: `byoVaultDnsZoneId`
+### Parameter: `byoVaultDnsZoneResourceId`
 
 Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.
 
@@ -1172,9 +1172,9 @@ Azure Data Explorer SKU. Leave empty to use configuration default (minimal: Dev 
 - Type: string
 - Default: `''`
 
-### Parameter: `dataFactoryPrivateDnsZoneId`
+### Parameter: `dataFactoryPrivateDnsZoneResourceId`
 
-Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead.
+Note: This is a deprecated property, please use `byoDataFactoryDnsZoneResourceId` instead.
 
 - Required: No
 - Type: string
@@ -1461,9 +1461,9 @@ Microsoft Fabric eventhouse ingestion URI. Used for data ingestion pipelines.
 - Type: string
 - Default: `''`
 
-### Parameter: `keyVaultPrivateDnsZoneId`
+### Parameter: `keyVaultPrivateDnsZoneResourceId`
 
-Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead.
+Note: This is a deprecated property, please use `byoVaultDnsZoneResourceId` instead.
 
 - Required: No
 - Type: string
@@ -1553,7 +1553,7 @@ Network isolation: "None" (public), "Managed" (module creates VNet/PEs), or "Bri
   ]
   ```
 
-### Parameter: `privateEndpointSubnetId`
+### Parameter: `privateEndpointSubnetResourceId`
 
 Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints.
 
@@ -1569,17 +1569,17 @@ Billing scopes to monitor. See README for scope types and export support matrix.
 - Type: array
 - Default: `[]`
 
-### Parameter: `storageBlobPrivateDnsZoneId`
+### Parameter: `storageBlobPrivateDnsZoneResourceId`
 
-Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead.
+Note: This is a deprecated property, please use `byoBlobDnsZoneResourceId` instead.
 
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `storageDfsPrivateDnsZoneId`
+### Parameter: `storageDfsPrivateDnsZoneResourceId`
 
-Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead.
+Note: This is a deprecated property, please use `byoDfsDnsZoneResourceId` instead.
 
 - Required: No
 - Type: string
@@ -1613,10 +1613,10 @@ Resource-specific tags by resource type.
 | `dataExplorerEndpoint` | string | Data Explorer cluster endpoint. For Fabric, returns the Eventhouse query URI. |
 | `dataExplorerName` | string | Data Explorer cluster name. Returns existing cluster name if using existing, or new cluster name if created. |
 | `dataExplorerResourceId` | string | Data Explorer cluster resource ID. Returns existing cluster ID if using existing. |
-| `dataFactoryId` | string | Data Factory resource ID. |
 | `dataFactoryName` | string | Data Factory name. |
 | `dataFactoryPipelines` | array | List of core Data Factory pipelines (msexports, ingestion). |
 | `dataFactoryPrincipalId` | string | Data Factory managed identity principal ID (for configuring managed exports). |
+| `dataFactoryResourceId` | string | Data Factory resource ID. |
 | `dataFactoryTriggers` | array | List of core Data Factory triggers. |
 | `deploymentMode` | string | Deployment mode: enterprise, demo, or hybrid. |
 | `exportConfiguration` | object | Cost Management export configuration. |
@@ -1626,8 +1626,8 @@ Resource-specific tags by resource type.
 | `fabricEventhouseQueryUri` | string | Fabric eventhouse query URI. Empty if not using Fabric. |
 | `gettingStartedGuide` | object | Getting started guide based on deployment mode. |
 | `hubName` | string | Name of the deployed FinOps Hub. |
-| `keyVaultId` | string | Key Vault resource ID. |
 | `keyVaultName` | string | Key Vault name. |
+| `keyVaultResourceId` | string | Key Vault resource ID. |
 | `keyVaultUri` | string | Key Vault URI. |
 | `location` | string | Azure region where resources were deployed. |
 | `maccEnabled` | bool | Indicates whether MACC (Microsoft Azure Consumption Commitment) tracking is enabled. |
@@ -1643,8 +1643,8 @@ Resource-specific tags by resource type.
 | `resourceGroupName` | string | Resource group name. |
 | `scopeCount` | int | Number of scopes configured for monitoring. |
 | `settingsJson` | object | Settings.json content for the config container. |
-| `storageAccountId` | string | Storage account resource ID. |
 | `storageAccountName` | string | Storage account name. |
+| `storageAccountResourceId` | string | Storage account resource ID. |
 | `storageBlobEndpoint` | string | Storage account primary blob endpoint. |
 | `storageUrlForPowerBI` | string | URL for Power BI connection to ingestion container. |
 | `tenantId` | string | Azure AD tenant ID (for configuring managed exports). |

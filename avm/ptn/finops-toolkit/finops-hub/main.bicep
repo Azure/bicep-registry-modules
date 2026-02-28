@@ -8,7 +8,7 @@
 
 metadata name = 'FinOps Hub'
 metadata description = 'Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.'
-metadata version = '0.0.12'
+metadata version = '0.12.0'
 metadata owner = 'FinOps Team'
 
 targetScope = 'resourceGroup'
@@ -80,7 +80,7 @@ param existingManagedIdentityResourceId string = ''
 param deployerPrincipalId string = ''
 
 @description('Optional. Array of additional ADX admin principal IDs (users or groups) to grant AllDatabasesAdmin role.')
-param adxAdminPrincipalIds array = []
+param adxAdminPrincipalIds string[] = []
 
 // --- Cost Management Export Configuration ---
 @description('Optional. Billing type hint: "ea", "mca", "mpa" support exports; "paygo", "csp" use demo mode. See README for export support matrix.')
@@ -123,20 +123,20 @@ param byoSubnetResourceId string = ''
 
 #disable-next-line no-hardcoded-env-urls
 @description('Conditional. Resource ID of the private DNS zone for blob storage (privatelink.blob.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
-param byoBlobDnsZoneId string = ''
+param byoBlobDnsZoneResourceId string = ''
 
 #disable-next-line no-hardcoded-env-urls
 @description('Conditional. Resource ID of the private DNS zone for DFS storage (privatelink.dfs.core.windows.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
-param byoDfsDnsZoneId string = ''
+param byoDfsDnsZoneResourceId string = ''
 
 @description('Conditional. Resource ID of the private DNS zone for Key Vault (privatelink.vaultcore.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
-param byoVaultDnsZoneId string = ''
+param byoVaultDnsZoneResourceId string = ''
 
 @description('Conditional. Resource ID of the private DNS zone for Data Factory (privatelink.datafactory.azure.net). Required if networkIsolationMode is "BringYourOwn" and enablePrivateDnsZoneGroups is true.')
-param byoDataFactoryDnsZoneId string = ''
+param byoDataFactoryDnsZoneResourceId string = ''
 
 @description('Conditional. Resource ID of the private DNS zone for Kusto/ADX (privatelink.<region>.kusto.windows.net). Required if networkIsolationMode is "BringYourOwn", deploymentType is "adx", and enablePrivateDnsZoneGroups is true.')
-param byoKustoDnsZoneId string = ''
+param byoKustoDnsZoneResourceId string = ''
 
 // --- Private Endpoint Options ---
 @description('Optional. Enable Data Factory Managed Virtual Network with Managed Integration Runtime. Required for accessing private endpoints from ADF pipelines. Automatically enabled when networkIsolationMode is "Managed" or "BringYourOwn". See enableManagedPeAutoApproval parameter for PE approval options.')
@@ -151,19 +151,19 @@ param enablePrivateDnsZoneGroups bool = true
 // --- Legacy Parameters (Deprecated - use networkIsolationMode instead) ---
 // These are kept for backward compatibility but will be removed in v1.0
 @description('Optional. Note: This is a deprecated property, please use `networkIsolationMode="BringYourOwn"` with `byoSubnetResourceId` instead. Resource ID of the subnet for private endpoints.')
-param privateEndpointSubnetId string = ''
+param privateEndpointSubnetResourceId string = ''
 
-@description('Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneId` instead.')
-param storageBlobPrivateDnsZoneId string = ''
+@description('Optional. Note: This is a deprecated property, please use `byoBlobDnsZoneResourceId` instead.')
+param storageBlobPrivateDnsZoneResourceId string = ''
 
-@description('Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneId` instead.')
-param storageDfsPrivateDnsZoneId string = ''
+@description('Optional. Note: This is a deprecated property, please use `byoDfsDnsZoneResourceId` instead.')
+param storageDfsPrivateDnsZoneResourceId string = ''
 
-@description('Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneId` instead.')
-param keyVaultPrivateDnsZoneId string = ''
+@description('Optional. Note: This is a deprecated property, please use `byoVaultDnsZoneResourceId` instead.')
+param keyVaultPrivateDnsZoneResourceId string = ''
 
-@description('Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneId` instead.')
-param dataFactoryPrivateDnsZoneId string = ''
+@description('Optional. Note: This is a deprecated property, please use `byoDataFactoryDnsZoneResourceId` instead.')
+param dataFactoryPrivateDnsZoneResourceId string = ''
 
 // --- Tagging ---
 @description('Optional. Tags to apply to all resources.')
@@ -210,7 +210,7 @@ var enableManagedExports = contains(['ea', 'mca', 'mpa'], billingAccountType) &&
 // Network isolation: waf-aligned defaults to Managed, legacy params upgrade to BringYourOwn
 var effectiveNetworkIsolationMode = deploymentConfiguration == 'waf-aligned' && networkIsolationMode == 'None'
   ? 'Managed'
-  : (!empty(privateEndpointSubnetId) && networkIsolationMode == 'None' ? 'BringYourOwn' : networkIsolationMode)
+  : (!empty(privateEndpointSubnetResourceId) && networkIsolationMode == 'None' ? 'BringYourOwn' : networkIsolationMode)
 
 // Private endpoint configuration - enabled for Managed or BringYourOwn modes
 var enablePrivateEndpoints = effectiveNetworkIsolationMode != 'None'
@@ -322,33 +322,33 @@ module managedNetwork 'modules/network.bicep' = if (effectiveNetworkIsolationMod
 var effectiveSubnetId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.subnetResourceId
   : (effectiveNetworkIsolationMode == 'BringYourOwn'
-      ? (!empty(byoSubnetResourceId) ? byoSubnetResourceId : privateEndpointSubnetId)
+      ? (!empty(byoSubnetResourceId) ? byoSubnetResourceId : privateEndpointSubnetResourceId)
       : '')
 
 #disable-next-line BCP321
 var effectiveBlobDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.blobDnsZoneId
-  : (!empty(byoBlobDnsZoneId) ? byoBlobDnsZoneId : storageBlobPrivateDnsZoneId)
+  : (!empty(byoBlobDnsZoneResourceId) ? byoBlobDnsZoneResourceId : storageBlobPrivateDnsZoneResourceId)
 
 #disable-next-line BCP321
 var effectiveDfsDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.dfsDnsZoneId
-  : (!empty(byoDfsDnsZoneId) ? byoDfsDnsZoneId : storageDfsPrivateDnsZoneId)
+  : (!empty(byoDfsDnsZoneResourceId) ? byoDfsDnsZoneResourceId : storageDfsPrivateDnsZoneResourceId)
 
 #disable-next-line BCP321
 var effectiveVaultDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.vaultDnsZoneId
-  : (!empty(byoVaultDnsZoneId) ? byoVaultDnsZoneId : keyVaultPrivateDnsZoneId)
+  : (!empty(byoVaultDnsZoneResourceId) ? byoVaultDnsZoneResourceId : keyVaultPrivateDnsZoneResourceId)
 
 #disable-next-line BCP321
 var effectiveDataFactoryDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.dataFactoryDnsZoneId
-  : (!empty(byoDataFactoryDnsZoneId) ? byoDataFactoryDnsZoneId : dataFactoryPrivateDnsZoneId)
+  : (!empty(byoDataFactoryDnsZoneResourceId) ? byoDataFactoryDnsZoneResourceId : dataFactoryPrivateDnsZoneResourceId)
 
 #disable-next-line BCP321
 var effectiveKustoDnsZoneId = effectiveNetworkIsolationMode == 'Managed'
   ? managedNetwork!.outputs.kustoDnsZoneId
-  : byoKustoDnsZoneId
+  : byoKustoDnsZoneResourceId
 
 // --- User-Assigned Managed Identity ---
 resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (useExistingIdentity) {
@@ -967,7 +967,7 @@ output resourceGroupName string = resourceGroup().name
 output storageAccountName string = storageAccount.outputs.name
 
 @description('Storage account resource ID.')
-output storageAccountId string = storageAccount.outputs.resourceId
+output storageAccountResourceId string = storageAccount.outputs.resourceId
 
 @description('Storage account primary blob endpoint.')
 output storageBlobEndpoint string = storageAccount.outputs.primaryBlobEndpoint
@@ -980,7 +980,7 @@ output storageUrlForPowerBI string = 'https://${storageAccountName}.dfs.${enviro
 output keyVaultName string = keyVault.outputs.name
 
 @description('Key Vault resource ID.')
-output keyVaultId string = keyVault.outputs.resourceId
+output keyVaultResourceId string = keyVault.outputs.resourceId
 
 @description('Key Vault URI.')
 output keyVaultUri string = keyVault.outputs.uri
@@ -990,7 +990,7 @@ output keyVaultUri string = keyVault.outputs.uri
 output dataFactoryName string = dataFactory.outputs.name
 
 @description('Data Factory resource ID.')
-output dataFactoryId string = dataFactory.outputs.resourceId
+output dataFactoryResourceId string = dataFactory.outputs.resourceId
 
 @description('Data Factory managed identity principal ID (for configuring managed exports).')
 output dataFactoryPrincipalId string = dataFactory.outputs.systemAssignedMIPrincipalId!
@@ -1106,7 +1106,7 @@ output deploymentMode string = empty(scopesToMonitor) || billingAccountType == '
 
 @description('Cost Management export configuration.')
 output exportConfiguration object = {
-  storageAccountId: storageAccount.outputs.resourceId
+  storageAccountResourceId: storageAccount.outputs.resourceId
   storageAccountName: storageAccount.outputs.name
   msexportsContainer: 'msexports'
   ingestionContainer: 'ingestion'

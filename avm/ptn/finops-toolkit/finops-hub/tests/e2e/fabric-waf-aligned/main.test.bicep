@@ -71,32 +71,32 @@ module testDeployment '../../../main.bicep' = [
       hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       // Non-required parameters
       location: resourceLocation
-      
+
       // WAF-aligned configuration with Fabric
       deploymentConfiguration: 'waf-aligned'
       deploymentType: 'fabric'
-      
+
       // Fabric Eventhouse configuration
       // The eventhouse must be pre-created in your Fabric workspace
       fabricQueryUri: fabricQueryUri
       fabricIngestionUri: fabricIngestionUri
       fabricDatabaseName: 'finops'
-      
+
       // WAF-aligned automatically enables:
       // - Premium_ZRS storage for HA/DR
       // - Purge protection for Key Vault
       // - Disables public network access
-      
+
       // Private endpoint configuration
-      privateEndpointSubnetId: dependencies.outputs.privateEndpointSubnetId
-      storageBlobPrivateDnsZoneId: dependencies.outputs.storageBlobPrivateDnsZoneId
-      storageDfsPrivateDnsZoneId: dependencies.outputs.storageDfsPrivateDnsZoneId
-      keyVaultPrivateDnsZoneId: dependencies.outputs.keyVaultPrivateDnsZoneId
-      dataFactoryPrivateDnsZoneId: dependencies.outputs.dataFactoryPrivateDnsZoneId
-      
+      privateEndpointSubnetResourceId: dependencies.outputs.privateEndpointSubnetResourceId
+      storageBlobPrivateDnsZoneResourceId: dependencies.outputs.storageBlobPrivateDnsZoneResourceId
+      storageDfsPrivateDnsZoneResourceId: dependencies.outputs.storageDfsPrivateDnsZoneResourceId
+      keyVaultPrivateDnsZoneResourceId: dependencies.outputs.keyVaultPrivateDnsZoneResourceId
+      dataFactoryPrivateDnsZoneResourceId: dependencies.outputs.dataFactoryPrivateDnsZoneResourceId
+
       // Telemetry
       enableTelemetry: true
-      
+
       // Tags following WAF recommendations
       tags: {
         SecurityControl: 'Ignore'

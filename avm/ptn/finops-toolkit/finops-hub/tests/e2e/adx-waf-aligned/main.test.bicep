@@ -68,42 +68,42 @@ module testDeployment '../../../main.bicep' = [
       hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       // Non-required parameters
       location: enforcedLocation
-      
+
       // WAF-aligned configuration with ADX
       deploymentConfiguration: 'waf-aligned'
       deploymentType: 'adx'
       dataExplorerClusterName: '${namePrefix}${serviceShort}adx${deploymentSuffix}'
-      
+
       // WAF-aligned automatically enables:
       // - Premium_ZRS storage for HA/DR
       // - Purge protection for Key Vault
       // - Disables public network access
-      
+
       // BringYourOwn network isolation - customer manages subnet and DNS zones
       // ⚠️ You own upgrades when using BringYourOwn - test before deploying new versions
       // For easier upgrades, consider networkIsolationMode: 'Managed'
       networkIsolationMode: 'BringYourOwn'
-      byoSubnetResourceId: dependencies.outputs.privateEndpointSubnetId
-      byoBlobDnsZoneId: dependencies.outputs.storageBlobPrivateDnsZoneId
-      byoDfsDnsZoneId: dependencies.outputs.storageDfsPrivateDnsZoneId
-      byoVaultDnsZoneId: dependencies.outputs.keyVaultPrivateDnsZoneId
-      byoDataFactoryDnsZoneId: dependencies.outputs.dataFactoryPrivateDnsZoneId
+      byoSubnetResourceId: dependencies.outputs.privateEndpointSubnetResourceId
+      byoBlobDnsZoneResourceId: dependencies.outputs.storageBlobPrivateDnsZoneResourceId
+      byoDfsDnsZoneResourceId: dependencies.outputs.storageDfsPrivateDnsZoneResourceId
+      byoVaultDnsZoneResourceId: dependencies.outputs.keyVaultPrivateDnsZoneResourceId
+      byoDataFactoryDnsZoneResourceId: dependencies.outputs.dataFactoryPrivateDnsZoneResourceId
       enablePrivateDnsZoneGroups: true
-      
+
       // ADX admin access for testing
       adxAdminPrincipalIds: []
       deployerPrincipalId: deployerPrincipalId
-      
+
       // Telemetry
       enableTelemetry: true
-      
+
       // WAF: AZR-000119 (KeyVault.Logs) - audit diagnostics for Key Vault
       diagnosticSettings: [
         {
           workspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceId
         }
       ]
-      
+
       // Tags following WAF recommendations
       tags: {
         SecurityControl: 'Ignore'
