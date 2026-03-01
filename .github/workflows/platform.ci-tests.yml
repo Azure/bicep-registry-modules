@@ -80,7 +80,10 @@ jobs:
             $res = Test-CI @functionInput
 
             Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $res.path) >> $env:GITHUB_OUTPUT
-            Write-Output ('{0}={1}' -f 'testsFailed', $res.error) >> $env:GITHUB_OUTPUT
+
+            if ($res.error) {
+              Write-Error "One or more tests have failed. Please review the test results for more details."
+            }
           azPSVersion: "latest"
 
       - name: "Output to GitHub job summaries"
@@ -97,9 +100,5 @@ jobs:
           } else {
             Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
             Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
-          }
-
-          if('${{ steps.pester_run_step.outputs.testsFailed }}' -eq 'true') {
-            throw 'Tests failed. Please check the test results above for more details.'
           }
           Write-Output '::endgroup::'
