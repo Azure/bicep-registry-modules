@@ -42,11 +42,11 @@ jobs:
               SkipVersionCheck       = $true
               Recurse                = $true
               SkipBuild              = $true # To reduce noise
-              ThrottleLimit          = 1 # Only for troubleshooting
+              # ThrottleLimit          = 1 # Only for troubleshooting
             }
             $StartTime = Get-Date
             try {
-              Set-AVMModule @inputObject
+              Set-AVMModule @inputObject -ErrorAction 'SilentlyContinue'
             } catch {
               $_.Exception.StackTrace | ConvertTo-Json -Depth 1
               $_.Exception | ConvertTo-Json -Depth 3
