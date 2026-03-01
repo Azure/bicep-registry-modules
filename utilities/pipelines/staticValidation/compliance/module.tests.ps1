@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -45,7 +45,11 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $builtTestFileMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
+    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
+    $builtTestFileMap = @{}
+    foreach ($path in $pathsToBuild) {
+        $builtTestFileMap[$path] = $compiledTemplatesMap[$path] | ConvertFrom-Json -AsHashtable
+    }
 
     # Getting the list of child modules allowed for publishing
     $childModuleAllowedListRelativePath = Join-Path 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
