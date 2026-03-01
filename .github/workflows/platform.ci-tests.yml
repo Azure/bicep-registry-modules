@@ -77,9 +77,10 @@ jobs:
             Write-Verbose "Invoke task with" -Verbose
             Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            $outputsFilePath = Test-CI @functionInput
+            $res = Test-CI @functionInput
 
-            Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $outputsFilePath) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $res.path) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'testsFailed', $res.error) >> $env:GITHUB_OUTPUT
           azPSVersion: "latest"
 
       - name: "Output to GitHub job summaries"
@@ -96,5 +97,9 @@ jobs:
           } else {
             Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
             Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
+          }
+
+          if('${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}' -eq 'true') {
+            throw 'Tests failed. Please check the test results above for more details.'
           }
           Write-Output '::endgroup::'

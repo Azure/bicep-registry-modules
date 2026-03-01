@@ -102,7 +102,10 @@ function Test-CI {
 
         Set-PesterGitHubOutput @functionInput -Verbose
 
-        return $functionInput.OutputFilePath
+        return @{
+            path  = $functionInput.OutputFilePath
+            error = $testResults.FailedCount -gt 0
+        }
     }
 }
 
