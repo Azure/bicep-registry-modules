@@ -2203,17 +2203,27 @@ function Set-ModuleReadMe {
     Write-Output 'Hey 2'
     # Build template, if required
     if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
+        Write-Output 'Hey 2.1'
         if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
+            Write-Output 'Hey 2.2'
             $templateFileContent = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
+            Write-Output 'Hey 2.3'
         } else {
+            Write-Output 'Hey 2.4'
             $templateFileContent = ConvertFrom-Json (Get-Content $TemplateFilePath -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+            Write-Output 'Hey 2.5'
         }
     } else {
+        Write-Output 'Hey 2.6'
         $templateFileContent = $PreLoadedContent.TemplateFileContent
+        Write-Output 'Hey 2.7'
     }
 
+    Write-Output 'Hey 2.8'
     if (-not $templateFileContent) {
+        Write-Output 'Hey 2.9'
         throw "Failed to compile [$TemplateFilePath]"
+        Write-Output 'Hey 2.10'
     }
 
     Write-Output 'Hey 3'
