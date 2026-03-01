@@ -102,10 +102,7 @@ function Set-AVMModule {
         [int] $Depth,
 
         [Parameter()]
-        [switch] $ForceCacheRefresh,
-
-        [Parameter()]
-        [switch] $Async
+        [switch] $ForceCacheRefresh
     )
 
     # Load helper scripts
@@ -121,6 +118,9 @@ function Set-AVMModule {
     . $buildRpcFilePath
     . $readMeFilePath
 
+    # ============ #
+    #   Pre-Build  #
+    # ============ #
     if ($InvokeForDiff) {
         $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
 
@@ -176,34 +176,34 @@ function Set-AVMModule {
         Test-BicepVersion
     }
 
+    # ======================= #
+    #   Module module files   #
+    # ======================= #
     if (-not $SkipBuild) {
-        if (-not $Async) {
-            if ($PSCmdlet.ShouldProcess(('Building of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-                Build-ViaRPC -BicepFilePath $relevantTemplatePaths
-            }
+        $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize 50
+        if ($relevantTemplatePaths.Count -le 50) {
+            $compilationChunks = , $compilationChunks
         } else {
-            $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize 50
-            if ($relevantTemplatePaths.Count -le 50) {
-                $compilationChunks = , $compilationChunks
-            } else {
-                $compilationChunks = $compilationChunks
-            }
+            $compilationChunks = $compilationChunks
+        }
 
-            $compilationInputObject = @{
-                List          = $compilationChunks
-                ScriptBlock   = {
-                    . $using:buildRpcFilePath
-                    Build-ViaRPC -BicepFilePath $_
-                }
-                ThrottleLimit = $ThrottleLimit
-                ProgressText  = 'Compiled [{0}/{1}] template file batches'
+        $compilationInputObject = @{
+            List          = $compilationChunks
+            ScriptBlock   = {
+                . $using:buildRpcFilePath
+                Build-ViaRPC -BicepFilePath $_
             }
-            if ($PSCmdlet.ShouldProcess(('Compiling templaes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-                Invoke-Async @compilationInputObject
-            }
+            ThrottleLimit = $ThrottleLimit
+            ProgressText  = 'Compiled [{0}/{1}] template file batches'
+        }
+        if ($PSCmdlet.ShouldProcess(('Compiling templaes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Invoke-Async @compilationInputObject
         }
     }
 
+    # ====================== #
+    #   Build readme files   #
+    # ====================== #
     if (-not $SkipReadMe) {
         # Load recurring information we'll need for the modules
         .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
@@ -234,14 +234,42 @@ function Set-AVMModule {
             }
         }
 
-        if (-not $Async) {
-            $compiledTestFilePaths = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
-            foreach ($TemplateFilePath in $relevantTemplatePaths) {
+        $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
+        if ($relevantTemplatePaths.Count -le 50) {
+            $compilationChunks = , $compilationChunks
+        } else {
+            $compilationChunks = $compilationChunks
+        }
+
+        $testFileCompilationInputObject = @{
+            List           = $compilationChunks
+            ScriptBlock    = {
+                . $using:buildRpcFilePath
+                return (Build-ViaRPC -BicepFilePath $_ -PassThru)
+            }
+            ThrottleLimit  = $ThrottleLimit
+            ProgressText   = 'Generated [{0}/{1}] test files batches.'
+            PassThruObject = @{}
+        }
+
+
+        if ($PSCmdlet.ShouldProcess(('Building [{0}] test templates in path [{1}]' -f $testFilePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            $compiledTestFilePaths = Invoke-Async @testFileCompilationInputObject
+        }
+
+        # ================= #
+        #   Build ReadMEs   #
+        # ================= #
+        $compilationInputObject = @{
+            List          = $relevantTemplatePaths
+            ScriptBlock   = {
+                . $using:readMeFilePath
 
                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                 $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
-                Write-Verbose "Generating readme for [$resourceTypeIdentifier]"
+                Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
+                $TemplateFilePath = $_
                 $moduleRoot = Split-Path $TemplateFilePath -Parent
 
                 # Select relevant test files
@@ -254,115 +282,35 @@ function Set-AVMModule {
                         $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
                     }
                     foreach ($relevantTestFilePath in $relevantTestFilePaths) {
-                        $relevantTestFilesContent[$relevantTestFilePath] = $compiledTestFilePaths[$relevantTestFilePath]
+                        $relevantTestFilesContent[$relevantTestFilePath] = ($using:compiledTestFilePaths)[$relevantTestFilePath]
                     }
                 } else {
-                    foreach ($filePath in $compiledTestFilePaths.Keys) {
+                    foreach ($filePath in $using:compiledTestFilePaths.Keys) {
                         if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($moduleRoot))) {
-                            $relevantTestFilesContent[$filePath] = $compiledTestFilePaths[$filePath]
+                            $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
                         }
                     }
                 }
 
                 $readmeInputObject = @{
                     TemplateFilePath  = $TemplateFilePath
-                    ForceCacheRefresh = $ForceCacheRefresh
+                    ForceCacheRefresh = $using:ForceCacheRefresh
                     PreLoadedContent  = @{
-                        CrossReferencedModuleList = $crossReferencedModuleList
-                        TelemetryFileContent      = $telemetryFileContent
+                        CrossReferencedModuleList = $using:crossReferencedModuleList
+                        TelemetryFileContent      = $using:telemetryFileContent
                         CompiledTestFiles         = $relevantTestFilesContent
-                    } + (-not $SkipBuild ? @{
+                    } + (-not $using:SkipBuild ? @{
                             # If the template was just build, we can pass the JSON into the readme script to be more efficient
                             TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
                         } : @{})
                 }
-                if ($PSCmdlet.ShouldProcess(('Generating of [{0}] module readmes in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-                    Set-ModuleReadMe @readmeInputObject
-                }
+                Set-ModuleReadMe @readmeInputObject
             }
-
-        } else {
-            . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
-            $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
-            if ($relevantTemplatePaths.Count -le 50) {
-                $compilationChunks = , $compilationChunks
-            } else {
-                $compilationChunks = $compilationChunks
-            }
-
-
-
-            $testFileCompilationInputObject = @{
-                List           = $compilationChunks
-                ScriptBlock    = {
-                    . $using:buildRpcFilePath
-                    return (Build-ViaRPC -BicepFilePath $_ -PassThru)
-                }
-                ThrottleLimit  = $ThrottleLimit
-                ProgressText   = 'Generated [{0}/{1}] test files batches.'
-                PassThruObject = @{}
-            }
-
-
-            if ($PSCmdlet.ShouldProcess(('Building [{0}] test templates in path [{1}]' -f $testFilePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-                $compiledTestFilePaths = Invoke-Async @testFileCompilationInputObject
-            }
-
-            # ================= #
-            #   Build ReadMEs   #
-            # ================= #
-            $compilationInputObject = @{
-                List          = $relevantTemplatePaths
-                ScriptBlock   = {
-                    . $using:readMeFilePath
-
-                    $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
-                    $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
-                    Write-Output "Generating readme for [$resourceTypeIdentifier]"
-
-                    $TemplateFilePath = $_
-                    $moduleRoot = Split-Path $TemplateFilePath -Parent
-
-                    # Select relevant test files
-                    $relevantTestFilesContent = @{}
-                    if ($moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$') {
-                        $testFolderPath = Split-Path $moduleRoot
-
-                        $scopedModuleFolderName = Split-Path -Path $moduleRoot -Leaf
-                        $relevantTestFilePaths = (Get-ChildItem -Path $testFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
-                            $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
-                        }
-                        foreach ($relevantTestFilePath in $relevantTestFilePaths) {
-                            $relevantTestFilesContent[$relevantTestFilePath] = ($using:compiledTestFilePaths)[$relevantTestFilePath]
-                        }
-                    } else {
-                        foreach ($filePath in $using:compiledTestFilePaths.Keys) {
-                            if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($moduleRoot))) {
-                                $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
-                            }
-                        }
-                    }
-
-                    $readmeInputObject = @{
-                        TemplateFilePath  = $TemplateFilePath
-                        ForceCacheRefresh = $using:ForceCacheRefresh
-                        PreLoadedContent  = @{
-                            CrossReferencedModuleList = $using:crossReferencedModuleList
-                            TelemetryFileContent      = $using:telemetryFileContent
-                            CompiledTestFiles         = $relevantTestFilesContent
-                        } + (-not $using:SkipBuild ? @{
-                                # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                                TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-                            } : @{})
-                    }
-                    Set-ModuleReadMe @readmeInputObject
-                }
-                ThrottleLimit = $ThrottleLimit
-                ProgressText  = 'Generated [{0}/{1}] readme files'
-            }
-            if ($PSCmdlet.ShouldProcess(('Generating readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-                Invoke-Async @compilationInputObject
-            }
+            ThrottleLimit = $ThrottleLimit
+            ProgressText  = 'Generated [{0}/{1}] readme files'
+        }
+        if ($PSCmdlet.ShouldProcess(('Generating readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Invoke-Async @compilationInputObject
         }
     }
 }
