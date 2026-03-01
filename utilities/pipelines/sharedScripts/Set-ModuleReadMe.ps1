@@ -987,18 +987,8 @@ function Add-BicepParameterTypeComment {
         # [2/4] Add a comment where the required parameters start
         $BicepParamsArray = @('{0}// Required parameters' -f (' ' * $requiredParameterIndent)) + $BicepParamsArray[(0 .. ($BicepParamsArray.Count))]
         # [3/4] Find the location if the last required parameter
-        try {
-            $requiredParameterStartIndex = ($BicepParamsArray | Select-String ('^[\s]{0}{1}:.+' -f "{$requiredParameterIndent}", $parameterToSplitAt) | ForEach-Object { $_.LineNumber - 1 })[0]
-        } catch {
-            # Write-Warning '########## Troubleshooting' -Verbose
-            # Write-Warning "Path: [$testFilePath]" -Verbose
-            # Write-Warning '##########' -Verbose
-            # Write-Warning "ParamToSplit: [$parameterToSplitAt]" -Verbose
-            # Write-Warning "Indent: [$requiredParameterIndent]" -Verbose
-            # Write-Warning ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
-            # Write-Warning '##########' -Verbose
-            throw $_
-        }
+        $requiredParameterStartIndex = ($BicepParamsArray | Select-String ('^[\s]{0}{1}:.+' -f "{$requiredParameterIndent}", $parameterToSplitAt) | ForEach-Object { $_.LineNumber - 1 })[0]
+
         # [4/4] If we have more than only required parameters, let's add a corresponding comment
         if ($AllParametersList.Count -gt $RequiredParametersList.Count) {
             $nextLineIndent = ([regex]::Match($BicepParamsArray[$requiredParameterStartIndex + 1], '^(\s+).*')).Captures.Groups[1].Value.Length
@@ -1464,19 +1454,7 @@ function ConvertTo-FormattedBicep {
         RequiredParametersList = $RequiredParametersList
         AllParametersList      = $JSONParameters.psBase.Keys
     }
-
-    try {
-        $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
-    } catch {
-        Write-Warning '########## Troubleshooting' -Verbose
-        Write-Warning "Path: [$testFilePath]" -Verbose
-        Write-Warning '##########' -Verbose
-        Write-Warning "JSONParameters: [$($JSONParameters | ConvertTo-Json)]" -Verbose
-        Write-Warning "orderedJSONParameters: [$($orderedJSONParameters | ConvertTo-Json)]" -Verbose
-        Write-Warning "BicepParams: [$($BicepParams | ConvertTo-Json)]" -Verbose
-        Write-Warning '##########' -Verbose
-        throw $_
-    }
+    $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
 
     return $commentedBicepParams
 }
@@ -1780,7 +1758,18 @@ function Set-UsageExamplesSection {
                 JSONParameters         = $paramsInJSONFormat
                 RequiredParametersList = $RequiredParametersList
             }
-            $bicepExample = ConvertTo-FormattedBicep @conversionInputObject
+            try {
+                $bicepExample = ConvertTo-FormattedBicep @conversionInputObject -ErrorAction 'Stop'
+            } catch {
+                Write-Warning '########## Troubleshooting' -Verbose
+                Write-Warning "Path: [$testFilePath]" -Verbose
+                Write-Warning '##########' -Verbose
+                Write-Warning "rawBicepExample: [$($rawBicepExample | ConvertTo-Json -Depth 2)]" -Verbose
+                Write-Warning "paramsInJSONFormat: [$($paramsInJSONFormat | ConvertTo-Json -Depth 2)]" -Verbose
+                Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json -Depth 2)]" -Verbose
+                Write-Warning '##########' -Verbose
+                throw $_
+            }
 
             # [6/6] Convert the Bicep format to a Bicep parameters file format
             if ($bicepExample.length -gt 0) {
