@@ -2263,7 +2263,13 @@ function Set-ModuleReadMe {
         TemplateFileContent  = $templateFileContent
         TemplateFilePath     = $TemplateFilePath
     }
-    $readMeFileContent = Initialize-ReadMe @inputObject
+    try {
+        $readMeFileContent = Initialize-ReadMe @inputObject
+    } catch {
+        Write-Warning 'Failed to set [Initialize] section:'
+        Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+        throw $_
+    }
 
     # =============== #
     #   Set content   #
@@ -2275,7 +2281,13 @@ function Set-ModuleReadMe {
             ReadMeFileContent   = $readMeFileContent
             TemplateFileContent = $templateFileContent
         }
-        $readMeFileContent = Set-ResourceTypesSection @inputObject
+        try {
+            $readMeFileContent = Set-ResourceTypesSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [Resource Types] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
@@ -2295,7 +2307,13 @@ function Set-ModuleReadMe {
             IsMultiScopeParentModule = $isMultiScopeParentModule
             IsMultiScopeChildModule  = $isMultiScopeChildModule
         }
-        $readMeFileContent = Set-UsageExamplesSection @inputObject
+        try {
+            $readMeFileContent = Set-UsageExamplesSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [Usage examples] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     if ($SectionsToRefresh -contains 'Parameters') {
@@ -2306,7 +2324,13 @@ function Set-ModuleReadMe {
             TemplateFileContent = $templateFileContent
             currentFolderPath   = (Split-Path $TemplateFilePath -Parent)
         }
-        $readMeFileContent = Set-ParametersSection @inputObject
+        try {
+            $readMeFileContent = Set-ParametersSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [Parameters] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     if ($SectionsToRefresh -contains 'Functions') {
@@ -2316,7 +2340,13 @@ function Set-ModuleReadMe {
             ReadMeFileContent   = $readMeFileContent
             TemplateFileContent = $templateFileContent
         }
-        $readMeFileContent = Set-FunctionsSection @inputObject
+        try {
+            $readMeFileContent = Set-FunctionsSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [Functions] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     if ($SectionsToRefresh -contains 'Outputs') {
@@ -2326,7 +2356,13 @@ function Set-ModuleReadMe {
             ReadMeFileContent   = $readMeFileContent
             TemplateFileContent = $templateFileContent
         }
-        $readMeFileContent = Set-OutputsSection @inputObject
+        try {
+            $readMeFileContent = Set-OutputsSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [Outputs] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     if ($SectionsToRefresh -contains 'CrossReferences') {
@@ -2339,7 +2375,13 @@ function Set-ModuleReadMe {
             TemplateFileContent  = $templateFileContent
             PreLoadedContent     = $PreLoadedContent
         }
-        $readMeFileContent = Set-CrossReferencesSection @inputObject
+        try {
+            $readMeFileContent = Set-CrossReferencesSection @inputObject
+        } catch {
+            Write-Warning 'Failed to set [CrossReferences] section:'
+            Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
+            throw $_
+        }
     }
 
     # Handle [Notes] section
