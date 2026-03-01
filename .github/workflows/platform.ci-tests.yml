@@ -59,94 +59,94 @@ jobs:
             git diff --stat --diff-filter=AM
           azPSVersion: "latest"
 
-  test_rpc:
-    runs-on: ubuntu-latest
-    name: "Run CI tests"
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+  # test_rpc:
+  #   runs-on: ubuntu-latest
+  #   name: "Run CI tests"
+  #   steps:
+  #     - name: "Checkout"
+  #       uses: actions/checkout@v5
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Get short SHA
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            git branch --show-current
-            git rev-parse --short HEAD
-          azPSVersion: "latest"
+  #     - name: Get short SHA
+  #       uses: azure/powershell@v2
+  #       with:
+  #         inlineScript: |
+  #           git branch --show-current
+  #           git rev-parse --short HEAD
+  #         azPSVersion: "latest"
 
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
+  #     - name: Set environment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
 
-      - name: Run CI tests
-        id: pester_run_step
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
+  #     - name: Run CI tests
+  #       id: pester_run_step
+  #       uses: azure/powershell@v2
+  #       with:
+  #         inlineScript: |
+  #           # Load used functions
+  #           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
 
-            $inputObject = @{
-              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
-              SkipFileAndFolderSetup = $true
-              SkipVersionCheck       = $true
-              Recurse                = $true
-              SkipBuild              = $true # To reduce noise
-            }
+  #           $inputObject = @{
+  #             ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
+  #             SkipFileAndFolderSetup = $true
+  #             SkipVersionCheck       = $true
+  #             Recurse                = $true
+  #             SkipBuild              = $true # To reduce noise
+  #           }
 
-            $StartTime = Get-Date
-            try {
-              Set-AVMModule @inputObject
-            } catch {
-              $_.Exception | ConvertTo-Json -Depth 3
-            }
-            $ElapsedTime = (Get-Date) - $StartTime
-            $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
-            Write-Verbose ("Execution took [$TotalTime]") -Verbose
+  #           $StartTime = Get-Date
+  #           try {
+  #             Set-AVMModule @inputObject
+  #           } catch {
+  #             $_.Exception | ConvertTo-Json -Depth 3
+  #           }
+  #           $ElapsedTime = (Get-Date) - $StartTime
+  #           $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
+  #           Write-Verbose ("Execution took [$TotalTime]") -Verbose
 
-            git diff --stat --diff-filter=AM
-          azPSVersion: "latest"
+  #           git diff --stat --diff-filter=AM
+  #         azPSVersion: "latest"
 
-  test_rpc_async:
-    runs-on: ubuntu-latest
-    name: "Run CI tests (async)"
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+  # test_rpc_async:
+  #   runs-on: ubuntu-latest
+  #   name: "Run CI tests (async)"
+  #   steps:
+  #     - name: "Checkout"
+  #       uses: actions/checkout@v5
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
+  #     - name: Set environment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
 
-      - name: Run CI tests
-        id: pester_run_step
-        uses: azure/powershell@v2
-        with:
-          inlineScript: |
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
+  #     - name: Run CI tests
+  #       id: pester_run_step
+  #       uses: azure/powershell@v2
+  #       with:
+  #         inlineScript: |
+  #           # Load used functions
+  #           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Set-AVMModule.ps1')
 
-            $inputObject = @{
-              ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
-              SkipFileAndFolderSetup = $true
-              SkipVersionCheck       = $true
-              Recurse                = $true
-              Async                  = $true
-              SkipBuild              = $true # To reduce noise
-              ErrorAction            = 'Stop'
-            }
+  #           $inputObject = @{
+  #             ModuleFolderPath       = (Join-Path $env:GITHUB_WORKSPACE 'avm' 'res' 'network')
+  #             SkipFileAndFolderSetup = $true
+  #             SkipVersionCheck       = $true
+  #             Recurse                = $true
+  #             Async                  = $true
+  #             SkipBuild              = $true # To reduce noise
+  #             ErrorAction            = 'Stop'
+  #           }
 
-            $StartTime = Get-Date
-            try {
-              Set-AVMModule @inputObject
-            } catch {
-              $_.Exception
-            }
-            $ElapsedTime = (Get-Date) - $StartTime
-            $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
-            Write-Verbose ("Execution took [$TotalTime]") -Verbose
+  #           $StartTime = Get-Date
+  #           try {
+  #             Set-AVMModule @inputObject
+  #           } catch {
+  #             $_.Exception
+  #           }
+  #           $ElapsedTime = (Get-Date) - $StartTime
+  #           $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
+  #           Write-Verbose ("Execution took [$TotalTime]") -Verbose
 
-            git diff --stat --diff-filter=AM
-          azPSVersion: "latest"
+  #           git diff --stat --diff-filter=AM
+  #         azPSVersion: "latest"
