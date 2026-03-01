@@ -2193,12 +2193,14 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Check template & make full path
+    Write-Output 'Hey 1'
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
 
     if (-not (Test-Path $TemplateFilePath -PathType 'Leaf')) {
         throw "[$TemplateFilePath] is no valid file path."
     }
 
+    Write-Output 'Hey 2'
     # Build template, if required
     if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
         if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
@@ -2214,6 +2216,7 @@ function Set-ModuleReadMe {
         throw "Failed to compile [$TemplateFilePath]"
     }
 
+    Write-Output 'Hey 3'
     $moduleRoot = Split-Path $TemplateFilePath -Parent
     $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
     # Custom modules are modules having the same resource type but different properties based on the name
@@ -2223,6 +2226,7 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    Write-Output 'Hey 4'
     # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
     # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
     $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
@@ -2233,6 +2237,7 @@ function Set-ModuleReadMe {
     # ===================== #
     #   Preparation steps   #
     # ===================== #
+    Write-Output 'Hey 5'
     # Read original readme, if any. Then delete it to build from scratch
     if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
         $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
@@ -2255,6 +2260,7 @@ function Set-ModuleReadMe {
     } else {
         $notes = @()
     }
+    Write-Output 'Hey 6'
 
     # Initialize readme
     $inputObject = @{
@@ -2264,7 +2270,7 @@ function Set-ModuleReadMe {
         TemplateFilePath     = $TemplateFilePath
     }
     try {
-        $readMeFileContent = Initialize-ReadMe @inputObject
+        $readMeFileContent = Initialize-ReadMe @inputObject -ErrorAction 'Stop'
     } catch {
         Write-Warning 'Failed to set [Initialize] section:'
         Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2282,7 +2288,7 @@ function Set-ModuleReadMe {
             TemplateFileContent = $templateFileContent
         }
         try {
-            $readMeFileContent = Set-ResourceTypesSection @inputObject
+            $readMeFileContent = Set-ResourceTypesSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [Resource Types] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2308,7 +2314,7 @@ function Set-ModuleReadMe {
             IsMultiScopeChildModule  = $isMultiScopeChildModule
         }
         try {
-            $readMeFileContent = Set-UsageExamplesSection @inputObject
+            $readMeFileContent = Set-UsageExamplesSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [Usage examples] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2325,7 +2331,7 @@ function Set-ModuleReadMe {
             currentFolderPath   = (Split-Path $TemplateFilePath -Parent)
         }
         try {
-            $readMeFileContent = Set-ParametersSection @inputObject
+            $readMeFileContent = Set-ParametersSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [Parameters] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2341,7 +2347,7 @@ function Set-ModuleReadMe {
             TemplateFileContent = $templateFileContent
         }
         try {
-            $readMeFileContent = Set-FunctionsSection @inputObject
+            $readMeFileContent = Set-FunctionsSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [Functions] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2357,7 +2363,7 @@ function Set-ModuleReadMe {
             TemplateFileContent = $templateFileContent
         }
         try {
-            $readMeFileContent = Set-OutputsSection @inputObject
+            $readMeFileContent = Set-OutputsSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [Outputs] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
@@ -2376,7 +2382,7 @@ function Set-ModuleReadMe {
             PreLoadedContent     = $PreLoadedContent
         }
         try {
-            $readMeFileContent = Set-CrossReferencesSection @inputObject
+            $readMeFileContent = Set-CrossReferencesSection @inputObject -ErrorAction 'Stop'
         } catch {
             Write-Warning 'Failed to set [CrossReferences] section:'
             Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
