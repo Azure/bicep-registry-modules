@@ -255,10 +255,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                         PreLoadedContent = @{
                             CrossReferencedModuleList = $using:crossReferencedModuleList
                             TelemetryFileContent      = $using:TelemetryFileContent
-                        } + (-not $using:SkipBuild ? @{
-                                # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                                TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-                            } : @{})
+                        }
                     }
                     Set-ModuleReadMe @readmeInputObject
                 }
