@@ -99,7 +99,7 @@ jobs:
             Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
           }
 
-          if('${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}' -eq 'true') {
+          if('${{ steps.pester_run_step.outputs.testsFailed }}' -eq 'true') {
             throw 'Tests failed. Please check the test results above for more details.'
           }
           Write-Output '::endgroup::'
