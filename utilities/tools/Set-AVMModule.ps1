@@ -260,7 +260,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                                 TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
                             } : @{})
                     }
-                    Set-ModuleReadMe @readmeInputObject -ErrorAction 'Stop'
+                    Set-ModuleReadMe @readmeInputObject
                 }
             }
 

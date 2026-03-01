@@ -2202,31 +2202,25 @@ function Set-ModuleReadMe {
 
     Write-Output 'Hey 2'
     # Build template, if required
-    if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
-        Write-Output 'Hey 2.1'
-        if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
-            Write-Output 'Hey 2.2'
-            $templateFileContent = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
-            Write-Output 'Hey 2.3'
+    try {
+        if ($PreLoadedContent.Keys -notcontains 'TemplateFileContent') {
+            if ((Split-Path -Path $TemplateFilePath -Extension) -eq '.bicep') {
+                $templateFileContent = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
+            } else {
+                $templateFileContent = ConvertFrom-Json (Get-Content $TemplateFilePath -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+            }
         } else {
-            Write-Output 'Hey 2.4'
-            $templateFileContent = ConvertFrom-Json (Get-Content $TemplateFilePath -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-            Write-Output 'Hey 2.5'
+            $templateFileContent = $PreLoadedContent.TemplateFileContent
         }
-    } else {
-        Write-Output 'Hey 2.6'
-        $templateFileContent = $PreLoadedContent.TemplateFileContent
-        Write-Output 'Hey 2.7'
+
+        if (-not $templateFileContent) {
+            throw "Failed to compile [$TemplateFilePath]"
+        }
+    } catch {
+        Write-Output 'Fail 2'
+        throw $_
     }
 
-    Write-Output 'Hey 2.8'
-    if (-not $templateFileContent) {
-        Write-Output 'Hey 2.9'
-        throw "Failed to compile [$TemplateFilePath]"
-        Write-Output 'Hey 2.10'
-    }
-
-    Write-Output 'Hey 3'
     $moduleRoot = Split-Path $TemplateFilePath -Parent
     $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
     # Custom modules are modules having the same resource type but different properties based on the name
@@ -2236,7 +2230,6 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
-    Write-Output 'Hey 4'
     # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
     # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
     $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
@@ -2247,7 +2240,6 @@ function Set-ModuleReadMe {
     # ===================== #
     #   Preparation steps   #
     # ===================== #
-    Write-Output 'Hey 5'
     # Read original readme, if any. Then delete it to build from scratch
     if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
         $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
@@ -2270,7 +2262,7 @@ function Set-ModuleReadMe {
     } else {
         $notes = @()
     }
-    Write-Output 'Hey 6'
+    Write-Output "Begin readme generation for module: [$fullModuleIdentifier]"
 
     # Initialize readme
     $inputObject = @{
