@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "1894786010509047155"
+      "version": "0.40.2.10011",
+      "templateHash": "5421209616382254469"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -1197,14 +1197,21 @@
   "variables": {
     "copy": [
       {
+        "name": "userAssignedIdsClean",
+        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]",
+        "input": "[trim(string(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex('userAssignedIdsClean')]))]"
+      },
+      {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "enableReferencedModulesTelemetry": false,
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "systemAssignedEnabled": "[coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())]",
+    "hasUserAssigned": "[not(empty(variables('userAssignedIdsClean')))]",
+    "formattedUserAssignedIdentities": "[if(variables('hasUserAssigned'), reduce(map(variables('userAssignedIdsClean'), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), null())]",
+    "identity": "[if(or(variables('systemAssignedEnabled'), variables('hasUserAssigned')), createObject('type', if(variables('systemAssignedEnabled'), if(variables('hasUserAssigned'), 'SystemAssigned, UserAssigned', 'SystemAssigned'), 'UserAssigned'), 'userAssignedIdentities', if(variables('hasUserAssigned'), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Automation Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f353d9bd-d4a6-484e-a77a-8050b599b867')]",
       "Automation Job Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4fe576fe-1146-4730-92eb-48519fa6bf9f')]",
@@ -1289,7 +1296,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Automation/automationAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1306,7 +1313,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Automation/automationAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1347,7 +1354,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Automation/automationAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1399,8 +1406,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1102035892549822881"
+              "version": "0.40.2.10011",
+              "templateHash": "10585729329725234313"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1525,8 +1532,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9350842444998004762"
+              "version": "0.40.2.10011",
+              "templateHash": "17703213389649231754"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module."
@@ -1669,8 +1676,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7429439001293692573"
+              "version": "0.40.2.10011",
+              "templateHash": "13290079138115448455"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -1810,8 +1817,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "14037488219091728238"
+              "version": "0.40.2.10011",
+              "templateHash": "11739533985870237787"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -1943,8 +1950,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "6843144992392213265"
+              "version": "0.40.2.10011",
+              "templateHash": "6137708918956060271"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -2087,8 +2094,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "5301804441296572842"
+              "version": "0.40.2.10011",
+              "templateHash": "12656272962843008080"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule."
@@ -2271,8 +2278,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "10588034900706137826"
+              "version": "0.40.2.10011",
+              "templateHash": "7204929107119213973"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2474,8 +2481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1003001893489041612"
+              "version": "0.40.2.10011",
+              "templateHash": "16251399738270014446"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule."
@@ -2605,8 +2612,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16799927383775424664"
+              "version": "0.40.2.10011",
+              "templateHash": "11756495158297130838"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable."
@@ -2725,8 +2732,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "13061424773815045389"
+              "version": "0.40.2.10011",
+              "templateHash": "10732761663190432430"
             },
             "name": "Automation Account Webhook",
             "description": "This module deploys an Azure Automation Account Webhook."
@@ -2877,8 +2884,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9129481983892486980"
+              "version": "0.40.2.10011",
+              "templateHash": "14404067029010691909"
             },
             "name": "Automation Account Source Controls",
             "description": "This module deploys an Azure Automation Account Source Control."
@@ -3045,8 +3052,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "634840299052899075"
+              "version": "0.40.2.10011",
+              "templateHash": "17692041944530990573"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4710674832973366577"
+      "version": "0.40.2.10011",
+      "templateHash": "14404067029010691909"
     },
     "name": "Automation Account Source Controls",
     "description": "This module deploys an Azure Automation Account Source Control."

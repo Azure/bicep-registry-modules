@@ -96,21 +96,25 @@ param sourceControlConfigurations sourceControlConfigurationType[]?
 
 var enableReferencedModulesTelemetry = false
 
-var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
-var identity = !empty(managedIdentities)
+// --- Normalize managed identity inputs
+var systemAssignedEnabled = managedIdentities.?systemAssigned ?? false
+// Clean array: remove empty/whitespace entries (robust against messy inputs)
+var userAssignedIdsClean = [for id in (managedIdentities.?userAssignedResourceIds ?? []): trim(string(id))]
+var hasUserAssigned = !empty(userAssignedIdsClean)
+// Build ARM-compliant map: { '<resourceId>': {} }
+var formattedUserAssignedIdentities = hasUserAssigned
+  ? reduce(map(userAssignedIdsClean, (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next))
+  : null
+// IMPORTANT: never emit type 'None'. If nothing requested -> identity is null (omit property)
+var identity = (systemAssignedEnabled || hasUserAssigned)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+      type: systemAssignedEnabled
+        ? (hasUserAssigned ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : 'UserAssigned'
+      userAssignedIdentities: hasUserAssigned ? formattedUserAssignedIdentities : null
     }
   : null
-
+// --- End normalize managed identity inputs
 var builtInRoleNames = {
   'Automation Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
