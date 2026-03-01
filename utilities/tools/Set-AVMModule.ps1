@@ -236,17 +236,31 @@ function Set-AVMModule {
 
         if (-not $Async) {
             $compiledTestFilePaths = Build-ViaRPC -BicepFilePath $testFilePaths -PassThru
-
             foreach ($TemplateFilePath in $relevantTemplatePaths) {
+
+                $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
+                $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
+                Write-Verbose "Generating readme for [$resourceTypeIdentifier]"
+
                 $moduleRoot = Split-Path $TemplateFilePath -Parent
 
-                $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
-
+                # Select relevant test files
                 $relevantTestFilesContent = @{}
-                foreach ($filePath in $compiledTestFilePaths.Keys) {
-                    $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
-                    if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($expectedTestFolderPath))) {
-                        $relevantTestFilesContent[$filePath] = $compiledTestFilePaths[$filePath]
+                if ($moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$') {
+                    $testFolderPath = Split-Path $moduleRoot
+
+                    $scopedModuleFolderName = Split-Path -Path $moduleRoot -Leaf
+                    $relevantTestFilePaths = (Get-ChildItem -Path $testFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+                        $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+                    }
+                    foreach ($relevantTestFilePath in $relevantTestFilePaths) {
+                        $relevantTestFilesContent[$relevantTestFilePath] = $compiledTestFilePaths[$relevantTestFilePath]
+                    }
+                } else {
+                    foreach ($filePath in $compiledTestFilePaths.Keys) {
+                        if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($moduleRoot))) {
+                            $relevantTestFilesContent[$filePath] = $compiledTestFilePaths[$filePath]
+                        }
                     }
                 }
 
@@ -300,22 +314,32 @@ function Set-AVMModule {
             $compilationInputObject = @{
                 List          = $relevantTemplatePaths
                 ScriptBlock   = {
+                    . $using:readMeFilePath
+
                     $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                     $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
                     Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
-                    . $using:readMeFilePath
-
                     $TemplateFilePath = $_
                     $moduleRoot = Split-Path $TemplateFilePath -Parent
 
-                    $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
-
+                    # Select relevant test files
                     $relevantTestFilesContent = @{}
-                    foreach ($filePath in $using:compiledTestFilePaths.Keys) {
-                        $expectedTestFolderPath = $isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot
-                        if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($expectedTestFolderPath))) {
-                            $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
+                    if ($moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$') {
+                        $testFolderPath = Split-Path $moduleRoot
+
+                        $scopedModuleFolderName = Split-Path -Path $moduleRoot -Leaf
+                        $relevantTestFilePaths = (Get-ChildItem -Path $testFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+                            $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
+                        }
+                        foreach ($relevantTestFilePath in $relevantTestFilePaths) {
+                            $relevantTestFilesContent[$relevantTestFilePath] = ($using:compiledTestFilePaths)[$relevantTestFilePath]
+                        }
+                    } else {
+                        foreach ($filePath in $using:compiledTestFilePaths.Keys) {
+                            if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($moduleRoot))) {
+                                $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
+                            }
                         }
                     }
 
