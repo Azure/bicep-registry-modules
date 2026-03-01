@@ -990,13 +990,13 @@ function Add-BicepParameterTypeComment {
         try {
             $requiredParameterStartIndex = ($BicepParamsArray | Select-String ('^[\s]{0}{1}:.+' -f "{$requiredParameterIndent}", $parameterToSplitAt) | ForEach-Object { $_.LineNumber - 1 })[0]
         } catch {
-            Write-Warning '########## Troubleshooting' -Verbose
-            Write-Warning "Path: [$testFilePath]" -Verbose
-            Write-Warning '##########' -Verbose
-            Write-Warning "ParamToSplit: [$parameterToSplitAt]" -Verbose
-            Write-Warning "Indent: [$requiredParameterIndent]" -Verbose
-            Write-Warning ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
-            Write-Warning '##########' -Verbose
+            # Write-Warning '########## Troubleshooting' -Verbose
+            # Write-Warning "Path: [$testFilePath]" -Verbose
+            # Write-Warning '##########' -Verbose
+            # Write-Warning "ParamToSplit: [$parameterToSplitAt]" -Verbose
+            # Write-Warning "Indent: [$requiredParameterIndent]" -Verbose
+            # Write-Warning ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
+            # Write-Warning '##########' -Verbose
             throw $_
         }
         # [4/4] If we have more than only required parameters, let's add a corresponding comment
@@ -1471,9 +1471,9 @@ function ConvertTo-FormattedBicep {
         Write-Warning '########## Troubleshooting' -Verbose
         Write-Warning "Path: [$testFilePath]" -Verbose
         Write-Warning '##########' -Verbose
+        Write-Warning "JSONParameters: [$($JSONParameters | ConvertTo-Json)]" -Verbose
+        Write-Warning "orderedJSONParameters: [$($orderedJSONParameters | ConvertTo-Json)]" -Verbose
         Write-Warning "BicepParams: [$($BicepParams | ConvertTo-Json)]" -Verbose
-        Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json)]" -Verbose
-        Write-Warning "AllParametersList: [$($JSONParameters | ConvertTo-Json)]" -Verbose
         Write-Warning '##########' -Verbose
         throw $_
     }

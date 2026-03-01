@@ -142,7 +142,7 @@ jobs:
             try {
               Set-AVMModule @inputObject
             } catch {
-              $_.Exception | ConvertTo-Json -Depth 3
+              $_.Exception
             }
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
