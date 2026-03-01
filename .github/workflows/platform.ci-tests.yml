@@ -46,7 +46,7 @@ jobs:
 
             $StartTime = Get-Date
             try {
-              Set-AVMModule @inputObject
+              Set-AVMModule @inputObject -ErrorAction 'SilentlyContinue'
             } catch {
               $_.Exception | ConvertTo-Json -Depth 3
             }
