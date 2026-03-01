@@ -1,4 +1,4 @@
-#region helper functions
+﻿#region helper functions
 <#
 .SYNOPSIS
 Find any nested dependency recursively
@@ -112,7 +112,7 @@ As an output you will receive a hashtable that (for each provider namespace) lis
 - Directly deployed resources (e.g. via "resource myDeployment 'Microsoft.(..)/(..)@(..)'")
 - Linked remote module templates (e.g. via "module rg 'br/modules:(..):(..)'")
 
-.PARAMETER Path
+.PARAMETER PathFilter
 Optional. The path to search in. Defaults to the 'res' folder.
 
 .PARAMETER ForceCacheRefresh
@@ -148,11 +148,13 @@ function Get-CrossReferencedModuleList {
     [CmdletBinding()]
     param (
         [Parameter()]
-        [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent,
+        [string] $PathFilter = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent,
 
         [Parameter()]
         [switch] $ForceCacheRefresh
     )
+
+    $repoRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
 
     $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
     $cacheFilePath = Join-Path $cacheFolderPath 'avm-crossReferences.json'
@@ -171,6 +173,10 @@ function Get-CrossReferencedModuleList {
     if ($ForceCacheRefresh) {
         $fetchNewData = $true
     } else {
+        $fileInfo = Get-Item $cacheFilePath
+        $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
+        $cacheContent = Get-Content -Path $cacheFilePath -Raw
+
         if (-not $cacheExpired -and $cacheContent.count -gt 0) {
             Write-Verbose 'Fetch references from cache'
             $resultSet = ($cacheContent | ConvertFrom-Json -AsHashtable)
@@ -180,14 +186,13 @@ function Get-CrossReferencedModuleList {
         }
     }
 
-    if ($fetchNewData) {
+    if ($fetchNewData -or ($PathFilter -ne $repoRoot)) {
         Write-Verbose 'Refreshing references'
         # Fetch data
-        $repoRoot = ($Path -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[0]
         $resultSet = [ordered]@{}
 
         # Collect data
-        $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter '*.bicep').FullName | Where-Object {
+        $moduleTemplatePaths = (Get-ChildItem -Path $PathFilter -Recurse -File -Filter '*.bicep').FullName | Where-Object {
             # No files inthe [/utilities/tools/] folder and none in the [/tests/] folder
             $_ -notmatch '.*[\\|\/]tools[\\|\/].*|.*[\\|\/]tests[\\|\/].*'
         } | Sort-Object -Culture 'en-US'
@@ -222,7 +227,7 @@ function Get-CrossReferencedModuleList {
             }
         }
 
-        if ([String]::IsNullOrEmpty($Path)) {
+        if ($PathFilter -eq $repoRoot) {
             # Shouldn't be cached if for specific path as the result set is very small and may override a library-wie cached file
             Write-Verbose 'Caching cross references'
             $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
