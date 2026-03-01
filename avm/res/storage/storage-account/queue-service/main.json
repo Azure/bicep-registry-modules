@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "4565703002375249410"
+      "templateHash": "13378115631248426403"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service."
@@ -345,7 +345,8 @@
     }
   },
   "variables": {
-    "name": "default"
+    "name": "default",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "storageAccount": {
@@ -428,6 +429,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -438,7 +442,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "7074748362797990420"
+              "templateHash": "3909535090487420754"
             },
             "name": "Storage Account Queues",
             "description": "This module deploys a Storage Account Queue."
@@ -553,6 +557,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -585,6 +596,26 @@
               "type": "Microsoft.Storage/storageAccounts/queueServices",
               "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.storage-queue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "storageAccount": {
               "existing": true,

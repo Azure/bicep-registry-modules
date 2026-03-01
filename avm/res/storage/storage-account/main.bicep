@@ -624,6 +624,7 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
   params: {
     storageAccountName: storageAccount.name
     rules: formattedManagementPolicies!
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule) as well as versioning
@@ -643,6 +644,7 @@ module storageAccount_localUsers 'local-user/main.bicep' = [
       hasSharedKey: localUser.?hasSharedKey
       homeDirectory: localUser.?homeDirectory
       sshAuthorizedKeys: localUser.?sshAuthorizedKeys
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
