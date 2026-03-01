@@ -41,7 +41,7 @@ jobs:
               SkipFileAndFolderSetup = $true
               SkipVersionCheck       = $true
               Recurse                = $true
-              SkipBuild              = $true # To reduce noise
+              # SkipBuild              = $true # To reduce noise
               # ThrottleLimit          = 1 # Only for troubleshooting
             }
             $StartTime = Get-Date
@@ -91,7 +91,6 @@ jobs:
               SkipFileAndFolderSetup = $true
               SkipVersionCheck       = $true
               Recurse                = $true
-              SkipBuild              = $true # To reduce noise
             }
 
             $StartTime = Get-Date
@@ -133,7 +132,6 @@ jobs:
               SkipVersionCheck       = $true
               Recurse                = $true
               Async                  = $true
-              SkipBuild              = $true # To reduce noise
               ErrorAction            = 'Stop'
             }
 
