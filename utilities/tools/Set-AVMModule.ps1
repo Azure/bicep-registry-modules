@@ -113,6 +113,7 @@ function Set-AVMModule {
     $buildRpcFilePath = (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
 
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Test-BicepVersion.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
     . $buildRpcFilePath
@@ -170,45 +171,7 @@ function Set-AVMModule {
 
 
     if (-not $SkipVersionCheck) {
-
-        # Get latest release from Azure/Bicep repository
-        # ----------------------------------------------
-        $latestReleaseUrl = 'https://api.github.com/repos/azure/bicep/releases/latest'
-        try {
-            $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
-        } catch {
-            Write-Warning "Skipping Bicep version check as url [$latestReleaseUrl] did not return a response."
-        }
-        if ($latestReleaseObject) {
-            # Only run if connected to the internet / url returns a response
-            $releaseTag = $latestReleaseObject.tag_name
-            $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
-            $latestReleaseUrl = $latestReleaseObject.html_url
-
-            # Get latest installed Bicep CLI version
-            # --------------------------------------
-            $latestInstalledVersionOutput = bicep --version
-
-            if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
-                $latestInstalledVersion = [version]$matches[1]
-            }
-
-            # Compare the versions
-            # --------------------
-            if ($latestInstalledVersion -ne $latestReleaseVersion) {
-                Write-Warning """
-You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
-You can find the latest release at: $latestReleaseUrl.
-
-On Windows, you can use winget to update the Bicep CLI by running 'winget update Microsoft.Bicep' or chocolatey via 'choco upgrade bicep'.
-For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
-
-Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
-"""
-            } else {
-                Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
-            }
-        }
+        Test-BicepVersion
     }
 
     if (-not $SkipBuild) {
@@ -423,59 +386,3 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
         }
     }
 }
-
-### ORIGINAL CODE
-# ---------------
-#
-#     # Using threading to speed up the process
-#     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-#         try {
-#             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-#                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
-#                 $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
-
-#                 ################
-#                 ##   ReadMe   ##
-#                 ################
-#                 if (-not $using:SkipReadMe) {
-#                     Write-Output "Generating readme for [$resourceTypeIdentifier]"
-
-#                     . $using:ReadMeScriptFilePath
-#                     $readmeInputObject = @{
-#                         TemplateFilePath = $_
-#                         PreLoadedContent = @{
-#                             CrossReferencedModuleList = $using:crossReferencedModuleList
-#                             TelemetryFileContent      = $using:TelemetryFileContent
-#                         } + (-not $using:SkipBuild ? @{
-#                                 # If the template was just build, we can pass the JSON into the readme script to be more efficient
-#                                 TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-#                             } : @{})
-#                     }
-#                     Set-ModuleReadMe @readmeInputObject
-#                 }
-#             }
-
-#             do {
-#                 # Sleep a bit to allow the threads to run - adjust as desired.
-#                 Start-Sleep -Seconds 0.5
-
-#                 # Determine how many jobs have completed so far.
-#                 $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
-
-#                 # Relay any pending output from the child jobs.
-#                 $job | Receive-Job
-
-#                 # Update the progress display.
-#                 [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
-#                 Write-Progress -Activity ("Processed [$completedJobsCount/{0}] files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
-
-#             } while ($completedJobsCount -lt $job.ChildJobs.Count)
-
-#             # Clean up the job.
-#             $job | Remove-Job
-#         } finally {
-#             # In case the user cancelled the process, we need to make sure to stop all running jobs
-#             $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
-#         }
-#     }
-# }
