@@ -991,7 +991,7 @@ function Add-BicepParameterTypeComment {
             $requiredParameterStartIndex = ($BicepParamsArray | Select-String ('^[\s]{0}{1}:.+' -f "{$requiredParameterIndent}", $parameterToSplitAt) | ForEach-Object { $_.LineNumber - 1 })[0]
         } catch {
             Write-Warning '########## Troubleshooting' -Verbose
-            Write-Warning "Path: [$TemplateFilePath]" -Verbose
+            Write-Warning "Path: [$testFilePath]" -Verbose
             Write-Warning '##########' -Verbose
             Write-Warning "ParamToSplit: [$parameterToSplitAt]" -Verbose
             Write-Warning "Indent: [$requiredParameterIndent]" -Verbose
@@ -1469,7 +1469,7 @@ function ConvertTo-FormattedBicep {
         $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
     } catch {
         Write-Warning '########## Troubleshooting' -Verbose
-        Write-Warning "Path: [$TemplateFilePath]" -Verbose
+        Write-Warning "Path: [$testFilePath]" -Verbose
         Write-Warning '##########' -Verbose
         Write-Warning "BicepParams: [$($BicepParams | ConvertTo-Json)]" -Verbose
         Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json)]" -Verbose
