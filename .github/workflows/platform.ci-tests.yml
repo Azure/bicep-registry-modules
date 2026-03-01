@@ -44,7 +44,7 @@ jobs:
               SkipBuild              = $true # To reduce noise
               ThrottleLimit          = 1 # Only for troubleshooting
             }
-
+            git diff
             $StartTime = Get-Date
             try {
               Set-AVMModule @inputObject
