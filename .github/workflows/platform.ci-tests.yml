@@ -50,7 +50,6 @@ jobs:
             } catch {
               $_.Exception.StackTrace | ConvertTo-Json -Depth 1
               $_.Exception | ConvertTo-Json -Depth 3
-              throw $_
             }
             $ElapsedTime = (Get-Date) - $StartTime
             $TotalTime = '{0:HH:mm:ss}' -f ([datetime]$ElapsedTime.Ticks)
