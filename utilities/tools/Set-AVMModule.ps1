@@ -1,4 +1,4 @@
-#requires -version 7.3
+﻿#requires -version 7.3
 <#
 .SYNOPSIS
 Create/update all content of an AVM module that can be generated for the user
@@ -260,7 +260,7 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                                 TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
                             } : @{})
                     }
-                    Set-ModuleReadMe @readmeInputObject
+                    Set-ModuleReadMe @readmeInputObject -ErrorAction 'Stop'
                 }
             }
 
