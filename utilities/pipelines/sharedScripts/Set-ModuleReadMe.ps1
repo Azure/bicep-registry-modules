@@ -1762,11 +1762,15 @@ function Set-UsageExamplesSection {
                 $bicepExample = ConvertTo-FormattedBicep @conversionInputObject -ErrorAction 'Stop'
             } catch {
                 Write-Warning '########## Troubleshooting' -Verbose
-                Write-Warning "Path: [$testFilePath]" -Verbose
+                Write-Warning "ModulePath: [$TemplateFilePath]" -Verbose
+                Write-Warning "TestFile-Path: [$testFilePath]" -Verbose
                 Write-Warning '##########' -Verbose
-                Write-Warning "rawBicepExample: [$($rawBicepExample | ConvertTo-Json -Depth 2)]" -Verbose
-                Write-Warning "paramsInJSONFormat: [$($paramsInJSONFormat | ConvertTo-Json -Depth 2)]" -Verbose
-                Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json -Depth 2)]" -Verbose
+                # Write-Warning "rawBicepExample: [$($rawBicepExample | ConvertTo-Json -Depth 2)]" -Verbose
+                # Write-Warning "paramsInJSONFormat: [$($paramsInJSONFormat | ConvertTo-Json -Depth 2)]" -Verbose
+                # Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json -Depth 2)]" -Verbose
+                Write-Warning "CompiledTestFiles: [$($CompiledTestFiles.Keys | ConvertTo-Json -Depth 1)]" -Verbose
+                Write-Warning '##########' -Verbose
+                Write-Warning $_.Exception.StackTrace
                 Write-Warning '##########' -Verbose
                 throw $_
             }
