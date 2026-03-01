@@ -990,13 +990,14 @@ function Add-BicepParameterTypeComment {
         try {
             $requiredParameterStartIndex = ($BicepParamsArray | Select-String ('^[\s]{0}{1}:.+' -f "{$requiredParameterIndent}", $parameterToSplitAt) | ForEach-Object { $_.LineNumber - 1 })[0]
         } catch {
-            Write-Verbose '########## Troubleshooting' -Verbose
-            Write-Verbose "Path: [$TemplateFilePath]" -Verbose
-            Write-Verbose '##########' -Verbose
-            Write-Verbose "Indent: [$parameterToSplitAt]" -Verbose
-            Write-Verbose "Split: [$requiredParameterIndent]" -Verbose
-            Write-Verbose ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
-            Write-Verbose '##########' -Verbose
+            Write-Warning '########## Troubleshooting' -Verbose
+            Write-Warning "Path: [$TemplateFilePath]" -Verbose
+            Write-Warning '##########' -Verbose
+            Write-Warning "Indent: [$parameterToSplitAt]" -Verbose
+            Write-Warning "Split: [$requiredParameterIndent]" -Verbose
+            Write-Warning ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
+            Write-Warning '##########' -Verbose
+            throw $_
         }
         # [4/4] If we have more than only required parameters, let's add a corresponding comment
         if ($AllParametersList.Count -gt $RequiredParametersList.Count) {
