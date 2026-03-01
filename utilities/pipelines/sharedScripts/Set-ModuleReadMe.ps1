@@ -993,8 +993,8 @@ function Add-BicepParameterTypeComment {
             Write-Warning '########## Troubleshooting' -Verbose
             Write-Warning "Path: [$TemplateFilePath]" -Verbose
             Write-Warning '##########' -Verbose
-            Write-Warning "Indent: [$parameterToSplitAt]" -Verbose
-            Write-Warning "Split: [$requiredParameterIndent]" -Verbose
+            Write-Warning "ParamToSplit: [$parameterToSplitAt]" -Verbose
+            Write-Warning "Indent: [$requiredParameterIndent]" -Verbose
             Write-Warning ($BicepParamsArray | ConvertTo-Json | Out-String) -Verbose
             Write-Warning '##########' -Verbose
             throw $_
@@ -1464,7 +1464,19 @@ function ConvertTo-FormattedBicep {
         RequiredParametersList = $RequiredParametersList
         AllParametersList      = $JSONParameters.psBase.Keys
     }
-    $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
+
+    try {
+        $commentedBicepParams = Add-BicepParameterTypeComment @splitInputObject
+    } catch {
+        Write-Warning '########## Troubleshooting' -Verbose
+        Write-Warning "Path: [$TemplateFilePath]" -Verbose
+        Write-Warning '##########' -Verbose
+        Write-Warning "BicepParams: [$($BicepParams | ConvertTo-Json)]" -Verbose
+        Write-Warning "RequiredParametersList: [$($RequiredParametersList | ConvertTo-Json)]" -Verbose
+        Write-Warning "AllParametersList: [$($JSONParameters | ConvertTo-Json)]" -Verbose
+        Write-Warning '##########' -Verbose
+        throw $_
+    }
 
     return $commentedBicepParams
 }
