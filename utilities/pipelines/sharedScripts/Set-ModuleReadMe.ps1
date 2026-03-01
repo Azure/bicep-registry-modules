@@ -2276,6 +2276,7 @@ function Set-ModuleReadMe {
         Write-Warning ($inputObject | ConvertTo-Json -Depth 5 | Out-String)
         throw $_
     }
+    Write-Output 'Hey 7'
 
     # =============== #
     #   Set content   #
@@ -2295,6 +2296,7 @@ function Set-ModuleReadMe {
             throw $_
         }
     }
+    Write-Output 'Hey 8'
 
     $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
     $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
@@ -2321,6 +2323,7 @@ function Set-ModuleReadMe {
             throw $_
         }
     }
+    Write-Output 'Hey 9'
 
     if ($SectionsToRefresh -contains 'Parameters') {
         # Handle [Parameters] section
@@ -2339,6 +2342,8 @@ function Set-ModuleReadMe {
         }
     }
 
+    Write-Output 'Hey 10'
+
     if ($SectionsToRefresh -contains 'Functions') {
         # Handle [Functions] section
         # ===========================
@@ -2354,6 +2359,8 @@ function Set-ModuleReadMe {
             throw $_
         }
     }
+    Write-Output 'Hey 11'
+
 
     if ($SectionsToRefresh -contains 'Outputs') {
         # Handle [Outputs] section
@@ -2370,6 +2377,8 @@ function Set-ModuleReadMe {
             throw $_
         }
     }
+    Write-Output 'Hey 12'
+
 
     if ($SectionsToRefresh -contains 'CrossReferences') {
         # Handle [CrossReferences] section
@@ -2389,6 +2398,8 @@ function Set-ModuleReadMe {
             throw $_
         }
     }
+    Write-Output 'Hey 13'
+
 
     # Handle [Notes] section
     # ========================
@@ -2407,6 +2418,7 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }
+    Write-Output 'Hey 14'
 
     if ($SectionsToRefresh -contains 'Navigation') {
         # Handle [Navigation] section
@@ -2416,6 +2428,8 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-TableOfContent @inputObject
     }
+    Write-Output 'Hey 15'
+
 
     Write-Verbose 'New content:'
     Write-Verbose '============'
@@ -2432,4 +2446,6 @@ function Set-ModuleReadMe {
         }
         Write-Verbose "File [$ReadMeFilePath] created" -Verbose
     }
+    Write-Output 'Hey 16'
+
 }
