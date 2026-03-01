@@ -1,4 +1,4 @@
-#requires -version 7.3
+﻿#requires -version 7.3
 <#
 .SYNOPSIS
 Create/update all content of an AVM module that can be generated for the user
@@ -362,6 +362,10 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
                 if ($PSCmdlet.ShouldProcess(('Generatig readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
                     try {
                         $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                            $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
+                            $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
+                            Write-Output "Generating readme for [$resourceTypeIdentifier]"
+
                             . $using:readMeFilePath
 
                             $TemplateFilePath = $_

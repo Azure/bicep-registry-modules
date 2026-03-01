@@ -42,6 +42,7 @@ jobs:
               SkipVersionCheck       = $true
               Recurse                = $true
               SkipBuild              = $true # To reduce noise
+              ThrottleLimit          = 1 # Only for troubleshooting
             }
 
             $StartTime = Get-Date
@@ -133,6 +134,7 @@ jobs:
               Recurse                = $true
               Async                  = $true
               SkipBuild              = $true # To reduce noise
+              ThrottleLimit          = 1 # Only for troubleshooting
             }
 
             $StartTime = Get-Date
