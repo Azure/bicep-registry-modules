@@ -175,7 +175,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v6'
+      vmSize: 'Standard_D2as_v7'
       adminPassword: password
       availabilityZone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "137682104091156275"
+      "templateHash": "3646182433268273754"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2865,7 +2865,7 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "networkAccessPolicy": "[parameters('networkAccessPolicy')]"
       },
-      "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
+      "zones": "[if(and(not(equals(parameters('availabilityZone'), -1)), not(contains(coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), ''), 'ZRS'))), array(string(parameters('availabilityZone'))), null())]",
       "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
     },
     "vm": {
