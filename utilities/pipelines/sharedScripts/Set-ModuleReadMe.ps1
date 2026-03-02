@@ -2008,16 +2008,24 @@ function Initialize-ReadMe {
         [switch] $ForceCacheRefresh
     )
 
+    Write-Verbose 'Hola 1' -Verbose
+
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
 
     if ($ReadMeFilePath -match 'avm.(?:res)') {
         # Resource module
+
+        Write-Verbose 'Hola 2' -Verbose
+
         $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
 
+        Write-Verbose 'Hola 3' -Verbose
         $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
             $_ -match "^$formattedResourceType$"
         }
+        Write-Verbose 'Hola 4' -Verbose
+
 
         if ($inTemplateResourceType) {
             $headerType = $inTemplateResourceType
@@ -2032,6 +2040,8 @@ function Initialize-ReadMe {
         $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
     }
+    Write-Verbose 'Hola 5' -Verbose
+
 
     # Deprecation file existing?
     $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
@@ -2053,6 +2063,9 @@ function Initialize-ReadMe {
     if ($isMovedToAVM) {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }
+
+    Write-Verbose 'Hola 6' -Verbose
+
 
     # Code reference block
     $isVersioned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'version.json')
@@ -2083,6 +2096,9 @@ function Initialize-ReadMe {
             'For examples, please refer to the [Usage Examples](#usage-examples) section.'
         )
     }
+
+    Write-Verbose 'Hola 7' -Verbose
+
 
     # Build result
     $initialContent = @(
@@ -2216,8 +2232,6 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Build-ViaRPC.ps1')
 
-    Write-Verbose 'Hola 1' -Verbose
-
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
 
@@ -2236,15 +2250,9 @@ function Set-ModuleReadMe {
         $templateFileContent = $PreLoadedContent.TemplateFileContent
     }
 
-    Write-Verbose 'Hola 2' -Verbose
-
-
     if (-not $templateFileContent) {
         throw "Failed to compile [$TemplateFilePath]"
     }
-
-    Write-Verbose 'Hola 3' -Verbose
-
 
     $moduleRoot = Split-Path $TemplateFilePath -Parent
     $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
@@ -2264,9 +2272,6 @@ function Set-ModuleReadMe {
     if ($fullModuleIdentifier -match $scopedModuleSeparator) {
         $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
     }
-
-    Write-Verbose 'Hola 5' -Verbose
-
 
     # ===================== #
     #   Preparation steps   #
@@ -2294,9 +2299,6 @@ function Set-ModuleReadMe {
         $notes = @()
     }
 
-    Write-Verbose 'Hola 6' -Verbose
-
-
     # Initialize readme
     $inputObject = @{
         ReadMeFilePath       = $ReadMeFilePath
@@ -2306,9 +2308,6 @@ function Set-ModuleReadMe {
         ForceCacheRefresh    = $ForceCacheRefresh
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
-
-    Write-Verbose 'Hola 7' -Verbose
-
 
     # =============== #
     #   Set content   #
@@ -2322,9 +2321,6 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
-
-    Write-Verbose 'Hola 8' -Verbose
-
 
     $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
     $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
@@ -2347,9 +2343,6 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-UsageExamplesSection @inputObject
     }
 
-    Write-Verbose 'Hola 9' -Verbose
-
-
     if ($SectionsToRefresh -contains 'Parameters') {
         # Handle [Parameters] section
         # ===========================
@@ -2361,9 +2354,6 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ParametersSection @inputObject
     }
 
-    Write-Verbose 'Hola 10' -Verbose
-
-
     if ($SectionsToRefresh -contains 'Functions') {
         # Handle [Functions] section
         # ===========================
@@ -2374,9 +2364,6 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-FunctionsSection @inputObject
     }
 
-    Write-Verbose 'Hola 11' -Verbose
-
-
     if ($SectionsToRefresh -contains 'Outputs') {
         # Handle [Outputs] section
         # ========================
@@ -2386,9 +2373,6 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-OutputsSection @inputObject
     }
-
-    Write-Verbose 'Hola 12' -Verbose
-
 
     if ($SectionsToRefresh -contains 'CrossReferences') {
         # Handle [CrossReferences] section
@@ -2403,9 +2387,6 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
-
-    Write-Verbose 'Hola 13' -Verbose
-
 
     # Handle [Notes] section
     # ========================
@@ -2425,9 +2406,6 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }
 
-    Write-Verbose 'Hola 14' -Verbose
-
-
     if ($SectionsToRefresh -contains 'Navigation') {
         # Handle [Navigation] section
         # ===================================
@@ -2436,9 +2414,6 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-TableOfContent @inputObject
     }
-
-    Write-Verbose 'Hola 15' -Verbose
-
 
     Write-Verbose 'New content:'
     Write-Verbose '============'
