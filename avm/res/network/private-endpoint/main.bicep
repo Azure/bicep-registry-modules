@@ -14,7 +14,10 @@ param applicationSecurityGroupResourceIds string[]?
 param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.ipConfigurations?
+param ipConfigurations resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.ipConfigurations?
+
+@description('Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4.')
+param ipVersionType resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.ipVersionType?
 
 @description('Optional. The private DNS zone group to configure for the private endpoint.')
 param privateDnsZoneGroup privateDnsZoneGroupType?
@@ -31,16 +34,16 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.tags?
+param tags resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.tags?
 
 @description('Optional. Custom DNS configurations.')
-param customDnsConfigs resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.customDnsConfigs?
+param customDnsConfigs resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.customDnsConfigs?
 
 @description('Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.')
-param manualPrivateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.manualPrivateLinkServiceConnections?
+param manualPrivateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.manualPrivateLinkServiceConnections?
 
 @description('Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.')
-param privateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.privateLinkServiceConnections?
+param privateLinkServiceConnections resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.privateLinkServiceConnections?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -109,7 +112,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-10-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -127,6 +130,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-10-01' = {
     subnet: {
       id: subnetResourceId
     }
+    ipVersionType: ipVersionType
   }
 }
 
@@ -179,7 +183,7 @@ output name string = privateEndpoint.name
 output location string = privateEndpoint.location
 
 @description('The custom DNS configurations of the private endpoint.')
-output customDnsConfigs resourceOutput<'Microsoft.Network/privateEndpoints@2024-01-01'>.properties.customDnsConfigs = privateEndpoint.properties.customDnsConfigs
+output customDnsConfigs resourceOutput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.customDnsConfigs = privateEndpoint.properties.customDnsConfigs
 
 @description('The resource IDs of the network interfaces associated with the private endpoint.')
 output networkInterfaceResourceIds string[] = map(privateEndpoint.properties.networkInterfaces, nic => nic.id)
