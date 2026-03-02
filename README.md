@@ -11,6 +11,8 @@ Existing non-AVM modules have been retired or migrated to AVM. To provide contin
 
 For the list of available and planned AVM modules, please visit the [AVM Module Index](https://aka.ms/AVM/ModuleIndex) pages.
 
+🎂
+
 # Bicep Registry Modules
 
 This repo contains the source code of all currently available Bicep modules in the Bicep public module registry (i.e., all AVM Bicep modules).
