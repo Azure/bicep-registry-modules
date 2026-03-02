@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Recompiled the template with latest Bicep version `0.40.2.10011`
 - Updated the policy name parameter to handle optional values correctly by using the safe navigation operator
+- Updated API version of Microsoft.Resources/deployments reference to `2025-04-01`
 
 ### Breaking Changes
 
