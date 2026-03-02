@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16098269805793528146"
+      "version": "0.40.2.10011",
+      "templateHash": "9225455796484218326"
     },
     "name": "Management Groups",
     "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group"
@@ -19,7 +20,7 @@
     },
     "displayName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The friendly name of the management group. If no value is passed then this field will be set to the group ID."
       }
@@ -46,8 +47,8 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -68,9 +69,16 @@
         }
       }
     },
-    {
+    "parentManagementGroup": {
+      "existing": true,
       "type": "Microsoft.Management/managementGroups",
-      "apiVersion": "2021-04-01",
+      "apiVersion": "2023-04-01",
+      "scope": "/",
+      "name": "[parameters('parentId')]"
+    },
+    "managementGroup": {
+      "type": "Microsoft.Management/managementGroups",
+      "apiVersion": "2023-04-01",
       "scope": "/",
       "name": "[parameters('name')]",
       "properties": {
@@ -78,7 +86,7 @@
         "details": "[if(not(empty(parameters('parentId'))), createObject('parent', createObject('id', tenantResourceId('Microsoft.Management/managementGroups', parameters('parentId')))), null())]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
