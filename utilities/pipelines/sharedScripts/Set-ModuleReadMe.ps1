@@ -2323,6 +2323,9 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
+    Write-Verbose 'Hola 8' -Verbose
+
+
     $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
     $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
 
@@ -2344,6 +2347,9 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-UsageExamplesSection @inputObject
     }
 
+    Write-Verbose 'Hola 9' -Verbose
+
+
     if ($SectionsToRefresh -contains 'Parameters') {
         # Handle [Parameters] section
         # ===========================
@@ -2355,6 +2361,9 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ParametersSection @inputObject
     }
 
+    Write-Verbose 'Hola 10' -Verbose
+
+
     if ($SectionsToRefresh -contains 'Functions') {
         # Handle [Functions] section
         # ===========================
@@ -2365,6 +2374,9 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-FunctionsSection @inputObject
     }
 
+    Write-Verbose 'Hola 11' -Verbose
+
+
     if ($SectionsToRefresh -contains 'Outputs') {
         # Handle [Outputs] section
         # ========================
@@ -2374,6 +2386,9 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-OutputsSection @inputObject
     }
+
+    Write-Verbose 'Hola 12' -Verbose
+
 
     if ($SectionsToRefresh -contains 'CrossReferences') {
         # Handle [CrossReferences] section
@@ -2388,6 +2403,9 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
+
+    Write-Verbose 'Hola 13' -Verbose
+
 
     # Handle [Notes] section
     # ========================
@@ -2407,6 +2425,9 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-DataCollectionSection @inputObject
     }
 
+    Write-Verbose 'Hola 14' -Verbose
+
+
     if ($SectionsToRefresh -contains 'Navigation') {
         # Handle [Navigation] section
         # ===================================
@@ -2415,6 +2436,9 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-TableOfContent @inputObject
     }
+
+    Write-Verbose 'Hola 15' -Verbose
+
 
     Write-Verbose 'New content:'
     Write-Verbose '============'
