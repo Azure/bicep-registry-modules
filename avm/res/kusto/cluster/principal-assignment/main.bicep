@@ -20,6 +20,7 @@ param principalType string
 @allowed([
   'AllDatabasesAdmin'
   'AllDatabasesViewer'
+  'AllDatabasesMonitor'
 ])
 @description('Required. The Kusto Cluster role to be assigned to the principal id.')
 param role string
