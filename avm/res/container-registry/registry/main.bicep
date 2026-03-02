@@ -128,10 +128,10 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param zoneRedundancy string = 'Enabled'
 
 @description('Optional. All replications to create.')
-param replications replicationType[]?
+param replications resourceInput<'Microsoft.ContainerRegistry/registries/replications@2025-11-01'>.properties[]?
 
 @description('Optional. All webhooks to create.')
-param webhooks webhookType[]?
+param webhooks resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-11-01'>.properties[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
@@ -159,19 +159,19 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Array of Cache Rules.')
-param cacheRules cacheRuleType[]?
+param cacheRules resourceInput<'Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01'>.properties[]?
 
 @description('Optional. Array of Credential Sets.')
 param credentialSets credentialSetType[]?
 
 @description('Optional. Scope maps setting.')
-param scopeMaps scopeMapsType[]?
+param scopeMaps resourceInput<'Microsoft.ContainerRegistry/registries/scopeMaps@2025-11-01'>.properties[]?
 
 @description('Optional. Tokens to create for the container registry.')
-param tokens tokenType[]?
+param tokens resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties[]?
 
 @description('Optional. Array of ACR Tasks to create.')
-param tasks taskType[]?
+param tasks resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -253,7 +253,7 @@ var publicNetworkAccessMode = !empty(publicNetworkAccess)
 var shouldConfigureNetworkRuleSet = networkRuleSetIpRules != null || (publicNetworkAccessMode == 'Enabled' && networkRuleSetDefaultAction == 'Deny')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -664,35 +664,6 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
-@export()
-@description('The type for a scope map.')
-type scopeMapsType = {
-  @description('Optional. The name of the scope map.')
-  name: string?
-
-  @description('Required. The list of scoped permissions for registry artifacts.')
-  actions: string[]
-
-  @description('Optional. The user friendly description of the scope map.')
-  description: string?
-}
-
-@export()
-@description('The type for a cache rule.')
-type cacheRuleType = {
-  @description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
-  name: string?
-
-  @description('Required. Source repository pulled from upstream.')
-  sourceRepository: string
-
-  @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
-  targetRepository: string?
-
-  @description('Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com).')
-  credentialSetResourceId: string?
-}
-
 import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 import { authCredentialsType } from 'credential-set/main.bicep'
 @export()
@@ -709,124 +680,4 @@ type credentialSetType = {
 
   @description('Required. The credentials are stored for this upstream or login server.')
   loginServer: string
-}
-
-@export()
-@description('The type for a replication.')
-type replicationType = {
-  @description('Required. The name of the replication.')
-  name: string
-
-  @description('Optional. Location for all resources.')
-  location: string?
-
-  @description('Optional. Tags of the resource.')
-  tags: object?
-
-  @description('Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.')
-  regionEndpointEnabled: bool?
-
-  @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
-  zoneRedundancy: ('Disabled' | 'Enabled')?
-}
-
-@description('The type for a token.')
-type tokenType = {
-  @description('Required. The name of the token.')
-  @minLength(5)
-  @maxLength(50)
-  name: string
-
-  @description('Required. The resource ID of the scope map to which the token will be associated with.')
-  scopeMapResourceId: string
-
-  @description('Optional. The status of the token.')
-  status: ('disabled' | 'enabled')?
-
-  @description('Optional. The credentials of the token, such as certificates and passwords.')
-  credentials: resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties.credentials?
-}
-
-@export()
-@description('The type for a webhook.')
-type webhookType = {
-  @description('Optional. The name of the registry webhook.')
-  @minLength(5)
-  @maxLength(50)
-  name: string?
-
-  @description('Required. The service URI for the webhook to post notifications.')
-  serviceUri: string
-
-  @description('Optional. The status of the webhook at the time the operation was called.')
-  status: ('enabled' | 'disabled')?
-
-  @description('Optional. The list of actions that trigger the webhook to post notifications.')
-  action: string[]?
-
-  @description('Optional. Location for all resources.')
-  location: string?
-
-  @description('Optional. Tags of the resource.')
-  tags: object?
-
-  @description('Optional. Custom headers that will be added to the webhook notifications.')
-  customHeaders: object?
-
-  @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
-  scope: string?
-}
-
-import {
-  taskStepType
-  triggerType
-} from 'task/main.bicep'
-@export()
-@description('The type for a task.')
-type taskType = {
-  @description('Required. The name of the task.')
-  @minLength(5)
-  @maxLength(50)
-  name: string
-
-  @description('Optional. Location for the task resource.')
-  location: string?
-
-  @description('Optional. Tags of the resource.')
-  tags: object?
-
-  @description('Optional. The platform properties against which the task has to run.')
-  platform: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
-
-  @description('Optional. The task step properties. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.')
-  step: taskStepType?
-
-  @description('Optional. The properties that describe all triggers for the task.')
-  trigger: triggerType?
-
-  @description('Optional. The current status of task.')
-  status: ('Disabled' | 'Enabled')?
-
-  @description('Optional. Run timeout in seconds.')
-  @minValue(300)
-  @maxValue(28800)
-  timeout: int?
-
-  @description('Optional. The machine configuration of the run agent.')
-  agentConfiguration: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.agentConfiguration?
-
-  @description('Optional. The dedicated agent pool for the task.')
-  agentPoolName: string?
-
-  @description('Optional. The properties that describe the credentials that will be used when the task is invoked.')
-  credentials: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.credentials?
-
-  @description('Optional. The value of this property indicates whether the task resource is system task or not.')
-  isSystemTask: bool?
-
-  @description('Optional. The template that describes the repository and tag information for run log artifact.')
-  logTemplate: string?
-
-  @description('Optional. The managed identity definition for this resource.')
-  managedIdentities: managedIdentityAllType?
 }

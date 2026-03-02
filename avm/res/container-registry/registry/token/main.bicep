@@ -26,8 +26,8 @@ param credentials resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.containerregistry-token.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerregistry-registry-token.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -71,5 +71,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the token.')
 output resourceId string = token.id
-
-

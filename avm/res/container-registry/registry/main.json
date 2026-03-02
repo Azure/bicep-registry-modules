@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "1713663571323272850"
+      "templateHash": "12985044807752341572"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -75,74 +75,6 @@
         "__bicep_export!": true
       }
     },
-    "scopeMapsType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the scope map."
-          }
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Required. The list of scoped permissions for registry artifacts."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The user friendly description of the scope map."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a scope map."
-      }
-    },
-    "cacheRuleType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
-          }
-        },
-        "sourceRepository": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Source repository pulled from upstream."
-          }
-        },
-        "targetRepository": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
-          }
-        },
-        "credentialSetResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com)."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a cache rule."
-      }
-    },
     "credentialSetType": {
       "type": "object",
       "properties": {
@@ -178,292 +110,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a credential set."
-      }
-    },
-    "replicationType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the replication."
-          }
-        },
-        "location": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Location for all resources."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags of the resource."
-          }
-        },
-        "regionEndpointEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
-          }
-        },
-        "zoneRedundancy": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a replication."
-      }
-    },
-    "tokenType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 5,
-          "maxLength": 50,
-          "metadata": {
-            "description": "Required. The name of the token."
-          }
-        },
-        "scopeMapResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the scope map to which the token will be associated with."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "disabled",
-            "enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The status of the token."
-          }
-        },
-        "credentials": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/credentials"
-            },
-            "description": "Optional. The credentials of the token, such as certificates and passwords."
-          },
-          "nullable": true
-        }
-      },
-      "metadata": {
-        "description": "The type for a token."
-      }
-    },
-    "webhookType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "minLength": 5,
-          "maxLength": 50,
-          "metadata": {
-            "description": "Optional. The name of the registry webhook."
-          }
-        },
-        "serviceUri": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The service URI for the webhook to post notifications."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "disabled",
-            "enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The status of the webhook at the time the operation was called."
-          }
-        },
-        "action": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The list of actions that trigger the webhook to post notifications."
-          }
-        },
-        "location": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Location for all resources."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags of the resource."
-          }
-        },
-        "customHeaders": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom headers that will be added to the webhook notifications."
-          }
-        },
-        "scope": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a webhook."
-      }
-    },
-    "taskType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 5,
-          "maxLength": 50,
-          "metadata": {
-            "description": "Required. The name of the task."
-          }
-        },
-        "location": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Location for the task resource."
-          }
-        },
-        "tags": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tags of the resource."
-          }
-        },
-        "platform": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
-            },
-            "description": "Optional. The platform properties against which the task has to run."
-          },
-          "nullable": true
-        },
-        "step": {
-          "$ref": "#/definitions/taskStepType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The task step properties. Exactly one of dockerBuild, encodedTask, or fileTask must be provided."
-          }
-        },
-        "trigger": {
-          "$ref": "#/definitions/triggerType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The properties that describe all triggers for the task."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The current status of task."
-          }
-        },
-        "timeout": {
-          "type": "int",
-          "nullable": true,
-          "minValue": 300,
-          "maxValue": 28800,
-          "metadata": {
-            "description": "Optional. Run timeout in seconds."
-          }
-        },
-        "agentConfiguration": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
-            },
-            "description": "Optional. The machine configuration of the run agent."
-          },
-          "nullable": true
-        },
-        "agentPoolName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The dedicated agent pool for the task."
-          }
-        },
-        "credentials": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/credentials"
-            },
-            "description": "Optional. The properties that describe the credentials that will be used when the task is invoked."
-          },
-          "nullable": true
-        },
-        "isSystemTask": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of this property indicates whether the task resource is system task or not."
-          }
-        },
-        "logTemplate": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The template that describes the repository and tag information for run log artifact."
-          }
-        },
-        "managedIdentities": {
-          "$ref": "#/definitions/managedIdentityAllType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The managed identity definition for this resource."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a task."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -572,439 +218,6 @@
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
-        }
-      }
-    },
-    "_2.argumentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the argument."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The value of the argument."
-          }
-        },
-        "isSecret": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Flag to indicate whether the argument represents a secret and want to be removed from build logs."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a build argument.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.authInfoType": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "securestring",
-          "metadata": {
-            "description": "Required. The access token used to access the source control provider."
-          }
-        },
-        "tokenType": {
-          "type": "string",
-          "allowedValues": [
-            "OAuth",
-            "PAT"
-          ],
-          "metadata": {
-            "description": "Required. The type of Auth token."
-          }
-        },
-        "expiresIn": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Time in seconds that the token remains valid."
-          }
-        },
-        "refreshToken": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The refresh token used to refresh the access token."
-          }
-        },
-        "scope": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The scope of the access token."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the auth info of source control.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.baseImageTriggerType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the trigger."
-          }
-        },
-        "baseImageTriggerType": {
-          "type": "string",
-          "allowedValues": [
-            "All",
-            "Runtime"
-          ],
-          "metadata": {
-            "description": "Required. The type of the auto trigger for base image dependency updates."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The current status of trigger."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a base image trigger.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.dockerBuildStepType": {
-      "type": "object",
-      "properties": {
-        "dockerFilePath": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The Docker file path relative to the source context."
-          }
-        },
-        "contextPath": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-          }
-        },
-        "contextAccessToken": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-          }
-        },
-        "imageNames": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The fully qualified image names including the repository and tag."
-          }
-        },
-        "isPushEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of this property indicates whether the image built should be pushed to the registry or not."
-          }
-        },
-        "noCache": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of this property indicates whether the image cache is enabled or not."
-          }
-        },
-        "target": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the target build stage for the docker build."
-          }
-        },
-        "arguments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.argumentType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collection of override arguments to be used when executing this build step."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a Docker build step.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.encodedTaskStepType": {
-      "type": "object",
-      "properties": {
-        "encodedTaskContent": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Base64 encoded value of the template/definition file content."
-          }
-        },
-        "encodedValuesContent": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Base64 encoded value of the parameters/values file content."
-          }
-        },
-        "contextPath": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-          }
-        },
-        "contextAccessToken": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-          }
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.setValueType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collection of overridable values that can be passed when running a task."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for an encoded task step.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.fileTaskStepType": {
-      "type": "object",
-      "properties": {
-        "taskFilePath": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The task template/definition file path relative to the source context."
-          }
-        },
-        "contextPath": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-          }
-        },
-        "contextAccessToken": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-          }
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.setValueType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collection of overridable values that can be passed when running a task."
-          }
-        },
-        "valuesFilePath": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The task values/parameters file path relative to the source context."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a file task step.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.setValueType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the overridable value."
-          }
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The overridable value."
-          }
-        },
-        "isSecret": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Flag to indicate whether the value represents a secret or not."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for an overridable value.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.sourcePropertiesType": {
-      "type": "object",
-      "properties": {
-        "repositoryUrl": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The full URL to the source code repository."
-          }
-        },
-        "sourceControlType": {
-          "type": "string",
-          "allowedValues": [
-            "Github",
-            "VisualStudioTeamService"
-          ],
-          "metadata": {
-            "description": "Required. The type of source control service."
-          }
-        },
-        "branch": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The branch name of the source code."
-          }
-        },
-        "sourceControlAuthProperties": {
-          "$ref": "#/definitions/_2.authInfoType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The authorization properties for accessing the source code repository."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the source properties of a task trigger.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.sourceTriggerType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the trigger."
-          }
-        },
-        "sourceRepository": {
-          "$ref": "#/definitions/_2.sourcePropertiesType",
-          "metadata": {
-            "description": "Required. The properties that describe the source (code) for the task."
-          }
-        },
-        "sourceTriggerEvents": {
-          "type": "array",
-          "allowedValues": [
-            "commit",
-            "pullrequest"
-          ],
-          "metadata": {
-            "description": "Required. The source event corresponding to the trigger."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The current status of trigger."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a source trigger.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "_2.timerTriggerType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the trigger."
-          }
-        },
-        "schedule": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The CRON expression for the task schedule."
-          }
-        },
-        "status": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The current status of trigger."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a timer trigger.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
         }
       }
     },
@@ -1505,76 +718,6 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
-    },
-    "taskStepType": {
-      "type": "object",
-      "properties": {
-        "dockerBuild": {
-          "$ref": "#/definitions/_2.dockerBuildStepType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Docker build step properties."
-          }
-        },
-        "encodedTask": {
-          "$ref": "#/definitions/_2.encodedTaskStepType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The encoded task step properties."
-          }
-        },
-        "fileTask": {
-          "$ref": "#/definitions/_2.fileTaskStepType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The file task step properties."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the task step. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
-    },
-    "triggerType": {
-      "type": "object",
-      "properties": {
-        "baseImageTrigger": {
-          "$ref": "#/definitions/_2.baseImageTriggerType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The trigger based on base image dependencies."
-          }
-        },
-        "sourceTriggers": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.sourceTriggerType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collection of triggers based on source code repository."
-          }
-        },
-        "timerTriggers": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_2.timerTriggerType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The collection of timer triggers."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the trigger properties of a task.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "task/main.bicep"
-        }
-      }
     }
   },
   "parameters": {
@@ -1798,7 +941,12 @@
     "replications": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/replicationType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/replications@2025-11-01#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1808,7 +956,12 @@
     "webhooks": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/webhookType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/webhooks@2025-11-01#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1873,7 +1026,12 @@
     "cacheRules": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/cacheRuleType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1893,7 +1051,12 @@
     "scopeMaps": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/scopeMapsType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/scopeMaps@2025-11-01#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1903,7 +1066,12 @@
     "tokens": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/tokenType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1913,7 +1081,12 @@
     "tasks": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/taskType"
+        "type": "object",
+        "metadata": {
+          "__bicep_resource_derived_type!": {
+            "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties"
+          }
+        }
       },
       "nullable": true,
       "metadata": {
@@ -1965,7 +1138,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -2155,7 +1328,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16737459938591445525"
+              "templateHash": "683499329157365347"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -2202,8 +1375,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-scopemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry-scopemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2308,7 +1481,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16684370129088694769"
+              "templateHash": "9019947043413788201"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -2370,8 +1543,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-replication.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry-replication.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2482,7 +1655,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "11486039807314283650"
+              "templateHash": "6676248576233609797"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
@@ -2584,8 +1757,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-credentialset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry-credentialset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2696,7 +1869,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "8813413118104745796"
+              "templateHash": "1270388104986705607"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -2747,8 +1920,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-cacherule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry-cacherule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2852,7 +2025,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "16711563961281893405"
+              "templateHash": "13992065029445135108"
             },
             "name": "Container Registries Tokens",
             "description": "This module deploys an Azure Container Registry (ACR) Token."
@@ -2911,8 +2084,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerregistry-token.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.containerregistry-registry-token.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3046,491 +2219,12 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "15458270304500128647"
+              "templateHash": "13785553331776705990"
             },
             "name": "Container Registries Tasks",
             "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
           },
           "definitions": {
-            "taskStepType": {
-              "type": "object",
-              "properties": {
-                "dockerBuild": {
-                  "$ref": "#/definitions/dockerBuildStepType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Docker build step properties."
-                  }
-                },
-                "encodedTask": {
-                  "$ref": "#/definitions/encodedTaskStepType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The encoded task step properties."
-                  }
-                },
-                "fileTask": {
-                  "$ref": "#/definitions/fileTaskStepType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The file task step properties."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the task step. Exactly one of dockerBuild, encodedTask, or fileTask must be provided."
-              }
-            },
-            "dockerBuildStepType": {
-              "type": "object",
-              "properties": {
-                "dockerFilePath": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The Docker file path relative to the source context."
-                  }
-                },
-                "contextPath": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-                  }
-                },
-                "contextAccessToken": {
-                  "type": "securestring",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-                  }
-                },
-                "imageNames": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The fully qualified image names including the repository and tag."
-                  }
-                },
-                "isPushEnabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The value of this property indicates whether the image built should be pushed to the registry or not."
-                  }
-                },
-                "noCache": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The value of this property indicates whether the image cache is enabled or not."
-                  }
-                },
-                "target": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the target build stage for the docker build."
-                  }
-                },
-                "arguments": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/argumentType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collection of override arguments to be used when executing this build step."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a Docker build step."
-              }
-            },
-            "encodedTaskStepType": {
-              "type": "object",
-              "properties": {
-                "encodedTaskContent": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Base64 encoded value of the template/definition file content."
-                  }
-                },
-                "encodedValuesContent": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Base64 encoded value of the parameters/values file content."
-                  }
-                },
-                "contextPath": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-                  }
-                },
-                "contextAccessToken": {
-                  "type": "securestring",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-                  }
-                },
-                "values": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/setValueType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collection of overridable values that can be passed when running a task."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for an encoded task step."
-              }
-            },
-            "fileTaskStepType": {
-              "type": "object",
-              "properties": {
-                "taskFilePath": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The task template/definition file path relative to the source context."
-                  }
-                },
-                "contextPath": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The URL (absolute or relative) of the source context for the task step."
-                  }
-                },
-                "contextAccessToken": {
-                  "type": "securestring",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The token (git PAT or SAS token of storage account blob) associated with the context."
-                  }
-                },
-                "values": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/setValueType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collection of overridable values that can be passed when running a task."
-                  }
-                },
-                "valuesFilePath": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The task values/parameters file path relative to the source context."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a file task step."
-              }
-            },
-            "triggerType": {
-              "type": "object",
-              "properties": {
-                "baseImageTrigger": {
-                  "$ref": "#/definitions/baseImageTriggerType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The trigger based on base image dependencies."
-                  }
-                },
-                "sourceTriggers": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/sourceTriggerType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collection of triggers based on source code repository."
-                  }
-                },
-                "timerTriggers": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/timerTriggerType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The collection of timer triggers."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the trigger properties of a task."
-              }
-            },
-            "baseImageTriggerType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the trigger."
-                  }
-                },
-                "baseImageTriggerType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "All",
-                    "Runtime"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of the auto trigger for base image dependency updates."
-                  }
-                },
-                "status": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Disabled",
-                    "Enabled"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The current status of trigger."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a base image trigger."
-              }
-            },
-            "sourceTriggerType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the trigger."
-                  }
-                },
-                "sourceRepository": {
-                  "$ref": "#/definitions/sourcePropertiesType",
-                  "metadata": {
-                    "description": "Required. The properties that describe the source (code) for the task."
-                  }
-                },
-                "sourceTriggerEvents": {
-                  "type": "array",
-                  "allowedValues": [
-                    "commit",
-                    "pullrequest"
-                  ],
-                  "metadata": {
-                    "description": "Required. The source event corresponding to the trigger."
-                  }
-                },
-                "status": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Disabled",
-                    "Enabled"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The current status of trigger."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a source trigger."
-              }
-            },
-            "sourcePropertiesType": {
-              "type": "object",
-              "properties": {
-                "repositoryUrl": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The full URL to the source code repository."
-                  }
-                },
-                "sourceControlType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Github",
-                    "VisualStudioTeamService"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of source control service."
-                  }
-                },
-                "branch": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The branch name of the source code."
-                  }
-                },
-                "sourceControlAuthProperties": {
-                  "$ref": "#/definitions/authInfoType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The authorization properties for accessing the source code repository."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the source properties of a task trigger."
-              }
-            },
-            "authInfoType": {
-              "type": "object",
-              "properties": {
-                "token": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. The access token used to access the source control provider."
-                  }
-                },
-                "tokenType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "OAuth",
-                    "PAT"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of Auth token."
-                  }
-                },
-                "expiresIn": {
-                  "type": "int",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Time in seconds that the token remains valid."
-                  }
-                },
-                "refreshToken": {
-                  "type": "securestring",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The refresh token used to refresh the access token."
-                  }
-                },
-                "scope": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The scope of the access token."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the auth info of source control."
-              }
-            },
-            "timerTriggerType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the trigger."
-                  }
-                },
-                "schedule": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The CRON expression for the task schedule."
-                  }
-                },
-                "status": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Disabled",
-                    "Enabled"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The current status of trigger."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a timer trigger."
-              }
-            },
-            "argumentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the argument."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The value of the argument."
-                  }
-                },
-                "isSecret": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Flag to indicate whether the argument represents a secret and want to be removed from build logs."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a build argument."
-              }
-            },
-            "setValueType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the overridable value."
-                  }
-                },
-                "value": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The overridable value."
-                  }
-                },
-                "isSecret": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Flag to indicate whether the value represents a secret or not."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for an overridable value."
-              }
-            },
             "managedIdentityAllType": {
               "type": "object",
               "properties": {
@@ -3603,18 +2297,24 @@
               "nullable": true
             },
             "step": {
-              "$ref": "#/definitions/taskStepType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/step"
+                },
                 "description": "Optional. The task step properties. Exactly one of dockerBuildStep, encodedTaskStep, or fileTaskStep must be provided."
-              }
+              },
+              "nullable": true
             },
             "trigger": {
-              "$ref": "#/definitions/triggerType",
-              "nullable": true,
+              "type": "object",
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/trigger"
+                },
                 "description": "Optional. The properties that describe all triggers for the task."
-              }
+              },
+              "nullable": true
             },
             "status": {
               "type": "string",
@@ -3701,7 +2401,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.containerregistry-task.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -3842,7 +2542,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "1281849176523641259"
+              "templateHash": "10744547825856523359"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -3936,7 +2636,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.containerregistry-webhook.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",

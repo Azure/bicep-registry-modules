@@ -19,10 +19,10 @@ param tags resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-0
 param platform resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
 
 @description('Optional. The task step properties. Exactly one of dockerBuildStep, encodedTaskStep, or fileTaskStep must be provided.')
-param step taskStepType?
+param step resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.step?
 
 @description('Optional. The properties that describe all triggers for the task.')
-param trigger triggerType?
+param trigger resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.trigger?
 
 @allowed([
   'Disabled'
@@ -106,7 +106,7 @@ var stepProperties = step.?dockerBuild != null
           : null
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerregistry-task.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -162,207 +162,3 @@ output location string = task.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = task.?identity.?principalId
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for the task step. Exactly one of dockerBuild, encodedTask, or fileTask must be provided.')
-type taskStepType = {
-  @description('Optional. The Docker build step properties.')
-  dockerBuild: dockerBuildStepType?
-
-  @description('Optional. The encoded task step properties.')
-  encodedTask: encodedTaskStepType?
-
-  @description('Optional. The file task step properties.')
-  fileTask: fileTaskStepType?
-}
-
-@export()
-@description('The type for a Docker build step.')
-type dockerBuildStepType = {
-  @description('Required. The Docker file path relative to the source context.')
-  dockerFilePath: string
-
-  @description('Optional. The URL (absolute or relative) of the source context for the task step.')
-  contextPath: string?
-
-  @description('Optional. The token (git PAT or SAS token of storage account blob) associated with the context.')
-  @secure()
-  contextAccessToken: string?
-
-  @description('Optional. The fully qualified image names including the repository and tag.')
-  imageNames: string[]?
-
-  @description('Optional. The value of this property indicates whether the image built should be pushed to the registry or not.')
-  isPushEnabled: bool?
-
-  @description('Optional. The value of this property indicates whether the image cache is enabled or not.')
-  noCache: bool?
-
-  @description('Optional. The name of the target build stage for the docker build.')
-  target: string?
-
-  @description('Optional. The collection of override arguments to be used when executing this build step.')
-  arguments: argumentType[]?
-}
-
-@export()
-@description('The type for an encoded task step.')
-type encodedTaskStepType = {
-  @description('Required. Base64 encoded value of the template/definition file content.')
-  encodedTaskContent: string
-
-  @description('Optional. Base64 encoded value of the parameters/values file content.')
-  encodedValuesContent: string?
-
-  @description('Optional. The URL (absolute or relative) of the source context for the task step.')
-  contextPath: string?
-
-  @description('Optional. The token (git PAT or SAS token of storage account blob) associated with the context.')
-  @secure()
-  contextAccessToken: string?
-
-  @description('Optional. The collection of overridable values that can be passed when running a task.')
-  values: setValueType[]?
-}
-
-@export()
-@description('The type for a file task step.')
-type fileTaskStepType = {
-  @description('Required. The task template/definition file path relative to the source context.')
-  taskFilePath: string
-
-  @description('Optional. The URL (absolute or relative) of the source context for the task step.')
-  contextPath: string?
-
-  @description('Optional. The token (git PAT or SAS token of storage account blob) associated with the context.')
-  @secure()
-  contextAccessToken: string?
-
-  @description('Optional. The collection of overridable values that can be passed when running a task.')
-  values: setValueType[]?
-
-  @description('Optional. The task values/parameters file path relative to the source context.')
-  valuesFilePath: string?
-}
-
-@export()
-@description('The type for the trigger properties of a task.')
-type triggerType = {
-  @description('Optional. The trigger based on base image dependencies.')
-  baseImageTrigger: baseImageTriggerType?
-
-  @description('Optional. The collection of triggers based on source code repository.')
-  sourceTriggers: sourceTriggerType[]?
-
-  @description('Optional. The collection of timer triggers.')
-  timerTriggers: timerTriggerType[]?
-}
-
-@export()
-@description('The type for a base image trigger.')
-type baseImageTriggerType = {
-  @description('Required. The name of the trigger.')
-  name: string
-
-  @description('Required. The type of the auto trigger for base image dependency updates.')
-  baseImageTriggerType: 'All' | 'Runtime'
-
-  @description('Optional. The current status of trigger.')
-  status: ('Disabled' | 'Enabled')?
-}
-
-@export()
-@description('The type for a source trigger.')
-type sourceTriggerType = {
-  @description('Required. The name of the trigger.')
-  name: string
-
-  @description('Required. The properties that describe the source (code) for the task.')
-  sourceRepository: sourcePropertiesType
-
-  @description('Required. The source event corresponding to the trigger.')
-  sourceTriggerEvents: ('commit' | 'pullrequest')[]
-
-  @description('Optional. The current status of trigger.')
-  status: ('Disabled' | 'Enabled')?
-}
-
-@export()
-@description('The type for the source properties of a task trigger.')
-type sourcePropertiesType = {
-  @description('Required. The full URL to the source code repository.')
-  repositoryUrl: string
-
-  @description('Required. The type of source control service.')
-  sourceControlType: 'Github' | 'VisualStudioTeamService'
-
-  @description('Optional. The branch name of the source code.')
-  branch: string?
-
-  @description('Optional. The authorization properties for accessing the source code repository.')
-  sourceControlAuthProperties: authInfoType?
-}
-
-@export()
-@description('The type for the auth info of source control.')
-type authInfoType = {
-  @description('Required. The access token used to access the source control provider.')
-  @secure()
-  token: string
-
-  @description('Required. The type of Auth token.')
-  tokenType: 'OAuth' | 'PAT'
-
-  @description('Optional. Time in seconds that the token remains valid.')
-  expiresIn: int?
-
-  @description('Optional. The refresh token used to refresh the access token.')
-  @secure()
-  refreshToken: string?
-
-  @description('Optional. The scope of the access token.')
-  scope: string?
-}
-
-@export()
-@description('The type for a timer trigger.')
-type timerTriggerType = {
-  @description('Required. The name of the trigger.')
-  name: string
-
-  @description('Required. The CRON expression for the task schedule.')
-  schedule: string
-
-  @description('Optional. The current status of trigger.')
-  status: ('Disabled' | 'Enabled')?
-}
-
-@export()
-@description('The type for a build argument.')
-type argumentType = {
-  @description('Required. The name of the argument.')
-  name: string
-
-  @description('Required. The value of the argument.')
-  value: string
-
-  @description('Optional. Flag to indicate whether the argument represents a secret and want to be removed from build logs.')
-  isSecret: bool?
-}
-
-@export()
-@description('The type for an overridable value.')
-type setValueType = {
-  @description('Required. The name of the overridable value.')
-  name: string
-
-  @description('Required. The overridable value.')
-  value: string
-
-  @description('Optional. Flag to indicate whether the value represents a secret or not.')
-  isSecret: bool?
-}
