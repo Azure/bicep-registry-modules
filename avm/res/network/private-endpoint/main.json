@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1689225882409492834"
+      "templateHash": "18260738850189792400"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint."
@@ -70,7 +70,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -169,7 +169,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -208,9 +208,19 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
         },
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+      },
+      "nullable": true
+    },
+    "ipVersionType": {
+      "type": "string",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+        },
+        "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
       },
       "nullable": true
     },
@@ -249,7 +259,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
       },
@@ -259,7 +269,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
         },
         "description": "Optional. Custom DNS configurations."
       },
@@ -269,7 +279,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
         },
         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
       },
@@ -279,7 +289,7 @@
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
         },
         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
       },
@@ -337,7 +347,7 @@
     },
     "privateEndpoint": {
       "type": "Microsoft.Network/privateEndpoints",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -358,7 +368,8 @@
         "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
-        }
+        },
+        "ipVersionType": "[parameters('ipVersionType')]"
       }
     },
     "privateEndpoint_lock": {
@@ -426,7 +437,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "16749814813950384638"
+              "templateHash": "9935179114830442414"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -485,12 +496,12 @@
             "privateEndpoint": {
               "existing": true,
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('privateEndpointName')]"
             },
             "privateDnsZoneGroup": {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
               "properties": {
                 "copy": [
@@ -565,13 +576,13 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+      "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
     },
     "customDnsConfigs": {
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
           "output": true
         },
         "description": "The custom DNS configurations of the private endpoint."
