@@ -2008,24 +2008,16 @@ function Initialize-ReadMe {
         [switch] $ForceCacheRefresh
     )
 
-    Write-Verbose 'Hola 1' -Verbose
-
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
 
     if ($ReadMeFilePath -match 'avm.(?:res)') {
         # Resource module
-
-        Write-Verbose 'Hola 2' -Verbose
-
         $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
 
-        Write-Verbose 'Hola 3' -Verbose
         $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
             $_ -match "^$formattedResourceType$"
         }
-        Write-Verbose 'Hola 4' -Verbose
-
 
         if ($inTemplateResourceType) {
             $headerType = $inTemplateResourceType
@@ -2040,8 +2032,6 @@ function Initialize-ReadMe {
         $formattedChildIdentifierName = (Get-Culture).TextInfo.ToTitleCase(($childIdentifierName -replace '[^0-9A-Z]', ' ')) -replace ' '
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
     }
-    Write-Verbose 'Hola 5' -Verbose
-
 
     # Deprecation file existing?
     $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
@@ -2063,9 +2053,6 @@ function Initialize-ReadMe {
     if ($isMovedToAVM) {
         $movedReadMeContent = Get-Content -Path $movedReadMeFilePath | ForEach-Object { "> $_" }
     }
-
-    Write-Verbose 'Hola 6' -Verbose
-
 
     # Code reference block
     $isVersioned = Test-Path (Join-Path (Split-Path $ReadMeFilePath -Parent) 'version.json')
@@ -2096,9 +2083,6 @@ function Initialize-ReadMe {
             'For examples, please refer to the [Usage Examples](#usage-examples) section.'
         )
     }
-
-    Write-Verbose 'Hola 7' -Verbose
-
 
     # Build result
     $initialContent = @(
@@ -2262,9 +2246,6 @@ function Set-ModuleReadMe {
     if ($fullModuleIdentifier.Contains($customModuleSeparator)) {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
-
-    Write-Verbose 'Hola 4' -Verbose
-
 
     # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
     # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
