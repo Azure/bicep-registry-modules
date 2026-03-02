@@ -562,7 +562,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     }
     storageProfile: {
       #disable-next-line BCP321
-      imageReference: contains(imageReference, 'id')
+      imageReference: contains(imageReference ?? {}, 'id')
         ? {
             id: imageReference!.id!
           }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "3646182433268273754"
+      "templateHash": "15545046834095806669"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2898,7 +2898,7 @@
               }
             }
           ],
-          "imageReference": "[if(contains(parameters('imageReference'), 'id'), createObject('id', parameters('imageReference').id), parameters('imageReference'))]",
+          "imageReference": "[if(contains(coalesce(parameters('imageReference'), createObject()), 'id'), createObject('id', parameters('imageReference').id), parameters('imageReference'))]",
           "osDisk": {
             "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
             "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
