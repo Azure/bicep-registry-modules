@@ -69,8 +69,6 @@ function Get-SpecsAlignedResourceName {
         [switch] $ForceCacheRefresh
     )
 
-    Write-Verbose 'Hola 1' -Verbose
-
     $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
     $cacheFilePath = Join-Path $cacheFolderPath 'avm-apiSpecs.json'
     $cacheExists = Test-Path $cacheFilePath
@@ -84,8 +82,6 @@ function Get-SpecsAlignedResourceName {
             }
         }
     }
-
-    Write-Verbose 'Hola 2' -Verbose
 
     if ($ForceCacheRefresh) {
         $fetchNewData = $true
@@ -113,9 +109,9 @@ function Get-SpecsAlignedResourceName {
     if ($fetchNewData) {
         try {
             Write-Verbose 'Hola 8' -Verbose
-            $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
+            $apiSpecs = (Invoke-WebRequest -Uri $ApiSpecsFileUri).Content
             Write-Verbose 'Hola 9' -Verbose
-            $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
+            $specs = ConvertFrom-Json $apiSpecs -AsHashtable
             Write-Verbose 'Hola 10' -Verbose
         } catch {
             Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
