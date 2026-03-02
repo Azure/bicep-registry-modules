@@ -1650,7 +1650,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -1974,7 +1974,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "WindowsServer",
         "publisher": "MicrosoftWindowsServer",
-        "sku": "2019-datacenter",
+        "sku": "2019-datacenter-gensecond",
         "version": "latest"
       }
     },
@@ -2260,7 +2260,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
-  sku: '2019-datacenter'
+  sku: '2019-datacenter-gensecond'
   version: 'latest'
 }
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
@@ -3473,7 +3473,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     location: '<location>'
@@ -3864,7 +3864,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "WindowsServer",
         "publisher": "MicrosoftWindowsServer",
-        "sku": "2019-datacenter",
+        "sku": "2019-datacenter-gensecond",
         "version": "latest"
       }
     },
@@ -4219,7 +4219,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
-  sku: '2019-datacenter'
+  sku: '2019-datacenter-gensecond'
   version: 'latest'
 }
 param location = '<location>'
