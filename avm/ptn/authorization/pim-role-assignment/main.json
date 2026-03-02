@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "17391044044629631031"
+      "version": "0.41.2.15936",
+      "templateHash": "13030246505489706513"
     },
     "name": "PIM Role Assignments (All scopes)",
     "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -448,8 +448,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "4433413933094874992"
+              "version": "0.41.2.15936",
+              "templateHash": "9977567650396843522"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
@@ -896,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "15963295932027707707"
+              "version": "0.41.2.15936",
+              "templateHash": "1236008351316898716"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
@@ -1352,8 +1352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "11642603087731996523"
+              "version": "0.41.2.15936",
+              "templateHash": "5058800053080485720"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."

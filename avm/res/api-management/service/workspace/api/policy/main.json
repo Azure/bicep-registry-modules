@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "15545563898620965357"
+      "version": "0.41.2.15936",
+      "templateHash": "9723836575560979346"
     },
     "name": "API Management Workspace APIs Policies",
     "description": "This module deploys an API Policy in an API Management Workspace."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "11744781664550629014"
+      "version": "0.41.2.15936",
+      "templateHash": "10726092378772056968"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -600,7 +600,7 @@
     "dsMsi": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ds-msi', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -1084,7 +1084,7 @@
     "imageMSI": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-image-msi', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -1568,7 +1568,7 @@
     "imageMSI_build_rg_rbac": {
       "condition": "[and(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), not(empty(parameters('imageTemplateResourceGroupName'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-image-msi-rbac-build-rg', deployment().name)]",
       "resourceGroup": "[parameters('imageTemplateResourceGroupName')]",
       "properties": {
@@ -1762,7 +1762,7 @@
     "azureComputeGallery": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-acg', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -3589,7 +3589,7 @@
     "vnet": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-vnet', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -5252,7 +5252,7 @@
     "assetsStorageAccount": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-files-sa', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -11080,7 +11080,7 @@
     "dsStorageAccount": {
       "condition": "[or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-ds-sa', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -16900,7 +16900,7 @@
     "storageAccount_upload": {
       "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only base')), equals(parameters('deploymentsToPerform'), 'Only assets & image'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-storage-upload-ds', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -17491,7 +17491,7 @@
     "imageTemplate": {
       "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-it', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -18357,7 +18357,7 @@
     "imageTemplate_trigger": {
       "condition": "[or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-imageTemplate-trigger-ds', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -18941,7 +18941,7 @@
     "imageTemplate_wait": {
       "condition": "[and(parameters('waitForImageBuild'), or(or(equals(parameters('deploymentsToPerform'), 'All'), equals(parameters('deploymentsToPerform'), 'Only assets & image')), equals(parameters('deploymentsToPerform'), 'Only image')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-imageTemplate-wait-ds', deployment().name)]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {

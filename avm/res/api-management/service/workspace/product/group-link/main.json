@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "8184527050686414236"
+      "version": "0.41.2.15936",
+      "templateHash": "528294820302295428"
     },
     "name": "API Management Workspace Product Group Links",
     "description": "This module deploys a Product Group Link in an API Management Workspace."
