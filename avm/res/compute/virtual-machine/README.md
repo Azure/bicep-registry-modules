@@ -3299,7 +3299,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v6'
+    vmSize: 'Standard_D2s_v3'
     // Non-required parameters
     additionalUnattendContent: [
       {
@@ -3650,7 +3650,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v6"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "additionalUnattendContent": {
@@ -4045,7 +4045,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v6'
+param vmSize = 'Standard_D2s_v3'
 // Non-required parameters
 param additionalUnattendContent = [
   {
