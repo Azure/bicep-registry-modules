@@ -2216,6 +2216,8 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-CrossReferencedModuleList.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Build-ViaRPC.ps1')
 
+    Write-Verbose 'Hola 1' -Verbose
+
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
 
@@ -2234,9 +2236,15 @@ function Set-ModuleReadMe {
         $templateFileContent = $PreLoadedContent.TemplateFileContent
     }
 
+    Write-Verbose 'Hola 2' -Verbose
+
+
     if (-not $templateFileContent) {
         throw "Failed to compile [$TemplateFilePath]"
     }
+
+    Write-Verbose 'Hola 3' -Verbose
+
 
     $moduleRoot = Split-Path $TemplateFilePath -Parent
     $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
@@ -2247,12 +2255,18 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    Write-Verbose 'Hola 4' -Verbose
+
+
     # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
     # E.g., authorization/role-assignment/rg-scope vs authorization/role-assignment/sub-scope
     $scopedModuleSeparator = '\/(rg|sub|mg)\-scope$'
     if ($fullModuleIdentifier -match $scopedModuleSeparator) {
         $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
     }
+
+    Write-Verbose 'Hola 5' -Verbose
+
 
     # ===================== #
     #   Preparation steps   #
@@ -2280,6 +2294,9 @@ function Set-ModuleReadMe {
         $notes = @()
     }
 
+    Write-Verbose 'Hola 6' -Verbose
+
+
     # Initialize readme
     $inputObject = @{
         ReadMeFilePath       = $ReadMeFilePath
@@ -2289,6 +2306,9 @@ function Set-ModuleReadMe {
         ForceCacheRefresh    = $ForceCacheRefresh
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
+
+    Write-Verbose 'Hola 7' -Verbose
+
 
     # =============== #
     #   Set content   #
