@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "14382045290198346824"
+      "version": "0.41.2.15936",
+      "templateHash": "18021832575415677448"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -191,7 +191,7 @@
     },
     "containerAppsEnvironment": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('containerAppsEnvironment-{0}-deployment', deployment().name), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1130,7 +1130,7 @@
     },
     "containerRegistry": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('containerRegistry-{0}-deployment', deployment().name), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
