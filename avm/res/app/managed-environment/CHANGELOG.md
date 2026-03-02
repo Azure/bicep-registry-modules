@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added support for parameters
+  - `daprConfiguration`
+  - `ingressConfiguration`
+  - `kedaConfiguration`
+  - `peerAuthentication`
+- Added type for parameter `tags`
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes

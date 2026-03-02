@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -24,6 +24,18 @@ param enableTelemetry bool = true
 @description('Optional. Application Insights connection string.')
 @secure()
 param appInsightsConnectionString string = ''
+
+@description('Optional. The configuration of Dapr component.')
+param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.daprConfiguration?
+
+@description('Optional. Ingress configuration for the Managed Environment.')
+param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.ingressConfiguration?
+
+@description('Optional. The configuration of Keda component.')
+param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.kedaConfiguration?
+
+@description('Optional. Peer authentication settings for the Managed Environment.')
+param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.peerAuthentication?
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
@@ -80,7 +92,7 @@ param lock lockType?
 param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
 
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.workloadProfiles?
+param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.workloadProfiles?
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
@@ -161,7 +173,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   )
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -170,6 +182,10 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
+    daprConfiguration: daprConfiguration
+    ingressConfiguration: ingressConfiguration
+    kedaConfiguration: kedaConfiguration
+    peerAuthentication: peerAuthentication
     appLogsConfiguration: !empty(appLogsConfiguration)
       ? {
           destination: appLogsConfiguration!.destination
@@ -218,33 +234,20 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
-
-  resource storage 'storages' = [
-    for storage in (storages ?? []): {
-      name: storage.shareName
-      properties: {
-        nfsAzureFile: storage.kind == 'NFS'
-          ? {
-              accessMode: storage.accessMode
-              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
-              shareName: '/${storage.storageAccountName}/${storage.shareName}'
-            }
-          : null
-        azureFile: storage.kind == 'SMB'
-          ? {
-              accessMode: storage.accessMode
-              accountName: storage.storageAccountName
-              accountKey: listkeys(
-                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
-                '2025-01-01'
-              ).keys[0].value
-              shareName: storage.shareName
-            }
-          : null
-      }
-    }
-  ]
 }
+
+module managedEnvironment_storage 'storage/main.bicep' = [
+  for (storage, index) in (storages ?? []): {
+    name: '${uniqueString(deployment().name)}-Managed-Environment-Storage-${index}'
+    params: {
+      name: storage.name
+      managedEnvironmentName: managedEnvironment.name
+      kind: storage.kind
+      accessMode: storage.accessMode
+      storageAccountName: storage.storageAccountName
+    }
+  }
+]
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -334,6 +337,7 @@ type certificateType = {
   certificateValue: string?
 
   @description('Optional. The password of the certificate.')
+  @secure()
   certificatePassword: string?
 
   @description('Optional. A key vault reference.')
@@ -343,7 +347,7 @@ type certificateType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview'>.tags?
+  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
 }
 
 @export()
@@ -359,7 +363,7 @@ type storageType = {
   storageAccountName: string
 
   @description('Required. File share name.')
-  shareName: string
+  name: string
 }
 
 @export()

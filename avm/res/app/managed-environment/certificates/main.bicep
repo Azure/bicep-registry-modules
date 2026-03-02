@@ -25,13 +25,13 @@ param certificateValue string?
 param certificatePassword string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' existing = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' existing = {
   name: managedEnvironmentName
 }
 
-resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2025-02-02-preview' = {
+resource managedEnvironmentCertificate 'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview' = {
   parent: managedEnvironment
   location: location
   name: name
@@ -55,7 +55,7 @@ output name string = managedEnvironmentCertificate.name
 @description('The resource ID of the key values.')
 output resourceId string = managedEnvironmentCertificate.id
 
-@description('The resource group the batch account was deployed into.')
+@description('The resource group the certificate was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 // =============== //
