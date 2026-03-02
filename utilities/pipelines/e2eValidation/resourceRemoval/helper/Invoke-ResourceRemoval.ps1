@@ -525,6 +525,36 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.ApiManagement/service' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
+
+            # Check if the APIM service exists
+            $apimService = az apim show --resource-group $resourceGroupName --name $resourceName 2>$null
+            if ($apimService) {
+                # Delete the APIM service
+                if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Remove')) {
+                    Write-Verbose ('[*] Removing API Management service [{0}] from resource group [{1}]' -f $resourceName, $resourceGroupName) -Verbose
+                    az apim delete --resource-group $resourceGroupName --name $resourceName --yes
+                }
+
+                # Purge the soft-deleted APIM service to ensure complete removal
+                $apimLocation = ($apimService | ConvertFrom-Json).location
+                $softDeletedService = az apim deletedservice show --service-name $resourceName --location $apimLocation 2>$null
+                if ($softDeletedService) {
+                    if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Purge')) {
+                        Write-Verbose ('[*] Purging soft-deleted API Management service [{0}] in location [{1}]' -f $resourceName, $apimLocation) -Verbose
+                        az apim deletedservice purge --service-name $resourceName --location $apimLocation
+                    }
+                } else {
+                    Write-Verbose ('[/] No soft-deleted API Management service [{0}] found in location [{1}]. Skipping purge.' -f $resourceName, $apimLocation) -Verbose
+                }
+            } else {
+                Write-Warning "Unable to find API Management service [$resourceName] in resource group [$resourceGroupName]"
+            }
+            break
+        }
         ### CODE LOCATION: Add custom removal action here
         default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
