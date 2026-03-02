@@ -1,6 +1,18 @@
+#!/bin/bash
+# Creates a scripts.zip archive containing the install script
+# and uploads it to the blob container for the Managed Instance test.
+
+set -euo pipefail
+
+# Create a temporary directory for the scripts
+TEMP_DIR=$(mktemp -d)
+trap 'rm -rf "$TEMP_DIR"' EXIT
+
+# Create install.ps1 matching the Terraform managed_instance example
+cat > "$TEMP_DIR/install.ps1" << 'PWSH'
 <#
 This is an example PowerShell script to show how to customize an App Service Managed Instance to perform additional configuration after it has been provisioned.
-In this example, the script creates a registry key with a string value, creates a JSON configuration file on the C: drive, and installs fonts from the current directory and subdirectories to the Windows Fonts folder.
+In this example, the script creates a registry key with a string value and creates a JSON configuration file on the C: drive.
 You can RDP via Azure Bastion onto one of the instances in the App Service Managed Instance to see the results after deployment.
 #>
 
@@ -51,23 +63,23 @@ try {
 catch {
   Write-Host "Error creating config file: $($_.Exception.Message)" -ForegroundColor Red
 }
+PWSH
 
-# Install fonts from the current directory and subdirectories
-Write-Host "Install fonts..."
+# Create the zip archive
+cd "$TEMP_DIR"
+python3 -c "
+import zipfile, os
+with zipfile.ZipFile('scripts.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+    zf.write('install.ps1', 'install.ps1')
+"
 
-try {
-  Get-ChildItem -Recurse -Include *.ttf, *.otf | ForEach-Object {
-      $FontFullName = $_.FullName
-      $FontName = $_.BaseName + " (TrueType)"
-      $Destination = "$env:windir\Fonts\$($_.Name)"
+# Upload to blob storage using managed identity
+az storage blob upload \
+  --account-name "$STORAGE_ACCOUNT_NAME" \
+  --container-name "scripts" \
+  --name "scripts.zip" \
+  --file "scripts.zip" \
+  --auth-mode login \
+  --overwrite
 
-      Write-Host "Installing font: $($_.Name)"
-      Copy-Item $FontFullName -Destination $Destination -Force
-      New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" -Name $FontName -PropertyType String -Value $_.Name -Force | Out-Null
-  }
-
-  Write-Host "Font installation completed." -ForegroundColor Green
-}
-catch {
-  Write-Host "Error installing fonts: $($_.Exception.Message)" -ForegroundColor Red
-}
+echo "scripts.zip uploaded successfully to container 'scripts'"

@@ -1,6 +1,6 @@
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Azure/bicep-registry-modules/badge)](https://scorecard.dev/viewer/?uri=github.com/Azure/bicep-registry-modules)
 
-<h1 style="color: steelblue;">⚠️ New standard for Bicep modules - AVM ⚠️</h1>
+<h1 style="color: steelblue;">Azure Verified Modules</h1>
 
 To provide our customers with a unified experience, Azure Verified Modules ([AVM](https://aka.ms/AVM)) is now the single Microsoft standard for Bicep modules, published to the Public Bicep Registry, via this repository.
 
@@ -21,7 +21,7 @@ To view all available AVM Bicep modules, go to AVM Bicep Module Index ([https://
 
 ## Contributing
 
-Everyone in the world can contribute towards the AVM modules wheteher that is by creating [issues](https://aka.ms/AVM/Bicep/ModuleIssue) and/or by creating [pull requests](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/) on **any existing AVM Bicep Module.**
+Everyone in the world can contribute towards the AVM modules whether that is by creating [issues](https://aka.ms/AVM/Bicep/ModuleIssue) and/or by creating [pull requests](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/) on **any existing AVM Bicep Module.**
 
 However, **only [Microsoft employees](https://azure.github.io/Azure-Verified-Modules/faq/#can-i-be-an-avm-module-owner-if-im-not-a-microsoft-fte) can be module owners at this time**. Teams within Microsoft can refer to [AVM Bicep Contribution Guide](https://aka.ms/AVM/Contribute/Bicep) for information on contributing modules.
 
