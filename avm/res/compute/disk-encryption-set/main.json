@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "13014371579579914637"
+      "version": "0.41.2.15936",
+      "templateHash": "6330014743086271288"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
@@ -444,8 +444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "5726881581696810744"
+              "version": "0.41.2.15936",
+              "templateHash": "9850337473108153570"
             }
           },
           "parameters": {
@@ -532,8 +532,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.40.2.10011",
-                      "templateHash": "4021648740442052121"
+                      "version": "0.41.2.15936",
+                      "templateHash": "11733492044716022563"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy."

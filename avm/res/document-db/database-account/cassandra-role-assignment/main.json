@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "552115240340341941"
+      "version": "0.41.2.15936",
+      "templateHash": "10018553115278082779"
     },
     "name": "DocumentDB Database Account Cassandra Role Assignments.",
     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."

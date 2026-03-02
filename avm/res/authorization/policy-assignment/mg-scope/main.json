@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10299986712018563236"
+      "version": "0.41.2.15936",
+      "templateHash": "18423021046416689050"
     },
     "name": "Policy Assignments (Management Group scope)",
     "description": "This module deploys a Policy Assignment at a Management Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity."
@@ -268,7 +268,7 @@
       },
       "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC', uniqueString(deployment().name, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId, coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', coalesce(variables('expandedMgRoleAssignments'), createArray())[copyIndex()].managementGroupId)]",
       "location": "[deployment().location]",
@@ -294,8 +294,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13813165544404512288"
+              "version": "0.41.2.15936",
+              "templateHash": "11079781275568976155"
             }
           },
           "parameters": {
@@ -345,7 +345,7 @@
       },
       "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "subscriptionId": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].subscriptionId]",
       "location": "[deployment().location]",
@@ -371,8 +371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "7233473995757164172"
+              "version": "0.41.2.15936",
+              "templateHash": "8163845298911809426"
             }
           },
           "parameters": {
@@ -429,7 +429,7 @@
       },
       "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId, parameters('name'), variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId), substring(split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2], 0, 8))]",
       "subscriptionId": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2]]",
       "resourceGroup": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[4]]",
@@ -455,8 +455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "12181669984624391484"
+              "version": "0.41.2.15936",
+              "templateHash": "2352196448303122044"
             }
           },
           "parameters": {
