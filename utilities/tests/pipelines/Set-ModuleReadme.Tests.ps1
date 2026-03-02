@@ -86,7 +86,7 @@ Describe 'Test ReadMe generation' {
             ErrorVariable    = 'InvocationError'
         }
         try {
-            Set-ModuleReadMe @inputObject -Verbose
+            Set-ModuleReadMe @inputObject
         } catch {
             $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
         }

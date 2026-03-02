@@ -90,29 +90,19 @@ function Get-SpecsAlignedResourceName {
         $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
         $cacheContent = Get-Content -Path $cacheFilePath -Raw
 
-        Write-Verbose 'Hola 3' -Verbose
-
         if (-not $cacheExpired -and $cacheContent.count -gt 0) {
             Write-Verbose 'Fetch api specs from cache'
-            Write-Verbose 'Hola 4' -Verbose
             $specs = ($cacheContent | ConvertFrom-Json -AsHashtable)
-            Write-Verbose 'Hola 5' -Verbose
             $fetchNewData = $false
         } else {
-            Write-Verbose 'Hola 6' -Verbose
             $fetchNewData = $true
         }
     }
 
-    Write-Verbose 'Hola 7' -Verbose
-
     if ($fetchNewData) {
         try {
-            Write-Verbose 'Hola 8' -Verbose
             $apiSpecs = (Invoke-WebRequest -Uri $ApiSpecsFileUri).Content
-            Write-Verbose 'Hola 9' -Verbose
             $specs = ConvertFrom-Json $apiSpecs -AsHashtable
-            Write-Verbose 'Hola 10' -Verbose
         } catch {
             Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
             $specs = @{}
