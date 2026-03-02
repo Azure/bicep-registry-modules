@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "17782525815468884180"
+      "version": "0.41.2.15936",
+      "templateHash": "9520703982620338303"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -714,7 +714,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}', parameters('netAppAccountName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -834,8 +834,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7002091751456368072"
+              "version": "0.41.2.15936",
+              "templateHash": "9110937642114901627"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -1517,7 +1517,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}/volumes/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

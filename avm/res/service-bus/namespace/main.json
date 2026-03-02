@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12230533121190686251"
+      "version": "0.41.2.15936",
+      "templateHash": "13944045693421633524"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace."
@@ -1808,7 +1808,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1825,7 +1825,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1866,7 +1866,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1911,8 +1911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7331395302433111098"
+              "version": "0.41.2.15936",
+              "templateHash": "15570477545881857023"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule."
@@ -2014,8 +2014,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "5536916122228196610"
+              "version": "0.41.2.15936",
+              "templateHash": "12207804353823589513"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -2118,8 +2118,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17455962299216694274"
+              "version": "0.41.2.15936",
+              "templateHash": "13935712669788207481"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -2222,8 +2222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "2674842963224947050"
+              "version": "0.41.2.15936",
+              "templateHash": "14806712169906543481"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -2424,8 +2424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1834255414874254098"
+              "version": "0.41.2.15936",
+              "templateHash": "3806147992786667261"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue."
@@ -2792,7 +2792,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/queues/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -2809,7 +2809,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/queues/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceBus/namespaces/queues', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2857,8 +2857,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "4116748364582130588"
+                      "version": "0.41.2.15936",
+                      "templateHash": "7011460922200909344"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -3040,8 +3040,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "5082885619629238407"
+              "version": "0.41.2.15936",
+              "templateHash": "12247231423348414376"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic."
@@ -3723,7 +3723,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -3740,7 +3740,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3788,8 +3788,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "16587567666261394583"
+                      "version": "0.41.2.15936",
+                      "templateHash": "17554074515170474710"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -3941,8 +3941,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "11047735223529370411"
+                      "version": "0.41.2.15936",
+                      "templateHash": "13429996626122286039"
                     },
                     "name": "Service Bus Namespace Topic Subscription",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -4400,8 +4400,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.39.26.7824",
-                              "templateHash": "10380124336770907492"
+                              "version": "0.41.2.15936",
+                              "templateHash": "10852899782320525955"
                             },
                             "name": "Service Bus Namespace Topic Subscription Rule",
                             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."

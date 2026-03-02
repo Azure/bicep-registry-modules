@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "10171745902607079182"
+      "version": "0.41.2.15936",
+      "templateHash": "7757578701498573864"
     },
     "name": "Role Assignments (All scopes)",
     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -163,8 +163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "2644044087598445758"
+              "version": "0.41.2.15936",
+              "templateHash": "5447559796617732310"
             },
             "name": "Role Assignments (Management Group scope)",
             "description": "This module deploys a Role Assignment at a Management Group scope."
@@ -326,8 +326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17966277059112419137"
+              "version": "0.41.2.15936",
+              "templateHash": "1012931657431899978"
             },
             "name": "Role Assignments (Subscription scope)",
             "description": "This module deploys a Role Assignment at a Subscription scope."
@@ -497,8 +497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "15596389954699354305"
+              "version": "0.41.2.15936",
+              "templateHash": "10599369707354286303"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope."

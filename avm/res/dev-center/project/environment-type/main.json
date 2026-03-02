@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "2947154870216849436"
+      "version": "0.41.2.15936",
+      "templateHash": "1658089513943882489"
     },
     "name": "Dev Center Project Environment Type",
     "description": "This module deploys a Dev Center Project Environment Type."
@@ -289,7 +289,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.DevCenter/projects/{0}/environmentTypes/{1}', parameters('projectName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DevCenter/projects/environmentTypes', parameters('projectName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DevCenter/projects/environmentTypes', parameters('projectName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

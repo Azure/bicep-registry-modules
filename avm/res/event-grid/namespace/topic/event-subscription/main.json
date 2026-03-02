@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "9175880743294904029"
+      "version": "0.41.2.15936",
+      "templateHash": "11043765954159507396"
     },
     "name": "Event Subscriptions",
     "description": "This module deploys an Event Subscription."
@@ -193,7 +193,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}/eventSubscriptions/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
