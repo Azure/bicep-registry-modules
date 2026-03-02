@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "11339035250690273224"
+      "version": "0.41.2.15936",
+      "templateHash": "15268271787844536670"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -925,7 +925,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/vpnGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/vpnGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -978,8 +978,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "288341564823488659"
+              "version": "0.41.2.15936",
+              "templateHash": "17554607253739700603"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -1190,8 +1190,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "4258875418296204842"
+              "version": "0.41.2.15936",
+              "templateHash": "15268351828180632888"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."

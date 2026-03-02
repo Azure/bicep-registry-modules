@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.5.1644",
-      "templateHash": "11814049283144062120"
+      "version": "0.41.2.15936",
+      "templateHash": "1269136697379732887"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster."
@@ -678,7 +678,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ServiceFabric/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceFabric/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -695,7 +695,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ServiceFabric/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceFabric/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceFabric/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -741,8 +741,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "13680418401617861921"
+              "version": "0.41.2.15936",
+              "templateHash": "1195765568545520326"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type."

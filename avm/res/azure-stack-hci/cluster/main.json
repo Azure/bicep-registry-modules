@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8814015841651123227"
+      "version": "0.41.2.15936",
+      "templateHash": "14388286101217935316"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -927,7 +927,7 @@
       },
       "type": "Microsoft.AzureStackHCI/edgeDevices",
       "apiVersion": "2024-02-15-preview",
-      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('deploymentSettings').clusterNodeNames[copyIndex()])]",
+      "scope": "[resourceId('Microsoft.HybridCompute/machines', parameters('deploymentSettings').clusterNodeNames[copyIndex()])]",
       "name": "default",
       "kind": "HCI",
       "properties": {
@@ -1087,7 +1087,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.AzureStackHCI/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.AzureStackHCI/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1105,7 +1105,7 @@
     "secrets": {
       "condition": "[parameters('useSharedKeyVault')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[coalesce(parameters('keyvaultSubscriptionId'), subscription().subscriptionId)]",
       "resourceGroup": "[coalesce(parameters('keyvaultResourceGroup'), resourceGroup().name)]",
@@ -1189,8 +1189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "10154446741860637754"
+              "version": "0.41.2.15936",
+              "templateHash": "2283457638420902146"
             }
           },
           "parameters": {
@@ -1362,7 +1362,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+              "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
               "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'keyVaultSecretUser', parameters('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
               "properties": {
                 "roleDefinitionId": "[variables('keyVaultSecretUserRoleID')]",
