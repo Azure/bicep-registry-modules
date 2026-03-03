@@ -41,7 +41,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       databaseAccountOfferType: 'Standard'
-      totalThroughputLimit: 4000
       capabilitiesToAdd: [
         'EnableServerless'
       ]
