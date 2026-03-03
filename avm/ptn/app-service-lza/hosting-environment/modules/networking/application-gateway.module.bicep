@@ -1,4 +1,9 @@
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import {
+  lockType
+  managedIdentityAllType
+  roleAssignmentType
+} from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 // NOTE: The resourceId() calls in this file are necessary for Application Gateway sub-resource
 // self-references during creation, where symbolic names cannot be used.
@@ -45,6 +50,86 @@ param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The availability zones for the Application Gateway.')
 param availabilityZones int[] = [1, 2, 3]
+
+@description('Optional. Managed identities for the Application Gateway. Required for Key Vault-referenced SSL certificates.')
+param managedIdentities managedIdentityAllType?
+
+@description('Optional. SSL certificates for the Application Gateway. Required for HTTPS termination.')
+param sslCertificates array?
+
+@description('Optional. Trusted root certificates for end-to-end SSL with internal CA backends.')
+param trustedRootCertificates array?
+
+@description('Optional. The SSL policy type. Use "Custom" for custom cipher suites or "Predefined" for a named policy.')
+@allowed(['Custom', 'CustomV2', 'Predefined'])
+param sslPolicyType string?
+
+@description('Optional. The predefined SSL policy name (e.g. "AppGwSslPolicy20220101S").')
+param sslPolicyName string?
+
+@description('Optional. The minimum TLS protocol version.')
+@allowed(['TLSv1_2', 'TLSv1_3'])
+param sslPolicyMinProtocolVersion string?
+
+@description('Optional. SSL cipher suites for the Application Gateway when sslPolicyType is Custom.')
+param sslPolicyCipherSuites string[] = []
+
+@description('Optional. Specify the type of resource lock for the Application Gateway.')
+param lock lockType?
+
+@description('Optional. Role assignments for the Application Gateway.')
+param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Authentication certificates for backend auth.')
+param authenticationCertificates array = []
+
+@description('Optional. Custom error configurations for the Application Gateway.')
+param customErrorConfigurations array = []
+
+@description('Optional. Whether FIPS mode is enabled on the Application Gateway.')
+param enableFips bool = false
+
+@description('Optional. Whether HTTP/2 is enabled. Defaults to true.')
+param enableHttp2 bool = true
+
+@description('Optional. Whether request buffering is enabled.')
+param enableRequestBuffering bool = false
+
+@description('Optional. Whether response buffering is enabled.')
+param enableResponseBuffering bool = false
+
+@description('Optional. Load distribution policies for the Application Gateway.')
+param loadDistributionPolicies array = []
+
+@description('Optional. Private endpoints for the Application Gateway.')
+param privateEndpoints array?
+
+@description('Optional. Private link configurations for the Application Gateway.')
+param privateLinkConfigurations array = []
+
+@description('Optional. Redirect configurations for the Application Gateway.')
+param redirectConfigurations array = []
+
+@description('Optional. Rewrite rule sets for the Application Gateway.')
+param rewriteRuleSets array = []
+
+@description('Optional. SSL profiles for the Application Gateway.')
+param sslProfiles array = []
+
+@description('Optional. Trusted client certificates for mTLS.')
+param trustedClientCertificates array = []
+
+@description('Optional. URL path maps for path-based routing.')
+param urlPathMaps array = []
+
+@description('Optional. Backend settings collection (v2 configuration).')
+param backendSettingsCollection array = []
+
+@description('Optional. Listeners (v2 configuration).')
+param listeners array = []
+
+@description('Optional. Routing rules (v2 configuration).')
+param routingRules array = []
 
 @description('Optional. WAF policy mode. Only used when skuName is WAF_v2.')
 @allowed([
@@ -127,10 +212,35 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.8.0' 
     capacity: capacity
     autoscaleMinCapacity: autoscaleMinCapacity
     autoscaleMaxCapacity: autoscaleMaxCapacity
-    enableHttp2: true
+    enableHttp2: enableHttp2
+    enableFips: enableFips
+    enableRequestBuffering: enableRequestBuffering
+    enableResponseBuffering: enableResponseBuffering
     availabilityZones: availabilityZones
     diagnosticSettings: diagnosticSettings
     firewallPolicyResourceId: wafPolicy.?outputs.?resourceId
+    lock: lock
+    roleAssignments: roleAssignments
+    managedIdentities: managedIdentities
+    authenticationCertificates: authenticationCertificates
+    customErrorConfigurations: customErrorConfigurations
+    loadDistributionPolicies: loadDistributionPolicies
+    privateEndpoints: privateEndpoints
+    privateLinkConfigurations: privateLinkConfigurations
+    redirectConfigurations: redirectConfigurations
+    rewriteRuleSets: rewriteRuleSets
+    sslProfiles: sslProfiles
+    trustedClientCertificates: trustedClientCertificates
+    urlPathMaps: urlPathMaps
+    backendSettingsCollection: backendSettingsCollection
+    listeners: listeners
+    routingRules: routingRules
+    sslCertificates: sslCertificates
+    trustedRootCertificates: trustedRootCertificates
+    sslPolicyType: sslPolicyType
+    sslPolicyName: sslPolicyName ?? null
+    sslPolicyMinProtocolVersion: sslPolicyMinProtocolVersion
+    sslPolicyCipherSuites: !empty(sslPolicyCipherSuites) ? sslPolicyCipherSuites : null
     gatewayIPConfigurations: [
       {
         name: gatewayIpConfigName

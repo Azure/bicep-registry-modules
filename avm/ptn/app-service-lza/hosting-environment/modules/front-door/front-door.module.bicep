@@ -1,4 +1,5 @@
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 // ------------------
 //    TYPES
@@ -89,10 +90,43 @@ param wafPolicyState string = 'Enabled'
 ])
 param wafPolicyMode string = 'Prevention'
 
+@description('Optional. Name for the WAF policy resource. Defaults to naming-module value if empty.')
+param wafPolicyName string = ''
+
+@description('Optional. Whether to deploy the default WAF custom rule that blocks non-GET/HEAD/OPTIONS methods. Set to false for API backends that need POST/PUT/PATCH/DELETE.')
+param enableDefaultWafMethodBlock bool = true
+
+@description('Optional. Custom WAF rules to deploy. Only used if enableDefaultWafMethodBlock is false (replaces the default rule set).')
+param wafCustomRules object?
+
+@description('Optional. Health probe path for the origin group. Defaults to "/".')
+param healthProbePath string = '/'
+
+@description('Optional. Health probe interval in seconds. Defaults to 100.')
+param healthProbeIntervalInSeconds int = 100
+
+@description('Optional. Custom domains for the Front Door profile.')
+param customDomains array?
+
+@description('Optional. Rule sets for URL rewrites, header manipulation, and caching.')
+param ruleSets array?
+
+@description('Optional. Secrets for the Front Door profile (e.g. BYOC certificates).')
+param secrets array?
+
+@description('Optional. Specify the type of resource lock for the Front Door profile.')
+param lock lockType?
+
+@description('Optional. Role assignments for the Front Door profile.')
+param roleAssignments roleAssignmentType[]?
+
+@description('Optional. The time in seconds before the origin response times out. Defaults to 120.')
+param originResponseTimeoutSeconds int = 120
+
 module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.3' = {
   name: 'wafPolicy-${uniqueString(resourceGroup().id)}'
   params: {
-    name: 'waffrontdoor'
+    name: !empty(wafPolicyName) ? wafPolicyName : 'waffrontdoor'
     location: 'Global'
     enableTelemetry: enableTelemetry
     tags: tags
@@ -102,31 +136,33 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
       mode: wafPolicyMode
       requestBodyCheck: 'Enabled'
     }
-    customRules: {
-      rules: [
-        {
-          name: 'BlockMethod'
-          enabledState: 'Enabled'
-          action: 'Block'
-          ruleType: 'MatchRule'
-          priority: 10
-          rateLimitDurationInMinutes: 1
-          rateLimitThreshold: 100
-          matchConditions: [
+    customRules: enableDefaultWafMethodBlock
+      ? {
+          rules: [
             {
-              matchVariable: 'RequestMethod'
-              operator: 'Equal'
-              negateCondition: true
-              matchValue: [
-                'GET'
-                'OPTIONS'
-                'HEAD'
+              name: 'BlockMethod'
+              enabledState: 'Enabled'
+              action: 'Block'
+              ruleType: 'MatchRule'
+              priority: 10
+              rateLimitDurationInMinutes: 1
+              rateLimitThreshold: 100
+              matchConditions: [
+                {
+                  matchVariable: 'RequestMethod'
+                  operator: 'Equal'
+                  negateCondition: true
+                  matchValue: [
+                    'GET'
+                    'OPTIONS'
+                    'HEAD'
+                  ]
+                }
               ]
             }
           ]
         }
-      ]
-    }
+      : (wafCustomRules ?? { rules: [] })
     managedRules: {
       managedRuleSets: [
         {
@@ -146,18 +182,23 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
   }
 }
 
-module frontDoor 'br/public:avm/res/cdn/profile:0.17.1' = {
+module frontDoor 'br/public:avm/res/cdn/profile:0.17.2' = {
   name: 'frontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: afdName
     sku: skuName
     location: 'global'
     enableTelemetry: enableTelemetry
-    originResponseTimeoutSeconds: 120
+    originResponseTimeoutSeconds: originResponseTimeoutSeconds
     managedIdentities: {
       systemAssigned: true
     }
     diagnosticSettings: diagnosticSettings
+    lock: lock
+    roleAssignments: roleAssignments
+    customDomains: customDomains
+    ruleSets: ruleSets
+    secrets: secrets
     afdEndpoints: [
       {
         name: endpointName
@@ -188,10 +229,10 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.17.1' = {
           additionalLatencyInMilliseconds: 50
         }
         healthProbeSettings: {
-          probePath: '/'
+          probePath: healthProbePath
           probeRequestType: 'GET'
           probeProtocol: 'Https'
-          probeIntervalInSeconds: 100
+          probeIntervalInSeconds: healthProbeIntervalInSeconds
         }
         sessionAffinityState: 'Disabled'
         trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 10

@@ -1,6 +1,11 @@
 targetScope = 'resourceGroup'
 
 import { NamingOutput } from '../naming/naming.module.bicep'
+import {
+  lockType
+  diagnosticSettingFullType
+  roleAssignmentType
+} from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @description('Required. The naming convention output object from the naming module.')
 param naming NamingOutput
@@ -44,6 +49,40 @@ param logAnalyticsWorkspaceId string
 
 @description('Optional. The resource ID of the hub VNet. If not empty, VNet peering will be configured.')
 param hubVnetResourceId string = ''
+
+@description('Optional. Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used.')
+param dnsServers string[] = []
+
+@description('Optional. The resource ID of a DDoS Protection Plan to associate with the spoke VNet.')
+param ddosProtectionPlanResourceId string = ''
+
+@description('Optional. Diagnostic Settings for the spoke virtual network.')
+param vnetDiagnosticSettings diagnosticSettingFullType[]?
+
+@description('Optional. Specify the type of resource lock for the spoke virtual network.')
+param vnetLock lockType?
+
+@description('Optional. Whether to disable BGP route propagation on the route table. Defaults to true to prevent BGP-learned routes from bypassing the firewall.')
+param disableBgpRoutePropagation bool = true
+
+@description('Optional. Role assignments for the spoke virtual network.')
+param vnetRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable VNet encryption.')
+param vnetEncryption bool = false
+
+@description('Optional. VNet encryption enforcement. Only used when vnetEncryption is true.')
+@allowed(['AllowUnencrypted', 'DropUnencrypted'])
+param vnetEncryptionEnforcement string = 'AllowUnencrypted'
+
+@description('Optional. The flow timeout in minutes for the VNet (max 30). 0 means disabled.')
+param flowTimeoutInMinutes int = 0
+
+@description('Optional. Enable VM protection for the VNet.')
+param enableVmProtection bool?
+
+@description('Optional. The BGP community for the VNet.')
+param virtualNetworkBgpCommunity string?
 
 var deployAppGw = networkingOption == 'applicationGateway'
 
@@ -112,6 +151,16 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.7.2' = {
     addressPrefixes: [
       vnetSpokeAddressSpace
     ]
+    dnsServers: !empty(dnsServers) ? dnsServers : []
+    ddosProtectionPlanResourceId: !empty(ddosProtectionPlanResourceId) ? ddosProtectionPlanResourceId : ''
+    diagnosticSettings: vnetDiagnosticSettings
+    lock: vnetLock
+    roleAssignments: vnetRoleAssignments
+    vnetEncryption: vnetEncryption
+    vnetEncryptionEnforcement: vnetEncryption ? vnetEncryptionEnforcement : 'AllowUnencrypted'
+    flowTimeoutInMinutes: flowTimeoutInMinutes
+    enableVmProtection: enableVmProtection
+    virtualNetworkBgpCommunity: virtualNetworkBgpCommunity
     subnets: subnets
     peerings: !empty(hubVnetResourceId)
       ? [
@@ -135,6 +184,7 @@ module routeTableToFirewall 'br/public:avm/res/network/route-table:0.5.0' = if (
     enableTelemetry: enableTelemetry
     tags: tags
     routes: udrRoutes
+    disableBgpRoutePropagation: disableBgpRoutePropagation
   }
 }
 
