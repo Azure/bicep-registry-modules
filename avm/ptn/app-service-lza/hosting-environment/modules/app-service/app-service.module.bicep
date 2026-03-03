@@ -156,7 +156,7 @@ param rdpEnabled bool?
 param installScripts array?
 
 @description('Optional. The default identity for the App Service Plan.')
-param planDefaultIdentity string?
+param planDefaultIdentity resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.properties.planDefaultIdentity?
 
 @description('Optional. Registry adapter configuration for the App Service Plan.')
 param registryAdapters array?

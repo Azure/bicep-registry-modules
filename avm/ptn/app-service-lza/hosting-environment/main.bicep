@@ -11,6 +11,9 @@ import {
   diagnosticSettingFullType
   diagnosticSettingMetricsOnlyType
   diagnosticSettingLogsOnlyType
+  lockType
+  roleAssignmentType
+  managedIdentityAllType
 } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @maxLength(10)
@@ -141,6 +144,427 @@ param appGatewayDiagnosticSettings diagnosticSettingFullType[] = []
 @description('Optional. Diagnostic Settings for the KeyVault.')
 param keyVaultDiagnosticSettings diagnosticSettingFullType[] = []
 
+@description('Optional. Diagnostic Settings for the spoke virtual network.')
+param vnetDiagnosticSettings diagnosticSettingFullType[] = []
+
+// ======================== //
+// Governance & Security    //
+// ======================== //
+
+@description('Optional. Specify the type of resource lock for the Web App.')
+param webAppLock lockType?
+
+@description('Optional. Role assignments to apply to the Web App.')
+param webAppRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Specify the type of resource lock for the App Service Plan.')
+param appServicePlanLock lockType?
+
+@description('Optional. Role assignments to apply to the App Service Plan.')
+param appServicePlanRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Specify the type of resource lock for the Key Vault.')
+param keyVaultLock lockType?
+
+@description('Optional. Additional role assignments for the Key Vault beyond the default App Service identity.')
+param keyVaultAdditionalRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Specify the type of resource lock for the spoke virtual network.')
+param vnetLock lockType?
+
+@description('Optional. Specify the type of resource lock for the Front Door profile.')
+param frontDoorLock lockType?
+
+@description('Optional. Specify the type of resource lock for the Application Gateway.')
+param appGatewayLock lockType?
+
+@description('Optional. Enable purge protection for the Key Vault. Defaults to true.')
+param keyVaultEnablePurgeProtection bool = true
+
+@description('Optional. Soft delete retention in days for the Key Vault. Defaults to 90.')
+param keyVaultSoftDeleteRetentionInDays int = 90
+
+@description('Optional. Access policies for the Key Vault (non-RBAC mode).')
+param keyVaultAccessPolicies array?
+
+@description('Optional. Secrets to create in the Key Vault.')
+param keyVaultSecrets array?
+
+@description('Optional. Keys to create in the Key Vault.')
+param keyVaultKeys array?
+
+@description('Optional. Enable the Key Vault for template deployment.')
+param keyVaultEnableVaultForTemplateDeployment bool = true
+
+@description('Optional. Enable the Key Vault for disk encryption.')
+param keyVaultEnableVaultForDiskEncryption bool = true
+
+@description('Optional. The create mode for the Key Vault (default or recover).')
+@allowed(['default', 'recover'])
+param keyVaultCreateMode string = 'default'
+
+@description('Optional. The SKU of the Key Vault.')
+@allowed(['standard', 'premium'])
+param keyVaultSku string = 'standard'
+
+@description('Optional. Enable RBAC authorization on the Key Vault. Defaults to true.')
+param keyVaultEnableRbacAuthorization bool = true
+
+@description('Optional. Enable the Key Vault for deployment. Defaults to true.')
+param keyVaultEnableVaultForDeployment bool = true
+
+@description('Optional. Network ACLs for the Key Vault.')
+param keyVaultNetworkAcls object?
+
+@description('Optional. Public network access for the Key Vault.')
+@allowed(['Enabled', 'Disabled', ''])
+param keyVaultPublicNetworkAccess string = 'Disabled'
+
+@description('Optional. Set to true to enable client certificate authentication (mTLS) on the web app.')
+param clientCertEnabled bool = false
+
+@description('Optional. Client certificate mode. Only used when clientCertEnabled is true.')
+@allowed(['Optional', 'OptionalInteractiveUser', 'Required'])
+param clientCertMode string = 'Required'
+
+@description('Optional. Disable basic publishing credentials (FTP/SCM) on the web app. Defaults to true for security.')
+param disableBasicPublishingCredentials bool = true
+
+@description('Optional. Property to allow or block public network access to the web app.')
+@allowed(['Enabled', 'Disabled', ''])
+param webAppPublicNetworkAccess string = ''
+
+// ======================== //
+// Web App Advanced         //
+// ======================== //
+
+@description('Optional. Configures the web app to accept only HTTPS requests.')
+param httpsOnly bool = true
+
+@description('Optional. Client certificate authentication exclusion paths (comma-separated).')
+param clientCertExclusionPaths string?
+
+@description('Optional. Site redundancy mode.')
+@allowed(['ActiveActive', 'Failover', 'GeoRedundant', 'Manual', 'None'])
+param redundancyMode string = 'None'
+
+@description('Optional. Stop SCM (Kudu) site when the app is stopped.')
+param scmSiteAlsoStopped bool = false
+
+@description('Optional. The Function App configuration object.')
+param functionAppConfig object?
+
+@description('Optional. The managed environment resource ID for Azure Container Apps scenarios.')
+param managedEnvironmentResourceId string?
+
+@description('Optional. The outbound VNET routing configuration for the site.')
+param outboundVnetRouting object?
+
+@description('Optional. Hostname SSL states for managing SSL bindings.')
+param hostNameSslStates array?
+
+@description('Optional. Enable end-to-end encryption (used with ASE).')
+param e2eEncryptionEnabled bool?
+
+@description('Optional. The resource ID of the identity to use for Key Vault references.')
+param keyVaultAccessIdentityResourceId string?
+
+@description('Optional. Names of hybrid connection relays to connect the app with.')
+param hybridConnectionRelays array?
+
+@description('Optional. Extensions configuration for the web app.')
+param webAppExtensions array?
+
+@description('Optional. Setting this value to false disables the app (takes the app offline).')
+param webAppEnabled bool = true
+
+@description('Optional. If specified during app creation, the app is cloned from a source app.')
+param cloningInfo object?
+
+@description('Optional. Size of the function container.')
+param containerSize int?
+
+@description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
+param dailyMemoryTimeQuota int?
+
+@description('Optional. Whether customer-provided storage account is required.')
+param storageAccountRequired bool = false
+
+@description('Optional. Property to configure DNS-related settings for the site.')
+param dnsConfiguration object?
+
+@description('Optional. Specifies the scope of uniqueness for the default hostname during resource creation.')
+param autoGeneratedDomainNameLabelScope string?
+
+@description('Optional. Whether to enable SSH access.')
+param sshEnabled bool?
+
+@description('Optional. Dapr configuration for the app (Container Apps).')
+param daprConfig object?
+
+@description('Optional. Specifies the IP mode of the app.')
+param ipMode string?
+
+@description('Optional. Function app resource requirements.')
+param resourceConfig object?
+
+@description('Optional. Workload profile name for function app to execute on.')
+param workloadProfileName string?
+
+@description('Optional. True to disable the public hostnames of the app.')
+param hostNamesDisabled bool?
+
+@description('Optional. True if reserved (Linux). Overrides auto-detection when set.')
+param webAppReserved bool?
+
+@description('Optional. Extended location of the web app resource.')
+param extendedLocation object?
+
+@description('Optional. If client affinity is enabled on the web app.')
+param clientAffinityEnabled bool = false
+
+@description('Optional. Proxy-based client affinity enabled on the web app.')
+param clientAffinityProxyEnabled bool?
+
+@description('Optional. Partitioned client affinity using CHIPS cookies.')
+param clientAffinityPartitioningEnabled bool?
+
+// ======================== //
+// Service Plan Advanced    //
+// ======================== //
+
+@description('Optional. The SKU capacity (number of workers) for the App Service Plan.')
+param skuCapacity int?
+
+@description('Optional. Target worker tier assigned to the App Service Plan.')
+param workerTierName string?
+
+@description('Optional. Whether elastic scale is enabled on the App Service Plan.')
+param elasticScaleEnabled bool?
+
+@description('Optional. The resource ID of a subnet for VNet integration on the App Service Plan level.')
+param appServicePlanVirtualNetworkSubnetId string?
+
+@description('Optional. Whether the App Service Plan uses custom mode.')
+param isCustomMode bool?
+
+@description('Optional. Whether RDP is enabled on the App Service Plan.')
+param rdpEnabled bool?
+
+@description('Optional. Install scripts for the App Service Plan.')
+param installScripts array?
+
+@description('Optional. The default identity for the App Service Plan.')
+param planDefaultIdentity resourceInput<'Microsoft.Web/serverfarms@2025-03-01'>.properties.planDefaultIdentity?
+
+@description('Optional. Registry adapter configuration for the App Service Plan.')
+param registryAdapters array?
+
+@description('Optional. Storage mount configuration for the App Service Plan.')
+param storageMounts array?
+
+@description('Optional. Managed identities for the App Service Plan.')
+param appServicePlanManagedIdentities managedIdentityAllType?
+
+// ======================== //
+// App Insights Settings    //
+// ======================== //
+
+@description('Optional. Public network access for App Insights ingestion. Defaults to Disabled for secure baseline.')
+@allowed(['Enabled', 'Disabled'])
+param appInsightsPublicNetworkAccessForIngestion string = 'Disabled'
+
+@description('Optional. Public network access for App Insights query. Defaults to Disabled for secure baseline.')
+@allowed(['Enabled', 'Disabled'])
+param appInsightsPublicNetworkAccessForQuery string = 'Disabled'
+
+@description('Optional. App Insights data retention in days. Defaults to 90.')
+param appInsightsRetentionInDays int = 90
+
+@description('Optional. App Insights sampling percentage (1-100). Defaults to 100.')
+param appInsightsSamplingPercentage int = 100
+
+@description('Optional. Disable non-AAD based auth on App Insights. Defaults to true.')
+param appInsightsDisableLocalAuth bool = true
+
+@description('Optional. Disable IP masking in App Insights.')
+param appInsightsDisableIpMasking bool?
+
+@description('Optional. Force customer storage for profiler in App Insights.')
+param appInsightsForceCustomerStorageForProfiler bool?
+
+@description('Optional. Linked storage account resource ID for App Insights.')
+param appInsightsLinkedStorageAccountResourceId string?
+
+@description('Optional. Flow type for App Insights.')
+param appInsightsFlowType string?
+
+@description('Optional. Request source for App Insights.')
+param appInsightsRequestSource string?
+
+@description('Optional. Kind of App Insights resource.')
+param appInsightsKind string?
+
+@description('Optional. Purge data immediately after 30 days in App Insights.')
+param appInsightsImmediatePurgeDataOn30Days bool?
+
+@description('Optional. Ingestion mode for App Insights.')
+@allowed(['ApplicationInsights', 'ApplicationInsightsWithDiagnosticSettings', 'LogAnalytics'])
+param appInsightsIngestionMode string?
+
+@description('Optional. Specify the type of resource lock for App Insights.')
+param appInsightsLock lockType?
+
+@description('Optional. Role assignments for App Insights.')
+param appInsightsRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Diagnostic Settings for App Insights.')
+param appInsightsDiagnosticSettings diagnosticSettingFullType[]?
+
+// ======================== //
+// Networking Advanced      //
+// ======================== //
+
+@description('Optional. Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used.')
+param dnsServers string[] = []
+
+@description('Optional. The resource ID of a DDoS Protection Plan to associate with the spoke VNet.')
+param ddosProtectionPlanResourceId string = ''
+
+@description('Optional. Whether to disable BGP route propagation on the route table. Defaults to true.')
+param disableBgpRoutePropagation bool = true
+
+@description('Optional. Role assignments for the spoke virtual network.')
+param vnetRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable VNet encryption.')
+param vnetEncryption bool = false
+
+@description('Optional. VNet encryption enforcement. Only used when vnetEncryption is true.')
+@allowed(['AllowUnencrypted', 'DropUnencrypted'])
+param vnetEncryptionEnforcement string = 'AllowUnencrypted'
+
+@description('Optional. The flow timeout in minutes for the VNet (max 30). 0 means disabled.')
+param flowTimeoutInMinutes int = 0
+
+@description('Optional. Enable VM protection for the VNet.')
+param enableVmProtection bool?
+
+@description('Optional. The BGP community for the VNet.')
+param virtualNetworkBgpCommunity string?
+
+// ======================== //
+// Application Gateway Adv  //
+// ======================== //
+
+@description('Optional. SSL certificates for the Application Gateway. Required for HTTPS termination.')
+param appGatewaySslCertificates array?
+
+@description('Optional. Managed identities for the Application Gateway. Required for Key Vault-referenced SSL certificates.')
+param appGatewayManagedIdentities managedIdentityAllType?
+
+@description('Optional. Trusted root certificates for end-to-end SSL.')
+param appGatewayTrustedRootCertificates array?
+
+@description('Optional. The SSL policy type for the Application Gateway.')
+@allowed(['Custom', 'CustomV2', 'Predefined'])
+param appGatewaySslPolicyType string?
+
+@description('Optional. The predefined SSL policy name for the Application Gateway.')
+param appGatewaySslPolicyName string?
+
+@description('Optional. Minimum TLS protocol version for the Application Gateway.')
+@allowed(['TLSv1_2', 'TLSv1_3'])
+param appGatewaySslPolicyMinProtocolVersion string?
+
+@description('Optional. SSL cipher suites for the Application Gateway.')
+param appGatewaySslPolicyCipherSuites string[] = []
+
+@description('Optional. Role assignments for the Application Gateway.')
+param appGatewayRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Authentication certificates for Application Gateway backend auth.')
+param appGatewayAuthenticationCertificates array = []
+
+@description('Optional. Custom error configurations for the Application Gateway.')
+param appGatewayCustomErrorConfigurations array = []
+
+@description('Optional. Whether FIPS mode is enabled on the Application Gateway.')
+param appGatewayEnableFips bool = false
+
+@description('Optional. Whether HTTP/2 is enabled on the Application Gateway. Defaults to true.')
+param appGatewayEnableHttp2 bool = true
+
+@description('Optional. Whether request buffering is enabled on the Application Gateway.')
+param appGatewayEnableRequestBuffering bool = false
+
+@description('Optional. Whether response buffering is enabled on the Application Gateway.')
+param appGatewayEnableResponseBuffering bool = false
+
+@description('Optional. Load distribution policies for the Application Gateway.')
+param appGatewayLoadDistributionPolicies array = []
+
+@description('Optional. Private endpoints for the Application Gateway.')
+param appGatewayPrivateEndpoints array?
+
+@description('Optional. Private link configurations for the Application Gateway.')
+param appGatewayPrivateLinkConfigurations array = []
+
+@description('Optional. Redirect configurations for the Application Gateway.')
+param appGatewayRedirectConfigurations array = []
+
+@description('Optional. Rewrite rule sets for the Application Gateway.')
+param appGatewayRewriteRuleSets array = []
+
+@description('Optional. SSL profiles for the Application Gateway.')
+param appGatewaySslProfiles array = []
+
+@description('Optional. Trusted client certificates for mTLS on the Application Gateway.')
+param appGatewayTrustedClientCertificates array = []
+
+@description('Optional. URL path maps for path-based routing on the Application Gateway.')
+param appGatewayUrlPathMaps array = []
+
+@description('Optional. Backend settings collection (v2) for the Application Gateway.')
+param appGatewayBackendSettingsCollection array = []
+
+@description('Optional. Listeners (v2) for the Application Gateway.')
+param appGatewayListeners array = []
+
+@description('Optional. Routing rules (v2) for the Application Gateway.')
+param appGatewayRoutingRules array = []
+
+// ======================== //
+// Front Door Advanced      //
+// ======================== //
+
+@description('Optional. Whether to deploy the default WAF custom rule that blocks non-GET/HEAD/OPTIONS methods. Set to false for API backends.')
+param enableDefaultWafMethodBlock bool = true
+
+@description('Optional. Custom WAF rules. Only used when enableDefaultWafMethodBlock is false.')
+param wafCustomRules object?
+
+@description('Optional. Health probe path for the Front Door origin group.')
+param frontDoorHealthProbePath string = '/'
+
+@description('Optional. Health probe interval in seconds for the Front Door origin group.')
+param frontDoorHealthProbeIntervalInSeconds int = 100
+
+@description('Optional. Custom domains for the Front Door profile.')
+param frontDoorCustomDomains array?
+
+@description('Optional. Rule sets for the Front Door profile.')
+param frontDoorRuleSets array?
+
+@description('Optional. Secrets for the Front Door profile (e.g. BYOC certificates).')
+param frontDoorSecrets array?
+
+@description('Optional. Role assignments for the Front Door profile.')
+param frontDoorRoleAssignments roleAssignmentType[]?
+
+@description('Optional. The time in seconds before the Front Door origin response times out. Defaults to 120.')
+param frontDoorOriginResponseTimeoutSeconds int = 120
+
 // ======================== //
 // Networking Option        //
 // ======================== //
@@ -192,6 +616,28 @@ param containerRegistryUsername string = ''
 @description('Optional. The container registry password for private registries.')
 @secure()
 param containerRegistryPassword string = ''
+
+// ======================== //
+// ASE Advanced             //
+// ======================== //
+
+@description('Optional. Role assignments for the ASE.')
+param aseRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Custom DNS suffix for the ASE.')
+param aseCustomDnsSuffix string?
+
+@description('Optional. Number of IP SSL addresses reserved for the ASE.')
+param aseIpsslAddressCount int?
+
+@description('Optional. Front-end VM size for the ASE.')
+param aseMultiSize string?
+
+@description('Optional. Managed identities for the ASE.')
+param aseManagedIdentities managedIdentityAllType?
+
+@description('Optional. Specify the type of resource lock for the ASE.')
+param aseLock lockType?
 
 // ======================== //
 // Custom Resource Names    //
@@ -313,6 +759,19 @@ module networking './modules/networking/network.module.bicep' = {
     hubVnetResourceId: vnetHubResourceId
     networkingOption: networkingOption
     logAnalyticsWorkspaceId: logAnalyticsWorkspaceResourceId
+    dnsServers: dnsServers
+    ddosProtectionPlanResourceId: ddosProtectionPlanResourceId
+    vnetDiagnosticSettings: !empty(vnetDiagnosticSettings)
+      ? vnetDiagnosticSettings
+      : null
+    vnetLock: vnetLock
+    disableBgpRoutePropagation: disableBgpRoutePropagation
+    vnetRoleAssignments: vnetRoleAssignments
+    vnetEncryption: vnetEncryption
+    vnetEncryptionEnforcement: vnetEncryptionEnforcement
+    flowTimeoutInMinutes: flowTimeoutInMinutes
+    enableVmProtection: enableVmProtection
+    virtualNetworkBgpCommunity: virtualNetworkBgpCommunity
     tags: tags
   }
 }
@@ -346,6 +805,77 @@ module webApp './modules/app-service/app-service.module.bicep' = {
     containerRegistryUrl: containerRegistryUrl
     containerRegistryUsername: containerRegistryUsername
     containerRegistryPassword: containerRegistryPassword
+    webAppLock: webAppLock
+    webAppRoleAssignments: webAppRoleAssignments
+    appServicePlanLock: appServicePlanLock
+    appServicePlanRoleAssignments: appServicePlanRoleAssignments
+    clientCertEnabled: clientCertEnabled
+    clientCertMode: clientCertMode
+    disableBasicPublishingCredentials: disableBasicPublishingCredentials
+    webAppPublicNetworkAccess: webAppPublicNetworkAccess
+    appInsightsPublicNetworkAccessForIngestion: appInsightsPublicNetworkAccessForIngestion
+    appInsightsPublicNetworkAccessForQuery: appInsightsPublicNetworkAccessForQuery
+    appInsightsRetentionInDays: appInsightsRetentionInDays
+    appInsightsSamplingPercentage: appInsightsSamplingPercentage
+    appInsightsDisableLocalAuth: appInsightsDisableLocalAuth
+    appInsightsDisableIpMasking: appInsightsDisableIpMasking
+    appInsightsForceCustomerStorageForProfiler: appInsightsForceCustomerStorageForProfiler
+    appInsightsLinkedStorageAccountResourceId: appInsightsLinkedStorageAccountResourceId
+    appInsightsFlowType: appInsightsFlowType
+    appInsightsRequestSource: appInsightsRequestSource
+    appInsightsKind: appInsightsKind
+    appInsightsImmediatePurgeDataOn30Days: appInsightsImmediatePurgeDataOn30Days
+    appInsightsIngestionMode: appInsightsIngestionMode
+    appInsightsLock: appInsightsLock
+    appInsightsRoleAssignments: appInsightsRoleAssignments
+    appInsightsDiagnosticSettings: appInsightsDiagnosticSettings
+    httpsOnly: httpsOnly
+    clientCertExclusionPaths: clientCertExclusionPaths
+    redundancyMode: redundancyMode
+    scmSiteAlsoStopped: scmSiteAlsoStopped
+    functionAppConfig: functionAppConfig
+    managedEnvironmentResourceId: managedEnvironmentResourceId
+    outboundVnetRouting: outboundVnetRouting
+    hostNameSslStates: hostNameSslStates
+    e2eEncryptionEnabled: e2eEncryptionEnabled
+    keyVaultAccessIdentityResourceId: keyVaultAccessIdentityResourceId
+    hybridConnectionRelays: hybridConnectionRelays
+    extensions: webAppExtensions
+    webAppEnabled: webAppEnabled
+    cloningInfo: cloningInfo
+    containerSize: containerSize
+    dailyMemoryTimeQuota: dailyMemoryTimeQuota
+    storageAccountRequired: storageAccountRequired
+    dnsConfiguration: dnsConfiguration
+    autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
+    sshEnabled: sshEnabled
+    daprConfig: daprConfig
+    ipMode: ipMode
+    resourceConfig: resourceConfig
+    workloadProfileName: workloadProfileName
+    hostNamesDisabled: hostNamesDisabled
+    webAppReserved: webAppReserved
+    extendedLocation: extendedLocation
+    clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityProxyEnabled: clientAffinityProxyEnabled
+    clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled
+    skuCapacity: skuCapacity
+    workerTierName: workerTierName
+    elasticScaleEnabled: elasticScaleEnabled
+    appServicePlanVirtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
+    isCustomMode: isCustomMode
+    rdpEnabled: rdpEnabled
+    installScripts: installScripts
+    planDefaultIdentity: planDefaultIdentity
+    registryAdapters: registryAdapters
+    storageMounts: storageMounts
+    appServicePlanManagedIdentities: appServicePlanManagedIdentities
+    aseRoleAssignments: aseRoleAssignments
+    aseCustomDnsSuffix: aseCustomDnsSuffix
+    aseIpsslAddressCount: aseIpsslAddressCount
+    aseMultiSize: aseMultiSize
+    aseManagedIdentities: aseManagedIdentities
+    aseLock: aseLock
     appserviceDiagnosticSettings: !empty(appserviceDiagnosticSettings)
       ? appserviceDiagnosticSettings
       : [
@@ -417,6 +947,17 @@ module afd './modules/front-door/front-door.module.bicep' = if (networkingOption
       }
     ]
     skuName: 'Premium_AzureFrontDoor'
+    enableDefaultWafMethodBlock: enableDefaultWafMethodBlock
+    wafCustomRules: wafCustomRules
+    healthProbePath: frontDoorHealthProbePath
+    healthProbeIntervalInSeconds: frontDoorHealthProbeIntervalInSeconds
+    customDomains: frontDoorCustomDomains
+    ruleSets: frontDoorRuleSets
+    secrets: frontDoorSecrets
+    lock: frontDoorLock
+    roleAssignments: frontDoorRoleAssignments
+    originResponseTimeoutSeconds: frontDoorOriginResponseTimeoutSeconds
+    wafPolicyName: resourceNames.frontDoorWaf
     diagnosticSettings: !empty(frontDoorDiagnosticSettings)
       ? frontDoorDiagnosticSettings
       : [
@@ -465,6 +1006,32 @@ module appGw './modules/networking/application-gateway.module.bicep' = if (netwo
     tags: tags
     subnetResourceId: networking.outputs.snetAppGwResourceId
     backendHostName: webApp.outputs.webAppHostName
+    lock: appGatewayLock
+    managedIdentities: appGatewayManagedIdentities
+    sslCertificates: appGatewaySslCertificates
+    trustedRootCertificates: appGatewayTrustedRootCertificates
+    sslPolicyType: appGatewaySslPolicyType
+    sslPolicyName: appGatewaySslPolicyName
+    sslPolicyMinProtocolVersion: appGatewaySslPolicyMinProtocolVersion
+    sslPolicyCipherSuites: appGatewaySslPolicyCipherSuites
+    roleAssignments: appGatewayRoleAssignments
+    authenticationCertificates: appGatewayAuthenticationCertificates
+    customErrorConfigurations: appGatewayCustomErrorConfigurations
+    enableFips: appGatewayEnableFips
+    enableHttp2: appGatewayEnableHttp2
+    enableRequestBuffering: appGatewayEnableRequestBuffering
+    enableResponseBuffering: appGatewayEnableResponseBuffering
+    loadDistributionPolicies: appGatewayLoadDistributionPolicies
+    privateEndpoints: appGatewayPrivateEndpoints
+    privateLinkConfigurations: appGatewayPrivateLinkConfigurations
+    redirectConfigurations: appGatewayRedirectConfigurations
+    rewriteRuleSets: appGatewayRewriteRuleSets
+    sslProfiles: appGatewaySslProfiles
+    trustedClientCertificates: appGatewayTrustedClientCertificates
+    urlPathMaps: appGatewayUrlPathMaps
+    backendSettingsCollection: appGatewayBackendSettingsCollection
+    listeners: appGatewayListeners
+    routingRules: appGatewayRoutingRules
     diagnosticSettings: !empty(appGatewayDiagnosticSettings)
       ? appGatewayDiagnosticSettings
       : [
@@ -503,6 +1070,21 @@ module keyVault './modules/supporting-services/modules/key-vault.bicep' = {
     spokeVNetResourceId: networking.outputs.vnetSpokeResourceId
     spokePrivateEndpointSubnetName: networking.outputs.snetPeName
     appServiceManagedIdentityPrincipalId: webApp.outputs.webAppSystemAssignedPrincipalId
+    lock: keyVaultLock
+    enablePurgeProtection: keyVaultEnablePurgeProtection
+    softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
+    additionalRoleAssignments: keyVaultAdditionalRoleAssignments
+    accessPolicies: keyVaultAccessPolicies
+    secrets: keyVaultSecrets
+    keys: keyVaultKeys
+    enableVaultForTemplateDeployment: keyVaultEnableVaultForTemplateDeployment
+    enableVaultForDiskEncryption: keyVaultEnableVaultForDiskEncryption
+    createMode: keyVaultCreateMode
+    keyVaultSku: keyVaultSku
+    enableRbacAuthorization: keyVaultEnableRbacAuthorization
+    enableVaultForDeployment: keyVaultEnableVaultForDeployment
+    networkAcls: keyVaultNetworkAcls
+    keyVaultPublicNetworkAccess: keyVaultPublicNetworkAccess
     diagnosticSettings: !empty(keyVaultDiagnosticSettings)
       ? keyVaultDiagnosticSettings
       : [
