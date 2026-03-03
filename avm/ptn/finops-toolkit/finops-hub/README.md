@@ -1829,13 +1829,13 @@ The ADX cluster processes cost **line items** (rows), not dollars. A $10M/mo ent
 
 ```powershell
 # Pause the hub (stop incurring compute charges)
-.\src\Manage-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Pause
+.\src\Switch-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Pause
 
 # Resume the hub (when ready to review - processes any backlog)
-.\src\Manage-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Resume
+.\src\Switch-FinOpsHubState.ps1 -ResourceGroupName "finops-rg" -HubName "myfinopshub" -Operation Resume
 ```
 
-The script handles the correct order (stop triggers before cluster, start cluster before triggers) and waits for resources to be ready. See [src/Manage-FinOpsHubState.ps1](./src/Manage-FinOpsHubState.ps1) for details.
+The script handles the correct order (stop triggers before cluster, start cluster before triggers) and waits for resources to be ready. See [src/Switch-FinOpsHubState.ps1](./src/Switch-FinOpsHubState.ps1) for details.
 
 > **⚠️ Backlog Processing**: If paused for days/weeks, expect 30 min to several hours for ADF to process accumulated data when resumed.
 
@@ -1847,7 +1847,7 @@ Helper scripts in the [src/](./src/) folder simplify deployment and testing:
 |--------|---------|
 | `Deploy-FinOpsHub.ps1` | Interactive deployment with validation |
 | `Get-BestAdxSku.ps1` | Find available ADX SKUs by region |
-| `Manage-FinOpsHubState.ps1` | Pause/resume hub to optimize costs |
+| `Switch-FinOpsHubState.ps1` | Pause/resume hub to optimize costs |
 
 > **Test Data & Dashboards**: Multi-cloud test data generation scripts and ADX dashboards are maintained in the official [Microsoft FinOps Toolkit](https://aka.ms/finops/toolkit) repository.
 
