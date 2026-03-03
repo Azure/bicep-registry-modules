@@ -19,6 +19,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `vpn-connection.vpnSiteLinkConnectionType`
   - `vpn-connection.routingConfigurationType`
 
+  which only has an impact on which types are exported, not the way the parameters are used
+
 ## 0.2.2
 
 ### Changes
