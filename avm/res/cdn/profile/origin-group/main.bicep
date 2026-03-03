@@ -8,10 +8,13 @@ param name string
 param profileName string
 
 @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-param healthProbeSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
+param healthProbeSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.healthProbeSettings?
 
 @description('Required. Load balancing settings for a backend pool.')
-param loadBalancingSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
+param loadBalancingSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.loadBalancingSettings
+
+@description('Optional. Settings for Origin Authentication.')
+param authentication resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
 
 @allowed([
   'Disabled'
@@ -26,14 +29,15 @@ param trafficRestorationTimeToHealedOrNewEndpointsInMinutes int = 10
 @description('Required. The list of origins within the origin group.')
 param origins originType[]
 
-resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
+resource profile 'Microsoft.Cdn/profiles@2025-06-01' existing = {
   name: profileName
 }
 
-resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-04-15' = {
+resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-06-01' = {
   name: name
   parent: profile
   properties: {
+    authentication: authentication
     healthProbeSettings: healthProbeSettings
     loadBalancingSettings: loadBalancingSettings
     sessionAffinityState: sessionAffinityState
@@ -139,5 +143,5 @@ type originType = {
   weight: int?
 
   @description('Optional. The properties of the private link resource for private origin.')
-  sharedPrivateLinkResource: resourceInput<'Microsoft.Cdn/profiles/originGroups/origins@2025-04-15'>.properties.sharedPrivateLinkResource?
+  sharedPrivateLinkResource: resourceInput<'Microsoft.Cdn/profiles/originGroups/origins@2025-06-01'>.properties.sharedPrivateLinkResource?
 }
