@@ -4,7 +4,11 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import {
+  diagnosticSettingFullType
+  lockType
+  roleAssignmentType
+} from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
@@ -35,6 +39,54 @@ param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Required. The principal ID of the App Service managed identity to grant Key Vault access.')
 param appServiceManagedIdentityPrincipalId string
+
+@description('Optional. Specify the type of resource lock.')
+param lock lockType?
+
+@description('Optional. Enable purge protection for the Key Vault. Defaults to true for production safety.')
+param enablePurgeProtection bool = true
+
+@description('Optional. Soft delete retention in days. Defaults to 90.')
+param softDeleteRetentionInDays int = 90
+
+@description('Optional. Additional role assignments to apply to the Key Vault beyond the default App Service identity assignment.')
+param additionalRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Access policies for the Key Vault (non-RBAC mode).')
+param accessPolicies array?
+
+@description('Optional. Secrets to create in the Key Vault.')
+param secrets array?
+
+@description('Optional. Keys to create in the Key Vault.')
+param keys array?
+
+@description('Optional. Enable the Key Vault for template deployment.')
+param enableVaultForTemplateDeployment bool = true
+
+@description('Optional. Enable the Key Vault for disk encryption.')
+param enableVaultForDiskEncryption bool = true
+
+@description('Optional. The create mode for the Key Vault (default or recover).')
+@allowed(['default', 'recover'])
+param createMode string = 'default'
+
+@description('Optional. The SKU of the Key Vault.')
+@allowed(['standard', 'premium'])
+param keyVaultSku string = 'standard'
+
+@description('Optional. Enable RBAC authorization on the Key Vault. Defaults to true.')
+param enableRbacAuthorization bool = true
+
+@description('Optional. Enable the Key Vault for deployment. Defaults to true.')
+param enableVaultForDeployment bool = true
+
+@description('Optional. Network ACLs for the Key Vault.')
+param networkAcls object?
+
+@description('Optional. Public network access for the Key Vault.')
+@allowed(['Enabled', 'Disabled', ''])
+param keyVaultPublicNetworkAccess string = 'Disabled'
 
 // ------------------
 // VARIABLES
@@ -93,17 +145,23 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    sku: 'standard'
-    networkAcls: {
+    sku: keyVaultSku
+    networkAcls: networkAcls ?? {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
     }
     enableSoftDelete: true
-    softDeleteRetentionInDays: 7
-    enablePurgeProtection: false
-    publicNetworkAccess: 'Disabled'
-    enableRbacAuthorization: true
-    enableVaultForDeployment: true
+    softDeleteRetentionInDays: softDeleteRetentionInDays
+    enablePurgeProtection: enablePurgeProtection
+    publicNetworkAccess: !empty(keyVaultPublicNetworkAccess) ? keyVaultPublicNetworkAccess : 'Disabled'
+    enableRbacAuthorization: enableRbacAuthorization
+    enableVaultForDeployment: enableVaultForDeployment
+    enableVaultForTemplateDeployment: enableVaultForTemplateDeployment
+    enableVaultForDiskEncryption: enableVaultForDiskEncryption
+    createMode: createMode
+    accessPolicies: accessPolicies
+    secrets: secrets
+    keys: keys
     privateEndpoints: [
       {
         name: keyVaultPrivateEndpointName
@@ -118,12 +176,16 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
       }
     ]
     diagnosticSettings: diagnosticSettings
-    roleAssignments: [
-      {
-        principalId: appServiceManagedIdentityPrincipalId
-        roleDefinitionIdOrName: 'Key Vault Secrets User'
-      }
-    ]
+    lock: lock
+    roleAssignments: concat(
+      [
+        {
+          principalId: appServiceManagedIdentityPrincipalId
+          roleDefinitionIdOrName: 'Key Vault Secrets User'
+        }
+      ],
+      additionalRoleAssignments ?? []
+    )
   }
 }
 
