@@ -12,7 +12,7 @@ This module deploys a CDN Profile Origin Group.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Cdn/profiles/originGroups` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups)</li></ul> |
+| `Microsoft.Cdn/profiles/originGroups` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/originGroups)</li></ul> |
 | `Microsoft.Cdn/profiles/originGroups/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups/origins)</li></ul> |
 
 ## Parameters
@@ -30,6 +30,7 @@ This module deploys a CDN Profile Origin Group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`authentication`](#parameter-authentication) | object | Settings for Origin Authentication. |
 | [`healthProbeSettings`](#parameter-healthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
 | [`sessionAffinityState`](#parameter-sessionaffinitystate) | string | Whether to allow session affinity on this host. |
 | [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-trafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
@@ -158,6 +159,13 @@ The name of the CDN profile.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `authentication`
+
+Settings for Origin Authentication.
+
+- Required: No
+- Type: object
 
 ### Parameter: `healthProbeSettings`
 
