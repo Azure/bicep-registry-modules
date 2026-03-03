@@ -193,26 +193,69 @@ param containerRegistryUsername string = ''
 @secure()
 param containerRegistryPassword string = ''
 
+// ======================== //
+// Custom Resource Names    //
+// ======================== //
+
+@description('Optional. Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely.')
+param customResourceNames {
+  @description('Optional. Custom name for the spoke resource group.')
+  resourceGroupName: string?
+
+  @description('Optional. Custom name for the App Service Environment.')
+  aseName: string?
+
+  @description('Optional. Custom name for the App Service Plan.')
+  appServicePlanName: string?
+
+  @description('Optional. Custom name for the Web App.')
+  webAppName: string?
+
+  @description('Optional. Custom name for the App Service managed identity.')
+  appSvcManagedIdentityName: string?
+
+  @description('Optional. Custom name for the Front Door profile.')
+  frontDoorName: string?
+
+  @description('Optional. Custom name for the Front Door endpoint.')
+  frontDoorEndpointName: string?
+
+  @description('Optional. Custom name for the Front Door WAF policy.')
+  frontDoorWafName: string?
+
+  @description('Optional. Custom name for the Front Door origin group.')
+  frontDoorOriginGroupName: string?
+
+  @description('Optional. Custom name for the DevOps subnet.')
+  devOpsSubnetName: string?
+
+  @description('Optional. Custom name for the jumpbox NSG.')
+  jumpboxNsgName: string?
+
+  @description('Optional. Custom name for the AFD private-endpoint auto-approver managed identity.')
+  afdPeAutoApproverName: string?
+}?
+
 // ================ //
 // Variables        //
 // ================ //
 
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
-var resourceGroupName = 'rg-spoke-${resourceSuffix}'
+var resourceGroupName = customResourceNames.?resourceGroupName ?? 'rg-spoke-${resourceSuffix}'
 
 var names = naming.outputs.names
 var resourceNames = {
-  aseName: names.appServiceEnvironment.nameUnique
-  aspName: names.appServicePlan.name
-  webApp: names.appService.nameUnique
-  appSvcUserAssignedManagedIdentity: take('${names.managedIdentity.name}-appSvc', 128)
-  frontDoorEndPoint: 'webAppLza-${take(uniqueString(resourceGroupName), 6)}'
-  frontDoorWaf: names.frontDoorFirewallPolicy.name
-  frontDoor: names.frontDoor.name
-  frontDoorOriginGroup: '${names.frontDoor.name}-originGroup'
-  snetDevOps: 'snet-devOps-${names.virtualNetwork.name}-spoke'
-  jumpboxNsg: take('${names.networkSecurityGroup.name}-jumpbox', 80)
-  idAfdApprovePeAutoApprover: take('${names.managedIdentity.name}-AfdApprovePe', 128)
+  aseName: customResourceNames.?aseName ?? names.appServiceEnvironment.nameUnique
+  aspName: customResourceNames.?appServicePlanName ?? names.appServicePlan.name
+  webApp: customResourceNames.?webAppName ?? names.appService.nameUnique
+  appSvcUserAssignedManagedIdentity: customResourceNames.?appSvcManagedIdentityName ?? take('${names.managedIdentity.name}-appSvc', 128)
+  frontDoorEndPoint: customResourceNames.?frontDoorEndpointName ?? 'webAppLza-${take(uniqueString(resourceGroupName), 6)}'
+  frontDoorWaf: customResourceNames.?frontDoorWafName ?? names.frontDoorFirewallPolicy.name
+  frontDoor: customResourceNames.?frontDoorName ?? names.frontDoor.name
+  frontDoorOriginGroup: customResourceNames.?frontDoorOriginGroupName ?? '${names.frontDoor.name}-originGroup'
+  snetDevOps: customResourceNames.?devOpsSubnetName ?? 'snet-devOps-${names.virtualNetwork.name}-spoke'
+  jumpboxNsg: customResourceNames.?jumpboxNsgName ?? take('${names.networkSecurityGroup.name}-jumpbox', 80)
+  idAfdApprovePeAutoApprover: customResourceNames.?afdPeAutoApproverName ?? take('${names.managedIdentity.name}-AfdApprovePe', 128)
 }
 
 var virtualNetworkLinks = [
@@ -534,7 +577,7 @@ module jumpboxWindowsVM './modules/compute/windows-vm.bicep' = if (deployJumpHos
 // Telemetry                //
 // ======================== //
 
-#disable-next-line no-deployments-resources
+#disable-next-line no-deployments-resources use-recent-api-versions
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.appsvclza-hostingenvironment.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
