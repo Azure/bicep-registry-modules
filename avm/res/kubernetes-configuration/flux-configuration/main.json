@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "15830965181183865554"
+      "version": "0.41.2.15936",
+      "templateHash": "10640822757460985738"
     },
     "name": "Kubernetes Configuration Flux Configurations",
     "description": "This module deploys a Kubernetes Configuration Flux Configuration."
@@ -201,7 +201,7 @@
       "condition": "[equals(parameters('clusterType'), 'managedCluster')]",
       "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
       "apiVersion": "2025-04-01",
-      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
+      "scope": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName'))]",
       "name": "[parameters('name')]",
       "properties": "[variables('fluxConfigProperties')]"
     },
@@ -209,7 +209,7 @@
       "condition": "[equals(parameters('clusterType'), 'connectedCluster')]",
       "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
       "apiVersion": "2025-04-01",
-      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+      "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName'))]",
       "name": "[parameters('name')]",
       "properties": "[variables('fluxConfigProperties')]"
     }

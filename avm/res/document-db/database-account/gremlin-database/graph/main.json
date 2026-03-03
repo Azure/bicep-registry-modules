@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "15097132107382000570"
+      "version": "0.41.2.15936",
+      "templateHash": "7568522973479705658"
     },
     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."

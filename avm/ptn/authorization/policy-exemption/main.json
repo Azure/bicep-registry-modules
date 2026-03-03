@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "1138157386451332111"
+      "version": "0.41.2.15936",
+      "templateHash": "2967430012839274211"
     },
     "name": "Policy Exemptions (All scopes)",
     "description": "This module deploys a Policy Exemption at a Management Group, Subscription, Resource Group, or Resource scope."
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "2720028542983684854"
+              "version": "0.41.2.15936",
+              "templateHash": "14133512742309046426"
             },
             "name": "Policy Exemptions (Management Group scope)",
             "description": "This module deploys a policy exemption at a Management Group scope."
@@ -388,8 +388,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "12676596160501473041"
+              "version": "0.41.2.15936",
+              "templateHash": "4502631200331263035"
             },
             "name": "Policy Exemptions (Subscription scope)",
             "description": "This module deploys a policy exemption at a Subscription scope."
@@ -566,8 +566,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "6378886631550804006"
+              "version": "0.41.2.15936",
+              "templateHash": "8357534651170749390"
             },
             "name": "Policy Exemptions (Resource Group scope)",
             "description": "This module deploys a policy exemption at a Resource Group scope."
@@ -744,8 +744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "7934040801329808273"
+              "version": "0.41.2.15936",
+              "templateHash": "4597859642502134857"
             },
             "name": "Policy Exemptions (Resource scope)",
             "description": "This module deploys a policy exemption at a resource scope."

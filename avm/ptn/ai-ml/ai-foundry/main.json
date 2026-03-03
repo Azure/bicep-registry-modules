@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "6372849576366278037"
+      "version": "0.41.2.15936",
+      "templateHash": "8777572165026994831"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -648,8 +648,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9133352881482707682"
+              "version": "0.41.2.15936",
+              "templateHash": "13486344221437469430"
             }
           },
           "definitions": {
@@ -3685,8 +3685,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10341613549995209032"
+              "version": "0.41.2.15936",
+              "templateHash": "13705632804861206186"
             }
           },
           "definitions": {
@@ -7468,8 +7468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4285493545618522255"
+              "version": "0.41.2.15936",
+              "templateHash": "384392232913236225"
             }
           },
           "definitions": {
@@ -10150,8 +10150,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16651426455263024090"
+              "version": "0.41.2.15936",
+              "templateHash": "5921857894956056490"
             }
           },
           "definitions": {
@@ -18444,8 +18444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4729737487417358981"
+              "version": "0.41.2.15936",
+              "templateHash": "1826146636063559509"
             }
           },
           "definitions": {
@@ -24687,8 +24687,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "4456142376294516992"
+              "version": "0.41.2.15936",
+              "templateHash": "7035514747964948913"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -25017,7 +25017,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}/projects/{1}', parameters('accountName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('accountName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -25054,8 +25054,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "2297586848184477491"
+                      "version": "0.41.2.15936",
+                      "templateHash": "18159445983239950245"
                     }
                   },
                   "parameters": {
@@ -25076,7 +25076,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosDbName'))]",
+                      "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName'))]",
                       "name": "[guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')))]",
                       "properties": {
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
@@ -25117,8 +25117,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16405095293780360423"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1962474273047499778"
                     }
                   },
                   "parameters": {
@@ -25139,7 +25139,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                       "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'), parameters('storageAccountName'), parameters('projectIdentityPrincipalId'))]",
                       "properties": {
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
@@ -25180,8 +25180,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16025941000331400340"
+                      "version": "0.41.2.15936",
+                      "templateHash": "12691179346337632165"
                     }
                   },
                   "parameters": {
@@ -25202,7 +25202,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('aiSearchName'))]",
+                      "scope": "[resourceId('Microsoft.Search/searchServices', parameters('aiSearchName'))]",
                       "name": "[guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7'), resourceId('Microsoft.Search/searchServices', parameters('aiSearchName')))]",
                       "properties": {
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
@@ -25213,7 +25213,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('aiSearchName'))]",
+                      "scope": "[resourceId('Microsoft.Search/searchServices', parameters('aiSearchName'))]",
                       "name": "[guid(parameters('projectIdentityPrincipalId'), resourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0'), resourceId('Microsoft.Search/searchServices', parameters('aiSearchName')))]",
                       "properties": {
                         "principalId": "[parameters('projectIdentityPrincipalId')]",
@@ -25257,8 +25257,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "11649050309693252000"
+                      "version": "0.41.2.15936",
+                      "templateHash": "10626036550019432984"
                     }
                   },
                   "parameters": {
@@ -25344,8 +25344,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "12109249428053532616"
+                      "version": "0.41.2.15936",
+                      "templateHash": "5133390612408649446"
                     }
                   },
                   "parameters": {
@@ -25372,7 +25372,7 @@
                     {
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                       "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), resourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'), parameters('storageAccountName'), parameters('projectIdentityPrincipalId'))]",
                       "properties": {
                         "principalId": "[parameters('projectIdentityPrincipalId')]",

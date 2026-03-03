@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13498060084797132903"
+      "version": "0.41.2.15936",
+      "templateHash": "2512678161846731495"
     },
     "name": "avm/ptn/authorization/role-definition",
     "description": "This module deploys a custom role definition to a Management Group."

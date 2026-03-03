@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "10226887119813429553"
+      "version": "0.41.2.15936",
+      "templateHash": "8696969453021178923"
     },
     "name": "API Management Workspace Subscriptions",
     "description": "This module deploys a Subscription in an API Management Workspace."
