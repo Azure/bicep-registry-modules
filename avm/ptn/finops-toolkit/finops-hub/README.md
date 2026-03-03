@@ -350,10 +350,6 @@ This instance deploys the module with Azure Data Explorer in alignment with the 
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-waf-aligned]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Deployment skipped: Log Analytics workspace replication (AZR-000425 compliance) cannot provision in the CI environment. PSRule WAF validation still runs and passes. The adx-minimal test validates the core ADX deployment end-to-end.
-```
 
 <details>
 
