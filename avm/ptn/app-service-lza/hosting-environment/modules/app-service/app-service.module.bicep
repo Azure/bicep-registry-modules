@@ -2,6 +2,9 @@ import {
   diagnosticSettingFullType
   diagnosticSettingMetricsOnlyType
   diagnosticSettingLogsOnlyType
+  lockType
+  roleAssignmentType
+  managedIdentityAllType
 } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 import {
@@ -127,6 +130,43 @@ param targetWorkerCount int = 0
 ])
 param targetWorkerSize int = 0
 
+// ======================== //
+// Service Plan Advanced    //
+// ======================== //
+
+@description('Optional. The SKU capacity (number of workers) for the App Service Plan.')
+param skuCapacity int?
+
+@description('Optional. Target worker tier assigned to the App Service Plan.')
+param workerTierName string?
+
+@description('Optional. Whether elastic scale is enabled on the App Service Plan.')
+param elasticScaleEnabled bool?
+
+@description('Optional. The resource ID of a subnet to use for VNet integration on the App Service Plan level.')
+param appServicePlanVirtualNetworkSubnetId string?
+
+@description('Optional. Whether the App Service Plan uses custom mode.')
+param isCustomMode bool?
+
+@description('Optional. Whether RDP is enabled on the App Service Plan.')
+param rdpEnabled bool?
+
+@description('Optional. Install scripts for the App Service Plan.')
+param installScripts array?
+
+@description('Optional. The default identity for the App Service Plan.')
+param planDefaultIdentity string?
+
+@description('Optional. Registry adapter configuration for the App Service Plan.')
+param registryAdapters array?
+
+@description('Optional. Storage mount configuration for the App Service Plan.')
+param storageMounts array?
+
+@description('Optional. Managed identities for the App Service Plan.')
+param appServicePlanManagedIdentities managedIdentityAllType?
+
 @description('Optional. The site configuration for the web app.')
 param siteConfig siteConfigType = {
   alwaysOn: true
@@ -184,6 +224,208 @@ param servicePlanDiagnosticSettings diagnosticSettingMetricsOnlyType[]?
 param aseDiagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 // ======================== //
+// ASE Advanced             //
+// ======================== //
+
+@description('Optional. Role assignments for the ASE.')
+param aseRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Custom DNS suffix for the ASE.')
+param aseCustomDnsSuffix string?
+
+@description('Optional. Number of IP SSL addresses reserved for the ASE.')
+param aseIpsslAddressCount int?
+
+@description('Optional. Front-end VM size for the ASE.')
+param aseMultiSize string?
+
+@description('Optional. Managed identities for the ASE.')
+param aseManagedIdentities managedIdentityAllType?
+
+@description('Optional. Specify the type of resource lock for the ASE.')
+param aseLock lockType?
+
+// ======================== //
+// Governance & Security    //
+// ======================== //
+
+@description('Optional. Specify the type of resource lock for the Web App.')
+param webAppLock lockType?
+
+@description('Optional. Role assignments to apply to the Web App.')
+param webAppRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Specify the type of resource lock for the App Service Plan.')
+param appServicePlanLock lockType?
+
+@description('Optional. Role assignments to apply to the App Service Plan.')
+param appServicePlanRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Set to true to enable client certificate authentication (mTLS). Default is false.')
+param clientCertEnabled bool = false
+
+@description('Optional. Client certificate mode. Only used when clientCertEnabled is true.')
+@allowed(['Optional', 'OptionalInteractiveUser', 'Required'])
+param clientCertMode string = 'Required'
+
+@description('Optional. Whether to disable basic publishing credentials (FTP/SCM). Defaults to true for security.')
+param disableBasicPublishingCredentials bool = true
+
+@description('Optional. Property to allow or block public network access to the web app. Defaults to empty (module default).')
+@allowed(['Enabled', 'Disabled', ''])
+param webAppPublicNetworkAccess string = ''
+
+// ======================== //
+// Web App Advanced         //
+// ======================== //
+
+@description('Optional. Configures the web app to accept only HTTPS requests.')
+param httpsOnly bool = true
+
+@description('Optional. Client certificate authentication exclusion paths (comma-separated).')
+param clientCertExclusionPaths string?
+
+@description('Optional. Site redundancy mode.')
+@allowed(['ActiveActive', 'Failover', 'GeoRedundant', 'Manual', 'None'])
+param redundancyMode string = 'None'
+
+@description('Optional. Stop SCM (Kudu) site when the app is stopped.')
+param scmSiteAlsoStopped bool = false
+
+@description('Optional. The Function App configuration object.')
+param functionAppConfig object?
+
+@description('Optional. The managed environment resource ID for Azure Container Apps scenarios.')
+param managedEnvironmentResourceId string?
+
+@description('Optional. The outbound VNET routing configuration for the site.')
+param outboundVnetRouting object?
+
+@description('Optional. Hostname SSL states for managing SSL bindings.')
+param hostNameSslStates array?
+
+@description('Optional. Enable end-to-end encryption (used with ASE).')
+param e2eEncryptionEnabled bool?
+
+@description('Optional. The resource ID of the identity to use for Key Vault references.')
+param keyVaultAccessIdentityResourceId string?
+
+@description('Optional. Names of hybrid connection relays to connect the app with.')
+param hybridConnectionRelays array?
+
+@description('Optional. Extensions configuration for the web app.')
+param extensions array?
+
+@description('Optional. Setting this value to false disables the app (takes the app offline).')
+param webAppEnabled bool = true
+
+@description('Optional. If specified during app creation, the app is cloned from a source app.')
+param cloningInfo object?
+
+@description('Optional. Size of the function container.')
+param containerSize int?
+
+@description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
+param dailyMemoryTimeQuota int?
+
+@description('Optional. Whether customer-provided storage account is required.')
+param storageAccountRequired bool = false
+
+@description('Optional. Property to configure DNS-related settings for the site.')
+param dnsConfiguration object?
+
+@description('Optional. Specifies the scope of uniqueness for the default hostname during resource creation.')
+param autoGeneratedDomainNameLabelScope string?
+
+@description('Optional. Whether to enable SSH access.')
+param sshEnabled bool?
+
+@description('Optional. Dapr configuration for the app (Container Apps).')
+param daprConfig object?
+
+@description('Optional. Specifies the IP mode of the app.')
+param ipMode string?
+
+@description('Optional. Function app resource requirements.')
+param resourceConfig object?
+
+@description('Optional. Workload profile name for function app to execute on.')
+param workloadProfileName string?
+
+@description('Optional. True to disable the public hostnames of the app.')
+param hostNamesDisabled bool?
+
+@description('Optional. True if reserved (Linux); otherwise, false (Windows). Overrides auto-detection when set.')
+param webAppReserved bool?
+
+@description('Optional. Extended location of the web app resource.')
+param extendedLocation object?
+
+@description('Optional. If client affinity is enabled on the web app.')
+param clientAffinityEnabled bool = false
+
+@description('Optional. Proxy-based client affinity enabled on the web app.')
+param clientAffinityProxyEnabled bool?
+
+@description('Optional. Partitioned client affinity using CHIPS cookies.')
+param clientAffinityPartitioningEnabled bool?
+
+// ======================== //
+// App Insights Settings    //
+// ======================== //
+
+@description('Optional. Public network access for App Insights ingestion. Defaults to Disabled for secure baseline.')
+@allowed(['Enabled', 'Disabled'])
+param appInsightsPublicNetworkAccessForIngestion string = 'Disabled'
+
+@description('Optional. Public network access for App Insights query. Defaults to Disabled for secure baseline.')
+@allowed(['Enabled', 'Disabled'])
+param appInsightsPublicNetworkAccessForQuery string = 'Disabled'
+
+@description('Optional. App Insights data retention in days. Defaults to 90.')
+param appInsightsRetentionInDays int = 90
+
+@description('Optional. App Insights sampling percentage. Defaults to 100.')
+param appInsightsSamplingPercentage int = 100
+
+@description('Optional. Disable non-AAD based auth for App Insights. Defaults to true for security.')
+param appInsightsDisableLocalAuth bool = true
+
+@description('Optional. Disable IP masking in App Insights.')
+param appInsightsDisableIpMasking bool?
+
+@description('Optional. Force customer storage for profiler in App Insights.')
+param appInsightsForceCustomerStorageForProfiler bool?
+
+@description('Optional. Linked storage account resource ID for App Insights.')
+param appInsightsLinkedStorageAccountResourceId string?
+
+@description('Optional. Flow type for App Insights (e.g. Bluefield).')
+param appInsightsFlowType string?
+
+@description('Optional. Request source for App Insights.')
+param appInsightsRequestSource string?
+
+@description('Optional. Kind of App Insights resource.')
+param appInsightsKind string?
+
+@description('Optional. Purge data immediately after 30 days in App Insights.')
+param appInsightsImmediatePurgeDataOn30Days bool?
+
+@description('Optional. Ingestion mode for App Insights.')
+@allowed(['ApplicationInsights', 'ApplicationInsightsWithDiagnosticSettings', 'LogAnalytics'])
+param appInsightsIngestionMode string?
+
+@description('Optional. Specify the type of resource lock for App Insights.')
+param appInsightsLock lockType?
+
+@description('Optional. Role assignments for App Insights.')
+param appInsightsRoleAssignments roleAssignmentType[]?
+
+@description('Optional. Diagnostic Settings for App Insights.')
+param appInsightsDiagnosticSettings diagnosticSettingFullType[]?
+
+// ======================== //
 // Variables                //
 // ======================== //
 
@@ -233,6 +475,12 @@ module ase './ase.module.bicep' = if (deployAseV3) {
     allowNewPrivateEndpointConnections: true
     virtualNetworkLinks: virtualNetworkLinks
     diagnosticSettings: aseDiagnosticSettings
+    lock: aseLock
+    roleAssignments: aseRoleAssignments
+    customDnsSuffix: aseCustomDnsSuffix
+    ipsslAddressCount: aseIpsslAddressCount
+    multiSize: aseMultiSize
+    managedIdentities: aseManagedIdentities
   }
 }
 
@@ -245,10 +493,22 @@ module appInsights 'br/public:avm/res/insights/component:0.7.1' = {
     tags: tags
     workspaceResourceId: logAnalyticsWorkspaceResourceId
     applicationType: 'web'
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-    retentionInDays: 90
-    samplingPercentage: 100
+    publicNetworkAccessForIngestion: appInsightsPublicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: appInsightsPublicNetworkAccessForQuery
+    retentionInDays: appInsightsRetentionInDays
+    samplingPercentage: appInsightsSamplingPercentage
+    disableLocalAuth: appInsightsDisableLocalAuth
+    disableIpMasking: appInsightsDisableIpMasking ?? true
+    forceCustomerStorageForProfiler: appInsightsForceCustomerStorageForProfiler ?? false
+    linkedStorageAccountResourceId: appInsightsLinkedStorageAccountResourceId
+    flowType: appInsightsFlowType
+    requestSource: appInsightsRequestSource
+    kind: appInsightsKind ?? ''
+    immediatePurgeDataOn30Days: appInsightsImmediatePurgeDataOn30Days
+    ingestionMode: appInsightsIngestionMode
+    lock: appInsightsLock
+    roleAssignments: appInsightsRoleAssignments
+    diagnosticSettings: appInsightsDiagnosticSettings
   }
 }
 
@@ -260,16 +520,29 @@ module plan 'br/public:avm/res/web/serverfarm:0.7.0' = if (deployPlan) {
     enableTelemetry: enableTelemetry
     tags: tags
     skuName: sku
+    skuCapacity: skuCapacity
     zoneRedundant: zoneRedundant
     kind: isLinux ? 'Linux' : 'Windows'
     perSiteScaling: perSiteScaling
     maximumElasticWorkerCount: (maximumElasticWorkerCount < 3 && zoneRedundant) ? 3 : maximumElasticWorkerCount
+    elasticScaleEnabled: elasticScaleEnabled
     reserved: isLinux
     targetWorkerCount: (targetWorkerCount < 3 && zoneRedundant) ? 3 : targetWorkerCount
     targetWorkerSize: targetWorkerSize
+    workerTierName: workerTierName
     hyperV: isWindowsContainer
     appServiceEnvironmentResourceId: ase.?outputs.?resourceId ?? ''
+    virtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
+    isCustomMode: isCustomMode ?? false
+    rdpEnabled: rdpEnabled
+    installScripts: installScripts
+    planDefaultIdentity: planDefaultIdentity
+    registryAdapters: registryAdapters
+    storageMounts: storageMounts
+    managedIdentities: appServicePlanManagedIdentities
     diagnosticSettings: servicePlanDiagnosticSettings
+    lock: appServicePlanLock
+    roleAssignments: appServicePlanRoleAssignments
   }
 }
 
@@ -282,8 +555,54 @@ module webApp 'br/public:avm/res/web/site:0.22.0' = {
     enableTelemetry: enableTelemetry
     serverFarmResourceId: resolvedServerFarmResourceId
     siteConfig: containerSiteConfig
-    clientAffinityEnabled: false
+    httpsOnly: httpsOnly
+    clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityProxyEnabled: clientAffinityProxyEnabled ?? true
+    clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled ?? false
+    clientCertEnabled: clientCertEnabled
+    clientCertMode: clientCertEnabled ? clientCertMode : null
+    clientCertExclusionPaths: clientCertExclusionPaths
+    publicNetworkAccess: !empty(webAppPublicNetworkAccess) ? webAppPublicNetworkAccess : null
+    redundancyMode: redundancyMode
+    scmSiteAlsoStopped: scmSiteAlsoStopped
+    functionAppConfig: functionAppConfig
+    managedEnvironmentResourceId: managedEnvironmentResourceId
+    outboundVnetRouting: outboundVnetRouting
+    hostNameSslStates: hostNameSslStates
+    e2eEncryptionEnabled: e2eEncryptionEnabled
+    keyVaultAccessIdentityResourceId: keyVaultAccessIdentityResourceId
+    hybridConnectionRelays: hybridConnectionRelays
+    extensions: extensions
+    enabled: webAppEnabled
+    cloningInfo: cloningInfo
+    containerSize: containerSize
+    dailyMemoryTimeQuota: dailyMemoryTimeQuota
+    storageAccountRequired: storageAccountRequired
+    dnsConfiguration: dnsConfiguration
+    autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
+    sshEnabled: sshEnabled
+    daprConfig: daprConfig
+    ipMode: ipMode
+    resourceConfig: resourceConfig
+    workloadProfileName: workloadProfileName
+    hostNamesDisabled: hostNamesDisabled
+    reserved: webAppReserved
+    extendedLocation: extendedLocation
+    basicPublishingCredentialsPolicies: disableBasicPublishingCredentials
+      ? [
+          {
+            name: 'ftp'
+            allow: false
+          }
+          {
+            name: 'scm'
+            allow: false
+          }
+        ]
+      : null
     diagnosticSettings: appserviceDiagnosticSettings
+    lock: webAppLock
+    roleAssignments: webAppRoleAssignments
     virtualNetworkSubnetResourceId: !(deployAseV3) ? subnetIdForVnetInjection : ''
     managedIdentities: {
       userAssignedResourceIds: [webAppUserAssignedManagedIdentity.outputs.resourceId]

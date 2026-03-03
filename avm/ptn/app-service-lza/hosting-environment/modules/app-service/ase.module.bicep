@@ -1,6 +1,8 @@
 import {
   diagnosticSettingLogsOnlyType
   lockType
+  roleAssignmentType
+  managedIdentityAllType
 } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 import {
@@ -86,6 +88,21 @@ param zoneRedundant bool = false
 @description('Optional. Diagnostic Settings for the ASE.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+@description('Optional. Role assignments for the ASE.')
+param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Custom DNS suffix for the ASE.')
+param customDnsSuffix string?
+
+@description('Optional. Number of IP SSL addresses reserved for the ASE.')
+param ipsslAddressCount int?
+
+@description('Optional. Front-end VM size, e.g. "Medium", "Large".')
+param multiSize string?
+
+@description('Optional. Managed identities for the ASE.')
+param managedIdentities managedIdentityAllType?
+
 @description('Required. The virtual network links for the ASE private DNS zone.')
 param virtualNetworkLinks virtualNetworkLinkType[]
 
@@ -112,10 +129,15 @@ module ase 'br/public:avm/res/web/hosting-environment:0.5.0' = {
     }
     customDnsSuffixCertificateUrl: customDnsSuffixCertificateUrl
     customDnsSuffixKeyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity
+    customDnsSuffix: customDnsSuffix
     dnsSuffix: !empty(dnsSuffix) ? dnsSuffix : null
     upgradePreference: upgradePreference
+    ipsslAddressCount: ipsslAddressCount
+    multiSize: multiSize
+    managedIdentities: managedIdentities
     diagnosticSettings: diagnosticSettings
     lock: lock
+    roleAssignments: roleAssignments
   }
 }
 
