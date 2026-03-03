@@ -8,7 +8,7 @@ This folder contains PowerShell scripts that help with deploying, testing, and m
 |--------|---------|-------------|
 | `Deploy-FinOpsHub.ps1` | Interactive deployment helper | When you want guided deployment with validation |
 | `Get-BestAdxSku.ps1` | ADX SKU availability checker | Before deployment to find available SKUs |
-| `Manage-FinOpsHubState.ps1` | Pause/resume hub operations | When you want to optimize costs by pausing idle resources |
+| `Switch-FinOpsHubState.ps1` | Pause/resume hub operations | When you want to optimize costs by pausing idle resources |
 
 > **Test Data Generation**: Multi-cloud test data generation scripts are maintained in the official [Microsoft FinOps Toolkit](https://aka.ms/finops/toolkit) repository.
 

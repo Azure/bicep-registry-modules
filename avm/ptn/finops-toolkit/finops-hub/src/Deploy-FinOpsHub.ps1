@@ -106,10 +106,10 @@ $ErrorActionPreference = 'Stop'
 # ============================================================================
 # VERSION REQUIREMENTS
 # ============================================================================
-$MIN_PS_VERSION = [Version]'7.0.0'
-$MIN_AZ_CLI_VERSION = [Version]'2.61.0'
-$MIN_BICEP_VERSION = [Version]'0.28.0'
-$MIN_AZ_MODULE_VERSION = [Version]'12.0.0'
+$MinPsVersion = [Version]'7.0.0'
+$MinAzCliVersion = [Version]'2.61.0'
+$MinBicepVersion = [Version]'0.28.0'
+$MinAzModuleVersion = [Version]'12.0.0'
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -129,8 +129,8 @@ function Test-Prerequisites {
 
     # Check PowerShell version
     $psVersion = $PSVersionTable.PSVersion
-    if ($psVersion -lt $MIN_PS_VERSION) {
-        $errors += "PowerShell $MIN_PS_VERSION+ required. Current: $psVersion. Install from https://aka.ms/powershell"
+    if ($psVersion -lt $MinPsVersion) {
+        $errors += "PowerShell $MinPsVersion+ required. Current: $psVersion. Install from https://aka.ms/powershell"
     } else {
         Write-Host "   ✓ PowerShell $psVersion" -ForegroundColor Green
     }
@@ -143,8 +143,8 @@ function Test-Prerequisites {
             $azVersionJson = $azVersionOutput | ConvertFrom-Json
             $azVersion = [Version]$azVersionJson.'azure-cli'
             $azCliInstalled = $true
-            if ($azVersion -lt $MIN_AZ_CLI_VERSION) {
-                Write-Host "   ⚠ Azure CLI $azVersion (recommend $MIN_AZ_CLI_VERSION+, run: az upgrade)" -ForegroundColor Yellow
+            if ($azVersion -lt $MinAzCliVersion) {
+                Write-Host "   ⚠ Azure CLI $azVersion (recommend $MinAzCliVersion+, run: az upgrade)" -ForegroundColor Yellow
             } else {
                 Write-Host "   ✓ Azure CLI $azVersion" -ForegroundColor Green
             }
@@ -181,8 +181,8 @@ function Test-Prerequisites {
         }
 
         if ($bicepInstalled) {
-            if ($bicepVersion -lt $MIN_BICEP_VERSION) {
-                Write-Host "   ⚠ Bicep CLI $bicepVersion (recommend $MIN_BICEP_VERSION+, run: az bicep upgrade)" -ForegroundColor Yellow
+            if ($bicepVersion -lt $MinBicepVersion) {
+                Write-Host "   ⚠ Bicep CLI $bicepVersion (recommend $MinBicepVersion+, run: az bicep upgrade)" -ForegroundColor Yellow
             } else {
                 Write-Host "   ✓ Bicep CLI $bicepVersion" -ForegroundColor Green
             }
@@ -377,7 +377,7 @@ function Start-DataFactoryTriggers {
     return $allStarted
 }
 
-function Upload-HubSettings {
+function Send-HubSettings {
     param(
         [string]$StorageAccountName,
         [string]$SubscriptionId,
@@ -756,7 +756,7 @@ if ($WhatIf) {
 
         # Upload settings.json to config container
         $settingsPath = Join-Path (Split-Path -Parent $scriptDir) 'data/config/settings.json'
-        Upload-HubSettings -StorageAccountName $storageAccountName -SubscriptionId $SubscriptionId -SettingsTemplatePath $settingsPath
+        Send-HubSettings -StorageAccountName $storageAccountName -SubscriptionId $SubscriptionId -SettingsTemplatePath $settingsPath
 
         # Start Data Factory triggers
         Start-DataFactoryTriggers -ResourceGroupName $ResourceGroupName -DataFactoryName $dataFactoryName -DeploymentType $finalDeploymentType
