@@ -51,7 +51,9 @@ These modules deploy the FinOps Hub schema to Azure Data Explorer:
 |--------|---------|
 | `adxSchemaSetup.bicep` | Orchestrates KQL script deployment in correct order |
 | `hub-database.bicep` | Generic wrapper that creates `Microsoft.Kusto/clusters/databases/scripts` resources |
-| `adxManagedIdentityPolicy.bicep` | Sets cluster-level MI policy via deployment script |
+| `adxManagedIdentityPolicy.bicep` | ⚠️ **Legacy / not used** — See note below |
+
+> **Note on `adxManagedIdentityPolicy.bicep`**: This module is retained as reference only and is **not wired into the deployment graph**. ADX does not natively support executing cluster-level management commands (e.g., `.alter-merge cluster policy managed_identity`) through ARM-deployable resources — `Microsoft.Kusto/clusters/databases/scripts` is limited to database-scoped commands, and deployment scripts face a known ARM→ADX control-plane timing gap. This limitation has been reported to the ADX Product Group. The accepted workaround is to set the managed identity policy at runtime via an ADF `AzureDataExplorerCommand` pipeline activity (see ADR-013).
 
 ## Key Concepts
 

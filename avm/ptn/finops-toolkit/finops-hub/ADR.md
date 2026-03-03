@@ -509,7 +509,9 @@ clusterPrincipalAssignments: [
 **Date**: 2025-02-28
 **Context**: ADX native ingestion (`managed_identity = SystemAssigned`) requires a database-level managed identity policy. This policy must be set via the `.alter-merge database policy managed_identity` management command at the cluster/database level. The module needed a reliable way to apply this policy during deployment.
 
-**Problem**: Three approaches were attempted to set the ADX managed identity policy during ARM deployment. The first two failed; the third succeeded.
+**Platform Limitation**: Azure Data Explorer does not natively support executing cluster-level management commands (such as `.alter-merge cluster policy managed_identity`) through ARM-deployable resources. The `Microsoft.Kusto/clusters/databases/scripts` resource is limited to database-scoped KQL commands. There is no ARM resource type for cluster-level policy management, and deployment scripts that attempt to call the ADX REST API face a known timing gap between the ARM control plane and the Kusto data plane where principal assignments are not yet propagated. This limitation has been reported to the Azure Data Explorer Product Group.
+
+**Problem**: Three approaches were attempted to set the ADX managed identity policy during ARM deployment. The first two failed due to this platform limitation; the third succeeded by deferring execution to runtime.
 
 **Approach 1 — Database Script with `scriptLevel: 'Cluster'`**:
 The `Microsoft.Kusto/clusters/databases/scripts` resource supports a `scriptLevel` property. Setting `scriptLevel: 'Cluster'` should elevate the script to run cluster-level management commands. However, this consistently failed with:
@@ -542,7 +544,7 @@ The managed identity policy is set at runtime via an `AzureDataExplorerCommand` 
 3. Database-level `managed_identity` policy is sufficient — cluster-level is not required for native ingestion
 4. ADF's own managed identity is already an `AllDatabasesAdmin`, so the command succeeds without additional permission setup
 
-**Decision**: Set the ADX managed identity policy via the ADF `AzureDataExplorerCommand` pipeline activity at runtime, not during ARM deployment. The legacy deployment script modules (`adxManagedIdentityPolicy.bicep` and `adxManagedIdentityPolicyScript.bicep`) are retained as reference but are not wired into the orchestration.
+**Decision**: Set the ADX managed identity policy via the ADF `AzureDataExplorerCommand` pipeline activity at runtime, not during ARM deployment. The legacy deployment script module (`adxManagedIdentityPolicy.bicep`) is retained as reference in case the ADX Product Group addresses the platform limitation in a future API version, but it is **not wired into the orchestration** and is excluded from the deployment graph.
 
 **References**:
 - [ADX Managed Identity Policy](https://learn.microsoft.com/en-us/kusto/management/alter-merge-managed-identity-policy-command): `.alter-merge database policy managed_identity`
