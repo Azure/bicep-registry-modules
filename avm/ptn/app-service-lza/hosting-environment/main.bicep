@@ -16,6 +16,11 @@ import {
   managedIdentityAllType
 } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
+import {
+  siteConfigType
+  clusterSettingType
+} from './modules/shared.types.bicep'
+
 @maxLength(10)
 @description('Optional. suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>.')
 param workloadName string = 'appsvc${take( uniqueString( subscription().id), 4) }'
@@ -366,6 +371,32 @@ param storageMounts array?
 @description('Optional. Managed identities for the App Service Plan.')
 param appServicePlanManagedIdentities managedIdentityAllType?
 
+@description('Optional. If true, apps assigned to this App Service plan can be scaled independently.')
+param perSiteScaling bool = false
+
+@description('Optional. Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.')
+param maximumElasticWorkerCount int = 20
+
+@description('Optional. Scaling worker count.')
+param targetWorkerCount int = 0
+
+@description('Optional. The instance size of the hosting plan (small, medium, or large).')
+@allowed([
+  0
+  1
+  2
+])
+param targetWorkerSize int = 0
+
+@description('Optional. The site configuration for the web app.')
+param siteConfig siteConfigType = {
+  alwaysOn: true
+  ftpsState: 'FtpsOnly'
+  minTlsVersion: '1.2'
+  healthCheckPath: '/healthz'
+  http20Enabled: true
+}
+
 // ======================== //
 // App Insights Settings    //
 // ======================== //
@@ -639,6 +670,59 @@ param aseManagedIdentities managedIdentityAllType?
 @description('Optional. Specify the type of resource lock for the ASE.')
 param aseLock lockType?
 
+@description('Optional. Custom settings for changing the behavior of the App Service Environment.')
+param aseClusterSettings clusterSettingType[] = [
+  {
+    name: 'DisableTls1.0'
+    value: '1'
+  }
+]
+
+@description('Optional. The URL referencing the Azure Key Vault certificate secret for the ASE custom domain suffix.')
+param aseCustomDnsSuffixCertificateUrl string = ''
+
+@description('Optional. The user-assigned identity to use for resolving the ASE key vault certificate reference.')
+param aseCustomDnsSuffixKeyVaultReferenceIdentity string = ''
+
+@description('Optional. The Dedicated Host Count for the ASE. Set to 2 for physical hardware isolation when zoneRedundant is false.')
+param aseDedicatedHostCount int = 0
+
+@description('Optional. DNS suffix of the App Service Environment.')
+param aseDnsSuffix string = ''
+
+@description('Optional. Scale factor for ASE frontends.')
+param aseFrontEndScaleFactor int = 15
+
+@description('Optional. Specifies which endpoints to serve internally in the Virtual Network for the ASE.')
+@allowed([
+  'None'
+  'Web'
+  'Publishing'
+  'Web, Publishing'
+])
+param aseInternalLoadBalancingMode string = 'Web, Publishing'
+
+@description('Optional. Allow new private endpoint connections on the ASE.')
+param aseAllowNewPrivateEndpointConnections bool = true
+
+@description('Optional. Enable FTP on the ASE.')
+param aseFtpEnabled bool = false
+
+@description('Optional. Customer provided Inbound IP Address for the ASE.')
+param aseInboundIpAddressOverride string = ''
+
+@description('Optional. Enable Remote Debug on the ASE.')
+param aseRemoteDebugEnabled bool = false
+
+@description('Optional. Maintenance upgrade preference for the ASE.')
+@allowed([
+  'Early'
+  'Late'
+  'Manual'
+  'None'
+])
+param aseUpgradePreference string = 'None'
+
 // ======================== //
 // Custom Resource Names    //
 // ======================== //
@@ -777,60 +861,267 @@ module networking './modules/networking/network.module.bicep' = {
 }
 
 // ======================== //
-// App Service              //
+// App Service Variables    //
 // ======================== //
 
-module webApp './modules/app-service/app-service.module.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-webApp'
+var webAppDnsZoneName = 'privatelink.azurewebsites.net'
+var slotName = 'staging'
+
+var deployPlan = empty(existingAppServicePlanId)
+var resolvedServerFarmResourceId = appServicePlan.?outputs.?resourceId ?? existingAppServicePlanId
+
+var isLinux = webAppBaseOs =~ 'linux'
+var isContainer = contains(webAppKind, 'container')
+var isWindowsContainer = contains(webAppKind, 'container') && contains(webAppKind, 'windows')
+
+// Merge container-specific site config properties
+var containerSiteConfig = isContainer && !empty(containerImageName)
+  ? union(siteConfig, isLinux
+      ? { linuxFxVersion: 'DOCKER|${containerImageName}' }
+      : { windowsFxVersion: 'DOCKER|${containerImageName}' })
+  : siteConfig
+
+// Container registry app settings for private registries
+var containerRegistryAppSettings = isContainer && !empty(containerRegistryUrl)
+  ? {
+      DOCKER_REGISTRY_SERVER_URL: containerRegistryUrl
+      ...(!empty(containerRegistryUsername)
+        ? {
+            DOCKER_REGISTRY_SERVER_USERNAME: containerRegistryUsername
+            DOCKER_REGISTRY_SERVER_PASSWORD: containerRegistryPassword
+          }
+        : {})
+    }
+  : {}
+
+var resolvedAppServiceDiagnosticSettings = !empty(appserviceDiagnosticSettings)
+  ? appserviceDiagnosticSettings
+  : [
+      {
+        name: 'appservice-diagnosticSettings'
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+      }
+    ]
+
+var resolvedServicePlanDiagnosticSettings = !empty(servicePlanDiagnosticSettings)
+  ? servicePlanDiagnosticSettings
+  : [
+      {
+        name: 'servicePlan-diagnosticSettings'
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+      }
+    ]
+
+var resolvedAseDiagnosticSettings = !empty(aseDiagnosticSettings)
+  ? aseDiagnosticSettings
+  : [
+      {
+        name: 'ase-diagnosticSettings'
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+      }
+    ]
+
+// ======================== //
+// ASE                      //
+// ======================== //
+
+module aseEnvironment 'br/public:avm/res/web/hosting-environment:0.5.0' = if (deployAseV3) {
+  name: '${uniqueString(deployment().name, location)}-ase-avm'
   scope: az.resourceGroup(resourceGroupName)
   params: {
-    enableTelemetry: enableTelemetry
-    deployAseV3: deployAseV3
-    aseName: resourceNames.aseName
-    appServicePlanName: resourceNames.aspName
-    webAppName: resourceNames.webApp
-    managedIdentityName: resourceNames.appSvcUserAssignedManagedIdentity
+    name: resourceNames.aseName
     location: location
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    subnetIdForVnetInjection: networking.outputs.snetAppSvcResourceId
+    enableTelemetry: enableTelemetry
     tags: tags
-    webAppBaseOs: webAppBaseOs
+    subnetResourceId: networking.outputs.snetAppSvcResourceId
+    clusterSettings: aseClusterSettings
+    dedicatedHostCount: aseDedicatedHostCount != 0 ? aseDedicatedHostCount : null
+    frontEndScaleFactor: aseFrontEndScaleFactor
+    internalLoadBalancingMode: aseInternalLoadBalancingMode
     zoneRedundant: zoneRedundant
-    subnetPrivateEndpointResourceId: networking.outputs.snetPeResourceId
+    networkConfiguration: {
+      properties: {
+        allowNewPrivateEndpointConnections: aseAllowNewPrivateEndpointConnections
+        ftpEnabled: aseFtpEnabled
+        inboundIpAddressOverride: aseInboundIpAddressOverride
+        remoteDebugEnabled: aseRemoteDebugEnabled
+      }
+    }
+    customDnsSuffixCertificateUrl: aseCustomDnsSuffixCertificateUrl
+    customDnsSuffixKeyVaultReferenceIdentity: aseCustomDnsSuffixKeyVaultReferenceIdentity
+    customDnsSuffix: aseCustomDnsSuffix
+    dnsSuffix: !empty(aseDnsSuffix) ? aseDnsSuffix : null
+    upgradePreference: aseUpgradePreference
+    ipsslAddressCount: aseIpsslAddressCount
+    multiSize: aseMultiSize
+    managedIdentities: aseManagedIdentities
+    diagnosticSettings: resolvedAseDiagnosticSettings
+    lock: aseLock
+    roleAssignments: aseRoleAssignments
+  }
+}
+
+
+#disable-diagnostics BCP318
+module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (deployAseV3) {
+  name: '${uniqueString(deployment().name, location)}-ase-dnszone'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: '${aseEnvironment.outputs.name}.appserviceenvironment.net'
     virtualNetworkLinks: virtualNetworkLinks
-    sku: webAppPlanSku
+    enableTelemetry: enableTelemetry
+    tags: tags
+    a: [
+      {
+        name: '*'
+        aRecords: [
+          {
+            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+          }
+        ]
+        ttl: 3600
+      }
+      {
+        name: '*.scm'
+        aRecords: [
+          {
+            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+          }
+        ]
+        ttl: 3600
+      }
+      {
+        name: '@'
+        aRecords: [
+          {
+            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+          }
+        ]
+        ttl: 3600
+      }
+    ]
+  }
+}
+
+resource aseExisting 'Microsoft.Web/hostingEnvironments@2025-03-01' existing = if (deployAseV3) {
+  scope: az.resourceGroup(resourceGroupName)
+  name: resourceNames.aseName
+}
+
+// ======================== //
+// App Insights             //
+// ======================== //
+
+module appInsights 'br/public:avm/res/insights/component:0.7.1' = {
+  name: '${uniqueString(deployment().name, location)}-appInsights'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: 'appi-${resourceNames.webApp}'
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+    workspaceResourceId: logAnalyticsWorkspaceResourceId
+    applicationType: 'web'
+    publicNetworkAccessForIngestion: appInsightsPublicNetworkAccessForIngestion
+    publicNetworkAccessForQuery: appInsightsPublicNetworkAccessForQuery
+    retentionInDays: appInsightsRetentionInDays
+    samplingPercentage: appInsightsSamplingPercentage
+    disableLocalAuth: appInsightsDisableLocalAuth
+    disableIpMasking: appInsightsDisableIpMasking ?? true
+    forceCustomerStorageForProfiler: appInsightsForceCustomerStorageForProfiler ?? false
+    linkedStorageAccountResourceId: appInsightsLinkedStorageAccountResourceId
+    flowType: appInsightsFlowType
+    requestSource: appInsightsRequestSource
+    kind: appInsightsKind ?? ''
+    immediatePurgeDataOn30Days: appInsightsImmediatePurgeDataOn30Days
+    ingestionMode: appInsightsIngestionMode
+    lock: appInsightsLock
+    roleAssignments: appInsightsRoleAssignments
+    diagnosticSettings: appInsightsDiagnosticSettings
+  }
+}
+
+// ======================== //
+// App Service Plan         //
+// ======================== //
+
+module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = if (deployPlan) {
+  name: '${uniqueString(deployment().name, location, 'webapp')}-plan'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: resourceNames.aspName
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+    skuName: webAppPlanSku
+    skuCapacity: skuCapacity
+    zoneRedundant: zoneRedundant
+    kind: isLinux ? 'Linux' : 'Windows'
+    perSiteScaling: perSiteScaling
+    maximumElasticWorkerCount: (maximumElasticWorkerCount < 3 && zoneRedundant) ? 3 : maximumElasticWorkerCount
+    elasticScaleEnabled: elasticScaleEnabled
+    reserved: isLinux
+    targetWorkerCount: (targetWorkerCount < 3 && zoneRedundant) ? 3 : targetWorkerCount
+    targetWorkerSize: targetWorkerSize
+    workerTierName: workerTierName
+    hyperV: isWindowsContainer
+    appServiceEnvironmentResourceId: aseEnvironment.?outputs.?resourceId ?? ''
+    virtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
+    isCustomMode: isCustomMode ?? false
+    rdpEnabled: rdpEnabled
+    installScripts: installScripts
+    planDefaultIdentity: planDefaultIdentity
+    registryAdapters: registryAdapters
+    storageMounts: storageMounts
+    managedIdentities: appServicePlanManagedIdentities
+    diagnosticSettings: resolvedServicePlanDiagnosticSettings
+    lock: appServicePlanLock
+    roleAssignments: appServicePlanRoleAssignments
+  }
+}
+
+// ======================== //
+// Web App                  //
+// ======================== //
+
+module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
+  name: '${uniqueString(deployment().name, location)}-webapp'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
     kind: webAppKind
-    existingAppServicePlanId: existingAppServicePlanId
-    containerImageName: containerImageName
-    containerRegistryUrl: containerRegistryUrl
-    containerRegistryUsername: containerRegistryUsername
-    containerRegistryPassword: containerRegistryPassword
-    webAppLock: webAppLock
-    webAppRoleAssignments: webAppRoleAssignments
-    appServicePlanLock: appServicePlanLock
-    appServicePlanRoleAssignments: appServicePlanRoleAssignments
-    clientCertEnabled: clientCertEnabled
-    clientCertMode: clientCertMode
-    disableBasicPublishingCredentials: disableBasicPublishingCredentials
-    webAppPublicNetworkAccess: webAppPublicNetworkAccess
-    appInsightsPublicNetworkAccessForIngestion: appInsightsPublicNetworkAccessForIngestion
-    appInsightsPublicNetworkAccessForQuery: appInsightsPublicNetworkAccessForQuery
-    appInsightsRetentionInDays: appInsightsRetentionInDays
-    appInsightsSamplingPercentage: appInsightsSamplingPercentage
-    appInsightsDisableLocalAuth: appInsightsDisableLocalAuth
-    appInsightsDisableIpMasking: appInsightsDisableIpMasking
-    appInsightsForceCustomerStorageForProfiler: appInsightsForceCustomerStorageForProfiler
-    appInsightsLinkedStorageAccountResourceId: appInsightsLinkedStorageAccountResourceId
-    appInsightsFlowType: appInsightsFlowType
-    appInsightsRequestSource: appInsightsRequestSource
-    appInsightsKind: appInsightsKind
-    appInsightsImmediatePurgeDataOn30Days: appInsightsImmediatePurgeDataOn30Days
-    appInsightsIngestionMode: appInsightsIngestionMode
-    appInsightsLock: appInsightsLock
-    appInsightsRoleAssignments: appInsightsRoleAssignments
-    appInsightsDiagnosticSettings: appInsightsDiagnosticSettings
+    name: resourceNames.webApp
+    location: location
+    enableTelemetry: enableTelemetry
+    serverFarmResourceId: resolvedServerFarmResourceId
+    siteConfig: containerSiteConfig
     httpsOnly: httpsOnly
+    clientAffinityEnabled: clientAffinityEnabled
+    clientAffinityProxyEnabled: clientAffinityProxyEnabled ?? true
+    clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled ?? false
+    clientCertEnabled: clientCertEnabled
+    clientCertMode: clientCertEnabled ? clientCertMode : null
     clientCertExclusionPaths: clientCertExclusionPaths
+    publicNetworkAccess: !empty(webAppPublicNetworkAccess) ? webAppPublicNetworkAccess : null
     redundancyMode: redundancyMode
     scmSiteAlsoStopped: scmSiteAlsoStopped
     functionAppConfig: functionAppConfig
@@ -841,7 +1132,7 @@ module webApp './modules/app-service/app-service.module.bicep' = {
     keyVaultAccessIdentityResourceId: keyVaultAccessIdentityResourceId
     hybridConnectionRelays: hybridConnectionRelays
     extensions: webAppExtensions
-    webAppEnabled: webAppEnabled
+    enabled: webAppEnabled
     cloningInfo: cloningInfo
     containerSize: containerSize
     dailyMemoryTimeQuota: dailyMemoryTimeQuota
@@ -854,72 +1145,110 @@ module webApp './modules/app-service/app-service.module.bicep' = {
     resourceConfig: resourceConfig
     workloadProfileName: workloadProfileName
     hostNamesDisabled: hostNamesDisabled
-    webAppReserved: webAppReserved
+    reserved: webAppReserved
     extendedLocation: extendedLocation
-    clientAffinityEnabled: clientAffinityEnabled
-    clientAffinityProxyEnabled: clientAffinityProxyEnabled
-    clientAffinityPartitioningEnabled: clientAffinityPartitioningEnabled
-    skuCapacity: skuCapacity
-    workerTierName: workerTierName
-    elasticScaleEnabled: elasticScaleEnabled
-    appServicePlanVirtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
-    isCustomMode: isCustomMode
-    rdpEnabled: rdpEnabled
-    installScripts: installScripts
-    planDefaultIdentity: planDefaultIdentity
-    registryAdapters: registryAdapters
-    storageMounts: storageMounts
-    appServicePlanManagedIdentities: appServicePlanManagedIdentities
-    aseRoleAssignments: aseRoleAssignments
-    aseCustomDnsSuffix: aseCustomDnsSuffix
-    aseIpsslAddressCount: aseIpsslAddressCount
-    aseMultiSize: aseMultiSize
-    aseManagedIdentities: aseManagedIdentities
-    aseLock: aseLock
-    appserviceDiagnosticSettings: !empty(appserviceDiagnosticSettings)
-      ? appserviceDiagnosticSettings
-      : [
+    basicPublishingCredentialsPolicies: disableBasicPublishingCredentials
+      ? [
           {
-            name: 'appservice-diagnosticSettings'
-            workspaceResourceId: logAnalyticsWorkspaceResourceId
-            logCategoriesAndGroups: [
-              {
-                categoryGroup: 'allLogs'
-              }
-            ]
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
+            name: 'ftp'
+            allow: false
+          }
+          {
+            name: 'scm'
+            allow: false
           }
         ]
-    servicePlanDiagnosticSettings: !empty(servicePlanDiagnosticSettings)
-      ? servicePlanDiagnosticSettings
-      : [
+      : null
+    diagnosticSettings: resolvedAppServiceDiagnosticSettings
+    lock: webAppLock
+    roleAssignments: webAppRoleAssignments
+    virtualNetworkSubnetResourceId: !(deployAseV3) ? networking.outputs.snetAppSvcResourceId : ''
+    managedIdentities: {
+      userAssignedResourceIds: [webAppUserAssignedManagedIdentity.outputs.resourceId]
+    }
+    configs: [
+      {
+        name: 'appsettings'
+        applicationInsightResourceId: appInsights.outputs.resourceId
+        properties: !empty(containerRegistryAppSettings) ? containerRegistryAppSettings : {}
+      }
+    ]
+    slots: [
+      {
+        name: slotName
+      }
+    ]
+    privateEndpoints: (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3)
+      ? [
           {
-            name: 'servicePlan-diagnosticSettings'
-            workspaceResourceId: logAnalyticsWorkspaceResourceId
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
+            name: 'webApp'
+            subnetResourceId: networking.outputs.snetPeResourceId
+            privateDnsZoneGroup: {
+              name: 'webApp'
+              privateDnsZoneGroupConfigs: [
+                {
+                  name: webAppDnsZoneName
+                  privateDnsZoneResourceId: webAppPrivateDnsZone.?outputs.?resourceId ?? ''
+                }
+              ]
+            }
           }
         ]
-    aseDiagnosticSettings: !empty(aseDiagnosticSettings)
-      ? aseDiagnosticSettings
-      : [
-          {
-            name: 'ase-diagnosticSettings'
-            workspaceResourceId: logAnalyticsWorkspaceResourceId
-            logCategoriesAndGroups: [
-              {
-                categoryGroup: 'allLogs'
-              }
-            ]
-          }
-        ]
+      : []
+    tags: tags
+  }
+}
+
+module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
+  name: '${uniqueString(deployment().name, location, 'webapp')}-dnszone'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: webAppDnsZoneName
+    location: 'global'
+    enableTelemetry: enableTelemetry
+    virtualNetworkLinks: virtualNetworkLinks
+    tags: tags
+  }
+}
+
+module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
+  name: '${uniqueString(deployment().name, location, 'webapp')}-uami'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: resourceNames.appSvcUserAssignedManagedIdentity
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+  }
+}
+
+module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.11.1' = if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
+  name: '${uniqueString(deployment().name, location, 'webapp')}-slot-${slotName}'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    name: take('pe-${resourceNames.webApp}-slot-${slotName}', 64)
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+    privateDnsZoneGroup: (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3)
+      ? {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: webAppPrivateDnsZone.?outputs.?resourceId ?? ''
+            }
+          ]
+        }
+      : null
+    subnetResourceId: networking.outputs.snetPeResourceId
+    privateLinkServiceConnections: [
+      {
+        name: 'webApp'
+        properties: {
+          privateLinkServiceId: webAppSite.outputs.resourceId
+          groupIds: ['sites-${slotName}']
+        }
+      }
+    ]
   }
 }
 
@@ -937,12 +1266,12 @@ module afd './modules/front-door/front-door.module.bicep' = if (networkingOption
     originGroupName: resourceNames.frontDoorOriginGroup
     origins: [
       {
-        hostname: webApp.outputs.webAppHostName
+        hostname: webAppSite.outputs.defaultHostname
         enabledState: true
         privateLinkOrigin: {
-          privateEndpointResourceId: webApp.outputs.webAppResourceId
+          privateEndpointResourceId: webAppSite.outputs.resourceId
           privateLinkResourceType: 'sites'
-          privateEndpointLocation: webApp.outputs.webAppLocation
+          privateEndpointLocation: webAppSite.outputs.location
         }
       }
     ]
@@ -1005,7 +1334,7 @@ module appGw './modules/networking/application-gateway.module.bicep' = if (netwo
     enableTelemetry: enableTelemetry
     tags: tags
     subnetResourceId: networking.outputs.snetAppGwResourceId
-    backendHostName: webApp.outputs.webAppHostName
+    backendHostName: webAppSite.outputs.defaultHostname
     lock: appGatewayLock
     managedIdentities: appGatewayManagedIdentities
     sslCertificates: appGatewaySslCertificates
@@ -1069,7 +1398,7 @@ module keyVault './modules/supporting-services/modules/key-vault.bicep' = {
     hubVNetResourceId: vnetHubResourceId
     spokeVNetResourceId: networking.outputs.vnetSpokeResourceId
     spokePrivateEndpointSubnetName: networking.outputs.snetPeName
-    appServiceManagedIdentityPrincipalId: webApp.outputs.webAppSystemAssignedPrincipalId
+    appServiceManagedIdentityPrincipalId: webAppUserAssignedManagedIdentity.outputs.principalId
     lock: keyVaultLock
     enablePurgeProtection: keyVaultEnablePurgeProtection
     softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
@@ -1197,3 +1526,28 @@ output keyVaultResourceId string = keyVault.outputs.keyVaultResourceId
 
 @description('The name of the Azure key vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName
+
+@description('The name of the web app.')
+output webAppName string = webAppSite.outputs.name
+
+@description('The default hostname of the web app.')
+output webAppHostName string = webAppSite.outputs.defaultHostname
+
+@description('The resource ID of the web app.')
+output webAppResourceId string = webAppSite.outputs.resourceId
+
+@description('The location of the web app.')
+output webAppLocation string = webAppSite.outputs.location
+
+@description('The principal ID of the user-assigned managed identity for the web app.')
+output webAppManagedIdentityPrincipalId string = webAppUserAssignedManagedIdentity.outputs.principalId
+
+@description('The resource ID of the App Service Plan used (either created or pre-existing).')
+output appServicePlanResourceId string = resolvedServerFarmResourceId
+
+@description('The Internal ingress IP of the ASE.')
+#disable-next-line BCP318
+output internalInboundIpAddress string = deployAseV3 ? aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0] : ''
+
+@description('The name of the ASE.')
+output aseName string = aseEnvironment.?outputs.?name ?? ''
