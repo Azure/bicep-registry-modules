@@ -2,7 +2,7 @@
 
 This document captures the key architecture and design decisions made for the FinOps Hub AVM module.
 
-> **� ADR Format**: This log follows [Microsoft Well-Architected Framework ADR guidance](https://learn.microsoft.com/azure/well-architected/architect-role/architecture-decision-record) and [adr.github.io](https://adr.github.io/) conventions.
+> **ADR Format**: This log follows [Microsoft Well-Architected Framework ADR guidance](https://learn.microsoft.com/azure/well-architected/architect-role/architecture-decision-record) and [adr.github.io](https://adr.github.io/) conventions.
 >
 > **📚 FinOps Hub Docs**: [Microsoft Learn - FinOps Hubs](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/finops-hubs-overview)
 
@@ -29,7 +29,7 @@ This module represents the culmination of feedback from enterprise customers dep
 | **Multi-cloud from day one** | FOCUS schema enables Azure, AWS, GCP, OCI in single data model |
 | **Enterprise-ready defaults** | WAF-aligned mode, managed identities, network isolation options |
 | **Accessible for all** | Demo mode for PAYGO tenants; test data generators & dashboards available from [FinOps Toolkit](https://aka.ms/finops/toolkit) |
-| **Infrastructure focus** | This AVM module deploys Azure infrastructure only; analytics, reporting, and visualization are maintained in the [official FinOps Toolkit](https://aka.ms/finops/toolkit) (see ADR-016) |
+| **Infrastructure focus** | This AVM module deploys Azure infrastructure only; analytics, reporting, and visualization are maintained in the [official FinOps Toolkit](https://aka.ms/finops/toolkit) (see ADR-014) |
 
 ### Customer Feedback Incorporated
 
@@ -231,65 +231,38 @@ billingAccountType == 'auto' → Detect from scopesToMonitor
 import { lockType, diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 ```
 
+**Naming Conventions** (per [SNFR22](https://azure.github.io/Azure-Verified-Modules/spec/SNFR22/)):
+- All parameters and outputs accepting Azure Resource IDs include `ResourceId` suffix (e.g., `byoBlobDnsZoneResourceId`, `storageAccountResourceId`)
+- All outputs returning Resource IDs include `ResourceId` suffix (e.g., `storageAccountResourceId`, `keyVaultResourceId`, `dataFactoryResourceId`)
+
+**Strong Typing** (AVM 1.0 requirement):
+- Array parameters use typed arrays where possible (e.g., `adxAdminPrincipalIds string[]` instead of `array`)
+- Generic `object` and `array` types avoided except for standard AVM interfaces (`tags`, `tagsByResource`)
+
 **Rationale**:
 - Required for AVM module certification
 - Consistent experience for AVM consumers
 - Enterprise governance requirements (locks, diagnostics)
+- SNFR22 naming enables users to identify Resource ID parameters at a glance
+- Strong typing catches errors at compile time rather than deployment time
 
 **Consequences**:
 - Module depends on `avm/utl/types/avm-common-types:0.6.1`
 - All child resources receive lock and diagnostic settings
 - README documents all standard parameters
+- Parameter/output renames are breaking changes for consumers (acceptable pre-1.0)
 
 ---
 
-## ADR-007: KQL Function Architecture
+## ADR-007: ADX Dashboard vs Power BI Strategy
 
 **Date**: February 2026
-**Status**: Accepted
-**Context**: Organize KQL functions for maintainability and usability.
-
-**Decision**: Use **materialized functions** with **folder organization** following FOCUS use cases.
-
-**Folder Structure**:
-```
-Dashboard/
-├── AnomalyManagement/
-├── RateOptimization/
-├── MultiCloud/
-├── Allocation/
-├── Budgeting/
-└── Executive/
-```
-
-**Function Categories**:
-| Category | Functions | Purpose |
-|----------|-----------|---------|
-| FOCUS Use Cases | 15 | Official FOCUS use case implementations |
-| Advanced Analytics | 12 | Forecasting, optimization, anomaly detection |
-| Dashboard Helpers | 8 | Visualization-specific transformations |
-
-**Rationale**:
-- FOCUS use cases provide industry-standard queries
-- Folder organization mirrors FinOps Framework domains
-- Functions are reusable across dashboards and Power BI
-
-**Consequences**:
-- Functions deployed via ADX schema setup script
-- Dashboard references functions (not inline KQL)
-- Upgrading schema updates all functions
-
----
-
-## ADR-008: ADX Dashboard vs Power BI Strategy
-
-**Date**: February 2026
-**Status**: Superseded by ADR-016
+**Status**: Superseded by ADR-014
 **Context**: Determine visualization strategy for FinOps Hub.
 
 **Original Decision**: Include **ADX Dashboard** in AVM module; reference **Power BI reports** from FinOps Toolkit.
 
-**Updated Decision**: All visualization assets (ADX dashboards, Power BI reports) are maintained exclusively in the [FinOps Toolkit](https://aka.ms/finops/toolkit). This AVM module deploys infrastructure only. See **ADR-016** for the full scope separation rationale.
+**Updated Decision**: All visualization assets (ADX dashboards, Power BI reports) are maintained exclusively in the [FinOps Toolkit](https://aka.ms/finops/toolkit). This AVM module deploys infrastructure only. See **ADR-014** for the full scope separation rationale.
 
 | Visualization | Included In | Maintained By |
 |--------------|-------------|---------------|
@@ -298,7 +271,7 @@ Dashboard/
 
 **Rationale** (updated):
 - All visualization and analytics assets belong in the official FinOps Toolkit to avoid duplication
-- AVM module scope is limited to Azure infrastructure deployment (see ADR-016)
+- AVM module scope is limited to Azure infrastructure deployment (see ADR-014)
 - Single source of truth for dashboards simplifies versioning and maintenance
 - Power BI reports have broader audience (business users)
 
@@ -319,7 +292,7 @@ Dashboard/
 
 ---
 
-## ADR-009: Schema Versioning Strategy
+## ADR-008: Schema Versioning Strategy
 
 **Date**: February 2026
 **Status**: Accepted
@@ -351,42 +324,7 @@ HubSetup_Latest.kql  → Symlink to current version
 
 ---
 
-## ADR-010: Experimental Features Isolation
-
-**Date**: February 2026
-**Status**: Accepted
-**Context**: Handle features that are not yet production-ready.
-
-**Decision**: Isolate experimental features in `modules/scripts/experimental/` folder.
-
-**Current Experimental Features**:
-| Feature | Status | Files |
-|---------|--------|-------|
-| MACC Tracking | Experimental | `*_MACC.kql` |
-
-**Rationale**:
-- MACC (Microsoft Azure Consumption Commitment) queries are complex
-- Requires billing account access not all customers have
-- Needs more testing before general availability
-
-**Inclusion Criteria**:
-- Feature works but needs broader validation
-- May have edge cases not yet handled
-- Documentation incomplete
-
-**Graduation Criteria**:
-- 3+ production customers validated
-- Edge cases documented
-- Full test coverage
-
-**Consequences**:
-- Experimental scripts not deployed by default
-- README notes experimental status
-- Clear path to promote to production
-
----
-
-## ADR-011: Adoption of AVM Specification Constraints
+## ADR-009: Adoption of AVM Specification Constraints
 
 **Date**: February 2026
 **Status**: Accepted
@@ -402,7 +340,9 @@ HubSetup_Latest.kql  → Symlink to current version
 | ARM Template | `main.json` must be committed and match `main.bicep` | Build step required before every commit |
 | README | Must be auto-generated via `Set-ModuleReadMe` | Cannot use custom README formatting |
 | Line Endings | All files must use LF (Unix-style) | Git config and editor settings enforced |
-| Version Format | Semantic versioning in `version.json` and `main.bicep` metadata | Version must be synchronized across files |
+| Version Format | BRM versioning: `version.json` specifies **major.minor** only (e.g., `"0.12"`); patch is auto-calculated by CI pipeline. `main.bicep` metadata and `CHANGELOG.md` use full semver (e.g., `0.12.0`) | Version must be synchronized across files; `version.json` ≠ three-part semver |
+| CHANGELOG | File must be named `CHANGELOG.md` (all caps); links are case-sensitive on Linux CI runners | Case mismatch breaks links in CI |
+| Linter Overrides | Module-level `bicepconfig.json` overrides only apply during local development; consumers still see linter warnings unless they also override. Prefer inline `#disable-next-line` where feasible | `modules/bicepconfig.json` retained with comments for rules that have 10+ occurrences across sub-modules |
 | Lock Interface | Must support `lockType` from AVM common types | Added lock parameter, applied to all resources |
 | Diagnostic Settings | Must support `diagnosticSettingFullType` | Added diagnosticSettings parameter |
 | Tags | Must support resource tagging | Added tags and tagsByResource parameters |
@@ -425,7 +365,7 @@ HubSetup_Latest.kql  → Symlink to current version
 
 ---
 
-## ADR-012: Deployment-Unique Resource Naming for CI Idempotency
+## ADR-010: Deployment-Unique Resource Naming for CI Idempotency
 
 **Date**: February 2026
 **Status**: Accepted
@@ -455,7 +395,7 @@ var keyVaultName = take('kv-${hubName}-${deploymentSuffix}', 24)
 
 ---
 
-## ADR-013: Region Selection Strategy for Capacity-Constrained Resources
+## ADR-011: Region Selection Strategy for Capacity-Constrained Resources
 
 **Date**: February 2026
 **Status**: Accepted
@@ -477,15 +417,30 @@ param enforcedLocation = 'italynorth'
 | Dev/Test SKUs only | Always available | Not representative of production |
 | Fixed region with known capacity | Reliable, simple | May need updating if capacity changes |
 
+**CI Authentication**:
+GitHub OIDC federation token lifetime depends on the identity type:
+- **Service Principal**: ~55 minute token lifetime (insufficient for ADX+managed-network ~57 min deployments)
+- **Managed Identity (MSI)**: ~24 hour token lifetime (sufficient for all test scenarios)
+
+The CI pipeline uses a User-Assigned Managed Identity (`id-avm-ci-finops-hub`) with OIDC federation to avoid token expiration during long-running ADX deployments.
+
+**Test Scenario Coverage**:
+| Scenario | `.e2eignore` | Reason |
+|----------|-------------|--------|
+| `adx-managed-network` | No | MSI OIDC provides 24h token — sufficient for ~57 min deployment |
+| `adx-waf-aligned` | Yes | Log Analytics workspace replication (AZR-000425) cannot provision in CI environment |
+
 **Consequences**:
 - **Positive**: CI deployments succeed consistently
 - **Positive**: Tests run against production-representative SKUs
+- **Positive**: MSI OIDC tokens eliminate timeout issues for long deployments
 - **Negative**: Test resources not co-located with CI infrastructure (minor latency)
 - **Negative**: Region selection may need periodic review as Azure capacity changes
+- **Negative**: `adx-waf-aligned` skips deployment validation due to LAW replication limitations in CI
 
 ---
 
-## ADR-014: ADX Principal Assignment Identity Format
+## ADR-012: ADX Principal Assignment Identity Format
 
 **Date**: February 2026
 **Status**: Accepted
@@ -548,7 +503,7 @@ clusterPrincipalAssignments: [
 
 ---
 
-### ADR-015: ADF Pipeline for ADX Managed Identity Policy
+### ADR-013: ADF Pipeline for ADX Managed Identity Policy
 
 **Status**: Accepted
 **Date**: 2025-02-28
@@ -604,7 +559,7 @@ The managed identity policy is set at runtime via an `AzureDataExplorerCommand` 
 
 ---
 
-## ADR-016: Scope Separation — AVM Module vs FinOps Toolkit Repository
+## ADR-014: Scope Separation — AVM Module vs FinOps Toolkit Repository
 
 **Date**: June 2025
 **Status**: Accepted
@@ -662,7 +617,7 @@ Maintaining copies in the AVM module introduced risks: version drift, duplicated
 - Eliminating duplication reduces maintenance burden and prevents version drift
 - README and deployment output provide clear links to FinOps Toolkit assets
 
-**Supersedes**: ADR-008 (ADX Dashboard vs Power BI Strategy)
+**Supersedes**: ADR-007 (ADX Dashboard vs Power BI Strategy)
 
 **References**:
 - [FinOps Toolkit Repository](https://github.com/microsoft/finops-toolkit)
@@ -700,8 +655,9 @@ For detailed implementation guidance, refer to the official Microsoft Learn docu
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.4.0 | Jun 2025 | FinOps Toolkit Team | Added ADR-016 (Scope separation — AVM module vs FinOps Toolkit); Superseded ADR-008 |
-| 1.3.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-015 (ADF pipeline for ADX managed identity policy) |
-| 1.2.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-014 (ADX principal assignment identity format fix) |
-| 1.1.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-011 (AVM constraints), ADR-012 (CI naming), ADR-013 (region selection) |
+| 1.5.0 | Mar 2026 | FinOps Toolkit Team | Updated ADR-006 (SNFR22 naming, strong typing), ADR-009 (BRM versioning, linter overrides), ADR-011 (OIDC/MSI); Removed ADR-007 (KQL Functions) and ADR-010 (Experimental Features); Renumbered ADRs sequentially |
+| 1.4.0 | Jun 2025 | FinOps Toolkit Team | Added ADR-014 (Scope separation — AVM module vs FinOps Toolkit); Superseded ADR-007 |
+| 1.3.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-013 (ADF pipeline for ADX managed identity policy) |
+| 1.2.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-012 (ADX principal assignment identity format fix) |
+| 1.1.0 | Feb 2026 | FinOps Toolkit Team | Added ADR-009 (AVM constraints), ADR-010 (CI naming), ADR-011 (region selection) |
 | 1.0.0 | Feb 2026 | FinOps Toolkit Team | Initial ADRs for AVM module |

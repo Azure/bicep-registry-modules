@@ -102,10 +102,6 @@ This instance deploys the module with Azure Data Explorer and networkIsolationMo
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-managed-network]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Deployment skipped: ADX + managed network provisioning (~57 min) exceeds the CI OIDC token lifetime (~55 min). PSRule WAF validation still runs and passes. The adx-minimal and managed-network tests validate ADX and managed networking independently.
-```
 
 <details>
 
