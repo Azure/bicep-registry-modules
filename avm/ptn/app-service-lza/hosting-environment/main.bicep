@@ -23,7 +23,7 @@ import {
 
 @maxLength(10)
 @description('Optional. suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>.')
-param workloadName string = 'appsvc${take( uniqueString( subscription().id), 4) }'
+param workloadName string = 'appsvc${take(uniqueString(subscription().id), 4)}'
 
 @description('Optional. Azure region where the resources will be deployed in.')
 param location string = deployment().location
@@ -130,6 +130,43 @@ param autoApproveAfdPrivateEndpoint bool = true
 @description('Optional. Default is windows. The OS of the jump box virtual machine to create.')
 @allowed(['linux', 'windows', 'none'])
 param vmJumpboxOSType string = 'windows'
+
+// ======================== //
+// VM Image & Maintenance   //
+// ======================== //
+
+@description('Optional. The Windows OS version for the jumpbox virtual machine image.')
+param vmWindowsOSVersion string = '2025-datacenter-g2'
+
+@description('Optional. The Linux OS image publisher for the jumpbox VM.')
+param vmLinuxImagePublisher string = 'canonical'
+
+@description('Optional. The Linux OS image offer for the jumpbox VM.')
+param vmLinuxImageOffer string = 'ubuntu-24_04-lts'
+
+@description('Optional. The Linux OS image SKU for the jumpbox VM.')
+param vmLinuxImageSku string = 'server-gen2'
+
+@description('Optional. Enable encryption at host for the jumpbox VMs. Defaults to true for WAF alignment.')
+param vmEncryptionAtHost bool = true
+
+@description('Optional. The OS disk size in GB for the jumpbox VMs.')
+param vmOsDiskSizeGB int = 128
+
+@description('Optional. The storage account type for the jumpbox VM OS disks.')
+param vmOsDiskStorageAccountType ('PremiumV2_LRS' | 'Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS' | 'UltraSSD_LRS') = 'Premium_LRS'
+
+@description('Optional. The start date and time for the VM maintenance window (e.g. "2026-06-16 00:00").')
+param vmMaintenanceWindowStartDateTime string = '2026-06-16 00:00'
+
+@description('Optional. The duration of the VM maintenance window (e.g. "03:55").')
+param vmMaintenanceWindowDuration string = '03:55'
+
+@description('Optional. The timezone for the VM maintenance window.')
+param vmMaintenanceWindowTimeZone string = 'UTC'
+
+@description('Optional. The recurrence of the VM maintenance window (e.g. "1Day", "1Week Saturday").')
+param vmMaintenanceWindowRecurrence string = '1Day'
 
 @description('Optional. Diagnostic Settings for the App Service.')
 param appserviceDiagnosticSettings diagnosticSettingFullType[] = []
@@ -982,6 +1019,8 @@ module aseEnvironment 'br/public:avm/res/web/hosting-environment:0.5.0' = if (de
 }
 
 
+// BCP318 suppression: the aseExisting/aseEnvironment references below are guarded by `if (deployAseV3)` conditions,
+// so nullable access is safe at runtime. Bicep's compile-time checker cannot verify this.
 #disable-diagnostics BCP318
 module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (deployAseV3) {
   name: '${uniqueString(deployment().name, location)}-ase-dnszone'
@@ -1052,7 +1091,7 @@ module appInsights 'br/public:avm/res/insights/component:0.7.1' = {
     linkedStorageAccountResourceId: appInsightsLinkedStorageAccountResourceId
     flowType: appInsightsFlowType
     requestSource: appInsightsRequestSource
-    kind: appInsightsKind ?? ''
+    kind: appInsightsKind ?? 'web'
     immediatePurgeDataOn30Days: appInsightsImmediatePurgeDataOn30Days
     ingestionMode: appInsightsIngestionMode
     lock: appInsightsLock
@@ -1162,7 +1201,7 @@ module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
     diagnosticSettings: resolvedAppServiceDiagnosticSettings
     lock: webAppLock
     roleAssignments: webAppRoleAssignments
-    virtualNetworkSubnetResourceId: !(deployAseV3) ? networking.outputs.snetAppSvcResourceId : ''
+    virtualNetworkSubnetResourceId: !deployAseV3 ? networking.outputs.snetAppSvcResourceId : ''
     managedIdentities: {
       userAssignedResourceIds: [webAppUserAssignedManagedIdentity.outputs.resourceId]
     }
@@ -1459,6 +1498,16 @@ module jumpboxLinuxVM './modules/compute/linux-vm.bicep' = if (deployJumpHost &&
     vmNetworkSecurityGroupName: names.networkSecurityGroup.name
     vmAuthenticationType: vmAuthenticationType
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    vmImagePublisher: vmLinuxImagePublisher
+    vmImageOffer: vmLinuxImageOffer
+    vmImageSku: vmLinuxImageSku
+    encryptionAtHost: vmEncryptionAtHost
+    osDiskSizeGB: vmOsDiskSizeGB
+    osDiskStorageAccountType: vmOsDiskStorageAccountType
+    maintenanceWindowStartDateTime: vmMaintenanceWindowStartDateTime
+    maintenanceWindowDuration: vmMaintenanceWindowDuration
+    maintenanceWindowTimeZone: vmMaintenanceWindowTimeZone
+    maintenanceWindowRecurrence: vmMaintenanceWindowRecurrence
   }
 }
 
@@ -1476,11 +1525,19 @@ module jumpboxWindowsVM './modules/compute/windows-vm.bicep' = if (deployJumpHos
     vmAdminPassword: adminPassword
     vmSize: vmSize
     vmVnetName: networking.outputs.vnetSpokeName
-    vmSubnetName: 'snet-jumpbox'
+    vmSubnetName: resourceNames.snetDevOps
     vmSubnetAddressPrefix: subnetSpokeJumpboxAddressSpace
     vmNetworkInterfaceName: names.networkInterface.name
     vmNetworkSecurityGroupName: resourceNames.jumpboxNsg
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    vmWindowsOSVersion: vmWindowsOSVersion
+    encryptionAtHost: vmEncryptionAtHost
+    osDiskSizeGB: vmOsDiskSizeGB
+    osDiskStorageAccountType: vmOsDiskStorageAccountType
+    maintenanceWindowStartDateTime: vmMaintenanceWindowStartDateTime
+    maintenanceWindowDuration: vmMaintenanceWindowDuration
+    maintenanceWindowTimeZone: vmMaintenanceWindowTimeZone
+    maintenanceWindowRecurrence: vmMaintenanceWindowRecurrence
   }
 }
 

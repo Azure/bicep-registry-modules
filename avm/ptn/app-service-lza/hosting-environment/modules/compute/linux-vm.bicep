@@ -13,6 +13,36 @@ param vmSize string
 @description('Optional. The availability zone for the virtual machine. Set to 0 for no zone.')
 param vmZone int = 0
 
+@description('Optional. The Linux OS image publisher.')
+param vmImagePublisher string = 'canonical'
+
+@description('Optional. The Linux OS image offer.')
+param vmImageOffer string = 'ubuntu-24_04-lts'
+
+@description('Optional. The Linux OS image SKU.')
+param vmImageSku string = 'server-gen2'
+
+@description('Optional. Enable encryption at host for the VM. Defaults to true for WAF alignment.')
+param encryptionAtHost bool = true
+
+@description('Optional. The OS disk size in GB for the VM.')
+param osDiskSizeGB int = 128
+
+@description('Optional. The storage account type for the OS disk.')
+param osDiskStorageAccountType ('PremiumV2_LRS' | 'Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS' | 'UltraSSD_LRS') = 'Premium_LRS'
+
+@description('Optional. The start date and time for the maintenance window (e.g. "2026-06-16 00:00").')
+param maintenanceWindowStartDateTime string = '2026-06-16 00:00'
+
+@description('Optional. The duration of the maintenance window (e.g. "03:55").')
+param maintenanceWindowDuration string = '03:55'
+
+@description('Optional. The timezone for the maintenance window.')
+param maintenanceWindowTimeZone string = 'UTC'
+
+@description('Optional. The recurrence of the maintenance window (e.g. "1Day", "1Week Saturday").')
+param maintenanceWindowRecurrence string = '1Day'
+
 @description('Required. The name of the virtual network containing the VM subnet.')
 param vmVnetName string
 
@@ -63,7 +93,7 @@ param location string = resourceGroup().location
 @description('Optional. The name of the user-assigned identity used to generate the SSH key for the Linux VM.')
 param sshKeyGenName string = guid(resourceGroup().id, 'userAssignedIdentity')
 
-var roleAssignmentName = guid(resourceGroup().id, 'contributor')
+var roleAssignmentName = guid(resourceGroup().id, 'contributor', 'sshKeyGen')
 var contributorRoleDefinitionId = resourceId(
   'Microsoft.Authorization/roleDefinitions',
   'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -152,10 +182,10 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
       InGuestPatchMode: 'User'
     }
     maintenanceWindow: {
-      startDateTime: '2024-06-16 00:00'
-      duration: '03:55'
-      timeZone: 'W. Europe Standard Time'
-      recurEvery: '1Day'
+      startDateTime: maintenanceWindowStartDateTime
+      duration: maintenanceWindowDuration
+      timeZone: maintenanceWindowTimeZone
+      recurEvery: maintenanceWindowRecurrence
     }
     visibility: 'Custom'
     installPatches: {
@@ -235,7 +265,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
     adminUsername: vmAdminUsername
     adminPassword: ((vmAuthenticationType == 'password') ? vmAdminPassword : null)
     disablePasswordAuthentication: ((vmAuthenticationType == 'sshPublicKey') ? true : false)
-    encryptionAtHost: false
+    encryptionAtHost: encryptionAtHost
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
@@ -265,17 +295,17 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       caching: 'ReadWrite'
       createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: 128
+      diskSizeGB: osDiskSizeGB
       managedDisk: {
-        storageAccountType: 'Premium_LRS'
+        storageAccountType: osDiskStorageAccountType
       }
     }
     availabilityZone: vmZone
     vmSize: vmSize
     imageReference: {
-      publisher: 'canonical'
-      offer: '0001-com-ubuntu-server-focal'
-      sku: '20_04-lts-gen2'
+      publisher: vmImagePublisher
+      offer: vmImageOffer
+      sku: vmImageSku
       version: 'latest'
     }
     extensionMonitoringAgentConfig: {

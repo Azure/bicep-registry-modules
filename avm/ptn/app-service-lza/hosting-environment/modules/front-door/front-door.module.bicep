@@ -1,5 +1,8 @@
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import {
+  diagnosticSettingFullType
+  lockType
+  roleAssignmentType
+} from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 // ------------------
 //    TYPES

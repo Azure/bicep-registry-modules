@@ -11,10 +11,31 @@ param vmName string
 param vmSize string
 
 @description('Optional. The Windows OS version for the virtual machine image.')
-param vmWindowsOSVersion string = '2016-Datacenter'
+param vmWindowsOSVersion string = '2025-datacenter-g2'
+
+@description('Optional. Enable encryption at host for the VM. Defaults to true for WAF alignment.')
+param encryptionAtHost bool = true
+
+@description('Optional. The OS disk size in GB for the VM.')
+param osDiskSizeGB int = 128
+
+@description('Optional. The storage account type for the OS disk.')
+param osDiskStorageAccountType ('PremiumV2_LRS' | 'Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS' | 'UltraSSD_LRS') = 'Premium_LRS'
 
 @description('Optional. The availability zone for the virtual machine. Set to 0 for no zone.')
 param vmZone int = 0
+
+@description('Optional. The start date and time for the maintenance window (e.g. "2026-06-16 00:00").')
+param maintenanceWindowStartDateTime string = '2026-06-16 00:00'
+
+@description('Optional. The duration of the maintenance window (e.g. "03:55").')
+param maintenanceWindowDuration string = '03:55'
+
+@description('Optional. The timezone for the maintenance window.')
+param maintenanceWindowTimeZone string = 'UTC'
+
+@description('Optional. The recurrence of the maintenance window (e.g. "1Day", "1Week Saturday").')
+param maintenanceWindowRecurrence string = '1Day'
 
 @description('Required. The name of the virtual network containing the VM subnet.')
 param vmVnetName string
@@ -136,10 +157,10 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
       InGuestPatchMode: 'User'
     }
     maintenanceWindow: {
-      startDateTime: '2024-06-16 00:00'
-      duration: '03:55'
-      timeZone: 'W. Europe Standard Time'
-      recurEvery: '1Day'
+      startDateTime: maintenanceWindowStartDateTime
+      duration: maintenanceWindowDuration
+      timeZone: maintenanceWindowTimeZone
+      recurEvery: maintenanceWindowRecurrence
     }
     visibility: 'Custom'
     installPatches: {
@@ -165,7 +186,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
     computerName: vmName
     adminUsername: vmAdminUsername
     adminPassword: vmAdminPassword
-    encryptionAtHost: false
+    encryptionAtHost: encryptionAtHost
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
@@ -187,9 +208,9 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       caching: 'ReadWrite'
       createOption: 'FromImage'
       deleteOption: 'Delete'
-      diskSizeGB: 128
+      diskSizeGB: osDiskSizeGB
       managedDisk: {
-        storageAccountType: 'Premium_LRS'
+        storageAccountType: osDiskStorageAccountType
       }
     }
     availabilityZone: vmZone

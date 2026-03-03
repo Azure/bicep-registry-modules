@@ -10,7 +10,7 @@ param tags object = {}
 @description('Required. Whether to enable deployment telemetry.')
 param enableTelemetry bool
 
-var roleAssignmentName = guid(resourceGroup().id, 'contributor')
+var roleAssignmentName = guid(resourceGroup().id, 'contributor', 'afdPeApproval')
 var contributorRoleDefinitionId = resourceId(
   'Microsoft.Authorization/roleDefinitions',
   'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -52,7 +52,7 @@ module runAfdApproval 'br/public:avm/res/resources/deployment-script:0.5.2' = {
     managedIdentities: {
       userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
     }
-    azCliVersion: '2.47.0'
+    azCliVersion: '2.67.0'
     timeout: 'PT30M'
     environmentVariables: [
       {
