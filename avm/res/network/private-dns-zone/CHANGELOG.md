@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/private-dns-zone/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Enabling child module `avm/res/network/private-dns-zone/virtual-network-link` for publishing
+
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes
