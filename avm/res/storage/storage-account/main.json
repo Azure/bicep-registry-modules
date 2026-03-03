@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "844527307092650903"
+      "templateHash": "545234552347756391"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2136,7 +2136,8 @@
       "type": "string",
       "defaultValue": "TLS1_2",
       "allowedValues": [
-        "TLS1_2"
+        "TLS1_2",
+        "TLS1_3"
       ],
       "metadata": {
         "description": "Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore."
