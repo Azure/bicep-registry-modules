@@ -6004,7 +6004,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/pim-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.4` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.3` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
