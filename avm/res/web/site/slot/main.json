@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "14052272888861733713"
+      "version": "0.41.2.15936",
+      "templateHash": "1598357983498923934"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -4707,8 +4707,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "13092463903978918984"
+              "version": "0.41.2.15936",
+              "templateHash": "319132526797752020"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -4831,8 +4831,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "12095674050134269466"
+              "version": "0.41.2.15936",
+              "templateHash": "10268410733442303425"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -4954,8 +4954,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "15603385201464692720"
+              "version": "0.41.2.15936",
+              "templateHash": "10635413561028273101"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5143,8 +5143,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "7485006155767796037"
+              "version": "0.41.2.15936",
+              "templateHash": "4802443523203546531"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."

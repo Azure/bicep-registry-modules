@@ -28,9 +28,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
@@ -46,7 +46,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [Enable public access](#example-4-enable-public-access)
-- [WAF-aligned](#example-5-waf-aligned)
+- [With an external certificate](#example-5-with-an-external-certificate)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _No App Logging_
 
@@ -373,13 +374,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       {
         accessMode: 'ReadWrite'
         kind: 'SMB'
-        shareName: 'smbfileshare'
+        name: 'smbfileshare'
         storageAccountName: '<storageAccountName>'
       }
       {
         accessMode: 'ReadWrite'
         kind: 'NFS'
-        shareName: 'nfsfileshare'
+        name: 'nfsfileshare'
         storageAccountName: '<storageAccountName>'
       }
     ]
@@ -514,13 +515,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         {
           "accessMode": "ReadWrite",
           "kind": "SMB",
-          "shareName": "smbfileshare",
+          "name": "smbfileshare",
           "storageAccountName": "<storageAccountName>"
         },
         {
           "accessMode": "ReadWrite",
           "kind": "NFS",
-          "shareName": "nfsfileshare",
+          "name": "nfsfileshare",
           "storageAccountName": "<storageAccountName>"
         }
       ]
@@ -623,13 +624,13 @@ param storages = [
   {
     accessMode: 'ReadWrite'
     kind: 'SMB'
-    shareName: 'smbfileshare'
+    name: 'smbfileshare'
     storageAccountName: '<storageAccountName>'
   }
   {
     accessMode: 'ReadWrite'
     kind: 'NFS'
-    shareName: 'nfsfileshare'
+    name: 'nfsfileshare'
     storageAccountName: '<storageAccountName>'
   }
 ]
@@ -771,7 +772,163 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 5: _With an external certificate_
+
+This instance deploys the module with its certificate being located in a different resource group.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secondary-rg]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  params: {
+    // Required parameters
+    name: 'amecert001'
+    // Non-required parameters
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amecert'
+    }
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
+    internal: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "amecert001"
+    },
+    // Non-required parameters
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amecert"
+      }
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param name = 'amecert001'
+// Non-required parameters
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amecert'
+}
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -946,12 +1103,16 @@ param workloadProfiles = [
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
+| [`daprConfiguration`](#parameter-daprconfiguration) | object | The configuration of Dapr component. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ingressConfiguration`](#parameter-ingressconfiguration) | object | Ingress configuration for the Managed Environment. |
+| [`kedaConfiguration`](#parameter-kedaconfiguration) | object | The configuration of Keda component. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerAuthentication`](#parameter-peerauthentication) | object | Peer authentication settings for the Managed Environment. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1111,7 +1272,7 @@ A Managed Environment Certificate.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
-| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
 | [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
 | [`location`](#parameter-certificatelocation) | string | The location for the resource. |
@@ -1151,7 +1312,7 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 The password of the certificate.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `certificate.certificateType`
 
@@ -1226,6 +1387,13 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 - Type: securestring
 - Default: `''`
 
+### Parameter: `daprConfiguration`
+
+The configuration of Dapr component.
+
+- Required: No
+- Type: object
+
 ### Parameter: `dnsSuffix`
 
 DNS suffix for the environment domain.
@@ -1241,6 +1409,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `ingressConfiguration`
+
+Ingress configuration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+### Parameter: `kedaConfiguration`
+
+The configuration of Keda component.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -1325,6 +1507,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 ### Parameter: `openTelemetryConfiguration`
 
 Open Telemetry configuration.
+
+- Required: No
+- Type: object
+
+### Parameter: `peerAuthentication`
+
+Peer authentication settings for the Managed Environment.
 
 - Required: No
 - Type: object
@@ -1468,7 +1657,7 @@ The list of storages to mount on the environment.
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
 | [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
-| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`name`](#parameter-storagesname) | string | File share name. |
 | [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
 
 ### Parameter: `storages.accessMode`
@@ -1499,7 +1688,7 @@ Type of storage: "SMB" or "NFS".
   ]
   ```
 
-### Parameter: `storages.shareName`
+### Parameter: `storages.name`
 
 File share name.
 

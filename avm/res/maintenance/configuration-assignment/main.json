@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "3336929556126511635"
+      "version": "0.41.2.15936",
+      "templateHash": "9959582202134377032"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -172,7 +172,7 @@
       "condition": "[not(equals(parameters('resourceId'), null()))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', last(split(coalesce(parameters('resourceId'), ''), '/')))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', last(split(coalesce(parameters('resourceId'), ''), '/')))]",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {

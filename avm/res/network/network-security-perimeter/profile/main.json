@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "3178550593460166182"
+      "version": "0.41.2.15936",
+      "templateHash": "18431466622784980660"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile."
@@ -195,8 +195,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "15729882010132355819"
+              "version": "0.41.2.15936",
+              "templateHash": "6200985394778207185"
             },
             "name": "Network Security Perimeter Access Rule",
             "description": "This module deploys a Network Security Perimeter Access Rule."
