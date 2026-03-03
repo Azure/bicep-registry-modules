@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3382398691306391503"
+      "version": "0.41.2.15936",
+      "templateHash": "5898330814354329672"
     },
     "name": "Consumption Budgets (Multi-Scope)",
     "description": "This module's child-modules deploy a Consumption Budget at a Management Group (mg-scope), Subscription (sub-scope) or Resource Group (rg-scope) scope.\n\n> While this template is **not** published, you can find the actual published modules in the subfolders\n> - `mg-scope`\n> - `sub-scope`\n> - `rg-scope`\n"

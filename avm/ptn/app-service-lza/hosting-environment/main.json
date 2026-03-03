@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "3192294764283847078"
+      "version": "0.41.2.15936",
+      "templateHash": "2632974299420956195"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -412,7 +412,7 @@
     },
     "resourceGroup": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName')))]",
       "location": "[deployment().location]",
       "properties": {
@@ -906,7 +906,7 @@
     },
     "naming": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "NamingDeployment",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -937,8 +937,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11585270413994604765"
+              "version": "0.41.2.15936",
+              "templateHash": "11448484785498671045"
             },
             "name": "Azure Naming module",
             "description": "Module to maintain a consistent naming of Azure resources.",
@@ -1465,7 +1465,7 @@
     },
     "spoke": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))]",
       "location": "[deployment().location]",
       "properties": {
@@ -1575,8 +1575,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5074236165577099950"
+              "version": "0.41.2.15936",
+              "templateHash": "6625389421703320428"
             }
           },
           "definitions": {
@@ -2138,7 +2138,7 @@
           "resources": {
             "networking": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-networking', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -2184,8 +2184,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "17885804681167318240"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1168168493301567535"
                     }
                   },
                   "parameters": {
@@ -2282,7 +2282,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2314,14 +2314,14 @@
                                 "addressPrefix": "[parameters('subnetSpokeAppSvcAddressSpace')]",
                                 "privateEndpointNetworkPolicies": "[if(not(parameters('deployAseV3')), 'Enabled', 'Disabled')]",
                                 "delegation": "[if(not(parameters('deployAseV3')), 'Microsoft.Web/serverfarms', 'Microsoft.Web/hostingEnvironments')]",
-                                "networkSecurityGroupResourceId": "[if(not(parameters('deployAseV3')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value)]",
-                                "routeTableResourceId": "[if(and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-rt', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, null())]"
+                                "networkSecurityGroupResourceId": "[if(not(parameters('deployAseV3')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.resourceId.value, reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgase', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.resourceId.value)]",
+                                "routeTableResourceId": "[if(and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-rt', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.resourceId.value, null())]"
                               },
                               {
                                 "name": "[variables('resourceNames').snetPe]",
                                 "addressPrefix": "[parameters('subnetSpokePrivateEndpointAddressSpace')]",
                                 "privateEndpointNetworkPolicies": "Disabled",
-                                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.resourceId.value]"
                               }
                             ]
                           },
@@ -3863,7 +3863,7 @@
                     {
                       "condition": "[and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown'))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-rt', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4233,7 +4233,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -4892,7 +4892,7 @@
                     {
                       "condition": "[parameters('deployAseV3')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-nsgase', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5549,23 +5549,23 @@
                   "outputs": {
                     "vnetSpokeResourceId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.resourceId.value]"
                     },
                     "vnetSpokeName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.name.value]"
                     },
                     "snetAppSvcResourceId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetResourceIds.value[0]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.subnetResourceIds.value[0]]"
                     },
                     "snetPeResourceId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.subnetResourceIds.value[1]]"
                     },
                     "snetPeName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetNames.value[1]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.subnetNames.value[1]]"
                     }
                   }
                 }
@@ -5576,7 +5576,7 @@
             },
             "logAnalyticsWs": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-logAnalyticsWs', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -8599,7 +8599,7 @@
             },
             "webApp": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-webApp', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -8670,8 +8670,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "2019669499513368270"
+                      "version": "0.41.2.15936",
+                      "templateHash": "5338498241087604901"
                     }
                   },
                   "definitions": {
@@ -9035,7 +9035,7 @@
                     "ase": {
                       "condition": "[parameters('deployAseV3')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-ase', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -9078,8 +9078,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.34.44.8038",
-                              "templateHash": "1234582323282736741"
+                              "version": "0.41.2.15936",
+                              "templateHash": "15754566290249040040"
                             }
                           },
                           "definitions": {
@@ -9386,7 +9386,7 @@
                             },
                             "ase": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -10145,7 +10145,7 @@
                             },
                             "asePrivateDnsZone": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-ase-dnszone', uniqueString(deployment().name, parameters('location')))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -13262,7 +13262,7 @@
                     },
                     "appInsights": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-appInsights', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -13916,7 +13916,7 @@
                     },
                     "plan": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -14462,7 +14462,7 @@
                     },
                     "webApp": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-webapp', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -19716,7 +19716,7 @@
                     "webAppPrivateDnsZone": {
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -22765,7 +22765,7 @@
                     },
                     "webAppUserAssignedManagedIdentity": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -23234,7 +23234,7 @@
                     "peWebAppSlot": {
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-slot-{1}', uniqueString(deployment().name, parameters('location'), 'webapp'), variables('slotName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -24070,7 +24070,7 @@
             },
             "afd": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-afd', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -24120,8 +24120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "11345924437698943885"
+                      "version": "0.41.2.15936",
+                      "templateHash": "8168108222662157260"
                     }
                   },
                   "definitions": {
@@ -24352,7 +24352,7 @@
                   "resources": {
                     "waf": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('wafPolicy-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -24922,7 +24922,7 @@
                     },
                     "frontDoor": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -29333,7 +29333,7 @@
             "autoApproveAfdPe": {
               "condition": "[parameters('autoApproveAfdPrivateEndpoint')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-autoApproveAfdPe', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -29361,8 +29361,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "17760408799064175649"
+                      "version": "0.41.2.15936",
+                      "templateHash": "7572890821767426347"
                     }
                   },
                   "parameters": {
@@ -29413,7 +29413,7 @@
                       "name": "[variables('roleAssignmentName')]",
                       "properties": {
                         "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
-                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value]",
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.principalId.value]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
@@ -29459,7 +29459,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-uami', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -29947,7 +29947,7 @@
             "jumpboxLinuxVM": {
               "condition": "[and(parameters('deployJumpHost'), equals(parameters('vmJumpboxOSType'), 'linux'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-jumpboxLinuxVM', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -30012,8 +30012,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "9723023194733870965"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1123346744257005954"
                     }
                   },
                   "parameters": {
@@ -30273,7 +30273,7 @@
                     },
                     "vmNetworkSecurityGroup": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -30902,7 +30902,7 @@
                     },
                     "vmSubnet": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('vmSubnet-{0}', uniqueString('vmSubnet', deployment().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -31295,7 +31295,7 @@
                     },
                     "userAssignedIdentity": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-ssh-uami', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -31760,7 +31760,7 @@
                     },
                     "vm": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-linux-vm', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -37418,7 +37418,7 @@
             "jumpboxWindowsVM": {
               "condition": "[and(parameters('deployJumpHost'), equals(parameters('vmJumpboxOSType'), 'windows'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-jumpboxWindowsVM', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
@@ -37480,8 +37480,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "16841286216299938852"
+                      "version": "0.41.2.15936",
+                      "templateHash": "17623498314062632829"
                     }
                   },
                   "parameters": {
@@ -37664,7 +37664,7 @@
                     },
                     "vmNetworkSecurityGroup": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -38293,7 +38293,7 @@
                     },
                     "vmSubnet": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('vmSubnet-{0}', uniqueString('vmSubnet', deployment().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -38686,7 +38686,7 @@
                     },
                     "vm": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-win-vm', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -44372,7 +44372,7 @@
     },
     "supportingServices": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-supportingServicesDeployment', uniqueString(deployment().name, parameters('location')))]",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -44419,8 +44419,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "7015146195145608743"
+              "version": "0.41.2.15936",
+              "templateHash": "8364436575370639002"
             }
           },
           "definitions": {
@@ -44768,7 +44768,7 @@
           "resources": {
             "keyVault": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('keyVaultModule-{0}', uniqueString(resourceGroup().id))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -44809,8 +44809,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "6424925005044988428"
+                      "version": "0.41.2.15936",
+                      "templateHash": "14661706822431214027"
                     }
                   },
                   "definitions": {
@@ -45030,7 +45030,7 @@
                     },
                     "vaultdnszone": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -48074,7 +48074,7 @@
                     },
                     "keyvault": {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('vault-{0}', uniqueString(resourceGroup().id))]",
                       "properties": {
                         "expressionEvaluationOptions": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "11222933398241906970"
+      "version": "0.41.2.15936",
+      "templateHash": "11485823259297877576"
     },
     "name": "avm/ptn/alz/ama",
     "description": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones"
@@ -223,7 +223,7 @@
       "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfAndMap'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
+      "scope": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleVMInsightsName'))]",
       "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleVMInsightsName')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
@@ -236,7 +236,7 @@
       "condition": "[and(and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name')))), equals(parameters('dataCollectionRuleVMInsightsExperience'), 'PerfOnly'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleVMInsightsName'))]",
+      "scope": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleVMInsightsName'))]",
       "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleVMInsightsName')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
@@ -512,7 +512,7 @@
       "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleChangeTrackingName'))]",
+      "scope": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleChangeTrackingName'))]",
       "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleChangeTrackingName')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"
@@ -575,7 +575,7 @@
       "condition": "[and(not(equals(tryGet(parameters('lockConfig'), 'kind'), 'None')), not(empty(tryGet(parameters('lockConfig'), 'name'))))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleMDFCSQLName'))]",
+      "scope": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dataCollectionRuleMDFCSQLName'))]",
       "name": "[coalesce(tryGet(parameters('lockConfig'), 'name'), format('{0}-lock', parameters('dataCollectionRuleMDFCSQLName')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lockConfig'), 'kind'), 'ReadOnly')]"

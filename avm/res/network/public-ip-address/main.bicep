@@ -8,11 +8,7 @@ param name string
 param publicIpPrefixResourceId string?
 
 @description('Optional. The public IP address allocation method.')
-@allowed([
-  'Dynamic'
-  'Static'
-])
-param publicIPAllocationMethod string = 'Static'
+param publicIPAllocationMethod resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.publicIPAllocationMethod = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
 @allowed([
@@ -27,11 +23,7 @@ param availabilityZones int[] = [
 ]
 
 @description('Optional. IP address version.')
-@allowed([
-  'IPv4'
-  'IPv6'
-])
-param publicIPAddressVersion string = 'IPv4'
+param publicIPAddressVersion resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.publicIPAddressVersion = 'IPv4'
 
 @description('Optional. The DNS settings of the public IP address.')
 param dnsSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.dnsSettings?
@@ -44,28 +36,16 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Name of a public IP address SKU.')
-@allowed([
-  'Basic'
-  'Standard'
-])
-param skuName string = 'Standard'
+param skuName resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.sku.name = 'Standard'
 
 @description('Optional. Tier of a public IP address SKU.')
-@allowed([
-  'Global'
-  'Regional'
-])
-param skuTier string = 'Regional'
+param skuTier resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.sku.tier = 'Regional'
 
 @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
 param ddosSettings resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ddosSettings?
 
 @description('Optional. The delete option for the public IP address.')
-@allowed([
-  'Delete'
-  'Detach'
-])
-param deleteOption string?
+param deleteOption resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.deleteOption?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location

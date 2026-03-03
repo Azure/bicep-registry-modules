@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.15.2
+
+### Changes
+
+- Fixed bug when using managed HSM with a custom key version
+
+### Breaking Changes
+
+- None
+
 ## 0.15.1
 
 ### Changes

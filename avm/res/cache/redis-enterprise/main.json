@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "3131549630716150176"
+      "version": "0.41.2.15936",
+      "templateHash": "8899481815404121220"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache."
@@ -1340,7 +1340,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Cache/redisEnterprise/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Cache/redisEnterprise', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1357,7 +1357,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Cache/redisEnterprise/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Cache/redisEnterprise', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1389,7 +1389,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Cache/redisEnterprise/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Cache/redisEnterprise', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Cache/redisEnterprise', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1457,8 +1457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "13084841827475815644"
+              "version": "0.41.2.15936",
+              "templateHash": "9492572042805684235"
             },
             "name": "Redis database",
             "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster."
@@ -1916,7 +1916,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Cache/redisEnterprise/{0}/databases/{1}', parameters('redisClusterName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -1978,8 +1978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "7365321585586345225"
+                      "version": "0.41.2.15936",
+                      "templateHash": "15201669394209392511"
                     },
                     "name": "Azure Managed Redis Database Access Policy Assignment",
                     "description": "This module deploys an access policy assignment for an Azure Managed Redis database."

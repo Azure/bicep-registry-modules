@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "15140994850914151675"
+      "version": "0.41.2.15936",
+      "templateHash": "1719513757266735347"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route."

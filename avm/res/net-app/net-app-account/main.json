@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "13460155148106147747"
+      "version": "0.41.2.15936",
+      "templateHash": "11211131249966866067"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1420,7 +1420,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1437,7 +1437,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1494,8 +1494,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "11087093817022732635"
+              "version": "0.41.2.15936",
+              "templateHash": "12514820119133331762"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1645,8 +1645,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "455660621266488630"
+              "version": "0.41.2.15936",
+              "templateHash": "1419096139907846605"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1961,8 +1961,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "10702865910517505500"
+              "version": "0.41.2.15936",
+              "templateHash": "4638391921034842014"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2100,8 +2100,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "12582804890302222446"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1118662498814857052"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2310,8 +2310,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "17782525815468884180"
+              "version": "0.41.2.15936",
+              "templateHash": "9520703982620338303"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3019,7 +3019,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}', parameters('netAppAccountName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3139,8 +3139,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "7002091751456368072"
+                      "version": "0.41.2.15936",
+                      "templateHash": "9110937642114901627"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3822,7 +3822,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}/volumes/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3958,8 +3958,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "10702865910517505500"
+              "version": "0.41.2.15936",
+              "templateHash": "4638391921034842014"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4097,8 +4097,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "12582804890302222446"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1118662498814857052"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."

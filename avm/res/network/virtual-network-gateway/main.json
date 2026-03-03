@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "15169409386496752827"
+      "version": "0.41.2.15936",
+      "templateHash": "7335746169551196413"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1165,7 +1165,7 @@
       "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[parameters('maintenanceConfiguration').assignmentName]",
       "location": "[parameters('location')]",
       "properties": {
@@ -1179,7 +1179,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1196,7 +1196,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1237,7 +1237,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2032,8 +2032,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "1238836689979940050"
+              "version": "0.41.2.15936",
+              "templateHash": "6176844381568041137"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."

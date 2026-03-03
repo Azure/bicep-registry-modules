@@ -13,6 +13,15 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Removed some parameters into child module calls, these technically shouldn't be breaking for consumers but for awareness:
   - `subscriptionId` and `resourceGroupName` parameters removed from main module and added to deployment script role assignment module calls with values passed in from main module parameters
   - `scope` property added to deployment script role assignment module calls with appropriate scope based on parameters passed into main module
+## 0.5.4
+
+### Changes
+
+- Add defaultOutboundAccess property to subnets
+
+### Breaking Changes
+
+- None
 
 ## 0.5.3
 

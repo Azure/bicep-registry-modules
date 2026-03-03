@@ -2,6 +2,25 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.22.0
+
+### Changes
+
+- Upgraded all `Microsoft.Web/*` resource API versions to `2025-03-01`
+- Added new parameters: `daprConfig`, `ipMode`, `resourceConfig`, `workloadProfileName`, `hostNamesDisabled`, `reserved`, `extendedLocation`
+- Added `clientAffinityProxyEnabled` and `clientAffinityPartitioningEnabled` parameters
+- Added `outboundVnetRouting` parameter (replaces deprecated `vnetContentShareEnabled`, `vnetImagePullEnabled`, `vnetRouteAllEnabled`)
+- Upgraded `functionAppConfig`, `cloningInfo`, `siteConfig`, and `tags` to resource-derived types
+- Upgraded `extensions` in slot type to resource-derived type (`resourceInput<'Microsoft.Web/sites/extensions@2025-03-01'>.properties[]?`)
+- Unified all `avm-common-types` imports to `0.6.1`
+- Updated test dependency API versions to latest GA: `Microsoft.Network/virtualNetworks@2025-05-01`, `Microsoft.Storage/storageAccounts@2025-06-01`, `Microsoft.Web/serverfarms@2025-03-01`
+- Strengthened WAF-aligned test with managed identity, private endpoints, and resource lock
+- Expanded max test coverage for new parameters across web app, Linux web app, and function app scenarios
+
+### Breaking Changes
+
+- Removed deprecated slot properties `vnetContentShareEnabled`, `vnetImagePullEnabled`, `vnetRouteAllEnabled` from `slotType` (use `outboundVnetRouting` instead)
+
 ## 0.21.0
 
 ### Changes

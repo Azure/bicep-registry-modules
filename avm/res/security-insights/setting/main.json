@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "3587891524982588643"
+      "version": "0.41.2.15936",
+      "templateHash": "11393712004636778358"
     },
     "name": "Security Insights Settings",
     "description": "This module deploys a Security Insights Setting."
@@ -187,7 +187,7 @@
     "setting": {
       "type": "Microsoft.SecurityInsights/settings",
       "apiVersion": "2024-10-01-preview",
-      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
+      "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/')))]",
       "name": "[parameters('name')]",
       "kind": "[parameters('settingsType')]",
       "properties": "[parameters('properties')]"
@@ -199,7 +199,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[extensionResourceId(format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/settings', parameters('name'))]",
+      "scope": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/settings', parameters('name'))]",
       "name": "[guid(extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/settings', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

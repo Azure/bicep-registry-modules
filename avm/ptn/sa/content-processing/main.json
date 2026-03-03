@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "10264966361145289420"
+      "version": "0.41.2.15936",
+      "templateHash": "1580568133635633350"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -336,8 +336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "2779842231546071291"
+              "version": "0.41.2.15936",
+              "templateHash": "4055670269816744382"
             }
           },
           "definitions": {
@@ -21430,8 +21430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "11438993289824448790"
+              "version": "0.41.2.15936",
+              "templateHash": "13929816981891754138"
             }
           },
           "parameters": {
@@ -22022,8 +22022,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "5367106659064154619"
+              "version": "0.41.2.15936",
+              "templateHash": "6875105046655783177"
             },
             "name": "Container Registry Module"
           },
@@ -33479,8 +33479,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "14778776168178406345"
+              "version": "0.41.2.15936",
+              "templateHash": "14665055850815306155"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -34712,8 +34712,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "15543669199012061397"
+                      "version": "0.41.2.15936",
+                      "templateHash": "16478281730968347158"
                     }
                   },
                   "definitions": {
@@ -35669,7 +35669,7 @@
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -35683,7 +35683,7 @@
                       },
                       "type": "Microsoft.Insights/diagnosticSettings",
                       "apiVersion": "2021-05-01-preview",
-                      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
                       "properties": {
                         "copy": [
@@ -35721,7 +35721,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -36417,8 +36417,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.39.26.7824",
-                              "templateHash": "4291957610087788581"
+                              "version": "0.41.2.15936",
+                              "templateHash": "13613528958300112275"
                             }
                           },
                           "definitions": {
@@ -36567,8 +36567,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.39.26.7824",
-                              "templateHash": "11111367661509803427"
+                              "version": "0.41.2.15936",
+                              "templateHash": "15078969478343132721"
                             }
                           },
                           "definitions": {
@@ -36798,10 +36798,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]

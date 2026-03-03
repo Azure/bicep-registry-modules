@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "361780476242398749"
+      "version": "0.41.2.15936",
+      "templateHash": "15847031804671168374"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -374,7 +374,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/dnsResolvers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/dnsResolvers', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -391,7 +391,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/dnsResolvers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/dnsResolvers', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/dnsResolvers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -449,8 +449,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "16808169649950903879"
+              "version": "0.41.2.15936",
+              "templateHash": "16245975001490001017"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -599,8 +599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "18174708402583270564"
+              "version": "0.41.2.15936",
+              "templateHash": "7687544906310235333"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint."

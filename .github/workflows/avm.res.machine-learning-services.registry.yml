@@ -49,6 +49,7 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
@@ -79,8 +80,8 @@ jobs:
   call-workflow-passing-data:
     name: "Run"
     permissions:
-      id-token: write       # For OIDC
-      contents: write       # For release tags
+      id-token: write # For OIDC
+      contents: write # For release tags
     needs:
       - job_initialize_pipeline
     uses: ./.github/workflows/avm.template.module.yml
