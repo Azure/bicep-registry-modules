@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
 
+## 0.17.3
+
+### Changes
+
+- Add `authentication` parameter to Origin Group (#6630) and update resource API version.
+
+### Breaking Changes
+
+- None
+
 ## 0.17.2
 
 ### Changes
