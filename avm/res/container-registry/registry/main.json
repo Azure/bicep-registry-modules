@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "4180641535809011145"
+      "templateHash": "13140856393451069643"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -2518,7 +2518,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "2586374430751153084"
+              "templateHash": "14036144006333362944"
             },
             "name": "Container Registries Tasks",
             "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
@@ -2693,8 +2693,7 @@
           },
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-            "stepProperties": "[if(not(equals(tryGet(parameters('step'), 'dockerBuild'), null())), createObject('type', 'Docker', 'dockerFilePath', parameters('step').dockerBuild.dockerFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'contextAccessToken'), 'imageNames', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'imageNames'), 'isPushEnabled', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'isPushEnabled'), 'noCache', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'noCache'), 'target', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'target'), 'arguments', tryGet(tryGet(parameters('step'), 'dockerBuild'), 'arguments')), if(not(equals(tryGet(parameters('step'), 'encodedTask'), null())), createObject('type', 'EncodedTask', 'encodedTaskContent', parameters('step').encodedTask.encodedTaskContent, 'encodedValuesContent', tryGet(tryGet(parameters('step'), 'encodedTask'), 'encodedValuesContent'), 'contextPath', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'encodedTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'encodedTask'), 'values')), if(not(equals(tryGet(parameters('step'), 'fileTask'), null())), createObject('type', 'FileTask', 'taskFilePath', parameters('step').fileTask.taskFilePath, 'contextPath', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextPath'), 'contextAccessToken', tryGet(tryGet(parameters('step'), 'fileTask'), 'contextAccessToken'), 'values', tryGet(tryGet(parameters('step'), 'fileTask'), 'values'), 'valuesFilePath', tryGet(tryGet(parameters('step'), 'fileTask'), 'valuesFilePath')), null())))]"
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
             "avmTelemetry": {
@@ -2738,7 +2737,7 @@
                 "logTemplate": "[parameters('logTemplate')]",
                 "platform": "[parameters('platform')]",
                 "status": "[parameters('status')]",
-                "step": "[variables('stepProperties')]",
+                "step": "[parameters('step')]",
                 "timeout": "[parameters('timeout')]",
                 "trigger": "[parameters('trigger')]"
               }

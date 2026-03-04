@@ -73,38 +73,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var stepProperties = step.?dockerBuild != null
-  ? {
-      type: 'Docker'
-      dockerFilePath: step!.dockerBuild!.dockerFilePath
-      contextPath: step.?dockerBuild.?contextPath
-      contextAccessToken: step.?dockerBuild.?contextAccessToken
-      imageNames: step.?dockerBuild.?imageNames
-      isPushEnabled: step.?dockerBuild.?isPushEnabled
-      noCache: step.?dockerBuild.?noCache
-      target: step.?dockerBuild.?target
-      arguments: step.?dockerBuild.?arguments
-    }
-  : step.?encodedTask != null
-      ? {
-          type: 'EncodedTask'
-          encodedTaskContent: step!.encodedTask!.encodedTaskContent
-          encodedValuesContent: step.?encodedTask.?encodedValuesContent
-          contextPath: step.?encodedTask.?contextPath
-          contextAccessToken: step.?encodedTask.?contextAccessToken
-          values: step.?encodedTask.?values
-        }
-      : step.?fileTask != null
-          ? {
-              type: 'FileTask'
-              taskFilePath: step!.fileTask!.taskFilePath
-              contextPath: step.?fileTask.?contextPath
-              contextAccessToken: step.?fileTask.?contextAccessToken
-              values: step.?fileTask.?values
-              valuesFilePath: step.?fileTask.?valuesFilePath
-            }
-          : null
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerregistry-registry-task.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -142,7 +110,7 @@ resource task 'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview' 
     logTemplate: logTemplate
     platform: platform
     status: status
-    step: stepProperties
+    step: step
     timeout: timeout
     trigger: trigger
   }
