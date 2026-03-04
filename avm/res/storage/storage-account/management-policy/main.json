@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "17698045653779755482"
+      "version": "0.41.2.15936",
+      "templateHash": "4000605059554016072"
     },
     "name": "Storage Account Management Policies",
     "description": "This module deploys a Storage Account Management Policy."
