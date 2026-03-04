@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2905036788725164172"
+      "version": "0.41.2.15936",
+      "templateHash": "16826378208545583850"
     },
-    "name": "Azure Front Doors",
-    "description": "This module deploys an Azure Front Door."
+    "name": "Azure Front Doors (Classic)",
+    "description": "DEPRECATED - This module deploys an Azure Front Door (Classic).\n\nPlease note that the Azure Front Door (Classic) service is being deprecated in favor of the new Azure Front Door Standard/Premium offerings ([ref(https://learn.microsoft.com/en-us/azure/frontdoor/classic-overview)]).\nYou can use the `avm/res/cdn/profile` module to deploy the new Azure Front Door Standard/Premium services.\n"
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -419,7 +419,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/frontDoors/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/frontDoors', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -436,7 +436,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/frontDoors/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/frontDoors', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -477,7 +477,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/frontDoors/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/frontDoors', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/frontDoors', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

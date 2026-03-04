@@ -58,7 +58,11 @@ module testDeployment '../../../main.bicep' = [
       additionalPublicIpConfigurations: [
         {
           name: 'ipConfig01'
-          publicIPAddressResourceId: nestedDependencies.outputs.publicIPResourceId
+          properties: {
+            publicIPAddress: {
+              id: nestedDependencies.outputs.publicIPResourceId
+            }
+          }
         }
       ]
       azureSkuTier: 'Basic'

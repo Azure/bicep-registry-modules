@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Updated `azureADAuthenticationAsArmPolicy` setting to `disabled` by default to address Microsoft Defender Low Severity level finding.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### Changes
