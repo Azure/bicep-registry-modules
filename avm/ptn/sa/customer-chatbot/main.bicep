@@ -137,8 +137,8 @@ var solutionSuffix = toLower(trim(replace(
   ''
 )))
 
-@description('Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
-param cosmosDbReplicaLocation string = 'canadacentral'
+@description('Required. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string
 
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {

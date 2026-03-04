@@ -136,6 +136,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
+    cosmosDbReplicaLocation: ''
     // Non-required parameters
     location: '<location>'
     solutionName: '<solutionName>'
@@ -158,6 +159,9 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Required parameters
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
+    },
+    "cosmosDbReplicaLocation": {
+      "value": ""
     },
     // Non-required parameters
     "location": {
@@ -182,6 +186,7 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
+param cosmosDbReplicaLocation = ''
 // Non-required parameters
 param location = '<location>'
 param solutionName = '<solutionName>'
@@ -206,6 +211,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
+    cosmosDbReplicaLocation: 'canadacentral'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -235,6 +241,9 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Required parameters
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
+    },
+    "cosmosDbReplicaLocation": {
+      "value": "canadacentral"
     },
     // Non-required parameters
     "enableMonitoring": {
@@ -280,6 +289,7 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
+param cosmosDbReplicaLocation = 'canadacentral'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
@@ -302,6 +312,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This should be one of the supported Azure AI Service locations. |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
 
 **Optional parameters**
 
@@ -312,7 +323,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
-| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -355,6 +365,13 @@ Location for all AI service resources. This should be one of the supported Azure
   ]
   ```
 
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `azureAiAgentApiVersion`
 
 Version of AI Agent API.
@@ -394,14 +411,6 @@ The Container Registry hostname where the docker images for the backend are loca
 - Required: No
 - Type: string
 - Default: `'ccbcontainerreg.azurecr.io'`
-
-### Parameter: `cosmosDbReplicaLocation`
-
-Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
-
-- Required: No
-- Type: string
-- Default: `'canadacentral'`
 
 ### Parameter: `createdBy`
 
