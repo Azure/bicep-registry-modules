@@ -863,6 +863,7 @@ Specifies the IP version type for the private IPs of the private endpoint. If no
 
 - Required: No
 - Type: string
+- Default: `'IPv4'`
 
 ### Parameter: `location`
 

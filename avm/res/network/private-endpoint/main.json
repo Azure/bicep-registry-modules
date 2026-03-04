@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18260738850189792400"
+      "templateHash": "102135285937683920"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint."
@@ -222,7 +222,7 @@
         },
         "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
       },
-      "nullable": true
+      "defaultValue": "IPv4"
     },
     "privateDnsZoneGroup": {
       "$ref": "#/definitions/privateDnsZoneGroupType",

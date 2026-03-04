@@ -17,7 +17,7 @@ param customNetworkInterfaceName string?
 param ipConfigurations resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.ipConfigurations?
 
 @description('Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4.')
-param ipVersionType resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.ipVersionType?
+param ipVersionType resourceInput<'Microsoft.Network/privateEndpoints@2025-05-01'>.properties.ipVersionType = 'IPv4'
 
 @description('Optional. The private DNS zone group to configure for the private endpoint.')
 param privateDnsZoneGroup privateDnsZoneGroupType?
