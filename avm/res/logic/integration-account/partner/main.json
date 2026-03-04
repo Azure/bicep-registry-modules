@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12600538169226085087"
+      "version": "0.41.2.15936",
+      "templateHash": "8971155917921431400"
     },
     "name": "Integration Account Partners",
     "description": "This module deploys an Integration Account Partner."

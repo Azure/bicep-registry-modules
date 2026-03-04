@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "9376737816655308926"
+      "version": "0.41.2.15936",
+      "templateHash": "9793985627007673576"
     },
     "name": "Integration Account Agreements",
     "description": "This module deploys an Integration Account Agreement."

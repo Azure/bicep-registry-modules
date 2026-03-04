@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "9677410372218378940"
+      "version": "0.41.2.15936",
+      "templateHash": "14681437665806139784"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."

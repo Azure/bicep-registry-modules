@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2273969900389099556"
+      "version": "0.41.2.15936",
+      "templateHash": "11512664168074076033"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -821,7 +821,7 @@
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('logAnalyticsWorkspace-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3901,7 +3901,7 @@
     },
     "userAssignedIdentity": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('userAssignedIdentity-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4378,7 +4378,7 @@
     "acrPrivateDNSZone": {
       "condition": "[and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateDnsZoneResourceId'), '')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('acrdnszone{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7746,7 +7746,7 @@
     },
     "acr": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('acr{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -10932,7 +10932,7 @@
     "newVnet": {
       "condition": "[equals(parameters('networkingConfiguration').networkType, 'createNew')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('vnet-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -12584,7 +12584,7 @@
     "appEnvironment": {
       "condition": "[contains(parameters('computeTypes'), 'azure-container-app')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('appEnv-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -12600,7 +12600,7 @@
               "destination": "log-analytics",
               "logAnalyticsConfiguration": {
                 "customerId": "[reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value]",
-                "sharedKey": "[listOutputsWithSecureValues('logAnalyticsWorkspace', '2022-09-01').primarySharedKey]"
+                "sharedKey": "[listOutputsWithSecureValues('logAnalyticsWorkspace', '2025-04-01').primarySharedKey]"
               }
             }
           },
@@ -13515,7 +13515,7 @@
     "natGatewayPublicIp": {
       "condition": "[and(and(and(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), '')), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayPublicIpAddressResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew')), parameters('privateNetworking'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('natGatewayPublicIp-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -14215,7 +14215,7 @@
     "natGateway": {
       "condition": "[and(and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'natGatewayResourceId'), ''))), equals(parameters('networkingConfiguration').networkType, 'createNew'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('natGateway-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -15872,7 +15872,7 @@
         "count": "[length(parameters('computeTypes'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('buildImagesRoleAssignment-{0}-{1}', uniqueString(resourceGroup().id), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -16127,7 +16127,7 @@
       },
       "condition": "[contains(parameters('computeTypes'), 'azure-container-instance')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}aciJob-{1}', parameters('namingPrefix'), range(0, int(coalesce(tryGet(tryGet(parameters('selfHostedConfig'), 'azureContainerInstanceTarget'), 'numberOfInstances'), 1)))[copyIndex()])]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -17318,7 +17318,7 @@
     "acaJob": {
       "condition": "[contains(parameters('computeTypes'), 'azure-container-app')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}acaJob', parameters('namingPrefix'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -18572,7 +18572,7 @@
     "acaPlaceholderJob": {
       "condition": "[and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "acaDevOpsPlaceholderJob",
       "properties": {
         "expressionEvaluationOptions": {
@@ -19844,7 +19844,7 @@
     "deploymentScriptPrivateDNSZone": {
       "condition": "[and(parameters('privateNetworking'), empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), '')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('stgdsdnszone{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -23213,7 +23213,7 @@
     "deploymentScriptStg": {
       "condition": "[and(and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops')), parameters('privateNetworking'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('placeholderAgentDeploymentScript-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -29128,7 +29128,7 @@
     "deploymentScriptAcrStg": {
       "condition": "[parameters('privateNetworking')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('deploymentScriptAcrStg-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -35043,7 +35043,7 @@
     "runPlaceHolderAgent": {
       "condition": "[and(contains(parameters('computeTypes'), 'azure-container-app'), equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('runPlaceHolderAgent-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -35622,7 +35622,7 @@
     },
     "acrNetworkByPassTasks": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('acrNetworkByPassTasks-{0}', uniqueString('acrNetworkByPassTasks', deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
