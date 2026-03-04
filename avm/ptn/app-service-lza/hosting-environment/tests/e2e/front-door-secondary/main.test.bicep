@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux web app.'
-metadata description = 'This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.'
+metadata name = 'Front Door secondary region with Linux.'
+metadata description = 'This instance deploys a secondary regional stamp behind Front Door with a Linux web app to validate multi-region topology.'
 
 targetScope = 'subscription'
 
@@ -12,14 +12,14 @@ targetScope = 'subscription'
 param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
+param serviceShort string = 'appfdsec'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-
+// Hardcoded to a region where App Service Premium plans are available
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'australiasoutheast'
 
 // Diagnostics
 // ===========
@@ -44,30 +44,27 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux web app ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
+      workloadName: take('${namePrefix}${serviceShort}', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-webapp'
+        scenario: 'front-door-secondary-linux'
       }
 
-      deployAseV3: true
+      spokeNetworkConfig: {
+        ingressOption: 'frontDoor'
+      }
+
       servicePlanConfig: {
         kind: 'linux'
-        sku: 'I1v2'
       }
       appServiceConfig: {
         kind: 'app,linux'
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
       }
 
       location: enforcedLocation

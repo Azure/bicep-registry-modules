@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux web app.'
-metadata description = 'This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.'
+metadata name = 'Bring-your-own-service with Linux container.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux container workload on it.'
 
 targetScope = 'subscription'
 
@@ -12,11 +12,10 @@ targetScope = 'subscription'
 param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
+param serviceShort string = 'byolctr'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -40,34 +39,48 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   }
 }
 
+// Pre-create a Linux App Service Plan to exercise bring-your-own-service
+module existingLinuxPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-existingLinuxPlan'
+  params: {
+    name: take('asp-${namePrefix}-${serviceShort}-lnx', 40)
+    location: enforcedLocation
+    skuName: 'P1V3'
+    kind: 'Linux'
+    reserved: true
+    enableTelemetry: true
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux web app ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
+      workloadName: take('${namePrefix}byolc', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-webapp'
+        scenario: 'byos-linux-container'
       }
 
-      deployAseV3: true
       servicePlanConfig: {
+        existingPlanId: existingLinuxPlan.outputs.resourceId
         kind: 'linux'
-        sku: 'I1v2'
       }
       appServiceConfig: {
-        kind: 'app,linux'
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
         ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
       }
 
       location: enforcedLocation

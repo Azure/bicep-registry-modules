@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux web app.'
-metadata description = 'This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.'
+metadata name = 'ASE v3 with Linux container workload.'
+metadata description = 'This instance deploys ASE v3 with a Linux container workload to validate the ASE + Linux container path.'
 
 targetScope = 'subscription'
 
@@ -12,11 +12,10 @@ targetScope = 'subscription'
 param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
+param serviceShort string = 'aselctr'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -44,17 +43,16 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux web app ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
+      workloadName: take('${namePrefix}aselc', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-webapp'
+        scenario: 'ase-linux-container'
       }
 
       deployAseV3: true
@@ -63,7 +61,10 @@ module testDeployment '../../../main.bicep' = [
         sku: 'I1v2'
       }
       appServiceConfig: {
-        kind: 'app,linux'
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
         ingressOption: 'none'

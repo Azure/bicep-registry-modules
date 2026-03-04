@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux web app.'
-metadata description = 'This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.'
+metadata name = 'Bring-your-own-service with Windows container.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows container workload on it.'
 
 targetScope = 'subscription'
 
@@ -12,11 +12,10 @@ targetScope = 'subscription'
 param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
+param serviceShort string = 'byowctr'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -40,34 +39,48 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   }
 }
 
+// Pre-create a Windows App Service Plan to exercise bring-your-own-service
+module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-existingWindowsPlan'
+  params: {
+    name: take('asp-${namePrefix}-${serviceShort}-win', 40)
+    location: enforcedLocation
+    skuName: 'P1V3'
+    kind: 'Windows'
+    reserved: false
+    enableTelemetry: true
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux web app ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
+      workloadName: take('${namePrefix}byowc', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-webapp'
+        scenario: 'byos-windows-container'
       }
 
-      deployAseV3: true
       servicePlanConfig: {
-        kind: 'linux'
-        sku: 'I1v2'
+        existingPlanId: existingWindowsPlan.outputs.resourceId
+        kind: 'windows'
       }
       appServiceConfig: {
-        kind: 'app,linux'
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
         ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
       }
 
       location: enforcedLocation

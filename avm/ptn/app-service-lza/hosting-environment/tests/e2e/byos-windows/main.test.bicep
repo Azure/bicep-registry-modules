@@ -1,5 +1,5 @@
-metadata name = 'Bring-your-own-service with Windows workloads.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and passing it via existingAppServicePlanId, then deploying a Windows web app and a Windows container on it.'
+metadata name = 'Bring-your-own-service with Windows web app.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows web app on it.'
 
 targetScope = 'subscription'
 
@@ -87,39 +87,4 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// --- BYOS + Windows container ---
-@batchSize(1)
-module testDeploymentWindowsContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byowc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-windows-container'
-      }
-
-      servicePlanConfig: {
-        existingPlanId: existingWindowsPlan.outputs.resourceId
-        kind: 'windows'
-      }
-      appServiceConfig: {
-        kind: 'app,container,windows'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-      }
-
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  windowsWebApp: testDeployment[0].outputs
-  windowsContainer: testDeploymentWindowsContainer[0].outputs
-}
+output testDeploymentOutputs object = testDeployment[0].outputs

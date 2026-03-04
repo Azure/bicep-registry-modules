@@ -1,5 +1,5 @@
-metadata name = 'Bring-your-own-service with Linux workloads.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and passing it via existingAppServicePlanId, then deploying a Linux web app and a Linux container on it.'
+metadata name = 'Bring-your-own-service with Linux web app.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux web app on it.'
 
 targetScope = 'subscription'
 
@@ -87,39 +87,4 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// --- BYOS + Linux container ---
-@batchSize(1)
-module testDeploymentLinuxContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byolc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-linux-container'
-      }
-
-      servicePlanConfig: {
-        existingPlanId: existingLinuxPlan.outputs.resourceId
-        kind: 'linux'
-      }
-      appServiceConfig: {
-        kind: 'app,linux,container'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-      }
-
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  linuxWebApp: testDeployment[0].outputs
-  linuxContainer: testDeploymentLinuxContainer[0].outputs
-}
+output testDeploymentOutputs object = testDeployment[0].outputs

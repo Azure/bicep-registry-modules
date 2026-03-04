@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Windows workloads and Bastion integration.'
-metadata description = 'This instance deploys ASE v3 with Windows web app and Windows container workloads, plus a Windows jump host with Bastion-enabled NSG rules to validate the managed-instance + Bastion integration path.'
+metadata name = 'ASE v3 with Windows web app and jumpbox example.'
+metadata description = 'This instance deploys ASE v3 with a Windows web app and demonstrates deploying a jumpbox VM via Bastion.'
 
 targetScope = 'subscription'
 
@@ -79,45 +79,7 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// --- ASE v3 + Windows container + Bastion jump host ---
-@batchSize(1)
-module testDeploymentWindowsContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}asewc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'ase-windows-container-bastion'
-      }
-
-      deployAseV3: true
-      servicePlanConfig: {
-        kind: 'windows'
-        sku: 'I1v2'
-      }
-      appServiceConfig: {
-        kind: 'app,container,windows'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
-      }
-
-      // Windows jump host with Bastion integration
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  windowsWebApp: testDeployment[0].outputs
-  windowsContainer: testDeploymentWindowsContainer[0].outputs
-}
+output testDeploymentOutputs object = testDeployment[0].outputs
 
 // ================================= //
 // Example: Deploy a jumpbox VM      //
