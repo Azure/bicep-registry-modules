@@ -176,6 +176,7 @@ Settings for Origin Authentication.
 
 - Required: No
 - Type: object
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.

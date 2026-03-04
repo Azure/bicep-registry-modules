@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
 
+## 0.18.0
+
+### Changes
+
+- Add `authentication` parameter to Origin Group (#6630) and update resource API version.
+
+### Breaking Changes
+
+- None
+
 ## 0.17.3
 
 ### Changes
@@ -13,16 +23,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `security-policy`
   - `afd-endpoint/route`
 - Added `enableReferencedModulesTelemetry` variable to parent and `afd-endpoint` modules to disable telemetry for child modules when called from parent.
-
-### Breaking Changes
-
-- None
-
-## 0.18.0
-
-### Changes
-
-- Add `authentication` parameter to Origin Group (#6630) and update resource API version.
 
 ### Breaking Changes
 
