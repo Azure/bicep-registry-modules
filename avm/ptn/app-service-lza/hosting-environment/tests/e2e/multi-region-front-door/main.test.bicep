@@ -64,19 +64,23 @@ module testDeploymentPrimary '../../../main.bicep' = [
       }
 
       // Front Door ingress
-      networkingOption: 'frontDoor'
+      spokeNetworkConfig: {
+        ingressOption: 'frontDoor'
+      }
 
       // Windows web app
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
+      servicePlanConfig: {
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
 
       // No jump host for speed
-      deployJumpHost: false
-
-      // VM params still required by the module interface
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: primaryLocation
     }
   }
@@ -96,18 +100,23 @@ module testDeploymentSecondary '../../../main.bicep' = [
       }
 
       // Front Door ingress
-      networkingOption: 'frontDoor'
+      spokeNetworkConfig: {
+        ingressOption: 'frontDoor'
+      }
 
       // Linux web app
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
+      servicePlanConfig: {
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
 
       // No jump host for speed
-      deployJumpHost: false
-
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: secondaryLocation
     }
   }

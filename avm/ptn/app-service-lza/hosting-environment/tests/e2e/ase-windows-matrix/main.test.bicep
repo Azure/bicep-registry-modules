@@ -65,19 +65,26 @@ module testDeploymentWindowsWebApp '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
-
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
+      servicePlanConfig: {
+        kind: 'windows'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
       // Windows jump host with Bastion integration
-      vmJumpboxOSType: 'windows'
-      bastionResourceId: bastionPlaceholderResourceId
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        osType: 'windows'
+        bastionResourceId: bastionPlaceholderResourceId
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -97,20 +104,29 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'windows'
-      webAppKind: 'app,container,windows'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
-
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
+      servicePlanConfig: {
+        kind: 'windows'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
       // Windows jump host with Bastion integration
-      vmJumpboxOSType: 'windows'
-      bastionResourceId: bastionPlaceholderResourceId
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        osType: 'windows'
+        bastionResourceId: bastionPlaceholderResourceId
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }

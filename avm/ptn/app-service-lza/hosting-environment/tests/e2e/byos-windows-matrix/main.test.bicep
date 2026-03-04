@@ -74,15 +74,21 @@ module testDeploymentWindowsWebApp '../../../main.bicep' = [
         scenario: 'byos-windows-webapp'
       }
 
-      existingAppServicePlanId: existingWindowsPlan.outputs.resourceId
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingWindowsPlan.outputs.resourceId
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -101,16 +107,24 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
         scenario: 'byos-windows-container'
       }
 
-      existingAppServicePlanId: existingWindowsPlan.outputs.resourceId
-      webAppBaseOs: 'windows'
-      webAppKind: 'app,container,windows'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingWindowsPlan.outputs.resourceId
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }

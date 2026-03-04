@@ -305,7 +305,7 @@ type containerConfigType = {
 
 @export()
 @description('Configuration for the Web App.')
-type webAppConfigType = {
+type appServiceConfigType = {
   @description('Optional. Kind of web app (e.g. "app", "app,linux", "app,linux,container", "functionapp").')
   kind: ('api' | 'app' | 'app,container,windows' | 'app,linux' | 'app,linux,container' | 'functionapp' | 'functionapp,linux' | 'functionapp,linux,container' | 'functionapp,linux,container,azurecontainerapps' | 'functionapp,workflowapp' | 'functionapp,workflowapp,linux' | 'linux,api')?
 

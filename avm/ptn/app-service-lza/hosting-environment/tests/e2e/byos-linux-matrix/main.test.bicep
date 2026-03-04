@@ -74,15 +74,21 @@ module testDeploymentLinuxWebApp '../../../main.bicep' = [
         scenario: 'byos-linux-webapp'
       }
 
-      existingAppServicePlanId: existingLinuxPlan.outputs.resourceId
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingLinuxPlan.outputs.resourceId
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -101,16 +107,24 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
         scenario: 'byos-linux-container'
       }
 
-      existingAppServicePlanId: existingLinuxPlan.outputs.resourceId
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux,container'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingLinuxPlan.outputs.resourceId
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }

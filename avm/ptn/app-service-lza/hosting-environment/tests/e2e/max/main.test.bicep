@@ -61,97 +61,113 @@ module testDeployment '../../../main.bicep' = [
       }
 
       // Networking: Application Gateway path
-      networkingOption: 'applicationGateway'
-      subnetSpokeAppGwAddressSpace: '10.240.12.0/24'
+      spokeNetworkConfig: {
+        ingressOption: 'applicationGateway'
+        appGwSubnetAddressSpace: '10.240.12.0/24'
+        enableEgressLockdown: true
+      }
 
       // Linux container workload
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux,container'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+      servicePlanConfig: {
+        kind: 'linux'
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      }
+      appServiceConfig: {
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      }
 
       // Diagnostic settings
-      aseDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-        }
-      ]
-      servicePlanDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-        }
-      ]
-      appserviceDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-        }
-      ]
-      appGatewayDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-        }
-      ]
-      keyVaultDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-        }
-      ]
+      aseConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+          }
+        ]
+      }
+      appGatewayConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      }
+      keyVaultConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+          }
+        ]
+      }
 
       // VM / Jump host settings
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
-      vmJumpboxOSType: 'linux'
-      enableEgressLockdown: true
+      jumpboxConfig: {
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+        osType: 'linux'
+      }
       location: enforcedLocation
     }
   }

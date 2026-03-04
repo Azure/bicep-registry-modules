@@ -51,9 +51,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       workloadName: take('${namePrefix}${serviceShort}', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }

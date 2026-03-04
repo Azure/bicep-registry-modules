@@ -191,18 +191,22 @@ module testDeploymentLinuxWebApp '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        kind: 'linux'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
-      // ASE needs a /24 for the app-svc subnet
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
-
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -222,18 +226,25 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux,container'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        kind: 'linux'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
-
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -327,19 +338,26 @@ module testDeploymentWindowsWebApp '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
-
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
+      servicePlanConfig: {
+        kind: 'windows'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
       // Windows jump host with Bastion integration
-      vmJumpboxOSType: 'windows'
-      bastionResourceId: bastionPlaceholderResourceId
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        osType: 'windows'
+        bastionResourceId: bastionPlaceholderResourceId
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -359,20 +377,29 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'windows'
-      webAppKind: 'app,container,windows'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
-
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
+      servicePlanConfig: {
+        kind: 'windows'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
       // Windows jump host with Bastion integration
-      vmJumpboxOSType: 'windows'
-      bastionResourceId: bastionPlaceholderResourceId
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        osType: 'windows'
+        bastionResourceId: bastionPlaceholderResourceId
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -475,15 +502,21 @@ module testDeploymentLinuxWebApp '../../../main.bicep' = [
         scenario: 'byos-linux-webapp'
       }
 
-      existingAppServicePlanId: existingLinuxPlan.outputs.resourceId
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingLinuxPlan.outputs.resourceId
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -502,16 +535,24 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
         scenario: 'byos-linux-container'
       }
 
-      existingAppServicePlanId: existingLinuxPlan.outputs.resourceId
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux,container'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingLinuxPlan.outputs.resourceId
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -614,15 +655,21 @@ module testDeploymentWindowsWebApp '../../../main.bicep' = [
         scenario: 'byos-windows-webapp'
       }
 
-      existingAppServicePlanId: existingWindowsPlan.outputs.resourceId
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingWindowsPlan.outputs.resourceId
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -641,16 +688,24 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
         scenario: 'byos-windows-container'
       }
 
-      existingAppServicePlanId: existingWindowsPlan.outputs.resourceId
-      webAppBaseOs: 'windows'
-      webAppKind: 'app,container,windows'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        existingPlanId: existingWindowsPlan.outputs.resourceId
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+      }
 
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -682,10 +737,12 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
-    adminUsername: 'azureuser'
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'azureuser'
+      vmSize: 'Standard_D2s_v4'
+    }
     location: '<location>'
-    vmSize: 'Standard_D2s_v4'
     workloadName: '<workloadName>'
   }
 }
@@ -708,17 +765,15 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
-    "adminUsername": {
-      "value": "azureuser"
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "azureuser",
+        "vmSize": "Standard_D2s_v4"
+      }
     },
     "location": {
       "value": "<location>"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v4"
     },
     "workloadName": {
       "value": "<workloadName>"
@@ -740,10 +795,12 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 // Required parameters
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
-param adminUsername = 'azureuser'
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'azureuser'
+  vmSize: 'Standard_D2s_v4'
+}
 param location = '<location>'
-param vmSize = 'Standard_D2s_v4'
 param workloadName = '<workloadName>'
 ```
 
@@ -767,96 +824,112 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
-    adminUsername: 'azureuser'
-    appGatewayDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
+    appGatewayConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    appServiceConfig: {
+      container: {
+        imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
       }
-    ]
-    appserviceDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    aseDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-    enableEgressLockdown: true
-    keyVaultDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+      kind: 'app,linux,container'
+    }
+    aseConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'azureuser'
+      osType: 'linux'
+      vmSize: 'Standard_D2s_v4'
+    }
+    keyVaultConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
     location: '<location>'
-    networkingOption: 'applicationGateway'
-    servicePlanDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    subnetSpokeAppGwAddressSpace: '10.240.12.0/24'
+    servicePlanConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+      kind: 'linux'
+    }
+    spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      enableEgressLockdown: true
+      ingressOption: 'applicationGateway'
+    }
     tags: {
       environment: 'test'
       scenario: 'max'
     }
-    vmJumpboxOSType: 'linux'
-    vmSize: 'Standard_D2s_v4'
-    webAppBaseOs: 'linux'
-    webAppKind: 'app,linux,container'
     workloadName: '<workloadName>'
   }
 }
@@ -879,129 +952,129 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
+    "appGatewayConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "metricCategories": [
+              {
+                "category": "AllMetrics"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
-    "adminUsername": {
-      "value": "azureuser"
+    "appServiceConfig": {
+      "value": {
+        "container": {
+          "imageName": "mcr.microsoft.com/appsvc/staticsite:latest"
+        },
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "metricCategories": [
+              {
+                "category": "AllMetrics"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ],
+        "kind": "app,linux,container"
+      }
     },
-    "appGatewayDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "aseConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
-    "appserviceDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "azureuser",
+        "osType": "linux",
+        "vmSize": "Standard_D2s_v4"
+      }
     },
-    "aseDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "containerImageName": {
-      "value": "mcr.microsoft.com/appsvc/staticsite:latest"
-    },
-    "enableEgressLockdown": {
-      "value": true
-    },
-    "keyVaultDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "keyVaultConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
     "location": {
       "value": "<location>"
     },
-    "networkingOption": {
-      "value": "applicationGateway"
+    "servicePlanConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "metricCategories": [
+              {
+                "category": "AllMetrics"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ],
+        "kind": "linux"
+      }
     },
-    "servicePlanDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "subnetSpokeAppGwAddressSpace": {
-      "value": "10.240.12.0/24"
+    "spokeNetworkConfig": {
+      "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "enableEgressLockdown": true,
+        "ingressOption": "applicationGateway"
+      }
     },
     "tags": {
       "value": {
         "environment": "test",
         "scenario": "max"
       }
-    },
-    "vmJumpboxOSType": {
-      "value": "linux"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v4"
-    },
-    "webAppBaseOs": {
-      "value": "linux"
-    },
-    "webAppKind": {
-      "value": "app,linux,container"
     },
     "workloadName": {
       "value": "<workloadName>"
@@ -1023,96 +1096,112 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 // Required parameters
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
-param adminUsername = 'azureuser'
-param appGatewayDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
+param appGatewayConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param appServiceConfig = {
+  container: {
+    imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
   }
-]
-param appserviceDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param aseDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param containerImageName = 'mcr.microsoft.com/appsvc/staticsite:latest'
-param enableEgressLockdown = true
-param keyVaultDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  kind: 'app,linux,container'
+}
+param aseConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'azureuser'
+  osType: 'linux'
+  vmSize: 'Standard_D2s_v4'
+}
+param keyVaultConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
 param location = '<location>'
-param networkingOption = 'applicationGateway'
-param servicePlanDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param subnetSpokeAppGwAddressSpace = '10.240.12.0/24'
+param servicePlanConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+  kind: 'linux'
+}
+param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  enableEgressLockdown: true
+  ingressOption: 'applicationGateway'
+}
 param tags = {
   environment: 'test'
   scenario: 'max'
 }
-param vmJumpboxOSType = 'linux'
-param vmSize = 'Standard_D2s_v4'
-param webAppBaseOs = 'linux'
-param webAppKind = 'app,linux,container'
 param workloadName = '<workloadName>'
 ```
 
@@ -1197,19 +1286,23 @@ module testDeploymentPrimary '../../../main.bicep' = [
       }
 
       // Front Door ingress
-      networkingOption: 'frontDoor'
+      spokeNetworkConfig: {
+        ingressOption: 'frontDoor'
+      }
 
       // Windows web app
-      webAppBaseOs: 'windows'
-      webAppKind: 'app'
+      servicePlanConfig: {
+        kind: 'windows'
+      }
+      appServiceConfig: {
+        kind: 'app'
+      }
 
       // No jump host for speed
-      deployJumpHost: false
-
-      // VM params still required by the module interface
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: primaryLocation
     }
   }
@@ -1229,18 +1322,23 @@ module testDeploymentSecondary '../../../main.bicep' = [
       }
 
       // Front Door ingress
-      networkingOption: 'frontDoor'
+      spokeNetworkConfig: {
+        ingressOption: 'frontDoor'
+      }
 
       // Linux web app
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
+      servicePlanConfig: {
+        kind: 'linux'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
 
       // No jump host for speed
-      deployJumpHost: false
-
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: secondaryLocation
     }
   }
@@ -1272,74 +1370,86 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
-    adminPassword: '<adminPassword>'
-    adminUsername: 'azureuser'
-    appserviceDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    aseDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'allLogs'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enableEgressLockdown: true
-    frontDoorDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            category: 'FrontdoorAccessLog'
-          }
-          {
-            category: 'FrontdoorWebApplicationFirewallLog'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    appServiceConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    aseConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              categoryGroup: 'allLogs'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    frontDoorConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          logCategoriesAndGroups: [
+            {
+              category: 'FrontdoorAccessLog'
+            }
+            {
+              category: 'FrontdoorWebApplicationFirewallLog'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'azureuser'
+      vmSize: 'Standard_D2s_v4'
+    }
     location: '<location>'
-    servicePlanDiagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    servicePlanConfig: {
+      diagnosticSettings: [
+        {
+          eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+          eventHubName: '<eventHubName>'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    spokeNetworkConfig: {
+      enableEgressLockdown: true
+    }
     tags: {
       environment: 'test'
     }
-    vmSize: 'Standard_D2s_v4'
     workloadName: '<workloadName>'
   }
 }
@@ -1362,93 +1472,101 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
+    "appServiceConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "metricCategories": [
+              {
+                "category": "AllMetrics"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
-    "adminUsername": {
-      "value": "azureuser"
+    "aseConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "categoryGroup": "allLogs"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
-    "appserviceDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "frontDoorConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "logCategoriesAndGroups": [
+              {
+                "category": "FrontdoorAccessLog"
+              },
+              {
+                "category": "FrontdoorWebApplicationFirewallLog"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
     },
-    "aseDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "allLogs"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enableEgressLockdown": {
-      "value": true
-    },
-    "frontDoorDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "category": "FrontdoorAccessLog"
-            },
-            {
-              "category": "FrontdoorWebApplicationFirewallLog"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "azureuser",
+        "vmSize": "Standard_D2s_v4"
+      }
     },
     "location": {
       "value": "<location>"
     },
-    "servicePlanDiagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+    "servicePlanConfig": {
+      "value": {
+        "diagnosticSettings": [
+          {
+            "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+            "eventHubName": "<eventHubName>",
+            "metricCategories": [
+              {
+                "category": "AllMetrics"
+              }
+            ],
+            "storageAccountResourceId": "<storageAccountResourceId>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "enableEgressLockdown": true
+      }
     },
     "tags": {
       "value": {
         "environment": "test"
       }
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v4"
     },
     "workloadName": {
       "value": "<workloadName>"
@@ -1470,74 +1588,86 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 // Required parameters
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
-param adminPassword = '<adminPassword>'
-param adminUsername = 'azureuser'
-param appserviceDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param aseDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        categoryGroup: 'allLogs'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
-param enableEgressLockdown = true
-param frontDoorDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        category: 'FrontdoorAccessLog'
-      }
-      {
-        category: 'FrontdoorWebApplicationFirewallLog'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
+param appServiceConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param aseConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          categoryGroup: 'allLogs'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param frontDoorConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      logCategoriesAndGroups: [
+        {
+          category: 'FrontdoorAccessLog'
+        }
+        {
+          category: 'FrontdoorWebApplicationFirewallLog'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'azureuser'
+  vmSize: 'Standard_D2s_v4'
+}
 param location = '<location>'
-param servicePlanDiagnosticSettings = [
-  {
-    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-    eventHubName: '<eventHubName>'
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    storageAccountResourceId: '<storageAccountResourceId>'
-    workspaceResourceId: '<workspaceResourceId>'
-  }
-]
+param servicePlanConfig = {
+  diagnosticSettings: [
+    {
+      eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+      eventHubName: '<eventHubName>'
+      metricCategories: [
+        {
+          category: 'AllMetrics'
+        }
+      ]
+      storageAccountResourceId: '<storageAccountResourceId>'
+      workspaceResourceId: '<workspaceResourceId>'
+    }
+  ]
+}
+param spokeNetworkConfig = {
+  enableEgressLockdown: true
+}
 param tags = {
   environment: 'test'
 }
-param vmSize = 'Standard_D2s_v4'
 param workloadName = '<workloadName>'
 ```
 
@@ -1552,204 +1682,26 @@ param workloadName = '<workloadName>'
 | :-- | :-- | :-- |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The resource ID of the Log Analytics workspace managed by the Platform Landing Zone. All diagnostic settings will be configured to send logs and metrics to this workspace. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`adminPassword`](#parameter-adminpassword) | securestring | Required if jumpbox deployed and not using SSH key. The password of the admin user of the jumpbox VM. |
-| [`adminUsername`](#parameter-adminusername) | string | Required if jumpbox deployed. The username of the admin user of the jumpbox VM. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appGatewayAuthenticationCertificates`](#parameter-appgatewayauthenticationcertificates) | array | Authentication certificates for Application Gateway backend auth. |
-| [`appGatewayBackendSettingsCollection`](#parameter-appgatewaybackendsettingscollection) | array | Backend settings collection (v2) for the Application Gateway. |
-| [`appGatewayCustomErrorConfigurations`](#parameter-appgatewaycustomerrorconfigurations) | array | Custom error configurations for the Application Gateway. |
-| [`appGatewayDiagnosticSettings`](#parameter-appgatewaydiagnosticsettings) | array | Diagnostic Settings for the Application Gateway. |
-| [`appGatewayEnableFips`](#parameter-appgatewayenablefips) | bool | Whether FIPS mode is enabled on the Application Gateway. |
-| [`appGatewayEnableHttp2`](#parameter-appgatewayenablehttp2) | bool | Whether HTTP/2 is enabled on the Application Gateway. Defaults to true. |
-| [`appGatewayEnableRequestBuffering`](#parameter-appgatewayenablerequestbuffering) | bool | Whether request buffering is enabled on the Application Gateway. |
-| [`appGatewayEnableResponseBuffering`](#parameter-appgatewayenableresponsebuffering) | bool | Whether response buffering is enabled on the Application Gateway. |
-| [`appGatewayListeners`](#parameter-appgatewaylisteners) | array | Listeners (v2) for the Application Gateway. |
-| [`appGatewayLoadDistributionPolicies`](#parameter-appgatewayloaddistributionpolicies) | array | Load distribution policies for the Application Gateway. |
-| [`appGatewayLock`](#parameter-appgatewaylock) | object | Specify the type of resource lock for the Application Gateway. |
-| [`appGatewayManagedIdentities`](#parameter-appgatewaymanagedidentities) | object | Managed identities for the Application Gateway. Required for Key Vault-referenced SSL certificates. |
-| [`appGatewayPrivateEndpoints`](#parameter-appgatewayprivateendpoints) | array | Private endpoints for the Application Gateway. |
-| [`appGatewayPrivateLinkConfigurations`](#parameter-appgatewayprivatelinkconfigurations) | array | Private link configurations for the Application Gateway. |
-| [`appGatewayRedirectConfigurations`](#parameter-appgatewayredirectconfigurations) | array | Redirect configurations for the Application Gateway. |
-| [`appGatewayRewriteRuleSets`](#parameter-appgatewayrewriterulesets) | array | Rewrite rule sets for the Application Gateway. |
-| [`appGatewayRoleAssignments`](#parameter-appgatewayroleassignments) | array | Role assignments for the Application Gateway. |
-| [`appGatewayRoutingRules`](#parameter-appgatewayroutingrules) | array | Routing rules (v2) for the Application Gateway. |
-| [`appGatewaySslCertificates`](#parameter-appgatewaysslcertificates) | array | SSL certificates for the Application Gateway. Required for HTTPS termination. |
-| [`appGatewaySslPolicyCipherSuites`](#parameter-appgatewaysslpolicyciphersuites) | array | SSL cipher suites for the Application Gateway. |
-| [`appGatewaySslPolicyMinProtocolVersion`](#parameter-appgatewaysslpolicyminprotocolversion) | string | Minimum TLS protocol version for the Application Gateway. |
-| [`appGatewaySslPolicyName`](#parameter-appgatewaysslpolicyname) | string | The predefined SSL policy name for the Application Gateway. |
-| [`appGatewaySslPolicyType`](#parameter-appgatewaysslpolicytype) | string | The SSL policy type for the Application Gateway. |
-| [`appGatewaySslProfiles`](#parameter-appgatewaysslprofiles) | array | SSL profiles for the Application Gateway. |
-| [`appGatewayTrustedClientCertificates`](#parameter-appgatewaytrustedclientcertificates) | array | Trusted client certificates for mTLS on the Application Gateway. |
-| [`appGatewayTrustedRootCertificates`](#parameter-appgatewaytrustedrootcertificates) | array | Trusted root certificates for end-to-end SSL. |
-| [`appGatewayUrlPathMaps`](#parameter-appgatewayurlpathmaps) | array | URL path maps for path-based routing on the Application Gateway. |
-| [`appInsightsDiagnosticSettings`](#parameter-appinsightsdiagnosticsettings) | array | Diagnostic Settings for App Insights. |
-| [`appInsightsDisableIpMasking`](#parameter-appinsightsdisableipmasking) | bool | Disable IP masking in App Insights. |
-| [`appInsightsDisableLocalAuth`](#parameter-appinsightsdisablelocalauth) | bool | Disable non-AAD based auth on App Insights. Defaults to true. |
-| [`appInsightsFlowType`](#parameter-appinsightsflowtype) | string | Flow type for App Insights. |
-| [`appInsightsForceCustomerStorageForProfiler`](#parameter-appinsightsforcecustomerstorageforprofiler) | bool | Force customer storage for profiler in App Insights. |
-| [`appInsightsImmediatePurgeDataOn30Days`](#parameter-appinsightsimmediatepurgedataon30days) | bool | Purge data immediately after 30 days in App Insights. |
-| [`appInsightsIngestionMode`](#parameter-appinsightsingestionmode) | string | Ingestion mode for App Insights. |
-| [`appInsightsKind`](#parameter-appinsightskind) | string | Kind of App Insights resource. |
-| [`appInsightsLinkedStorageAccountResourceId`](#parameter-appinsightslinkedstorageaccountresourceid) | string | Linked storage account resource ID for App Insights. |
-| [`appInsightsLock`](#parameter-appinsightslock) | object | Specify the type of resource lock for App Insights. |
-| [`appInsightsPublicNetworkAccessForIngestion`](#parameter-appinsightspublicnetworkaccessforingestion) | string | Public network access for App Insights ingestion. Defaults to Disabled for secure baseline. |
-| [`appInsightsPublicNetworkAccessForQuery`](#parameter-appinsightspublicnetworkaccessforquery) | string | Public network access for App Insights query. Defaults to Disabled for secure baseline. |
-| [`appInsightsRequestSource`](#parameter-appinsightsrequestsource) | string | Request source for App Insights. |
-| [`appInsightsRetentionInDays`](#parameter-appinsightsretentionindays) | int | App Insights data retention in days. Defaults to 90. |
-| [`appInsightsRoleAssignments`](#parameter-appinsightsroleassignments) | array | Role assignments for App Insights. |
-| [`appInsightsSamplingPercentage`](#parameter-appinsightssamplingpercentage) | int | App Insights sampling percentage (1-100). Defaults to 100. |
-| [`appserviceDiagnosticSettings`](#parameter-appservicediagnosticsettings) | array | Diagnostic Settings for the App Service. |
-| [`appServicePlanLock`](#parameter-appserviceplanlock) | object | Specify the type of resource lock for the App Service Plan. |
-| [`appServicePlanManagedIdentities`](#parameter-appserviceplanmanagedidentities) | object | Managed identities for the App Service Plan. |
-| [`appServicePlanRoleAssignments`](#parameter-appserviceplanroleassignments) | array | Role assignments to apply to the App Service Plan. |
-| [`appServicePlanVirtualNetworkSubnetId`](#parameter-appserviceplanvirtualnetworksubnetid) | string | The resource ID of a subnet for VNet integration on the App Service Plan level. |
-| [`aseAllowNewPrivateEndpointConnections`](#parameter-aseallownewprivateendpointconnections) | bool | Allow new private endpoint connections on the ASE. |
-| [`aseClusterSettings`](#parameter-aseclustersettings) | array | Custom settings for changing the behavior of the App Service Environment. |
-| [`aseCustomDnsSuffix`](#parameter-asecustomdnssuffix) | string | Custom DNS suffix for the ASE. |
-| [`aseCustomDnsSuffixCertificateUrl`](#parameter-asecustomdnssuffixcertificateurl) | string | The URL referencing the Azure Key Vault certificate secret for the ASE custom domain suffix. |
-| [`aseCustomDnsSuffixKeyVaultReferenceIdentity`](#parameter-asecustomdnssuffixkeyvaultreferenceidentity) | string | The user-assigned identity to use for resolving the ASE key vault certificate reference. |
-| [`aseDedicatedHostCount`](#parameter-asededicatedhostcount) | int | The Dedicated Host Count for the ASE. Set to 2 for physical hardware isolation when zoneRedundant is false. |
-| [`aseDiagnosticSettings`](#parameter-asediagnosticsettings) | array | Diagnostic Settings for the ASE. |
-| [`aseDnsSuffix`](#parameter-asednssuffix) | string | DNS suffix of the App Service Environment. |
-| [`aseFrontEndScaleFactor`](#parameter-asefrontendscalefactor) | int | Scale factor for ASE frontends. |
-| [`aseFtpEnabled`](#parameter-aseftpenabled) | bool | Enable FTP on the ASE. |
-| [`aseInboundIpAddressOverride`](#parameter-aseinboundipaddressoverride) | string | Customer provided Inbound IP Address for the ASE. |
-| [`aseInternalLoadBalancingMode`](#parameter-aseinternalloadbalancingmode) | string | Specifies which endpoints to serve internally in the Virtual Network for the ASE. |
-| [`aseIpsslAddressCount`](#parameter-aseipssladdresscount) | int | Number of IP SSL addresses reserved for the ASE. |
-| [`aseLock`](#parameter-aselock) | object | Specify the type of resource lock for the ASE. |
-| [`aseManagedIdentities`](#parameter-asemanagedidentities) | object | Managed identities for the ASE. |
-| [`aseMultiSize`](#parameter-asemultisize) | string | Front-end VM size for the ASE. |
-| [`aseRemoteDebugEnabled`](#parameter-aseremotedebugenabled) | bool | Enable Remote Debug on the ASE. |
-| [`aseRoleAssignments`](#parameter-aseroleassignments) | array | Role assignments for the ASE. |
-| [`aseUpgradePreference`](#parameter-aseupgradepreference) | string | Maintenance upgrade preference for the ASE. |
-| [`autoApproveAfdPrivateEndpoint`](#parameter-autoapproveafdprivateendpoint) | bool | Set to true if you want to auto-approve the private endpoint connection to the Azure Front Door. |
-| [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | Specifies the scope of uniqueness for the default hostname during resource creation. |
-| [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
-| [`clientAffinityEnabled`](#parameter-clientaffinityenabled) | bool | If client affinity is enabled on the web app. |
-| [`clientAffinityPartitioningEnabled`](#parameter-clientaffinitypartitioningenabled) | bool | Partitioned client affinity using CHIPS cookies. |
-| [`clientAffinityProxyEnabled`](#parameter-clientaffinityproxyenabled) | bool | Proxy-based client affinity enabled on the web app. |
-| [`clientCertEnabled`](#parameter-clientcertenabled) | bool | Set to true to enable client certificate authentication (mTLS) on the web app. |
-| [`clientCertExclusionPaths`](#parameter-clientcertexclusionpaths) | string | Client certificate authentication exclusion paths (comma-separated). |
-| [`clientCertMode`](#parameter-clientcertmode) | string | Client certificate mode. Only used when clientCertEnabled is true. |
-| [`cloningInfo`](#parameter-cloninginfo) | object | If specified during app creation, the app is cloned from a source app. |
-| [`containerImageName`](#parameter-containerimagename) | string | The container image name for container-based deployments (e.g. "mcr.microsoft.com/appsvc/staticsite:latest"). |
-| [`containerRegistryPassword`](#parameter-containerregistrypassword) | securestring | The container registry password for private registries. |
-| [`containerRegistryUrl`](#parameter-containerregistryurl) | string | The container registry URL for private registries (e.g. "https://myregistry.azurecr.io"). |
-| [`containerRegistryUsername`](#parameter-containerregistryusername) | string | The container registry username for private registries. |
-| [`containerSize`](#parameter-containersize) | int | Size of the function container. |
+| [`appGatewayConfig`](#parameter-appgatewayconfig) | object | Configuration for the Application Gateway. Only used when spokeNetworkConfig.ingressOption is "applicationGateway". |
+| [`appInsightsConfig`](#parameter-appinsightsconfig) | object | Configuration for Application Insights. |
+| [`appServiceConfig`](#parameter-appserviceconfig) | object | Configuration for the Web App. |
+| [`aseConfig`](#parameter-aseconfig) | object | Configuration for the App Service Environment v3. Only used when deployAseV3 is true. |
 | [`customResourceNames`](#parameter-customresourcenames) | object | Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely. |
-| [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
-| [`daprConfig`](#parameter-daprconfig) | object | Dapr configuration for the app (Container Apps). |
-| [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | The resource ID of a DDoS Protection Plan to associate with the spoke VNet. |
 | [`deployAseV3`](#parameter-deployasev3) | bool | Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan. |
-| [`deployJumpHost`](#parameter-deployjumphost) | bool | Set to true if you want to deploy a jumpbox/devops VM. |
-| [`disableBasicPublishingCredentials`](#parameter-disablebasicpublishingcredentials) | bool | Disable basic publishing credentials (FTP/SCM) on the web app. Defaults to true for security. |
-| [`disableBgpRoutePropagation`](#parameter-disablebgproutepropagation) | bool | Whether to disable BGP route propagation on the route table. Defaults to true. |
-| [`dnsConfiguration`](#parameter-dnsconfiguration) | object | Property to configure DNS-related settings for the site. |
-| [`dnsServers`](#parameter-dnsservers) | array | Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used. |
-| [`e2eEncryptionEnabled`](#parameter-e2eencryptionenabled) | bool | Enable end-to-end encryption (used with ASE). |
-| [`elasticScaleEnabled`](#parameter-elasticscaleenabled) | bool | Whether elastic scale is enabled on the App Service Plan. |
-| [`enableDefaultWafMethodBlock`](#parameter-enabledefaultwafmethodblock) | bool | Whether to deploy the default WAF custom rule that blocks non-GET/HEAD/OPTIONS methods. Set to false for API backends. |
-| [`enableEgressLockdown`](#parameter-enableegresslockdown) | bool | Set to true if you want to intercept all outbound traffic with azure firewall. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableVmProtection`](#parameter-enablevmprotection) | bool | Enable VM protection for the VNet. |
 | [`environmentName`](#parameter-environmentname) | string | The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long. |
-| [`existingAppServicePlanId`](#parameter-existingappserviceplanid) | string | The resource ID of an existing App Service Plan. If provided, the module will skip creating a new plan and deploy the web app on the existing one. |
-| [`extendedLocation`](#parameter-extendedlocation) | object | Extended location of the web app resource. |
-| [`firewallInternalIp`](#parameter-firewallinternalip) | string | Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR. |
-| [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the VNet (max 30). 0 means disabled. |
-| [`frontDoorCustomDomains`](#parameter-frontdoorcustomdomains) | array | Custom domains for the Front Door profile. |
-| [`frontDoorDiagnosticSettings`](#parameter-frontdoordiagnosticsettings) | array | Diagnostic Settings for Front Door. |
-| [`frontDoorHealthProbeIntervalInSeconds`](#parameter-frontdoorhealthprobeintervalinseconds) | int | Health probe interval in seconds for the Front Door origin group. |
-| [`frontDoorHealthProbePath`](#parameter-frontdoorhealthprobepath) | string | Health probe path for the Front Door origin group. |
-| [`frontDoorLock`](#parameter-frontdoorlock) | object | Specify the type of resource lock for the Front Door profile. |
-| [`frontDoorOriginResponseTimeoutSeconds`](#parameter-frontdoororiginresponsetimeoutseconds) | int | The time in seconds before the Front Door origin response times out. Defaults to 120. |
-| [`frontDoorRoleAssignments`](#parameter-frontdoorroleassignments) | array | Role assignments for the Front Door profile. |
-| [`frontDoorRuleSets`](#parameter-frontdoorrulesets) | array | Rule sets for the Front Door profile. |
-| [`frontDoorSecrets`](#parameter-frontdoorsecrets) | array | Secrets for the Front Door profile (e.g. BYOC certificates). |
-| [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App configuration object. |
-| [`hostNamesDisabled`](#parameter-hostnamesdisabled) | bool | True to disable the public hostnames of the app. |
-| [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states for managing SSL bindings. |
-| [`httpsOnly`](#parameter-httpsonly) | bool | Configures the web app to accept only HTTPS requests. |
-| [`hybridConnectionRelays`](#parameter-hybridconnectionrelays) | array | Names of hybrid connection relays to connect the app with. |
-| [`installScripts`](#parameter-installscripts) | array | Install scripts for the App Service Plan. |
-| [`ipMode`](#parameter-ipmode) | string | Specifies the IP mode of the app. |
-| [`isCustomMode`](#parameter-iscustommode) | bool | Whether the App Service Plan uses custom mode. |
-| [`keyVaultAccessIdentityResourceId`](#parameter-keyvaultaccessidentityresourceid) | string | The resource ID of the identity to use for Key Vault references. |
-| [`keyVaultAccessPolicies`](#parameter-keyvaultaccesspolicies) | array | Access policies for the Key Vault (non-RBAC mode). |
-| [`keyVaultAdditionalRoleAssignments`](#parameter-keyvaultadditionalroleassignments) | array | Additional role assignments for the Key Vault beyond the default App Service identity. |
-| [`keyVaultCreateMode`](#parameter-keyvaultcreatemode) | string | The create mode for the Key Vault (default or recover). |
-| [`keyVaultDiagnosticSettings`](#parameter-keyvaultdiagnosticsettings) | array | Diagnostic Settings for the KeyVault. |
-| [`keyVaultEnablePurgeProtection`](#parameter-keyvaultenablepurgeprotection) | bool | Enable purge protection for the Key Vault. Defaults to true. |
-| [`keyVaultEnableRbacAuthorization`](#parameter-keyvaultenablerbacauthorization) | bool | Enable RBAC authorization on the Key Vault. Defaults to true. |
-| [`keyVaultEnableVaultForDeployment`](#parameter-keyvaultenablevaultfordeployment) | bool | Enable the Key Vault for deployment. Defaults to true. |
-| [`keyVaultEnableVaultForDiskEncryption`](#parameter-keyvaultenablevaultfordiskencryption) | bool | Enable the Key Vault for disk encryption. |
-| [`keyVaultEnableVaultForTemplateDeployment`](#parameter-keyvaultenablevaultfortemplatedeployment) | bool | Enable the Key Vault for template deployment. |
-| [`keyVaultKeys`](#parameter-keyvaultkeys) | array | Keys to create in the Key Vault. |
-| [`keyVaultLock`](#parameter-keyvaultlock) | object | Specify the type of resource lock for the Key Vault. |
-| [`keyVaultNetworkAcls`](#parameter-keyvaultnetworkacls) | object | Network ACLs for the Key Vault. |
-| [`keyVaultPublicNetworkAccess`](#parameter-keyvaultpublicnetworkaccess) | string | Public network access for the Key Vault. |
-| [`keyVaultSecrets`](#parameter-keyvaultsecrets) | array | Secrets to create in the Key Vault. |
-| [`keyVaultSku`](#parameter-keyvaultsku) | string | The SKU of the Key Vault. |
-| [`keyVaultSoftDeleteRetentionInDays`](#parameter-keyvaultsoftdeleteretentionindays) | int | Soft delete retention in days for the Key Vault. Defaults to 90. |
+| [`frontDoorConfig`](#parameter-frontdoorconfig) | object | Configuration for Azure Front Door. Only used when spokeNetworkConfig.ingressOption is "frontDoor". |
+| [`jumpboxConfig`](#parameter-jumpboxconfig) | object | Configuration for the jumpbox VM deployment. |
+| [`keyVaultConfig`](#parameter-keyvaultconfig) | object | Configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Azure region where the resources will be deployed in. |
-| [`managedEnvironmentResourceId`](#parameter-managedenvironmentresourceid) | string | The managed environment resource ID for Azure Container Apps scenarios. |
-| [`maximumElasticWorkerCount`](#parameter-maximumelasticworkercount) | int | Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan. |
-| [`networkingOption`](#parameter-networkingoption) | string | The networking option to use for ingress. Options: frontDoor (Azure Front Door with WAF), applicationGateway (Application Gateway with WAF), none. |
-| [`outboundVnetRouting`](#parameter-outboundvnetrouting) | object | The outbound VNET routing configuration for the site. |
-| [`perSiteScaling`](#parameter-persitescaling) | bool | If true, apps assigned to this App Service plan can be scaled independently. |
-| [`planDefaultIdentity`](#parameter-plandefaultidentity) | object | The default identity for the App Service Plan. |
-| [`rdpEnabled`](#parameter-rdpenabled) | bool | Whether RDP is enabled on the App Service Plan. |
-| [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
-| [`registryAdapters`](#parameter-registryadapters) | array | Registry adapter configuration for the App Service Plan. |
-| [`resourceConfig`](#parameter-resourceconfig) | object | Function app resource requirements. |
-| [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (Kudu) site when the app is stopped. |
-| [`servicePlanDiagnosticSettings`](#parameter-serviceplandiagnosticsettings) | array | Diagnostic Settings for the App Service Plan. |
-| [`siteConfig`](#parameter-siteconfig) | object | The site configuration for the web app. |
-| [`skuCapacity`](#parameter-skucapacity) | int | The SKU capacity (number of workers) for the App Service Plan. |
-| [`sshEnabled`](#parameter-sshenabled) | bool | Whether to enable SSH access. |
-| [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Whether customer-provided storage account is required. |
-| [`storageMounts`](#parameter-storagemounts) | array | Storage mount configuration for the App Service Plan. |
-| [`subnetSpokeAppGwAddressSpace`](#parameter-subnetspokeappgwaddressspace) | string | CIDR of the subnet that will hold the Application Gateway. Required if networkingOption is "applicationGateway". |
-| [`subnetSpokeAppSvcAddressSpace`](#parameter-subnetspokeappsvcaddressspace) | string | CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network. |
-| [`subnetSpokeJumpboxAddressSpace`](#parameter-subnetspokejumpboxaddressspace) | string | CIDR of the subnet that will hold the jumpbox. |
-| [`subnetSpokePrivateEndpointAddressSpace`](#parameter-subnetspokeprivateendpointaddressspace) | string | CIDR of the subnet that will hold the private endpoints of the supporting services. |
+| [`servicePlanConfig`](#parameter-serviceplanconfig) | object | Configuration for the App Service Plan. |
+| [`spokeNetworkConfig`](#parameter-spokenetworkconfig) | object | Configuration for the spoke virtual network and ingress networking. |
 | [`tags`](#parameter-tags) | object | Tags to apply to all resources. |
-| [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
-| [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
-| [`virtualNetworkBgpCommunity`](#parameter-virtualnetworkbgpcommunity) | string | The BGP community for the VNet. |
-| [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
-| [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | Default is windows. The OS of the jump box virtual machine to create. |
-| [`vmSize`](#parameter-vmsize) | string | The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
-| [`vnetDiagnosticSettings`](#parameter-vnetdiagnosticsettings) | array | Diagnostic Settings for the spoke virtual network. |
-| [`vnetEncryption`](#parameter-vnetencryption) | bool | Enable VNet encryption. |
-| [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | VNet encryption enforcement. Only used when vnetEncryption is true. |
-| [`vnetHubResourceId`](#parameter-vnethubresourceid) | string | Default is empty. If given, peering between spoke and and existing hub vnet will be created. |
-| [`vnetLock`](#parameter-vnetlock) | object | Specify the type of resource lock for the spoke virtual network. |
-| [`vnetRoleAssignments`](#parameter-vnetroleassignments) | array | Role assignments for the spoke virtual network. |
-| [`vnetSpokeAddressSpace`](#parameter-vnetspokeaddressspace) | string | CIDR of the SPOKE vnet i.e. 192.168.0.0/24. |
-| [`wafCustomRules`](#parameter-wafcustomrules) | object | Custom WAF rules. Only used when enableDefaultWafMethodBlock is false. |
-| [`webAppBaseOs`](#parameter-webappbaseos) | string | Kind of server OS of the App Service Plan. Default is "windows". |
-| [`webAppEnabled`](#parameter-webappenabled) | bool | Setting this value to false disables the app (takes the app offline). |
-| [`webAppExtensions`](#parameter-webappextensions) | array | Extensions configuration for the web app. |
-| [`webAppKind`](#parameter-webappkind) | string | Kind of web app to deploy. Use "app" for standard web apps, "app,linux" for Linux, "app,linux,container" for Linux containers, etc. |
-| [`webAppLock`](#parameter-webapplock) | object | Specify the type of resource lock for the Web App. |
-| [`webAppPlanSku`](#parameter-webappplansku) | string | The name of the SKU for the App Service Plan. Determines the tier, size, family and capacity. Defaults to P1V3 to leverage availability zones. EP* SKUs are only for Azure Functions elastic premium plans. |
-| [`webAppPublicNetworkAccess`](#parameter-webapppublicnetworkaccess) | string | Property to allow or block public network access to the web app. |
-| [`webAppReserved`](#parameter-webappreserved) | bool | True if reserved (Linux). Overrides auto-detection when set. |
-| [`webAppRoleAssignments`](#parameter-webapproleassignments) | array | Role assignments to apply to the Web App. |
-| [`workerTierName`](#parameter-workertiername) | string | Target worker tier assigned to the App Service Plan. |
 | [`workloadName`](#parameter-workloadname) | string | suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>. |
-| [`workloadProfileName`](#parameter-workloadprofilename) | string | Workload profile name for function app to execute on. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true. |
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
@@ -1758,83 +1710,102 @@ The resource ID of the Log Analytics workspace managed by the Platform Landing Z
 - Required: Yes
 - Type: string
 
-### Parameter: `adminPassword`
+### Parameter: `appGatewayConfig`
 
-Required if jumpbox deployed and not using SSH key. The password of the admin user of the jumpbox VM.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
-### Parameter: `adminUsername`
-
-Required if jumpbox deployed. The username of the admin user of the jumpbox VM.
+Configuration for the Application Gateway. Only used when spokeNetworkConfig.ingressOption is "applicationGateway".
 
 - Required: No
-- Type: string
-- Default: `'azureuser'`
-
-### Parameter: `appGatewayAuthenticationCertificates`
-
-Authentication certificates for Application Gateway backend auth.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewayBackendSettingsCollection`
-
-Backend settings collection (v2) for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewayCustomErrorConfigurations`
-
-Custom error configurations for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewayDiagnosticSettings`
-
-Diagnostic Settings for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-appgatewaydiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-appgatewaydiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-appgatewaydiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-appgatewaydiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-appgatewaydiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-appgatewaydiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-appgatewaydiagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-appgatewaydiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-appgatewaydiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`authenticationCertificates`](#parameter-appgatewayconfigauthenticationcertificates) | array | Authentication certificates for backend auth. |
+| [`backendSettingsCollection`](#parameter-appgatewayconfigbackendsettingscollection) | array | Backend settings collection (v2). |
+| [`customErrorConfigurations`](#parameter-appgatewayconfigcustomerrorconfigurations) | array | Custom error configurations. |
+| [`diagnosticSettings`](#parameter-appgatewayconfigdiagnosticsettings) | array | Diagnostic settings for the Application Gateway. |
+| [`enableFips`](#parameter-appgatewayconfigenablefips) | bool | Whether FIPS mode is enabled. |
+| [`enableHttp2`](#parameter-appgatewayconfigenablehttp2) | bool | Whether HTTP/2 is enabled. Defaults to true. |
+| [`enableRequestBuffering`](#parameter-appgatewayconfigenablerequestbuffering) | bool | Whether request buffering is enabled. |
+| [`enableResponseBuffering`](#parameter-appgatewayconfigenableresponsebuffering) | bool | Whether response buffering is enabled. |
+| [`listeners`](#parameter-appgatewayconfiglisteners) | array | Listeners (v2). |
+| [`loadDistributionPolicies`](#parameter-appgatewayconfigloaddistributionpolicies) | array | Load distribution policies. |
+| [`lock`](#parameter-appgatewayconfiglock) | object | Resource lock for the Application Gateway. |
+| [`managedIdentities`](#parameter-appgatewayconfigmanagedidentities) | object | Managed identities for Key Vault-referenced SSL certificates. |
+| [`privateEndpoints`](#parameter-appgatewayconfigprivateendpoints) | array | Private endpoints for the Application Gateway. |
+| [`privateLinkConfigurations`](#parameter-appgatewayconfigprivatelinkconfigurations) | array | Private link configurations. |
+| [`redirectConfigurations`](#parameter-appgatewayconfigredirectconfigurations) | array | Redirect configurations. |
+| [`rewriteRuleSets`](#parameter-appgatewayconfigrewriterulesets) | array | Rewrite rule sets. |
+| [`roleAssignments`](#parameter-appgatewayconfigroleassignments) | array | Role assignments for the Application Gateway. |
+| [`routingRules`](#parameter-appgatewayconfigroutingrules) | array | Routing rules (v2). |
+| [`sslCertificates`](#parameter-appgatewayconfigsslcertificates) | array | SSL certificates for HTTPS termination. |
+| [`sslPolicyCipherSuites`](#parameter-appgatewayconfigsslpolicyciphersuites) | array | SSL cipher suites. |
+| [`sslPolicyMinProtocolVersion`](#parameter-appgatewayconfigsslpolicyminprotocolversion) | string | Minimum TLS protocol version. |
+| [`sslPolicyName`](#parameter-appgatewayconfigsslpolicyname) | string | Predefined SSL policy name. |
+| [`sslPolicyType`](#parameter-appgatewayconfigsslpolicytype) | string | SSL policy type. |
+| [`sslProfiles`](#parameter-appgatewayconfigsslprofiles) | array | SSL profiles. |
+| [`trustedClientCertificates`](#parameter-appgatewayconfigtrustedclientcertificates) | array | Trusted client certificates for mTLS. |
+| [`trustedRootCertificates`](#parameter-appgatewayconfigtrustedrootcertificates) | array | Trusted root certificates for end-to-end SSL. |
+| [`urlPathMaps`](#parameter-appgatewayconfigurlpathmaps) | array | URL path maps for path-based routing. |
 
-### Parameter: `appGatewayDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `appGatewayConfig.authenticationCertificates`
+
+Authentication certificates for backend auth.
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.backendSettingsCollection`
+
+Backend settings collection (v2).
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.customErrorConfigurations`
+
+Custom error configurations.
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.diagnosticSettings`
+
+Diagnostic settings for the Application Gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-appgatewayconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-appgatewayconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-appgatewayconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-appgatewayconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-appgatewayconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-appgatewayconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-appgatewayconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-appgatewayconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-appgatewayconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `appGatewayConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.eventHubName`
+### Parameter: `appGatewayConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `appGatewayConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -1848,7 +1819,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `appGatewayDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `appGatewayConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -1859,39 +1830,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appgatewaydiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-appgatewaydiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-appgatewaydiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-appgatewayconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-appgatewayconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-appgatewayconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appGatewayDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `appGatewayConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `appGatewayConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `appGatewayConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appGatewayDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `appGatewayConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.metricCategories`
+### Parameter: `appGatewayConfig.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -1902,100 +1873,94 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appgatewaydiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-appgatewayconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-appgatewaydiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-appgatewayconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appGatewayDiagnosticSettings.metricCategories.category`
+### Parameter: `appGatewayConfig.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.metricCategories.enabled`
+### Parameter: `appGatewayConfig.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appGatewayDiagnosticSettings.name`
+### Parameter: `appGatewayConfig.diagnosticSettings.name`
 
 The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.storageAccountResourceId`
+### Parameter: `appGatewayConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayDiagnosticSettings.workspaceResourceId`
+### Parameter: `appGatewayConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayEnableFips`
+### Parameter: `appGatewayConfig.enableFips`
 
-Whether FIPS mode is enabled on the Application Gateway.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `appGatewayEnableHttp2`
-
-Whether HTTP/2 is enabled on the Application Gateway. Defaults to true.
+Whether FIPS mode is enabled.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
-### Parameter: `appGatewayEnableRequestBuffering`
+### Parameter: `appGatewayConfig.enableHttp2`
 
-Whether request buffering is enabled on the Application Gateway.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `appGatewayEnableResponseBuffering`
-
-Whether response buffering is enabled on the Application Gateway.
+Whether HTTP/2 is enabled. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `appGatewayListeners`
+### Parameter: `appGatewayConfig.enableRequestBuffering`
 
-Listeners (v2) for the Application Gateway.
+Whether request buffering is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appGatewayConfig.enableResponseBuffering`
+
+Whether response buffering is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appGatewayConfig.listeners`
+
+Listeners (v2).
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewayLoadDistributionPolicies`
+### Parameter: `appGatewayConfig.loadDistributionPolicies`
 
-Load distribution policies for the Application Gateway.
+Load distribution policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewayLock`
+### Parameter: `appGatewayConfig.lock`
 
-Specify the type of resource lock for the Application Gateway.
+Resource lock for the Application Gateway.
 
 - Required: No
 - Type: object
@@ -2004,11 +1969,11 @@ Specify the type of resource lock for the Application Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-appgatewaylockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-appgatewaylockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-appgatewaylocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-appgatewayconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-appgatewayconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-appgatewayconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `appGatewayLock.kind`
+### Parameter: `appGatewayConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -2023,23 +1988,23 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `appGatewayLock.name`
+### Parameter: `appGatewayConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayLock.notes`
+### Parameter: `appGatewayConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayManagedIdentities`
+### Parameter: `appGatewayConfig.managedIdentities`
 
-Managed identities for the Application Gateway. Required for Key Vault-referenced SSL certificates.
+Managed identities for Key Vault-referenced SSL certificates.
 
 - Required: No
 - Type: object
@@ -2048,55 +2013,52 @@ Managed identities for the Application Gateway. Required for Key Vault-reference
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-appgatewaymanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-appgatewaymanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+| [`systemAssigned`](#parameter-appgatewayconfigmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-appgatewayconfigmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
-### Parameter: `appGatewayManagedIdentities.systemAssigned`
+### Parameter: `appGatewayConfig.managedIdentities.systemAssigned`
 
 Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appGatewayManagedIdentities.userAssignedResourceIds`
+### Parameter: `appGatewayConfig.managedIdentities.userAssignedResourceIds`
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
 
-### Parameter: `appGatewayPrivateEndpoints`
+### Parameter: `appGatewayConfig.privateEndpoints`
 
 Private endpoints for the Application Gateway.
 
 - Required: No
 - Type: array
 
-### Parameter: `appGatewayPrivateLinkConfigurations`
+### Parameter: `appGatewayConfig.privateLinkConfigurations`
 
-Private link configurations for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewayRedirectConfigurations`
-
-Redirect configurations for the Application Gateway.
+Private link configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewayRewriteRuleSets`
+### Parameter: `appGatewayConfig.redirectConfigurations`
 
-Rewrite rule sets for the Application Gateway.
+Redirect configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewayRoleAssignments`
+### Parameter: `appGatewayConfig.rewriteRuleSets`
+
+Rewrite rule sets.
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.roleAssignments`
 
 Role assignments for the Application Gateway.
 
@@ -2107,42 +2069,42 @@ Role assignments for the Application Gateway.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-appgatewayroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-appgatewayroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-appgatewayconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-appgatewayconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-appgatewayroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-appgatewayroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-appgatewayroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-appgatewayroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-appgatewayroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-appgatewayroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-appgatewayconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-appgatewayconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-appgatewayconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-appgatewayconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-appgatewayconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-appgatewayconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `appGatewayRoleAssignments.principalId`
+### Parameter: `appGatewayConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `appGatewayConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.condition`
+### Parameter: `appGatewayConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.conditionVersion`
+### Parameter: `appGatewayConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -2155,28 +2117,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `appGatewayRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `appGatewayConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.description`
+### Parameter: `appGatewayConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.name`
+### Parameter: `appGatewayConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewayRoleAssignments.principalType`
+### Parameter: `appGatewayConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -2193,32 +2155,30 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `appGatewayRoutingRules`
+### Parameter: `appGatewayConfig.routingRules`
 
-Routing rules (v2) for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewaySslCertificates`
-
-SSL certificates for the Application Gateway. Required for HTTPS termination.
+Routing rules (v2).
 
 - Required: No
 - Type: array
 
-### Parameter: `appGatewaySslPolicyCipherSuites`
+### Parameter: `appGatewayConfig.sslCertificates`
 
-SSL cipher suites for the Application Gateway.
+SSL certificates for HTTPS termination.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewaySslPolicyMinProtocolVersion`
+### Parameter: `appGatewayConfig.sslPolicyCipherSuites`
 
-Minimum TLS protocol version for the Application Gateway.
+SSL cipher suites.
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.sslPolicyMinProtocolVersion`
+
+Minimum TLS protocol version.
 
 - Required: No
 - Type: string
@@ -2230,16 +2190,16 @@ Minimum TLS protocol version for the Application Gateway.
   ]
   ```
 
-### Parameter: `appGatewaySslPolicyName`
+### Parameter: `appGatewayConfig.sslPolicyName`
 
-The predefined SSL policy name for the Application Gateway.
+Predefined SSL policy name.
 
 - Required: No
 - Type: string
 
-### Parameter: `appGatewaySslPolicyType`
+### Parameter: `appGatewayConfig.sslPolicyType`
 
-The SSL policy type for the Application Gateway.
+SSL policy type.
 
 - Required: No
 - Type: string
@@ -2252,40 +2212,65 @@ The SSL policy type for the Application Gateway.
   ]
   ```
 
-### Parameter: `appGatewaySslProfiles`
+### Parameter: `appGatewayConfig.sslProfiles`
 
-SSL profiles for the Application Gateway.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `appGatewayTrustedClientCertificates`
-
-Trusted client certificates for mTLS on the Application Gateway.
+SSL profiles.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appGatewayTrustedRootCertificates`
+### Parameter: `appGatewayConfig.trustedClientCertificates`
+
+Trusted client certificates for mTLS.
+
+- Required: No
+- Type: array
+
+### Parameter: `appGatewayConfig.trustedRootCertificates`
 
 Trusted root certificates for end-to-end SSL.
 
 - Required: No
 - Type: array
 
-### Parameter: `appGatewayUrlPathMaps`
+### Parameter: `appGatewayConfig.urlPathMaps`
 
-URL path maps for path-based routing on the Application Gateway.
+URL path maps for path-based routing.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `appInsightsDiagnosticSettings`
+### Parameter: `appInsightsConfig`
 
-Diagnostic Settings for App Insights.
+Configuration for Application Insights.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diagnosticSettings`](#parameter-appinsightsconfigdiagnosticsettings) | array | Diagnostic settings for App Insights. |
+| [`disableIpMasking`](#parameter-appinsightsconfigdisableipmasking) | bool | Disable IP masking (false = mask IPs for privacy). |
+| [`disableLocalAuth`](#parameter-appinsightsconfigdisablelocalauth) | bool | Disable non-AAD based auth. |
+| [`flowType`](#parameter-appinsightsconfigflowtype) | string | Flow type. |
+| [`forceCustomerStorageForProfiler`](#parameter-appinsightsconfigforcecustomerstorageforprofiler) | bool | Force customer storage for profiler. |
+| [`immediatePurgeDataOn30Days`](#parameter-appinsightsconfigimmediatepurgedataon30days) | bool | Purge data immediately after 30 days. |
+| [`ingestionMode`](#parameter-appinsightsconfigingestionmode) | string | Ingestion mode. |
+| [`kind`](#parameter-appinsightsconfigkind) | string | Kind of App Insights resource. |
+| [`linkedStorageAccountResourceId`](#parameter-appinsightsconfiglinkedstorageaccountresourceid) | string | Linked storage account resource ID. |
+| [`lock`](#parameter-appinsightsconfiglock) | object | Resource lock for App Insights. |
+| [`publicNetworkAccessForIngestion`](#parameter-appinsightsconfigpublicnetworkaccessforingestion) | string | Public network access for ingestion. |
+| [`publicNetworkAccessForQuery`](#parameter-appinsightsconfigpublicnetworkaccessforquery) | string | Public network access for query. |
+| [`requestSource`](#parameter-appinsightsconfigrequestsource) | string | Request source. |
+| [`retentionInDays`](#parameter-appinsightsconfigretentionindays) | int | Data retention in days. |
+| [`roleAssignments`](#parameter-appinsightsconfigroleassignments) | array | Role assignments for App Insights. |
+| [`samplingPercentage`](#parameter-appinsightsconfigsamplingpercentage) | int | Sampling percentage (1-100). |
+
+### Parameter: `appInsightsConfig.diagnosticSettings`
+
+Diagnostic settings for App Insights.
 
 - Required: No
 - Type: array
@@ -2294,31 +2279,31 @@ Diagnostic Settings for App Insights.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-appinsightsdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-appinsightsdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-appinsightsdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-appinsightsdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-appinsightsdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-appinsightsdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-appinsightsdiagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-appinsightsdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-appinsightsdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-appinsightsconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-appinsightsconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-appinsightsconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-appinsightsconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-appinsightsconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-appinsightsconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-appinsightsconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-appinsightsconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-appinsightsconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
-### Parameter: `appInsightsDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `appInsightsConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.eventHubName`
+### Parameter: `appInsightsConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `appInsightsConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -2332,7 +2317,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `appInsightsDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `appInsightsConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -2343,39 +2328,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appinsightsdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-appinsightsdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-appinsightsdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-appinsightsconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-appinsightsconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-appinsightsconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appInsightsDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `appInsightsConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `appInsightsConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `appInsightsConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appInsightsDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `appInsightsConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.metricCategories`
+### Parameter: `appInsightsConfig.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -2386,88 +2371,87 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appinsightsdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-appinsightsconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-appinsightsdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-appinsightsconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appInsightsDiagnosticSettings.metricCategories.category`
+### Parameter: `appInsightsConfig.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.metricCategories.enabled`
+### Parameter: `appInsightsConfig.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appInsightsDiagnosticSettings.name`
+### Parameter: `appInsightsConfig.diagnosticSettings.name`
 
 The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.storageAccountResourceId`
+### Parameter: `appInsightsConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDiagnosticSettings.workspaceResourceId`
+### Parameter: `appInsightsConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsDisableIpMasking`
+### Parameter: `appInsightsConfig.disableIpMasking`
 
-Disable IP masking in App Insights.
+Disable IP masking (false = mask IPs for privacy).
+
+- Required: No
+- Type: bool
+
+### Parameter: `appInsightsConfig.disableLocalAuth`
+
+Disable non-AAD based auth.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appInsightsDisableLocalAuth`
+### Parameter: `appInsightsConfig.flowType`
 
-Disable non-AAD based auth on App Insights. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `appInsightsFlowType`
-
-Flow type for App Insights.
+Flow type.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsForceCustomerStorageForProfiler`
+### Parameter: `appInsightsConfig.forceCustomerStorageForProfiler`
 
-Force customer storage for profiler in App Insights.
-
-- Required: No
-- Type: bool
-
-### Parameter: `appInsightsImmediatePurgeDataOn30Days`
-
-Purge data immediately after 30 days in App Insights.
+Force customer storage for profiler.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appInsightsIngestionMode`
+### Parameter: `appInsightsConfig.immediatePurgeDataOn30Days`
 
-Ingestion mode for App Insights.
+Purge data immediately after 30 days.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appInsightsConfig.ingestionMode`
+
+Ingestion mode.
 
 - Required: No
 - Type: string
@@ -2480,23 +2464,23 @@ Ingestion mode for App Insights.
   ]
   ```
 
-### Parameter: `appInsightsKind`
+### Parameter: `appInsightsConfig.kind`
 
 Kind of App Insights resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsLinkedStorageAccountResourceId`
+### Parameter: `appInsightsConfig.linkedStorageAccountResourceId`
 
-Linked storage account resource ID for App Insights.
+Linked storage account resource ID.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsLock`
+### Parameter: `appInsightsConfig.lock`
 
-Specify the type of resource lock for App Insights.
+Resource lock for App Insights.
 
 - Required: No
 - Type: object
@@ -2505,11 +2489,11 @@ Specify the type of resource lock for App Insights.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-appinsightslockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-appinsightslockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-appinsightslocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-appinsightsconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-appinsightsconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-appinsightsconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `appInsightsLock.kind`
+### Parameter: `appInsightsConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -2524,27 +2508,26 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `appInsightsLock.name`
+### Parameter: `appInsightsConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsLock.notes`
+### Parameter: `appInsightsConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsPublicNetworkAccessForIngestion`
+### Parameter: `appInsightsConfig.publicNetworkAccessForIngestion`
 
-Public network access for App Insights ingestion. Defaults to Disabled for secure baseline.
+Public network access for ingestion.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -2553,13 +2536,12 @@ Public network access for App Insights ingestion. Defaults to Disabled for secur
   ]
   ```
 
-### Parameter: `appInsightsPublicNetworkAccessForQuery`
+### Parameter: `appInsightsConfig.publicNetworkAccessForQuery`
 
-Public network access for App Insights query. Defaults to Disabled for secure baseline.
+Public network access for query.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -2568,22 +2550,35 @@ Public network access for App Insights query. Defaults to Disabled for secure ba
   ]
   ```
 
-### Parameter: `appInsightsRequestSource`
+### Parameter: `appInsightsConfig.requestSource`
 
-Request source for App Insights.
+Request source.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsRetentionInDays`
+### Parameter: `appInsightsConfig.retentionInDays`
 
-App Insights data retention in days. Defaults to 90.
+Data retention in days.
 
 - Required: No
 - Type: int
-- Default: `90`
+- Allowed:
+  ```Bicep
+  [
+    30
+    60
+    90
+    120
+    180
+    270
+    365
+    550
+    730
+  ]
+  ```
 
-### Parameter: `appInsightsRoleAssignments`
+### Parameter: `appInsightsConfig.roleAssignments`
 
 Role assignments for App Insights.
 
@@ -2594,42 +2589,42 @@ Role assignments for App Insights.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-appinsightsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-appinsightsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-appinsightsconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-appinsightsconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-appinsightsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-appinsightsroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-appinsightsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-appinsightsroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-appinsightsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-appinsightsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-appinsightsconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-appinsightsconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-appinsightsconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-appinsightsconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-appinsightsconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-appinsightsconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `appInsightsRoleAssignments.principalId`
+### Parameter: `appInsightsConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `appInsightsConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.condition`
+### Parameter: `appInsightsConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.conditionVersion`
+### Parameter: `appInsightsConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -2642,28 +2637,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `appInsightsRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `appInsightsConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.description`
+### Parameter: `appInsightsConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.name`
+### Parameter: `appInsightsConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `appInsightsRoleAssignments.principalType`
+### Parameter: `appInsightsConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -2680,51 +2675,239 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `appInsightsSamplingPercentage`
+### Parameter: `appInsightsConfig.samplingPercentage`
 
-App Insights sampling percentage (1-100). Defaults to 100.
+Sampling percentage (1-100).
 
 - Required: No
 - Type: int
-- Default: `100`
 
-### Parameter: `appserviceDiagnosticSettings`
+### Parameter: `appServiceConfig`
 
-Diagnostic Settings for the App Service.
+Configuration for the Web App.
 
 - Required: No
-- Type: array
-- Default: `[]`
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-appservicediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-appservicediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-appservicediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-appservicediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-appservicediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-appservicediagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-appservicediagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-appservicediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-appservicediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`autoGeneratedDomainNameLabelScope`](#parameter-appserviceconfigautogenerateddomainnamelabelscope) | string | Default hostname uniqueness scope. |
+| [`clientAffinityEnabled`](#parameter-appserviceconfigclientaffinityenabled) | bool | Enable client affinity on the web app. |
+| [`clientAffinityPartitioningEnabled`](#parameter-appserviceconfigclientaffinitypartitioningenabled) | bool | Partitioned client affinity using CHIPS cookies. |
+| [`clientAffinityProxyEnabled`](#parameter-appserviceconfigclientaffinityproxyenabled) | bool | Proxy-based client affinity. |
+| [`clientCertEnabled`](#parameter-appserviceconfigclientcertenabled) | bool | Enable client certificate authentication (mTLS). |
+| [`clientCertExclusionPaths`](#parameter-appserviceconfigclientcertexclusionpaths) | string | Client certificate exclusion paths (comma-separated). |
+| [`clientCertMode`](#parameter-appserviceconfigclientcertmode) | string | Client certificate mode. Only used when clientCertEnabled is true. |
+| [`cloningInfo`](#parameter-appserviceconfigcloninginfo) | object | Cloning info for creating from a source app. |
+| [`container`](#parameter-appserviceconfigcontainer) | object | Container configuration for container-based deployments. |
+| [`containerSize`](#parameter-appserviceconfigcontainersize) | int | Size of the function container. |
+| [`dailyMemoryTimeQuota`](#parameter-appserviceconfigdailymemorytimequota) | int | Maximum allowed daily memory-time quota. |
+| [`daprConfig`](#parameter-appserviceconfigdaprconfig) | object | Dapr configuration (Container Apps). |
+| [`diagnosticSettings`](#parameter-appserviceconfigdiagnosticsettings) | array | Diagnostic settings for the Web App. |
+| [`disableBasicPublishingCredentials`](#parameter-appserviceconfigdisablebasicpublishingcredentials) | bool | Disable basic publishing credentials (FTP/SCM). Defaults to true. |
+| [`dnsConfiguration`](#parameter-appserviceconfigdnsconfiguration) | object | DNS-related settings for the site. |
+| [`e2eEncryptionEnabled`](#parameter-appserviceconfige2eencryptionenabled) | bool | Enable end-to-end encryption (used with ASE). |
+| [`enabled`](#parameter-appserviceconfigenabled) | bool | Setting to false disables the app (takes it offline). |
+| [`extendedLocation`](#parameter-appserviceconfigextendedlocation) | object | Extended location of the web app resource. |
+| [`extensions`](#parameter-appserviceconfigextensions) | array | Extensions configuration for the web app. |
+| [`functionAppConfig`](#parameter-appserviceconfigfunctionappconfig) | object | Function App configuration object. |
+| [`hostNamesDisabled`](#parameter-appserviceconfighostnamesdisabled) | bool | Disable public hostnames of the app. |
+| [`hostNameSslStates`](#parameter-appserviceconfighostnamesslstates) | array | Hostname SSL states for managing SSL bindings. |
+| [`httpsOnly`](#parameter-appserviceconfighttpsonly) | bool | Require HTTPS only. |
+| [`hybridConnectionRelays`](#parameter-appserviceconfighybridconnectionrelays) | array | Hybrid connection relays to connect the app with. |
+| [`ipMode`](#parameter-appserviceconfigipmode) | string | IP mode of the app. |
+| [`keyVaultAccessIdentityResourceId`](#parameter-appserviceconfigkeyvaultaccessidentityresourceid) | string | Resource ID of the identity for Key Vault references. |
+| [`kind`](#parameter-appserviceconfigkind) | string | Kind of web app (e.g. "app", "app,linux", "app,linux,container", "functionapp"). |
+| [`lock`](#parameter-appserviceconfiglock) | object | Resource lock for the Web App. |
+| [`managedEnvironmentResourceId`](#parameter-appserviceconfigmanagedenvironmentresourceid) | string | Managed environment resource ID for Azure Container Apps. |
+| [`outboundVnetRouting`](#parameter-appserviceconfigoutboundvnetrouting) | object | Outbound VNet routing configuration. |
+| [`publicNetworkAccess`](#parameter-appserviceconfigpublicnetworkaccess) | string | Public network access for the web app. |
+| [`redundancyMode`](#parameter-appserviceconfigredundancymode) | string | Site redundancy mode. |
+| [`reserved`](#parameter-appserviceconfigreserved) | bool | True if reserved (Linux). Overrides auto-detection. |
+| [`resourceConfig`](#parameter-appserviceconfigresourceconfig) | object | Function app resource requirements. |
+| [`roleAssignments`](#parameter-appserviceconfigroleassignments) | array | Role assignments for the Web App. |
+| [`scmSiteAlsoStopped`](#parameter-appserviceconfigscmsitealsostopped) | bool | Stop SCM (Kudu) site when the app is stopped. |
+| [`siteConfig`](#parameter-appserviceconfigsiteconfig) | object | The site configuration object. |
+| [`sshEnabled`](#parameter-appserviceconfigsshenabled) | bool | Whether to enable SSH access. |
+| [`storageAccountRequired`](#parameter-appserviceconfigstorageaccountrequired) | bool | Whether customer-provided storage account is required. |
+| [`workloadProfileName`](#parameter-appserviceconfigworkloadprofilename) | string | Workload profile name for function app. |
 
-### Parameter: `appserviceDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `appServiceConfig.autoGeneratedDomainNameLabelScope`
+
+Default hostname uniqueness scope.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.clientAffinityEnabled`
+
+Enable client affinity on the web app.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.clientAffinityPartitioningEnabled`
+
+Partitioned client affinity using CHIPS cookies.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.clientAffinityProxyEnabled`
+
+Proxy-based client affinity.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.clientCertEnabled`
+
+Enable client certificate authentication (mTLS).
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.clientCertExclusionPaths`
+
+Client certificate exclusion paths (comma-separated).
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.clientCertMode`
+
+Client certificate mode. Only used when clientCertEnabled is true.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Optional'
+    'OptionalInteractiveUser'
+    'Required'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.cloningInfo`
+
+Cloning info for creating from a source app.
+
+- Required: No
+- Type: object
+
+### Parameter: `appServiceConfig.container`
+
+Container configuration for container-based deployments.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageName`](#parameter-appserviceconfigcontainerimagename) | string | The container image name (e.g. "mcr.microsoft.com/appsvc/staticsite:latest"). |
+| [`registryPassword`](#parameter-appserviceconfigcontainerregistrypassword) | securestring | The container registry password. |
+| [`registryUrl`](#parameter-appserviceconfigcontainerregistryurl) | string | The container registry URL (e.g. "https://myregistry.azurecr.io"). |
+| [`registryUsername`](#parameter-appserviceconfigcontainerregistryusername) | string | The container registry username. |
+
+### Parameter: `appServiceConfig.container.imageName`
+
+The container image name (e.g. "mcr.microsoft.com/appsvc/staticsite:latest").
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.container.registryPassword`
+
+The container registry password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `appServiceConfig.container.registryUrl`
+
+The container registry URL (e.g. "https://myregistry.azurecr.io").
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.container.registryUsername`
+
+The container registry username.
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.containerSize`
+
+Size of the function container.
+
+- Required: No
+- Type: int
+
+### Parameter: `appServiceConfig.dailyMemoryTimeQuota`
+
+Maximum allowed daily memory-time quota.
+
+- Required: No
+- Type: int
+
+### Parameter: `appServiceConfig.daprConfig`
+
+Dapr configuration (Container Apps).
+
+- Required: No
+- Type: object
+
+### Parameter: `appServiceConfig.diagnosticSettings`
+
+Diagnostic settings for the Web App.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-appserviceconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-appserviceconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-appserviceconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-appserviceconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-appserviceconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-appserviceconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-appserviceconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-appserviceconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-appserviceconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `appServiceConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.eventHubName`
+### Parameter: `appServiceConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `appServiceConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -2738,7 +2921,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `appServiceConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -2749,39 +2932,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appservicediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-appservicediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-appservicediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-appserviceconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-appserviceconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-appserviceconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `appServiceConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `appServiceConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `appServiceConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appserviceDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `appServiceConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.metricCategories`
+### Parameter: `appServiceConfig.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -2792,52 +2975,175 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-appservicediagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-appserviceconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-appservicediagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-appserviceconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `appserviceDiagnosticSettings.metricCategories.category`
+### Parameter: `appServiceConfig.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.metricCategories.enabled`
+### Parameter: `appServiceConfig.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appserviceDiagnosticSettings.name`
+### Parameter: `appServiceConfig.diagnosticSettings.name`
 
 The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.storageAccountResourceId`
+### Parameter: `appServiceConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appserviceDiagnosticSettings.workspaceResourceId`
+### Parameter: `appServiceConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanLock`
+### Parameter: `appServiceConfig.disableBasicPublishingCredentials`
 
-Specify the type of resource lock for the App Service Plan.
+Disable basic publishing credentials (FTP/SCM). Defaults to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.dnsConfiguration`
+
+DNS-related settings for the site.
+
+- Required: No
+- Type: object
+
+### Parameter: `appServiceConfig.e2eEncryptionEnabled`
+
+Enable end-to-end encryption (used with ASE).
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.enabled`
+
+Setting to false disables the app (takes it offline).
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.extendedLocation`
+
+Extended location of the web app resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `appServiceConfig.extensions`
+
+Extensions configuration for the web app.
+
+- Required: No
+- Type: array
+
+### Parameter: `appServiceConfig.functionAppConfig`
+
+Function App configuration object.
+
+- Required: No
+- Type: object
+
+### Parameter: `appServiceConfig.hostNamesDisabled`
+
+Disable public hostnames of the app.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.hostNameSslStates`
+
+Hostname SSL states for managing SSL bindings.
+
+- Required: No
+- Type: array
+
+### Parameter: `appServiceConfig.httpsOnly`
+
+Require HTTPS only.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.hybridConnectionRelays`
+
+Hybrid connection relays to connect the app with.
+
+- Required: No
+- Type: array
+
+### Parameter: `appServiceConfig.ipMode`
+
+IP mode of the app.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv4AndIPv6'
+    'IPv6'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.keyVaultAccessIdentityResourceId`
+
+Resource ID of the identity for Key Vault references.
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.kind`
+
+Kind of web app (e.g. "app", "app,linux", "app,linux,container", "functionapp").
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'api'
+    'app'
+    'app,container,windows'
+    'app,linux'
+    'app,linux,container'
+    'functionapp'
+    'functionapp,linux'
+    'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
+    'functionapp,workflowapp'
+    'functionapp,workflowapp,linux'
+    'linux,api'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.lock`
+
+Resource lock for the Web App.
 
 - Required: No
 - Type: object
@@ -2846,11 +3152,11 @@ Specify the type of resource lock for the App Service Plan.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-appserviceplanlockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-appserviceplanlockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-appserviceplanlocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-appserviceconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-appserviceconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-appserviceconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `appServicePlanLock.kind`
+### Parameter: `appServiceConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -2865,51 +3171,83 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `appServicePlanLock.name`
+### Parameter: `appServiceConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanLock.notes`
+### Parameter: `appServiceConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanManagedIdentities`
+### Parameter: `appServiceConfig.managedEnvironmentResourceId`
 
-Managed identities for the App Service Plan.
+Managed environment resource ID for Azure Container Apps.
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.outboundVnetRouting`
+
+Outbound VNet routing configuration.
 
 - Required: No
 - Type: object
 
-**Optional parameters**
+### Parameter: `appServiceConfig.publicNetworkAccess`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-appserviceplanmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-appserviceplanmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+Public network access for the web app.
 
-### Parameter: `appServicePlanManagedIdentities.systemAssigned`
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
-Enables system assigned managed identity on the resource.
+### Parameter: `appServiceConfig.redundancyMode`
+
+Site redundancy mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ActiveActive'
+    'Failover'
+    'GeoRedundant'
+    'Manual'
+    'None'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.reserved`
+
+True if reserved (Linux). Overrides auto-detection.
 
 - Required: No
 - Type: bool
 
-### Parameter: `appServicePlanManagedIdentities.userAssignedResourceIds`
+### Parameter: `appServiceConfig.resourceConfig`
 
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+Function app resource requirements.
 
 - Required: No
-- Type: array
+- Type: object
 
-### Parameter: `appServicePlanRoleAssignments`
+### Parameter: `appServiceConfig.roleAssignments`
 
-Role assignments to apply to the App Service Plan.
+Role assignments for the Web App.
 
 - Required: No
 - Type: array
@@ -2918,42 +3256,42 @@ Role assignments to apply to the App Service Plan.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-appserviceplanroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-appserviceplanroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-appserviceconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-appserviceconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-appserviceplanroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-appserviceplanroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-appserviceplanroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-appserviceplanroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-appserviceplanroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-appserviceplanroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-appserviceconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-appserviceconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-appserviceconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-appserviceconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-appserviceconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-appserviceconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `appServicePlanRoleAssignments.principalId`
+### Parameter: `appServiceConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `appServiceConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.condition`
+### Parameter: `appServiceConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.conditionVersion`
+### Parameter: `appServiceConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -2966,28 +3304,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `appServicePlanRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `appServiceConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.description`
+### Parameter: `appServiceConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.name`
+### Parameter: `appServiceConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `appServicePlanRoleAssignments.principalType`
+### Parameter: `appServiceConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -3004,125 +3342,248 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `appServicePlanVirtualNetworkSubnetId`
+### Parameter: `appServiceConfig.scmSiteAlsoStopped`
 
-The resource ID of a subnet for VNet integration on the App Service Plan level.
+Stop SCM (Kudu) site when the app is stopped.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.siteConfig`
+
+The site configuration object.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alwaysOn`](#parameter-appserviceconfigsiteconfigalwayson) | bool | Whether the web app should always be loaded. |
+| [`ftpsState`](#parameter-appserviceconfigsiteconfigftpsstate) | string | State of FTP / FTPS service. |
+| [`healthCheckPath`](#parameter-appserviceconfigsiteconfighealthcheckpath) | string | Health check path. Used by App Service load balancers to determine instance health. |
+| [`http20Enabled`](#parameter-appserviceconfigsiteconfighttp20enabled) | bool | Whether HTTP 2.0 is enabled. |
+| [`linuxFxVersion`](#parameter-appserviceconfigsiteconfiglinuxfxversion) | string | Linux app framework and version string for container deployments (e.g. "DOCKER|image:tag"). |
+| [`minTlsVersion`](#parameter-appserviceconfigsiteconfigmintlsversion) | string | Configures the minimum version of TLS required for SSL requests. |
+| [`windowsFxVersion`](#parameter-appserviceconfigsiteconfigwindowsfxversion) | string | Windows app framework and version string for container deployments (e.g. "DOCKER|image:tag"). |
+
+### Parameter: `appServiceConfig.siteConfig.alwaysOn`
+
+Whether the web app should always be loaded.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.siteConfig.ftpsState`
+
+State of FTP / FTPS service.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllAllowed'
+    'Disabled'
+    'FtpsOnly'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.siteConfig.healthCheckPath`
+
+Health check path. Used by App Service load balancers to determine instance health.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseAllowNewPrivateEndpointConnections`
+### Parameter: `appServiceConfig.siteConfig.http20Enabled`
+
+Whether HTTP 2.0 is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.siteConfig.linuxFxVersion`
+
+Linux app framework and version string for container deployments (e.g. "DOCKER|image:tag").
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.siteConfig.minTlsVersion`
+
+Configures the minimum version of TLS required for SSL requests.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1.0'
+    '1.1'
+    '1.2'
+    '1.3'
+  ]
+  ```
+
+### Parameter: `appServiceConfig.siteConfig.windowsFxVersion`
+
+Windows app framework and version string for container deployments (e.g. "DOCKER|image:tag").
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.sshEnabled`
+
+Whether to enable SSH access.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.storageAccountRequired`
+
+Whether customer-provided storage account is required.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appServiceConfig.workloadProfileName`
+
+Workload profile name for function app.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseConfig`
+
+Configuration for the App Service Environment v3. Only used when deployAseV3 is true.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowNewPrivateEndpointConnections`](#parameter-aseconfigallownewprivateendpointconnections) | bool | Allow new private endpoint connections on the ASE. |
+| [`clusterSettings`](#parameter-aseconfigclustersettings) | array | Custom settings for ASE behavior. |
+| [`customDnsSuffix`](#parameter-aseconfigcustomdnssuffix) | string | Custom DNS suffix for the ASE. |
+| [`customDnsSuffixCertificateUrl`](#parameter-aseconfigcustomdnssuffixcertificateurl) | string | Key Vault certificate URL for the custom DNS suffix. |
+| [`customDnsSuffixKeyVaultReferenceIdentity`](#parameter-aseconfigcustomdnssuffixkeyvaultreferenceidentity) | string | User-assigned identity for resolving the ASE Key Vault certificate. |
+| [`dedicatedHostCount`](#parameter-aseconfigdedicatedhostcount) | int | Dedicated Host Count. Set to 2 for physical isolation when zoneRedundant is false. |
+| [`diagnosticSettings`](#parameter-aseconfigdiagnosticsettings) | array | Diagnostic settings for the ASE. |
+| [`dnsSuffix`](#parameter-aseconfigdnssuffix) | string | DNS suffix of the ASE. |
+| [`frontEndScaleFactor`](#parameter-aseconfigfrontendscalefactor) | int | Scale factor for ASE frontends. |
+| [`ftpEnabled`](#parameter-aseconfigftpenabled) | bool | Enable FTP on the ASE. |
+| [`inboundIpAddressOverride`](#parameter-aseconfiginboundipaddressoverride) | string | Customer-provided inbound IP address. |
+| [`internalLoadBalancingMode`](#parameter-aseconfiginternalloadbalancingmode) | string | Which endpoints to serve internally in the VNet. |
+| [`ipsslAddressCount`](#parameter-aseconfigipssladdresscount) | int | Number of IP SSL addresses reserved. |
+| [`lock`](#parameter-aseconfiglock) | object | Resource lock for the ASE. |
+| [`managedIdentities`](#parameter-aseconfigmanagedidentities) | object | Managed identities for the ASE. |
+| [`multiSize`](#parameter-aseconfigmultisize) | string | Front-end VM size. |
+| [`remoteDebugEnabled`](#parameter-aseconfigremotedebugenabled) | bool | Enable remote debug on the ASE. |
+| [`roleAssignments`](#parameter-aseconfigroleassignments) | array | Role assignments for the ASE. |
+| [`upgradePreference`](#parameter-aseconfigupgradepreference) | string | Maintenance upgrade preference. |
+
+### Parameter: `aseConfig.allowNewPrivateEndpointConnections`
 
 Allow new private endpoint connections on the ASE.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
-### Parameter: `aseClusterSettings`
+### Parameter: `aseConfig.clusterSettings`
 
-Custom settings for changing the behavior of the App Service Environment.
+Custom settings for ASE behavior.
 
 - Required: No
 - Type: array
-- Default:
-  ```Bicep
-  [
-    {
-      name: 'DisableTls1.0'
-      value: '1'
-    }
-  ]
-  ```
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-aseclustersettingsname) | string | The name of the cluster setting. |
-| [`value`](#parameter-aseclustersettingsvalue) | string | The value of the cluster setting. |
+| [`name`](#parameter-aseconfigclustersettingsname) | string | The name of the cluster setting. |
+| [`value`](#parameter-aseconfigclustersettingsvalue) | string | The value of the cluster setting. |
 
-### Parameter: `aseClusterSettings.name`
+### Parameter: `aseConfig.clusterSettings.name`
 
 The name of the cluster setting.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aseClusterSettings.value`
+### Parameter: `aseConfig.clusterSettings.value`
 
 The value of the cluster setting.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aseCustomDnsSuffix`
+### Parameter: `aseConfig.customDnsSuffix`
 
 Custom DNS suffix for the ASE.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseCustomDnsSuffixCertificateUrl`
+### Parameter: `aseConfig.customDnsSuffixCertificateUrl`
 
-The URL referencing the Azure Key Vault certificate secret for the ASE custom domain suffix.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `aseCustomDnsSuffixKeyVaultReferenceIdentity`
-
-The user-assigned identity to use for resolving the ASE key vault certificate reference.
+Key Vault certificate URL for the custom DNS suffix.
 
 - Required: No
 - Type: string
-- Default: `''`
 
-### Parameter: `aseDedicatedHostCount`
+### Parameter: `aseConfig.customDnsSuffixKeyVaultReferenceIdentity`
 
-The Dedicated Host Count for the ASE. Set to 2 for physical hardware isolation when zoneRedundant is false.
+User-assigned identity for resolving the ASE Key Vault certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseConfig.dedicatedHostCount`
+
+Dedicated Host Count. Set to 2 for physical isolation when zoneRedundant is false.
 
 - Required: No
 - Type: int
-- Default: `0`
 
-### Parameter: `aseDiagnosticSettings`
+### Parameter: `aseConfig.diagnosticSettings`
 
-Diagnostic Settings for the ASE.
+Diagnostic settings for the ASE.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-asediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-asediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-asediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-asediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-asediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`name`](#parameter-asediagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-asediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-asediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-aseconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-aseconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-aseconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-aseconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-aseconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`name`](#parameter-aseconfigdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-aseconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-aseconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
-### Parameter: `aseDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `aseConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.eventHubName`
+### Parameter: `aseConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `aseConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -3136,7 +3597,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `aseConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -3147,98 +3608,93 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-asediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-asediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-asediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-aseconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-aseconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-aseconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `aseConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `aseConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `aseConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `aseDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `aseConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.name`
+### Parameter: `aseConfig.diagnosticSettings.name`
 
 The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.storageAccountResourceId`
+### Parameter: `aseConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDiagnosticSettings.workspaceResourceId`
+### Parameter: `aseConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseDnsSuffix`
+### Parameter: `aseConfig.dnsSuffix`
 
-DNS suffix of the App Service Environment.
+DNS suffix of the ASE.
 
 - Required: No
 - Type: string
-- Default: `''`
 
-### Parameter: `aseFrontEndScaleFactor`
+### Parameter: `aseConfig.frontEndScaleFactor`
 
 Scale factor for ASE frontends.
 
 - Required: No
 - Type: int
-- Default: `15`
 
-### Parameter: `aseFtpEnabled`
+### Parameter: `aseConfig.ftpEnabled`
 
 Enable FTP on the ASE.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `aseInboundIpAddressOverride`
+### Parameter: `aseConfig.inboundIpAddressOverride`
 
-Customer provided Inbound IP Address for the ASE.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `aseInternalLoadBalancingMode`
-
-Specifies which endpoints to serve internally in the Virtual Network for the ASE.
+Customer-provided inbound IP address.
 
 - Required: No
 - Type: string
-- Default: `'Web, Publishing'`
+
+### Parameter: `aseConfig.internalLoadBalancingMode`
+
+Which endpoints to serve internally in the VNet.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -3249,16 +3705,16 @@ Specifies which endpoints to serve internally in the Virtual Network for the ASE
   ]
   ```
 
-### Parameter: `aseIpsslAddressCount`
+### Parameter: `aseConfig.ipsslAddressCount`
 
-Number of IP SSL addresses reserved for the ASE.
+Number of IP SSL addresses reserved.
 
 - Required: No
 - Type: int
 
-### Parameter: `aseLock`
+### Parameter: `aseConfig.lock`
 
-Specify the type of resource lock for the ASE.
+Resource lock for the ASE.
 
 - Required: No
 - Type: object
@@ -3267,11 +3723,11 @@ Specify the type of resource lock for the ASE.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-aselockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-aselockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-aselocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-aseconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-aseconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-aseconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `aseLock.kind`
+### Parameter: `aseConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -3286,21 +3742,21 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `aseLock.name`
+### Parameter: `aseConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseLock.notes`
+### Parameter: `aseConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseManagedIdentities`
+### Parameter: `aseConfig.managedIdentities`
 
 Managed identities for the ASE.
 
@@ -3311,39 +3767,38 @@ Managed identities for the ASE.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-asemanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-asemanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+| [`systemAssigned`](#parameter-aseconfigmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-aseconfigmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
-### Parameter: `aseManagedIdentities.systemAssigned`
+### Parameter: `aseConfig.managedIdentities.systemAssigned`
 
 Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
 
-### Parameter: `aseManagedIdentities.userAssignedResourceIds`
+### Parameter: `aseConfig.managedIdentities.userAssignedResourceIds`
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
 
-### Parameter: `aseMultiSize`
+### Parameter: `aseConfig.multiSize`
 
-Front-end VM size for the ASE.
+Front-end VM size.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseRemoteDebugEnabled`
+### Parameter: `aseConfig.remoteDebugEnabled`
 
-Enable Remote Debug on the ASE.
+Enable remote debug on the ASE.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `aseRoleAssignments`
+### Parameter: `aseConfig.roleAssignments`
 
 Role assignments for the ASE.
 
@@ -3354,42 +3809,42 @@ Role assignments for the ASE.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-aseroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-aseroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-aseconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-aseconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-aseroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-aseroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-aseroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-aseroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-aseroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-aseroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-aseconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-aseconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-aseconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-aseconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-aseconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-aseconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `aseRoleAssignments.principalId`
+### Parameter: `aseConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aseRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `aseConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aseRoleAssignments.condition`
+### Parameter: `aseConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `aseRoleAssignments.conditionVersion`
+### Parameter: `aseConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -3402,28 +3857,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `aseRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `aseConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseRoleAssignments.description`
+### Parameter: `aseConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseRoleAssignments.name`
+### Parameter: `aseConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `aseRoleAssignments.principalType`
+### Parameter: `aseConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -3440,13 +3895,12 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `aseUpgradePreference`
+### Parameter: `aseConfig.upgradePreference`
 
-Maintenance upgrade preference for the ASE.
+Maintenance upgrade preference.
 
 - Required: No
 - Type: string
-- Default: `'None'`
 - Allowed:
   ```Bicep
   [
@@ -3456,128 +3910,6 @@ Maintenance upgrade preference for the ASE.
     'None'
   ]
   ```
-
-### Parameter: `autoApproveAfdPrivateEndpoint`
-
-Set to true if you want to auto-approve the private endpoint connection to the Azure Front Door.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `autoGeneratedDomainNameLabelScope`
-
-Specifies the scope of uniqueness for the default hostname during resource creation.
-
-- Required: No
-- Type: string
-
-### Parameter: `bastionResourceId`
-
-The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `clientAffinityEnabled`
-
-If client affinity is enabled on the web app.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `clientAffinityPartitioningEnabled`
-
-Partitioned client affinity using CHIPS cookies.
-
-- Required: No
-- Type: bool
-
-### Parameter: `clientAffinityProxyEnabled`
-
-Proxy-based client affinity enabled on the web app.
-
-- Required: No
-- Type: bool
-
-### Parameter: `clientCertEnabled`
-
-Set to true to enable client certificate authentication (mTLS) on the web app.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `clientCertExclusionPaths`
-
-Client certificate authentication exclusion paths (comma-separated).
-
-- Required: No
-- Type: string
-
-### Parameter: `clientCertMode`
-
-Client certificate mode. Only used when clientCertEnabled is true.
-
-- Required: No
-- Type: string
-- Default: `'Required'`
-- Allowed:
-  ```Bicep
-  [
-    'Optional'
-    'OptionalInteractiveUser'
-    'Required'
-  ]
-  ```
-
-### Parameter: `cloningInfo`
-
-If specified during app creation, the app is cloned from a source app.
-
-- Required: No
-- Type: object
-
-### Parameter: `containerImageName`
-
-The container image name for container-based deployments (e.g. "mcr.microsoft.com/appsvc/staticsite:latest").
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `containerRegistryPassword`
-
-The container registry password for private registries.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
-### Parameter: `containerRegistryUrl`
-
-The container registry URL for private registries (e.g. "https://myregistry.azurecr.io").
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `containerRegistryUsername`
-
-The container registry username for private registries.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `containerSize`
-
-Size of the function container.
-
-- Required: No
-- Type: int
 
 ### Parameter: `customResourceNames`
 
@@ -3687,100 +4019,9 @@ Custom name for the Web App.
 - Required: No
 - Type: string
 
-### Parameter: `dailyMemoryTimeQuota`
-
-Maximum allowed daily memory-time quota (applicable on dynamic apps only).
-
-- Required: No
-- Type: int
-
-### Parameter: `daprConfig`
-
-Dapr configuration for the app (Container Apps).
-
-- Required: No
-- Type: object
-
-### Parameter: `ddosProtectionPlanResourceId`
-
-The resource ID of a DDoS Protection Plan to associate with the spoke VNet.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `deployAseV3`
 
 Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `deployJumpHost`
-
-Set to true if you want to deploy a jumpbox/devops VM.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `disableBasicPublishingCredentials`
-
-Disable basic publishing credentials (FTP/SCM) on the web app. Defaults to true for security.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `disableBgpRoutePropagation`
-
-Whether to disable BGP route propagation on the route table. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `dnsConfiguration`
-
-Property to configure DNS-related settings for the site.
-
-- Required: No
-- Type: object
-
-### Parameter: `dnsServers`
-
-Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `e2eEncryptionEnabled`
-
-Enable end-to-end encryption (used with ASE).
-
-- Required: No
-- Type: bool
-
-### Parameter: `elasticScaleEnabled`
-
-Whether elastic scale is enabled on the App Service Plan.
-
-- Required: No
-- Type: bool
-
-### Parameter: `enableDefaultWafMethodBlock`
-
-Whether to deploy the default WAF custom rule that blocks non-GET/HEAD/OPTIONS methods. Set to false for API backends.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableEgressLockdown`
-
-Set to true if you want to intercept all outbound traffic with azure firewall.
 
 - Required: No
 - Type: bool
@@ -3794,13 +4035,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableVmProtection`
-
-Enable VM protection for the VNet.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `environmentName`
 
 The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.
@@ -3809,81 +4043,80 @@ The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging
 - Type: string
 - Default: `'test'`
 
-### Parameter: `existingAppServicePlanId`
+### Parameter: `frontDoorConfig`
 
-The resource ID of an existing App Service Plan. If provided, the module will skip creating a new plan and deploy the web app on the existing one.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `extendedLocation`
-
-Extended location of the web app resource.
+Configuration for Azure Front Door. Only used when spokeNetworkConfig.ingressOption is "frontDoor".
 
 - Required: No
 - Type: object
 
-### Parameter: `firewallInternalIp`
+**Optional parameters**
 
-Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoApprovePrivateEndpoint`](#parameter-frontdoorconfigautoapproveprivateendpoint) | bool | Auto-approve the private endpoint connection to AFD. |
+| [`customDomains`](#parameter-frontdoorconfigcustomdomains) | array | Custom domains for the Front Door profile. |
+| [`diagnosticSettings`](#parameter-frontdoorconfigdiagnosticsettings) | array | Diagnostic settings for Front Door. |
+| [`enableDefaultWafMethodBlock`](#parameter-frontdoorconfigenabledefaultwafmethodblock) | bool | Deploy the default WAF rule that blocks non-GET/HEAD/OPTIONS methods. |
+| [`healthProbeIntervalInSeconds`](#parameter-frontdoorconfighealthprobeintervalinseconds) | int | Health probe interval in seconds. |
+| [`healthProbePath`](#parameter-frontdoorconfighealthprobepath) | string | Health probe path for the origin group. |
+| [`lock`](#parameter-frontdoorconfiglock) | object | Resource lock for the Front Door profile. |
+| [`originResponseTimeoutSeconds`](#parameter-frontdoorconfigoriginresponsetimeoutseconds) | int | Origin response timeout in seconds. Defaults to 120. |
+| [`roleAssignments`](#parameter-frontdoorconfigroleassignments) | array | Role assignments for the Front Door profile. |
+| [`ruleSets`](#parameter-frontdoorconfigrulesets) | array | Rule sets for the Front Door profile. |
+| [`secrets`](#parameter-frontdoorconfigsecrets) | array | Secrets for the Front Door profile (e.g. BYOC certificates). |
+| [`wafCustomRules`](#parameter-frontdoorconfigwafcustomrules) | object | Custom WAF rules. Only used when enableDefaultWafMethodBlock is false. |
+
+### Parameter: `frontDoorConfig.autoApprovePrivateEndpoint`
+
+Auto-approve the private endpoint connection to AFD.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: bool
 
-### Parameter: `flowTimeoutInMinutes`
-
-The flow timeout in minutes for the VNet (max 30). 0 means disabled.
-
-- Required: No
-- Type: int
-- Default: `0`
-
-### Parameter: `frontDoorCustomDomains`
+### Parameter: `frontDoorConfig.customDomains`
 
 Custom domains for the Front Door profile.
 
 - Required: No
 - Type: array
 
-### Parameter: `frontDoorDiagnosticSettings`
+### Parameter: `frontDoorConfig.diagnosticSettings`
 
-Diagnostic Settings for Front Door.
+Diagnostic settings for Front Door.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-frontdoordiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-frontdoordiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-frontdoordiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-frontdoordiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-frontdoordiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-frontdoordiagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-frontdoordiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-frontdoordiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-frontdoorconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-frontdoorconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-frontdoorconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-frontdoorconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-frontdoorconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-frontdoorconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-frontdoorconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-frontdoorconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-frontdoorconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
-### Parameter: `frontDoorDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `frontDoorConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.eventHubName`
+### Parameter: `frontDoorConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `frontDoorConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -3897,7 +4130,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `frontDoorConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -3908,39 +4141,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-frontdoorconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-frontdoorconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-frontdoorconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `frontDoorConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `frontDoorConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `frontDoorConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `frontDoorDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `frontDoorConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.metricCategories`
+### Parameter: `frontDoorConfig.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -3951,68 +4184,73 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-frontdoordiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-frontdoorconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-frontdoordiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-frontdoorconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `frontDoorDiagnosticSettings.metricCategories.category`
+### Parameter: `frontDoorConfig.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.metricCategories.enabled`
+### Parameter: `frontDoorConfig.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `frontDoorDiagnosticSettings.name`
+### Parameter: `frontDoorConfig.diagnosticSettings.name`
 
 The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.storageAccountResourceId`
+### Parameter: `frontDoorConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorDiagnosticSettings.workspaceResourceId`
+### Parameter: `frontDoorConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorHealthProbeIntervalInSeconds`
+### Parameter: `frontDoorConfig.enableDefaultWafMethodBlock`
 
-Health probe interval in seconds for the Front Door origin group.
+Deploy the default WAF rule that blocks non-GET/HEAD/OPTIONS methods.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontDoorConfig.healthProbeIntervalInSeconds`
+
+Health probe interval in seconds.
 
 - Required: No
 - Type: int
-- Default: `100`
 
-### Parameter: `frontDoorHealthProbePath`
+### Parameter: `frontDoorConfig.healthProbePath`
 
-Health probe path for the Front Door origin group.
+Health probe path for the origin group.
 
 - Required: No
 - Type: string
-- Default: `'/'`
 
-### Parameter: `frontDoorLock`
+### Parameter: `frontDoorConfig.lock`
 
-Specify the type of resource lock for the Front Door profile.
+Resource lock for the Front Door profile.
 
 - Required: No
 - Type: object
@@ -4021,11 +4259,11 @@ Specify the type of resource lock for the Front Door profile.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-frontdoorlockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-frontdoorlockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-frontdoorlocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-frontdoorconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-frontdoorconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-frontdoorconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `frontDoorLock.kind`
+### Parameter: `frontDoorConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -4040,29 +4278,28 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `frontDoorLock.name`
+### Parameter: `frontDoorConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorLock.notes`
+### Parameter: `frontDoorConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorOriginResponseTimeoutSeconds`
+### Parameter: `frontDoorConfig.originResponseTimeoutSeconds`
 
-The time in seconds before the Front Door origin response times out. Defaults to 120.
+Origin response timeout in seconds. Defaults to 120.
 
 - Required: No
 - Type: int
-- Default: `120`
 
-### Parameter: `frontDoorRoleAssignments`
+### Parameter: `frontDoorConfig.roleAssignments`
 
 Role assignments for the Front Door profile.
 
@@ -4073,42 +4310,42 @@ Role assignments for the Front Door profile.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-frontdoorroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-frontdoorroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-frontdoorconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-frontdoorconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-frontdoorroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-frontdoorroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-frontdoorroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-frontdoorroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-frontdoorroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-frontdoorroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-frontdoorconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-frontdoorconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-frontdoorconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-frontdoorconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-frontdoorconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-frontdoorconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `frontDoorRoleAssignments.principalId`
+### Parameter: `frontDoorConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `frontDoorConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.condition`
+### Parameter: `frontDoorConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.conditionVersion`
+### Parameter: `frontDoorConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -4121,28 +4358,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `frontDoorRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `frontDoorConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.description`
+### Parameter: `frontDoorConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.name`
+### Parameter: `frontDoorConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `frontDoorRoleAssignments.principalType`
+### Parameter: `frontDoorConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -4159,400 +4396,30 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `frontDoorRuleSets`
+### Parameter: `frontDoorConfig.ruleSets`
 
 Rule sets for the Front Door profile.
 
 - Required: No
 - Type: array
 
-### Parameter: `frontDoorSecrets`
+### Parameter: `frontDoorConfig.secrets`
 
 Secrets for the Front Door profile (e.g. BYOC certificates).
 
 - Required: No
 - Type: array
 
-### Parameter: `functionAppConfig`
+### Parameter: `frontDoorConfig.wafCustomRules`
 
-The Function App configuration object.
+Custom WAF rules. Only used when enableDefaultWafMethodBlock is false.
 
 - Required: No
 - Type: object
 
-### Parameter: `hostNamesDisabled`
+### Parameter: `jumpboxConfig`
 
-True to disable the public hostnames of the app.
-
-- Required: No
-- Type: bool
-
-### Parameter: `hostNameSslStates`
-
-Hostname SSL states for managing SSL bindings.
-
-- Required: No
-- Type: array
-
-### Parameter: `httpsOnly`
-
-Configures the web app to accept only HTTPS requests.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `hybridConnectionRelays`
-
-Names of hybrid connection relays to connect the app with.
-
-- Required: No
-- Type: array
-
-### Parameter: `installScripts`
-
-Install scripts for the App Service Plan.
-
-- Required: No
-- Type: array
-
-### Parameter: `ipMode`
-
-Specifies the IP mode of the app.
-
-- Required: No
-- Type: string
-
-### Parameter: `isCustomMode`
-
-Whether the App Service Plan uses custom mode.
-
-- Required: No
-- Type: bool
-
-### Parameter: `keyVaultAccessIdentityResourceId`
-
-The resource ID of the identity to use for Key Vault references.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultAccessPolicies`
-
-Access policies for the Key Vault (non-RBAC mode).
-
-- Required: No
-- Type: array
-
-### Parameter: `keyVaultAdditionalRoleAssignments`
-
-Additional role assignments for the Key Vault beyond the default App Service identity.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-keyvaultadditionalroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-keyvaultadditionalroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-keyvaultadditionalroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-keyvaultadditionalroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultadditionalroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-keyvaultadditionalroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-keyvaultadditionalroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-keyvaultadditionalroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `keyVaultAdditionalRoleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `keyVaultAdditionalRoleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultAdditionalRoleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `keyVaultCreateMode`
-
-The create mode for the Key Vault (default or recover).
-
-- Required: No
-- Type: string
-- Default: `'default'`
-- Allowed:
-  ```Bicep
-  [
-    'default'
-    'recover'
-  ]
-  ```
-
-### Parameter: `keyVaultDiagnosticSettings`
-
-Diagnostic Settings for the KeyVault.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-keyvaultdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-keyvaultdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-keyvaultdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-keyvaultdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-keyvaultdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-keyvaultdiagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-keyvaultdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-keyvaultdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `keyVaultDiagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDiagnostics'
-    'Dedicated'
-  ]
-  ```
-
-### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups`
-
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.category`
-
-Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `keyVaultDiagnosticSettings.marketplacePartnerResourceId`
-
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-keyvaultdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-keyvaultdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `keyVaultDiagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `keyVaultDiagnosticSettings.name`
-
-The name of the diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultDiagnosticSettings.workspaceResourceId`
-
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `keyVaultEnablePurgeProtection`
-
-Enable purge protection for the Key Vault. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keyVaultEnableRbacAuthorization`
-
-Enable RBAC authorization on the Key Vault. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keyVaultEnableVaultForDeployment`
-
-Enable the Key Vault for deployment. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keyVaultEnableVaultForDiskEncryption`
-
-Enable the Key Vault for disk encryption.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keyVaultEnableVaultForTemplateDeployment`
-
-Enable the Key Vault for template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keyVaultKeys`
-
-Keys to create in the Key Vault.
-
-- Required: No
-- Type: array
-
-### Parameter: `keyVaultLock`
-
-Specify the type of resource lock for the Key Vault.
+Configuration for the jumpbox VM deployment.
 
 - Required: No
 - Type: object
@@ -4561,512 +4428,41 @@ Specify the type of resource lock for the Key Vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-keyvaultlockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-keyvaultlockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-keyvaultlocknotes) | string | Specify the notes of the lock. |
+| [`adminPassword`](#parameter-jumpboxconfigadminpassword) | securestring | The admin password. Required when authenticationType is "password". |
+| [`adminUsername`](#parameter-jumpboxconfigadminusername) | string | The admin username. |
+| [`authenticationType`](#parameter-jumpboxconfigauthenticationtype) | string | Authentication type for the VM. |
+| [`bastionResourceId`](#parameter-jumpboxconfigbastionresourceid) | string | Resource ID of the Bastion host for connectivity. |
+| [`enabled`](#parameter-jumpboxconfigenabled) | bool | Whether to deploy a jumpbox VM. |
+| [`encryptionAtHost`](#parameter-jumpboxconfigencryptionathost) | bool | Enable encryption at host. Defaults to true for WAF alignment. |
+| [`linuxImageOffer`](#parameter-jumpboxconfiglinuximageoffer) | string | The Linux OS image offer. |
+| [`linuxImagePublisher`](#parameter-jumpboxconfiglinuximagepublisher) | string | The Linux OS image publisher. |
+| [`linuxImageSku`](#parameter-jumpboxconfiglinuximagesku) | string | The Linux OS image SKU. |
+| [`maintenanceWindow`](#parameter-jumpboxconfigmaintenancewindow) | object | Maintenance window configuration. |
+| [`osDisk`](#parameter-jumpboxconfigosdisk) | object | OS disk configuration. |
+| [`osType`](#parameter-jumpboxconfigostype) | string | The OS type: "linux", "windows", or "none". |
+| [`vmSize`](#parameter-jumpboxconfigvmsize) | string | The VM SKU size (e.g. "Standard_D2s_v4"). |
+| [`windowsOSVersion`](#parameter-jumpboxconfigwindowsosversion) | string | The Windows OS version SKU (e.g. "2025-datacenter-g2"). |
 
-### Parameter: `keyVaultLock.kind`
+### Parameter: `jumpboxConfig.adminPassword`
 
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `keyVaultLock.name`
-
-Specify the name of lock.
+The admin password. Required when authenticationType is "password".
 
 - Required: No
-- Type: string
+- Type: securestring
 
-### Parameter: `keyVaultLock.notes`
+### Parameter: `jumpboxConfig.adminUsername`
 
-Specify the notes of the lock.
+The admin username.
 
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultNetworkAcls`
+### Parameter: `jumpboxConfig.authenticationType`
 
-Network ACLs for the Key Vault.
-
-- Required: No
-- Type: object
-
-### Parameter: `keyVaultPublicNetworkAccess`
-
-Public network access for the Key Vault.
+Authentication type for the VM.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `keyVaultSecrets`
-
-Secrets to create in the Key Vault.
-
-- Required: No
-- Type: array
-
-### Parameter: `keyVaultSku`
-
-The SKU of the Key Vault.
-
-- Required: No
-- Type: string
-- Default: `'standard'`
-- Allowed:
-  ```Bicep
-  [
-    'premium'
-    'standard'
-  ]
-  ```
-
-### Parameter: `keyVaultSoftDeleteRetentionInDays`
-
-Soft delete retention in days for the Key Vault. Defaults to 90.
-
-- Required: No
-- Type: int
-- Default: `90`
-
-### Parameter: `location`
-
-Azure region where the resources will be deployed in.
-
-- Required: No
-- Type: string
-- Default: `[deployment().location]`
-
-### Parameter: `managedEnvironmentResourceId`
-
-The managed environment resource ID for Azure Container Apps scenarios.
-
-- Required: No
-- Type: string
-
-### Parameter: `maximumElasticWorkerCount`
-
-Maximum number of total workers allowed for this ElasticScaleEnabled App Service Plan.
-
-- Required: No
-- Type: int
-- Default: `20`
-
-### Parameter: `networkingOption`
-
-The networking option to use for ingress. Options: frontDoor (Azure Front Door with WAF), applicationGateway (Application Gateway with WAF), none.
-
-- Required: No
-- Type: string
-- Default: `'frontDoor'`
-- Allowed:
-  ```Bicep
-  [
-    'applicationGateway'
-    'frontDoor'
-    'none'
-  ]
-  ```
-
-### Parameter: `outboundVnetRouting`
-
-The outbound VNET routing configuration for the site.
-
-- Required: No
-- Type: object
-
-### Parameter: `perSiteScaling`
-
-If true, apps assigned to this App Service plan can be scaled independently.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `planDefaultIdentity`
-
-The default identity for the App Service Plan.
-
-- Required: No
-- Type: object
-
-### Parameter: `rdpEnabled`
-
-Whether RDP is enabled on the App Service Plan.
-
-- Required: No
-- Type: bool
-
-### Parameter: `redundancyMode`
-
-Site redundancy mode.
-
-- Required: No
-- Type: string
-- Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'ActiveActive'
-    'Failover'
-    'GeoRedundant'
-    'Manual'
-    'None'
-  ]
-  ```
-
-### Parameter: `registryAdapters`
-
-Registry adapter configuration for the App Service Plan.
-
-- Required: No
-- Type: array
-
-### Parameter: `resourceConfig`
-
-Function app resource requirements.
-
-- Required: No
-- Type: object
-
-### Parameter: `scmSiteAlsoStopped`
-
-Stop SCM (Kudu) site when the app is stopped.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `servicePlanDiagnosticSettings`
-
-Diagnostic Settings for the App Service Plan.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-serviceplandiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-serviceplandiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-serviceplandiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`marketplacePartnerResourceId`](#parameter-serviceplandiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-serviceplandiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-serviceplandiagnosticsettingsname) | string | The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-serviceplandiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-serviceplandiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-
-### Parameter: `servicePlanDiagnosticSettings.eventHubAuthorizationRuleResourceId`
-
-Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.eventHubName`
-
-Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.logAnalyticsDestinationType`
-
-A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureDiagnostics'
-    'Dedicated'
-  ]
-  ```
-
-### Parameter: `servicePlanDiagnosticSettings.marketplacePartnerResourceId`
-
-The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.metricCategories`
-
-The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`category`](#parameter-serviceplandiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-serviceplandiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
-
-### Parameter: `servicePlanDiagnosticSettings.metricCategories.category`
-
-Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.metricCategories.enabled`
-
-Enable or disable the category explicitly. Default is `true`.
-
-- Required: No
-- Type: bool
-
-### Parameter: `servicePlanDiagnosticSettings.name`
-
-The name of diagnostic setting.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.storageAccountResourceId`
-
-Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePlanDiagnosticSettings.workspaceResourceId`
-
-Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
-
-- Required: No
-- Type: string
-
-### Parameter: `siteConfig`
-
-The site configuration for the web app.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      alwaysOn: true
-      ftpsState: 'FtpsOnly'
-      healthCheckPath: '/healthz'
-      http20Enabled: true
-      minTlsVersion: '1.2'
-  }
-  ```
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`alwaysOn`](#parameter-siteconfigalwayson) | bool | Whether the web app should always be loaded. |
-| [`ftpsState`](#parameter-siteconfigftpsstate) | string | State of FTP / FTPS service. |
-| [`healthCheckPath`](#parameter-siteconfighealthcheckpath) | string | Health check path. Used by App Service load balancers to determine instance health. |
-| [`http20Enabled`](#parameter-siteconfighttp20enabled) | bool | Whether HTTP 2.0 is enabled. |
-| [`linuxFxVersion`](#parameter-siteconfiglinuxfxversion) | string | Linux app framework and version string for container deployments (e.g. "DOCKER|image:tag"). |
-| [`minTlsVersion`](#parameter-siteconfigmintlsversion) | string | Configures the minimum version of TLS required for SSL requests. |
-| [`windowsFxVersion`](#parameter-siteconfigwindowsfxversion) | string | Windows app framework and version string for container deployments (e.g. "DOCKER|image:tag"). |
-
-### Parameter: `siteConfig.alwaysOn`
-
-Whether the web app should always be loaded.
-
-- Required: No
-- Type: bool
-
-### Parameter: `siteConfig.ftpsState`
-
-State of FTP / FTPS service.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AllAllowed'
-    'Disabled'
-    'FtpsOnly'
-  ]
-  ```
-
-### Parameter: `siteConfig.healthCheckPath`
-
-Health check path. Used by App Service load balancers to determine instance health.
-
-- Required: No
-- Type: string
-
-### Parameter: `siteConfig.http20Enabled`
-
-Whether HTTP 2.0 is enabled.
-
-- Required: No
-- Type: bool
-
-### Parameter: `siteConfig.linuxFxVersion`
-
-Linux app framework and version string for container deployments (e.g. "DOCKER|image:tag").
-
-- Required: No
-- Type: string
-
-### Parameter: `siteConfig.minTlsVersion`
-
-Configures the minimum version of TLS required for SSL requests.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '1.0'
-    '1.1'
-    '1.2'
-    '1.3'
-  ]
-  ```
-
-### Parameter: `siteConfig.windowsFxVersion`
-
-Windows app framework and version string for container deployments (e.g. "DOCKER|image:tag").
-
-- Required: No
-- Type: string
-
-### Parameter: `skuCapacity`
-
-The SKU capacity (number of workers) for the App Service Plan.
-
-- Required: No
-- Type: int
-
-### Parameter: `sshEnabled`
-
-Whether to enable SSH access.
-
-- Required: No
-- Type: bool
-
-### Parameter: `storageAccountRequired`
-
-Whether customer-provided storage account is required.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `storageMounts`
-
-Storage mount configuration for the App Service Plan.
-
-- Required: No
-- Type: array
-
-### Parameter: `subnetSpokeAppGwAddressSpace`
-
-CIDR of the subnet that will hold the Application Gateway. Required if networkingOption is "applicationGateway".
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `subnetSpokeAppSvcAddressSpace`
-
-CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network.
-
-- Required: No
-- Type: string
-- Default: `'10.240.0.0/26'`
-
-### Parameter: `subnetSpokeJumpboxAddressSpace`
-
-CIDR of the subnet that will hold the jumpbox.
-
-- Required: No
-- Type: string
-- Default: `'10.240.10.128/26'`
-
-### Parameter: `subnetSpokePrivateEndpointAddressSpace`
-
-CIDR of the subnet that will hold the private endpoints of the supporting services.
-
-- Required: No
-- Type: string
-- Default: `'10.240.11.0/24'`
-
-### Parameter: `tags`
-
-Tags to apply to all resources.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `targetWorkerCount`
-
-Scaling worker count.
-
-- Required: No
-- Type: int
-- Default: `0`
-
-### Parameter: `targetWorkerSize`
-
-The instance size of the hosting plan (small, medium, or large).
-
-- Required: No
-- Type: int
-- Default: `0`
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-  ]
-  ```
-
-### Parameter: `virtualNetworkBgpCommunity`
-
-The BGP community for the VNet.
-
-- Required: No
-- Type: string
-
-### Parameter: `vmAuthenticationType`
-
-Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password".
-
-- Required: No
-- Type: string
-- Default: `'password'`
 - Allowed:
   ```Bicep
   [
@@ -5075,13 +4471,138 @@ Type of authentication to use on the Virtual Machine. SSH key is recommended. De
   ]
   ```
 
-### Parameter: `vmJumpboxOSType`
+### Parameter: `jumpboxConfig.bastionResourceId`
 
-Default is windows. The OS of the jump box virtual machine to create.
+Resource ID of the Bastion host for connectivity.
 
 - Required: No
 - Type: string
-- Default: `'windows'`
+
+### Parameter: `jumpboxConfig.enabled`
+
+Whether to deploy a jumpbox VM.
+
+- Required: No
+- Type: bool
+
+### Parameter: `jumpboxConfig.encryptionAtHost`
+
+Enable encryption at host. Defaults to true for WAF alignment.
+
+- Required: No
+- Type: bool
+
+### Parameter: `jumpboxConfig.linuxImageOffer`
+
+The Linux OS image offer.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.linuxImagePublisher`
+
+The Linux OS image publisher.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.linuxImageSku`
+
+The Linux OS image SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.maintenanceWindow`
+
+Maintenance window configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-jumpboxconfigmaintenancewindowduration) | string | The duration (e.g. "03:55"). |
+| [`recurEvery`](#parameter-jumpboxconfigmaintenancewindowrecurevery) | string | The recurrence (e.g. "1Day", "1Week Saturday"). |
+| [`startDateTime`](#parameter-jumpboxconfigmaintenancewindowstartdatetime) | string | The start date and time (e.g. "2026-06-16 00:00"). |
+| [`timeZone`](#parameter-jumpboxconfigmaintenancewindowtimezone) | string | The timezone (e.g. "UTC"). |
+
+### Parameter: `jumpboxConfig.maintenanceWindow.duration`
+
+The duration (e.g. "03:55").
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.maintenanceWindow.recurEvery`
+
+The recurrence (e.g. "1Day", "1Week Saturday").
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.maintenanceWindow.startDateTime`
+
+The start date and time (e.g. "2026-06-16 00:00").
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.maintenanceWindow.timeZone`
+
+The timezone (e.g. "UTC").
+
+- Required: No
+- Type: string
+
+### Parameter: `jumpboxConfig.osDisk`
+
+OS disk configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sizeGB`](#parameter-jumpboxconfigosdisksizegb) | int | The OS disk size in GB. |
+| [`storageAccountType`](#parameter-jumpboxconfigosdiskstorageaccounttype) | string | The storage account type for the OS disk. |
+
+### Parameter: `jumpboxConfig.osDisk.sizeGB`
+
+The OS disk size in GB.
+
+- Required: No
+- Type: int
+
+### Parameter: `jumpboxConfig.osDisk.storageAccountType`
+
+The storage account type for the OS disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `jumpboxConfig.osType`
+
+The OS type: "linux", "windows", or "none".
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -5091,51 +4612,202 @@ Default is windows. The OS of the jump box virtual machine to create.
   ]
   ```
 
-### Parameter: `vmSize`
+### Parameter: `jumpboxConfig.vmSize`
 
-The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.
+The VM SKU size (e.g. "Standard_D2s_v4").
 
 - Required: No
 - Type: string
-- Default: `'Standard_D2s_v4'`
 
-### Parameter: `vnetDiagnosticSettings`
+### Parameter: `jumpboxConfig.windowsOSVersion`
 
-Diagnostic Settings for the spoke virtual network.
+The Windows OS version SKU (e.g. "2025-datacenter-g2").
 
 - Required: No
-- Type: array
-- Default: `[]`
+- Type: string
+
+### Parameter: `keyVaultConfig`
+
+Configuration for the Key Vault.
+
+- Required: No
+- Type: object
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-vnetdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-vnetdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-vnetdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-vnetdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-vnetdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-vnetdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-vnetdiagnosticsettingsname) | string | The name of the diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-vnetdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-vnetdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`accessPolicies`](#parameter-keyvaultconfigaccesspolicies) | array | Access policies (non-RBAC mode). |
+| [`additionalRoleAssignments`](#parameter-keyvaultconfigadditionalroleassignments) | array | Additional role assignments beyond the default App Service identity. |
+| [`createMode`](#parameter-keyvaultconfigcreatemode) | string | Create mode: "default" or "recover". |
+| [`diagnosticSettings`](#parameter-keyvaultconfigdiagnosticsettings) | array | Diagnostic settings for the Key Vault. |
+| [`enablePurgeProtection`](#parameter-keyvaultconfigenablepurgeprotection) | bool | Enable purge protection. Defaults to true. |
+| [`enableRbacAuthorization`](#parameter-keyvaultconfigenablerbacauthorization) | bool | Enable RBAC authorization. Defaults to true. |
+| [`enableVaultForDeployment`](#parameter-keyvaultconfigenablevaultfordeployment) | bool | Enable for deployment. |
+| [`enableVaultForDiskEncryption`](#parameter-keyvaultconfigenablevaultfordiskencryption) | bool | Enable for disk encryption. |
+| [`enableVaultForTemplateDeployment`](#parameter-keyvaultconfigenablevaultfortemplatedeployment) | bool | Enable for template deployment. |
+| [`keys`](#parameter-keyvaultconfigkeys) | array | Keys to create. |
+| [`lock`](#parameter-keyvaultconfiglock) | object | Resource lock for the Key Vault. |
+| [`networkAcls`](#parameter-keyvaultconfignetworkacls) | object | Network ACLs for the Key Vault. |
+| [`publicNetworkAccess`](#parameter-keyvaultconfigpublicnetworkaccess) | string | Public network access for the Key Vault. |
+| [`secrets`](#parameter-keyvaultconfigsecrets) | array | Secrets to create. |
+| [`sku`](#parameter-keyvaultconfigsku) | string | The SKU: "standard" or "premium". |
+| [`softDeleteRetentionInDays`](#parameter-keyvaultconfigsoftdeleteretentionindays) | int | Soft delete retention in days. Defaults to 90. |
 
-### Parameter: `vnetDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+### Parameter: `keyVaultConfig.accessPolicies`
+
+Access policies (non-RBAC mode).
+
+- Required: No
+- Type: array
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments`
+
+Additional role assignments beyond the default App Service identity.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-keyvaultconfigadditionalroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keyvaultconfigadditionalroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-keyvaultconfigadditionalroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keyvaultconfigadditionalroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultconfigadditionalroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keyvaultconfigadditionalroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-keyvaultconfigadditionalroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-keyvaultconfigadditionalroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfig.additionalRoleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `keyVaultConfig.createMode`
+
+Create mode: "default" or "recover".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'default'
+    'recover'
+  ]
+  ```
+
+### Parameter: `keyVaultConfig.diagnosticSettings`
+
+Diagnostic settings for the Key Vault.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-keyvaultconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-keyvaultconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-keyvaultconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-keyvaultconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-keyvaultconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-keyvaultconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-keyvaultconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-keyvaultconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-keyvaultconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `keyVaultConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
 Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.eventHubName`
+### Parameter: `keyVaultConfig.diagnosticSettings.eventHubName`
 
 Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.logAnalyticsDestinationType`
+### Parameter: `keyVaultConfig.diagnosticSettings.logAnalyticsDestinationType`
 
 A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
@@ -5149,7 +4821,7 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
-### Parameter: `vnetDiagnosticSettings.logCategoriesAndGroups`
+### Parameter: `keyVaultConfig.diagnosticSettings.logCategoriesAndGroups`
 
 The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
@@ -5160,39 +4832,39 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-vnetdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-vnetdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
-| [`enabled`](#parameter-vnetdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`category`](#parameter-keyvaultconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-keyvaultconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-keyvaultconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `vnetDiagnosticSettings.logCategoriesAndGroups.category`
+### Parameter: `keyVaultConfig.diagnosticSettings.logCategoriesAndGroups.category`
 
 Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+### Parameter: `keyVaultConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
 Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.logCategoriesAndGroups.enabled`
+### Parameter: `keyVaultConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `vnetDiagnosticSettings.marketplacePartnerResourceId`
+### Parameter: `keyVaultConfig.diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.metricCategories`
+### Parameter: `keyVaultConfig.diagnosticSettings.metricCategories`
 
 The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
@@ -5203,83 +4875,94 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`category`](#parameter-vnetdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+| [`category`](#parameter-keyvaultconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enabled`](#parameter-vnetdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+| [`enabled`](#parameter-keyvaultconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
-### Parameter: `vnetDiagnosticSettings.metricCategories.category`
+### Parameter: `keyVaultConfig.diagnosticSettings.metricCategories.category`
 
 Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.metricCategories.enabled`
+### Parameter: `keyVaultConfig.diagnosticSettings.metricCategories.enabled`
 
 Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
 
-### Parameter: `vnetDiagnosticSettings.name`
+### Parameter: `keyVaultConfig.diagnosticSettings.name`
 
 The name of the diagnostic setting.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.storageAccountResourceId`
+### Parameter: `keyVaultConfig.diagnosticSettings.storageAccountResourceId`
 
 Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetDiagnosticSettings.workspaceResourceId`
+### Parameter: `keyVaultConfig.diagnosticSettings.workspaceResourceId`
 
 Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetEncryption`
+### Parameter: `keyVaultConfig.enablePurgeProtection`
 
-Enable VNet encryption.
+Enable purge protection. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
-### Parameter: `vnetEncryptionEnforcement`
+### Parameter: `keyVaultConfig.enableRbacAuthorization`
 
-VNet encryption enforcement. Only used when vnetEncryption is true.
-
-- Required: No
-- Type: string
-- Default: `'AllowUnencrypted'`
-- Allowed:
-  ```Bicep
-  [
-    'AllowUnencrypted'
-    'DropUnencrypted'
-  ]
-  ```
-
-### Parameter: `vnetHubResourceId`
-
-Default is empty. If given, peering between spoke and and existing hub vnet will be created.
+Enable RBAC authorization. Defaults to true.
 
 - Required: No
-- Type: string
-- Default: `''`
+- Type: bool
 
-### Parameter: `vnetLock`
+### Parameter: `keyVaultConfig.enableVaultForDeployment`
 
-Specify the type of resource lock for the spoke virtual network.
+Enable for deployment.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keyVaultConfig.enableVaultForDiskEncryption`
+
+Enable for disk encryption.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keyVaultConfig.enableVaultForTemplateDeployment`
+
+Enable for template deployment.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keyVaultConfig.keys`
+
+Keys to create.
+
+- Required: No
+- Type: array
+
+### Parameter: `keyVaultConfig.lock`
+
+Resource lock for the Key Vault.
 
 - Required: No
 - Type: object
@@ -5288,11 +4971,11 @@ Specify the type of resource lock for the spoke virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-vnetlockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-vnetlockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-vnetlocknotes) | string | Specify the notes of the lock. |
+| [`kind`](#parameter-keyvaultconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-keyvaultconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-keyvaultconfiglocknotes) | string | Specify the notes of the lock. |
 
-### Parameter: `vnetLock.kind`
+### Parameter: `keyVaultConfig.lock.kind`
 
 Specify the type of lock.
 
@@ -5307,21 +4990,887 @@ Specify the type of lock.
   ]
   ```
 
-### Parameter: `vnetLock.name`
+### Parameter: `keyVaultConfig.lock.name`
 
 Specify the name of lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetLock.notes`
+### Parameter: `keyVaultConfig.lock.notes`
 
 Specify the notes of the lock.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetRoleAssignments`
+### Parameter: `keyVaultConfig.networkAcls`
+
+Network ACLs for the Key Vault.
+
+- Required: No
+- Type: object
+
+### Parameter: `keyVaultConfig.publicNetworkAccess`
+
+Public network access for the Key Vault.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `keyVaultConfig.secrets`
+
+Secrets to create.
+
+- Required: No
+- Type: array
+
+### Parameter: `keyVaultConfig.sku`
+
+The SKU: "standard" or "premium".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'premium'
+    'standard'
+  ]
+  ```
+
+### Parameter: `keyVaultConfig.softDeleteRetentionInDays`
+
+Soft delete retention in days. Defaults to 90.
+
+- Required: No
+- Type: int
+
+### Parameter: `location`
+
+Azure region where the resources will be deployed in.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
+
+### Parameter: `servicePlanConfig`
+
+Configuration for the App Service Plan.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diagnosticSettings`](#parameter-serviceplanconfigdiagnosticsettings) | array | Diagnostic settings for the App Service Plan. |
+| [`elasticScaleEnabled`](#parameter-serviceplanconfigelasticscaleenabled) | bool | Whether elastic scale is enabled. |
+| [`existingPlanId`](#parameter-serviceplanconfigexistingplanid) | string | Resource ID of an existing App Service Plan. Skips creating a new plan if provided. |
+| [`installScripts`](#parameter-serviceplanconfiginstallscripts) | array | Install scripts for the App Service Plan. |
+| [`isCustomMode`](#parameter-serviceplanconfigiscustommode) | bool | Whether the App Service Plan uses custom mode. |
+| [`kind`](#parameter-serviceplanconfigkind) | string | Kind of server OS: "windows" or "linux". |
+| [`lock`](#parameter-serviceplanconfiglock) | object | Resource lock for the App Service Plan. |
+| [`managedIdentities`](#parameter-serviceplanconfigmanagedidentities) | object | Managed identities for the App Service Plan. |
+| [`maximumElasticWorkerCount`](#parameter-serviceplanconfigmaximumelasticworkercount) | int | Maximum number of total workers for ElasticScaleEnabled plans. |
+| [`perSiteScaling`](#parameter-serviceplanconfigpersitescaling) | bool | If true, apps can be scaled independently. |
+| [`planDefaultIdentity`](#parameter-serviceplanconfigplandefaultidentity) | string | The default identity for the App Service Plan. |
+| [`rdpEnabled`](#parameter-serviceplanconfigrdpenabled) | bool | Whether RDP is enabled. |
+| [`registryAdapters`](#parameter-serviceplanconfigregistryadapters) | array | Registry adapter configuration. |
+| [`roleAssignments`](#parameter-serviceplanconfigroleassignments) | array | Role assignments for the App Service Plan. |
+| [`sku`](#parameter-serviceplanconfigsku) | string | The SKU name for the App Service Plan (e.g. "P1V3"). |
+| [`skuCapacity`](#parameter-serviceplanconfigskucapacity) | int | The SKU capacity (number of workers). |
+| [`storageMounts`](#parameter-serviceplanconfigstoragemounts) | array | Storage mount configuration. |
+| [`targetWorkerCount`](#parameter-serviceplanconfigtargetworkercount) | int | Scaling worker count. |
+| [`targetWorkerSize`](#parameter-serviceplanconfigtargetworkersize) | int | The instance size of the hosting plan (0=small, 1=medium, 2=large). |
+| [`virtualNetworkSubnetId`](#parameter-serviceplanconfigvirtualnetworksubnetid) | string | Resource ID of a subnet for App Service Plan VNet integration. |
+| [`workerTierName`](#parameter-serviceplanconfigworkertiername) | string | Target worker tier name. |
+| [`zoneRedundant`](#parameter-serviceplanconfigzoneredundant) | bool | Deploy the plan in a zone redundant manner. |
+
+### Parameter: `servicePlanConfig.diagnosticSettings`
+
+Diagnostic settings for the App Service Plan.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-serviceplanconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-serviceplanconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-serviceplanconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`marketplacePartnerResourceId`](#parameter-serviceplanconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-serviceplanconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-serviceplanconfigdiagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-serviceplanconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-serviceplanconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `servicePlanConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-serviceplanconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-serviceplanconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `servicePlanConfig.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.diagnosticSettings.name`
+
+The name of diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.elasticScaleEnabled`
+
+Whether elastic scale is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.existingPlanId`
+
+Resource ID of an existing App Service Plan. Skips creating a new plan if provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.installScripts`
+
+Install scripts for the App Service Plan.
+
+- Required: No
+- Type: array
+
+### Parameter: `servicePlanConfig.isCustomMode`
+
+Whether the App Service Plan uses custom mode.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.kind`
+
+Kind of server OS: "windows" or "linux".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'linux'
+    'windows'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.lock`
+
+Resource lock for the App Service Plan.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-serviceplanconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-serviceplanconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-serviceplanconfiglocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `servicePlanConfig.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.managedIdentities`
+
+Managed identities for the App Service Plan.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-serviceplanconfigmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-serviceplanconfigmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `servicePlanConfig.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
+### Parameter: `servicePlanConfig.maximumElasticWorkerCount`
+
+Maximum number of total workers for ElasticScaleEnabled plans.
+
+- Required: No
+- Type: int
+
+### Parameter: `servicePlanConfig.perSiteScaling`
+
+If true, apps can be scaled independently.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.planDefaultIdentity`
+
+The default identity for the App Service Plan.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DefaultIdentity'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.rdpEnabled`
+
+Whether RDP is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanConfig.registryAdapters`
+
+Registry adapter configuration.
+
+- Required: No
+- Type: array
+
+### Parameter: `servicePlanConfig.roleAssignments`
+
+Role assignments for the App Service Plan.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-serviceplanconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-serviceplanconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-serviceplanconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-serviceplanconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-serviceplanconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-serviceplanconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-serviceplanconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-serviceplanconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `servicePlanConfig.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.sku`
+
+The SKU name for the App Service Plan (e.g. "P1V3").
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.skuCapacity`
+
+The SKU capacity (number of workers).
+
+- Required: No
+- Type: int
+
+### Parameter: `servicePlanConfig.storageMounts`
+
+Storage mount configuration.
+
+- Required: No
+- Type: array
+
+### Parameter: `servicePlanConfig.targetWorkerCount`
+
+Scaling worker count.
+
+- Required: No
+- Type: int
+
+### Parameter: `servicePlanConfig.targetWorkerSize`
+
+The instance size of the hosting plan (0=small, 1=medium, 2=large).
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+  ]
+  ```
+
+### Parameter: `servicePlanConfig.virtualNetworkSubnetId`
+
+Resource ID of a subnet for App Service Plan VNet integration.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.workerTierName`
+
+Target worker tier name.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanConfig.zoneRedundant`
+
+Deploy the plan in a zone redundant manner.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig`
+
+Configuration for the spoke virtual network and ingress networking.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appGwSubnetAddressSpace`](#parameter-spokenetworkconfigappgwsubnetaddressspace) | string | CIDR of the Application Gateway subnet. Required when ingressOption is "applicationGateway". |
+| [`appSvcSubnetAddressSpace`](#parameter-spokenetworkconfigappsvcsubnetaddressspace) | string | CIDR of the App Service / ASE subnet. ASEv3 needs a /24. |
+| [`bgpCommunity`](#parameter-spokenetworkconfigbgpcommunity) | string | The BGP community for the VNet. |
+| [`ddosProtectionPlanResourceId`](#parameter-spokenetworkconfigddosprotectionplanresourceid) | string | Resource ID of a DDoS Protection Plan to associate with the spoke VNet. |
+| [`diagnosticSettings`](#parameter-spokenetworkconfigdiagnosticsettings) | array | Diagnostic settings for the spoke virtual network. |
+| [`disableBgpRoutePropagation`](#parameter-spokenetworkconfigdisablebgproutepropagation) | bool | Whether to disable BGP route propagation on the route table. |
+| [`dnsServers`](#parameter-spokenetworkconfigdnsservers) | array | Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used. |
+| [`enableEgressLockdown`](#parameter-spokenetworkconfigenableegresslockdown) | bool | Set to true to route all egress traffic through the firewall. |
+| [`enableVmProtection`](#parameter-spokenetworkconfigenablevmprotection) | bool | Enable VM protection for the VNet. |
+| [`encryption`](#parameter-spokenetworkconfigencryption) | bool | Enable VNet encryption. |
+| [`encryptionEnforcement`](#parameter-spokenetworkconfigencryptionenforcement) | string | VNet encryption enforcement policy. |
+| [`firewallInternalIp`](#parameter-spokenetworkconfigfirewallinternalip) | string | Internal IP of the Azure Firewall in the hub. If set, a UDR is created for egress. |
+| [`flowTimeoutInMinutes`](#parameter-spokenetworkconfigflowtimeoutinminutes) | int | The flow timeout in minutes for the VNet (max 30). 0 = disabled. |
+| [`hubVnetResourceId`](#parameter-spokenetworkconfighubvnetresourceid) | string | Resource ID of an existing hub VNet to peer with. If empty, no peering is created. |
+| [`ingressOption`](#parameter-spokenetworkconfigingressoption) | string | Ingress option: "frontDoor", "applicationGateway", or "none". |
+| [`jumpboxSubnetAddressSpace`](#parameter-spokenetworkconfigjumpboxsubnetaddressspace) | string | CIDR of the jumpbox subnet. |
+| [`lock`](#parameter-spokenetworkconfiglock) | object | Resource lock for the spoke virtual network. |
+| [`privateEndpointSubnetAddressSpace`](#parameter-spokenetworkconfigprivateendpointsubnetaddressspace) | string | CIDR of the private endpoint subnet. |
+| [`roleAssignments`](#parameter-spokenetworkconfigroleassignments) | array | Role assignments for the spoke virtual network. |
+| [`vnetAddressSpace`](#parameter-spokenetworkconfigvnetaddressspace) | string | CIDR of the spoke VNet (e.g. "10.240.0.0/20"). |
+
+### Parameter: `spokeNetworkConfig.appGwSubnetAddressSpace`
+
+CIDR of the Application Gateway subnet. Required when ingressOption is "applicationGateway".
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.appSvcSubnetAddressSpace`
+
+CIDR of the App Service / ASE subnet. ASEv3 needs a /24.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.bgpCommunity`
+
+The BGP community for the VNet.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.ddosProtectionPlanResourceId`
+
+Resource ID of a DDoS Protection Plan to associate with the spoke VNet.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings`
+
+Diagnostic settings for the spoke virtual network.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-spokenetworkconfigdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-spokenetworkconfigdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-spokenetworkconfigdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-spokenetworkconfigdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-spokenetworkconfigdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-spokenetworkconfigdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-spokenetworkconfigdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-spokenetworkconfigdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-spokenetworkconfigdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-spokenetworkconfigdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-spokenetworkconfigdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-spokenetworkconfigdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-spokenetworkconfigdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-spokenetworkconfigdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.diagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.disableBgpRoutePropagation`
+
+Whether to disable BGP route propagation on the route table.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.dnsServers`
+
+Custom DNS servers for the spoke VNet. If empty, Azure-provided DNS is used.
+
+- Required: No
+- Type: array
+
+### Parameter: `spokeNetworkConfig.enableEgressLockdown`
+
+Set to true to route all egress traffic through the firewall.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.enableVmProtection`
+
+Enable VM protection for the VNet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.encryption`
+
+Enable VNet encryption.
+
+- Required: No
+- Type: bool
+
+### Parameter: `spokeNetworkConfig.encryptionEnforcement`
+
+VNet encryption enforcement policy.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllowUnencrypted'
+    'DropUnencrypted'
+  ]
+  ```
+
+### Parameter: `spokeNetworkConfig.firewallInternalIp`
+
+Internal IP of the Azure Firewall in the hub. If set, a UDR is created for egress.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.flowTimeoutInMinutes`
+
+The flow timeout in minutes for the VNet (max 30). 0 = disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `spokeNetworkConfig.hubVnetResourceId`
+
+Resource ID of an existing hub VNet to peer with. If empty, no peering is created.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.ingressOption`
+
+Ingress option: "frontDoor", "applicationGateway", or "none".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationGateway'
+    'frontDoor'
+    'none'
+  ]
+  ```
+
+### Parameter: `spokeNetworkConfig.jumpboxSubnetAddressSpace`
+
+CIDR of the jumpbox subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.lock`
+
+Resource lock for the spoke virtual network.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-spokenetworkconfiglockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-spokenetworkconfiglockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-spokenetworkconfiglocknotes) | string | Specify the notes of the lock. |
+
+### Parameter: `spokeNetworkConfig.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `spokeNetworkConfig.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.privateEndpointSubnetAddressSpace`
+
+CIDR of the private endpoint subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.roleAssignments`
 
 Role assignments for the spoke virtual network.
 
@@ -5332,42 +5881,42 @@ Role assignments for the spoke virtual network.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-vnetroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-vnetroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-spokenetworkconfigroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-spokenetworkconfigroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-vnetroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-vnetroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-vnetroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-vnetroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-vnetroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-vnetroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-spokenetworkconfigroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-spokenetworkconfigroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-spokenetworkconfigroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-spokenetworkconfigroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-spokenetworkconfigroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-spokenetworkconfigroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `vnetRoleAssignments.principalId`
+### Parameter: `spokeNetworkConfig.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `vnetRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `spokeNetworkConfig.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `vnetRoleAssignments.condition`
+### Parameter: `spokeNetworkConfig.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetRoleAssignments.conditionVersion`
+### Parameter: `spokeNetworkConfig.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -5380,28 +5929,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `vnetRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `spokeNetworkConfig.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetRoleAssignments.description`
+### Parameter: `spokeNetworkConfig.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetRoleAssignments.name`
+### Parameter: `spokeNetworkConfig.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `vnetRoleAssignments.principalType`
+### Parameter: `spokeNetworkConfig.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -5418,278 +5967,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `vnetSpokeAddressSpace`
+### Parameter: `spokeNetworkConfig.vnetAddressSpace`
 
-CIDR of the SPOKE vnet i.e. 192.168.0.0/24.
+CIDR of the spoke VNet (e.g. "10.240.0.0/20").
 
 - Required: No
 - Type: string
-- Default: `'10.240.0.0/20'`
 
-### Parameter: `wafCustomRules`
+### Parameter: `tags`
 
-Custom WAF rules. Only used when enableDefaultWafMethodBlock is false.
+Tags to apply to all resources.
 
 - Required: No
 - Type: object
-
-### Parameter: `webAppBaseOs`
-
-Kind of server OS of the App Service Plan. Default is "windows".
-
-- Required: No
-- Type: string
-- Default: `'windows'`
-- Allowed:
-  ```Bicep
-  [
-    'linux'
-    'windows'
-  ]
-  ```
-
-### Parameter: `webAppEnabled`
-
-Setting this value to false disables the app (takes the app offline).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `webAppExtensions`
-
-Extensions configuration for the web app.
-
-- Required: No
-- Type: array
-
-### Parameter: `webAppKind`
-
-Kind of web app to deploy. Use "app" for standard web apps, "app,linux" for Linux, "app,linux,container" for Linux containers, etc.
-
-- Required: No
-- Type: string
-- Default: `'app'`
-- Allowed:
-  ```Bicep
-  [
-    'api'
-    'app'
-    'app,container,windows'
-    'app,linux'
-    'app,linux,container'
-    'functionapp'
-    'functionapp,linux'
-    'functionapp,linux,container'
-    'functionapp,linux,container,azurecontainerapps'
-    'functionapp,workflowapp'
-    'functionapp,workflowapp,linux'
-    'linux,api'
-  ]
-  ```
-
-### Parameter: `webAppLock`
-
-Specify the type of resource lock for the Web App.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-webapplockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-webapplockname) | string | Specify the name of lock. |
-| [`notes`](#parameter-webapplocknotes) | string | Specify the notes of the lock. |
-
-### Parameter: `webAppLock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `webAppLock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppLock.notes`
-
-Specify the notes of the lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppPlanSku`
-
-The name of the SKU for the App Service Plan. Determines the tier, size, family and capacity. Defaults to P1V3 to leverage availability zones. EP* SKUs are only for Azure Functions elastic premium plans.
-
-- Required: No
-- Type: string
-- Default: `'P1V3'`
-- Example:
-  ```Bicep
-  // Premium v4
-  'P0v4'
-  'P1v4'
-  'P2v4'
-  'P3v4'
-  // Premium Memory Optimized v4
-  'P1mv4'
-  'P3mv4'
-  'P4mv4'
-  'P5mv4'
-  // Isolated v2
-  'I1v2'
-  'I2v2'
-  'I3v2'
-  'I4v2'
-  'I5v2'
-  'I6v2'
-  // Functions Elastic Premium
-  'EP1'
-  'EP2'
-  'EP3'
-  ```
-
-### Parameter: `webAppPublicNetworkAccess`
-
-Property to allow or block public network access to the web app.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `webAppReserved`
-
-True if reserved (Linux). Overrides auto-detection when set.
-
-- Required: No
-- Type: bool
-
-### Parameter: `webAppRoleAssignments`
-
-Role assignments to apply to the Web App.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-webapproleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-webapproleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-webapproleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-webapproleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-webapproleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-webapproleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-webapproleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-webapproleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `webAppRoleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `webAppRoleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `webAppRoleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppRoleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `webAppRoleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppRoleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppRoleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `webAppRoleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `workerTierName`
-
-Target worker tier assigned to the App Service Plan.
-
-- Required: No
-- Type: string
+- Default: `{}`
 
 ### Parameter: `workloadName`
 
@@ -5698,21 +5989,6 @@ suffix (max 10 characters long) that will be used to name the resources in a pat
 - Required: No
 - Type: string
 - Default: `[format('appsvc{0}', take(uniqueString(subscription().id), 4))]`
-
-### Parameter: `workloadProfileName`
-
-Workload profile name for function app to execute on.
-
-- Required: No
-- Type: string
-
-### Parameter: `zoneRedundant`
-
-Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ## Outputs
 
@@ -5761,7 +6037,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/web/hosting-environment:0.5.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
 | `br/public:avm/res/web/site:0.22.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

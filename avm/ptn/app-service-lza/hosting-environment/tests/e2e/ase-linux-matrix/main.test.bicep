@@ -61,18 +61,22 @@ module testDeploymentLinuxWebApp '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        kind: 'linux'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,linux'
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
-      // ASE needs a /24 for the app-svc subnet
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
-
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
@@ -92,18 +96,25 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
       }
 
       deployAseV3: true
-      webAppBaseOs: 'linux'
-      webAppKind: 'app,linux,container'
-      containerImageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      webAppPlanSku: 'I1v2'
-      networkingOption: 'none'
+      servicePlanConfig: {
+        kind: 'linux'
+        sku: 'I1v2'
+      }
+      appServiceConfig: {
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        ingressOption: 'none'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+      }
 
-      subnetSpokeAppSvcAddressSpace: '10.240.0.0/24'
-
-      deployJumpHost: false
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
+      jumpboxConfig: {
+        enabled: false
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }

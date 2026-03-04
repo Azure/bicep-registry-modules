@@ -58,70 +58,82 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         environment: 'test'
       }
-      aseDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-        }
-      ]
-      servicePlanDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-        }
-      ]
-      appserviceDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              categoryGroup: 'allLogs'
-            }
-          ]
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-        }
-      ]
-      frontDoorDiagnosticSettings: [
-        {
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          logCategoriesAndGroups: [
-            {
-              category: 'FrontdoorAccessLog'
-            }
-            {
-              category: 'FrontdoorWebApplicationFirewallLog'
-            }
-          ]
-        }
-      ]
-      vmSize: 'Standard_D2s_v4'
-      adminUsername: 'azureuser'
-      adminPassword: password
-      enableEgressLockdown: true
+      aseConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+          }
+        ]
+      }
+      servicePlanConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      }
+      appServiceConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+      }
+      frontDoorConfig: {
+        diagnosticSettings: [
+          {
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                category: 'FrontdoorAccessLog'
+              }
+              {
+                category: 'FrontdoorWebApplicationFirewallLog'
+              }
+            ]
+          }
+        ]
+      }
+      spokeNetworkConfig: {
+        enableEgressLockdown: true
+      }
+      jumpboxConfig: {
+        vmSize: 'Standard_D2s_v4'
+        adminUsername: 'azureuser'
+        adminPassword: password
+      }
       location: enforcedLocation
     }
   }
