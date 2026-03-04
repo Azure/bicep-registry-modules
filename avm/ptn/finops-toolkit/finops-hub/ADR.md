@@ -340,7 +340,7 @@ HubSetup_Latest.kql  → Symlink to current version
 | ARM Template | `main.json` must be committed and match `main.bicep` | Build step required before every commit |
 | README | Must be auto-generated via `Set-ModuleReadMe` | Cannot use custom README formatting |
 | Line Endings | All files must use LF (Unix-style) | Git config and editor settings enforced |
-| Version Format | BRM versioning: `version.json` specifies **major.minor** only (e.g., `"0.12"`); patch is auto-calculated by CI pipeline. `main.bicep` metadata and `CHANGELOG.md` use full semver (e.g., `0.12.0`) | Version must be synchronized across files; `version.json` ≠ three-part semver |
+| Version Format | BRM versioning: `version.json` specifies **major.minor** only (e.g., `"0.2"`); patch is auto-calculated by CI pipeline. `main.bicep` metadata and `CHANGELOG.md` use full semver (e.g., `0.2.0`) | Version must be synchronized across files; `version.json` ≠ three-part semver |
 | CHANGELOG | File must be named `CHANGELOG.md` (all caps); links are case-sensitive on Linux CI runners | Case mismatch breaks links in CI |
 | Linter Overrides | Module-level `bicepconfig.json` overrides only apply during local development; consumers still see linter warnings unless they also override. Prefer inline `#disable-next-line` where feasible | `modules/bicepconfig.json` retained with comments for rules that have 10+ occurrences across sub-modules |
 | Lock Interface | Must support `lockType` from AVM common types | Added lock parameter, applied to all resources |

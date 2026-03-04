@@ -6,11 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13114117440927496179"
+      "templateHash": "11594521702739428086"
     },
     "name": "FinOps Hub",
     "description": "Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.",
-    "version": "0.12.0",
+    "version": "0.2.0",
     "owner": "FinOps Team"
   },
   "definitions": {

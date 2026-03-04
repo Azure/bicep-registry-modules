@@ -8,7 +8,7 @@
 
 metadata name = 'FinOps Hub'
 metadata description = 'Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.'
-metadata version = '0.12.0'
+metadata version = '0.2.0'
 metadata owner = 'FinOps Team'
 
 targetScope = 'resourceGroup'
