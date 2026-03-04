@@ -52,7 +52,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 
 // --- Primary region: Windows web app behind Front Door ---
 @batchSize(1)
-module testDeploymentPrimary '../../../main.bicep' = [
+module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, primaryLocation)}-test-${serviceShort}-pri-${iteration}'
     params: {
@@ -123,6 +123,6 @@ module testDeploymentSecondary '../../../main.bicep' = [
 ]
 
 output testDeploymentOutputs object = {
-  primary: testDeploymentPrimary[0].outputs
+  primary: testDeployment[0].outputs
   secondary: testDeploymentSecondary[0].outputs
 }

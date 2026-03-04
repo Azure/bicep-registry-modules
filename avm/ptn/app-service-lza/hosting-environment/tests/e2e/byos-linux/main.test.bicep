@@ -63,7 +63,7 @@ module existingLinuxPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
 
 // --- BYOS + Linux web app ---
 @batchSize(1)
-module testDeploymentLinuxWebApp '../../../main.bicep' = [
+module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
     params: {
@@ -131,6 +131,6 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
 ]
 
 output testDeploymentOutputs object = {
-  linuxWebApp: testDeploymentLinuxWebApp[0].outputs
+  linuxWebApp: testDeployment[0].outputs
   linuxContainer: testDeploymentLinuxContainer[0].outputs
 }

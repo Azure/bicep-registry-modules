@@ -63,7 +63,7 @@ module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
 
 // --- BYOS + Windows web app ---
 @batchSize(1)
-module testDeploymentWindowsWebApp '../../../main.bicep' = [
+module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wweb-${iteration}'
     params: {
@@ -131,6 +131,6 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
 ]
 
 output testDeploymentOutputs object = {
-  windowsWebApp: testDeploymentWindowsWebApp[0].outputs
+  windowsWebApp: testDeployment[0].outputs
   windowsContainer: testDeploymentWindowsContainer[0].outputs
 }
