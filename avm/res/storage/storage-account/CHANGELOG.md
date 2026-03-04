@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.32.0
+
+### Changes
+
+- Add `TLS1_3` to `allowedValues` for `minimumTlsVersion` in avm/res/storage/storage-account
+
+### Breaking Changes
+
+- None
+
 ## 0.31.2
 
 ### Changes

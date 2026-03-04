@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "3983342881327906024"
+      "version": "0.41.2.15936",
+      "templateHash": "14516220207627252368"
     },
     "name": "API Management Workspace Loggers",
     "description": "This module deploys a Logger in an API Management Workspace."

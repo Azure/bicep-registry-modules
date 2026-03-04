@@ -1,6 +1,22 @@
 # Changelog
 
-The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
+
+## 0.17.3
+
+### Changes
+
+- Published the following child modules for standalone use:
+  - `custom-domain`
+  - `origin-group`
+  - `rule-set`
+  - `security-policy`
+  - `afd-endpoint/route`
+- Added `enableReferencedModulesTelemetry` variable to parent and `afd-endpoint` modules to disable telemetry for child modules when called from parent.
+
+### Breaking Changes
+
+- None
 
 ## 0.17.2
 

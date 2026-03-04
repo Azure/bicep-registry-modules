@@ -2,14 +2,16 @@
 
 <h1 style="color: steelblue;">Azure Verified Modules</h1>
 
-To provide our customers with a unified experience, Azure Verified Modules ([AVM](https://aka.ms/AVM)) is now the single Microsoft standard for Bicep modules, published to the Public Bicep Registry, via this repository.
+To provide our customers with a unified experience, Azure Verified Modules ([AVM](https://aka.ms/AVM)) is the single Microsoft standard for Bicep modules, published to the Public Bicep Registry, via this repository.
 
 > [!IMPORTANT]
-> Going forward, new modules need to be developed and published in accordance with the [AVM specifications](https://azure.github.io/Azure-Verified-Modules/specs/module-specs/). Module proposals for new, non-AVM modules are no longer accepted. To propose a new AVM module, you can file an [AVM Module Proposal](https://aka.ms/AVM/ModuleProposal).
+> New modules need to be developed and published in accordance with the [AVM specifications](https://azure.github.io/Azure-Verified-Modules/specs/module-specs/). Module proposals for new, non-AVM modules are no longer accepted. To propose a new AVM module, you can file an [AVM Module Proposal](https://aka.ms/AVM/ModuleProposal).
 
 Existing non-AVM modules have been retired or migrated to AVM. To provide continued access for existing customers, non-AVM modules formerly published in the registry will be kept there indefinitely, but their source code has been replaced with an informational notice and a pointer to their successor in AVM, when applicable. Visual Studio Code IntelliSense support for the old, non-AVM modules have also been removed - while existing references will keep working.
 
 For the list of available and planned AVM modules, please visit the [AVM Module Index](https://aka.ms/AVM/ModuleIndex) pages.
+
+🎂
 
 # Bicep Registry Modules
 
