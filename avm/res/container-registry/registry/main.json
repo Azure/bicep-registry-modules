@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6901997260743588330"
+      "templateHash": "10637213113371937502"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -110,6 +110,335 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a credential set."
+      }
+    },
+    "scopeMapsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the scope map."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The list of scoped permissions for registry artifacts."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The user friendly description of the scope map."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a scope map."
+      }
+    },
+    "cacheRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
+          }
+        },
+        "sourceRepository": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Source repository pulled from upstream."
+          }
+        },
+        "targetRepository": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+          }
+        },
+        "credentialSetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a cache rule."
+      }
+    },
+    "replicationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "regionEndpointEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+          }
+        },
+        "zoneRedundancy": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries@2025-03-01-preview#properties/properties/properties/zoneRedundancy"
+            },
+            "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a replication."
+      }
+    },
+    "taskType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the task."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "platform": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
+            },
+            "description": "Optional. The platform properties for the task."
+          },
+          "nullable": true
+        },
+        "step": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/step"
+            },
+            "description": "Optional. The step properties for the task."
+          },
+          "nullable": true
+        },
+        "trigger": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/trigger"
+            },
+            "description": "Optional. The trigger properties for the task."
+          },
+          "nullable": true
+        },
+        "status": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/status"
+            },
+            "description": "Optional. The status of the task at the time the operation was called."
+          },
+          "nullable": true
+        },
+        "timeout": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The timeout in seconds for the task to run before it is automatically disabled."
+          }
+        },
+        "agentConfiguration": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
+            },
+            "description": "Optional. The agent configuration for the task."
+          },
+          "nullable": true
+        },
+        "agentPoolName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents."
+          }
+        },
+        "isSystemTask": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration."
+          }
+        },
+        "logTemplate": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The log template for the task to use when creating logs in Log Analytics."
+          }
+        }
+      }
+    },
+    "tokenType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the token."
+          }
+        },
+        "scopeMapResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the scope map which defines the permissions for this token."
+          }
+        },
+        "status": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/status"
+            },
+            "description": "Optional. The status of the token at the time the operation was called."
+          },
+          "nullable": true
+        },
+        "credentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/authCredentialsType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential."
+          }
+        }
+      }
+    },
+    "webhookType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 5,
+          "maxLength": 50,
+          "metadata": {
+            "description": "Optional. The name of the registry webhook."
+          }
+        },
+        "serviceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service URI for the webhook to post notifications."
+          }
+        },
+        "status": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview#properties/properties/properties/status"
+            },
+            "description": "Optional. The status of the webhook at the time the operation was called."
+          },
+          "nullable": true
+        },
+        "action": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of actions that trigger the webhook to post notifications."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "customHeaders": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview#properties/properties/properties/customHeaders"
+            },
+            "description": "Optional. Custom headers that will be added to the webhook notifications."
+          },
+          "nullable": true
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a webhook."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -941,12 +1270,7 @@
     "replications": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/replications@2025-11-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/replicationType"
       },
       "nullable": true,
       "metadata": {
@@ -956,12 +1280,7 @@
     "webhooks": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/webhooks@2025-11-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/webhookType"
       },
       "nullable": true,
       "metadata": {
@@ -1026,12 +1345,7 @@
     "cacheRules": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/cacheRuleType"
       },
       "nullable": true,
       "metadata": {
@@ -1051,12 +1365,7 @@
     "scopeMaps": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/scopeMaps@2025-11-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/scopeMapsType"
       },
       "nullable": true,
       "metadata": {
@@ -1066,12 +1375,7 @@
     "tokens": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/tokenType"
       },
       "nullable": true,
       "metadata": {
@@ -1081,12 +1385,7 @@
     "tasks": {
       "type": "array",
       "items": {
-        "type": "object",
-        "metadata": {
-          "__bicep_resource_derived_type!": {
-            "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties"
-          }
-        }
+        "$ref": "#/definitions/taskType"
       },
       "nullable": true,
       "metadata": {

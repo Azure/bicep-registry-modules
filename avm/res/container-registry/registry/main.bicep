@@ -128,10 +128,10 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param zoneRedundancy string = 'Enabled'
 
 @description('Optional. All replications to create.')
-param replications resourceInput<'Microsoft.ContainerRegistry/registries/replications@2025-11-01'>.properties[]?
+param replications replicationType[]?
 
 @description('Optional. All webhooks to create.')
-param webhooks resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-11-01'>.properties[]?
+param webhooks webhookType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
@@ -159,19 +159,19 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Array of Cache Rules.')
-param cacheRules resourceInput<'Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01'>.properties[]?
+param cacheRules cacheRuleType[]?
 
 @description('Optional. Array of Credential Sets.')
 param credentialSets credentialSetType[]?
 
 @description('Optional. Scope maps setting.')
-param scopeMaps resourceInput<'Microsoft.ContainerRegistry/registries/scopeMaps@2025-11-01'>.properties[]?
+param scopeMaps scopeMapsType[]?
 
 @description('Optional. Tokens to create for the container registry.')
-param tokens resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties[]?
+param tokens tokenType[]?
 
 @description('Optional. Array of ACR Tasks to create.')
-param tasks resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties[]?
+param tasks taskType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -680,4 +680,134 @@ type credentialSetType = {
 
   @description('Required. The credentials are stored for this upstream or login server.')
   loginServer: string
+}
+
+@export()
+@description('The type for a scope map.')
+type scopeMapsType = {
+  @description('Optional. The name of the scope map.')
+  name: string?
+
+  @description('Required. The list of scoped permissions for registry artifacts.')
+  actions: string[]
+
+  @description('Optional. The user friendly description of the scope map.')
+  description: string?
+}
+
+@export()
+@description('The type for a cache rule.')
+type cacheRuleType = {
+  @description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
+  name: string?
+
+  @description('Required. Source repository pulled from upstream.')
+  sourceRepository: string
+
+  @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
+  targetRepository: string?
+
+  @description('Optional. The resource ID of the credential store which is associated with the cache rule.')
+  credentialSetResourceId: string?
+}
+
+@export()
+@description('The type for a replication.')
+type replicationType = {
+  @description('Required. The name of the replication.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.')
+  regionEndpointEnabled: bool?
+
+  @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
+  zoneRedundancy: resourceInput<'Microsoft.ContainerRegistry/registries@2025-03-01-preview'>.properties.zoneRedundancy?
+}
+
+type taskType = {
+  @description('Required. The name of the task.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The platform properties for the task.')
+  platform: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
+
+  @description('Optional. The step properties for the task.')
+  step: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.step?
+
+  @description('Optional. The trigger properties for the task.')
+  trigger: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.trigger?
+
+  @description('Optional. The status of the task at the time the operation was called.')
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.status?
+
+  @description('Optional. The timeout in seconds for the task to run before it is automatically disabled.')
+  timeout: int?
+
+  @description('Optional. The agent configuration for the task.')
+  agentConfiguration: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.agentConfiguration?
+
+  @description('Optional. The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents.')
+  agentPoolName: string?
+
+  @description('Optional. Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration.')
+  isSystemTask: bool?
+
+  @description('Optional. The log template for the task to use when creating logs in Log Analytics.')
+  logTemplate: string?
+}
+
+type tokenType = {
+  @description('Required. The name of the token.')
+  name: string
+
+  @description('Required. The resource ID of the scope map which defines the permissions for this token.')
+  scopeMapResourceId: string
+
+  @description('Optional. The status of the token at the time the operation was called.')
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties.status?
+
+  @description('Optional. The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential.')
+  credentials: authCredentialsType[]?
+}
+
+@export()
+@description('The type for a webhook.')
+type webhookType = {
+  @description('Optional. The name of the registry webhook.')
+  @minLength(5)
+  @maxLength(50)
+  name: string?
+
+  @description('Required. The service URI for the webhook to post notifications.')
+  serviceUri: string
+
+  @description('Optional. The status of the webhook at the time the operation was called.')
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.properties.status?
+
+  @description('Optional. The list of actions that trigger the webhook to post notifications.')
+  action: string[]?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Custom headers that will be added to the webhook notifications.')
+  customHeaders: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.properties.customHeaders?
+
+  @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
+  scope: string?
 }

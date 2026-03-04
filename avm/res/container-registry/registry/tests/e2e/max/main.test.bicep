@@ -206,9 +206,8 @@ module testDeployment '../../../main.bicep' = [
             architecture: 'amd64'
           }
           step: {
-            encodedTask: {
-              encodedTaskContent: base64('version: v1.1.0\nsteps:\n  - cmd: mcr.microsoft.com/acr/acr-cli:0.14 --help\n')
-            }
+            type: 'EncodedTask'
+            encodedTaskContent: base64('version: v1.1.0\nsteps:\n  - cmd: mcr.microsoft.com/acr/acr-cli:0.14 --help\n')
           }
           trigger: {
             timerTriggers: [

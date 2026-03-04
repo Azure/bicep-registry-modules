@@ -373,9 +373,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
         status: 'Disabled'
         step: {
-          encodedTask: {
-            encodedTaskContent: '<encodedTaskContent>'
-          }
+          encodedTaskContent: '<encodedTaskContent>'
+          type: 'EncodedTask'
         }
         trigger: {
           timerTriggers: [
@@ -589,9 +588,8 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
           },
           "status": "Disabled",
           "step": {
-            "encodedTask": {
-              "encodedTaskContent": "<encodedTaskContent>"
-            }
+            "encodedTaskContent": "<encodedTaskContent>",
+            "type": "EncodedTask"
           },
           "trigger": {
             "timerTriggers": [
@@ -767,9 +765,8 @@ param tasks = [
     }
     status: 'Disabled'
     step: {
-      encodedTask: {
-        encodedTaskContent: '<encodedTaskContent>'
-      }
+      encodedTaskContent: '<encodedTaskContent>'
+      type: 'EncodedTask'
     }
     trigger: {
       timerTriggers: [
@@ -1326,6 +1323,48 @@ Array of Cache Rules.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sourceRepository`](#parameter-cacherulessourcerepository) | string | Source repository pulled from upstream. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentialSetResourceId`](#parameter-cacherulescredentialsetresourceid) | string | The resource ID of the credential store which is associated with the cache rule. |
+| [`name`](#parameter-cacherulesname) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
+| [`targetRepository`](#parameter-cacherulestargetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
+
+### Parameter: `cacheRules.sourceRepository`
+
+Source repository pulled from upstream.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cacheRules.credentialSetResourceId`
+
+The resource ID of the credential store which is associated with the cache rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.name`
+
+The name of the cache rule. Will be derived from the source repository name if not defined.
+
+- Required: No
+- Type: string
+
+### Parameter: `cacheRules.targetRepository`
+
+Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.
+
+- Required: No
+- Type: string
 
 ### Parameter: `credentialSets`
 
@@ -2224,6 +2263,56 @@ All replications to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-replicationsname) | string | The name of the replication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-replicationslocation) | string | Location for all resources. |
+| [`regionEndpointEnabled`](#parameter-replicationsregionendpointenabled) | bool | Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications. |
+| [`tags`](#parameter-replicationstags) | object | Tags of the resource. |
+| [`zoneRedundancy`](#parameter-replicationszoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
+
+### Parameter: `replications.name`
+
+The name of the replication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `replications.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `replications.regionEndpointEnabled`
+
+Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.
+
+- Required: No
+- Type: bool
+
+### Parameter: `replications.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `replications.zoneRedundancy`
+
+Whether or not zone redundancy is enabled for this container registry.
+
+- Required: No
+- Type: string
+
 ### Parameter: `retentionPolicyDays`
 
 The number of days to retain an untagged manifest after which it gets purged.
@@ -2381,6 +2470,40 @@ Scope maps setting.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-scopemapsactions) | array | The list of scoped permissions for registry artifacts. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-scopemapsdescription) | string | The user friendly description of the scope map. |
+| [`name`](#parameter-scopemapsname) | string | The name of the scope map. |
+
+### Parameter: `scopeMaps.actions`
+
+The list of scoped permissions for registry artifacts.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `scopeMaps.description`
+
+The user friendly description of the scope map.
+
+- Required: No
+- Type: string
+
+### Parameter: `scopeMaps.name`
+
+The name of the scope map.
+
+- Required: No
+- Type: string
+
 ### Parameter: `softDeletePolicyDays`
 
 The number of days after which a soft-deleted item is permanently deleted.
@@ -2418,12 +2541,189 @@ Array of ACR Tasks to create.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tasksname) | string | The name of the task. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentConfiguration`](#parameter-tasksagentconfiguration) | object | The agent configuration for the task. |
+| [`agentPoolName`](#parameter-tasksagentpoolname) | string | The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents. |
+| [`isSystemTask`](#parameter-tasksissystemtask) | bool | Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration. |
+| [`location`](#parameter-taskslocation) | string | Location for all resources. |
+| [`logTemplate`](#parameter-taskslogtemplate) | string | The log template for the task to use when creating logs in Log Analytics. |
+| [`platform`](#parameter-tasksplatform) | object | The platform properties for the task. |
+| [`status`](#parameter-tasksstatus) | string | The status of the task at the time the operation was called. |
+| [`step`](#parameter-tasksstep) | object | The step properties for the task. |
+| [`tags`](#parameter-taskstags) | object | Tags of the resource. |
+| [`timeout`](#parameter-taskstimeout) | int | The timeout in seconds for the task to run before it is automatically disabled. |
+| [`trigger`](#parameter-taskstrigger) | object | The trigger properties for the task. |
+
+### Parameter: `tasks.name`
+
+The name of the task.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tasks.agentConfiguration`
+
+The agent configuration for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.agentPoolName`
+
+The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.isSystemTask`
+
+Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration.
+
+- Required: No
+- Type: bool
+
+### Parameter: `tasks.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.logTemplate`
+
+The log template for the task to use when creating logs in Log Analytics.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.platform`
+
+The platform properties for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.status`
+
+The status of the task at the time the operation was called.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.step`
+
+The step properties for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.timeout`
+
+The timeout in seconds for the task to run before it is automatically disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `tasks.trigger`
+
+The trigger properties for the task.
+
+- Required: No
+- Type: object
+
 ### Parameter: `tokens`
 
 Tokens to create for the container registry.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokensname) | string | The name of the token. |
+| [`scopeMapResourceId`](#parameter-tokensscopemapresourceid) | string | The resource ID of the scope map which defines the permissions for this token. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentials`](#parameter-tokenscredentials) | array | The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential. |
+| [`status`](#parameter-tokensstatus) | string | The status of the token at the time the operation was called. |
+
+### Parameter: `tokens.name`
+
+The name of the token.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.scopeMapResourceId`
+
+The resource ID of the scope map which defines the permissions for this token.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials`
+
+The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokenscredentialsname) | string | The name of the credential. |
+| [`passwordSecretIdentifier`](#parameter-tokenscredentialspasswordsecretidentifier) | string | KeyVault Secret URI for accessing the password. |
+| [`usernameSecretIdentifier`](#parameter-tokenscredentialsusernamesecretidentifier) | string | KeyVault Secret URI for accessing the username. |
+
+### Parameter: `tokens.credentials.name`
+
+The name of the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials.passwordSecretIdentifier`
+
+KeyVault Secret URI for accessing the password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials.usernameSecretIdentifier`
+
+KeyVault Secret URI for accessing the username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.status`
+
+The status of the token at the time the operation was called.
+
+- Required: No
+- Type: string
 
 ### Parameter: `trustPolicyStatus`
 
@@ -2446,6 +2746,80 @@ All webhooks to create.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceUri`](#parameter-webhooksserviceuri) | string | The service URI for the webhook to post notifications. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-webhooksaction) | array | The list of actions that trigger the webhook to post notifications. |
+| [`customHeaders`](#parameter-webhookscustomheaders) | object | Custom headers that will be added to the webhook notifications. |
+| [`location`](#parameter-webhookslocation) | string | Location for all resources. |
+| [`name`](#parameter-webhooksname) | string | The name of the registry webhook. |
+| [`scope`](#parameter-webhooksscope) | string | The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events. |
+| [`status`](#parameter-webhooksstatus) | string | The status of the webhook at the time the operation was called. |
+| [`tags`](#parameter-webhookstags) | object | Tags of the resource. |
+
+### Parameter: `webhooks.serviceUri`
+
+The service URI for the webhook to post notifications.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `webhooks.action`
+
+The list of actions that trigger the webhook to post notifications.
+
+- Required: No
+- Type: array
+
+### Parameter: `webhooks.customHeaders`
+
+Custom headers that will be added to the webhook notifications.
+
+- Required: No
+- Type: object
+
+### Parameter: `webhooks.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.name`
+
+The name of the registry webhook.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.scope`
+
+The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.status`
+
+The status of the webhook at the time the operation was called.
+
+- Required: No
+- Type: string
+
+### Parameter: `webhooks.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `zoneRedundancy`
 
