@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "4057795169933801483"
+      "version": "0.41.2.15936",
+      "templateHash": "11316330965372950910"
     },
     "name": "Email Services Domains",
     "description": "This module deploys an Email Service Domain"
@@ -342,8 +342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "12965129978578560689"
+              "version": "0.41.2.15936",
+              "templateHash": "5118036937740143259"
             },
             "name": "Sender Usernames",
             "description": "This module deploys an Sender"
