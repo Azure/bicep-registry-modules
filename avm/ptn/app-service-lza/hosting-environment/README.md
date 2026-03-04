@@ -118,9 +118,9 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _ASE v3 with Linux workloads._
 
-This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux matrix.
+This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-linux-matrix]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-linux]
 
 
 <details>
@@ -129,7 +129,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 
 ```bicep
 metadata name = 'ASE v3 with Linux workloads.'
-metadata description = 'This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux matrix.'
+metadata description = 'This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux.'
 
 targetScope = 'subscription'
 
@@ -263,7 +263,7 @@ output testDeploymentOutputs object = {
 
 This instance deploys ASE v3 with Windows web app and Windows container workloads, plus a Windows jump host with Bastion-enabled NSG rules to validate the managed-instance + Bastion integration path.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-windows-matrix]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-windows]
 
 
 <details>
@@ -418,7 +418,7 @@ output testDeploymentOutputs object = {
 
 This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and passing it via existingAppServicePlanId, then deploying a Linux web app and a Linux container on it.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-linux-matrix]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-linux]
 
 
 <details>
@@ -571,7 +571,7 @@ output testDeploymentOutputs object = {
 
 This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and passing it via existingAppServicePlanId, then deploying a Windows web app and a Windows container on it.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-windows-matrix]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-windows]
 
 
 <details>

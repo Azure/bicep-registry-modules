@@ -1,5 +1,5 @@
 metadata name = 'ASE v3 with Linux workloads.'
-metadata description = 'This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux matrix.'
+metadata description = 'This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux.'
 
 targetScope = 'subscription'
 
