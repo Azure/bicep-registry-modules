@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "15199668707642182217"
+      "version": "0.41.2.15936",
+      "templateHash": "10809651084635321958"
     },
     "name": "Dev Center Project Catalog",
     "description": "This module deploys a Dev Center Project Catalog."
