@@ -178,7 +178,8 @@ module testDeployment '../../../main.bicep' = [
       tokens: [
         {
           name: '${namePrefix}${serviceShort}Token'
-          scopeMapResourceId: az.resourceId(
+          scopeMapResourceId: resourceId(
+            subscription().subscriptionId,
             resourceGroupName,
             'Microsoft.ContainerRegistry/registries/scopeMaps',
             '${namePrefix}${serviceShort}001',
