@@ -93,6 +93,9 @@ var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscription
 module jumpbox './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-jumpbox'
   scope: az.resourceGroup(spokeResourceGroupName)
+  dependsOn: [
+    testDeployment
+  ]
   params: {
     vmName: take('vm-${namePrefix}${serviceShort}', 15)
     spokeVnetName: testDeployment[0].outputs.spokeVnetName

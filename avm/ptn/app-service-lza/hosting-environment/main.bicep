@@ -628,7 +628,7 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = if (deployPlan)
     targetWorkerSize: targetWorkerSize
     workerTierName: workerTierName
     hyperV: isWindowsContainer
-    appServiceEnvironmentResourceId: aseEnvironment.?outputs.?resourceId ?? ''
+    appServiceEnvironmentResourceId: aseEnvironment.?outputs.?resourceId ?? null
     virtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
     isCustomMode: isCustomMode ?? false
     rdpEnabled: rdpEnabled

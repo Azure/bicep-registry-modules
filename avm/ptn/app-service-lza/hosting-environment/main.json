@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18114949555974043279"
+      "templateHash": "5561350670339195784"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -13524,7 +13524,7 @@
             "value": "[variables('isWindowsContainer')]"
           },
           "appServiceEnvironmentResourceId": {
-            "value": "[coalesce(tryGet(tryGet(tryGet(if(parameters('deployAseV3'), reference('aseEnvironment'), null()), 'outputs'), 'resourceId'), 'value'), '')]"
+            "value": "[coalesce(tryGet(tryGet(tryGet(if(parameters('deployAseV3'), reference('aseEnvironment'), null()), 'outputs'), 'resourceId'), 'value'), null())]"
           },
           "virtualNetworkSubnetId": {
             "value": "[variables('appServicePlanVirtualNetworkSubnetId')]"

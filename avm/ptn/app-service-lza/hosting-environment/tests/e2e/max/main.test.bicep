@@ -171,7 +171,7 @@ module testDeployment '../../../main.bicep' = [
 // Example: Deploy a jumpbox VM      //
 // ================================= //
 // This demonstrates how to deploy a jumpbox VM into the spoke VNet created by the LZA module.
-// Customers can use the `dependencies/jumpbox.bicep` template as a starting point.
+// Customers can use the `dependencies.bicep` template as a starting point.
 // Note: The spoke resource group name follows the LZA default: rg-spoke-{workloadName}-{env}-{location}
 
 var spokeResourceGroupName = 'rg-spoke-${take('${namePrefix}${serviceShort}', 10)}-test-${enforcedLocation}'
@@ -183,6 +183,9 @@ var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscription
 module jumpbox './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-jumpbox'
   scope: az.resourceGroup(spokeResourceGroupName)
+  dependsOn: [
+    testDeployment
+  ]
   params: {
     vmName: take('vm-${namePrefix}${serviceShort}', 15)
     spokeVnetName: testDeployment[0].outputs.spokeVnetName
