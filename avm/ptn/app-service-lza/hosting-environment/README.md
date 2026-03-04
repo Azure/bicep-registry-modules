@@ -128,132 +128,131 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-metadata name = 'ASE v3 with Linux workloads.'
-metadata description = 'This instance deploys ASE v3 with both a Linux web app and a Linux container workload to validate the ASE + Linux.'
-
-targetScope = 'subscription'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
-@maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
-
-@description('Optional. Test name prefix.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
-
-// Diagnostics
-// ===========
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
-  location: enforcedLocation
-}
-
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: enforcedLocation
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app,linux'
+    }
+    deployAseV3: true
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      enabled: false
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'linux'
+      sku: 'I1v2'
+    }
+    spokeNetworkConfig: {
+      appSvcSubnetAddressSpace: '10.240.0.0/24'
+      ingressOption: 'none'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'ase-linux-webapp'
+    }
+    workloadName: '<workloadName>'
   }
 }
+```
 
-// ============== //
-// Test Execution //
-// ============== //
+</details>
+<p>
 
-// --- ASE v3 + Linux web app ---
-@batchSize(1)
-module testDeploymentLinuxWebApp '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}aselw', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'ase-linux-webapp'
-      }
+<details>
 
-      deployAseV3: true
-      servicePlanConfig: {
-        kind: 'linux'
-        sku: 'I1v2'
-      }
-      appServiceConfig: {
-        kind: 'app,linux'
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
-      }
+<summary>via JSON parameters file</summary>
 
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app,linux"
       }
-      location: enforcedLocation
+    },
+    "deployAseV3": {
+      "value": true
+    },
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "enabled": false
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "linux",
+        "sku": "I1v2"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "appSvcSubnetAddressSpace": "10.240.0.0/24",
+        "ingressOption": "none"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "ase-linux-webapp"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
-]
-
-// --- ASE v3 + Linux container ---
-@batchSize(1)
-module testDeploymentLinuxContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}aselc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'ase-linux-container'
-      }
-
-      deployAseV3: true
-      servicePlanConfig: {
-        kind: 'linux'
-        sku: 'I1v2'
-      }
-      appServiceConfig: {
-        kind: 'app,linux,container'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
-      }
-
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  linuxWebApp: testDeploymentLinuxWebApp[0].outputs
-  linuxContainer: testDeploymentLinuxContainer[0].outputs
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app,linux'
+}
+deployAseV3: true
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  enabled: false
+}
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'linux'
+  sku: 'I1v2'
+}
+param spokeNetworkConfig = {
+  appSvcSubnetAddressSpace: '10.240.0.0/24'
+  ingressOption: 'none'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'ase-linux-webapp'
+}
+param workloadName = '<workloadName>'
 ```
 
 </details>
@@ -271,144 +270,140 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-metadata name = 'ASE v3 with Windows workloads and Bastion integration.'
-metadata description = 'This instance deploys ASE v3 with Windows web app and Windows container workloads, plus a Windows jump host with Bastion-enabled NSG rules to validate the managed-instance + Bastion integration path.'
-
-targetScope = 'subscription'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
-@maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appasewin'
-
-@description('Optional. Test name prefix.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
-
-// A placeholder Bastion resource ID exercises the Bastion-integration code path in jumpbox NSG rules.
-// The resource does not need to exist for a validation (dry-run) deployment.
-var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
-
-// Diagnostics
-// ===========
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
-  location: enforcedLocation
-}
-
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: enforcedLocation
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app'
+    }
+    deployAseV3: true
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'azureuser'
+      bastionResourceId: '<bastionResourceId>'
+      osType: 'windows'
+      vmSize: 'Standard_D2s_v4'
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'windows'
+      sku: 'I1v2'
+    }
+    spokeNetworkConfig: {
+      appSvcSubnetAddressSpace: '10.240.0.0/24'
+      ingressOption: 'none'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'ase-windows-webapp-bastion'
+    }
+    workloadName: '<workloadName>'
   }
 }
+```
 
-// ============== //
-// Test Execution //
-// ============== //
+</details>
+<p>
 
-// --- ASE v3 + Windows web app + Bastion jump host ---
-@batchSize(1)
-module testDeploymentWindowsWebApp '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wweb-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}aseww', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'ase-windows-webapp-bastion'
-      }
+<details>
 
-      deployAseV3: true
-      servicePlanConfig: {
-        kind: 'windows'
-        sku: 'I1v2'
-      }
-      appServiceConfig: {
-        kind: 'app'
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
-      }
+<summary>via JSON parameters file</summary>
 
-      // Windows jump host with Bastion integration
-      jumpboxConfig: {
-        osType: 'windows'
-        bastionResourceId: bastionPlaceholderResourceId
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app"
       }
-      location: enforcedLocation
+    },
+    "deployAseV3": {
+      "value": true
+    },
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "azureuser",
+        "bastionResourceId": "<bastionResourceId>",
+        "osType": "windows",
+        "vmSize": "Standard_D2s_v4"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "windows",
+        "sku": "I1v2"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "appSvcSubnetAddressSpace": "10.240.0.0/24",
+        "ingressOption": "none"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "ase-windows-webapp-bastion"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
-]
-
-// --- ASE v3 + Windows container + Bastion jump host ---
-@batchSize(1)
-module testDeploymentWindowsContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}asewc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'ase-windows-container-bastion'
-      }
-
-      deployAseV3: true
-      servicePlanConfig: {
-        kind: 'windows'
-        sku: 'I1v2'
-      }
-      appServiceConfig: {
-        kind: 'app,container,windows'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
-      }
-
-      // Windows jump host with Bastion integration
-      jumpboxConfig: {
-        osType: 'windows'
-        bastionResourceId: bastionPlaceholderResourceId
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
-      }
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  windowsWebApp: testDeploymentWindowsWebApp[0].outputs
-  windowsContainer: testDeploymentWindowsContainer[0].outputs
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app'
+}
+deployAseV3: true
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'azureuser'
+  bastionResourceId: '<bastionResourceId>'
+  osType: 'windows'
+  vmSize: 'Standard_D2s_v4'
+}
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'windows'
+  sku: 'I1v2'
+}
+param spokeNetworkConfig = {
+  appSvcSubnetAddressSpace: '10.240.0.0/24'
+  ingressOption: 'none'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'ase-windows-webapp-bastion'
+}
+param workloadName = '<workloadName>'
 ```
 
 </details>
@@ -426,142 +421,123 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-metadata name = 'Bring-your-own-service with Linux workloads.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and passing it via existingAppServicePlanId, then deploying a Linux web app and a Linux container on it.'
-
-targetScope = 'subscription'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
-@maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appbyolnx'
-
-@description('Optional. Test name prefix.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
-
-// Diagnostics
-// ===========
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
-  location: enforcedLocation
-}
-
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: enforcedLocation
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app,linux'
+    }
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      enabled: false
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      existingPlanId: '<existingPlanId>'
+      kind: 'linux'
+    }
+    spokeNetworkConfig: {
+      ingressOption: 'none'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'byos-linux-webapp'
+    }
+    workloadName: '<workloadName>'
   }
 }
+```
 
-// Pre-create a Linux App Service Plan to exercise bring-your-own-service
-module existingLinuxPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-existingLinuxPlan'
-  params: {
-    name: take('asp-${namePrefix}-${serviceShort}-lnx', 40)
-    location: enforcedLocation
-    skuName: 'P1V3'
-    kind: 'Linux'
-    reserved: true
-    enableTelemetry: true
-  }
-}
+</details>
+<p>
 
-// ============== //
-// Test Execution //
-// ============== //
+<details>
 
-// --- BYOS + Linux web app ---
-@batchSize(1)
-module testDeploymentLinuxWebApp '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byolw', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-linux-webapp'
-      }
+<summary>via JSON parameters file</summary>
 
-      servicePlanConfig: {
-        existingPlanId: existingLinuxPlan.outputs.resourceId
-        kind: 'linux'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app,linux"
       }
-      appServiceConfig: {
-        kind: 'app,linux'
+    },
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "enabled": false
       }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "existingPlanId": "<existingPlanId>",
+        "kind": "linux"
       }
-
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "ingressOption": "none"
       }
-      location: enforcedLocation
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "byos-linux-webapp"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
-]
-
-// --- BYOS + Linux container ---
-@batchSize(1)
-module testDeploymentLinuxContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byolc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-linux-container'
-      }
-
-      servicePlanConfig: {
-        existingPlanId: existingLinuxPlan.outputs.resourceId
-        kind: 'linux'
-      }
-      appServiceConfig: {
-        kind: 'app,linux,container'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-      }
-
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  linuxWebApp: testDeploymentLinuxWebApp[0].outputs
-  linuxContainer: testDeploymentLinuxContainer[0].outputs
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app,linux'
+}
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  enabled: false
+}
+param location = '<location>'
+param servicePlanConfig = {
+  existingPlanId: '<existingPlanId>'
+  kind: 'linux'
+}
+param spokeNetworkConfig = {
+  ingressOption: 'none'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'byos-linux-webapp'
+}
+param workloadName = '<workloadName>'
 ```
 
 </details>
@@ -579,142 +555,123 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-metadata name = 'Bring-your-own-service with Windows workloads.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and passing it via existingAppServicePlanId, then deploying a Windows web app and a Windows container on it.'
-
-targetScope = 'subscription'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
-@maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appbyowin'
-
-@description('Optional. Test name prefix.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
-
-// Diagnostics
-// ===========
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
-  location: enforcedLocation
-}
-
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: enforcedLocation
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app'
+    }
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      enabled: false
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      existingPlanId: '<existingPlanId>'
+      kind: 'windows'
+    }
+    spokeNetworkConfig: {
+      ingressOption: 'none'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'byos-windows-webapp'
+    }
+    workloadName: '<workloadName>'
   }
 }
+```
 
-// Pre-create a Windows App Service Plan to exercise bring-your-own-service
-module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-existingWindowsPlan'
-  params: {
-    name: take('asp-${namePrefix}-${serviceShort}-win', 40)
-    location: enforcedLocation
-    skuName: 'P1V3'
-    kind: 'Windows'
-    reserved: false
-    enableTelemetry: true
-  }
-}
+</details>
+<p>
 
-// ============== //
-// Test Execution //
-// ============== //
+<details>
 
-// --- BYOS + Windows web app ---
-@batchSize(1)
-module testDeploymentWindowsWebApp '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wweb-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byoww', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-windows-webapp'
-      }
+<summary>via JSON parameters file</summary>
 
-      servicePlanConfig: {
-        existingPlanId: existingWindowsPlan.outputs.resourceId
-        kind: 'windows'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app"
       }
-      appServiceConfig: {
-        kind: 'app'
+    },
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "enabled": false
       }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "existingPlanId": "<existingPlanId>",
+        "kind": "windows"
       }
-
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "ingressOption": "none"
       }
-      location: enforcedLocation
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "byos-windows-webapp"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
-]
-
-// --- BYOS + Windows container ---
-@batchSize(1)
-module testDeploymentWindowsContainer '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wctr-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}byowc', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'byos-windows-container'
-      }
-
-      servicePlanConfig: {
-        existingPlanId: existingWindowsPlan.outputs.resourceId
-        kind: 'windows'
-      }
-      appServiceConfig: {
-        kind: 'app,container,windows'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-        }
-      }
-      spokeNetworkConfig: {
-        ingressOption: 'none'
-      }
-
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
-      location: enforcedLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  windowsWebApp: testDeploymentWindowsWebApp[0].outputs
-  windowsContainer: testDeploymentWindowsContainer[0].outputs
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app'
+}
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  enabled: false
+}
+param location = '<location>'
+param servicePlanConfig = {
+  existingPlanId: '<existingPlanId>'
+  kind: 'windows'
+}
+param spokeNetworkConfig = {
+  ingressOption: 'none'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'byos-windows-webapp'
+}
+param workloadName = '<workloadName>'
 ```
 
 </details>
@@ -1220,134 +1177,120 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-metadata name = 'Multi-region with Azure Front Door.'
-metadata description = 'This instance deploys two regional stamps behind Front Door to validate the multi-region topology with Linux and Windows workloads.'
-
-targetScope = 'subscription'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
-@maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appmrfd'
-
-@description('Optional. Test name prefix.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
-// Hardcoded regions where App Service Premium plans are available
-#disable-next-line no-hardcoded-location
-var primaryLocation = 'australiaeast'
-#disable-next-line no-hardcoded-location
-var secondaryLocation = 'australiasoutheast'
-
-// Diagnostics
-// ===========
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
-  location: primaryLocation
-}
-
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, primaryLocation)}-diagnosticDependencies'
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: primaryLocation
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app'
+    }
+    jumpboxConfig: {
+      adminPassword: '<adminPassword>'
+      enabled: false
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'windows'
+    }
+    spokeNetworkConfig: {
+      ingressOption: 'frontDoor'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'multi-region-front-door-primary'
+    }
+    workloadName: '<workloadName>'
   }
 }
+```
 
-// ============== //
-// Test Execution //
-// ============== //
+</details>
+<p>
 
-// --- Primary region: Windows web app behind Front Door ---
-@batchSize(1)
-module testDeploymentPrimary '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, primaryLocation)}-test-${serviceShort}-pri-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}${serviceShort}p', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'multi-region-front-door-primary'
-      }
+<details>
 
-      // Front Door ingress
-      spokeNetworkConfig: {
-        ingressOption: 'frontDoor'
-      }
+<summary>via JSON parameters file</summary>
 
-      // Windows web app
-      servicePlanConfig: {
-        kind: 'windows'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app"
       }
-      appServiceConfig: {
-        kind: 'app'
+    },
+    "jumpboxConfig": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "enabled": false
       }
-
-      // No jump host for speed
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "windows"
       }
-      location: primaryLocation
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "ingressOption": "frontDoor"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "multi-region-front-door-primary"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
     }
   }
-]
-
-// --- Secondary region: Linux web app behind Front Door ---
-@batchSize(1)
-module testDeploymentSecondary '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, secondaryLocation)}-test-${serviceShort}-sec-${iteration}'
-    params: {
-      workloadName: take('${namePrefix}${serviceShort}s', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      tags: {
-        environment: 'test'
-        scenario: 'multi-region-front-door-secondary'
-      }
-
-      // Front Door ingress
-      spokeNetworkConfig: {
-        ingressOption: 'frontDoor'
-      }
-
-      // Linux web app
-      servicePlanConfig: {
-        kind: 'linux'
-      }
-      appServiceConfig: {
-        kind: 'app,linux'
-      }
-
-      // No jump host for speed
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
-      location: secondaryLocation
-    }
-  }
-]
-
-output testDeploymentOutputs object = {
-  primary: testDeploymentPrimary[0].outputs
-  secondary: testDeploymentSecondary[0].outputs
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app'
+}
+param jumpboxConfig = {
+  adminPassword: '<adminPassword>'
+  enabled: false
+}
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'windows'
+}
+param spokeNetworkConfig = {
+  ingressOption: 'frontDoor'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'multi-region-front-door-primary'
+}
+param workloadName = '<workloadName>'
 ```
 
 </details>
