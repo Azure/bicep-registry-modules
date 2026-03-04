@@ -127,7 +127,7 @@ resource spokePrivateEndpointSubnet 'Microsoft.Network/virtualNetworks/subnets@2
   name: spokePrivateEndpointSubnetName
 }
 
-module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.8.0' = {
+module vaultdnszone 'br/public:avm/res/network/private-dns-zone:0.8.1' = {
   name: 'keyvaultDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: vaultDnsZoneName

@@ -25,7 +25,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
 | `Microsoft.Cdn/profiles` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles)</li></ul> |
 | `Microsoft.Cdn/profiles/afdEndpoints` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/afdEndpoints/routes` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_afdendpoints_routes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/afdEndpoints/routes)</li></ul> |
@@ -38,29 +37,18 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cdn/profiles/ruleSets/rules` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_rulesets_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/ruleSets/rules)</li></ul> |
 | `Microsoft.Cdn/profiles/secrets` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/secrets)</li></ul> |
 | `Microsoft.Cdn/profiles/securityPolicies` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_securitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/securityPolicies)</li></ul> |
-| `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
-| `Microsoft.Compute/sshPublicKeys` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_sshpublickeys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/sshPublicKeys)</li></ul> |
-| `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
-| `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
-| `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
-| `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
 | `Microsoft.Insights/components` | 2020-02-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components)</li></ul> |
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
-| `Microsoft.Insights/dataCollectionRuleAssociations` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRuleAssociations)</li></ul> |
-| `Microsoft.Insights/dataCollectionRules` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults)</li></ul> |
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
-| `Microsoft.Maintenance/maintenanceConfigurations` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Network/applicationGateways` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/applicationGateways)</li></ul> |
 | `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
 | `Microsoft.Network/FrontDoorWebApplicationFirewallPolicies` | 2024-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_frontdoorwebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-02-01/FrontDoorWebApplicationFirewallPolicies)</li></ul> |
-| `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 | `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
 | `Microsoft.Network/privateDnsZones/A` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_a.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A)</li></ul> |
@@ -74,15 +62,13 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/routeTables` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/routeTables)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 | `Microsoft.Resources/resourceGroups` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/resourceGroups)</li></ul> |
 | `Microsoft.Web/hostingEnvironments` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_hostingenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/hostingEnvironments)</li></ul> |
@@ -137,10 +123,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       kind: 'app,linux'
     }
     deployAseV3: true
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      enabled: false
-    }
     location: '<location>'
     servicePlanConfig: {
       kind: 'linux'
@@ -183,12 +165,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "deployAseV3": {
       "value": true
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "enabled": false
-      }
     },
     "location": {
       "value": "<location>"
@@ -235,10 +211,6 @@ param appServiceConfig = {
   kind: 'app,linux'
 }
 deployAseV3: true
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  enabled: false
-}
 param location = '<location>'
 param servicePlanConfig = {
   kind: 'linux'
@@ -279,13 +251,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       kind: 'app'
     }
     deployAseV3: true
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      adminUsername: 'azureuser'
-      bastionResourceId: '<bastionResourceId>'
-      osType: 'windows'
-      vmSize: 'Standard_D2s_v4'
-    }
     location: '<location>'
     servicePlanConfig: {
       kind: 'windows'
@@ -328,15 +293,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "deployAseV3": {
       "value": true
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "adminUsername": "azureuser",
-        "bastionResourceId": "<bastionResourceId>",
-        "osType": "windows",
-        "vmSize": "Standard_D2s_v4"
-      }
     },
     "location": {
       "value": "<location>"
@@ -383,13 +339,6 @@ param appServiceConfig = {
   kind: 'app'
 }
 deployAseV3: true
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  adminUsername: 'azureuser'
-  bastionResourceId: '<bastionResourceId>'
-  osType: 'windows'
-  vmSize: 'Standard_D2s_v4'
-}
 param location = '<location>'
 param servicePlanConfig = {
   kind: 'windows'
@@ -429,10 +378,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     appServiceConfig: {
       kind: 'app,linux'
     }
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      enabled: false
-    }
     location: '<location>'
     servicePlanConfig: {
       existingPlanId: '<existingPlanId>'
@@ -470,12 +415,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "appServiceConfig": {
       "value": {
         "kind": "app,linux"
-      }
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "enabled": false
       }
     },
     "location": {
@@ -521,10 +460,6 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param appServiceConfig = {
   kind: 'app,linux'
 }
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  enabled: false
-}
 param location = '<location>'
 param servicePlanConfig = {
   existingPlanId: '<existingPlanId>'
@@ -563,10 +498,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     appServiceConfig: {
       kind: 'app'
     }
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      enabled: false
-    }
     location: '<location>'
     servicePlanConfig: {
       existingPlanId: '<existingPlanId>'
@@ -604,12 +535,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "appServiceConfig": {
       "value": {
         "kind": "app"
-      }
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "enabled": false
       }
     },
     "location": {
@@ -655,10 +580,6 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param appServiceConfig = {
   kind: 'app'
 }
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  enabled: false
-}
 param location = '<location>'
 param servicePlanConfig = {
   existingPlanId: '<existingPlanId>'
@@ -694,11 +615,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     // Required parameters
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      adminUsername: 'azureuser'
-      vmSize: 'Standard_D2s_v4'
-    }
     location: '<location>'
     workloadName: '<workloadName>'
   }
@@ -722,13 +638,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     // Non-required parameters
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "adminUsername": "azureuser",
-        "vmSize": "Standard_D2s_v4"
-      }
-    },
     "location": {
       "value": "<location>"
     },
@@ -752,11 +661,6 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 // Required parameters
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  adminUsername: 'azureuser'
-  vmSize: 'Standard_D2s_v4'
-}
 param location = '<location>'
 param workloadName = '<workloadName>'
 ```
@@ -839,12 +743,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
-    }
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      adminUsername: 'azureuser'
-      osType: 'linux'
-      vmSize: 'Standard_D2s_v4'
     }
     keyVaultConfig: {
       diagnosticSettings: [
@@ -972,14 +870,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ]
-      }
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "adminUsername": "azureuser",
-        "osType": "linux",
-        "vmSize": "Standard_D2s_v4"
       }
     },
     "keyVaultConfig": {
@@ -1112,12 +1002,6 @@ param aseConfig = {
     }
   ]
 }
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  adminUsername: 'azureuser'
-  osType: 'linux'
-  vmSize: 'Standard_D2s_v4'
-}
 param keyVaultConfig = {
   diagnosticSettings: [
     {
@@ -1185,10 +1069,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     appServiceConfig: {
       kind: 'app'
     }
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      enabled: false
-    }
     location: '<location>'
     servicePlanConfig: {
       kind: 'windows'
@@ -1225,12 +1105,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "appServiceConfig": {
       "value": {
         "kind": "app"
-      }
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "enabled": false
       }
     },
     "location": {
@@ -1274,10 +1148,6 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param appServiceConfig = {
   kind: 'app'
-}
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  enabled: false
 }
 param location = '<location>'
 param servicePlanConfig = {
@@ -1365,11 +1235,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
           workspaceResourceId: '<workspaceResourceId>'
         }
       ]
-    }
-    jumpboxConfig: {
-      adminPassword: '<adminPassword>'
-      adminUsername: 'azureuser'
-      vmSize: 'Standard_D2s_v4'
     }
     location: '<location>'
     servicePlanConfig: {
@@ -1472,13 +1337,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
             "workspaceResourceId": "<workspaceResourceId>"
           }
         ]
-      }
-    },
-    "jumpboxConfig": {
-      "value": {
-        "adminPassword": "<adminPassword>",
-        "adminUsername": "azureuser",
-        "vmSize": "Standard_D2s_v4"
       }
     },
     "location": {
@@ -1584,11 +1442,6 @@ param frontDoorConfig = {
     }
   ]
 }
-param jumpboxConfig = {
-  adminPassword: '<adminPassword>'
-  adminUsername: 'azureuser'
-  vmSize: 'Standard_D2s_v4'
-}
 param location = '<location>'
 param servicePlanConfig = {
   diagnosticSettings: [
@@ -1638,7 +1491,6 @@ param workloadName = '<workloadName>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentName`](#parameter-environmentname) | string | The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long. |
 | [`frontDoorConfig`](#parameter-frontdoorconfig) | object | Configuration for Azure Front Door. Only used when spokeNetworkConfig.ingressOption is "frontDoor". |
-| [`jumpboxConfig`](#parameter-jumpboxconfig) | object | Configuration for the jumpbox VM deployment. |
 | [`keyVaultConfig`](#parameter-keyvaultconfig) | object | Configuration for the Key Vault. |
 | [`location`](#parameter-location) | string | Azure region where the resources will be deployed in. |
 | [`servicePlanConfig`](#parameter-serviceplanconfig) | object | Configuration for the App Service Plan. |
@@ -3869,12 +3721,10 @@ Custom resource names. Any property not provided falls back to the naming-module
 | [`appServicePlanName`](#parameter-customresourcenamesappserviceplanname) | string | Custom name for the App Service Plan. |
 | [`appSvcManagedIdentityName`](#parameter-customresourcenamesappsvcmanagedidentityname) | string | Custom name for the App Service managed identity. |
 | [`aseName`](#parameter-customresourcenamesasename) | string | Custom name for the App Service Environment. |
-| [`devOpsSubnetName`](#parameter-customresourcenamesdevopssubnetname) | string | Custom name for the DevOps subnet. |
 | [`frontDoorEndpointName`](#parameter-customresourcenamesfrontdoorendpointname) | string | Custom name for the Front Door endpoint. |
 | [`frontDoorName`](#parameter-customresourcenamesfrontdoorname) | string | Custom name for the Front Door profile. |
 | [`frontDoorOriginGroupName`](#parameter-customresourcenamesfrontdoororigingroupname) | string | Custom name for the Front Door origin group. |
 | [`frontDoorWafName`](#parameter-customresourcenamesfrontdoorwafname) | string | Custom name for the Front Door WAF policy. |
-| [`jumpboxNsgName`](#parameter-customresourcenamesjumpboxnsgname) | string | Custom name for the jumpbox NSG. |
 | [`resourceGroupName`](#parameter-customresourcenamesresourcegroupname) | string | Custom name for the spoke resource group. |
 | [`webAppName`](#parameter-customresourcenameswebappname) | string | Custom name for the Web App. |
 
@@ -3906,13 +3756,6 @@ Custom name for the App Service Environment.
 - Required: No
 - Type: string
 
-### Parameter: `customResourceNames.devOpsSubnetName`
-
-Custom name for the DevOps subnet.
-
-- Required: No
-- Type: string
-
 ### Parameter: `customResourceNames.frontDoorEndpointName`
 
 Custom name for the Front Door endpoint.
@@ -3937,13 +3780,6 @@ Custom name for the Front Door origin group.
 ### Parameter: `customResourceNames.frontDoorWafName`
 
 Custom name for the Front Door WAF policy.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.jumpboxNsgName`
-
-Custom name for the jumpbox NSG.
 
 - Required: No
 - Type: string
@@ -4359,215 +4195,6 @@ Custom WAF rules. Only used when enableDefaultWafMethodBlock is false.
 
 - Required: No
 - Type: object
-
-### Parameter: `jumpboxConfig`
-
-Configuration for the jumpbox VM deployment.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`adminPassword`](#parameter-jumpboxconfigadminpassword) | securestring | The admin password. Required when authenticationType is "password". |
-| [`adminUsername`](#parameter-jumpboxconfigadminusername) | string | The admin username. |
-| [`authenticationType`](#parameter-jumpboxconfigauthenticationtype) | string | Authentication type for the VM. |
-| [`bastionResourceId`](#parameter-jumpboxconfigbastionresourceid) | string | Resource ID of the Bastion host for connectivity. |
-| [`enabled`](#parameter-jumpboxconfigenabled) | bool | Whether to deploy a jumpbox VM. |
-| [`encryptionAtHost`](#parameter-jumpboxconfigencryptionathost) | bool | Enable encryption at host. Defaults to true for WAF alignment. |
-| [`linuxImageOffer`](#parameter-jumpboxconfiglinuximageoffer) | string | The Linux OS image offer. |
-| [`linuxImagePublisher`](#parameter-jumpboxconfiglinuximagepublisher) | string | The Linux OS image publisher. |
-| [`linuxImageSku`](#parameter-jumpboxconfiglinuximagesku) | string | The Linux OS image SKU. |
-| [`maintenanceWindow`](#parameter-jumpboxconfigmaintenancewindow) | object | Maintenance window configuration. |
-| [`osDisk`](#parameter-jumpboxconfigosdisk) | object | OS disk configuration. |
-| [`osType`](#parameter-jumpboxconfigostype) | string | The OS type: "linux", "windows", or "none". |
-| [`vmSize`](#parameter-jumpboxconfigvmsize) | string | The VM SKU size (e.g. "Standard_D2s_v4"). |
-| [`windowsOSVersion`](#parameter-jumpboxconfigwindowsosversion) | string | The Windows OS version SKU (e.g. "2025-datacenter-g2"). |
-
-### Parameter: `jumpboxConfig.adminPassword`
-
-The admin password. Required when authenticationType is "password".
-
-- Required: No
-- Type: securestring
-
-### Parameter: `jumpboxConfig.adminUsername`
-
-The admin username.
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.authenticationType`
-
-Authentication type for the VM.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'password'
-    'sshPublicKey'
-  ]
-  ```
-
-### Parameter: `jumpboxConfig.bastionResourceId`
-
-Resource ID of the Bastion host for connectivity.
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.enabled`
-
-Whether to deploy a jumpbox VM.
-
-- Required: No
-- Type: bool
-
-### Parameter: `jumpboxConfig.encryptionAtHost`
-
-Enable encryption at host. Defaults to true for WAF alignment.
-
-- Required: No
-- Type: bool
-
-### Parameter: `jumpboxConfig.linuxImageOffer`
-
-The Linux OS image offer.
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.linuxImagePublisher`
-
-The Linux OS image publisher.
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.linuxImageSku`
-
-The Linux OS image SKU.
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.maintenanceWindow`
-
-Maintenance window configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`duration`](#parameter-jumpboxconfigmaintenancewindowduration) | string | The duration (e.g. "03:55"). |
-| [`recurEvery`](#parameter-jumpboxconfigmaintenancewindowrecurevery) | string | The recurrence (e.g. "1Day", "1Week Saturday"). |
-| [`startDateTime`](#parameter-jumpboxconfigmaintenancewindowstartdatetime) | string | The start date and time (e.g. "2026-06-16 00:00"). |
-| [`timeZone`](#parameter-jumpboxconfigmaintenancewindowtimezone) | string | The timezone (e.g. "UTC"). |
-
-### Parameter: `jumpboxConfig.maintenanceWindow.duration`
-
-The duration (e.g. "03:55").
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.maintenanceWindow.recurEvery`
-
-The recurrence (e.g. "1Day", "1Week Saturday").
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.maintenanceWindow.startDateTime`
-
-The start date and time (e.g. "2026-06-16 00:00").
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.maintenanceWindow.timeZone`
-
-The timezone (e.g. "UTC").
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.osDisk`
-
-OS disk configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`sizeGB`](#parameter-jumpboxconfigosdisksizegb) | int | The OS disk size in GB. |
-| [`storageAccountType`](#parameter-jumpboxconfigosdiskstorageaccounttype) | string | The storage account type for the OS disk. |
-
-### Parameter: `jumpboxConfig.osDisk.sizeGB`
-
-The OS disk size in GB.
-
-- Required: No
-- Type: int
-
-### Parameter: `jumpboxConfig.osDisk.storageAccountType`
-
-The storage account type for the OS disk.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Premium_LRS'
-    'Premium_ZRS'
-    'PremiumV2_LRS'
-    'Standard_LRS'
-    'StandardSSD_LRS'
-    'StandardSSD_ZRS'
-    'UltraSSD_LRS'
-  ]
-  ```
-
-### Parameter: `jumpboxConfig.osType`
-
-The OS type: "linux", "windows", or "none".
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'linux'
-    'none'
-    'windows'
-  ]
-  ```
-
-### Parameter: `jumpboxConfig.vmSize`
-
-The VM SKU size (e.g. "Standard_D2s_v4").
-
-- Required: No
-- Type: string
-
-### Parameter: `jumpboxConfig.windowsOSVersion`
-
-The Windows OS version SKU (e.g. "2025-datacenter-g2").
-
-- Required: No
-- Type: string
 
 ### Parameter: `keyVaultConfig`
 
@@ -5490,7 +5117,6 @@ Configuration for the spoke virtual network and ingress networking.
 | [`flowTimeoutInMinutes`](#parameter-spokenetworkconfigflowtimeoutinminutes) | int | The flow timeout in minutes for the VNet (max 30). 0 = disabled. |
 | [`hubVnetResourceId`](#parameter-spokenetworkconfighubvnetresourceid) | string | Resource ID of an existing hub VNet to peer with. If empty, no peering is created. |
 | [`ingressOption`](#parameter-spokenetworkconfigingressoption) | string | Ingress option: "frontDoor", "applicationGateway", or "none". |
-| [`jumpboxSubnetAddressSpace`](#parameter-spokenetworkconfigjumpboxsubnetaddressspace) | string | CIDR of the jumpbox subnet. |
 | [`lock`](#parameter-spokenetworkconfiglock) | object | Resource lock for the spoke virtual network. |
 | [`privateEndpointSubnetAddressSpace`](#parameter-spokenetworkconfigprivateendpointsubnetaddressspace) | string | CIDR of the private endpoint subnet. |
 | [`roleAssignments`](#parameter-spokenetworkconfigroleassignments) | array | Role assignments for the spoke virtual network. |
@@ -5755,13 +5381,6 @@ Ingress option: "frontDoor", "applicationGateway", or "none".
   ]
   ```
 
-### Parameter: `spokeNetworkConfig.jumpboxSubnetAddressSpace`
-
-CIDR of the jumpbox subnet.
-
-- Required: No
-- Type: string
-
 ### Parameter: `spokeNetworkConfig.lock`
 
 Resource lock for the spoke virtual network.
@@ -5958,23 +5577,18 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cdn/profile:0.17.2` | Remote reference |
-| `br/public:avm/res/compute/ssh-public-key:0.4.4` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.21.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
-| `br/public:avm/res/insights/data-collection-rule:0.10.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.1` | Remote reference |
 | `br/public:avm/res/network/application-gateway:0.8.0` | Remote reference |
 | `br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.3` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.12.0` | Remote reference |
 | `br/public:avm/res/network/route-table:0.5.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network/subnet:0.1.3` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.3` | Remote reference |
 | `br/public:avm/res/web/hosting-environment:0.5.0` | Remote reference |

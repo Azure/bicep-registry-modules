@@ -17,7 +17,7 @@ param serviceShort string = 'applzamax'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
+@description('Optional. The password to leverage for the jumpbox VM.')
 @secure()
 param password string = newGuid()
 
@@ -162,15 +162,40 @@ module testDeployment '../../../main.bicep' = [
       }
 
       // VM / Jump host settings
-      jumpboxConfig: {
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
-        osType: 'linux'
-      }
       location: enforcedLocation
     }
   }
 ]
+
+// ================================= //
+// Example: Deploy a jumpbox VM      //
+// ================================= //
+// This demonstrates how to deploy a jumpbox VM into the spoke VNet created by the LZA module.
+// Customers can use the `dependencies/jumpbox.bicep` template as a starting point.
+// Note: The spoke resource group name follows the LZA default: rg-spoke-{workloadName}-{env}-{location}
+
+var spokeResourceGroupName = 'rg-spoke-${take('${namePrefix}${serviceShort}', 10)}-test-${enforcedLocation}'
+
+// Placeholder Bastion resource ID for validation (dry-run) deployments.
+// Replace with a real Bastion resource ID for actual deployments.
+var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
+
+module jumpbox './dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-jumpbox'
+  scope: az.resourceGroup(spokeResourceGroupName)
+  params: {
+    vmName: take('vm-${namePrefix}${serviceShort}', 15)
+    spokeVnetName: testDeployment[0].outputs.spokeVnetName
+    vmAdminUsername: 'azureuser'
+    vmAdminPassword: password
+    bastionResourceId: bastionPlaceholderResourceId
+    vmSize: 'Standard_D2s_v4'
+    location: enforcedLocation
+    tags: {
+      environment: 'test'
+      scenario: 'max-jumpbox'
+    }
+  }
+}
 
 output testDeploymentOutputs object = testDeployment[0].outputs

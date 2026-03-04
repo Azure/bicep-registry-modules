@@ -17,9 +17,6 @@ param serviceShort string = 'appmrfd'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
 
 // Hardcoded regions where App Service Premium plans are available
 #disable-next-line no-hardcoded-location
@@ -77,10 +74,6 @@ module testDeployment '../../../main.bicep' = [
       }
 
       // No jump host for speed
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: primaryLocation
     }
   }
@@ -113,10 +106,6 @@ module testDeploymentSecondary '../../../main.bicep' = [
       }
 
       // No jump host for speed
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: secondaryLocation
     }
   }

@@ -17,9 +17,6 @@ param serviceShort string = 'appbyowin'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -85,10 +82,6 @@ module testDeployment '../../../main.bicep' = [
         ingressOption: 'none'
       }
 
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }
@@ -121,10 +114,6 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
         ingressOption: 'none'
       }
 
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }

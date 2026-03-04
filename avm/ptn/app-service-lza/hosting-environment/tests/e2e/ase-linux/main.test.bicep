@@ -17,9 +17,6 @@ param serviceShort string = 'appaselnx'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -73,10 +70,6 @@ module testDeployment '../../../main.bicep' = [
         appSvcSubnetAddressSpace: '10.240.0.0/24'
       }
 
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }
@@ -111,10 +104,6 @@ module testDeploymentLinuxContainer '../../../main.bicep' = [
         appSvcSubnetAddressSpace: '10.240.0.0/24'
       }
 
-      jumpboxConfig: {
-        enabled: false
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }

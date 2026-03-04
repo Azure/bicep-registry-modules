@@ -17,16 +17,12 @@ param serviceShort string = 'appasewin'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
+@description('Optional. The password to leverage for the jumpbox VM.')
 @secure()
 param password string = newGuid()
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
-
-// A placeholder Bastion resource ID exercises the Bastion-integration code path in jumpbox NSG rules.
-// The resource does not need to exist for a validation (dry-run) deployment.
-var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
 
 // Diagnostics
 // ===========
@@ -78,13 +74,6 @@ module testDeployment '../../../main.bicep' = [
       }
 
       // Windows jump host with Bastion integration
-      jumpboxConfig: {
-        osType: 'windows'
-        bastionResourceId: bastionPlaceholderResourceId
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }
@@ -120,13 +109,6 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
       }
 
       // Windows jump host with Bastion integration
-      jumpboxConfig: {
-        osType: 'windows'
-        bastionResourceId: bastionPlaceholderResourceId
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }
@@ -135,4 +117,31 @@ module testDeploymentWindowsContainer '../../../main.bicep' = [
 output testDeploymentOutputs object = {
   windowsWebApp: testDeployment[0].outputs
   windowsContainer: testDeploymentWindowsContainer[0].outputs
+}
+
+// ================================= //
+// Example: Deploy a jumpbox VM      //
+// ================================= //
+// Demonstrates deploying a jumpbox into the spoke VNet after the LZA deployment.
+
+var spokeResourceGroupName = 'rg-spoke-${take('${namePrefix}aseww', 10)}-test-${enforcedLocation}'
+
+var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
+
+module jumpbox './dependencies.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-jumpbox'
+  scope: az.resourceGroup(spokeResourceGroupName)
+  params: {
+    vmName: take('vm-${namePrefix}${serviceShort}', 15)
+    spokeVnetName: testDeployment[0].outputs.spokeVnetName
+    vmAdminUsername: 'azureuser'
+    vmAdminPassword: password
+    bastionResourceId: bastionPlaceholderResourceId
+    vmSize: 'Standard_D2s_v4'
+    location: enforcedLocation
+    tags: {
+      environment: 'test'
+      scenario: 'ase-windows-jumpbox'
+    }
+  }
 }

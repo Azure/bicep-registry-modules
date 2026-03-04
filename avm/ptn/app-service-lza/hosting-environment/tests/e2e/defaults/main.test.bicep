@@ -13,9 +13,6 @@ param serviceShort string = 'applzamin'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
 
 // Hardcoded to 'australiaeast' because App Service PV3 plans are not available in all regions
 #disable-next-line no-hardcoded-location
@@ -51,11 +48,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       workloadName: take('${namePrefix}${serviceShort}', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      jumpboxConfig: {
-        vmSize: 'Standard_D2s_v4'
-        adminUsername: 'azureuser'
-        adminPassword: password
-      }
       location: enforcedLocation
     }
   }

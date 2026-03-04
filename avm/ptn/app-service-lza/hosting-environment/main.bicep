@@ -9,7 +9,6 @@ metadata description = 'This Azure App Service pattern module represents an Azur
 
 import {
   spokeNetworkConfigType
-  jumpboxConfigType
   servicePlanConfigType
   appServiceConfigType
   keyVaultConfigType
@@ -48,9 +47,6 @@ param logAnalyticsWorkspaceResourceId string
 
 @description('Optional. Configuration for the spoke virtual network and ingress networking.')
 param spokeNetworkConfig spokeNetworkConfigType?
-
-@description('Optional. Configuration for the jumpbox VM deployment.')
-param jumpboxConfig jumpboxConfigType?
 
 @description('Optional. Configuration for the App Service Plan.')
 param servicePlanConfig servicePlanConfigType?
@@ -106,12 +102,6 @@ param customResourceNames {
   @description('Optional. Custom name for the Front Door origin group.')
   frontDoorOriginGroupName: string?
 
-  @description('Optional. Custom name for the DevOps subnet.')
-  devOpsSubnetName: string?
-
-  @description('Optional. Custom name for the jumpbox NSG.')
-  jumpboxNsgName: string?
-
   @description('Optional. Custom name for the AFD private-endpoint auto-approver managed identity.')
   afdPeAutoApproverName: string?
 }?
@@ -127,7 +117,6 @@ param customResourceNames {
 // Spoke Network
 var vnetSpokeAddressSpace = spokeNetworkConfig.?vnetAddressSpace ?? '10.240.0.0/20'
 var subnetSpokeAppSvcAddressSpace = spokeNetworkConfig.?appSvcSubnetAddressSpace ?? '10.240.0.0/26'
-var subnetSpokeJumpboxAddressSpace = spokeNetworkConfig.?jumpboxSubnetAddressSpace ?? '10.240.10.128/26'
 var subnetSpokePrivateEndpointAddressSpace = spokeNetworkConfig.?privateEndpointSubnetAddressSpace ?? '10.240.11.0/24'
 var subnetSpokeAppGwAddressSpace = spokeNetworkConfig.?appGwSubnetAddressSpace ?? ''
 var vnetHubResourceId = spokeNetworkConfig.?hubVnetResourceId ?? ''
@@ -145,25 +134,6 @@ var virtualNetworkBgpCommunity = spokeNetworkConfig.?bgpCommunity
 var vnetLock = spokeNetworkConfig.?lock
 var vnetRoleAssignments = spokeNetworkConfig.?roleAssignments
 var vnetDiagnosticSettings = spokeNetworkConfig.?diagnosticSettings
-
-// Jumpbox
-var deployJumpHost = jumpboxConfig.?enabled ?? true
-var vmJumpboxOSType = jumpboxConfig.?osType ?? 'windows'
-var vmSize = jumpboxConfig.?vmSize ?? 'Standard_D2s_v4'
-var adminUsername = jumpboxConfig.?adminUsername ?? 'azureuser'
-var vmAuthenticationType = jumpboxConfig.?authenticationType ?? 'password'
-var bastionResourceId = jumpboxConfig.?bastionResourceId ?? ''
-var vmEncryptionAtHost = jumpboxConfig.?encryptionAtHost ?? true
-var vmWindowsOSVersion = jumpboxConfig.?windowsOSVersion ?? '2025-datacenter-g2'
-var vmLinuxImagePublisher = jumpboxConfig.?linuxImagePublisher ?? 'canonical'
-var vmLinuxImageOffer = jumpboxConfig.?linuxImageOffer ?? 'ubuntu-24_04-lts'
-var vmLinuxImageSku = jumpboxConfig.?linuxImageSku ?? 'server-gen2'
-var vmOsDiskSizeGB = jumpboxConfig.?osDisk.?sizeGB ?? 128
-var vmOsDiskStorageAccountType = jumpboxConfig.?osDisk.?storageAccountType ?? 'Premium_LRS'
-var vmMaintenanceWindowStartDateTime = jumpboxConfig.?maintenanceWindow.?startDateTime ?? '2026-06-16 00:00'
-var vmMaintenanceWindowDuration = jumpboxConfig.?maintenanceWindow.?duration ?? '03:55'
-var vmMaintenanceWindowTimeZone = jumpboxConfig.?maintenanceWindow.?timeZone ?? 'UTC'
-var vmMaintenanceWindowRecurrence = jumpboxConfig.?maintenanceWindow.?recurEvery ?? '1Day'
 
 // Service Plan
 var webAppPlanSku = servicePlanConfig.?sku ?? 'P1V3'
@@ -356,8 +326,6 @@ var resourceNames = {
   frontDoorWaf: customResourceNames.?frontDoorWafName ?? names.frontDoorFirewallPolicy.name
   frontDoor: customResourceNames.?frontDoorName ?? names.frontDoor.name
   frontDoorOriginGroup: customResourceNames.?frontDoorOriginGroupName ?? '${names.frontDoor.name}-originGroup'
-  snetDevOps: customResourceNames.?devOpsSubnetName ?? 'snet-devOps-${names.virtualNetwork.name}-spoke'
-  jumpboxNsg: customResourceNames.?jumpboxNsgName ?? take('${names.networkSecurityGroup.name}-jumpbox', 80)
   idAfdApprovePeAutoApprover: customResourceNames.?afdPeAutoApproverName ?? take('${names.managedIdentity.name}-AfdApprovePe', 128)
 }
 
@@ -558,7 +526,7 @@ module aseEnvironment 'br/public:avm/res/web/hosting-environment:0.5.0' = if (de
 // BCP318 suppression: the aseExisting/aseEnvironment references below are guarded by `if (deployAseV3)` conditions,
 // so nullable access is safe at runtime. Bicep's compile-time checker cannot verify this.
 #disable-diagnostics BCP318
-module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (deployAseV3) {
+module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if (deployAseV3) {
   name: '${uniqueString(deployment().name, location)}-ase-dnszone'
   scope: az.resourceGroup(resourceGroupName)
   params: {
@@ -773,7 +741,7 @@ module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
   }
 }
 
-module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
+module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
   name: '${uniqueString(deployment().name, location, 'webapp')}-dnszone'
   scope: az.resourceGroup(resourceGroupName)
   params: {
@@ -1006,73 +974,6 @@ module keyVault './modules/supporting-services/modules/key-vault.bicep' = {
             ]
           }
         ]
-  }
-}
-
-// ======================== //
-// Jumpbox VMs              //
-// ======================== //
-
-@description('An optional Linux virtual machine deployment to act as a jump box.')
-module jumpboxLinuxVM './modules/compute/linux-vm.bicep' = if (deployJumpHost && vmJumpboxOSType == 'linux') {
-  name: '${uniqueString(deployment().name, location)}-jumpboxLinuxVM'
-  scope: az.resourceGroup(resourceGroupName)
-  params: {
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    vmName: names.linuxVirtualMachine.name
-    bastionResourceId: bastionResourceId
-    vmAdminUsername: adminUsername
-    vmAdminPassword: jumpboxConfig.?adminPassword ?? ''
-    vmSize: vmSize
-    vmVnetName: networking.outputs.vnetSpokeName
-    vmSubnetName: resourceNames.snetDevOps
-    vmSubnetAddressPrefix: subnetSpokeJumpboxAddressSpace
-    vmNetworkInterfaceName: names.networkInterface.name
-    vmNetworkSecurityGroupName: names.networkSecurityGroup.name
-    vmAuthenticationType: vmAuthenticationType
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    vmImagePublisher: vmLinuxImagePublisher
-    vmImageOffer: vmLinuxImageOffer
-    vmImageSku: vmLinuxImageSku
-    encryptionAtHost: vmEncryptionAtHost
-    osDiskSizeGB: vmOsDiskSizeGB
-    osDiskStorageAccountType: vmOsDiskStorageAccountType
-    maintenanceWindowStartDateTime: vmMaintenanceWindowStartDateTime
-    maintenanceWindowDuration: vmMaintenanceWindowDuration
-    maintenanceWindowTimeZone: vmMaintenanceWindowTimeZone
-    maintenanceWindowRecurrence: vmMaintenanceWindowRecurrence
-  }
-}
-
-@description('An optional Windows virtual machine deployment to act as a jump box.')
-module jumpboxWindowsVM './modules/compute/windows-vm.bicep' = if (deployJumpHost && vmJumpboxOSType == 'windows') {
-  name: '${uniqueString(deployment().name, location)}-jumpboxWindowsVM'
-  scope: az.resourceGroup(resourceGroupName)
-  params: {
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    vmName: names.windowsVirtualMachine.name
-    bastionResourceId: bastionResourceId
-    vmAdminUsername: adminUsername
-    vmAdminPassword: jumpboxConfig.?adminPassword ?? ''
-    vmSize: vmSize
-    vmVnetName: networking.outputs.vnetSpokeName
-    vmSubnetName: resourceNames.snetDevOps
-    vmSubnetAddressPrefix: subnetSpokeJumpboxAddressSpace
-    vmNetworkInterfaceName: names.networkInterface.name
-    vmNetworkSecurityGroupName: resourceNames.jumpboxNsg
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    vmWindowsOSVersion: vmWindowsOSVersion
-    encryptionAtHost: vmEncryptionAtHost
-    osDiskSizeGB: vmOsDiskSizeGB
-    osDiskStorageAccountType: vmOsDiskStorageAccountType
-    maintenanceWindowStartDateTime: vmMaintenanceWindowStartDateTime
-    maintenanceWindowDuration: vmMaintenanceWindowDuration
-    maintenanceWindowTimeZone: vmMaintenanceWindowTimeZone
-    maintenanceWindowRecurrence: vmMaintenanceWindowRecurrence
   }
 }
 

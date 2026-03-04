@@ -76,9 +76,6 @@ type spokeNetworkConfigType = {
   @description('Optional. CIDR of the App Service / ASE subnet. ASEv3 needs a /24.')
   appSvcSubnetAddressSpace: string?
 
-  @description('Optional. CIDR of the jumpbox subnet.')
-  jumpboxSubnetAddressSpace: string?
-
   @description('Optional. CIDR of the private endpoint subnet.')
   privateEndpointSubnetAddressSpace: string?
 
@@ -129,83 +126,6 @@ type spokeNetworkConfigType = {
 
   @description('Optional. Diagnostic settings for the spoke virtual network.')
   diagnosticSettings: diagnosticSettingFullType[]?
-}
-
-// ======================== //
-// Jumpbox VM Config         //
-// ======================== //
-
-@export()
-@description('Describes the OS disk configuration for a jumpbox VM.')
-type osDiskConfigType = {
-  @description('Optional. The OS disk size in GB.')
-  sizeGB: int?
-
-  @description('Optional. The storage account type for the OS disk.')
-  storageAccountType: ('PremiumV2_LRS' | 'Premium_LRS' | 'Premium_ZRS' | 'StandardSSD_LRS' | 'StandardSSD_ZRS' | 'Standard_LRS' | 'UltraSSD_LRS')?
-}
-
-@export()
-@description('Describes a maintenance window schedule.')
-type maintenanceWindowConfigType = {
-  @description('Optional. The start date and time (e.g. "2026-06-16 00:00").')
-  startDateTime: string?
-
-  @description('Optional. The duration (e.g. "03:55").')
-  duration: string?
-
-  @description('Optional. The timezone (e.g. "UTC").')
-  timeZone: string?
-
-  @description('Optional. The recurrence (e.g. "1Day", "1Week Saturday").')
-  recurEvery: string?
-}
-
-@export()
-@description('Configuration for the jumpbox VM deployment.')
-type jumpboxConfigType = {
-  @description('Optional. Whether to deploy a jumpbox VM.')
-  enabled: bool?
-
-  @description('Optional. The OS type: "linux", "windows", or "none".')
-  osType: ('linux' | 'windows' | 'none')?
-
-  @description('Optional. The VM SKU size (e.g. "Standard_D2s_v4").')
-  vmSize: string?
-
-  @description('Optional. The admin username.')
-  adminUsername: string?
-
-  @secure()
-  @description('Optional. The admin password. Required when authenticationType is "password".')
-  adminPassword: string?
-
-  @description('Optional. Authentication type for the VM.')
-  authenticationType: ('sshPublicKey' | 'password')?
-
-  @description('Optional. Resource ID of the Bastion host for connectivity.')
-  bastionResourceId: string?
-
-  @description('Optional. Enable encryption at host. Defaults to true for WAF alignment.')
-  encryptionAtHost: bool?
-
-  @description('Optional. The Windows OS version SKU (e.g. "2025-datacenter-g2").')
-  windowsOSVersion: string?
-
-  @description('Optional. The Linux OS image publisher.')
-  linuxImagePublisher: string?
-
-  @description('Optional. The Linux OS image offer.')
-  linuxImageOffer: string?
-
-  @description('Optional. The Linux OS image SKU.')
-  linuxImageSku: string?
-
-  @description('Optional. OS disk configuration.')
-  osDisk: osDiskConfigType?
-
-  @description('Optional. Maintenance window configuration.')
-  maintenanceWindow: maintenanceWindowConfigType?
 }
 
 // ======================== //
