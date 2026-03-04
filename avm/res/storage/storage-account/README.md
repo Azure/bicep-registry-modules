@@ -5703,6 +5703,7 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
   ```Bicep
   [
     'TLS1_2'
+    'TLS1_3'
   ]
   ```
 
