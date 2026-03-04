@@ -44,7 +44,6 @@ module testDeployment '../../../main.bicep' = [
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
-      cosmosDbReplicaLocation: ''
     }
   }
 ]

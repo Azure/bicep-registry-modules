@@ -136,7 +136,6 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    cosmosDbReplicaLocation: ''
     // Non-required parameters
     location: '<location>'
     solutionName: '<solutionName>'
@@ -159,9 +158,6 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Required parameters
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
-    },
-    "cosmosDbReplicaLocation": {
-      "value": ""
     },
     // Non-required parameters
     "location": {
@@ -186,7 +182,6 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param cosmosDbReplicaLocation = ''
 // Non-required parameters
 param location = '<location>'
 param solutionName = '<solutionName>'
@@ -211,8 +206,8 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    cosmosDbReplicaLocation: 'canadacentral'
     // Non-required parameters
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -242,10 +237,10 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
+    // Non-required parameters
     "cosmosDbReplicaLocation": {
       "value": "canadacentral"
     },
-    // Non-required parameters
     "enableMonitoring": {
       "value": true
     },
@@ -289,8 +284,8 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param cosmosDbReplicaLocation = 'canadacentral'
 // Non-required parameters
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -312,7 +307,12 @@ param virtualMachineAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This should be one of the supported Azure AI Service locations. |
-| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true. |
 
 **Optional parameters**
 
@@ -367,9 +367,9 @@ Location for all AI service resources. This should be one of the supported Azure
 
 ### Parameter: `cosmosDbReplicaLocation`
 
-Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
+Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `azureAiAgentApiVersion`
