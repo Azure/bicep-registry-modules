@@ -730,6 +730,8 @@ type replicationType = {
   zoneRedundancy: resourceInput<'Microsoft.ContainerRegistry/registries@2025-03-01-preview'>.properties.zoneRedundancy?
 }
 
+@export()
+@description('The type for a task.')
 type taskType = {
   @description('Required. The name of the task.')
   name: string
