@@ -689,7 +689,7 @@ type scopeMapsType = {
   name: string?
 
   @description('Required. The list of scoped permissions for registry artifacts.')
-  actions: string[]
+  actions: resourceInput<'Microsoft.ContainerRegistry/registries/scopeMaps@2025-03-01-preview'>.properties.actions
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?
@@ -721,7 +721,7 @@ type replicationType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/replications@2025-03-01-preview'>.tags?
 
   @description('Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.')
   regionEndpointEnabled: bool?
@@ -805,7 +805,7 @@ type webhookType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.tags?
 
   @description('Optional. Custom headers that will be added to the webhook notifications.')
   customHeaders: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.properties.customHeaders?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "12200940375082139752"
+      "templateHash": "2860652130095064044"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -124,10 +124,10 @@
         },
         "actions": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/scopeMaps@2025-03-01-preview#properties/properties/properties/actions"
+            },
             "description": "Required. The list of scoped permissions for registry artifacts."
           }
         },
@@ -198,10 +198,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/replications@2025-03-01-preview#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "regionEndpointEnabled": {
           "type": "bool",
@@ -420,10 +423,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "customHeaders": {
           "type": "object",
