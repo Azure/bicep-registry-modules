@@ -20,13 +20,13 @@ var enforcedLocation = 'australiaeast'
 
 // Diagnostics
 // ===========
-resource diagnosticsResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
   location: enforcedLocation
 }
 
 module diagnosticDependencies './dependencies.bicep' = {
-  scope: diagnosticsResourceGroup
+  scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -45,6 +45,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       workloadName: take('${namePrefix}${serviceShort}', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      spokeNetworkConfig: {
+        resourceGroupName: 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
+      }
       location: enforcedLocation
     }
   }

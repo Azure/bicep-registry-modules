@@ -7,9 +7,9 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for diagnostics settings')
+@description('Optional. The name of the resource group to deploy for testing purposes')
 @maxLength(90)
-param diagnosticsResourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'applzamax'
@@ -28,7 +28,7 @@ var enforcedLocation = 'australiaeast'
 // Diagnostics
 // ===========
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
+  name: resourceGroupName
   location: enforcedLocation
 }
 
@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
 
       // Networking: Application Gateway path
       spokeNetworkConfig: {
+        resourceGroupName: resourceGroupName
         ingressOption: 'applicationGateway'
         appGwSubnetAddressSpace: '10.240.12.0/24'
         enableEgressLockdown: true
@@ -174,7 +175,7 @@ module testDeployment '../../../main.bicep' = [
 // Customers can use the `dependencies.bicep` template as a starting point.
 // Note: The spoke resource group name follows the LZA default: rg-spoke-{workloadName}-{env}-{location}
 
-var spokeResourceGroupName = 'rg-spoke-${take('${namePrefix}${serviceShort}', 10)}-test-${enforcedLocation}'
+var spokeResourceGroupName = resourceGroupName
 
 // Placeholder Bastion resource ID for validation (dry-run) deployments.
 // Replace with a real Bastion resource ID for actual deployments.

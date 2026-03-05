@@ -7,9 +7,9 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for diagnostics settings.')
+@description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param diagnosticsResourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'appmgins'
@@ -27,7 +27,7 @@ var enforcedLocation = 'australiaeast'
 // Diagnostics
 // ===========
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: diagnosticsResourceGroupName
+  name: resourceGroupName
   location: enforcedLocation
 }
 
@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'app'
       }
       spokeNetworkConfig: {
+        resourceGroupName: resourceGroupName
         ingressOption: 'applicationGateway'
         appGwSubnetAddressSpace: '10.240.12.0/24'
       }
@@ -83,7 +84,7 @@ output testDeploymentOutputs object = testDeployment[0].outputs
 // ================================= //
 // Demonstrates deploying a jumpbox into the spoke VNet for RDP access via Bastion.
 
-var spokeResourceGroupName = 'rg-spoke-${take('${namePrefix}${serviceShort}', 10)}-test-${enforcedLocation}'
+var spokeResourceGroupName = resourceGroupName
 
 var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
 

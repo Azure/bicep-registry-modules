@@ -70,6 +70,9 @@ type siteConfigType = {
 @export()
 @description('Configuration for the spoke virtual network and ingress networking.')
 type spokeNetworkConfigType = {
+  @description('Optional. Custom name for the spoke resource group. Falls back to naming-module default.')
+  resourceGroupName: string?
+
   @description('Optional. CIDR of the spoke VNet (e.g. "10.240.0.0/20").')
   vnetAddressSpace: string?
 
@@ -135,6 +138,9 @@ type spokeNetworkConfigType = {
 @export()
 @description('Configuration for the App Service Plan.')
 type servicePlanConfigType = {
+  @description('Optional. Custom name for the App Service Plan. Falls back to naming-module default.')
+  name: string?
+
   @description('Optional. The SKU name for the App Service Plan (e.g. "P1V3").')
   sku: string?
 
@@ -226,6 +232,12 @@ type containerConfigType = {
 @export()
 @description('Configuration for the Web App.')
 type appServiceConfigType = {
+  @description('Optional. Custom name for the Web App. Falls back to naming-module default.')
+  name: string?
+
+  @description('Optional. Custom name for the App Service managed identity. Falls back to naming-module default.')
+  managedIdentityName: string?
+
   @description('Optional. Kind of web app (e.g. "app", "app,linux", "app,linux,container", "functionapp").')
   kind: ('api' | 'app' | 'app,container,windows' | 'app,linux' | 'app,linux,container' | 'functionapp' | 'functionapp,linux' | 'functionapp,linux,container' | 'functionapp,linux,container,azurecontainerapps' | 'functionapp,workflowapp' | 'functionapp,workflowapp,linux' | 'linux,api')?
 
@@ -354,6 +366,9 @@ type appServiceConfigType = {
 @export()
 @description('Configuration for the Key Vault.')
 type keyVaultConfigType = {
+  @description('Optional. Custom name for the Key Vault. Falls back to naming-module default.')
+  name: string?
+
   @description('Optional. Enable purge protection. Defaults to true.')
   enablePurgeProtection: bool?
 
@@ -466,6 +481,9 @@ type appInsightsConfigType = {
 @export()
 @description('Configuration for the Application Gateway.')
 type appGatewayConfigType = {
+  @description('Optional. Custom name for the Application Gateway. Falls back to naming-module default.')
+  name: string?
+
   @description('Optional. SSL certificates for HTTPS termination.')
   sslCertificates: array?
 
@@ -555,6 +573,21 @@ type appGatewayConfigType = {
 @export()
 @description('Configuration for Azure Front Door.')
 type frontDoorConfigType = {
+  @description('Optional. Custom name for the Front Door profile. Falls back to naming-module default.')
+  name: string?
+
+  @description('Optional. Custom name for the Front Door endpoint. Falls back to naming-module default.')
+  endpointName: string?
+
+  @description('Optional. Custom name for the Front Door WAF policy. Falls back to naming-module default.')
+  wafName: string?
+
+  @description('Optional. Custom name for the Front Door origin group. Falls back to naming-module default.')
+  originGroupName: string?
+
+  @description('Optional. Custom name for the AFD private-endpoint auto-approver managed identity. Falls back to naming-module default.')
+  afdPeAutoApproverName: string?
+
   @description('Optional. Deploy the default WAF rule that blocks non-GET/HEAD/OPTIONS methods.')
   enableDefaultWafMethodBlock: bool?
 
@@ -599,6 +632,9 @@ type frontDoorConfigType = {
 @export()
 @description('Configuration for the App Service Environment v3.')
 type aseConfigType = {
+  @description('Optional. Custom name for the App Service Environment. Falls back to naming-module default.')
+  name: string?
+
   @description('Optional. Custom settings for ASE behavior.')
   clusterSettings: clusterSettingType[]?
 

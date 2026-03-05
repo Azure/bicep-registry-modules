@@ -69,43 +69,6 @@ param frontDoorConfig frontDoorConfigType?
 @description('Optional. Configuration for the App Service Environment v3. Only used when deployAseV3 is true.')
 param aseConfig aseConfigType?
 
-// ======================== //
-// Custom Resource Names    //
-// ======================== //
-
-@description('Optional. Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely.')
-param customResourceNames {
-  @description('Optional. Custom name for the spoke resource group.')
-  resourceGroupName: string?
-
-  @description('Optional. Custom name for the App Service Environment.')
-  aseName: string?
-
-  @description('Optional. Custom name for the App Service Plan.')
-  appServicePlanName: string?
-
-  @description('Optional. Custom name for the Web App.')
-  webAppName: string?
-
-  @description('Optional. Custom name for the App Service managed identity.')
-  appSvcManagedIdentityName: string?
-
-  @description('Optional. Custom name for the Front Door profile.')
-  frontDoorName: string?
-
-  @description('Optional. Custom name for the Front Door endpoint.')
-  frontDoorEndpointName: string?
-
-  @description('Optional. Custom name for the Front Door WAF policy.')
-  frontDoorWafName: string?
-
-  @description('Optional. Custom name for the Front Door origin group.')
-  frontDoorOriginGroupName: string?
-
-  @description('Optional. Custom name for the AFD private-endpoint auto-approver managed identity.')
-  afdPeAutoApproverName: string?
-}?
-
 // ================ //
 // Variables        //
 // ================ //
@@ -314,19 +277,19 @@ var aseDiagnosticSettings = aseConfig.?diagnosticSettings ?? []
 // ======================== //
 
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
-var resourceGroupName = customResourceNames.?resourceGroupName ?? 'rg-spoke-${resourceSuffix}'
+var resourceGroupName = spokeNetworkConfig.?resourceGroupName ?? 'rg-spoke-${resourceSuffix}'
 
 var names = naming.outputs.names
 var resourceNames = {
-  aseName: customResourceNames.?aseName ?? names.appServiceEnvironment.nameUnique
-  aspName: customResourceNames.?appServicePlanName ?? names.appServicePlan.name
-  webApp: customResourceNames.?webAppName ?? names.appService.nameUnique
-  appSvcUserAssignedManagedIdentity: customResourceNames.?appSvcManagedIdentityName ?? take('${names.managedIdentity.name}-appSvc', 128)
-  frontDoorEndPoint: customResourceNames.?frontDoorEndpointName ?? 'webAppLza-${take(uniqueString(resourceGroupName), 6)}'
-  frontDoorWaf: replace(customResourceNames.?frontDoorWafName ?? names.frontDoorFirewallPolicy.name, '-', '')
-  frontDoor: customResourceNames.?frontDoorName ?? names.frontDoor.name
-  frontDoorOriginGroup: customResourceNames.?frontDoorOriginGroupName ?? '${names.frontDoor.name}-originGroup'
-  idAfdApprovePeAutoApprover: customResourceNames.?afdPeAutoApproverName ?? take('${names.managedIdentity.name}-AfdApprovePe', 128)
+  aseName: aseConfig.?name ?? names.appServiceEnvironment.nameUnique
+  aspName: servicePlanConfig.?name ?? names.appServicePlan.name
+  webApp: appServiceConfig.?name ?? names.appService.nameUnique
+  appSvcUserAssignedManagedIdentity: appServiceConfig.?managedIdentityName ?? take('${names.managedIdentity.name}-appSvc', 128)
+  frontDoorEndPoint: frontDoorConfig.?endpointName ?? 'webAppLza-${take(uniqueString(resourceGroupName), 6)}'
+  frontDoorWaf: replace(frontDoorConfig.?wafName ?? names.frontDoorFirewallPolicy.name, '-', '')
+  frontDoor: frontDoorConfig.?name ?? names.frontDoor.name
+  frontDoorOriginGroup: frontDoorConfig.?originGroupName ?? '${names.frontDoor.name}-originGroup'
+  idAfdApprovePeAutoApprover: frontDoorConfig.?afdPeAutoApproverName ?? take('${names.managedIdentity.name}-AfdApprovePe', 128)
 }
 
 var virtualNetworkLinks = [
