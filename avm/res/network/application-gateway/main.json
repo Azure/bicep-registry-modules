@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "5496742431716208105"
+      "templateHash": "10871766323691961782"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
