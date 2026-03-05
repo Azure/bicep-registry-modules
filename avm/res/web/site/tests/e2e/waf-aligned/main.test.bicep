@@ -36,6 +36,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -102,6 +104,28 @@ module testDeployment '../../../main.bicep' = [
         contentShareTraffic: true
         imagePullTraffic: true
       }
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 ]

@@ -126,6 +126,7 @@ param allowBlobPublicAccess bool = false
 
 @allowed([
   'TLS1_2'
+  'TLS1_3'
 ])
 @description('Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore.')
 param minimumTlsVersion string = 'TLS1_2'
@@ -399,7 +400,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   name: name
   location: location
   extendedLocation: !empty(extendedLocationZone)
@@ -624,6 +625,7 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
   params: {
     storageAccountName: storageAccount.name
     rules: formattedManagementPolicies!
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule) as well as versioning
@@ -643,6 +645,7 @@ module storageAccount_localUsers 'local-user/main.bicep' = [
       hasSharedKey: localUser.?hasSharedKey
       homeDirectory: localUser.?homeDirectory
       sshAuthorizedKeys: localUser.?sshAuthorizedKeys
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "5468659950690400320"
+      "version": "0.41.2.15936",
+      "templateHash": "16925483227622997507"
     },
     "name": "Digital Twins Instance Endpoint",
     "description": "This module deploys a Digital Twins Instance Endpoint."

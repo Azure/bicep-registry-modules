@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "13547770714849624777"
+      "version": "0.41.2.15936",
+      "templateHash": "468225492069709453"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service."
@@ -580,7 +580,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}', parameters('storageAccountName'), variables('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), variables('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
       "properties": {
         "copy": [
@@ -675,8 +675,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "12486801807235356029"
+              "version": "0.41.2.15936",
+              "templateHash": "273904034769611992"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container."
@@ -913,7 +913,8 @@
               "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
               "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "storageAccount::blobServices": {
@@ -969,7 +970,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1009,6 +1010,9 @@
                   },
                   "allowProtectedAppendWritesAll": {
                     "value": "[tryGet(parameters('immutabilityPolicy'), 'allowProtectedAppendWritesAll')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1017,8 +1021,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "9405311609774409339"
+                      "version": "0.41.2.15936",
+                      "templateHash": "15304742179563677019"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -1057,9 +1061,36 @@
                       "metadata": {
                         "description": "Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both \"Append and Block Blobs\" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The \"allowProtectedAppendWrites\" and \"allowProtectedAppendWritesAll\" properties are mutually exclusive. Defaults to false."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.storage-containerimmutpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
                       "apiVersion": "2025-01-01",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "12305562570232791269"
+      "version": "0.41.2.15936",
+      "templateHash": "14698138930215735288"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -535,7 +535,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/networkSecurityPerimeters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -552,7 +552,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/networkSecurityPerimeters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -584,7 +584,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/networkSecurityPerimeters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -630,8 +630,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "3178550593460166182"
+              "version": "0.41.2.15936",
+              "templateHash": "18431466622784980660"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -820,8 +820,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "15729882010132355819"
+                      "version": "0.41.2.15936",
+                      "templateHash": "6200985394778207185"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."

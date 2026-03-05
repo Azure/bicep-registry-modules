@@ -25,7 +25,7 @@ param destination destinationType
 @sys.description('Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified.')
 param nextHop nextHopType
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 
   resource routingConfiguration 'routingConfigurations' existing = {
@@ -37,7 +37,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing 
   }
 }
 
-resource rule 'Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules@2024-05-01' = {
+resource rule 'Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules@2025-05-01' = {
   name: name
   parent: networkManager::routingConfiguration::ruleCollection
   properties: {
