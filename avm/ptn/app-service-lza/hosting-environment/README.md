@@ -670,7 +670,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     // Non-required parameters
     location: '<location>'
     spokeNetworkConfig: {
-      resourceGroupName: 'dep-ptn.appsvclza-appdflt-rg'
+      resourceGroupName: 'dep-ptn.appsvclza-aslhemin-rg'
     }
     workloadName: '<workloadName>'
   }
@@ -699,7 +699,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "resourceGroupName": "dep-ptn.appsvclza-appdflt-rg"
+        "resourceGroupName": "dep-ptn.appsvclza-aslhemin-rg"
       }
     },
     "workloadName": {
@@ -724,7 +724,7 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param location = '<location>'
 param spokeNetworkConfig = {
-  resourceGroupName: 'dep-ptn.appsvclza-appdflt-rg'
+  resourceGroupName: 'dep-ptn.appsvclza-aslhemin-rg'
 }
 param workloadName = '<workloadName>'
 ```
