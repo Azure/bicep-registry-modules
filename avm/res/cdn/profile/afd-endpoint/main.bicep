@@ -32,6 +32,8 @@ param enabledState string = 'Enabled'
 @description('Optional. The list of routes for this AFD Endpoint.')
 param routes routeType[]?
 
+var enableReferencedModulesTelemetry = false
+
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
@@ -51,6 +53,7 @@ module afdEndpoint_routes 'route/main.bicep' = [
   for route in (routes ?? []): {
     name: '${uniqueString(deployment().name, route.name)}-Profile-AfdEndpoint-Route'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: route.name
       profileName: profile.name
       afdEndpointName: afdEndpoint.name

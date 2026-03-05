@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "16749814813950384638"
+      "templateHash": "9935179114830442414"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -65,12 +65,12 @@
     "privateEndpoint": {
       "existing": true,
       "type": "Microsoft.Network/privateEndpoints",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('privateEndpointName')]"
     },
     "privateDnsZoneGroup": {
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
       "properties": {
         "copy": [
