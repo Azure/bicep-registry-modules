@@ -39,9 +39,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authentication`](#parameter-authentication) | object | Settings for Origin Authentication. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`healthProbeSettings`](#parameter-healthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
+| [`originAuthenticationSettings`](#parameter-originauthenticationsettings) | object | Settings for Origin Authentication. |
 | [`sessionAffinityState`](#parameter-sessionaffinitystate) | string | Whether to allow session affinity on this host. |
 | [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-trafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
 
@@ -170,13 +170,6 @@ The name of the CDN profile.
 - Required: Yes
 - Type: string
 
-### Parameter: `authentication`
-
-Settings for Origin Authentication.
-
-- Required: No
-- Type: object
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -188,6 +181,13 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `healthProbeSettings`
 
 Health probe settings to the origin that is used to determine the health of the origin.
+
+- Required: No
+- Type: object
+
+### Parameter: `originAuthenticationSettings`
+
+Settings for Origin Authentication.
 
 - Required: No
 - Type: object

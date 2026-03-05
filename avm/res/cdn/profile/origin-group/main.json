@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "11354323423619918567"
+      "templateHash": "7772989382661098139"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group."
@@ -203,7 +203,7 @@
         "description": "Required. Load balancing settings for a backend pool."
       }
     },
-    "authentication": {
+    "originAuthenticationSettings": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
@@ -280,7 +280,7 @@
       "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
-        "authentication": "[parameters('authentication')]",
+        "originAuthenticationSettings": "[parameters('originAuthenticationSettings')]",
         "healthProbeSettings": "[parameters('healthProbeSettings')]",
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
