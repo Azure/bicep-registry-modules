@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13140856393451069643"
+      "templateHash": "12200940375082139752"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -244,10 +244,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/tags"
+            },
             "description": "Optional. Tags of the resource."
-          }
+          },
+          "nullable": true
         },
         "platform": {
           "type": "object",
@@ -327,6 +330,10 @@
             "description": "Optional. The log template for the task to use when creating logs in Log Analytics."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a task."
       }
     },
     "tokenType": {
