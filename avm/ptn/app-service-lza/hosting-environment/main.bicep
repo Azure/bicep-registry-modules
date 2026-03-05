@@ -323,7 +323,7 @@ var resourceNames = {
   webApp: customResourceNames.?webAppName ?? names.appService.nameUnique
   appSvcUserAssignedManagedIdentity: customResourceNames.?appSvcManagedIdentityName ?? take('${names.managedIdentity.name}-appSvc', 128)
   frontDoorEndPoint: customResourceNames.?frontDoorEndpointName ?? 'webAppLza-${take(uniqueString(resourceGroupName), 6)}'
-  frontDoorWaf: customResourceNames.?frontDoorWafName ?? names.frontDoorFirewallPolicy.name
+  frontDoorWaf: replace(customResourceNames.?frontDoorWafName ?? names.frontDoorFirewallPolicy.name, '-', '')
   frontDoor: customResourceNames.?frontDoorName ?? names.frontDoor.name
   frontDoorOriginGroup: customResourceNames.?frontDoorOriginGroupName ?? '${names.frontDoor.name}-originGroup'
   idAfdApprovePeAutoApprover: customResourceNames.?afdPeAutoApproverName ?? take('${names.managedIdentity.name}-AfdApprovePe', 128)
@@ -523,10 +523,21 @@ module aseEnvironment 'br/public:avm/res/web/hosting-environment:0.5.0' = if (de
 }
 
 
-// BCP318 suppression: the aseExisting/aseEnvironment references below are guarded by `if (deployAseV3)` conditions,
-// so nullable access is safe at runtime. Bicep's compile-time checker cannot verify this.
+// Lookup ASE properties via a resource-group-scoped module to avoid ARM reference() validation issues
+// in subscription-scoped templates with conditional existing resources.
+module aseLookup './modules/networking/ase-lookup.bicep' = if (deployAseV3) {
+  name: '${uniqueString(deployment().name, location)}-ase-lookup'
+  scope: az.resourceGroup(resourceGroupName)
+  params: {
+    aseName: resourceNames.aseName
+  }
+  dependsOn: [
+    aseEnvironment
+  ]
+}
+
 #disable-diagnostics BCP318
-module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if (deployAseV3) {
+module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1' = if (deployAseV3) {
   name: '${uniqueString(deployment().name, location)}-ase-dnszone'
   scope: az.resourceGroup(resourceGroupName)
   params: {
@@ -539,7 +550,7 @@ module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if 
         name: '*'
         aRecords: [
           {
-            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+            ipv4Address: aseLookup.outputs.internalInboundIpAddress
           }
         ]
         ttl: 3600
@@ -548,7 +559,7 @@ module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if 
         name: '*.scm'
         aRecords: [
           {
-            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+            ipv4Address: aseLookup.outputs.internalInboundIpAddress
           }
         ]
         ttl: 3600
@@ -557,18 +568,13 @@ module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.1'= if 
         name: '@'
         aRecords: [
           {
-            ipv4Address: aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+            ipv4Address: aseLookup.outputs.internalInboundIpAddress
           }
         ]
         ttl: 3600
       }
     ]
   }
-}
-
-resource aseExisting 'Microsoft.Web/hostingEnvironments@2025-03-01' existing = if (deployAseV3) {
-  scope: az.resourceGroup(resourceGroupName)
-  name: resourceNames.aseName
 }
 
 // ======================== //
@@ -1039,8 +1045,7 @@ output webAppManagedIdentityPrincipalId string = webAppUserAssignedManagedIdenti
 output appServicePlanResourceId string = resolvedServerFarmResourceId
 
 @description('The Internal ingress IP of the ASE.')
-#disable-next-line BCP318
-output internalInboundIpAddress string = deployAseV3 ? aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0] : ''
+output internalInboundIpAddress string = aseLookup.?outputs.?internalInboundIpAddress ?? ''
 
 @description('The name of the ASE.')
 output aseName string = aseEnvironment.?outputs.?name ?? ''

@@ -17,9 +17,9 @@ param serviceShort string = 'appfdsec'
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-// Hardcoded to a region where App Service Premium plans are available
+// Hardcoded to 'australiaeast' because App Service PV3 plans are not available in all regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiasoutheast'
+var enforcedLocation = 'australiaeast'
 
 // Diagnostics
 // ===========

@@ -39,7 +39,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   }
 }
 
-// Pre-create a Windows App Service Plan to exercise bring-your-own-service
+// Pre-create a Windows App Service Plan with Hyper-V for container support
 module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-existingWindowsPlan'
@@ -49,6 +49,7 @@ module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
     skuName: 'P1V3'
     kind: 'Windows'
     reserved: false
+    hyperV: true
     enableTelemetry: true
   }
 }
