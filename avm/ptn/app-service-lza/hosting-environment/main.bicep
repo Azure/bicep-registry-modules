@@ -598,7 +598,7 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = if (deployPlan)
     workerTierName: workerTierName
     hyperV: isWindowsContainer
     appServiceEnvironmentResourceId: aseEnvironment.?outputs.?resourceId ?? null
-    virtualNetworkSubnetId: appServicePlanVirtualNetworkSubnetId
+    virtualNetworkSubnetId: (isCustomMode ?? false) ? networking.outputs.snetAppSvcResourceId : appServicePlanVirtualNetworkSubnetId
     isCustomMode: isCustomMode ?? false
     rdpEnabled: rdpEnabled
     installScripts: installScripts
@@ -673,7 +673,7 @@ module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
     diagnosticSettings: resolvedAppServiceDiagnosticSettings
     lock: webAppLock
     roleAssignments: webAppRoleAssignments
-    virtualNetworkSubnetResourceId: !deployAseV3 ? networking.outputs.snetAppSvcResourceId : ''
+    virtualNetworkSubnetResourceId: !deployAseV3 && !(isCustomMode ?? false) ? networking.outputs.snetAppSvcResourceId : ''
     managedIdentities: {
       userAssignedResourceIds: [webAppUserAssignedManagedIdentity.outputs.resourceId]
     }

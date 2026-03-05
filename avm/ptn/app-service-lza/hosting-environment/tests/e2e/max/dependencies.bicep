@@ -60,7 +60,7 @@ module jumpboxNsg 'br/public:avm/res/network/network-security-group:0.5.2' = {
             properties: {
               description: 'Allow inbound traffic from Azure Bastion to the jumpbox'
               protocol: '*'
-              sourceAddressPrefix: 'AzureBastionSubnet'
+              sourceAddressPrefix: 'AzureBastion'
               sourcePortRange: '*'
               destinationAddressPrefix: '*'
               destinationPortRange: '*'

@@ -137,6 +137,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       appGwSubnetAddressSpace: '10.240.12.0/24'
       appSvcSubnetAddressSpace: '10.240.0.0/24'
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -188,7 +189,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
         "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -233,6 +235,7 @@ param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   appSvcSubnetAddressSpace: '10.240.0.0/24'
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -274,6 +277,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       appGwSubnetAddressSpace: '10.240.12.0/24'
       appSvcSubnetAddressSpace: '10.240.0.0/24'
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -322,7 +326,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
         "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -364,6 +369,7 @@ param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   appSvcSubnetAddressSpace: '10.240.0.0/24'
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -406,6 +412,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     spokeNetworkConfig: {
       appGwSubnetAddressSpace: '10.240.12.0/24'
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -453,7 +460,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "spokeNetworkConfig": {
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -496,6 +504,7 @@ param servicePlanConfig = {
 param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -538,6 +547,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     spokeNetworkConfig: {
       appGwSubnetAddressSpace: '10.240.12.0/24'
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -585,7 +595,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "spokeNetworkConfig": {
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -628,6 +639,7 @@ param servicePlanConfig = {
 param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -657,6 +669,9 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     // Non-required parameters
     location: '<location>'
+    spokeNetworkConfig: {
+      resourceGroupName: 'dep-ptn.appsvclza-appdflt-rg'
+    }
     workloadName: '<workloadName>'
   }
 }
@@ -682,6 +697,11 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "location": {
       "value": "<location>"
     },
+    "spokeNetworkConfig": {
+      "value": {
+        "resourceGroupName": "dep-ptn.appsvclza-appdflt-rg"
+      }
+    },
     "workloadName": {
       "value": "<workloadName>"
     }
@@ -703,6 +723,9 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 // Non-required parameters
 param location = '<location>'
+param spokeNetworkConfig = {
+  resourceGroupName: 'dep-ptn.appsvclza-appdflt-rg'
+}
 param workloadName = '<workloadName>'
 ```
 
@@ -735,6 +758,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     }
     spokeNetworkConfig: {
       ingressOption: 'frontDoor'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -777,7 +801,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "ingressOption": "frontDoor"
+        "ingressOption": "frontDoor",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -815,6 +840,7 @@ param servicePlanConfig = {
 }
 param spokeNetworkConfig = {
   ingressOption: 'frontDoor'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -856,6 +882,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     spokeNetworkConfig: {
       appGwSubnetAddressSpace: '10.240.12.0/24'
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -902,7 +929,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "spokeNetworkConfig": {
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -944,6 +972,7 @@ param servicePlanConfig = {
 param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -1067,6 +1096,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       appGwSubnetAddressSpace: '10.240.12.0/24'
       enableEgressLockdown: true
       ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -1201,7 +1231,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": {
         "appGwSubnetAddressSpace": "10.240.12.0/24",
         "enableEgressLockdown": true,
-        "ingressOption": "applicationGateway"
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -1325,6 +1356,7 @@ param spokeNetworkConfig = {
   appGwSubnetAddressSpace: '10.240.12.0/24'
   enableEgressLockdown: true
   ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -1362,6 +1394,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     }
     spokeNetworkConfig: {
       ingressOption: 'frontDoor'
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -1404,7 +1437,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "ingressOption": "frontDoor"
+        "ingressOption": "frontDoor",
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -1442,6 +1476,7 @@ param servicePlanConfig = {
 }
 param spokeNetworkConfig = {
   ingressOption: 'frontDoor'
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -1541,6 +1576,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     }
     spokeNetworkConfig: {
       enableEgressLockdown: true
+      resourceGroupName: '<resourceGroupName>'
     }
     tags: {
       environment: 'test'
@@ -1648,7 +1684,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "enableEgressLockdown": true
+        "enableEgressLockdown": true,
+        "resourceGroupName": "<resourceGroupName>"
       }
     },
     "tags": {
@@ -1747,6 +1784,7 @@ param servicePlanConfig = {
 }
 param spokeNetworkConfig = {
   enableEgressLockdown: true
+  resourceGroupName: '<resourceGroupName>'
 }
 param tags = {
   environment: 'test'
@@ -1773,7 +1811,6 @@ param workloadName = '<workloadName>'
 | [`appInsightsConfig`](#parameter-appinsightsconfig) | object | Configuration for Application Insights. |
 | [`appServiceConfig`](#parameter-appserviceconfig) | object | Configuration for the Web App. |
 | [`aseConfig`](#parameter-aseconfig) | object | Configuration for the App Service Environment v3. Only used when deployAseV3 is true. |
-| [`customResourceNames`](#parameter-customresourcenames) | object | Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely. |
 | [`deployAseV3`](#parameter-deployasev3) | bool | Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentName`](#parameter-environmentname) | string | The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long. |
@@ -1815,6 +1852,7 @@ Configuration for the Application Gateway. Only used when spokeNetworkConfig.ing
 | [`loadDistributionPolicies`](#parameter-appgatewayconfigloaddistributionpolicies) | array | Load distribution policies. |
 | [`lock`](#parameter-appgatewayconfiglock) | object | Resource lock for the Application Gateway. |
 | [`managedIdentities`](#parameter-appgatewayconfigmanagedidentities) | object | Managed identities for Key Vault-referenced SSL certificates. |
+| [`name`](#parameter-appgatewayconfigname) | string | Custom name for the Application Gateway. Falls back to naming-module default. |
 | [`privateEndpoints`](#parameter-appgatewayconfigprivateendpoints) | array | Private endpoints for the Application Gateway. |
 | [`privateLinkConfigurations`](#parameter-appgatewayconfigprivatelinkconfigurations) | array | Private link configurations. |
 | [`redirectConfigurations`](#parameter-appgatewayconfigredirectconfigurations) | array | Redirect configurations. |
@@ -2111,6 +2149,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `appGatewayConfig.name`
+
+Custom name for the Application Gateway. Falls back to naming-module default.
+
+- Required: No
+- Type: string
 
 ### Parameter: `appGatewayConfig.privateEndpoints`
 
@@ -2804,6 +2849,8 @@ Configuration for the Web App.
 | [`kind`](#parameter-appserviceconfigkind) | string | Kind of web app (e.g. "app", "app,linux", "app,linux,container", "functionapp"). |
 | [`lock`](#parameter-appserviceconfiglock) | object | Resource lock for the Web App. |
 | [`managedEnvironmentResourceId`](#parameter-appserviceconfigmanagedenvironmentresourceid) | string | Managed environment resource ID for Azure Container Apps. |
+| [`managedIdentityName`](#parameter-appserviceconfigmanagedidentityname) | string | Custom name for the App Service managed identity. Falls back to naming-module default. |
+| [`name`](#parameter-appserviceconfigname) | string | Custom name for the Web App. Falls back to naming-module default. |
 | [`outboundVnetRouting`](#parameter-appserviceconfigoutboundvnetrouting) | object | Outbound VNet routing configuration. |
 | [`publicNetworkAccess`](#parameter-appserviceconfigpublicnetworkaccess) | string | Public network access for the web app. |
 | [`redundancyMode`](#parameter-appserviceconfigredundancymode) | string | Site redundancy mode. |
@@ -3274,6 +3321,20 @@ Managed environment resource ID for Azure Container Apps.
 - Required: No
 - Type: string
 
+### Parameter: `appServiceConfig.managedIdentityName`
+
+Custom name for the App Service managed identity. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
+### Parameter: `appServiceConfig.name`
+
+Custom name for the Web App. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `appServiceConfig.outboundVnetRouting`
 
 Outbound VNet routing configuration.
@@ -3564,6 +3625,7 @@ Configuration for the App Service Environment v3. Only used when deployAseV3 is 
 | [`lock`](#parameter-aseconfiglock) | object | Resource lock for the ASE. |
 | [`managedIdentities`](#parameter-aseconfigmanagedidentities) | object | Managed identities for the ASE. |
 | [`multiSize`](#parameter-aseconfigmultisize) | string | Front-end VM size. |
+| [`name`](#parameter-aseconfigname) | string | Custom name for the App Service Environment. Falls back to naming-module default. |
 | [`remoteDebugEnabled`](#parameter-aseconfigremotedebugenabled) | bool | Enable remote debug on the ASE. |
 | [`roleAssignments`](#parameter-aseconfigroleassignments) | array | Role assignments for the ASE. |
 | [`upgradePreference`](#parameter-aseconfigupgradepreference) | string | Maintenance upgrade preference. |
@@ -3873,6 +3935,13 @@ Front-end VM size.
 - Required: No
 - Type: string
 
+### Parameter: `aseConfig.name`
+
+Custom name for the App Service Environment. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `aseConfig.remoteDebugEnabled`
 
 Enable remote debug on the ASE.
@@ -3993,98 +4062,6 @@ Maintenance upgrade preference.
   ]
   ```
 
-### Parameter: `customResourceNames`
-
-Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`afdPeAutoApproverName`](#parameter-customresourcenamesafdpeautoapprovername) | string | Custom name for the AFD private-endpoint auto-approver managed identity. |
-| [`appServicePlanName`](#parameter-customresourcenamesappserviceplanname) | string | Custom name for the App Service Plan. |
-| [`appSvcManagedIdentityName`](#parameter-customresourcenamesappsvcmanagedidentityname) | string | Custom name for the App Service managed identity. |
-| [`aseName`](#parameter-customresourcenamesasename) | string | Custom name for the App Service Environment. |
-| [`frontDoorEndpointName`](#parameter-customresourcenamesfrontdoorendpointname) | string | Custom name for the Front Door endpoint. |
-| [`frontDoorName`](#parameter-customresourcenamesfrontdoorname) | string | Custom name for the Front Door profile. |
-| [`frontDoorOriginGroupName`](#parameter-customresourcenamesfrontdoororigingroupname) | string | Custom name for the Front Door origin group. |
-| [`frontDoorWafName`](#parameter-customresourcenamesfrontdoorwafname) | string | Custom name for the Front Door WAF policy. |
-| [`resourceGroupName`](#parameter-customresourcenamesresourcegroupname) | string | Custom name for the spoke resource group. |
-| [`webAppName`](#parameter-customresourcenameswebappname) | string | Custom name for the Web App. |
-
-### Parameter: `customResourceNames.afdPeAutoApproverName`
-
-Custom name for the AFD private-endpoint auto-approver managed identity.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.appServicePlanName`
-
-Custom name for the App Service Plan.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.appSvcManagedIdentityName`
-
-Custom name for the App Service managed identity.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.aseName`
-
-Custom name for the App Service Environment.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.frontDoorEndpointName`
-
-Custom name for the Front Door endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.frontDoorName`
-
-Custom name for the Front Door profile.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.frontDoorOriginGroupName`
-
-Custom name for the Front Door origin group.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.frontDoorWafName`
-
-Custom name for the Front Door WAF policy.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.resourceGroupName`
-
-Custom name for the spoke resource group.
-
-- Required: No
-- Type: string
-
-### Parameter: `customResourceNames.webAppName`
-
-Custom name for the Web App.
-
-- Required: No
-- Type: string
-
 ### Parameter: `deployAseV3`
 
 Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.
@@ -4120,18 +4097,30 @@ Configuration for Azure Front Door. Only used when spokeNetworkConfig.ingressOpt
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`afdPeAutoApproverName`](#parameter-frontdoorconfigafdpeautoapprovername) | string | Custom name for the AFD private-endpoint auto-approver managed identity. Falls back to naming-module default. |
 | [`autoApprovePrivateEndpoint`](#parameter-frontdoorconfigautoapproveprivateendpoint) | bool | Auto-approve the private endpoint connection to AFD. |
 | [`customDomains`](#parameter-frontdoorconfigcustomdomains) | array | Custom domains for the Front Door profile. |
 | [`diagnosticSettings`](#parameter-frontdoorconfigdiagnosticsettings) | array | Diagnostic settings for Front Door. |
 | [`enableDefaultWafMethodBlock`](#parameter-frontdoorconfigenabledefaultwafmethodblock) | bool | Deploy the default WAF rule that blocks non-GET/HEAD/OPTIONS methods. |
+| [`endpointName`](#parameter-frontdoorconfigendpointname) | string | Custom name for the Front Door endpoint. Falls back to naming-module default. |
 | [`healthProbeIntervalInSeconds`](#parameter-frontdoorconfighealthprobeintervalinseconds) | int | Health probe interval in seconds. |
 | [`healthProbePath`](#parameter-frontdoorconfighealthprobepath) | string | Health probe path for the origin group. |
 | [`lock`](#parameter-frontdoorconfiglock) | object | Resource lock for the Front Door profile. |
+| [`name`](#parameter-frontdoorconfigname) | string | Custom name for the Front Door profile. Falls back to naming-module default. |
+| [`originGroupName`](#parameter-frontdoorconfigorigingroupname) | string | Custom name for the Front Door origin group. Falls back to naming-module default. |
 | [`originResponseTimeoutSeconds`](#parameter-frontdoorconfigoriginresponsetimeoutseconds) | int | Origin response timeout in seconds. Defaults to 120. |
 | [`roleAssignments`](#parameter-frontdoorconfigroleassignments) | array | Role assignments for the Front Door profile. |
 | [`ruleSets`](#parameter-frontdoorconfigrulesets) | array | Rule sets for the Front Door profile. |
 | [`secrets`](#parameter-frontdoorconfigsecrets) | array | Secrets for the Front Door profile (e.g. BYOC certificates). |
 | [`wafCustomRules`](#parameter-frontdoorconfigwafcustomrules) | object | Custom WAF rules. Only used when enableDefaultWafMethodBlock is false. |
+| [`wafName`](#parameter-frontdoorconfigwafname) | string | Custom name for the Front Door WAF policy. Falls back to naming-module default. |
+
+### Parameter: `frontDoorConfig.afdPeAutoApproverName`
+
+Custom name for the AFD private-endpoint auto-approver managed identity. Falls back to naming-module default.
+
+- Required: No
+- Type: string
 
 ### Parameter: `frontDoorConfig.autoApprovePrivateEndpoint`
 
@@ -4300,6 +4289,13 @@ Deploy the default WAF rule that blocks non-GET/HEAD/OPTIONS methods.
 - Required: No
 - Type: bool
 
+### Parameter: `frontDoorConfig.endpointName`
+
+Custom name for the Front Door endpoint. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `frontDoorConfig.healthProbeIntervalInSeconds`
 
 Health probe interval in seconds.
@@ -4354,6 +4350,20 @@ Specify the name of lock.
 ### Parameter: `frontDoorConfig.lock.notes`
 
 Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorConfig.name`
+
+Custom name for the Front Door profile. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorConfig.originGroupName`
+
+Custom name for the Front Door origin group. Falls back to naming-module default.
 
 - Required: No
 - Type: string
@@ -4483,6 +4493,13 @@ Custom WAF rules. Only used when enableDefaultWafMethodBlock is false.
 - Required: No
 - Type: object
 
+### Parameter: `frontDoorConfig.wafName`
+
+Custom name for the Front Door WAF policy. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `keyVaultConfig`
 
 Configuration for the Key Vault.
@@ -4505,6 +4522,7 @@ Configuration for the Key Vault.
 | [`enableVaultForTemplateDeployment`](#parameter-keyvaultconfigenablevaultfortemplatedeployment) | bool | Enable for template deployment. |
 | [`keys`](#parameter-keyvaultconfigkeys) | array | Keys to create. |
 | [`lock`](#parameter-keyvaultconfiglock) | object | Resource lock for the Key Vault. |
+| [`name`](#parameter-keyvaultconfigname) | string | Custom name for the Key Vault. Falls back to naming-module default. |
 | [`networkAcls`](#parameter-keyvaultconfignetworkacls) | object | Network ACLs for the Key Vault. |
 | [`publicNetworkAccess`](#parameter-keyvaultconfigpublicnetworkaccess) | string | Public network access for the Key Vault. |
 | [`secrets`](#parameter-keyvaultconfigsecrets) | array | Secrets to create. |
@@ -4861,6 +4879,13 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `keyVaultConfig.name`
+
+Custom name for the Key Vault. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `keyVaultConfig.networkAcls`
 
 Network ACLs for the Key Vault.
@@ -4939,6 +4964,7 @@ Configuration for the App Service Plan.
 | [`lock`](#parameter-serviceplanconfiglock) | object | Resource lock for the App Service Plan. |
 | [`managedIdentities`](#parameter-serviceplanconfigmanagedidentities) | object | Managed identities for the App Service Plan. |
 | [`maximumElasticWorkerCount`](#parameter-serviceplanconfigmaximumelasticworkercount) | int | Maximum number of total workers for ElasticScaleEnabled plans. |
+| [`name`](#parameter-serviceplanconfigname) | string | Custom name for the App Service Plan. Falls back to naming-module default. |
 | [`perSiteScaling`](#parameter-serviceplanconfigpersitescaling) | bool | If true, apps can be scaled independently. |
 | [`planDefaultIdentity`](#parameter-serviceplanconfigplandefaultidentity) | string | The default identity for the App Service Plan. |
 | [`rdpEnabled`](#parameter-serviceplanconfigrdpenabled) | bool | Whether RDP is enabled. |
@@ -5183,6 +5209,13 @@ Maximum number of total workers for ElasticScaleEnabled plans.
 - Required: No
 - Type: int
 
+### Parameter: `servicePlanConfig.name`
+
+Custom name for the App Service Plan. Falls back to naming-module default.
+
+- Required: No
+- Type: string
+
 ### Parameter: `servicePlanConfig.perSiteScaling`
 
 If true, apps can be scaled independently.
@@ -5406,6 +5439,7 @@ Configuration for the spoke virtual network and ingress networking.
 | [`ingressOption`](#parameter-spokenetworkconfigingressoption) | string | Ingress option: "frontDoor", "applicationGateway", or "none". |
 | [`lock`](#parameter-spokenetworkconfiglock) | object | Resource lock for the spoke virtual network. |
 | [`privateEndpointSubnetAddressSpace`](#parameter-spokenetworkconfigprivateendpointsubnetaddressspace) | string | CIDR of the private endpoint subnet. |
+| [`resourceGroupName`](#parameter-spokenetworkconfigresourcegroupname) | string | Custom name for the spoke resource group. Falls back to naming-module default. |
 | [`roleAssignments`](#parameter-spokenetworkconfigroleassignments) | array | Role assignments for the spoke virtual network. |
 | [`vnetAddressSpace`](#parameter-spokenetworkconfigvnetaddressspace) | string | CIDR of the spoke VNet (e.g. "10.240.0.0/20"). |
 
@@ -5715,6 +5749,13 @@ Specify the notes of the lock.
 ### Parameter: `spokeNetworkConfig.privateEndpointSubnetAddressSpace`
 
 CIDR of the private endpoint subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `spokeNetworkConfig.resourceGroupName`
+
+Custom name for the spoke resource group. Falls back to naming-module default.
 
 - Required: No
 - Type: string

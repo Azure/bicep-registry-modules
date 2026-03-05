@@ -8,7 +8,7 @@ targetScope = 'subscription'
 // ========== //
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'applzamin'
+param serviceShort string = 'appdflt'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "134813477097388990"
+      "templateHash": "17269636940605249335"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -596,6 +596,13 @@
     "appGatewayConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Application Gateway. Falls back to naming-module default."
+          }
+        },
         "sslCertificates": {
           "type": "array",
           "nullable": true,
@@ -967,6 +974,20 @@
     "appServiceConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Web App. Falls back to naming-module default."
+          }
+        },
+        "managedIdentityName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the App Service managed identity. Falls back to naming-module default."
+          }
+        },
         "kind": {
           "type": "string",
           "allowedValues": [
@@ -1306,6 +1327,13 @@
     "aseConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the App Service Environment. Falls back to naming-module default."
+          }
+        },
         "clusterSettings": {
           "type": "array",
           "items": {
@@ -1471,6 +1499,41 @@
     "frontDoorConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Front Door profile. Falls back to naming-module default."
+          }
+        },
+        "endpointName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Front Door endpoint. Falls back to naming-module default."
+          }
+        },
+        "wafName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Front Door WAF policy. Falls back to naming-module default."
+          }
+        },
+        "originGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Front Door origin group. Falls back to naming-module default."
+          }
+        },
+        "afdPeAutoApproverName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the AFD private-endpoint auto-approver managed identity. Falls back to naming-module default."
+          }
+        },
         "enableDefaultWafMethodBlock": {
           "type": "bool",
           "nullable": true,
@@ -1572,6 +1635,13 @@
     "keyVaultConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the Key Vault. Falls back to naming-module default."
+          }
+        },
         "enablePurgeProtection": {
           "type": "bool",
           "nullable": true,
@@ -1714,6 +1784,13 @@
     "servicePlanConfigType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the App Service Plan. Falls back to naming-module default."
+          }
+        },
         "sku": {
           "type": "string",
           "nullable": true,
@@ -1897,6 +1974,13 @@
     "spokeNetworkConfigType": {
       "type": "object",
       "properties": {
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom name for the spoke resource group. Falls back to naming-module default."
+          }
+        },
         "vnetAddressSpace": {
           "type": "string",
           "nullable": true,
@@ -2163,85 +2247,6 @@
       "metadata": {
         "description": "Optional. Configuration for the App Service Environment v3. Only used when deployAseV3 is true."
       }
-    },
-    "customResourceNames": {
-      "type": "object",
-      "properties": {
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the spoke resource group."
-          }
-        },
-        "aseName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the App Service Environment."
-          }
-        },
-        "appServicePlanName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the App Service Plan."
-          }
-        },
-        "webAppName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the Web App."
-          }
-        },
-        "appSvcManagedIdentityName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the App Service managed identity."
-          }
-        },
-        "frontDoorName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the Front Door profile."
-          }
-        },
-        "frontDoorEndpointName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the Front Door endpoint."
-          }
-        },
-        "frontDoorWafName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the Front Door WAF policy."
-          }
-        },
-        "frontDoorOriginGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the Front Door origin group."
-          }
-        },
-        "afdPeAutoApproverName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom name for the AFD private-endpoint auto-approver managed identity."
-          }
-        }
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Custom resource names. Any property not provided falls back to the naming-module default. Use this to comply with organization-specific naming policies without overriding the naming module entirely."
-      }
     }
   },
   "variables": {
@@ -2419,7 +2424,7 @@
     "aseRoleAssignments": "[tryGet(parameters('aseConfig'), 'roleAssignments')]",
     "aseDiagnosticSettings": "[coalesce(tryGet(parameters('aseConfig'), 'diagnosticSettings'), createArray())]",
     "resourceSuffix": "[format('{0}-{1}-{2}', parameters('workloadName'), parameters('environmentName'), parameters('location'))]",
-    "resourceGroupName": "[coalesce(tryGet(parameters('customResourceNames'), 'resourceGroupName'), format('rg-spoke-{0}', variables('resourceSuffix')))]",
+    "resourceGroupName": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'resourceGroupName'), format('rg-spoke-{0}', variables('resourceSuffix')))]",
     "webAppDnsZoneName": "privatelink.azurewebsites.net",
     "slotName": "staging",
     "deployPlan": "[empty(variables('existingAppServicePlanId'))]",
@@ -8426,7 +8431,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aseName]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aseName]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -9231,7 +9236,7 @@
         "mode": "Incremental",
         "parameters": {
           "aseName": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aseName]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aseName]"
           }
         },
         "template": {
@@ -12719,7 +12724,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('appi-{0}', createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp)]"
+            "value": "[format('appi-{0}', createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp)]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -13522,7 +13527,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aspName]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).aspName]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -13564,9 +13569,7 @@
           "appServiceEnvironmentResourceId": {
             "value": "[coalesce(tryGet(tryGet(tryGet(if(parameters('deployAseV3'), reference('aseEnvironment'), null()), 'outputs'), 'resourceId'), 'value'), null())]"
           },
-          "virtualNetworkSubnetId": {
-            "value": "[variables('appServicePlanVirtualNetworkSubnetId')]"
-          },
+          "virtualNetworkSubnetId": "[if(coalesce(variables('isCustomMode'), false()), createObject('value', reference('networking').outputs.snetAppSvcResourceId.value), createObject('value', variables('appServicePlanVirtualNetworkSubnetId')))]",
           "isCustomMode": {
             "value": "[coalesce(variables('isCustomMode'), false())]"
           },
@@ -14279,7 +14282,8 @@
       },
       "dependsOn": [
         "aseEnvironment",
-        "naming"
+        "naming",
+        "networking"
       ]
     },
     "webAppSite": {
@@ -14297,7 +14301,7 @@
             "value": "[variables('webAppKind')]"
           },
           "name": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -14416,7 +14420,7 @@
           "roleAssignments": {
             "value": "[variables('webAppRoleAssignments')]"
           },
-          "virtualNetworkSubnetResourceId": "[if(not(parameters('deployAseV3')), createObject('value', reference('networking').outputs.snetAppSvcResourceId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(and(not(parameters('deployAseV3')), not(coalesce(variables('isCustomMode'), false()))), createObject('value', reference('networking').outputs.snetAppSvcResourceId.value), createObject('value', ''))]",
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
@@ -30534,7 +30538,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).appSvcUserAssignedManagedIdentity]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).appSvcUserAssignedManagedIdentity]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -31043,7 +31047,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[take(format('pe-{0}-slot-{1}', createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp, variables('slotName')), 64)]"
+            "value": "[take(format('pe-{0}-slot-{1}', createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).webApp, variables('slotName')), 64)]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -31696,13 +31700,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "afdName": {
-            "value": "[format('{0}{1}', createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoor, parameters('workloadName'))]"
+            "value": "[format('{0}{1}', createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoor, parameters('workloadName'))]"
           },
           "endpointName": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorEndPoint]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorEndPoint]"
           },
           "originGroupName": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorOriginGroup]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorOriginGroup]"
           },
           "origins": {
             "value": [
@@ -31751,7 +31755,7 @@
             "value": "[variables('frontDoorOriginResponseTimeoutSeconds')]"
           },
           "wafPolicyName": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorWaf]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).frontDoorWaf]"
           },
           "diagnosticSettings": "[if(not(empty(variables('frontDoorDiagnosticSettings'))), createObject('value', variables('frontDoorDiagnosticSettings')), createObject('value', createArray(createObject('name', 'frontdoor-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('category', 'FrontdoorAccessLog'), createObject('category', 'FrontdoorWebApplicationFirewallLog'))))))]",
           "tags": {
@@ -36786,7 +36790,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "idAfdPeAutoApproverName": {
-            "value": "[createObject('aseName', coalesce(tryGet(parameters('customResourceNames'), 'aseName'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('customResourceNames'), 'appServicePlanName'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('customResourceNames'), 'webAppName'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('customResourceNames'), 'appSvcManagedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorEndpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('customResourceNames'), 'frontDoorWafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorName'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('customResourceNames'), 'frontDoorOriginGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('customResourceNames'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).idAfdApprovePeAutoApprover]"
+            "value": "[createObject('aseName', coalesce(tryGet(parameters('aseConfig'), 'name'), reference('naming').outputs.names.value.appServiceEnvironment.nameUnique), 'aspName', coalesce(tryGet(parameters('servicePlanConfig'), 'name'), reference('naming').outputs.names.value.appServicePlan.name), 'webApp', coalesce(tryGet(parameters('appServiceConfig'), 'name'), reference('naming').outputs.names.value.appService.nameUnique), 'appSvcUserAssignedManagedIdentity', coalesce(tryGet(parameters('appServiceConfig'), 'managedIdentityName'), take(format('{0}-appSvc', reference('naming').outputs.names.value.managedIdentity.name), 128)), 'frontDoorEndPoint', coalesce(tryGet(parameters('frontDoorConfig'), 'endpointName'), format('webAppLza-{0}', take(uniqueString(variables('resourceGroupName')), 6))), 'frontDoorWaf', replace(coalesce(tryGet(parameters('frontDoorConfig'), 'wafName'), reference('naming').outputs.names.value.frontDoorFirewallPolicy.name), '-', ''), 'frontDoor', coalesce(tryGet(parameters('frontDoorConfig'), 'name'), reference('naming').outputs.names.value.frontDoor.name), 'frontDoorOriginGroup', coalesce(tryGet(parameters('frontDoorConfig'), 'originGroupName'), format('{0}-originGroup', reference('naming').outputs.names.value.frontDoor.name)), 'idAfdApprovePeAutoApprover', coalesce(tryGet(parameters('frontDoorConfig'), 'afdPeAutoApproverName'), take(format('{0}-AfdApprovePe', reference('naming').outputs.names.value.managedIdentity.name), 128))).idAfdApprovePeAutoApprover]"
           },
           "tags": {
             "value": "[parameters('tags')]"

@@ -12,7 +12,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'applzamax'
+param serviceShort string = 'appmax'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
