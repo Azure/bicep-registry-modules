@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1605496623749646228"
+      "templateHash": "134813477097388990"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -9241,7 +9241,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "4452672858588994145"
+              "templateHash": "14078210385996520604"
             }
           },
           "parameters": {
@@ -9259,7 +9259,7 @@
               "metadata": {
                 "description": "The internal inbound IP address of the ASE."
               },
-              "value": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('aseName')), '2025-03-01').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
+              "value": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('aseName')), '2025-03-01').networkingConfiguration.internalInboundIpAddresses[0]]"
             }
           }
         }
@@ -13546,10 +13546,8 @@
           "perSiteScaling": {
             "value": "[variables('perSiteScaling')]"
           },
-          "maximumElasticWorkerCount": "[if(and(less(variables('maximumElasticWorkerCount'), 3), variables('zoneRedundant')), createObject('value', 3), createObject('value', variables('maximumElasticWorkerCount')))]",
-          "elasticScaleEnabled": {
-            "value": "[variables('elasticScaleEnabled')]"
-          },
+          "maximumElasticWorkerCount": "[if(parameters('deployAseV3'), createObject('value', null()), if(and(less(variables('maximumElasticWorkerCount'), 3), variables('zoneRedundant')), createObject('value', 3), createObject('value', variables('maximumElasticWorkerCount'))))]",
+          "elasticScaleEnabled": "[if(parameters('deployAseV3'), createObject('value', false()), createObject('value', variables('elasticScaleEnabled')))]",
           "reserved": {
             "value": "[variables('isLinux')]"
           },
@@ -14403,7 +14401,7 @@
             "value": "[variables('hostNamesDisabled')]"
           },
           "reserved": {
-            "value": "[variables('webAppReserved')]"
+            "value": "[coalesce(variables('webAppReserved'), variables('isLinux'))]"
           },
           "extendedLocation": {
             "value": "[variables('extendedLocation')]"

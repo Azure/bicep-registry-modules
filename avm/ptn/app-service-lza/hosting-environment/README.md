@@ -93,25 +93,22 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app-service-lza/hosting-environment:<version>`.
 
-- [ASE v3 with Linux container workload.](#example-1-ase-v3-with-linux-container-workload)
-- [ASE v3 with Linux web app.](#example-2-ase-v3-with-linux-web-app)
-- [ASE v3 with Windows container workload.](#example-3-ase-v3-with-windows-container-workload)
-- [ASE v3 with Windows web app and jumpbox example.](#example-4-ase-v3-with-windows-web-app-and-jumpbox-example)
-- [Bring-your-own-service with Linux container.](#example-5-bring-your-own-service-with-linux-container)
-- [Bring-your-own-service with Linux web app.](#example-6-bring-your-own-service-with-linux-web-app)
-- [Bring-your-own-service with Windows container.](#example-7-bring-your-own-service-with-windows-container)
-- [Bring-your-own-service with Windows web app.](#example-8-bring-your-own-service-with-windows-web-app)
-- [Using only defaults.](#example-9-using-only-defaults)
-- [Front Door secondary region with Linux.](#example-10-front-door-secondary-region-with-linux)
-- [Using all parameters.](#example-11-using-all-parameters)
-- [Front Door primary region with Windows.](#example-12-front-door-primary-region-with-windows)
-- [WAF-aligned](#example-13-waf-aligned)
+- [ASE v3 with Linux container and Application Gateway.](#example-1-ase-v3-with-linux-container-and-application-gateway)
+- [ASE v3 with Windows web app, Application Gateway, and jumpbox.](#example-2-ase-v3-with-windows-web-app-application-gateway-and-jumpbox)
+- [Bring-your-own-service with Linux container and Application Gateway.](#example-3-bring-your-own-service-with-linux-container-and-application-gateway)
+- [Bring-your-own-service with Windows container and Application Gateway.](#example-4-bring-your-own-service-with-windows-container-and-application-gateway)
+- [Using only defaults.](#example-5-using-only-defaults)
+- [Front Door secondary region with Linux.](#example-6-front-door-secondary-region-with-linux)
+- [Managed Instance with Application Gateway and Bastion.](#example-7-managed-instance-with-application-gateway-and-bastion)
+- [Using all parameters.](#example-8-using-all-parameters)
+- [Front Door primary region with Windows.](#example-9-front-door-primary-region-with-windows)
+- [WAF-aligned](#example-10-waf-aligned)
 
-### Example 1: _ASE v3 with Linux container workload._
+### Example 1: _ASE v3 with Linux container and Application Gateway._
 
-This instance deploys ASE v3 with a Linux container workload to validate the ASE + Linux container path.
+This instance deploys ASE v3 with a Linux container workload behind Application Gateway for single-region ingress.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-linux-container]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-linux]
 
 
 <details>
@@ -137,12 +134,13 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       sku: 'I1v2'
     }
     spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
       appSvcSubnetAddressSpace: '10.240.0.0/24'
-      ingressOption: 'none'
+      ingressOption: 'applicationGateway'
     }
     tags: {
       environment: 'test'
-      scenario: 'ase-linux-container'
+      scenario: 'ase-linux-container-appgw'
     }
     workloadName: '<workloadName>'
   }
@@ -188,14 +186,15 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
         "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "none"
+        "ingressOption": "applicationGateway"
       }
     },
     "tags": {
       "value": {
         "environment": "test",
-        "scenario": "ase-linux-container"
+        "scenario": "ase-linux-container-appgw"
       }
     },
     "workloadName": {
@@ -231,12 +230,13 @@ param servicePlanConfig = {
   sku: 'I1v2'
 }
 param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
   appSvcSubnetAddressSpace: '10.240.0.0/24'
-  ingressOption: 'none'
+  ingressOption: 'applicationGateway'
 }
 param tags = {
   environment: 'test'
-  scenario: 'ase-linux-container'
+  scenario: 'ase-linux-container-appgw'
 }
 param workloadName = '<workloadName>'
 ```
@@ -244,274 +244,9 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 2: _ASE v3 with Linux web app._
+### Example 2: _ASE v3 with Windows web app, Application Gateway, and jumpbox._
 
-This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-linux]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      kind: 'app,linux'
-    }
-    deployAseV3: true
-    location: '<location>'
-    servicePlanConfig: {
-      kind: 'linux'
-      sku: 'I1v2'
-    }
-    spokeNetworkConfig: {
-      appSvcSubnetAddressSpace: '10.240.0.0/24'
-      ingressOption: 'none'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'ase-linux-webapp'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "kind": "app,linux"
-      }
-    },
-    "deployAseV3": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "kind": "linux",
-        "sku": "I1v2"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "none"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "ase-linux-webapp"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  kind: 'app,linux'
-}
-deployAseV3: true
-param location = '<location>'
-param servicePlanConfig = {
-  kind: 'linux'
-  sku: 'I1v2'
-}
-param spokeNetworkConfig = {
-  appSvcSubnetAddressSpace: '10.240.0.0/24'
-  ingressOption: 'none'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'ase-linux-webapp'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 3: _ASE v3 with Windows container workload._
-
-This instance deploys ASE v3 with a Windows container workload to validate the ASE + Windows container path.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-windows-container]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      container: {
-        imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      }
-      kind: 'app,container,windows'
-    }
-    deployAseV3: true
-    location: '<location>'
-    servicePlanConfig: {
-      kind: 'windows'
-      sku: 'I1v2'
-    }
-    spokeNetworkConfig: {
-      appSvcSubnetAddressSpace: '10.240.0.0/24'
-      ingressOption: 'none'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'ase-windows-container'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "container": {
-          "imageName": "mcr.microsoft.com/appsvc/staticsite:latest"
-        },
-        "kind": "app,container,windows"
-      }
-    },
-    "deployAseV3": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "kind": "windows",
-        "sku": "I1v2"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "none"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "ase-windows-container"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  container: {
-    imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-  }
-  kind: 'app,container,windows'
-}
-deployAseV3: true
-param location = '<location>'
-param servicePlanConfig = {
-  kind: 'windows'
-  sku: 'I1v2'
-}
-param spokeNetworkConfig = {
-  appSvcSubnetAddressSpace: '10.240.0.0/24'
-  ingressOption: 'none'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'ase-windows-container'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 4: _ASE v3 with Windows web app and jumpbox example._
-
-This instance deploys ASE v3 with a Windows web app and demonstrates deploying a jumpbox VM via Bastion.
+This instance deploys ASE v3 with a Windows web app behind Application Gateway and demonstrates deploying a jumpbox VM via Bastion.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase-windows]
 
@@ -536,8 +271,9 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       sku: 'I1v2'
     }
     spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
       appSvcSubnetAddressSpace: '10.240.0.0/24'
-      ingressOption: 'none'
+      ingressOption: 'applicationGateway'
     }
     tags: {
       environment: 'test'
@@ -584,8 +320,9 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
         "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "none"
+        "ingressOption": "applicationGateway"
       }
     },
     "tags": {
@@ -624,8 +361,9 @@ param servicePlanConfig = {
   sku: 'I1v2'
 }
 param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
   appSvcSubnetAddressSpace: '10.240.0.0/24'
-  ingressOption: 'none'
+  ingressOption: 'applicationGateway'
 }
 param tags = {
   environment: 'test'
@@ -637,11 +375,11 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 5: _Bring-your-own-service with Linux container._
+### Example 3: _Bring-your-own-service with Linux container and Application Gateway._
 
-This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux container workload on it.
+This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux container workload behind Application Gateway.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-linux-container]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-linux]
 
 
 <details>
@@ -666,11 +404,12 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       kind: 'linux'
     }
     spokeNetworkConfig: {
-      ingressOption: 'none'
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      ingressOption: 'applicationGateway'
     }
     tags: {
       environment: 'test'
-      scenario: 'byos-linux-container'
+      scenario: 'byos-linux-container-appgw'
     }
     workloadName: '<workloadName>'
   }
@@ -713,13 +452,14 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "ingressOption": "none"
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "ingressOption": "applicationGateway"
       }
     },
     "tags": {
       "value": {
         "environment": "test",
-        "scenario": "byos-linux-container"
+        "scenario": "byos-linux-container-appgw"
       }
     },
     "workloadName": {
@@ -754,11 +494,12 @@ param servicePlanConfig = {
   kind: 'linux'
 }
 param spokeNetworkConfig = {
-  ingressOption: 'none'
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  ingressOption: 'applicationGateway'
 }
 param tags = {
   environment: 'test'
-  scenario: 'byos-linux-container'
+  scenario: 'byos-linux-container-appgw'
 }
 param workloadName = '<workloadName>'
 ```
@@ -766,131 +507,11 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 6: _Bring-your-own-service with Linux web app._
+### Example 4: _Bring-your-own-service with Windows container and Application Gateway._
 
-This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux web app on it.
+This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows container workload behind Application Gateway.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-linux]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      kind: 'app,linux'
-    }
-    location: '<location>'
-    servicePlanConfig: {
-      existingPlanId: '<existingPlanId>'
-      kind: 'linux'
-    }
-    spokeNetworkConfig: {
-      ingressOption: 'none'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'byos-linux-webapp'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "kind": "app,linux"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "existingPlanId": "<existingPlanId>",
-        "kind": "linux"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "ingressOption": "none"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "byos-linux-webapp"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  kind: 'app,linux'
-}
-param location = '<location>'
-param servicePlanConfig = {
-  existingPlanId: '<existingPlanId>'
-  kind: 'linux'
-}
-param spokeNetworkConfig = {
-  ingressOption: 'none'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'byos-linux-webapp'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 7: _Bring-your-own-service with Windows container._
-
-This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows container workload on it.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-windows-container]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-windows]
 
 
 <details>
@@ -915,11 +536,12 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       kind: 'windows'
     }
     spokeNetworkConfig: {
-      ingressOption: 'none'
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      ingressOption: 'applicationGateway'
     }
     tags: {
       environment: 'test'
-      scenario: 'byos-windows-container'
+      scenario: 'byos-windows-container-appgw'
     }
     workloadName: '<workloadName>'
   }
@@ -962,13 +584,14 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "spokeNetworkConfig": {
       "value": {
-        "ingressOption": "none"
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "ingressOption": "applicationGateway"
       }
     },
     "tags": {
       "value": {
         "environment": "test",
-        "scenario": "byos-windows-container"
+        "scenario": "byos-windows-container-appgw"
       }
     },
     "workloadName": {
@@ -1003,11 +626,12 @@ param servicePlanConfig = {
   kind: 'windows'
 }
 param spokeNetworkConfig = {
-  ingressOption: 'none'
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  ingressOption: 'applicationGateway'
 }
 param tags = {
   environment: 'test'
-  scenario: 'byos-windows-container'
+  scenario: 'byos-windows-container-appgw'
 }
 param workloadName = '<workloadName>'
 ```
@@ -1015,127 +639,7 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 8: _Bring-your-own-service with Windows web app._
-
-This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows web app on it.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos-windows]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      kind: 'app'
-    }
-    location: '<location>'
-    servicePlanConfig: {
-      existingPlanId: '<existingPlanId>'
-      kind: 'windows'
-    }
-    spokeNetworkConfig: {
-      ingressOption: 'none'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'byos-windows-webapp'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "kind": "app"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "existingPlanId": "<existingPlanId>",
-        "kind": "windows"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "ingressOption": "none"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "byos-windows-webapp"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  kind: 'app'
-}
-param location = '<location>'
-param servicePlanConfig = {
-  existingPlanId: '<existingPlanId>'
-  kind: 'windows'
-}
-param spokeNetworkConfig = {
-  ingressOption: 'none'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'byos-windows-webapp'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 9: _Using only defaults._
+### Example 5: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1205,7 +709,7 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 10: _Front Door secondary region with Linux._
+### Example 6: _Front Door secondary region with Linux._
 
 This instance deploys a secondary regional stamp behind Front Door with a Linux web app to validate multi-region topology.
 
@@ -1322,7 +826,136 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 11: _Using all parameters._
+### Example 7: _Managed Instance with Application Gateway and Bastion._
+
+This instance deploys a Windows Managed Instance App Service Plan with Application Gateway for single-region ingress and a jumpbox VM via Bastion.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managed-instance]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app'
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      isCustomMode: true
+      kind: 'windows'
+      rdpEnabled: true
+      sku: 'P1V4'
+    }
+    spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      ingressOption: 'applicationGateway'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'managed-instance-appgw-bastion'
+    }
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "isCustomMode": true,
+        "kind": "windows",
+        "rdpEnabled": true,
+        "sku": "P1V4"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "ingressOption": "applicationGateway"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "managed-instance-appgw-bastion"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app'
+}
+param location = '<location>'
+param servicePlanConfig = {
+  isCustomMode: true
+  kind: 'windows'
+  rdpEnabled: true
+  sku: 'P1V4'
+}
+param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  ingressOption: 'applicationGateway'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'managed-instance-appgw-bastion'
+}
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
+### Example 8: _Using all parameters._
 
 This instance deploys the module with the maximum set of parameters, exercising the Application Gateway networking option and Linux container workload.
 
@@ -1703,7 +1336,7 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 12: _Front Door primary region with Windows._
+### Example 9: _Front Door primary region with Windows._
 
 This instance deploys a regional stamp behind Front Door with a Windows web app. Use with front-door-secondary for multi-region topology.
 
@@ -1820,7 +1453,7 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module with WAF aligned settings.
 
