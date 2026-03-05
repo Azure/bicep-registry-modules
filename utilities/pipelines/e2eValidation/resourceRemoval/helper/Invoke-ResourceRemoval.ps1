@@ -594,8 +594,8 @@ function Invoke-ResourceRemoval {
                 # Purge the soft-deleted APIM service to ensure complete removal
                 $softDeletedService = az apim deletedservice show --service-name $resourceName --location $apimLocation 2>$null
                 if ($softDeletedService) {
-                    if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Purge')) {
-                        Write-Verbose ('[*] Purging soft-deleted API Management service [{0}] in location [{1}]' -f $resourceName, $apimLocation) -Verbose
+                    Write-Verbose ('[*] Purging soft-deleted API Management service [{0}] in location [{1}]' -f $resourceName, $apimLocation) -Verbose
+                        if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Purge')) {
                         az apim deletedservice purge --service-name $resourceName --location $apimLocation
                     }
                 } else {
