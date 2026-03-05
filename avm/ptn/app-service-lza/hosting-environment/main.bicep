@@ -627,8 +627,8 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = if (deployPlan)
     zoneRedundant: zoneRedundant
     kind: isLinux ? 'Linux' : 'Windows'
     perSiteScaling: perSiteScaling
-    maximumElasticWorkerCount: (maximumElasticWorkerCount < 3 && zoneRedundant) ? 3 : maximumElasticWorkerCount
-    elasticScaleEnabled: elasticScaleEnabled
+    maximumElasticWorkerCount: deployAseV3 ? null : ((maximumElasticWorkerCount < 3 && zoneRedundant) ? 3 : maximumElasticWorkerCount)
+    elasticScaleEnabled: deployAseV3 ? false : elasticScaleEnabled
     reserved: isLinux
     targetWorkerCount: (targetWorkerCount < 3 && zoneRedundant) ? 3 : targetWorkerCount
     targetWorkerSize: targetWorkerSize
@@ -693,7 +693,7 @@ module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
     resourceConfig: resourceConfig
     workloadProfileName: workloadProfileName
     hostNamesDisabled: hostNamesDisabled
-    reserved: webAppReserved
+    reserved: webAppReserved ?? isLinux
     extendedLocation: extendedLocation
     basicPublishingCredentialsPolicies: disableBasicPublishingCredentials
       ? [

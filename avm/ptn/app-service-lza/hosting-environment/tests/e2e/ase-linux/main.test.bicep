@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux web app.'
-metadata description = 'This instance deploys ASE v3 with a Linux web app to validate the ASE + Linux path.'
+metadata name = 'ASE v3 with Linux container and Application Gateway.'
+metadata description = 'This instance deploys ASE v3 with a Linux container workload behind Application Gateway for single-region ingress.'
 
 targetScope = 'subscription'
 
@@ -16,7 +16,6 @@ param serviceShort string = 'appaselnx'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -41,17 +40,17 @@ module diagnosticDependencies './dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux web app ---
+// --- ASE v3 + Linux container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workloadName: take('${namePrefix}aselw', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-webapp'
+        scenario: 'ase-linux-container-appgw'
       }
 
       deployAseV3: true
@@ -60,11 +59,15 @@ module testDeployment '../../../main.bicep' = [
         sku: 'I1v2'
       }
       appServiceConfig: {
-        kind: 'app,linux'
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
-        ingressOption: 'none'
+        ingressOption: 'applicationGateway'
         appSvcSubnetAddressSpace: '10.240.0.0/24'
+        appGwSubnetAddressSpace: '10.240.12.0/24'
       }
 
       location: enforcedLocation

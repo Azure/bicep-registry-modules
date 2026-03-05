@@ -10,4 +10,5 @@ resource aseExisting 'Microsoft.Web/hostingEnvironments@2025-03-01' existing = {
 }
 
 @description('The internal inbound IP address of the ASE.')
-output internalInboundIpAddress string = aseExisting.properties.networkingConfiguration.properties.internalInboundIpAddresses[0]
+#disable-next-line BCP053 // The ARM API at 2025-03-01 returns networkingConfiguration properties at the top level, not under a nested 'properties' bag
+output internalInboundIpAddress string = aseExisting.properties.networkingConfiguration.internalInboundIpAddresses[0]

@@ -1,5 +1,5 @@
-metadata name = 'Bring-your-own-service with Windows web app.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows web app on it.'
+metadata name = 'Bring-your-own-service with Windows container and Application Gateway.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows container workload behind Application Gateway.'
 
 targetScope = 'subscription'
 
@@ -16,7 +16,6 @@ param serviceShort string = 'appbyowin'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -37,7 +36,7 @@ module diagnosticDependencies './dependencies.bicep' = {
   }
 }
 
-// Pre-create a Windows App Service Plan to exercise bring-your-own-service
+// Pre-create a Windows App Service Plan with Hyper-V for container support
 module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-existingWindowsPlan'
@@ -47,6 +46,7 @@ module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
     skuName: 'P1V3'
     kind: 'Windows'
     reserved: false
+    hyperV: true
     enableTelemetry: true
   }
 }
@@ -55,17 +55,17 @@ module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
 // Test Execution //
 // ============== //
 
-// --- BYOS + Windows web app ---
+// --- BYOS + Windows container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-wweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workloadName: take('${namePrefix}byoww', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'byos-windows-webapp'
+        scenario: 'byos-windows-container-appgw'
       }
 
       servicePlanConfig: {
@@ -73,10 +73,14 @@ module testDeployment '../../../main.bicep' = [
         kind: 'windows'
       }
       appServiceConfig: {
-        kind: 'app'
+        kind: 'app,container,windows'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
-        ingressOption: 'none'
+        ingressOption: 'applicationGateway'
+        appGwSubnetAddressSpace: '10.240.12.0/24'
       }
 
       location: enforcedLocation

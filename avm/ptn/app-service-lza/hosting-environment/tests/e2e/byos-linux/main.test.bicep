@@ -1,5 +1,5 @@
-metadata name = 'Bring-your-own-service with Linux web app.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux web app on it.'
+metadata name = 'Bring-your-own-service with Linux container and Application Gateway.'
+metadata description = 'This instance validates bring-your-own-service by pre-creating a Linux App Service Plan and deploying a Linux container workload behind Application Gateway.'
 
 targetScope = 'subscription'
 
@@ -16,7 +16,6 @@ param serviceShort string = 'appbyolnx'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
-
 
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
@@ -55,17 +54,17 @@ module existingLinuxPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
 // Test Execution //
 // ============== //
 
-// --- BYOS + Linux web app ---
+// --- BYOS + Linux container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-lweb-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workloadName: take('${namePrefix}byolw', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'byos-linux-webapp'
+        scenario: 'byos-linux-container-appgw'
       }
 
       servicePlanConfig: {
@@ -73,10 +72,14 @@ module testDeployment '../../../main.bicep' = [
         kind: 'linux'
       }
       appServiceConfig: {
-        kind: 'app,linux'
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
       }
       spokeNetworkConfig: {
-        ingressOption: 'none'
+        ingressOption: 'applicationGateway'
+        appGwSubnetAddressSpace: '10.240.12.0/24'
       }
 
       location: enforcedLocation
