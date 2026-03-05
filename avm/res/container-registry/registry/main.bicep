@@ -738,7 +738,7 @@ type taskType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.tags?
 
   @description('Optional. The platform properties for the task.')
   platform: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
