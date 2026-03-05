@@ -9,7 +9,7 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for diagnostics settings.')
 @maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
+param diagnosticsResourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'appaselnx'

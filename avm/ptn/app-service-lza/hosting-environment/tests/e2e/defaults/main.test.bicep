@@ -21,7 +21,7 @@ var enforcedLocation = 'australiaeast'
 // Diagnostics
 // ===========
 resource diagnosticsResourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: 'diag-appservicelza-${serviceShort}-rg'
+  name: 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
   location: enforcedLocation
 }
 
