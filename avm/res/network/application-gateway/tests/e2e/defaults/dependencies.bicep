@@ -43,12 +43,30 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+          delegations: [
+            {
+              name: 'Microsoft.Network/applicationGateways'
+              properties: {
+                serviceName: 'Microsoft.Network/applicationGateways'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
         }
       }
       {
         name: 'privateLinkSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          delegations: [
+            {
+              name: 'Microsoft.Network/applicationGateways'
+              properties: {
+                serviceName: 'Microsoft.Network/applicationGateways'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
           privateLinkServiceNetworkPolicies: 'Disabled'
         }
       }
