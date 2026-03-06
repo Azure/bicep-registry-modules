@@ -4919,6 +4919,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
+  - `'Network Contributor'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
