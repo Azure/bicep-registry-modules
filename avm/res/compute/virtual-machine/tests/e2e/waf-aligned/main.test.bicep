@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral' //'uksouth'
+var enforcedLocation = 'spaincentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'vmwinwaf'
@@ -277,7 +277,7 @@ module testDeployment '../../../main.bicep' = [
       extensionAadJoinConfig: {
         enabled: true
         settings: {
-          // mdmId: '' // '0000000a-0000-0000-c000-000000000000' // Uncomment and provide valid mdmId for Intune enrollment
+          // mdmId: '0000000a-0000-0000-c000-000000000000' // Uncomment and provide valid mdmId for Intune enrollment
         }
         tags: {
           'hidden-title': 'This is visible in the resource name'
