@@ -69,6 +69,7 @@ function Read-BicepJsonRpcResponse {
     $headers = @{}
     while ($true) {
         $line = $proc.StandardOutput.ReadLine()
+        Write-Verbose "Line $line" -Verbose
         if ([string]::IsNullOrEmpty($line)) { break }
         if ($line -match 'Content-Length:\s*(\d+)') {
             $headers['Content-Length'] = [int]$matches[1]
