@@ -41,15 +41,15 @@ function Send-BicepJsonRpc {
         params  = $params
     } | ConvertTo-Json -Compress
 
-    # Calculate content length in UTF-8 BYTES (JSON-RPC framing requires bytes, not characters)
-    $payloadBytes = [System.Text.Encoding]::UTF8.GetBytes($json)
-    $length = $payloadBytes.Length
+    # Calculate content length
+    $length = $json.Length
 
-    # Frame the request and write through the base stream as UTF-8 bytes
-    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("Content-Length: $length`r`n`r`n")
-    $proc.StandardInput.BaseStream.Write($headerBytes, 0, $headerBytes.Length)
-    $proc.StandardInput.BaseStream.Write($payloadBytes, 0, $payloadBytes.Length)
-    $proc.StandardInput.BaseStream.Flush()
+    # Frame the request
+    $message = "Content-Length: $length`r`n`r`n$json"
+
+    # Send the request
+    $proc.StandardInput.Write($message)
+    $proc.StandardInput.Flush()
 }
 
 <#
@@ -79,27 +79,14 @@ function Read-BicepJsonRpcResponse {
     }
 
     Write-Verbose '4' -Verbose # TODO: remove
-    # Read content as exact byte count from the base stream.
-    # Content-Length is bytes (RFC), so char-based ReadBlock can deadlock on multibyte UTF-8 payloads.
+    # Read content
     if ($headers.ContainsKey('Content-Length')) {
         Write-Verbose '5' -Verbose # TODO: remove
-        $remaining = $headers['Content-Length']
-        $buffer = New-Object byte[] $remaining
-        $offset = 0
+        $buffer = New-Object char[] $headers['Content-Length']
         Write-Verbose '6' -Verbose # TODO: remove
-
-        while ($remaining -gt 0) {
-            $bytesRead = $proc.StandardOutput.BaseStream.Read($buffer, $offset, $remaining)
-            if ($bytesRead -le 0) {
-                throw "Unexpected EOF while reading JSON-RPC response body. Remaining bytes: $remaining"
-            }
-
-            $offset += $bytesRead
-            $remaining -= $bytesRead
-        }
-
+        $proc.StandardOutput.ReadBlock($buffer, 0, $buffer.Length) | Out-Null
         Write-Verbose '7' -Verbose # TODO: remove
-        return [System.Text.Encoding]::UTF8.GetString($buffer)
+        return ($buffer -join '')
     }
 
     return $null
