@@ -783,7 +783,9 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   }
 }
 
+// The AAD Join extension does not allow empty string for mdmId, so we filter it out if it's empty to avoid deployment failure. This allows customers to conditionally include mdmId in the settings without having to worry about the empty string case.
 var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+// filtered settings will only be used if AAD Join extension is enabled, so we don't need to worry about the case where mdmId is required but filtered out since that would be a customer configuration error.
 var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
   ? reduce(
       items(aadJoinSettings),
@@ -1050,15 +1052,17 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
     settings: {
       modulesUrl: extensionHostPoolRegistration.modulesUrl
       configurationFunction: extensionHostPoolRegistration.configurationFunction
+      properties: {
+        hostPoolName: extensionHostPoolRegistration.hostPoolName
+        aadJoin: true
+      }
     }
     protectedSettings: {
       properties: {
-        hostPoolName: extensionHostPoolRegistration.hostPoolName
         registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
-        aadJoin: true
       }
-      supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     }
+    supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     tags: extensionHostPoolRegistration.?tags ?? tags
   }
   dependsOn: [
