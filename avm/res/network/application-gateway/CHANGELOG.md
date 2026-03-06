@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/application-gateway/CHANGELOG.md).
 
+## 0.9.1
+
+### Changes
+
+- Removed 'Microsoft.Network/applicationGateways' Deligation from for Private Endpoint Subnets in e2e tests dependencies templates.
+- Added 'Network Contributor' built-in role to array of built-in roles in AppGW template to encourage least privilege access.
+- Updated e2e test to use 'Network Contributor' role vs. 'Owner' role to encourage least privilege access.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes
