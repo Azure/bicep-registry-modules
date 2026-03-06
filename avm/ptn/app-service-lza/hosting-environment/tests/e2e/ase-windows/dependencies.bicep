@@ -131,7 +131,7 @@ module jumpboxVm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
     computerName: vmName
     adminUsername: vmAdminUsername
     adminPassword: vmAdminPassword
-    encryptionAtHost: true
+    encryptionAtHost: false
     availabilityZone: 1
     nicConfigurations: [
       {
