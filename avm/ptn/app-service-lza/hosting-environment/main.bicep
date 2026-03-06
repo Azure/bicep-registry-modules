@@ -733,7 +733,7 @@ module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 }
 
-module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.11.1' = if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
+module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.12.0' = if (!empty(subnetSpokePrivateEndpointAddressSpace) && !deployAseV3) {
   name: '${uniqueString(deployment().name, location, 'webapp')}-slot-${slotName}'
   scope: az.resourceGroup(resourceGroupName)
   params: {
