@@ -14,7 +14,7 @@ param healthProbeSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@202
 param loadBalancingSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.loadBalancingSettings
 
 @description('Optional. Settings for Origin Authentication.')
-param originAuthenticationSettings resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
+param authentication resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
 
 @allowed([
   'Disabled'
@@ -59,7 +59,7 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2025-06-01' = {
   name: name
   parent: profile
   properties: {
-    originAuthenticationSettings: originAuthenticationSettings
+    authentication: authentication
     healthProbeSettings: healthProbeSettings
     loadBalancingSettings: loadBalancingSettings
     sessionAffinityState: sessionAffinityState
