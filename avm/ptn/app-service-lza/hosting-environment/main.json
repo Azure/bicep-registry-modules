@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "17269636940605249335"
+      "templateHash": "7854022271979876415"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -14420,7 +14420,7 @@
           "roleAssignments": {
             "value": "[variables('webAppRoleAssignments')]"
           },
-          "virtualNetworkSubnetResourceId": "[if(and(not(parameters('deployAseV3')), not(coalesce(variables('isCustomMode'), false()))), createObject('value', reference('networking').outputs.snetAppSvcResourceId.value), createObject('value', ''))]",
+          "virtualNetworkSubnetResourceId": "[if(and(not(parameters('deployAseV3')), not(coalesce(variables('isCustomMode'), false()))), createObject('value', reference('networking').outputs.snetAppSvcResourceId.value), createObject('value', null()))]",
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
