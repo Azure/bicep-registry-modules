@@ -24,7 +24,7 @@ var aVariable string = 'oi'
 // ============ //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = {
   name: '46d3xbcp.res.testModule.multi-scope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
