@@ -41,15 +41,15 @@ function Send-BicepJsonRpc {
         params  = $params
     } | ConvertTo-Json -Compress
 
-    # Calculate content length
-    $length = $json.Length
+    # Calculate content length in UTF-8 bytes
+    $payloadBytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+    $length = $payloadBytes.Length
 
-    # Frame the request
-    $message = "Content-Length: $length`r`n`r`n$json"
-
-    # Send the request
-    $proc.StandardInput.Write($message)
-    $proc.StandardInput.Flush()
+    # Frame the request and send as bytes
+    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("Content-Length: $length`r`n`r`n")
+    $proc.StandardInput.BaseStream.Write($headerBytes, 0, $headerBytes.Length)
+    $proc.StandardInput.BaseStream.Write($payloadBytes, 0, $payloadBytes.Length)
+    $proc.StandardInput.BaseStream.Flush()
 }
 
 <#
@@ -65,21 +65,69 @@ Read-BicepJsonRpcResponse
 Returns the response from the JSON-PRC server.
 #>
 function Read-BicepJsonRpcResponse {
+    $stream = $proc.StandardOutput.BaseStream
+
+    function Read-AsciiLineFromStream {
+        param (
+            [System.IO.Stream] $InputStream
+        )
+
+        $lineBytes = [System.Collections.Generic.List[byte]]::new()
+
+        while ($true) {
+            $singleByte = $InputStream.ReadByte()
+
+            if ($singleByte -lt 0) {
+                if ($lineBytes.Count -eq 0) {
+                    return $null
+                }
+
+                break
+            }
+
+            if ($singleByte -eq 10) {
+                break
+            }
+
+            $lineBytes.Add([byte]$singleByte)
+        }
+
+        $line = [System.Text.Encoding]::ASCII.GetString($lineBytes.ToArray())
+        return $line.TrimEnd("`r")
+    }
+
     # Read headers first
     $headers = @{}
     while ($true) {
-        $line = $proc.StandardOutput.ReadLine()
+        $line = Read-AsciiLineFromStream -InputStream $stream
+
+        if ($null -eq $line) {
+            throw 'Unexpected EOF while reading JSON-RPC headers.'
+        }
+
         if ([string]::IsNullOrEmpty($line)) { break }
         if ($line -match 'Content-Length:\s*(\d+)') {
             $headers['Content-Length'] = [int]$matches[1]
         }
     }
 
-    # Read content
+    # Read content (byte-accurate according to Content-Length)
     if ($headers.ContainsKey('Content-Length')) {
-        $buffer = New-Object char[] $headers['Content-Length']
-        $proc.StandardOutput.ReadBlock($buffer, 0, $buffer.Length) | Out-Null
-        return ($buffer -join '')
+        $remaining = $headers['Content-Length']
+        $buffer = New-Object byte[] $remaining
+        $offset = 0
+
+        while ($remaining -gt 0) {
+            $bytesRead = $stream.Read($buffer, $offset, $remaining)
+            if ($bytesRead -le 0) {
+                throw "Unexpected EOF while reading JSON-RPC response body. Remaining bytes: $remaining"
+            }
+
+            $offset += $bytesRead
+            $remaining -= $bytesRead
+        }
+
+        return [System.Text.Encoding]::UTF8.GetString($buffer)
     }
 
     return $null
