@@ -69,23 +69,16 @@ function Read-BicepJsonRpcResponse {
     $headers = @{}
     while ($true) {
         $line = $proc.StandardOutput.ReadLine()
-        Write-Verbose "1 Line $line" -Verbose # TODO: remove
         if ([string]::IsNullOrEmpty($line)) { break }
-        Write-Verbose '2' -Verbose # TODO: remove
         if ($line -match 'Content-Length:\s*(\d+)') {
-            Write-Verbose '3' -Verbose # TODO: remove
             $headers['Content-Length'] = [int]$matches[1]
         }
     }
 
-    Write-Verbose '4' -Verbose # TODO: remove
     # Read content
     if ($headers.ContainsKey('Content-Length')) {
-        Write-Verbose '5' -Verbose # TODO: remove
         $buffer = New-Object char[] $headers['Content-Length']
-        Write-Verbose '6' -Verbose # TODO: remove
         $proc.StandardOutput.ReadBlock($buffer, 0, $buffer.Length) | Out-Null
-        Write-Verbose '7' -Verbose # TODO: remove
         return ($buffer -join '')
     }
 
@@ -156,9 +149,7 @@ function Build-ViaRPC {
 
             # Compile template
             Send-BicepJsonRpc -id $id -method 'bicep/compile' -params @{ path = $filePath }
-            Write-Verbose '0' -Verbose
             $response = (Read-BicepJsonRpcResponse | ConvertFrom-Json).result
-            Write-Verbose 'x' -Verbose
 
             # Interpret response
             if ($response.success) {
