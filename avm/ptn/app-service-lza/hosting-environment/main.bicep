@@ -673,7 +673,7 @@ module webAppSite 'br/public:avm/res/web/site:0.22.0' = {
     diagnosticSettings: resolvedAppServiceDiagnosticSettings
     lock: webAppLock
     roleAssignments: webAppRoleAssignments
-    virtualNetworkSubnetResourceId: !deployAseV3 && !(isCustomMode ?? false) ? networking.outputs.snetAppSvcResourceId : ''
+    virtualNetworkSubnetResourceId: !deployAseV3 && !(isCustomMode ?? false) ? networking.outputs.snetAppSvcResourceId : null
     managedIdentities: {
       userAssignedResourceIds: [webAppUserAssignedManagedIdentity.outputs.resourceId]
     }
