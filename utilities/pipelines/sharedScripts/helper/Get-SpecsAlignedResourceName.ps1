@@ -109,7 +109,13 @@ function Get-SpecsAlignedResourceName {
         }
 
         Write-Verbose 'Caching api specs references'
-        $null = Set-Content -Path $cacheFilePath -Value $apiSpecs
+        try {
+            $null = Set-Content -Path $cacheFilePath -Value $apiSpecs
+        } catch {
+            if ($_.Exception.Message -notmatch 'used by another process|sharing violation|Stream was not readable') {
+                throw
+            }
+        }
     }
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'

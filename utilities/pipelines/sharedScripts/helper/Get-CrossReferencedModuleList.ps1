@@ -230,7 +230,13 @@ function Get-CrossReferencedModuleList {
         if ($PathFilter -eq $repoRoot) {
             # Shouldn't be cached if for specific path as the result set is very small and may override a library-wie cached file
             Write-Verbose 'Caching cross references'
-            $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
+            try {
+                $null = Set-Content -Path $cacheFilePath -Value ($resultSet | ConvertTo-Json)
+            } catch {
+                if ($_.Exception.Message -notmatch 'used by another process|sharing violation|Stream was not readable') {
+                    throw
+                }
+            }
         }
     }
 
