@@ -45,7 +45,7 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru -Verbose
+    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru -Verbose # TODO: Remove verbose
     $builtTestFileMap = @{}
     foreach ($path in $pathsToBuild) {
         $builtTestFileMap[$path] = $compiledTemplatesMap[$path] | ConvertFrom-Json -AsHashtable
