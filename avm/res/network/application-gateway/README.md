@@ -1076,7 +1076,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: 'Network Contributor'
       }
       {
         name: '<name>'
@@ -1557,7 +1557,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
           "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "Network Contributor"
         },
         {
           "name": "<name>",
@@ -2000,7 +2000,7 @@ param roleAssignments = [
     name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: 'Network Contributor'
   }
   {
     name: '<name>'
