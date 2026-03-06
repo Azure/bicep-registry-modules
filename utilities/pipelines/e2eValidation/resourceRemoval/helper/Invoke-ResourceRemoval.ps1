@@ -536,15 +536,16 @@ function Invoke-ResourceRemoval {
                 $apimLocation = ($apimService | ConvertFrom-Json).location
 
                 # Delete the APIM service (with retry for ServiceLocked / transitioning state)
-                if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Remove')) {
-                    $retryCount = 0
-                    $retryLimit = 30
-                    $retryInterval = 60
-                    $deleteSucceeded = $false
+                $retryCount = 0
+                $retryLimit = 30
+                $retryInterval = 60
+                $deleteSucceeded = $false
 
-                    do {
-                        $retryCount++
-                        Write-Verbose ('[*] Removing API Management service [{0}] from resource group [{1}] (attempt [{2}/{3}])' -f $resourceName, $resourceGroupName, $retryCount, $retryLimit) -Verbose
+                do {
+                    $retryCount++
+                    Write-Verbose ('[*] Removing API Management service [{0}] from resource group [{1}] (attempt [{2}/{3}])' -f $resourceName, $resourceGroupName, $retryCount, $retryLimit) -Verbose
+
+                    if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Remove')) {
                         $deleteOutput = az apim delete --resource-group $resourceGroupName --name $resourceName --yes 2>&1
 
                         if ($LASTEXITCODE -eq 0) {
@@ -560,35 +561,39 @@ function Invoke-ResourceRemoval {
                                 break
                             }
                         }
-                    } while (-not $deleteSucceeded -and $retryCount -lt $retryLimit)
+                    } else {
+                        break
+                    }
+                } while (-not $deleteSucceeded -and $retryCount -lt $retryLimit)
 
-                    if (-not $deleteSucceeded) {
+                if (-not $deleteSucceeded) {
+                    if ($retryCount -ge $retryLimit) {
                         Write-Warning ('[!] Failed to delete API Management service [{0}] after [{1}] attempts.' -f $resourceName, $retryCount)
-                        break
                     }
+                    break
+                }
 
-                    # Wait for the service to be fully soft-deleted before attempting purge
-                    $retryCount = 0
-                    $retryLimit = 60
-                    $retryInterval = 30
-                    $serviceSoftDeleted = $false
+                # Wait for the service to be fully soft-deleted before attempting purge
+                $retryCount = 0
+                $retryLimit = 60
+                $retryInterval = 30
+                $serviceSoftDeleted = $false
 
-                    do {
-                        $retryCount++
-                        $existingService = az apim show --resource-group $resourceGroupName --name $resourceName 2>$null
-                        if (-not $existingService) {
-                            $serviceSoftDeleted = $true
-                            Write-Verbose ('[✔️] API Management service [{0}] has been soft-deleted.' -f $resourceName) -Verbose
-                        } else {
-                            Write-Verbose ('    [⏱️] Waiting {0} seconds for API Management service [{1}] to be soft-deleted. [{2}/{3}]' -f $retryInterval, $resourceName, $retryCount, $retryLimit) -Verbose
-                            Start-Sleep -Seconds $retryInterval
-                        }
-                    } while (-not $serviceSoftDeleted -and $retryCount -lt $retryLimit)
-
-                    if (-not $serviceSoftDeleted) {
-                        Write-Warning ('[!] API Management service [{0}] was not soft-deleted after [{1}] seconds. Skipping purge.' -f $resourceName, ($retryCount * $retryInterval))
-                        break
+                do {
+                    $retryCount++
+                    $existingService = az apim show --resource-group $resourceGroupName --name $resourceName 2>$null
+                    if (-not $existingService) {
+                        $serviceSoftDeleted = $true
+                        Write-Verbose ('[✔️] API Management service [{0}] has been soft-deleted.' -f $resourceName) -Verbose
+                    } else {
+                        Write-Verbose ('    [⏱️] Waiting {0} seconds for API Management service [{1}] to be soft-deleted. [{2}/{3}]' -f $retryInterval, $resourceName, $retryCount, $retryLimit) -Verbose
+                        Start-Sleep -Seconds $retryInterval
                     }
+                } while (-not $serviceSoftDeleted -and $retryCount -lt $retryLimit)
+
+                if (-not $serviceSoftDeleted) {
+                    Write-Warning ('[!] API Management service [{0}] was not soft-deleted after [{1}] seconds. Skipping purge.' -f $resourceName, ($retryCount * $retryInterval))
+                    break
                 }
 
                 # Purge the soft-deleted APIM service to ensure complete removal
