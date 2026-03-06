@@ -2972,7 +2972,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionAadJoinConfig: {
       enabled: false
       settings: {
-        mdmId: ''
+        mdmId: '0000000a-0000-0000-c000-000000000000'
       }
       tags: {
         Environment: 'Non-Prod'
@@ -3063,7 +3063,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enabled": false,
         "settings": {
-          "mdmId": ""
+          "mdmId": "0000000a-0000-0000-c000-000000000000"
         },
         "tags": {
           "Environment": "Non-Prod",
@@ -3142,7 +3142,7 @@ param adminUsername = 'localAdminUser'
 param extensionAadJoinConfig = {
   enabled: false
   settings: {
-    mdmId: ''
+    mdmId: '0000000a-0000-0000-c000-000000000000'
   }
   tags: {
     Environment: 'Non-Prod'
