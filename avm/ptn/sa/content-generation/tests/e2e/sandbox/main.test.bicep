@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.contentgeneration-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.contentgeneration-${serviceShort}-rg1'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'swedencentral'
+var enforcedLocation = 'eastus2'
 
 // General resources
 // =================
