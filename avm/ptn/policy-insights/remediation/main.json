@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "14190380769454676871"
+      "version": "0.41.2.15936",
+      "templateHash": "7286010531347126558"
     },
     "name": "Policy Insights Remediations",
     "description": "This module deploys a Policy Insights Remediation."
@@ -148,7 +148,7 @@
     "remediation_mg": {
       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
       "location": "[deployment().location]",
@@ -193,8 +193,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "10127303315339284140"
+              "version": "0.41.2.15936",
+              "templateHash": "1010199323542410053"
             },
             "name": "Policy Insights Remediations (Management Group scope)",
             "description": "This module starts a Policy Remediation task at a Management Group scope."
@@ -325,7 +325,7 @@
     "remediation_sub": {
       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "location": "[deployment().location]",
@@ -373,8 +373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "5693975749961050586"
+              "version": "0.41.2.15936",
+              "templateHash": "4346428666754499292"
             },
             "name": "Policy Insights Remediations (Subscription scope)",
             "description": "This module deploys a Policy Insights Remediation on a Subscription scope."
@@ -517,7 +517,7 @@
     "remediation_rg": {
       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -565,8 +565,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "17544035878221874408"
+              "version": "0.41.2.15936",
+              "templateHash": "14574823618124172004"
             },
             "name": "Policy Insights Remediations (Resource Group scope)",
             "description": "This module deploys a Policy Insights Remediation on a Resource Group scope."
