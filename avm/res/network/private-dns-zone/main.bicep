@@ -235,6 +235,7 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [
       registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
       tags: virtualNetworkLink.?tags ?? tags
       resolutionPolicy: virtualNetworkLink.?resolutionPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
