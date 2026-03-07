@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "9279145178863932818"
+      "templateHash": "15465455858893780194"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -553,7 +553,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.apimgmt-api.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -634,7 +634,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "6533745744200267966"
+              "templateHash": "11797839067641751383"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -690,7 +690,7 @@
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.apimgmt-apipolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -811,7 +811,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "11810259613148054123"
+              "templateHash": "6787316023898210718"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -960,7 +960,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.apimgm-apidiagnostics.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
