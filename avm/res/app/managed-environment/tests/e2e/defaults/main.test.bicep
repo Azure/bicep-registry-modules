@@ -49,9 +49,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      managedIdentities: {
-        systemAssigned: true
-      }
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
