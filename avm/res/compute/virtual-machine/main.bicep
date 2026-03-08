@@ -23,7 +23,8 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Conditional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.')
-param imageReference imageReferenceType?
+param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.storageProfile.imageReference?
+
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
@@ -515,7 +516,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
+resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
   for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId) && (dataDisk.?createOption ?? 'Empty') != 'FromImage') {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
@@ -562,11 +563,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     }
     storageProfile: {
       #disable-next-line BCP321
-      imageReference: contains(imageReference ?? {}, 'id')
-        ? {
-            id: imageReference!.id!
-          }
-        : imageReference!
+      imageReference: imageReference
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))

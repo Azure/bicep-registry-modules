@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6343081343528203646"
+      "templateHash": "6127878029192778391"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2177,11 +2177,14 @@
       }
     },
     "imageReference": {
-      "$ref": "#/definitions/imageReferenceType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/virtualMachines@2025-04-01#properties/properties/properties/storageProfile/properties/imageReference"
+        },
         "description": "Conditional. OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter."
-      }
+      },
+      "nullable": true
     },
     "plan": {
       "$ref": "#/definitions/planType",
@@ -2849,7 +2852,7 @@
       },
       "condition": "[and(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'resourceId')), not(equals(coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createOption'), 'Empty'), 'FromImage')))]",
       "type": "Microsoft.Compute/disks",
-      "apiVersion": "2024-03-02",
+      "apiVersion": "2025-01-02",
       "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
       "location": "[parameters('location')]",
       "sku": {
@@ -2898,7 +2901,7 @@
               }
             }
           ],
-          "imageReference": "[if(contains(coalesce(parameters('imageReference'), createObject()), 'id'), createObject('id', parameters('imageReference').id), parameters('imageReference'))]",
+          "imageReference": "[parameters('imageReference')]",
           "osDisk": {
             "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
             "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
