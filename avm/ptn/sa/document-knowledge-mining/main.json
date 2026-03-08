@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18027327540491413678"
+      "version": "0.40.2.10011",
+      "templateHash": "4965365894348224351"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -6923,8 +6923,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2312702668661139959"
+              "version": "0.40.2.10011",
+              "templateHash": "15122884143127207074"
             }
           },
           "definitions": {
@@ -21574,8 +21574,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17410638167882347020"
+              "version": "0.40.2.10011",
+              "templateHash": "18390405074544348367"
             },
             "name": "Container Registry Module"
           },
@@ -50766,7 +50766,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "kubernetesVersion": {
-            "value": "1.32.7"
+            "value": "1.34.2"
           },
           "dnsPrefix": {
             "value": "[format('aks-{0}', variables('solutionSuffix'))]"

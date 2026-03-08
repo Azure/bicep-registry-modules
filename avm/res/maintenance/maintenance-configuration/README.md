@@ -53,10 +53,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
   params: {
-    // Required parameters
     name: 'mmcmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -73,13 +70,8 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "mmcmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -95,10 +87,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 ```bicep-params
 using 'br/public:avm/res/maintenance/maintenance-configuration:<version>'
 
-// Required parameters
 param name = 'mmcmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -394,7 +383,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
         kbNumbersToInclude: '<kbNumbersToInclude>'
       }
     }
-    location: '<location>'
     maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
       duration: '03:00'
@@ -453,9 +441,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
           "kbNumbersToInclude": "<kbNumbersToInclude>"
         }
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "maintenanceScope": {
       "value": "InGuestPatch"
@@ -518,7 +503,6 @@ param installPatches = {
     kbNumbersToInclude: '<kbNumbersToInclude>'
   }
 }
-param location = '<location>'
 param maintenanceScope = 'InGuestPatch'
 param maintenanceWindow = {
   duration: '03:00'
@@ -653,17 +637,6 @@ Gets or sets maintenanceScope of the configuration.
 - Required: No
 - Type: string
 - Default: `'Host'`
-- Allowed:
-  ```Bicep
-  [
-    'Extension'
-    'Host'
-    'InGuestPatch'
-    'OSImage'
-    'SQLDB'
-    'SQLManagedInstance'
-  ]
-  ```
 
 ### Parameter: `maintenanceWindow`
 
@@ -798,15 +771,6 @@ Gets or sets the visibility of the configuration. The default value is 'Custom'.
 
 - Required: No
 - Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Custom'
-    'Public'
-  ]
-  ```
 
 ## Outputs
 
@@ -823,8 +787,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
