@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
       extensionAadJoinConfig: {
         enabled: false // Should be true but is disabled for the test environment to avoid domain conflicts
         settings: {
-          mdmId: '0000000a-0000-0000-c000-000000000000' // Uncomment and provide valid mdmId for Intune enrollment
+          mdmId: '0000000a-0000-0000-c000-000000000000' 
         }
         tags: {
           'hidden-title': 'This is visible in the resource name'
