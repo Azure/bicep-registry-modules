@@ -2155,7 +2155,6 @@ Describe 'Governance tests' {
         $expectedOwningTeamName = '{0}-module-owners-bicep' -f ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
         $teamResponse = & gh api "orgs/Azure/teams/$expectedOwningTeamName" --jq '.slug' 2>&1
-        $teamLookupExitCode = $LASTEXITCODE
 
         $teamResponse | Should -Be $expectedOwningTeamName -Because ('the owning team from CODEOWNERS should exist in the [Azure] organization. Instead got the error [{0}]' -f ($teamResponse | Out-String).Trim())
     }
