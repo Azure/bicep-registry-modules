@@ -8,7 +8,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -63,7 +63,7 @@ param httpListeners resourceInput<'Microsoft.Network/applicationGateways@2025-05
 @description('Optional. Load distribution policies of the application gateway resource.')
 param loadDistributionPolicies resourceInput<'Microsoft.Network/applicationGateways@2025-05-01'>.properties.loadDistributionPolicies = []
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -152,7 +152,7 @@ param urlPathMaps resourceInput<'Microsoft.Network/applicationGateways@2025-05-0
 ])
 param availabilityZones int[] = [1, 2, 3]
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -169,11 +169,11 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -357,7 +357,7 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
-module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrEndpoint-${index}'
     scope: resourceGroup(
