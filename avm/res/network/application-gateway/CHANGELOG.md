@@ -7,9 +7,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated API version to `2025-05-01`
-- Added 'entraJWTValidationConfig' resource-devrived paramater to populate new property in API version '2025-03-01'.
+- Added 'entraJWTValidationConfig' resource-derived parameter to populate new property in API version '2025-03-01'.
 - Changed the maxvalue for 'capacity' parameter from 10 to 125.
 - Updated API version for avmTelemtry deployment, 'Microsoft.Resources/deployments', to '2025-04-01'.
+- Removed 'Microsoft.Network/applicationGateways' Delegation from for Private Endpoint Subnets in e2e tests dependencies templates.
+- Added 'Network Contributor' built-in role to array of built-in roles in AppGW template to encourage least privilege access.
 
 ### Breaking Changes
 
