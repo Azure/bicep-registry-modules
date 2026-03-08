@@ -37,7 +37,7 @@ function Get-AvailableResourceLocation {
             'eastus',
             'uksouth',
             'northeurope',
-            'italynorth',
+            'germanywestcentral',
             'eastasia' # Including as Edge Region for services like static-site
         ),
 
