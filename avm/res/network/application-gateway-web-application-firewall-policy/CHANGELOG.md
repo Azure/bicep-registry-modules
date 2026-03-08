@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated API version from '2025-01-01' to '2025-05-01'.
 - Added parameters and resources for configuring Locks and Role Assignments on WAF Policy.
+- Added tests to e2e/max for testing Lock and Role Assignments.
 - Updated API version for avmTelemtry deployment, 'Microsoft.Resources/deployments', to '2025-04-01'.
 
 ### Breaking Changes

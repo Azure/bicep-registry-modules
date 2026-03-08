@@ -162,6 +162,10 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     name: 'nagwafptstmax001'
     // Non-required parameters
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     policySettings: {
       customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
       customBlockResponseStatusCode: 403
@@ -170,6 +174,25 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       mode: 'Prevention'
       state: 'Enabled'
     }
+    roleAssignments: [
+      {
+        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Network Contributor'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -215,6 +238,12 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "policySettings": {
       "value": {
         "customBlockResponseBody": "PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg==",
@@ -224,6 +253,27 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
         "mode": "Prevention",
         "state": "Enabled"
       }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Network Contributor"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -264,6 +314,10 @@ param managedRules = {
 param name = 'nagwafptstmax001'
 // Non-required parameters
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param policySettings = {
   customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
   customBlockResponseStatusCode: 403
@@ -272,6 +326,25 @@ param policySettings = {
   mode: 'Prevention'
   state: 'Enabled'
 }
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Network Contributor'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -544,6 +617,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
+  - `'Network Contributor'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
