@@ -4,6 +4,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.13.0
 
+### Changes
+
 - Updated ARM API versions to `2025-10-01` in the main module and child modules.
 
 ### Breaking Changes
