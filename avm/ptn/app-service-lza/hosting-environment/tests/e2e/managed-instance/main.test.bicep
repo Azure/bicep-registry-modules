@@ -24,18 +24,18 @@ param password string = newGuid()
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 
-// Diagnostics
+// Dependencies
 // ===========
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
 
-module diagnosticDependencies './dependencies.bicep' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-law'
   params: {
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    name: 'dep-${namePrefix}-law-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workloadName: take('${namePrefix}${serviceShort}', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       tags: {
         environment: 'test'
         scenario: 'managed-instance-appgw-bastion'
@@ -88,7 +88,7 @@ var spokeResourceGroupName = resourceGroupName
 
 var bastionPlaceholderResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/rg-hub-bastion/providers/Microsoft.Network/bastionHosts/bst-appsvc-lza'
 
-module jumpbox '../ase-windows/dependencies.bicep' = {
+module jumpbox './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-jumpbox'
   scope: az.resourceGroup(spokeResourceGroupName)
   dependsOn: [
