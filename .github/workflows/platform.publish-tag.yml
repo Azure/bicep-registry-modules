@@ -42,69 +42,82 @@ jobs:
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
 
-      # Adding a step to install Oras as it's only needed for publishing/validation
-      - name: Install Oras
-        shell: bash
+      # create a token from the secret
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.MAR_REPO_ACCESS_CLIENTID }}
+          private-key: ${{ secrets.MAR_REPO_ACCESS_SECRET }}
+      # ensure the module is in the MAR file before publishing
+      - name: Confirm module in MAR
+        shell: pwsh
         run: |
-          VERSION="1.2.2"
-          curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
-          mkdir -p oras-install/
-          tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
-          sudo mv oras-install/oras /usr/local/bin/
-          rm -rf oras_${VERSION}_*.tar.gz oras-install/
+          Import-Module './utilities/pipelines/publish/Confirm-ModuleInMAR'
+          Confirm-ModuleInMAR -PublishedModuleName ${{ github.event.inputs.tag }} -GitHubToken ${{ steps.app-token.outputs.token }}
 
-      - name: "Publish tagged module to public bicep registry"
-        id: publish_tag
-        uses: azure/powershell@v2
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Grouping task logs
-            Write-Output '::group::Publish tagged module to public bicep registry'
+      # Adding a step to install Oras as it's only needed for publishing/validation
+      # - name: Install Oras
+      #   shell: bash
+      #   run: |
+      #     VERSION="1.2.2"
+      #     curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
+      #     mkdir -p oras-install/
+      #     tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
+      #     sudo mv oras-install/oras /usr/local/bin/
+      #     rm -rf oras_${VERSION}_*.tar.gz oras-install/
 
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
+      # - name: "Publish tagged module to public bicep registry"
+      #   id: publish_tag
+      #   uses: azure/powershell@v2
+      #   with:
+      #     azPSVersion: "latest"
+      #     inlineScript: |
+      #       # Grouping task logs
+      #       Write-Output '::group::Publish tagged module to public bicep registry'
 
-            $functionInput = @{
-              ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
-              PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
-              RepoRoot             = $env:GITHUB_WORKSPACE
-            }
+      #       # Load used functions
+      #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Publish-ModuleFromTagToPBR.ps1')
 
-            Write-Verbose 'Invoke function with' -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+      #       $functionInput = @{
+      #         ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
+      #         PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+      #         RepoRoot             = $env:GITHUB_WORKSPACE
+      #       }
 
-            if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
-              $publishOutputs.Keys | Foreach-Object {
-                Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-                Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
-              }
-            }
+      #       Write-Verbose 'Invoke function with' -Verbose
+      #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            Write-Output '::endgroup::'
+      #       if($publishOutputs = Publish-ModuleFromTagToPBR @functionInput -Verbose) {
+      #         $publishOutputs.Keys | Foreach-Object {
+      #           Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
+      #           Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+      #         }
+      #       }
 
-      - name: "Validate publish"
-        uses: azure/powershell@v2
-        if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Grouping task logs
-            Write-Output '::group::Validate publish'
+      #       Write-Output '::endgroup::'
 
-            # Load used functions
-            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+      # - name: "Validate publish"
+      #   uses: azure/powershell@v2
+      #   if: ${{ steps.publish_tag.outputs.version != '' && steps.publish_tag.outputs.publishedModuleName != '' }}
+      #   with:
+      #     azPSVersion: "latest"
+      #     inlineScript: |
+      #       # Grouping task logs
+      #       Write-Output '::group::Validate publish'
 
-            $functionInput = @{
-              Version             = "${{ steps.publish_tag.outputs.version }}"
-              PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
-              GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
+      #       # Load used functions
+      #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-            }
+      #       $functionInput = @{
+      #         Version             = "${{ steps.publish_tag.outputs.version }}"
+      #         PublishedModuleName = "${{ steps.publish_tag.outputs.publishedModuleName }}"
+      #         GitTagName          = "${{ steps.publish_tag.outputs.gitTagName }}"
 
-            Write-Verbose "Invoke function with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+      #       }
 
-            Confirm-ModuleIsPublished @functionInput
+      #       Write-Verbose "Invoke function with" -Verbose
+      #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            Write-Output '::endgroup::'
+      #       Confirm-ModuleIsPublished @functionInput
+
+      #       Write-Output '::endgroup::'
