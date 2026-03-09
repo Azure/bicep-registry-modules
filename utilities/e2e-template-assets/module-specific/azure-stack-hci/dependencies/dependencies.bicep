@@ -7,15 +7,15 @@ param localAdminPassword string
 @secure()
 param domainAdminPassword string
 
-@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@description('Optional. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentAppId string
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+param arbDeploymentAppId string?
+@description('Optional. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentSPObjectId string
-@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+param arbDeploymentSPObjectId string?
+@description('Optional. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentServicePrincipalSecret string
+param arbDeploymentServicePrincipalSecret string?
 @description('Required. The location to deploy the resources into.')
 param location string
 @description('Required. The name of the storage account to create as a cluster witness.')
@@ -55,7 +55,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeploymentWithImage.bicep'
     domainOUPath: domainOUPath
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hostVMSize: 'Standard_E32ps_v5'
+    hostVMSize: 'Standard_D16as_v7'
     localAdminPassword: localAdminPassword
     domainAdminPassword: domainAdminPassword
     location: location

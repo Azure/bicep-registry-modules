@@ -12,7 +12,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2024-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2025-09-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-09-15-preview/clusters/deploymentSettings)</li></ul> |
 
 ## Parameters
 
@@ -61,6 +61,13 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`name`](#parameter-name) | string | The name of the deployment settings. |
 | [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
+| [`partnerCredentialList`](#parameter-partnercredentiallist) | array | Solution builder extension (SBE) partner credential properties. |
+| [`partnerProperties`](#parameter-partnerproperties) | array | Solution builder extension (SBE) partner properties. |
+| [`sbeFamily`](#parameter-sbefamily) | string | Solution builder extension (SBE) family value. |
+| [`sbeManifestCreationDate`](#parameter-sbemanifestcreationdate) | string | Solution builder extension (SBE) creation date. |
+| [`sbeManifestSource`](#parameter-sbemanifestsource) | string | Solution builder extension (SBE) manifest source. |
+| [`sbePublisher`](#parameter-sbepublisher) | string | Solution builder extension (SBE) publisher name. |
+| [`sbeVersion`](#parameter-sbeversion) | string | Solution builder extension (SBE) version. |
 | [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-smbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-smbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
@@ -315,6 +322,62 @@ The intended operation for a cluster.
     'ClusterUpgrade'
   ]
   ```
+
+### Parameter: `partnerCredentialList`
+
+Solution builder extension (SBE) partner credential properties.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `partnerProperties`
+
+Solution builder extension (SBE) partner properties.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `sbeFamily`
+
+Solution builder extension (SBE) family value.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeManifestCreationDate`
+
+Solution builder extension (SBE) creation date.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeManifestSource`
+
+Solution builder extension (SBE) manifest source.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbePublisher`
+
+Solution builder extension (SBE) publisher name.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeVersion`
+
+Solution builder extension (SBE) version.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `sideChannelMitigationEnforced`
 

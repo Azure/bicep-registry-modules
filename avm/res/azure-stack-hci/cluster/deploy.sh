@@ -1,10 +1,20 @@
 #!/bin/bash
 
-set -e  # Exit on any error
+set -xe  # Exit on any error
 
-exec >/dev/null 2>&1 # Redirect log to avoid ACI issue
+LOG_DIR="$(dirname "${AZ_SCRIPTS_OUTPUT_PATH:-/tmp/azscripts-output}")"
+LOG_FILE="${LOG_DIR}/hci-deploy.log"
+mkdir -p "$LOG_DIR"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+# NOTE: Global stdout/stderr redirection is disabled to surface
+# detailed deployment errors from az deployment group create.
+# If log volume causes issues in ACI, consider re-enabling this
+# line once troubleshooting is complete.
+# exec >/dev/null 2>&1 # Redirect log to avoid ACI issue
 
 echo "Starting HCI deployment script..."
+echo "Log file: $LOG_FILE"
 
 # Check required environment variables
 if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLUSTER_AD_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then

@@ -147,7 +147,6 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-0
 resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = {
   name: HCIHostVirtualMachineScaleSetName
   location: location
-  zones: ['1', '2', '3']
   properties: {
     orchestrationMode: 'Flexible'
     platformFaultDomainCount: 1
@@ -180,7 +179,6 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
   for diskNum in range(1, hciNodeCount): {
     name: '${diskNamePrefix}${string(diskNum)}'
     location: location
-    zones: ['1']
     sku: {
       name: 'Premium_LRS'
     }
@@ -198,7 +196,6 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   location: location
   name: virtualMachineName
-  zones: ['1']
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {

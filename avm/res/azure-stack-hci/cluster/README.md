@@ -24,10 +24,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.AzureStackHCI/clusters` | 2025-09-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-09-15-preview/clusters)</li></ul> |
-| `Microsoft.AzureStackHCI/edgeDevices` | 2025-09-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-09-15-preview/edgeDevices)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters)</li></ul> |
+| `Microsoft.AzureStackHCI/edgeDevices` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/edgeDevices)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2021-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-06-01-preview/vaults/secrets)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Usage examples
@@ -820,6 +820,7 @@ param tags = {
 | [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
 | [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
 | [`clusterADName`](#parameter-clusteradname) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. |
+| [`createBuiltInRoleAssignments`](#parameter-createbuiltinroleassignments) | bool | Set to false to skip creating built-in role assignments for the HCI resource provider and Arc nodes when RBAC is pre-configured. |
 | [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
 | [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
@@ -880,6 +881,7 @@ The deployment settings of the cluster.
 | [`isEuropeanUnionLocation`](#parameter-deploymentsettingsiseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`partnerCredentialList`](#parameter-deploymentsettingspartnercredentiallist) | array | Solution builder extension (SBE) partner credential properties. |
 | [`partnerProperties`](#parameter-deploymentsettingspartnerproperties) | array | Solution builder extension (SBE) partner properties. |
+| [`physicalNodesSettings`](#parameter-deploymentsettingsphysicalnodessettings) | array | Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices. |
 | [`sbeFamily`](#parameter-deploymentsettingssbefamily) | string | Solution builder extension (SBE) family value. |
 | [`sbeManifestCreationDate`](#parameter-deploymentsettingssbemanifestcreationdate) | string | Solution builder extension (SBE) creation date. |
 | [`sbeManifestSource`](#parameter-deploymentsettingssbemanifestsource) | string | Solution builder extension (SBE) manifest source. |
@@ -890,7 +892,9 @@ The deployment settings of the cluster.
 | [`smbSigningEnforced`](#parameter-deploymentsettingssmbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
 | [`storageConfigurationMode`](#parameter-deploymentsettingsstorageconfigurationmode) | string | The storage volume configuration mode. See documentation for details. |
 | [`streamingDataClient`](#parameter-deploymentsettingsstreamingdataclient) | bool | The metrics data for deploying a HCI cluster. |
+| [`useDhcp`](#parameter-deploymentsettingsusedhcp) | bool | If true, the infrastructure network uses DHCP. If false, static IP pools are used. |
 | [`wdacEnforced`](#parameter-deploymentsettingswdacenforced) | bool | Limits the applications and the code that you can run on your Azure Stack HCI cluster. |
+| [`witnessType`](#parameter-deploymentsettingswitnesstype) | string | Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload. |
 
 ### Parameter: `deploymentSettings.clusterNodeNames`
 
@@ -979,9 +983,14 @@ An array of Network ATC Network Intent objects that define the Compute, Manageme
 | [`overrideAdapterProperty`](#parameter-deploymentsettingsnetworkintentsoverrideadapterproperty) | bool | Specify whether to override the adapter property. Use false by default. |
 | [`overrideQosPolicy`](#parameter-deploymentsettingsnetworkintentsoverrideqospolicy) | bool | Specify whether to override the qosPolicy property. Use false by default. |
 | [`overrideVirtualSwitchConfiguration`](#parameter-deploymentsettingsnetworkintentsoverridevirtualswitchconfiguration) | bool | Specify whether to override the virtualSwitchConfiguration property. Use false by default. |
-| [`qosPolicyOverrides`](#parameter-deploymentsettingsnetworkintentsqospolicyoverrides) | object | The qosPolicy overrides for the network intent. |
 | [`trafficType`](#parameter-deploymentsettingsnetworkintentstraffictype) | array | The traffic types for the network intent. |
 | [`virtualSwitchConfigurationOverrides`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverrides) | object | The virtualSwitchConfiguration overrides for the network intent. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`qosPolicyOverrides`](#parameter-deploymentsettingsnetworkintentsqospolicyoverrides) | object | The qosPolicy overrides for the network intent. Required when overrideQosPolicy is true. |
 
 ### Parameter: `deploymentSettings.networkIntents.adapter`
 
@@ -1003,6 +1012,11 @@ The adapter property overrides for the network intent.
 | :-- | :-- | :-- |
 | [`jumboPacket`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesjumbopacket) | string | The jumboPacket configuration for the network adapters. |
 | [`networkDirect`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`networkDirectTechnology`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. |
 
 ### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.jumboPacket`
@@ -1030,11 +1044,12 @@ The networkDirect configuration for the network adapters.
 
 The networkDirectTechnology configuration for the network adapters.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
   [
+    ''
     'iWARP'
     'RoCEv2'
   ]
@@ -1067,42 +1082,6 @@ Specify whether to override the virtualSwitchConfiguration property. Use false b
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides`
-
-The qosPolicy overrides for the network intent.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`bandwidthPercentageSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentagesmb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
-| [`priorityValue8021ActionCluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actioncluster) | string | Recommend 7. |
-| [`priorityValue8021ActionSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actionsmb) | string | Recommend 3. |
-
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentageSMB`
-
-The bandwidthPercentage for the network intent. Recommend 50.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionCluster`
-
-Recommend 7.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionSMB`
-
-Recommend 3.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `deploymentSettings.networkIntents.trafficType`
 
@@ -1142,6 +1121,7 @@ The enableIov configuration for the network intent.
 - Allowed:
   ```Bicep
   [
+    ''
     'false'
     'true'
   ]
@@ -1156,11 +1136,48 @@ The loadBalancingAlgorithm configuration for the network intent.
 - Allowed:
   ```Bicep
   [
+    ''
     'Dynamic'
     'HyperVPort'
     'IPHash'
   ]
   ```
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides`
+
+The qosPolicy overrides for the network intent. Required when overrideQosPolicy is true.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bandwidthPercentageSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentagesmb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
+| [`priorityValue8021ActionCluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actioncluster) | string | Recommend 7. |
+| [`priorityValue8021ActionSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actionsmb) | string | Recommend 3. |
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentageSMB`
+
+The bandwidthPercentage for the network intent. Recommend 50.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionCluster`
+
+Recommend 7.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionSMB`
+
+Recommend 3.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `deploymentSettings.startingIPAddress`
 
@@ -1338,6 +1355,34 @@ Solution builder extension (SBE) partner properties.
 - Required: No
 - Type: array
 
+### Parameter: `deploymentSettings.physicalNodesSettings`
+
+Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-deploymentsettingsphysicalnodessettingsipv4address) | string | The IPv4 address of the physical node. |
+| [`name`](#parameter-deploymentsettingsphysicalnodessettingsname) | string | The name of the physical node. This should match the Arc machine display name for the node. |
+
+### Parameter: `deploymentSettings.physicalNodesSettings.ipv4Address`
+
+The IPv4 address of the physical node.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.physicalNodesSettings.name`
+
+The name of the physical node. This should match the Arc machine display name for the node.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `deploymentSettings.sbeFamily`
 
 Solution builder extension (SBE) family value.
@@ -1416,12 +1461,33 @@ The metrics data for deploying a HCI cluster.
 - Required: No
 - Type: bool
 
+### Parameter: `deploymentSettings.useDhcp`
+
+If true, the infrastructure network uses DHCP. If false, static IP pools are used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `deploymentSettings.wdacEnforced`
 
 Limits the applications and the code that you can run on your Azure Stack HCI cluster.
 
 - Required: No
 - Type: bool
+
+### Parameter: `deploymentSettings.witnessType`
+
+Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Cloud'
+    'No Witness'
+  ]
+  ```
 
 ### Parameter: `hciResourceProviderObjectId`
 
@@ -1500,6 +1566,14 @@ The name of the Azure Stack HCI cluster - this must be a valid Active Directory 
 
 - Required: No
 - Type: string
+
+### Parameter: `createBuiltInRoleAssignments`
+
+Set to false to skip creating built-in role assignments for the HCI resource provider and Arc nodes when RBAC is pre-configured.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `defaultARBApplicationContentType`
 
