@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Add `originAuthenticationSettings` parameter to support Origin Authentication.
+- Add `authentication` parameter to support Origin Authentication.
 - Update resource API version to `2025-06-01` for origin groups.
 
 ### Breaking Changes
