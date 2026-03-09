@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "5329308456413751596"
+      "templateHash": "7246065259072047641"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -54905,7 +54905,7 @@
                   "SQLDB_USER_MID": "[reference('backendUserAssignedIdentity').outputs.clientId.value]",
                   "AZURE_AI_SEARCH_ENDPOINT": "[format('https://{0}.search.windows.net', variables('aiSearchName'))]",
                   "AZURE_AI_SEARCH_INDEX": "call_transcripts_index",
-                  "AZURE_AI_SEARCH_CONNECTION_NAME": "[variables('aiSearchName')]",
+                  "AZURE_AI_SEARCH_CONNECTION_NAME": "[variables('aiSearchConnectionName')]",
                   "USE_AI_PROJECT_CLIENT": "True",
                   "DISPLAY_CHART_DEFAULT": "False",
                   "APPLICATIONINSIGHTS_CONNECTION_STRING": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]",
@@ -58874,7 +58874,7 @@
       "metadata": {
         "description": "Contains Azure AI Search connection name."
       },
-      "value": "[variables('aiSearchName')]"
+      "value": "[variables('aiSearchConnectionName')]"
     },
     "azureCosmosDbAccount": {
       "type": "string",

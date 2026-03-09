@@ -1356,7 +1356,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           SQLDB_USER_MID: backendUserAssignedIdentity.outputs.clientId
           AZURE_AI_SEARCH_ENDPOINT: 'https://${aiSearchName}.search.windows.net'
           AZURE_AI_SEARCH_INDEX: 'call_transcripts_index'
-          AZURE_AI_SEARCH_CONNECTION_NAME: aiSearchName
+          AZURE_AI_SEARCH_CONNECTION_NAME: aiSearchConnectionName
           USE_AI_PROJECT_CLIENT: 'True'
           DISPLAY_CHART_DEFAULT: 'False'
           APPLICATIONINSIGHTS_CONNECTION_STRING: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
@@ -1452,7 +1452,7 @@ output azureAISearchEndpoint string = 'https://${aiSearchName}.search.windows.ne
 output azureAISearchIndex string = 'call_transcripts_index'
 
 @description('Contains Azure AI Search connection name.')
-output azureAISearchConnectionName string = aiSearchName
+output azureAISearchConnectionName string = aiSearchConnectionName
 
 @description('Contains Azure Cosmos DB account name.')
 output azureCosmosDbAccount string = cosmosDb.outputs.name
