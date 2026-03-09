@@ -38,6 +38,16 @@ param enabledProtocols string = 'SMB'
 @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
 param rootSquash string = 'NoRootSquash'
 
+@maxValue(10340)
+@minValue(0)
+@description('Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.')
+param provisionedBandwidthMibps int?
+
+@maxValue(102400)
+@minValue(0)
+@description('Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.')
+param provisionedIops int?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -133,6 +143,8 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-0
     shareQuota: shareQuota
     rootSquash: enabledProtocols == 'NFS' ? rootSquash : null
     enabledProtocols: enabledProtocols
+    provisionedBandwidthMibps: storageAccount.kind == 'FileStorage' ? provisionedBandwidthMibps : null
+    provisionedIops: storageAccount.kind == 'FileStorage' ? provisionedIops : null
   }
 }
 

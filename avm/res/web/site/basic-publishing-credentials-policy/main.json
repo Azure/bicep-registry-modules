@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "4414996332174672639"
+      "version": "0.40.2.10011",
+      "templateHash": "5646529427697319373"
     },
     "name": "Web Site Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -45,7 +45,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('{0}/{1}', parameters('webAppName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -80,7 +80,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2024-04-01', 'full').location]"
+      "value": "[reference(resourceId('Microsoft.Web/sites/basicPublishingCredentialsPolicies', parameters('webAppName'), parameters('name')), '2025-03-01', 'full').location]"
     }
   }
 }
