@@ -68,6 +68,7 @@ The Kusto Cluster role to be assigned to the principal id.
   ```Bicep
   [
     'AllDatabasesAdmin'
+    'AllDatabasesMonitor'
     'AllDatabasesViewer'
   ]
   ```
