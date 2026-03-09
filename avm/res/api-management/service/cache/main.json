@@ -41,7 +41,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Original uri of entity in external system cache points to."
+        "description": "Optional. Original URI of entity in external system cache points to."
       }
     },
     "useFromLocation": {

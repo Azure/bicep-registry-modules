@@ -62,7 +62,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
+        "description": "Optional. Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
       }
     },
     "serviceFabricCluster": {

@@ -20,7 +20,7 @@
     "productName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
