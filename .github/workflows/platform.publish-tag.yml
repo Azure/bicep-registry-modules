@@ -22,8 +22,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
 
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
+      # - name: Set environment
+      #   uses: ./.github/actions/templates/avm-setEnvironment
 
       # - name: Log in to Azure
       #   uses: azure/login@v2
@@ -34,13 +34,13 @@ jobs:
 
       # Adding a step to explicitly install the latest Bicep CLI because there is
       # always a delay in updating Bicep CLI in the job runner environments.
-      - name: Install the latest Bicep CLI
-        shell: bash
-        run: |
-          curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
-          chmod +x ./bicep
-          sudo mv ./bicep /usr/local/bin/bicep
-          bicep --version
+      # - name: Install the latest Bicep CLI
+      #   shell: bash
+      #   run: |
+      #     curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+      #     chmod +x ./bicep
+      #     sudo mv ./bicep /usr/local/bin/bicep
+      #     bicep --version
 
       # create a token from the secret
       - uses: actions/create-github-app-token@v2
@@ -48,6 +48,8 @@ jobs:
         with:
           app-id: ${{ secrets.MAR_REPO_ACCESS_CLIENTID }}
           private-key: ${{ secrets.MAR_REPO_ACCESS_SECRET }}
+          owner: ${{ vars.MAR_REPO_OWNER}}
+          repositories: ${{ vars.MAR_REPO_REPOSITORY}}
       # ensure the module is in the MAR file before publishing
       - name: Confirm module in MAR
         shell: pwsh
