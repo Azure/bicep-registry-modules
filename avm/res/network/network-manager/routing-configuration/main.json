@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "2420260740688338831"
+      "version": "0.41.2.15936",
+      "templateHash": "6605833306668609644"
     },
     "name": "Network Manager Routing Configurations",
     "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -272,8 +272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "15327481441544180728"
+              "version": "0.41.2.15936",
+              "templateHash": "14772952753338542761"
             },
             "name": "Network Manager Routing Configuration Rule Collections",
             "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -506,8 +506,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.40.2.10011",
-                      "templateHash": "7269872342288614102"
+                      "version": "0.41.2.15936",
+                      "templateHash": "13436762613765903502"
                     },
                     "name": "Network Manager Routing configuration Rule Collection Rules",
                     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."

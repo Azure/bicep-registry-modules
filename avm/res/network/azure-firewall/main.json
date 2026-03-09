@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "1269671834091212758"
+      "version": "0.41.2.15936",
+      "templateHash": "2739166780360013518"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."

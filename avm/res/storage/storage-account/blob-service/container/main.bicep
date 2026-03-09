@@ -123,6 +123,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
@@ -157,6 +159,7 @@ module container_immutabilityPolicy 'immutability-policy/main.bicep' = if (!empt
     immutabilityPeriodSinceCreationInDays: immutabilityPolicy.?immutabilityPeriodSinceCreationInDays
     allowProtectedAppendWrites: immutabilityPolicy.?allowProtectedAppendWrites
     allowProtectedAppendWritesAll: immutabilityPolicy.?allowProtectedAppendWritesAll
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

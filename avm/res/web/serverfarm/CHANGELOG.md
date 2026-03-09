@@ -2,16 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/serverfarm/CHANGELOG.md).
 
-## 0.7.1
-
-### Changes
-
-- Added updates to e2e test cases for Managed Instance deployments to include deployment script resource
-
-### Breaking Changes
-
-- None
-
 ## 0.7.0
 
 ### Changes

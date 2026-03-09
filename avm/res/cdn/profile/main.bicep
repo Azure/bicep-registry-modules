@@ -117,11 +117,13 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(formattedRoleAssignments) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(formattedRoleAssignments) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
@@ -244,6 +246,7 @@ module profile_customDomains 'custom-domain/main.bicep' = [
       profile_secrets
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: customDomain.name
       profileName: profile.name
       hostName: customDomain.hostName
@@ -263,6 +266,7 @@ module profile_originGroups 'origin-group/main.bicep' = [
   for (origingroup, index) in (originGroups ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: origingroup.name
       profileName: profile.name
       loadBalancingSettings: origingroup.loadBalancingSettings
@@ -281,6 +285,7 @@ module profile_ruleSets 'rule-set/main.bicep' = [
       profile_originGroups
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: ruleSet.name
       profileName: profile.name
       rules: ruleSet.?rules
@@ -316,6 +321,7 @@ module profile_securityPolicies 'security-policy/main.bicep' = [
       profile_customDomains
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: securityPolicy.name
       profileName: profile.name
       associations: securityPolicy.associations

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "12300610916812349141"
+      "version": "0.41.2.15936",
+      "templateHash": "5041030614676389368"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
