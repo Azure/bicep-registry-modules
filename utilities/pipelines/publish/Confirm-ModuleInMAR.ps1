@@ -58,5 +58,6 @@ function Confirm-ModuleInMAR {
         Write-Host "Passed: Found module [$moduleNameForMatch] in the MAR file" -ForegroundColor Green
     } else {
         Write-Host "Failed: Module [$moduleNameForMatch] was not found in the MAR file. Please review." -ForegroundColor Red
+        throw "Module [$moduleNameForMatch] was not found in the MAR file and can't be published. Please review."
     }
 }
