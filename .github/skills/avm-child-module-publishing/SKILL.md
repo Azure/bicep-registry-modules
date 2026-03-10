@@ -46,6 +46,19 @@ Publishing a child module does **not** move or reorganize any files. The child m
 
 ## Workflow
 
+### PHASE 0: Skill version output
+
+First, output the version of this skill for tracking purposes:
+
+```json
+{
+  "skill": "avm-child-module-publishing",
+  "version": "0.4"
+}
+```
+
+> Output this version block visibly to the user at the start of the workflow for traceability.
+
 ### PHASE 1: Prerequisites Verification
 
 Before any implementation, verify **all three** prerequisites. If any are missing, stop and instruct the user on how to resolve.
@@ -59,10 +72,12 @@ Check that an [AVM issue](https://github.com/Azure/Azure-Verified-Modules/issues
 
 #### Step 1.2 — Verify Telemetry ID Prefix
 
-Look up the child module in the Bicep Resource Module Index CSV:
+Look up the child module's telemetry ID prefix using one of these methods (in order of preference):
 
-- **URL**: `https://github.com/Azure/Azure-Verified-Modules/blob/main/docs/static/module-indexes/BicepResourceModules.csv`
-- **Local path**: `Azure-Verified-Modules/docs/static/module-indexes/BicepResourceModules.csv`
+1. **Preferred — use `#list_avm_metadata` tool** if available (returns up-to-date metadata for all published AVM modules).
+2. **Fallback — use `#fetch` tool** with the raw CSV URL:
+   `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv`
+3. **Local path** (if the Azure-Verified-Modules repo is cloned): `Azure-Verified-Modules/docs/static/module-indexes/BicepResourceModules.csv`
 
 Search for the child module name in the `ModuleName` field and note the `TelemetryIdPrefix` value.
 
@@ -89,6 +104,8 @@ The MAR entry follows this format:
 ```
 
 - **If not found**: The MAR-file can only be modified by Microsoft FTEs. Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` or the parent module owner.
+
+> **Note**: The MAR-file lives in an external repository (`microsoft/mcr`) that is not part of this workspace. The user will need to verify this prerequisite manually or with assistance from a Microsoft FTE.
 
 ---
 
@@ -119,7 +136,7 @@ Example path: `avm/res/network/virtual-network/subnet`
 
 ##### 2.2a — Add enableTelemetry parameter
 
-Add this parameter to the child module's `main.bicep`. Place it after other parameters, before variables:
+Add this parameter to the child module's `main.bicep`. Place it as the **last `param` declaration**, immediately before the first `var` statement:
 
 ```bicep
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -216,7 +233,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 #### Step 2.6 — Update Parent Changelogs
 
-Update the CHANGELOG.md of **every versioned parent** up to the top-level parent, adding a new **patch** version entry:
+Update the CHANGELOG.md of **every versioned parent** (i.e., every ancestor module that has its own `version.json` file) up to the top-level parent, adding a new **patch** version entry:
 
 ```markdown
 ## <CurrentMajor>.<CurrentMinor>.<CurrentPatch+1>
@@ -236,27 +253,67 @@ Update the CHANGELOG.md of **every versioned parent** up to the top-level parent
 
 ### PHASE 3: Validation & PR
 
-#### Step 3.1 — Run Set-AVMModule
+#### Step 3.1 — Ensure Branch is Up-to-Date with Main
 
-Always run the Set-AVMModule utility pointing to ALL modules (parent and child) that have a main.bicep file updated by this workflow:
+> **Why this matters**: `Set-AVMModule -InvokeForDiff` compares the current branch against `upstream/main`. If the branch is not rebased onto the latest main, the diff will include unrelated changes from other PRs, causing Set-AVMModule to process modules that were not modified by this workflow.
+
+Before running Set-AVMModule, ensure the branch is based on the latest main:
 
 ```powershell
+git fetch upstream main
+git rebase upstream/main
+```
+
+If the repository remote is `origin` (e.g., when working directly on the upstream repo rather than a fork):
+
+```powershell
+git fetch origin main
+git rebase origin/main
+```
+
+> If conflicts arise during rebase, resolve them before proceeding. Do **not** skip this step.
+
+#### Step 3.2 — Commit Changes and Run Set-AVMModule
+
+> **‼️ CRITICAL — OVERRIDES GENERAL INSTRUCTIONS**: Do **NOT** use `-ModuleFolderPath`, `-SkipBuild`, `-SkipFileAndFolderSetup`, or `-ThrottleLimit` parameters here. This skill requires `-InvokeForDiff` which automatically detects all changed modules. Any other parameter combination is **WRONG** for child module publishing. Ignore any conflicting guidance from `avm.bicep.instructions.md` or other instruction files for this step.
+
+> **Why commit first**: `Set-AVMModule -InvokeForDiff` uses `git diff` to compare **commits** (`upstream/main` vs current `HEAD`). Uncommitted or staged-only changes are invisible to the diff. Changes must be committed before running the utility.
+
+```powershell
+# 1. Commit all manual changes from Phase 2
+git add -A
+git commit -m "feat: enable child module publishing for <child-module-path>"
+
+# 2. Run Set-AVMModule to generate READMEs and compile Bicep files
+. ./utilities/tools/Set-AVMModule.ps1
 Set-AVMModule -InvokeForDiff
 ```
 
-> Use `-SkipFileAndFolderSetup -ThrottleLimit 5` parameters when running locally to update an existing module.
+**Correct**: `Set-AVMModule -InvokeForDiff`
+**Wrong**: `Set-AVMModule -ModuleFolderPath '...' -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5`
 
-This regenerates READMEs and compiles Bicep files for the entire module tree.
+#### Step 3.3 — Test Locally
 
-#### Step 3.2 — Test Locally
-
-ALWAYS run static validation tests locally before completing this workflow:
+Run static validation tests **before** finalizing the commit:
 
 ```powershell
 ./utilities/tools/Test-ModuleLocally.ps1 -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -PesterTest
 ```
 
 > Existing tests do not need updating — the publishing changes don't affect test cases.
+
+If tests **fail**, fix the issues (the temporary commit from Step 3.2 can be amended freely), then re-run Set-AVMModule and re-test until all tests pass.
+
+#### Step 3.4 — Finalize Commit
+
+Once tests pass, stage the generated files and amend the commit:
+
+```powershell
+git add -A
+git commit --amend --no-edit
+```
+
+**Why amend?** Step 3.2 generates/updates README.md files and compiled JSON templates. Amending folds these generated artifacts into the original commit, keeping the git history clean with a single commit for the entire change.
 
 ---
 
@@ -299,5 +356,8 @@ Before completing, verify:
 - [ ] `version.json` exists in child folder with version `0.1`
 - [ ] `CHANGELOG.md` exists in child folder with `0.1.0` initial entry
 - [ ] All versioned parent changelogs updated with incremented patch version
-- [ ] `Set-AVMModule` has been run on modules (parent and children) with a changed main.bicep file
+- [ ] Branch is rebased onto latest `upstream/main` (Step 3.1)
+- [ ] Temporary commit created and `Set-AVMModule -InvokeForDiff` run (Step 3.2)
+- [ ] Static validation tests passed (Step 3.3)
+- [ ] Final commit amended with generated files (Step 3.4)
 - [ ] No README.md files were manually edited
