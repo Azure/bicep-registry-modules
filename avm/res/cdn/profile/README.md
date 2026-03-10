@@ -841,7 +841,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               'test1-cdnpmax-custom-domain'
             ]
             enabledState: 'Enabled'
-            forwardingProtocol: 'MatchRequest'
+            forwardingProtocol: 'HttpsOnly'
             httpsRedirect: 'Enabled'
             linkToDefaultDomain: 'Enabled'
             name: 'test-cdnpmax-afd-route-1'
@@ -1075,7 +1075,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "test1-cdnpmax-custom-domain"
               ],
               "enabledState": "Enabled",
-              "forwardingProtocol": "MatchRequest",
+              "forwardingProtocol": "HttpsOnly",
               "httpsRedirect": "Enabled",
               "linkToDefaultDomain": "Enabled",
               "name": "test-cdnpmax-afd-route-1",
@@ -1323,7 +1323,7 @@ param afdEndpoints = [
           'test1-cdnpmax-custom-domain'
         ]
         enabledState: 'Enabled'
-        forwardingProtocol: 'MatchRequest'
+        forwardingProtocol: 'HttpsOnly'
         httpsRedirect: 'Enabled'
         linkToDefaultDomain: 'Enabled'
         name: 'test-cdnpmax-afd-route-1'
