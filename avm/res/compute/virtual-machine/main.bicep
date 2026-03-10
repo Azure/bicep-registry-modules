@@ -23,7 +23,8 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Conditional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.')
-param imageReference imageReferenceType?
+param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.storageProfile.imageReference?
+
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
@@ -474,7 +475,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -515,8 +516,8 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
+resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId) && (dataDisk.?createOption ?? 'Empty') != 'FromImage') {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -525,14 +526,14 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
     properties: {
       diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
-        createOption: dataDisk.?createoption ?? 'Empty'
+        createOption: dataDisk.?createOption ?? 'Empty'
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
       publicNetworkAccess: publicNetworkAccess
       networkAccessPolicy: networkAccessPolicy
     }
-    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType ?? '', 'ZRS')
       ? array(string(availabilityZone))
       : null
     tags: dataDisk.?tags ?? tags
@@ -593,19 +594,31 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           name: !empty(dataDisk.managedDisk.?resourceId)
             ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
-            ? 'Attach'
-            : dataDisk.?createoption ?? 'Empty'
+          createOption: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? 'FromImage'
+            : (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
+                ? 'Attach'
+                : dataDisk.?createOption ?? 'Empty'
           deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
-          managedDisk: {
-            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
-            diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
-              ? {
-                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
-                }
-              : null
-          }
+          diskSizeGB: (dataDisk.?createOption ?? 'Empty') == 'FromImage' ? null : dataDisk.?diskSizeGB
+          managedDisk: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? {
+                storageAccountType: dataDisk.managedDisk.?storageAccountType
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
+            : {
+                id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
         }
       ]
     }
@@ -640,6 +653,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -717,6 +731,8 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
 resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' = if (!empty(autoShutdownConfig)) {
   name: 'shutdown-computevm-${vm.name}'
   location: location
+  #disable-next-line BCP187
+  tags: autoShutdownConfig.?tags ?? tags
   properties: {
     status: autoShutdownConfig.?status ?? 'Disabled'
     targetResourceId: vm.id
@@ -748,7 +764,13 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
     typeHandlerVersion: extensionDomainJoinConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionDomainJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionDomainJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionDomainJoinConfig.settings
+    settings: extensionDomainJoinConfig.?settings ?? {
+      Name: extensionDomainJoinConfig.?domainName
+      OUPath: extensionDomainJoinConfig.?ouPath
+      User: extensionDomainJoinConfig.?user
+      Restart: extensionDomainJoinConfig.?restart
+      Options: extensionDomainJoinConfig.?options
+    }
     supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
     tags: extensionDomainJoinConfig.?tags ?? tags
     protectedSettings: {
@@ -756,6 +778,17 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
     }
   }
 }
+
+// The AAD Join extension does not allow empty string for mdmId, so we filter it out if it's empty to avoid deployment failure. This allows customers to conditionally include mdmId in the settings without having to worry about the empty string case.
+var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+// filtered settings will only be used if AAD Join extension is enabled, so we don't need to worry about the case where mdmId is required but filtered out since that would be a customer configuration error.
+var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
+  ? reduce(
+      items(aadJoinSettings),
+      {},
+      (cur, item) => item.key == 'mdmId' ? cur : union(cur, { '${item.key}': item.value })
+    )
+  : aadJoinSettings
 
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
@@ -768,7 +801,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
+    settings: !empty(filteredAadJoinSettings) ? filteredAadJoinSettings : null
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
@@ -818,6 +851,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionMonitoringAgentConfig.?settings ?? {}
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
   }
@@ -826,6 +860,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
+#disable-next-line BCP081
 resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
@@ -957,9 +992,6 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
         : {})
     }
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
@@ -1018,11 +1050,15 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
       configurationFunction: extensionHostPoolRegistration.configurationFunction
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
-        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
         aadJoin: true
       }
-      supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     }
+    protectedSettings: {
+      properties: {
+        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+      }
+    }
+    supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     tags: extensionHostPoolRegistration.?tags ?? tags
   }
   dependsOn: [
