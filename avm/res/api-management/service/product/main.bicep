@@ -56,7 +56,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -118,7 +118,7 @@ module product_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: apiManagementServiceName
       productName: product.name
-      name: policy.name
+      name: policy.?name
       format: policy.?format
       value: policy.value
     }
