@@ -455,7 +455,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf_2025-12-02_1084'`
+- Default: `'latest_afv2_2026-03-10_1326'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -588,7 +588,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf_2025-12-02_1084'`
+- Default: `'latest_afv2_2026-03-10_1326'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
@@ -750,7 +750,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/compute/virtual-machine:0.21.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |

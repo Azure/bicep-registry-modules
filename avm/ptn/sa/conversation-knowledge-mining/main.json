@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "7246065259072047641"
+      "templateHash": "12245986456617925733"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -186,7 +186,7 @@
     },
     "backendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_waf_2025-12-02_1084",
+      "defaultValue": "latest_afv2_2026-03-10_1326",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the backend."
       }
@@ -207,7 +207,7 @@
     },
     "frontendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_waf_2025-12-02_1084",
+      "defaultValue": "latest_afv2_2026-03-10_1326",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
@@ -9046,8 +9046,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9651684292850651586"
+              "version": "0.41.2.15936",
+              "templateHash": "14895287194406877557"
             },
             "name": "Maintenance Configurations",
             "description": "This module deploys a Maintenance Configuration."
@@ -9086,7 +9086,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -9161,7 +9161,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -9206,18 +9206,13 @@
             },
             "maintenanceScope": {
               "type": "string",
-              "defaultValue": "Host",
-              "allowedValues": [
-                "Host",
-                "OSImage",
-                "Extension",
-                "InGuestPatch",
-                "SQLDB",
-                "SQLManagedInstance"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/maintenanceScope"
+                },
                 "description": "Optional. Gets or sets maintenanceScope of the configuration."
-              }
+              },
+              "defaultValue": "Host"
             },
             "maintenanceWindow": {
               "type": "object",
@@ -9258,15 +9253,13 @@
             },
             "visibility": {
               "type": "string",
-              "defaultValue": "",
-              "allowedValues": [
-                "",
-                "Custom",
-                "Public"
-              ],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/visibility"
+                },
                 "description": "Optional. Gets or sets the visibility of the configuration. The default value is 'Custom'."
-              }
+              },
+              "nullable": true
             },
             "installPatches": {
               "type": "object",
@@ -9300,8 +9293,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -9336,7 +9329,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -9353,7 +9346,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
