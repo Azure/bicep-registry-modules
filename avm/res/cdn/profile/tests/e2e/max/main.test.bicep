@@ -249,7 +249,7 @@ module testDeployment '../../../main.bicep' = [
                 '${namePrefix}-test1-${serviceShort}-custom-domain'
               ]
               enabledState: 'Enabled'
-              forwardingProtocol: 'MatchRequest'
+              forwardingProtocol: 'HttpsOnly'
               httpsRedirect: 'Enabled'
               linkToDefaultDomain: 'Enabled'
               patternsToMatch: ['/api/*', '/health']
