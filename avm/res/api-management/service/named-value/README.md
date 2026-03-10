@@ -44,7 +44,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`keyVault`](#parameter-keyvault) | object | KeyVault location details of the namedValue. |
+| [`keyVault`](#parameter-keyvault) | object | Key Vault location details of the namedValue. |
 | [`secret`](#parameter-secret) | bool | Determines whether the value is a secret and should be encrypted or not. |
 | [`tags`](#parameter-tags) | array | Tags that when provided can be used to filter the NamedValue list. |
 | [`value`](#parameter-value) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
@@ -80,7 +80,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `keyVault`
 
-KeyVault location details of the namedValue.
+Key Vault location details of the namedValue.
 
 - Required: No
 - Type: object

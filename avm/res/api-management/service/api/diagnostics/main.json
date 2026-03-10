@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "6787316023898210718"
+      "templateHash": "8831683591503293949"
     },
-    "name": "API Management Service APIs Diagnostics.",
-    "description": "This module deploys an API Management Service API Diagnostics."
+    "name": "API Management Service API Diagnostics",
+    "description": "This module deploys an API Management Service API Diagnostic."
   },
   "parameters": {
     "apiManagementServiceName": {
