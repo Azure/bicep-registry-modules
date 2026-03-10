@@ -65,7 +65,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       dnsServers: [
         '192.168.1.254'
       ]
-      domainFqdn: 'jumpstart.local'
+      domainFqdn: 'hci.local'
       domainOUPath: '<domainOUPath>'
       enableStorageAutoIp: true
       endingIPAddress: '192.168.1.65'
@@ -179,7 +179,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "dnsServers": [
           "192.168.1.254"
         ],
-        "domainFqdn": "jumpstart.local",
+        "domainFqdn": "hci.local",
         "domainOUPath": "<domainOUPath>",
         "enableStorageAutoIp": true,
         "endingIPAddress": "192.168.1.65",
@@ -307,7 +307,7 @@ param deploymentSettings = {
   dnsServers: [
     '192.168.1.254'
   ]
-  domainFqdn: 'jumpstart.local'
+  domainFqdn: 'hci.local'
   domainOUPath: '<domainOUPath>'
   enableStorageAutoIp: true
   endingIPAddress: '192.168.1.65'
@@ -425,7 +425,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       dnsServers: [
         '192.168.1.254'
       ]
-      domainFqdn: 'jumpstart.local'
+      domainFqdn: 'hci.local'
       domainOUPath: '<domainOUPath>'
       driftControlEnforced: true
       enableStorageAutoIp: true
@@ -550,7 +550,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "dnsServers": [
           "192.168.1.254"
         ],
-        "domainFqdn": "jumpstart.local",
+        "domainFqdn": "hci.local",
         "domainOUPath": "<domainOUPath>",
         "driftControlEnforced": true,
         "enableStorageAutoIp": true,
@@ -691,7 +691,7 @@ param deploymentSettings = {
   dnsServers: [
     '192.168.1.254'
   ]
-  domainFqdn: 'jumpstart.local'
+  domainFqdn: 'hci.local'
   domainOUPath: '<domainOUPath>'
   driftControlEnforced: true
   enableStorageAutoIp: true
