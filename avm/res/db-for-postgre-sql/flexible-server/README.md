@@ -2,6 +2,14 @@
 
 This module deploys a DBforPostgreSQL Flexible Server.
 
+You can reference the module as follows:
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,19 +21,19 @@ This module deploys a DBforPostgreSQL Flexible Server.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DBforPostgreSQL/flexibleServers` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers) |
-| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/administrators) |
-| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/advancedThreatProtectionSettings) |
-| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/configurations) |
-| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/databases) |
-| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/firewallRules) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/administrators)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/databases)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/firewallRules)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -35,16 +43,161 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-postgre-sql/flexible-server:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
-- [Private access](#example-3-private-access)
-- [Public access with private endpoints](#example-4-public-access-with-private-endpoints)
-- [Public access](#example-5-public-access)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Private access](#example-4-private-access)
+- [Public access with private endpoints](#example-5-public-access-with-private-endpoints)
+- [Public access](#example-6-public-access)
+- [Primary server and Readonly Replication server](#example-7-primary-server-and-readonly-replication-server)
+- [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'dfpshsmu003'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administrators: [
+      {
+        objectId: '<objectId>'
+        principalName: '<principalName>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    geoRedundantBackup: 'Disabled'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "dfpshsmu003"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": [
+        {
+          "objectId": "<objectId>",
+          "principalName": "<principalName>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'dfpshsmu003'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administrators = [
+  {
+    objectId: '<objectId>'
+    principalName: '<principalName>'
+    principalType: 'ServicePrincipal'
+  }
+]
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param geoRedundantBackup = 'Disabled'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -53,7 +206,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -139,9 +291,11 @@ param administrators = [
 </details>
 <p>
 
-### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -150,7 +304,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -160,6 +313,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     autoGrow: 'Enabled'
     customerManagedKey: {
       keyName: '<keyName>'
@@ -167,10 +324,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     geoRedundantBackup: 'Disabled'
-    highAvailability: 'ZoneRedundant'
+    highAvailability: 'Disabled'
     highAvailabilityZone: 2
     location: '<location>'
     managedIdentities: {
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -212,6 +370,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
+    },
     "autoGrow": {
       "value": "Enabled"
     },
@@ -226,7 +390,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "Disabled"
     },
     "highAvailability": {
-      "value": "ZoneRedundant"
+      "value": "Disabled"
     },
     "highAvailabilityZone": {
       "value": 2
@@ -236,6 +400,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "managedIdentities": {
       "value": {
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -266,6 +431,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param autoGrow = 'Enabled'
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -273,10 +442,11 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param geoRedundantBackup = 'Disabled'
-param highAvailability = 'ZoneRedundant'
+param highAvailability = 'Disabled'
 param highAvailabilityZone = 2
 param location = '<location>'
 param managedIdentities = {
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
@@ -287,9 +457,11 @@ param serverThreatProtection = 'Enabled'
 </details>
 <p>
 
-### Example 3: _Private access_
+### Example 4: _Private access_
 
 This instance deploys the module with private access only.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
 
 
 <details>
@@ -298,7 +470,6 @@ This instance deploys the module with private access only.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -308,6 +479,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Disabled'
+      passwordAuth: 'Enabled'
+    }
     configurations: [
       {
         name: 'log_min_messages'
@@ -364,11 +539,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -404,6 +574,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Disabled",
+        "passwordAuth": "Enabled"
+      }
     },
     "configurations": {
       "value": [
@@ -474,13 +650,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -504,6 +673,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Disabled'
+  passwordAuth: 'Enabled'
+}
 param configurations = [
   {
     name: 'log_min_messages'
@@ -560,19 +733,16 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>
 <p>
 
-### Example 4: _Public access with private endpoints_
+### Example 5: _Public access with private endpoints_
 
 This instance deploys the module with public access and private endpoints.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public-with-pe]
 
 
 <details>
@@ -581,7 +751,6 @@ This instance deploys the module with public access and private endpoints.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -591,6 +760,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Enabled'
+    }
     geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
     maintenanceWindow: {
@@ -652,6 +825,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Enabled"
+      }
+    },
     "geoRedundantBackup": {
       "value": "Enabled"
     },
@@ -707,6 +886,10 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Enabled'
+}
 param geoRedundantBackup = 'Enabled'
 param highAvailability = 'ZoneRedundant'
 param maintenanceWindow = {
@@ -737,9 +920,11 @@ param privateEndpoints = [
 </details>
 <p>
 
-### Example 5: _Public access_
+### Example 6: _Public access_
 
 This instance deploys the module with public access and most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public]
 
 
 <details>
@@ -748,7 +933,6 @@ This instance deploys the module with public access and most of its features ena
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -834,11 +1018,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     storageSizeGB: 1024
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     version: '14'
   }
 }
@@ -972,13 +1151,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "storageSizeGB": {
       "value": 1024
     },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
     "version": {
       "value": "14"
     }
@@ -1080,20 +1252,17 @@ param roleAssignments = [
   }
 ]
 param storageSizeGB = 1024
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 param version = '14'
 ```
 
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _Primary server and Readonly Replication server_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys a primary and readonly replication server using the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/replication]
 
 
 <details>
@@ -1102,7 +1271,111 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'dfpsrep001'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    autoGrow: 'Enabled'
+    createMode: '<createMode>'
+    highAvailability: 'Disabled'
+    sourceServerResourceId: '<sourceServerResourceId>'
+    storageSizeGB: 512
+    version: '17'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "dfpsrep001"
+    },
+    "skuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "autoGrow": {
+      "value": "Enabled"
+    },
+    "createMode": {
+      "value": "<createMode>"
+    },
+    "highAvailability": {
+      "value": "Disabled"
+    },
+    "sourceServerResourceId": {
+      "value": "<sourceServerResourceId>"
+    },
+    "storageSizeGB": {
+      "value": 512
+    },
+    "version": {
+      "value": "17"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'dfpsrep001'
+param skuName = 'Standard_D2s_v3'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param autoGrow = 'Enabled'
+param createMode = '<createMode>'
+param highAvailability = 'Disabled'
+param sourceServerResourceId = '<sourceServerResourceId>'
+param storageSizeGB = 512
+param version = '17'
+```
+
+</details>
+<p>
+
+### Example 8: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
@@ -1117,6 +1390,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
+    authConfig: {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+    }
     configurations: [
       {
         name: 'log_min_messages'
@@ -1199,6 +1476,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "authConfig": {
+      "value": {
+        "activeDirectoryAuth": "Enabled",
+        "passwordAuth": "Disabled"
+      }
     },
     "configurations": {
       "value": [
@@ -1287,6 +1570,10 @@ param administrators = [
     principalType: 'ServicePrincipal'
   }
 ]
+param authConfig = {
+  activeDirectoryAuth: 'Enabled'
+  passwordAuth: 'Disabled'
+}
 param configurations = [
   {
     name: 'log_min_messages'
@@ -1362,6 +1649,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of the server. Can only be specified when the PostgreSQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
+| [`authConfig`](#parameter-authconfig) | object | The authentication configuration for the server. |
 | [`autoGrow`](#parameter-autogrow) | string | Flag to enable / disable Storage Auto grow for flexible server. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
@@ -1383,11 +1671,11 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Determines whether or not public network access is enabled or disabled. |
 | [`replica`](#parameter-replica) | object | The replication settings for the server. Can only be set on existing flexible servers. |
+| [`replicationRole`](#parameter-replicationrole) | string | The replication role for the server. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tenantId`](#parameter-tenantid) | string | Tenant id of the server. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
 
 ### Parameter: `availabilityZone`
@@ -1446,7 +1734,15 @@ The managed identity definition for this resource. Required if 'cMKKeyName' is n
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
 | [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
@@ -1491,7 +1787,71 @@ The Azure AD administrators when AAD authentication enabled.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`objectId`](#parameter-administratorsobjectid) | string | The objectId of the Active Directory administrator. |
+| [`principalName`](#parameter-administratorsprincipalname) | string | Active Directory administrator principal name. |
+| [`principalType`](#parameter-administratorsprincipaltype) | string | The principal type used to represent the type of Active Directory Administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-administratorstenantid) | string | The tenantId of the Active Directory administrator. |
+
+### Parameter: `administrators.objectId`
+
+The objectId of the Active Directory administrator.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrators.principalName`
+
+Active Directory administrator principal name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrators.principalType`
+
+The principal type used to represent the type of Active Directory Administrator.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'Unknown'
+    'User'
+  ]
+  ```
+
+### Parameter: `administrators.tenantId`
+
+The tenantId of the Active Directory administrator.
+
+- Required: No
+- Type: string
+
+### Parameter: `authConfig`
+
+The authentication configuration for the server.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      activeDirectoryAuth: 'Enabled'
+      passwordAuth: 'Disabled'
+  }
+  ```
 
 ### Parameter: `autoGrow`
 
@@ -1562,7 +1922,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1579,9 +1940,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -1776,7 +2144,35 @@ The firewall rules to create in the PostgreSQL flexible server.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`name`](#parameter-firewallrulesname) | string | The name of the PostgreSQL flexible server Firewall Rule. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.name`
+
+The name of the PostgreSQL flexible server Firewall Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `geoRedundantBackup`
 
@@ -1847,6 +2243,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1866,6 +2263,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2073,6 +2477,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2092,6 +2497,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2379,6 +2791,23 @@ Used to indicate role of the server in replication set. Required if enabling rep
   ]
   ```
 
+### Parameter: `replicationRole`
+
+The replication role for the server.
+
+- Required: No
+- Type: string
+- Default: `'None'`
+- Allowed:
+  ```Bicep
+  [
+    'AsyncReplica'
+    'GeoAsyncReplica'
+    'None'
+    'Primary'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -2527,20 +2956,13 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `tenantId`
-
-Tenant id of the server.
-
-- Required: No
-- Type: string
-
 ### Parameter: `version`
 
 PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'17'`
+- Default: `'18'`
 - Allowed:
   ```Bicep
   [
@@ -2551,6 +2973,7 @@ PostgreSQL Server version.
     '15'
     '16'
     '17'
+    '18'
   ]
   ```
 
@@ -2564,6 +2987,7 @@ PostgreSQL Server version.
 | `privateEndpoints` | array | The private endpoints of the PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned managed identity. |
 
 ## Cross-referenced modules
 
@@ -2571,9 +2995,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

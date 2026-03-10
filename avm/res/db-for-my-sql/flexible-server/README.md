@@ -1,6 +1,19 @@
 # DBforMySQL Flexible Servers `[Microsoft.DBforMySQL/flexibleServers]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a DBforMySQL Flexible Server.
+
+You can reference the module as follows:
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -13,18 +26,19 @@ This module deploys a DBforMySQL Flexible Server.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DBforMySQL/flexibleServers` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers) |
-| `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/administrators) |
-| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-10-01-preview/flexibleServers/advancedThreatProtectionSettings) |
-| `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/databases) |
-| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/firewallRules) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/administrators` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/administrators)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/configurations` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/databases` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/databases)</li></ul> |
+| `Microsoft.DBforMySQL/flexibleServers/firewallRules` | 2024-12-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbformysql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2024-12-30/flexibleServers/firewallRules)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -34,15 +48,154 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
-- [Deploys in connectivity mode "Public Access" with private endpoint](#example-4-deploys-in-connectivity-mode-public-access-with-private-endpoint)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Deploys in connectivity mode "Private Access"](#example-4-deploys-in-connectivity-mode-private-access)
+- [Deploys in connectivity mode "Public Access" with private endpoint](#example-5-deploys-in-connectivity-mode-public-access-with-private-endpoint)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'dfmshsmu001'
+    skuName: 'Standard_D2ds_v4'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    geoRedundantBackup: 'Disabled'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    storageAutoGrow: 'Enabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "dfmshsmu001"
+    },
+    "skuName": {
+      "value": "Standard_D2ds_v4"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "geoRedundantBackup": {
+      "value": "Disabled"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'dfmshsmu001'
+param skuName = 'Standard_D2ds_v4'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param geoRedundantBackup = 'Disabled'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param storageAutoGrow = 'Enabled'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -51,7 +204,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -61,7 +213,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    location: '<location>'
     storageAutoGrow: 'Enabled'
   }
 }
@@ -99,9 +250,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     }
@@ -127,16 +275,17 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param location = '<location>'
 param storageAutoGrow = 'Enabled'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -145,7 +294,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -157,6 +305,18 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLoginPassword: '<administratorLoginPassword>'
     advancedThreatProtection: 'Enabled'
     backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'max_connections'
+        source: 'user-override'
+        value: '200'
+      }
+      {
+        name: 'innodb_buffer_pool_size'
+        source: 'user-override'
+        value: '1073741824'
+      }
+    ]
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -209,7 +369,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     geoRedundantBackup: 'Enabled'
-    highAvailability: 'ZoneRedundant'
+    highAvailability: 'Disabled'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -293,6 +453,20 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "backupRetentionDays": {
       "value": 20
     },
+    "configurations": {
+      "value": [
+        {
+          "name": "max_connections",
+          "source": "user-override",
+          "value": "200"
+        },
+        {
+          "name": "innodb_buffer_pool_size",
+          "source": "user-override",
+          "value": "1073741824"
+        }
+      ]
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -358,7 +532,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       "value": "Enabled"
     },
     "highAvailability": {
-      "value": "ZoneRedundant"
+      "value": "Disabled"
     },
     "location": {
       "value": "<location>"
@@ -447,6 +621,18 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param advancedThreatProtection = 'Enabled'
 param backupRetentionDays = 20
+param configurations = [
+  {
+    name: 'max_connections'
+    source: 'user-override'
+    value: '200'
+  }
+  {
+    name: 'innodb_buffer_pool_size'
+    source: 'user-override'
+    value: '1073741824'
+  }
+]
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -499,7 +685,7 @@ param firewallRules = [
   }
 ]
 param geoRedundantBackup = 'Enabled'
-param highAvailability = 'ZoneRedundant'
+param highAvailability = 'Disabled'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -546,9 +732,11 @@ param version = '8.0.21'
 </details>
 <p>
 
-### Example 3: _Deploys in connectivity mode "Private Access"_
+### Example 4: _Deploys in connectivity mode "Private Access"_
 
 This instance deploys the module with connectivity mode "Private Access".
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
 
 
 <details>
@@ -557,7 +745,6 @@ This instance deploys the module with connectivity mode "Private Access".
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -599,7 +786,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -690,9 +876,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailability": {
       "value": "SameZone"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -769,7 +952,6 @@ param firewallRules = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -785,9 +967,11 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 4: _Deploys in connectivity mode "Public Access" with private endpoint_
+### Example 5: _Deploys in connectivity mode "Public Access" with private endpoint_
 
 This instance deploys the module with connectivity mode "Public Access" and a private endpoint.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public-with-pe]
 
 
 <details>
@@ -796,7 +980,6 @@ This instance deploys the module with connectivity mode "Public Access" and a pr
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: -1
@@ -820,7 +1003,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     highAvailability: 'SameZone'
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -906,9 +1088,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailability": {
       "value": "SameZone"
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -986,7 +1165,6 @@ param databases = [
   }
 ]
 param highAvailability = 'SameZone'
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1019,9 +1197,11 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1030,7 +1210,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: 'flexibleServerDeployment'
   params: {
     // Required parameters
     availabilityZone: 1
@@ -1042,11 +1221,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     administratorLoginPassword: '<administratorLoginPassword>'
     highAvailability: 'ZoneRedundant'
     highAvailabilityZone: 2
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     storageAutoGrow: 'Enabled'
     tags: {
       Environment: 'Non-Prod'
@@ -1095,15 +1269,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "highAvailabilityZone": {
       "value": 2
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     },
@@ -1138,11 +1303,6 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param highAvailability = 'ZoneRedundant'
 param highAvailabilityZone = 2
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param storageAutoGrow = 'Enabled'
 param tags = {
   Environment: 'Non-Prod'
@@ -1184,6 +1344,7 @@ param tags = {
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
+| [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
 | [`customerManagedKeyGeo`](#parameter-customermanagedkeygeo) | object | The customer managed key definition to use when geoRedundantBackup is "Enabled". |
@@ -1197,7 +1358,7 @@ param tags = {
 | [`highAvailabilityZone`](#parameter-highavailabilityzone) | int | Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenance window. If provided, "customWindow" property must exist and set to "Enabled". |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration. |
 | [`replicationRole`](#parameter-replicationrole) | string | The replication role. |
@@ -1356,6 +1517,54 @@ Backup retention days for the server.
 - Default: `7`
 - MinValue: 1
 - MaxValue: 35
+
+### Parameter: `configurations`
+
+The configurations to create in the server.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-configurationsname) | string | The name of the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`source`](#parameter-configurationssource) | string | Source of the configuration. |
+| [`value`](#parameter-configurationsvalue) | string | Value of the configuration. |
+
+### Parameter: `configurations.name`
+
+The name of the configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `configurations.source`
+
+Source of the configuration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'system-default'
+    'user-override'
+  ]
+  ```
+
+### Parameter: `configurations.value`
+
+Value of the configuration.
+
+- Required: No
+- Type: string
 
 ### Parameter: `createMode`
 
@@ -1718,6 +1927,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1741,9 +1951,16 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `maintenanceWindow`
 
-Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".
+Properties for the maintenance window. If provided, "customWindow" property must exist and set to "Enabled".
 
 - Required: No
 - Type: object
@@ -1928,6 +2145,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1947,6 +2165,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2363,6 +2588,8 @@ MySQL Server version.
   [
     '5.7'
     '8.0.21'
+    '8.4'
+    '9.3'
   ]
   ```
 
@@ -2383,10 +2610,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

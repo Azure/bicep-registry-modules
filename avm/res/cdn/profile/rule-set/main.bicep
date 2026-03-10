@@ -10,11 +10,33 @@ param profileName string
 @description('Optinal. The rules to apply to the rule set.')
 param rules ruleType[]?
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cdn-profile-ruleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource ruleSet 'Microsoft.Cdn/profiles/ruleSets@2023-05-01' = {
+resource ruleSet 'Microsoft.Cdn/profiles/ruleSets@2025-04-15' = {
   name: name
   parent: profile
 }
@@ -47,14 +69,21 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-import { ruleType } from './rule/main.bicep'
-
 @export()
-@description('The type of the rule set.')
-type ruleSetType = {
-  @description('Required. Name of the rule set.')
+@description('The type of the rule.')
+type ruleType = {
+  @description('Required. The name of the rule.')
   name: string
 
-  @description('Optional. Array of rules.')
-  rules: ruleType[]?
+  @description('Required. The order in which the rules are applied for the endpoint.')
+  order: int
+
+  @description('Optional. A list of actions that are executed when all the conditions of a rule are satisfied.')
+  actions: resourceInput<'Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15'>.properties.actions?
+
+  @description('Optional. A list of conditions that must be matched for the actions to be executed.')
+  conditions: resourceInput<'Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15'>.properties.conditions?
+
+  @description('Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
+  matchProcessingBehavior: 'Continue' | 'Stop' | null
 }

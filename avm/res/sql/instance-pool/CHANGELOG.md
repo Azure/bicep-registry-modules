@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Initial version
+- Updated ReadMe with AzAdvertizer reference
 
 ### Breaking Changes
 

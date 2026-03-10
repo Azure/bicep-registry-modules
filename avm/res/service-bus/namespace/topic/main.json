@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12054426509476980309"
+      "version": "0.41.2.15936",
+      "templateHash": "12247231423348414376"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -346,12 +346,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -580,18 +587,18 @@
         "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
       }
     },
-    "authorizationRules": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Authorization Rules for the Service Bus Topic."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
+      }
+    },
+    "authorizationRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Service Bus Topic."
       }
     },
     "roleAssignments": {
@@ -612,6 +619,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The subscriptions of the topic."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -635,17 +649,37 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.servicebus-namespacetopic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('namespaceName')]"
     },
     "topic": {
       "type": "Microsoft.ServiceBus/namespaces/topics",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
+      "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2024-01-01', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
       "dependsOn": [
         "namespace"
       ]
@@ -654,11 +688,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "topic"
@@ -671,7 +705,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -692,7 +726,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -719,8 +753,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "555281083108037724"
+              "version": "0.41.2.15936",
+              "templateHash": "17554074515170474710"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -760,7 +794,7 @@
           "resources": [
             {
               "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
@@ -802,7 +836,7 @@
         "count": "[length(coalesce(parameters('subscriptions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-subscription-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -872,8 +906,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10194470716819672897"
+              "version": "0.41.2.15936",
+              "templateHash": "13429996626122286039"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1255,18 +1289,18 @@
             "namespace::topic": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces/topics",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
             },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2022-10-01-preview",
+              "apiVersion": "2024-01-01",
               "name": "[parameters('namespaceName')]"
             },
             "subscription": {
               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
               "properties": {
                 "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
@@ -1291,7 +1325,7 @@
                 "count": "[length(coalesce(parameters('rules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1331,8 +1365,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "18396329421177385677"
+                      "version": "0.41.2.15936",
+                      "templateHash": "10852899782320525955"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -1589,24 +1623,24 @@
                     "namespace::topic::subscription": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
-                      "apiVersion": "2021-11-01",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
                     },
                     "namespace::topic": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces/topics",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
                     },
                     "namespace": {
                       "existing": true,
                       "type": "Microsoft.ServiceBus/namespaces",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[parameters('namespaceName')]"
                     },
                     "rule": {
                       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
-                      "apiVersion": "2022-10-01-preview",
+                      "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
                       "properties": {
                         "action": "[parameters('action')]",

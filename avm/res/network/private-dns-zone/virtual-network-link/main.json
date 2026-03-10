@@ -5,13 +5,20 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "725891200086243555"
+      "version": "0.41.2.15936",
+      "templateHash": "12602083370603562171"
     },
     "name": "Private DNS Zone Virtual Network Link",
     "description": "This module deploys a Private DNS Zone Virtual Network Link."
   },
   "parameters": {
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "privateDnsZoneName": {
       "type": "string",
       "metadata": {
@@ -34,10 +41,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "registrationEnabled": {
       "type": "bool",
@@ -61,6 +71,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.nw-privdnszonevnetlink.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "privateDnsZone": {
       "existing": true,
       "type": "Microsoft.Network/privateDnsZones",

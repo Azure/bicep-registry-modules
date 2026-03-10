@@ -2,6 +2,14 @@
 
 This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).
 
+You can reference the module as follows:
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -9,61 +17,62 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Authorization/roleAssignmentScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests) |
-| `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions) |
-| `Microsoft.Network/bastionHosts` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts) |
-| `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
-| `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
-| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
-| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
-| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
-| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
-| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
-| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
-| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
-| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
-| `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
-| `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections) |
-| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
-| `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
-| `Microsoft.Resources/tags` | [2025-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags) |
-| `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
-| `Microsoft.Storage/storageAccounts/blobServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices) |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers) |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables) |
-| `Microsoft.Subscription/aliases` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Subscription/2021-10-01/aliases) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Authorization/roleAssignmentScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignmentschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests)</li></ul> |
+| `Microsoft.Authorization/roleEligibilityScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleeligibilityschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
+| `Microsoft.Management/managementGroups/subscriptions` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/natGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_natgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/natGateways)</li></ul> |
+| `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
+| `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
+| `Microsoft.Network/privateDnsZones/A` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_a.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A)</li></ul> |
+| `Microsoft.Network/privateDnsZones/AAAA` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_aaaa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA)</li></ul> |
+| `Microsoft.Network/privateDnsZones/CNAME` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_cname.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME)</li></ul> |
+| `Microsoft.Network/privateDnsZones/MX` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_mx.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX)</li></ul> |
+| `Microsoft.Network/privateDnsZones/PTR` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_ptr.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR)</li></ul> |
+| `Microsoft.Network/privateDnsZones/SOA` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_soa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA)</li></ul> |
+| `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
+| `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
+| `Microsoft.Network/routeTables` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/routeTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
+| `Microsoft.Resources/resourceGroups` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/resourceGroups)</li></ul> |
+| `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables)</li></ul> |
+| `Microsoft.Subscription/aliases` | 2021-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.subscription_aliases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Subscription/2021-10-01/aliases)</li></ul> |
 
 ## Usage examples
 
@@ -77,16 +86,20 @@ The following section provides usage examples for the module, which were used to
 - [Deploy subscription with Bastion.](#example-2-deploy-subscription-with-bastion)
 - [Using only defaults.](#example-3-using-only-defaults)
 - [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-8-using-rbac-conditions)
-- [Using user-assigned managed identities.](#example-9-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-10-vwan-topology)
+- [Using IPAM pool for address allocation.](#example-5-using-ipam-pool-for-address-allocation)
+- [Hub and spoke topology with NAT gateway.](#example-6-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-7-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-8-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-9-using-rbac-conditions)
+- [Using standalone NSG deployment.](#example-10-using-standalone-nsg-deployment)
+- [Using user-assigned managed identities.](#example-11-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-12-vwan-topology)
 
 ### Example 1: _Multiple virtual networks._
 
 This instance deploys a subscription with a multiple virtual networks.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/additional-vnets]
 
 
 <details>
@@ -95,7 +108,6 @@ This instance deploys a subscription with a multiple virtual networks.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     additionalVirtualNetworks: [
       {
@@ -485,6 +497,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys a subscription with a bastion host.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/bastion]
+
 
 <details>
 
@@ -492,7 +506,6 @@ This instance deploys a subscription with a bastion host.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -674,6 +687,8 @@ param virtualNetworkSubnets = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -681,7 +696,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     subscriptionAliasEnabled: true
@@ -776,6 +790,8 @@ param subscriptionWorkload = 'Production'
 
 This instance deploys a subscription with a hub-spoke network topology.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hub-spoke]
+
 
 <details>
 
@@ -783,7 +799,6 @@ This instance deploys a subscription with a hub-spoke network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -1098,9 +1113,11 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 5: _Hub and spoke topology with NAT gateway._
+### Example 5: _Using IPAM pool for address allocation._
 
-This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
+This instance deploys the module with a virtual network that uses Azure Virtual Network Manager IPAM for automatic IP address allocation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipam]
 
 
 <details>
@@ -1109,7 +1126,265 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
+  params: {
+    deploymentScriptLocation: '<deploymentScriptLocation>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: 'ds-ssaipam'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '<ipamPoolResourceId>'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkIpamPoolNumberOfIpAddresses: '256'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '32'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet2'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<deploymentScriptLocation>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "ds-ssaipam"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "resourceProviders": {
+      "value": {
+        "Microsoft.Network": []
+      }
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "<ipamPoolResourceId>"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "value": "256"
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "32",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet2"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param deploymentScriptLocation = '<deploymentScriptLocation>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptName = 'ds-ssaipam'
+param deploymentScriptNetworkSecurityGroupName = '<deploymentScriptNetworkSecurityGroupName>'
+param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
+param resourceProviders = {
+  'Microsoft.Network': []
+}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '<ipamPoolResourceId>'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkIpamPoolNumberOfIpAddresses = '256'
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '32'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet2'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _Hub and spoke topology with NAT gateway._
+
+This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-gateway]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     resourceProviders: {
       'Microsoft.Network': []
@@ -1342,9 +1617,11 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 6: _Using PIM Active Role assignments._
+### Example 7: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-active-role-assignments]
 
 
 <details>
@@ -1353,7 +1630,6 @@ This instance deploys the module with PIM Active Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1538,9 +1814,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using PIM Eligible Role assignments._
+### Example 8: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pim-eligible-role-assignments]
 
 
 <details>
@@ -1549,7 +1827,6 @@ This instance deploys the module with PIM Eligible Role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     pimRoleAssignments: [
       {
@@ -1712,9 +1989,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 8: _Using RBAC conditions._
+### Example 9: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rbac-condition]
 
 
 <details>
@@ -1723,7 +2002,6 @@ This instance deploys the module with RBAC conditions for the role assignments.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -1881,9 +2159,11 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 9: _Using user-assigned managed identities._
+### Example 10: _Using standalone NSG deployment._
 
-This instance deploys the module with user-assigned managed identities.
+This instance deploys the module to test standalone NSG deployments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/standalone-nsg]
 
 
 <details>
@@ -1892,7 +2172,218 @@ This instance deploys the module with user-assigned managed identities.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
+  params: {
+    networkSecurityGroupResourceGroupName: '<networkSecurityGroupResourceGroupName>'
+    networkSecurityGroups: [
+      {
+        location: '<location>'
+        name: '<name>'
+        securityRules: [
+          {
+            name: 'Allow-HTTP-Inbound'
+            properties: {
+              access: 'Allow'
+              destinationAddressPrefix: '*'
+              destinationPortRange: '80'
+              direction: 'Inbound'
+              priority: 100
+              protocol: 'Tcp'
+              sourceAddressPrefix: '*'
+              sourcePortRange: '*'
+            }
+          }
+          {
+            name: 'Allow-HTTPS-Inbound'
+            properties: {
+              access: 'Allow'
+              destinationAddressPrefix: '*'
+              destinationPortRange: '443'
+              direction: 'Inbound'
+              priority: 110
+              protocol: 'Tcp'
+              sourceAddressPrefix: '*'
+              sourcePortRange: '*'
+            }
+          }
+        ]
+      }
+    ]
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "networkSecurityGroupResourceGroupName": {
+      "value": "<networkSecurityGroupResourceGroupName>"
+    },
+    "networkSecurityGroups": {
+      "value": [
+        {
+          "location": "<location>",
+          "name": "<name>",
+          "securityRules": [
+            {
+              "name": "Allow-HTTP-Inbound",
+              "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "80",
+                "direction": "Inbound",
+                "priority": 100,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+              }
+            },
+            {
+              "name": "Allow-HTTPS-Inbound",
+              "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "443",
+                "direction": "Inbound",
+                "priority": 110,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param networkSecurityGroupResourceGroupName = '<networkSecurityGroupResourceGroupName>'
+param networkSecurityGroups = [
+  {
+    location: '<location>'
+    name: '<name>'
+    securityRules: [
+      {
+        name: 'Allow-HTTP-Inbound'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '80'
+          direction: 'Inbound'
+          priority: 100
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'Allow-HTTPS-Inbound'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          direction: 'Inbound'
+          priority: 110
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+    ]
+  }
+]
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 11: _Using user-assigned managed identities._
+
+This instance deploys the module with user-assigned managed identities.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/user-assigned-identities]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     resourceProviders: {}
     roleAssignmentEnabled: true
@@ -2120,9 +2611,11 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 10: _Vwan topology._
+### Example 12: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vwan-spoke]
 
 
 <details>
@@ -2131,7 +2624,6 @@ This instance deploys a subscription with a vwan network topology.
 
 ```bicep
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
   params: {
     deploymentScriptLocation: '<deploymentScriptLocation>'
     deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
@@ -2352,17 +2844,19 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`. |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p> |
 | [`managementGroupAssociationDelayCount`](#parameter-managementgroupassociationdelaycount) | int | The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur. |
+| [`networkSecurityGroupResourceGroupName`](#parameter-networksecuritygroupresourcegroupname) | string | The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter. |
+| [`networkSecurityGroups`](#parameter-networksecuritygroups) | array | The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input. |
 | [`peerAllVirtualNetworks`](#parameter-peerallvirtualnetworks) | bool | Flag to do mesh peering of all virtual networks deployed into the new subscription. |
 | [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
-| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
+| [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p> |
 | [`roleAssignmentEnabled`](#parameter-roleassignmentenabled) | bool | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.<p> |
 | [`roleAssignments`](#parameter-roleassignments) | array | Supply an array of objects containing the details of the role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`routeTables`](#parameter-routetables) | array | The list of route tables to create. |
 | [`routeTablesResourceGroupName`](#parameter-routetablesresourcegroupname) | string | The name of the resource group to create the route tables in. |
 | [`subscriptionAliasEnabled`](#parameter-subscriptionaliasenabled) | bool | Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription''s ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription. |
-| [`subscriptionAliasName`](#parameter-subscriptionaliasname) | string | The name of the Subscription Alias, that will be created by this module.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
+| [`subscriptionAliasName`](#parameter-subscriptionaliasname) | string | The name of the Subscription Alias, that will be created by this module.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, and, `_`. The maximum length is 63 characters.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
 | [`subscriptionBillingScope`](#parameter-subscriptionbillingscope) | string | The Billing Scope for the new Subscription alias, that will be created by this module.<p><p>A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
-| [`subscriptionDisplayName`](#parameter-subscriptiondisplayname) | string | The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
+| [`subscriptionDisplayName`](#parameter-subscriptiondisplayname) | string | The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
 | [`subscriptionManagementGroupAssociationEnabled`](#parameter-subscriptionmanagementgroupassociationenabled) | bool | Whether to move the Subscription to the specified Management Group supplied in the parameter `subscriptionManagementGroupId`.<p> |
 | [`subscriptionManagementGroupId`](#parameter-subscriptionmanagementgroupid) | string | The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).<p><p>**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.<p> |
 | [`subscriptionOwnerId`](#parameter-subscriptionownerid) | string | The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.<p><p>> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**. |
@@ -2373,7 +2867,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`userAssignedIdentityResourceGroupName`](#parameter-userassignedidentityresourcegroupname) | string | The name of the resource group to create the user-assigned managed identities in. |
 | [`userAssignedManagedIdentities`](#parameter-userassignedmanagedidentities) | array | The list of user-assigned managed identities. |
 | [`vHubRoutingIntentEnabled`](#parameter-vhubroutingintentenabled) | bool | Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.<p> |
-| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
+| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p> |
 | [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
 | [`virtualNetworkDdosPlanResourceId`](#parameter-virtualnetworkddosplanresourceid) | string | The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p> |
 | [`virtualNetworkDeployBastion`](#parameter-virtualnetworkdeploybastion) | bool | Whether to deploy a Bastion host to the created virtual network. |
@@ -2381,6 +2875,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkDeployNatGateway`](#parameter-virtualnetworkdeploynatgateway) | bool | Whether to deploy a NAT gateway to the created virtual network. |
 | [`virtualNetworkDnsServers`](#parameter-virtualnetworkdnsservers) | array | The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.<p> |
 | [`virtualNetworkEnabled`](#parameter-virtualnetworkenabled) | bool | Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you also provide values for the following parameters at a minimum:<p><li>`virtualNetworkResourceGroupName`<li>`virtualNetworkResourceGroupLockEnabled`<li>`virtualNetworkLocation`<li>`virtualNetworkName`<li>`virtualNetworkAddressSpace`<p><p>> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.<p> |
+| [`virtualNetworkIpamPoolNumberOfIpAddresses`](#parameter-virtualnetworkipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p> |
 | [`virtualNetworkLocation`](#parameter-virtualnetworklocation) | string | The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.<p> |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.<p> |
 | [`virtualNetworkNatGatewayConfiguration`](#parameter-virtualnetworknatgatewayconfiguration) | object | The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway. |
@@ -2408,7 +2903,7 @@ A list of additional virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
+| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses. |
 | [`location`](#parameter-additionalvirtualnetworkslocation) | string | The location of the virtual network. |
 | [`name`](#parameter-additionalvirtualnetworksname) | string | The name of the virtual network resource. |
 | [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
@@ -2417,10 +2912,13 @@ A list of additional virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`alternativeHubVnetResourceId`](#parameter-additionalvirtualnetworksalternativehubvnetresourceid) | string | The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`. |
+| [`alternativeVwanHubResourceId`](#parameter-additionalvirtualnetworksalternativevwanhubresourceid) | string | The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`. |
 | [`ddosProtectionPlanResourceId`](#parameter-additionalvirtualnetworksddosprotectionplanresourceid) | string | The resource Id of the DDOS protection plan. |
 | [`deployBastion`](#parameter-additionalvirtualnetworksdeploybastion) | bool | The option to deploy Azure Bastion in the virtual network. |
 | [`deployNatGateway`](#parameter-additionalvirtualnetworksdeploynatgateway) | bool | Flag to deploy a NAT gateway. |
 | [`dnsServers`](#parameter-additionalvirtualnetworksdnsservers) | array | The list of DNS servers for the virtual network. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-additionalvirtualnetworksipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID. |
 | [`natGatewayConfiguration`](#parameter-additionalvirtualnetworksnatgatewayconfiguration) | object | The configuration for deploying a NAT gateway. |
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
@@ -2430,7 +2928,7 @@ A list of additional virtual networks to create.
 
 ### Parameter: `additionalVirtualNetworks.addressPrefixes`
 
-The address prefixes for the virtual network.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses.
 
 - Required: Yes
 - Type: array
@@ -2454,6 +2952,20 @@ The name of the virtual network resource.
 The name of the virtual network resource group.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.alternativeHubVnetResourceId`
+
+The resource ID of an alternative virtual network in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual network peering instead of whats provided in `hubNetworkResourceId`.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.alternativeVwanHubResourceId`
+
+The resource ID of an alternative virtual wan hub in the hub, opposed to what is defined in the parameter `hubNetworkResourceId`, to which the created virtual network will be peered/connected to via a virtual hub connection instead of whats provided in `hubNetworkResourceId`.
+
+- Required: No
 - Type: string
 
 ### Parameter: `additionalVirtualNetworks.ddosProtectionPlanResourceId`
@@ -2483,6 +2995,13 @@ The list of DNS servers for the virtual network.
 
 - Required: No
 - Type: array
+
+### Parameter: `additionalVirtualNetworks.ipamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `additionalVirtualNetworks.natGatewayConfiguration`
 
@@ -2628,6 +3147,7 @@ The subnets for the virtual network.
 | [`associateWithNatGateway`](#parameter-additionalvirtualnetworkssubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-additionalvirtualnetworkssubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-additionalvirtualnetworkssubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-additionalvirtualnetworkssubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-additionalvirtualnetworkssubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -2685,6 +3205,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `additionalVirtualNetworks.subnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `additionalVirtualNetworks.subnets.natGatewayResourceId`
 
@@ -3081,6 +3608,237 @@ The number of blank ARM deployments to create sequentially to introduce a delay 
 - Required: No
 - Type: int
 - Default: `15`
+
+### Parameter: `networkSecurityGroupResourceGroupName`
+
+The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `networkSecurityGroups`
+
+The list of network security groups to create that are standalone from the NSGs that can be created as part of the `virtualNetworkSubnets` parameter input.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-networksecuritygroupslocation) | string | The location of the network security group. |
+| [`name`](#parameter-networksecuritygroupsname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-networksecuritygroupssecurityrules) | array | The security rules of the network security group. |
+| [`tags`](#parameter-networksecuritygroupstags) | object | The tags of the network security group. |
+
+### Parameter: `networkSecurityGroups.location`
+
+The location of the network security group.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.name`
+
+The name of the network security group.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules`
+
+The security rules of the network security group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-networksecuritygroupssecurityrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-networksecuritygroupssecurityrulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `networkSecurityGroups.securityRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-networksecuritygroupssecurityrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-networksecuritygroupssecurityrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-networksecuritygroupssecurityrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-networksecuritygroupssecurityrulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-networksecuritygroupssecurityrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-networksecuritygroupssecurityrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-networksecuritygroupssecurityrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-networksecuritygroupssecurityrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-networksecuritygroupssecurityrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-networksecuritygroupssecurityrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-networksecuritygroupssecurityrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `networkSecurityGroups.securityRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `networkSecurityGroups.securityRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `networkSecurityGroups.securityRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkSecurityGroups.securityRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `networkSecurityGroups.tags`
+
+The tags of the network security group.
+
+- Required: No
+- Type: object
 
 ### Parameter: `peerAllVirtualNetworks`
 
@@ -3551,7 +4309,7 @@ The ticket system name for the role eligibility assignment.
 
 ### Parameter: `resourceProviders`
 
-An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p>
+An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.<p>
 
 - Required: No
 - Type: object
@@ -3602,8 +4360,6 @@ An object of resource providers and resource providers features to register. If 
       'Microsoft.Management': []
       'Microsoft.Maps': []
       'Microsoft.MarketplaceOrdering': []
-      'Microsoft.Media': []
-      'Microsoft.MixedReality': []
       'Microsoft.Network': []
       'Microsoft.NotificationHubs': []
       'Microsoft.OperationalInsights': []
@@ -4054,7 +4810,7 @@ Whether to create a new Subscription using the Subscription Alias resource. If `
 
 ### Parameter: `subscriptionAliasName`
 
-The name of the Subscription Alias, that will be created by this module.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p>
+The name of the Subscription Alias, that will be created by this module.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, and, `_`. The maximum length is 63 characters.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p>
 
 - Required: No
 - Type: string
@@ -4070,7 +4826,7 @@ The Billing Scope for the new Subscription alias, that will be created by this m
 
 ### Parameter: `subscriptionDisplayName`
 
-The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required for a reason.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p>
+The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> The value for this parameter and the parameter named `subscriptionAliasName` are usually set to the same value for simplicity. But they can be different if required.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p>
 
 - Required: No
 - Type: string
@@ -4499,7 +5255,7 @@ Indicates whether routing intent is enabled on the Virtual Hub within the Virtua
 
 ### Parameter: `virtualNetworkAddressSpace`
 
-The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p>
 
 - Required: No
 - Type: array
@@ -4636,6 +5392,13 @@ Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you als
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `virtualNetworkIpamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p>
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualNetworkLocation`
 
@@ -4814,6 +5577,7 @@ The subnets of the Virtual Network that will be created by this module.
 | [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-virtualnetworksubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -4871,6 +5635,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
 
@@ -5224,6 +5995,7 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 | `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants. |
 | `subscriptionId` | string | The Subscription ID that has been created or provided. |
 | `subscriptionResourceId` | string | The Subscription Resource ID that has been created or provided. |
+| `virtualWanHubConnectionName` | string | The name of the Virtual WAN Hub Connection. |
 
 ## Cross-referenced modules
 
@@ -5231,19 +6003,26 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
+| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
-| `br/public:avm/res/network/nat-gateway:1.2.2` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
-| `br/public:avm/res/network/route-table:0.4.1` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.20.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.3` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
+| `br/public:avm/res/network/nat-gateway:1.4.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
+| `br/public:avm/res/network/route-table:0.5.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.2` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.3` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
+
+## Notes
+
+- The `Microsoft.Subscription/aliases/write` action is required at the `/` (tenant) scope as this is where the API operates, as per [Microsoft.Subscription aliases template reference documentation](https://learn.microsoft.com/azure/templates/microsoft.subscription/aliases?pivots=deployment-language-bicep#bicep-resource-definition)
+  - You may need to elevate to User Access Administrator role to be able to assign the relevant role to the identity you wish to be able to create the subscription at the `/` (tenant) scope, as per [Elevate access to manage all Azure subscriptions and management groups](https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin)
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

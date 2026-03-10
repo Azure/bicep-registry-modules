@@ -10,9 +10,9 @@ This template deploys Forwarding Rule in a Dns Forwarding Ruleset.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Network/dnsForwardingRulesets/forwardingRules` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/forwardingRules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Network/dnsForwardingRulesets/forwardingRules` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnsforwardingrulesets_forwardingrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsForwardingRulesets/forwardingRules)</li></ul> |
 
 ## Parameters
 

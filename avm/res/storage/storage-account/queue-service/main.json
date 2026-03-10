@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12471258242431737986"
+      "version": "0.41.2.15936",
+      "templateHash": "9644461291744477521"
     },
     "name": "Storage Account Queue Services",
     "description": "This module deploys a Storage Account Queue Service."
@@ -70,6 +70,41 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a cors rule."
+      }
+    },
+    "queueType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the queue."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+            },
+            "description": "Optional. Metadata to set on the queue."
+          },
+          "nullable": true
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a queue."
       }
     },
     "diagnosticSettingFullType": {
@@ -190,7 +225,82 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -205,7 +315,10 @@
     },
     "queues": {
       "type": "array",
-      "nullable": true,
+      "items": {
+        "$ref": "#/definitions/queueType"
+      },
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Queues to create."
       }
@@ -232,18 +345,19 @@
     }
   },
   "variables": {
-    "name": "default"
+    "name": "default",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('storageAccountName')]"
     },
     "queueServices": {
       "type": "Microsoft.Storage/storageAccounts/queueServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {
         "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
@@ -256,7 +370,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}', parameters('storageAccountName'), variables('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccountName'), variables('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
       "properties": {
         "copy": [
@@ -296,7 +410,7 @@
         "count": "[length(coalesce(parameters('queues'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Queue-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -315,6 +429,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -324,8 +441,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4374879850096827769"
+              "version": "0.41.2.15936",
+              "templateHash": "12812824360066955039"
             },
             "name": "Storage Account Queues",
             "description": "This module deploys a Storage Account Queue."
@@ -402,7 +519,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -440,6 +557,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -470,18 +594,38 @@
             "storageAccount::queueServices": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/queueServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.storage-queue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "queue": {
               "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
               "properties": {
                 "metadata": "[parameters('metadata')]"
@@ -494,7 +638,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}/queues/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -541,21 +685,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the deployed file share service."
+        "description": "The name of the deployed queue service."
       },
       "value": "[variables('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the deployed file share service."
+        "description": "The resource ID of the deployed queue service."
       },
       "value": "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccountName'), variables('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed file share service."
+        "description": "The resource group of the deployed queue service."
       },
       "value": "[resourceGroup().name]"
     }

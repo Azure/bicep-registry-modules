@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "7479174639466514472"
+      "version": "0.41.2.15936",
+      "templateHash": "17749215322060510151"
     },
     "name": "Eventgrid Namespace Topics",
     "description": "This module deploys an Eventgrid Namespace Topic."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -224,11 +231,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.EventGrid/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "topic"
@@ -241,7 +248,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.EventGrid/namespaces/topics', parameters('namespaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.EventGrid/namespaces/topics', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -262,7 +269,7 @@
         "count": "[length(coalesce(parameters('eventSubscriptions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Topic-EventSubscription-{1}', uniqueString(deployment().name, parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -299,8 +306,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9175880743294904029"
+              "version": "0.41.2.15936",
+              "templateHash": "11043765954159507396"
             },
             "name": "Event Subscriptions",
             "description": "This module deploys an Event Subscription."
@@ -487,7 +494,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.EventGrid/namespaces/{0}/topics/{1}/eventSubscriptions/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.EventGrid/namespaces/topics/eventSubscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

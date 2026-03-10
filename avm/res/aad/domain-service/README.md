@@ -2,6 +2,14 @@
 
 This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
+You can reference the module as follows:
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,12 +22,12 @@ This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.AAD/domainServices` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2022-12-01/domainServices) |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.AAD/domainServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.aad_domainservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AAD/2025-06-01/domainServices)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
 
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
-  name: 'domainServiceDeployment'
   params: {
     // Required parameters
     domainName: 'onmicrosoft.com'
@@ -75,15 +84,12 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     lock: {
       kind: 'None'
       name: 'myCustomLockName'
+      notes: 'This is a custom lock for the deployment'
     }
     name: 'aaddswaf001'
     pfxCertificate: '<pfxCertificate>'
     pfxCertificatePassword: '<pfxCertificatePassword>'
     replicaSets: [
-      {
-        location: '<location>'
-        subnetId: '<subnetId>'
-      }
       {
         location: '<location>'
         subnetId: '<subnetId>'
@@ -153,7 +159,8 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     "lock": {
       "value": {
         "kind": "None",
-        "name": "myCustomLockName"
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock for the deployment"
       }
     },
     "name": {
@@ -167,10 +174,6 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
     },
     "replicaSets": {
       "value": [
-        {
-          "location": "<location>",
-          "subnetId": "<subnetId>"
-        },
         {
           "location": "<location>",
           "subnetId": "<subnetId>"
@@ -229,15 +232,12 @@ param location = '<location>'
 param lock = {
   kind: 'None'
   name: 'myCustomLockName'
+  notes: 'This is a custom lock for the deployment'
 }
 param name = 'aaddswaf001'
 param pfxCertificate = '<pfxCertificate>'
 param pfxCertificatePassword = '<pfxCertificatePassword>'
 param replicaSets = [
-  {
-    location: '<location>'
-    subnetId: '<subnetId>'
-  }
   {
     location: '<location>'
     subnetId: '<subnetId>'
@@ -292,9 +292,10 @@ param tags = {
 | [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure AD DS Services. For replica set support, this defaults to Enterprise. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
+| [`syncOnPremSamAccountName`](#parameter-synconpremsamaccountname) | string | When enabled, the samAccountName attribute in Entra Domain Services is synchronized from the onPremisesSamAccountName attribute in Entra ID. |
 | [`syncScope`](#parameter-syncscope) | string | All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tlsV1`](#parameter-tlsv1) | string | The value is to enable clients making request using TLSv1. |
+| [`tlsV1`](#parameter-tlsv1) | string | TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025. |
 
 ### Parameter: `domainName`
 
@@ -314,7 +315,6 @@ The certificate required to configure Secure LDAP. Should be a base64encoded rep
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `pfxCertificatePassword`
 
@@ -322,7 +322,6 @@ The password to decrypt the provided Secure LDAP certificate PFX file. Required 
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `additionalRecipients`
 
@@ -602,6 +601,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -621,6 +621,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -856,6 +863,20 @@ The value is to enable on-premises users to authenticate against managed domain.
   ]
   ```
 
+### Parameter: `syncOnPremSamAccountName`
+
+When enabled, the samAccountName attribute in Entra Domain Services is synchronized from the onPremisesSamAccountName attribute in Entra ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `syncScope`
 
 All users in AAD are synced to AAD DS domain or only users actively syncing in the cloud. Defaults to All.
@@ -887,7 +908,7 @@ Tags of the resource.
 
 ### Parameter: `tlsV1`
 
-The value is to enable clients making request using TLSv1.
+TLS 1.0 / 1.1 for Azure Domain Services has been deprecated on August 31, 2025.
 
 - Required: No
 - Type: string
@@ -896,7 +917,6 @@ The value is to enable clients making request using TLSv1.
   ```Bicep
   [
     'Disabled'
-    'Enabled'
   ]
   ```
 
@@ -915,7 +935,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -1016,4 +1036,4 @@ $pfxCertificate = [System.Convert]::ToBase64String($rawCertByteStream)
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

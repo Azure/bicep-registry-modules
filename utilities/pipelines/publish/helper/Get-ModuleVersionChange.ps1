@@ -10,6 +10,9 @@ If the version did not change, the function will return null.
 .PARAMETER VersionFilePath
 Mandatory. Path to the module version.json file.
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 # Note: "version" value is "0.1" and was not updated in the last commit
 Get-ModuleVersionChange -VersionFilePath 'C:\avm\res\key-vault\vault\version.json'
@@ -31,11 +34,14 @@ function Get-ModuleVersionChange {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $VersionFilePath
+        [string] $VersionFilePath,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.Parent.Parent.FullName
     )
 
-    # The diff will be empty, if the version.json file was not updated
-    $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
+    $diff = Get-GitDiff -PathFilter $VersionFilePath -Verbose | Out-String
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {
         $oldVersion = (New-Object System.Version($matches[1], $matches[2]))

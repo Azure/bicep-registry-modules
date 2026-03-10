@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "110739304231430782"
+      "version": "0.41.2.15936",
+      "templateHash": "1912358051314717943"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace."
@@ -33,12 +33,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -113,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -261,11 +268,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.HealthcareApis/workspaces', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "workspace"
@@ -278,7 +285,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.HealthcareApis/workspaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.HealthcareApis/workspaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -299,7 +306,7 @@
         "count": "[length(coalesce(parameters('fhirservices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Health-FHIR-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -396,8 +403,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8299999515410645137"
+              "version": "0.41.2.15936",
+              "templateHash": "18430990998888173673"
             },
             "name": "Healthcare API Workspace FHIR Services",
             "description": "This module deploys a Healthcare API Workspace FHIR Service."
@@ -546,12 +553,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -965,11 +979,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/fhirservices/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "fhir"
@@ -982,7 +996,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/fhirservices/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -1023,7 +1037,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/fhirservices/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.HealthcareApis/workspaces/fhirservices', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1096,7 +1110,7 @@
         "count": "[length(coalesce(parameters('dicomservices'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Health-DICOM-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1151,8 +1165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6408250113411138854"
+              "version": "0.41.2.15936",
+              "templateHash": "15054704158485708059"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service."
@@ -1301,12 +1315,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -1479,11 +1500,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/dicomservices/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/dicomservices', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "dicom"
@@ -1496,7 +1517,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/dicomservices/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/dicomservices', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -1581,7 +1602,7 @@
         "count": "[length(coalesce(parameters('iotconnectors'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Health-IOMT-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1633,8 +1654,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "18393606577108885160"
+              "version": "0.41.2.15936",
+              "templateHash": "10416241292583060852"
             },
             "name": "Healthcare API Workspace IoT Connectors",
             "description": "This module deploys a Healthcare API Workspace IoT Connector."
@@ -1783,12 +1804,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -1944,11 +1972,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/iotconnectors/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/iotconnectors', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "iotConnector"
@@ -1961,7 +1989,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.HealthcareApis/workspaces/{0}/iotconnectors/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.HealthcareApis/workspaces/iotconnectors', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -1998,7 +2026,7 @@
             "fhir_destination": {
               "condition": "[not(empty(parameters('fhirdestination')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-FhirDestination', deployment().name)]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2034,8 +2062,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2699016435767184247"
+                      "version": "0.41.2.15936",
+                      "templateHash": "16900810739814604113"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
                     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."

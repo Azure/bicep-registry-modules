@@ -33,7 +33,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -61,10 +61,14 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       availabilityZone: 1
-      highAvailability: 'ZoneRedundant'
+      highAvailability: 'Disabled'
       highAvailabilityZone: 2
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      authConfig: {
+        activeDirectoryAuth: 'Disabled'
+        passwordAuth: 'Enabled'
+      }
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Disabled'
@@ -77,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
+        systemAssigned: true
       }
       serverThreatProtection: 'Enabled'
       autoGrow: 'Enabled'

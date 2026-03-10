@@ -43,20 +43,38 @@ param applicationInsightResourceId string?
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
-      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+      AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount!.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
     }
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? {
           AzureWebJobsStorage__accountName: storageAccount.name
-          AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob
-          AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue
-          AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table
+          AzureWebJobsStorage__blobServiceUri: storageAccount!.properties.primaryEndpoints.blob
+          AzureWebJobsStorage__queueServiceUri: storageAccount!.properties.primaryEndpoints.queue
+          AzureWebJobsStorage__tableServiceUri: storageAccount!.properties.primaryEndpoints.table
         }
       : {}
 
 var appInsightsValues = !empty(applicationInsightResourceId)
   ? {
-      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+      APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights!.properties.ConnectionString
+      ...(!contains(properties, 'ApplicationInsightsAgent_EXTENSION_VERSION')
+        ? {
+            ApplicationInsightsAgent_EXTENSION_VERSION: contains(
+                [
+                  'functionapp,linux' // function app linux os
+                  'functionapp,workflowapp,linux' // logic app docker container
+                  'functionapp,linux,container' // function app linux container
+                  'functionapp,linux,container,azurecontainerapps' // function app linux container azure container apps
+                  'app,linux' // linux web app
+                  'linux,api' // linux api app
+                  'app,linux,container' // linux container app
+                ],
+                app::slot.kind
+              )
+              ? '~3'
+              : '~2'
+          }
+        : {})
     }
   : {}
 
@@ -67,12 +85,12 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   scope: resourceGroup(split(applicationInsightResourceId!, '/')[2], split(applicationInsightResourceId!, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split(storageAccountResourceId!, '/'))
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource app 'Microsoft.Web/sites@2023-12-01' existing = {
+resource app 'Microsoft.Web/sites@2025-03-01' existing = {
   name: appName
 
   resource slot 'slots' existing = {
@@ -80,7 +98,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   }
 }
 
-resource config 'Microsoft.Web/sites/slots/config@2024-04-01' = {
+resource config 'Microsoft.Web/sites/slots/config@2025-03-01' = {
   parent: app::slot
   #disable-next-line BCP225
   name: name

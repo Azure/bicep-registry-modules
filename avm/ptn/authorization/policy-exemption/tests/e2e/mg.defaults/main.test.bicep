@@ -19,12 +19,12 @@ param resourceLocation string = deployment().location
 // Test Execution //
 // ============== //
 
-resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2025-01-01' existing = {
+resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2025-03-01' existing = {
   name: '06a78e20-9358-41c9-923c-fb736d382a4d'
   scope: tenant()
 }
 
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2024-04-01' = {
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01' = {
   name: 'audit-vm-managed-disks'
   scope: managementGroup()
   properties: {

@@ -12,9 +12,9 @@ Lab virtual machines must be deployed into a virtual network. This resource type
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevTestLab/labs/virtualnetworks` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/virtualnetworks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevTestLab/labs/virtualnetworks` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/virtualnetworks)</li></ul> |
 
 ## Parameters
 

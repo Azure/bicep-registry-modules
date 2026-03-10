@@ -10,9 +10,9 @@ This module deploys an Event Hub Namespace Event Hub Authorization Rule.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_eventhubs_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules)</li></ul> |
 
 ## Parameters
 

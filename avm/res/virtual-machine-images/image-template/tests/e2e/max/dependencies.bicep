@@ -17,10 +17,13 @@ param deploymentScriptManagedIdentityName string
 param virtualNetworkName string
 
 @description('Optional. The name of the Image Virtual Network Subnet to create.')
-param imageSubnetName string = 'imageSubnet'
+param vmSubnetName string = 'imageSubnet'
 
 @description('Optional. The name of the Deployment Script Virtual Network Subnet to create.')
 param deploymentScriptSubnetName string = 'deploymentScriptSubnet'
+
+@description('Optional. The name of the Deployment Script Virtual Network Subnet to create.')
+param imageContainerInstanceSubnetName string = 'containerSubnet'
 
 @description('Required. The name of the Assets Storage Account to create.')
 param assetStorageAccountkName string
@@ -31,12 +34,12 @@ param deploymentScriptStorageAccountkName string
 @description('Required. The name of the Deployment Script used to upload files to the Assets Storage Account.')
 param storageDeploymentScriptName string
 
-resource imageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource imageManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: imageManagedIdentityName
   location: location
 }
 
-resource deploymentScriptManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource deploymentScriptManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: deploymentScriptManagedIdentityName
   location: location
 }
@@ -66,12 +69,12 @@ resource storageBlobDataContributorRole 'Microsoft.Authorization/roleDefinitions
 }
 
 // Resources
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
   name: galleryName
   location: location
   properties: {}
 
-  resource imageDefinition 'images@2022-03-03' = {
+  resource imageDefinition 'images@2024-03-03' = {
     name: sigImageDefinitionName
     location: location
     properties: {
@@ -98,7 +101,7 @@ resource gallery 'Microsoft.Compute/galleries@2022-03-03' = {
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -109,7 +112,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: imageSubnetName
+        name: vmSubnetName
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
           privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
@@ -139,11 +142,26 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
           ]
         }
       }
+      {
+        name: imageContainerInstanceSubnetName
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+          privateLinkServiceNetworkPolicies: 'Disabled' // Required if using Azure Image Builder with existing VNET
+          delegations: [
+            {
+              name: 'Microsoft.ContainerInstance/containerGroups'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
+        }
+      }
     ]
   }
 }
 
-resource assetsStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource assetsStorageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: assetStorageAccountkName
   location: location
   sku: {
@@ -155,11 +173,11 @@ resource assetsStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     allowSharedKeyAccess: false
   }
 
-  resource blobService 'blobServices@2023-01-01' = {
+  resource blobService 'blobServices@2024-01-01' = {
     name: 'default'
     properties: {}
 
-    resource container 'containers@2023-01-01' = {
+    resource container 'containers@2024-01-01' = {
       name: 'assets'
       properties: {
         publicAccess: 'None'
@@ -214,7 +232,7 @@ resource storageReaderRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' 
   }
 }
 
-resource dsStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource dsStorageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: deploymentScriptStorageAccountkName
   location: location
   sku: {
@@ -315,7 +333,10 @@ output managedIdentityPrincipalId string = imageManagedIdentity.properties.princ
 output sigImageDefinitionId string = gallery::imageDefinition.id
 
 @description('The subnet resource id of the defaultSubnet of the created Virtual Network.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+output vmSubnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The subnet resource id of the defaultSubnet of the created Virtual Network.')
+output containerSubnetResourceId string = virtualNetwork.properties.subnets[2].id
 
 @description('The blob endpoint of the created Assets Storage Account.')
 output assetsStorageAccountNameBlobEndpoint string = assetsStorageAccount.properties.primaryEndpoints.blob

@@ -137,7 +137,7 @@ function Set-AvmGitHubIssueForWorkflow {
             # --------------------------
             $failedRunText = 'Failed run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
 
-            if ($issues.title -notContains $issueName) {
+            if ($issues.title -notcontains $issueName) {
                 # Handle non-existend issues for failed runs in main
                 # --------------------------------------------------
                 # Logic ahead
@@ -160,7 +160,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
-                $workflowRun.name -notMatch 'avm.(?:res|ptn|utl)'
+                $workflowRun.name -notmatch 'avm.(?:res|ptn|utl)'
                 switch ($matches[0]) {
                     'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
                     'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
@@ -175,7 +175,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 if ($null -eq $module) {
                     # Non resource module. Could be platform workflow
                     if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                        $null = Add-GitHubIssueToProject -Repo $repo -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
+                        $null = Add-GitHubIssueToProject -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
                     }
                     $platformIssueComment = @'
 > [!IMPORTANT]
@@ -195,7 +195,7 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                    $null = Add-GitHubIssueToProject -Repo $repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+                    $null = Add-GitHubIssueToProject -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 # Handle comments & ownership
@@ -226,8 +226,7 @@ function Set-AvmGitHubIssueForWorkflow {
                             $userCommentUrl = gh issue comment $issueUrl --body $ownerAssignmentFailedComment --repo $repo
                         }
                         Write-Verbose ('💬 Commented issue {0} ({1}) as the automation was unable to auto-assign the module owner. ({2})' -f $issueUrl, $issueName, $userCommentUrl) -Verbose
-                    }
-                    else {
+                    } else {
                         Write-Verbose ('👋 Assigned owner [@{0}] to issue {1} ({2})' -f $module.PrimaryModuleOwnerGHHandle, $issueUrl, $issueName) -Verbose
                     }
                 }
@@ -238,8 +237,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its module''s latest run in the main branch failed. ({2})' -f $issueUrl, $issueName, $commentUrl) -Verbose
 
                 $issuesCreated++
-            }
-            else {
+            } else {
                 # Handle existing issues for failed runs in main
                 # ----------------------------------------------
                 # If an issue does already exist, add a comment to it
@@ -281,8 +279,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its lastest run in the main branch failed. ({2})' -f $issueToComment.html_url, $issueToComment.title, ($WhatIfPreference ? '<WhatIf-Id>' : $commentUrl)) -Verbose
                 $issuesCommented++
             }
-        }
-        else {
+        } else {
             # Handle successful runs in main
             # ------------------------------
             # Fetch and close all issues that match the issue name and match the successful run

@@ -10,9 +10,9 @@ This module deploys an API Management Service API Operation Policy.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ApiManagement/service/apis/operations/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/operations/policies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ApiManagement/service/apis/operations/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations/policies)</li></ul> |
 
 ## Parameters
 
@@ -20,8 +20,6 @@ This module deploys an API Management Service API Operation Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-format) | string | Format of the policyContent. |
-| [`name`](#parameter-name) | string | The name of the policy. |
 | [`value`](#parameter-value) | string | Contents of the Policy as defined by the format. |
 
 **Conditional parameters**
@@ -32,28 +30,12 @@ This module deploys an API Management Service API Operation Policy.
 | [`apiName`](#parameter-apiname) | string | The name of the parent API. Required if the template is used in a standalone deployment. |
 | [`operationName`](#parameter-operationname) | string | The name of the parent operation. Required if the template is used in a standalone deployment. |
 
-### Parameter: `format`
+**Optional parameters**
 
-Format of the policyContent.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'rawxml'
-    'rawxml-link'
-    'xml'
-    'xml-link'
-  ]
-  ```
-
-### Parameter: `name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-format) | string | Format of the policyContent. |
+| [`name`](#parameter-name) | string | The name of the policy. |
 
 ### Parameter: `value`
 
@@ -82,6 +64,31 @@ The name of the parent operation. Required if the template is used in a standalo
 
 - Required: Yes
 - Type: string
+
+### Parameter: `format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Default: `'xml'`
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
+- Default: `'policy'`
 
 ## Outputs
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "10108866543013698651"
+      "version": "0.41.2.15936",
+      "templateHash": "3916292453894614868"
     },
     "name": "Relay Namespace Network Rules Sets",
     "description": "This module deploys a Relay Namespace Network Rule Set."

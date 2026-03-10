@@ -297,7 +297,7 @@ type privateEndpointSingleServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/privateEndpoints@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
@@ -353,7 +353,7 @@ type privateEndpointMultiServiceType = {
   roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Network/privateEndpoints@2024-07-01'>.tags?
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
@@ -377,6 +377,16 @@ type customerManagedKeyType = {
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
+}
+
+@export()
+@description('An AVM-aligned type for a customer-managed key. To be used if only the key vault & key may be specified.')
+type customerManagedKeyAndVaultOnlyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
 }
 
 @export()

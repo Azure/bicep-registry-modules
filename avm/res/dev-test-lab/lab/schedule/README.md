@@ -12,9 +12,9 @@ Lab schedules are used to modify the settings for auto-shutdown, auto-start for 
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DevTestLab/labs/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DevTestLab/labs/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_labs_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/labs/schedules)</li></ul> |
 
 ## Parameters
 

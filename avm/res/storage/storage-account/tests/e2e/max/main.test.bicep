@@ -250,7 +250,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            allowProtectedAppendWrites: false
           }
         ]
         automaticSnapshotPolicyEnabled: true
@@ -258,6 +257,8 @@ module testDeployment '../../../main.bicep' = [
         containerDeleteRetentionPolicyDays: 10
         deleteRetentionPolicyEnabled: true
         deleteRetentionPolicyDays: 9
+        isVersioningEnabled: false // cannot be true when hierarchical namespace is enabled
+        versionDeletePolicyDays: 3
         corsRules: [
           {
             allowedHeaders: [

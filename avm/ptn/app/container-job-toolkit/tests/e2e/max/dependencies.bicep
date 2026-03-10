@@ -26,17 +26,17 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: userIdentityName
   location: location
 }
 
-resource dnsZoneKeyVault 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource dnsZoneKeyVault 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.vaultcore.azure.net'
   location: 'global'
 }
 
-resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azurecr.io'
   location: 'global'
 }

@@ -5,7 +5,7 @@ targetScope = 'managementGroup'
 param subscriptionDisplayName string
 
 @maxLength(63)
-@description('The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, -, _ and space. The maximum length is 63 characters.')
+@description('The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, -, _. The maximum length is 63 characters.')
 param subscriptionAliasName string
 
 @description('The billing scope for the new subscription alias. A valid billing scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.')

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -74,6 +74,20 @@ module testDeployment '../../../main.bicep' = [
               1
               2
               3
+            ]
+            diagnosticSettings: [
+              {
+                eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+                eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+                name: 'customSetting'
+                storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+                workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+              }
             ]
           }
           bastionHost: {

@@ -2,6 +2,14 @@
 
 This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 
+You can reference the module as follows:
+```bicep
+module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,13 +21,14 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/clusters` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-04-01/clusters)</li></ul> |
+| `Microsoft.AzureStackHCI/edgeDevices` | 2024-02-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-02-15-preview/edgeDevices)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2023-01-31 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +54,6 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 ```bicep
 module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     deploymentSettings: {
@@ -393,6 +403,8 @@ param servicePrincipalSecret = '<servicePrincipalSecret>'
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -400,7 +412,6 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 ```bicep
 module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     deploymentSettings: {
@@ -789,7 +800,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`hciResourceProviderObjectId`](#parameter-hciresourceproviderobjectid) | securestring | The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription. |
-| [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
+| [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure. |
 
 **Conditional parameters**
 
@@ -808,6 +819,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
 | [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
+| [`clusterADName`](#parameter-clusteradname) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name. |
 | [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
 | [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
@@ -1364,7 +1376,7 @@ The service principal object ID of the Azure Stack HCI Resource Provider in this
 
 ### Parameter: `name`
 
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
+The name of the Azure Stack HCI cluster - this will be the name of your cluster in Azure.
 
 - Required: Yes
 - Type: string
@@ -1425,6 +1437,13 @@ Tags of azure stack LCM user credential.
 
 - Required: No
 - Type: object
+
+### Parameter: `clusterADName`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `defaultARBApplicationContentType`
 
@@ -1715,4 +1734,4 @@ To find the correct service principal for role assignment:
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

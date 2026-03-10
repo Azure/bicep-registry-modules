@@ -11,10 +11,6 @@ param deploymentSettings deploymentSettingsType
 @description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
 param useSharedKeyVault bool = true
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
-@secure()
-param hciResourceProviderObjectId string
-
 @description('Optional. The intended operation for a cluster.')
 @allowed([
   'ClusterProvisioning'
@@ -23,6 +19,7 @@ param hciResourceProviderObjectId string
 param operationType string = 'ClusterProvisioning'
 
 param clusterName string
+param clusterADName string
 param cloudId string
 
 param needArbSecret bool
@@ -37,6 +34,7 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
     params: {
       cloudId: useSharedKeyVault ? cloudId : null
       clusterName: clusterName
+      clusterADName: clusterADName
       operationType: operationType
       deploymentMode: deploymentOperation
       clusterNodeNames: deploymentSettings!.clusterNodeNames
@@ -78,7 +76,6 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
       storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
-      hciResourceProviderObjectId: hciResourceProviderObjectId
       needArbSecret: needArbSecret
     }
   }

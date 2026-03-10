@@ -101,8 +101,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db1'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'
@@ -115,8 +115,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db2'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Automatic'
@@ -130,8 +130,8 @@ module testDeployment '../../../main.bicep' = [
           databases: [
             '${namePrefix}-${serviceShort}-db3'
           ]
-          partnerServers: [
-            nestedDependencies.outputs.secondaryServerName
+          partnerServerResourceIds: [
+            nestedDependencies.outputs.secondaryServerResourceId
           ]
           readWriteEndpoint: {
             failoverPolicy: 'Manual'

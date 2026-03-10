@@ -1,6 +1,5 @@
 metadata name = 'Security Insights Data Connectors'
 metadata description = 'This module deploys a Security Insights Data Connector.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource ID of the Log Analytics workspace.')
 param workspaceResourceId string

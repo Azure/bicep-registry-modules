@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
         skuName: 'Standard'
         skuTier: 'Regional'
       }
-      zones: []
+      availabilityZones: []
     }
   }
 ]

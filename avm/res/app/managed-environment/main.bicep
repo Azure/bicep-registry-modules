@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -25,6 +25,18 @@ param enableTelemetry bool = true
 @secure()
 param appInsightsConnectionString string = ''
 
+@description('Optional. The configuration of Dapr component.')
+param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.daprConfiguration?
+
+@description('Optional. Ingress configuration for the Managed Environment.')
+param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.ingressConfiguration?
+
+@description('Optional. The configuration of Keda component.')
+param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.kedaConfiguration?
+
+@description('Optional. Peer authentication settings for the Managed Environment.')
+param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.peerAuthentication?
+
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
 param daprAIConnectionString string = ''
@@ -37,9 +49,9 @@ param daprAIInstrumentationKey string = ''
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetResourceId string = ''
+param infrastructureSubnetResourceId string?
 
-@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
 
 @description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.')
@@ -67,20 +79,20 @@ param certificatePassword string = ''
 
 @description('Optional. Certificate to use for the custom domain. PFX or PEM.')
 @secure()
-param certificateValue string = ''
+param certificateValue string?
 
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Open Telemetry configuration.')
-param openTelemetryConfiguration object = {}
+param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
 
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param workloadProfiles array = []
+param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.workloadProfiles?
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
@@ -103,8 +115,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -153,7 +165,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableT
   }
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
+  name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/'))!
+  scope: resourceGroup(
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/')[2],
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/')[4]
+  )
+}
+
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -162,12 +182,28 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: appLogsConfiguration
+    daprConfiguration: daprConfiguration
+    ingressConfiguration: ingressConfiguration
+    kedaConfiguration: kedaConfiguration
+    peerAuthentication: peerAuthentication
+    appLogsConfiguration: !empty(appLogsConfiguration)
+      ? {
+          destination: appLogsConfiguration!.destination
+          ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
+            ? {
+                logAnalyticsConfiguration: {
+                  customerId: logAnalyticsWorkspace!.properties.customerId
+                  sharedKey: logAnalyticsWorkspace!.listKeys().primarySharedKey
+                }
+              }
+            : {})
+        }
+      : null
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
       certificatePassword: certificatePassword
-      certificateValue: !empty(certificateValue) ? certificateValue : null
+      certificateValue: certificateValue
       dnsSuffix: dnsSuffix
       certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
         ? {
@@ -176,7 +212,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
           }
         : null
     }
-    openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
+    openTelemetryConfiguration: openTelemetryConfiguration
     peerTrafficConfiguration: {
       encryption: {
         enabled: peerTrafficEncryption
@@ -185,7 +221,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
-      infrastructureSubnetId: !empty(infrastructureSubnetResourceId) ? infrastructureSubnetResourceId : null
+      infrastructureSubnetId: infrastructureSubnetResourceId
       dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
       platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
         ? platformReservedCidr
@@ -194,37 +230,24 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
         ? platformReservedDnsIP
         : null
     }
-    workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
+    workloadProfiles: workloadProfiles
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
-
-  resource storage 'storages' = [
-    for storage in (storages ?? []): {
-      name: storage.shareName
-      properties: {
-        nfsAzureFile: storage.kind == 'NFS'
-          ? {
-              accessMode: storage.accessMode
-              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
-              shareName: '/${storage.storageAccountName}/${storage.shareName}'
-            }
-          : null
-        azureFile: storage.kind == 'SMB'
-          ? {
-              accessMode: storage.accessMode
-              accountName: storage.storageAccountName
-              accountKey: listkeys(
-                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
-                '2023-01-01'
-              ).keys[0].value
-              shareName: storage.shareName
-            }
-          : null
-      }
-    }
-  ]
 }
+
+module managedEnvironment_storage 'storage/main.bicep' = [
+  for (storage, index) in (storages ?? []): {
+    name: '${uniqueString(deployment().name)}-Managed-Environment-Storage-${index}'
+    params: {
+      name: storage.name
+      managedEnvironmentName: managedEnvironment.name
+      kind: storage.kind
+      accessMode: storage.accessMode
+      storageAccountName: storage.storageAccountName
+    }
+  }
+]
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -250,9 +273,9 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: managedEnvironment
 }
@@ -266,6 +289,8 @@ module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(cer
     certificateType: certificate.?certificateType
     certificateValue: certificate.?certificateValue
     certificatePassword: certificate.?certificatePassword
+    location: certificate.?location
+    tags: certificate.?tags
   }
 }
 
@@ -312,10 +337,17 @@ type certificateType = {
   certificateValue: string?
 
   @description('Optional. The password of the certificate.')
+  @secure()
   certificatePassword: string?
 
   @description('Optional. A key vault reference.')
   certificateKeyVaultProperties: certificateKeyVaultPropertiesType?
+
+  @description('Optional. The location for the resource.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
 }
 
 @export()
@@ -331,22 +363,25 @@ type storageType = {
   storageAccountName: string
 
   @description('Required. File share name.')
-  shareName: string
+  name: string
 }
 
 @export()
+@discriminator('destination')
 @description('The type for the App Logs Configuration.')
-type appLogsConfigurationType = {
-  @description('Optional. The destination of the logs.')
-  destination: ('log-analytics' | 'azure-monitor' | 'none')?
+type appLogsConfigurationType = appLogsConfigurationMonitorType | appLogsConfigurationLawType
 
-  @description('Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`.')
-  logAnalyticsConfiguration: {
-    @description('Required. The Log Analytics Workspace ID.')
-    customerId: string
+@description('The type for the App Logs Configuration if using azure-monitor.')
+type appLogsConfigurationMonitorType = {
+  @description('Required. The destination of the logs.')
+  destination: 'azure-monitor'
+}
 
-    @description('Required. The shared key of the Log Analytics workspace.')
-    @secure()
-    sharedKey: string
-  }?
+@description('The type for the App Logs Configuration if using log-analytics.')
+type appLogsConfigurationLawType = {
+  @description('Required. The destination of the logs.')
+  destination: 'log-analytics'
+
+  @description('Required. Existing Log Analytics Workspace resource ID.')
+  logAnalyticsWorkspaceResourceId: string
 }

@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -207,11 +208,15 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      zones: [
-        '1'
-        '2'
-        '3'
+      availabilityZones: [
+        1
+        2
+        3
       ]
+      maintenanceConfiguration: {
+        assignmentName: 'myMaintenanceAssignment'
+        maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

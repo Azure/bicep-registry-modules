@@ -10,9 +10,9 @@ This module deploys a Custom Function App into a Static Web App Site using the L
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Web/staticSites/linkedBackends` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/linkedBackends) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Web/staticSites/linkedBackends` | 2022-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_staticsites_linkedbackends.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/linkedBackends)</li></ul> |
 
 ## Parameters
 

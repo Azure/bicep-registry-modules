@@ -2,6 +2,14 @@
 
 This module deploys a Service Bus Namespace.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,24 +21,24 @@ This module deploys a Service Bus Namespace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.ServiceBus/namespaces` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces) |
-| `Microsoft.ServiceBus/namespaces/AuthorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/AuthorizationRules) |
-| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/disasterRecoveryConfigs) |
-| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/migrationConfigurations) |
-| `Microsoft.ServiceBus/namespaces/networkRuleSets` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/networkRuleSets) |
-| `Microsoft.ServiceBus/namespaces/queues` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/queues) |
-| `Microsoft.ServiceBus/namespaces/queues/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/queues/authorizationRules) |
-| `Microsoft.ServiceBus/namespaces/topics` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics) |
-| `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/authorizationRules) |
-| `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
-| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/subscriptions/rules) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.ServiceBus/namespaces` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/AuthorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/AuthorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_disasterrecoveryconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/disasterRecoveryConfigs)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/migrationConfigurations` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_migrationconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/migrationConfigurations)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/networkRuleSets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_networkrulesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/networkRuleSets)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/queues)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/queues/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_queues_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/queues/authorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_authorizationrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/authorizationRules)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/subscriptions)</li></ul> |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.servicebus_namespaces_topics_subscriptions_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2024-01-01/namespaces/topics/subscriptions/rules)</li></ul> |
 
 ## Usage examples
 
@@ -40,15 +48,22 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-bus/namespace:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
 
 <details>
 
@@ -56,13 +71,23 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
-    name: 'sbnmin001'
+    name: 'sbnhsmu001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     skuObject: {
-      capacity: 2
+      capacity: 1
       name: 'Premium'
     }
   }
@@ -83,12 +108,27 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sbnmin001"
+      "value": "sbnhsmu001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "skuObject": {
       "value": {
-        "capacity": 2,
+        "capacity": 1,
         "name": "Premium"
       }
     }
@@ -107,10 +147,21 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 using 'br/public:avm/res/service-bus/namespace:<version>'
 
 // Required parameters
-param name = 'sbnmin001'
+param name = 'sbnhsmu001'
 // Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param skuObject = {
-  capacity: 2
+  capacity: 1
   name: 'Premium'
 }
 ```
@@ -122,6 +173,8 @@ param skuObject = {
 
 This instance deploys the module with features enabled for CMK encryption.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -129,7 +182,6 @@ This instance deploys the module with features enabled for CMK encryption.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnencr001'
@@ -228,9 +280,11 @@ param skuObject = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using only defaults_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -239,7 +293,80 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'sbnmin001'
+    // Non-required parameters
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sbnmin001"
+    },
+    // Non-required parameters
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-bus/namespace:<version>'
+
+// Required parameters
+param name = 'sbnmin001'
+// Non-required parameters
+param skuObject = {
+  capacity: 2
+  name: 'Premium'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   params: {
     // Required parameters
     name: 'sbnmax001'
@@ -281,7 +408,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     ]
     disableLocalAuth: true
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -583,9 +709,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     },
     "disableLocalAuth": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -903,7 +1026,6 @@ param diagnosticSettings = [
   }
 ]
 param disableLocalAuth = true
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -1147,9 +1269,11 @@ param topics = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1158,7 +1282,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
-  name: 'namespaceDeployment'
   params: {
     // Required parameters
     name: 'sbnwaf001'
@@ -1953,6 +2076,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1972,6 +2096,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2350,6 +2481,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2369,6 +2501,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2758,6 +2897,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-queueslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-queueslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-queueslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `queues.lock.kind`
 
@@ -2777,6 +2917,13 @@ Specify the type of lock.
 ### Parameter: `queues.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `queues.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3255,6 +3402,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-topicslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-topicslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-topicslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `topics.lock.kind`
 
@@ -3274,6 +3422,13 @@ Specify the type of lock.
 ### Parameter: `topics.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3861,9 +4016,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

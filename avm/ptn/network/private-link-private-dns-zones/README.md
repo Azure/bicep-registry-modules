@@ -2,6 +2,14 @@
 
 Private Link Private DNS Zones
 
+You can reference the module as follows:
+```bicep
+module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,11 +21,11 @@ Private Link Private DNS Zones
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/privateDnsZones` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/privateDnsZones` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones)</li></ul> |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
 
   }
@@ -85,6 +94,8 @@ using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 
 This instance deploys and excludes 3 zones from the default set of zones using the parameter `privateLinkPrivateDnsZonesToExclude`. The default set of zones is defined in the module in the parameter `privateLinkPrivateDnsZones`.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/exclude-zones]
+
 
 <details>
 
@@ -92,7 +103,6 @@ This instance deploys and excludes 3 zones from the default set of zones using t
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     privateLinkPrivateDnsZonesToExclude: [
       'privatelink.{regionCode}.backup.windowsazure.com'
@@ -150,6 +160,8 @@ param privateLinkPrivateDnsZonesToExclude = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -157,7 +169,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     additionalPrivateLinkPrivateDnsZonesToInclude: [
       'privatelink.3.azurestaticapps.net'
@@ -331,6 +342,8 @@ param virtualNetworkResourceIdsToLinkTo = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -338,7 +351,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
-  name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
     virtualNetworkLinks: [
       {
@@ -447,6 +459,7 @@ The lock settings for the Private Link Private DNS Zones created.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -470,6 +483,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateLinkPrivateDnsZones`
 
 An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.<p><p>**NOTE:**<p><li>Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.<li>Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.<p><p>**IMPORTANT:**<p><p>The folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:<p><li>`{subzone}.privatelink.{regionName}.azmk8s.io`<li>`privatelink.{dnsPrefix}.database.windows.net`<li>`privatelink.{partitionId}.azurestaticapps.net`<p><p>We have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:<p><li>`privatelink.azure.com`.<p>
@@ -479,12 +499,12 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
 - Default:
   ```Bicep
   [
-    '{regionName}.data.privatelink.azurecr.io'
     'privatelink-global.wvd.microsoft.com'
     'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
     'privatelink.{regionName}.azurecontainerapps.io'
     'privatelink.{regionName}.kusto.windows.net'
+    'privatelink.{regionName}.prometheus.monitor.azure.com'
     'privatelink.adf.azure.com'
     'privatelink.afs.azure.net'
     'privatelink.agentsvc.azure-automation.net'
@@ -530,6 +550,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.mariadb.database.azure.com'
     'privatelink.media.azure.net'
     'privatelink.mongo.cosmos.azure.com'
+    'privatelink.mongocluster.cosmos.azure.com'
     'privatelink.monitor.azure.com'
     'privatelink.mysql.database.azure.com'
     'privatelink.notebooks.azure.net'
@@ -663,8 +684,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

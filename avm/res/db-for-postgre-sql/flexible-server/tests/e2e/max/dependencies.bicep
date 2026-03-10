@@ -7,11 +7,13 @@ param keyVaultName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+#disable-next-line use-recent-api-versions
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
 }
 
+#disable-next-line use-recent-api-versions
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
@@ -30,6 +32,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
+  #disable-next-line use-recent-api-versions
   resource key 'keys@2023-07-01' = {
     name: 'keyEncryptionKey'
     properties: {

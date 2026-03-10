@@ -44,7 +44,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
     storageAccountName: toLower('dep${namePrefix}v${serviceShort}01')
   }
 }
@@ -66,27 +65,31 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      securityAlertPoliciesObj: {
+      securityAlertPolicy: {
         emailAccountAdmins: true
         name: 'default'
         state: 'Enabled'
-      }
-      vulnerabilityAssessmentsObj: {
-        emailSubscriptionAdmins: true
-        name: 'default'
-        recurringScansEmails: [
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        emailAddresses: [
           'test1@contoso.com'
           'test2@contoso.com'
         ]
-        recurringScansIsEnabled: true
-        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-        useStorageAccountAccessKey: false
-        createStorageRoleAssignment: true
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        disabledAlerts: [
+          'Unsafe_Action'
+        ]
+        retentionDays: 7
+      }
+      vulnerabilityAssessment: {
+        name: 'default'
+        recurringScans: {
+          isEnabled: true
+          emailSubscriptionAdmins: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
         }
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       }
     }
   }

@@ -7,7 +7,7 @@ param clusterName string
 @description('Required. The name of the AKS cluster nodes resource group to create.')
 param clusterNodeResourceGroupName string
 
-resource cluster 'Microsoft.ContainerService/managedClusters@2022-07-01' = {
+resource cluster 'Microsoft.ContainerService/managedClusters@2025-05-01' = {
   name: clusterName
   location: location
   identity: {

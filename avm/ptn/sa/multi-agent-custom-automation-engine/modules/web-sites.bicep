@@ -74,7 +74,7 @@ param configs appSettingsConfigType[]?
 @description('Optional. The Function App configuration object.')
 param functionAppConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.functionAppConfig?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -257,6 +257,61 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
       logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
     }
     scope: app
+  }
+]
+
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+              properties: {
+                privateLinkServiceId: app.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'sites'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
+              properties: {
+                privateLinkServiceId: app.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'sites'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: false //As per https://azure.github.io/Azure-Verified-Modules/spec/BCPFR7/
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? null
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
   }
 ]
 

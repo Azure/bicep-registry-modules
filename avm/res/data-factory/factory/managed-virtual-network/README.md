@@ -11,10 +11,10 @@ This module deploys a Data Factory Managed Virtual Network.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks) |
-| `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.DataFactory/factories/managedVirtualNetworks` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_managedvirtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks)</li></ul> |
+| `Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints` | 2018-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.datafactory_factories_managedvirtualnetworks_managedprivateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataFactory/2018-06-01/factories/managedVirtualNetworks/managedPrivateEndpoints)</li></ul> |
 
 ## Parameters
 
@@ -56,7 +56,43 @@ An array of managed private endpoints objects created in the Data Factory manage
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdns`](#parameter-managedprivateendpointsfqdns) | array | Fully qualified domain names. |
+| [`groupId`](#parameter-managedprivateendpointsgroupid) | string | The groupId to which the managed private endpoint is created. |
+| [`name`](#parameter-managedprivateendpointsname) | string | The managed private endpoint resource name. |
+| [`privateLinkResourceId`](#parameter-managedprivateendpointsprivatelinkresourceid) | string | The ARM resource ID of the resource to which the managed private endpoint is created. |
+
+### Parameter: `managedPrivateEndpoints.fqdns`
+
+Fully qualified domain names.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `managedPrivateEndpoints.groupId`
+
+The groupId to which the managed private endpoint is created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.name`
+
+The managed private endpoint resource name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedPrivateEndpoints.privateLinkResourceId`
+
+The ARM resource ID of the resource to which the managed private endpoint is created.
+
+- Required: Yes
+- Type: string
 
 ## Outputs
 

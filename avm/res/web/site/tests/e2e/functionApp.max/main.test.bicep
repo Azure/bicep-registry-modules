@@ -11,29 +11,29 @@ metadata description = 'This instance deploys the module as Function App with mo
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'wsfamax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+// Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'swedencentral'
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -42,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -50,13 +49,12 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -68,10 +66,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       configs: [
@@ -153,6 +151,104 @@ module testDeployment '../../../main.bicep' = [
               runtimeVersion: '~1'
             }
           }
+        }
+      ]
+      slots: [
+        {
+          name: 'slot1'
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          privateEndpoints: [
+            {
+              subnetResourceId: nestedDependencies.outputs.subnetResourceId
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
+              tags: {
+                'hidden-title': 'This is visible in the resource name'
+                Environment: 'Non-Prod'
+                Role: 'DeploymentValidation'
+              }
+              service: 'sites-slot1'
+            }
+          ]
+          dnsConfiguration: {
+            dnsMaxCacheTimeout: 45
+            dnsRetryAttemptCount: 3
+            dnsRetryAttemptTimeout: 5
+            dnsServers: [
+              '168.63.129.20'
+            ]
+          }
+          basicPublishingCredentialsPolicies: [
+            {
+              name: 'ftp'
+              allow: false
+            }
+            {
+              name: 'scm'
+              allow: false
+            }
+          ]
+          roleAssignments: [
+            {
+              name: '845ed19c-78e7-4422-aa3d-b78b67cd1234'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              name: guid('A custom seed ${namePrefix}${serviceShort}')
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'de139f84-1756-47ae-9be6-808fbbe84772'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          siteConfig: {
+            alwaysOn: true
+            metadata: [
+              {
+                name: 'CURRENT_STACK'
+                value: 'dotnetcore'
+              }
+            ]
+          }
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+              properties: {
+                ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
+              }
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
+          hybridConnectionRelays: [
+            {
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              sendKeyName: 'defaultSender'
+            }
+          ]
         }
       ]
       basicPublishingCredentialsPolicies: [
@@ -249,6 +345,17 @@ module testDeployment '../../../main.bicep' = [
           sendKeyName: 'defaultSender'
         }
       ]
+      scmSiteAlsoStopped: true
+      publicNetworkAccess: 'Disabled'
+      outboundVnetRouting: {
+        allTraffic: true
+        contentShareTraffic: true
+        imagePullTraffic: true
+      }
+      clientAffinityProxyEnabled: true
+      clientAffinityPartitioningEnabled: false
+      hostNamesDisabled: false
+      ipMode: 'IPv4'
     }
   }
 ]

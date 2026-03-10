@@ -16,12 +16,12 @@ param geoBackupManagedIdentityName string
 @description('Required. The location to deploy geo backup resources to.')
 param geoBackupLocation string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -39,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -60,12 +60,12 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource geoBackupManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: geoBackupManagedIdentityName
   location: geoBackupLocation
 }
 
-resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: geoBackupKeyVaultName
   location: geoBackupLocation
   properties: {
@@ -83,7 +83,7 @@ resource geoBackupKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

@@ -4,12 +4,12 @@ param virtualWANName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-01-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2024-10-01' = {
   name: virtualWANName
   location: location
 }
 
-resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-01-01' = {
+resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-10-01' = {
   name: '${virtualWANName}-${location}-vpnServerConfiguration'
   location: location
   properties: {
@@ -27,7 +27,7 @@ resource vpnServerConfiguration 'Microsoft.Network/vpnServerConfigurations@2024-
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-01-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-10-01' = {
   name: '${virtualWANName}-${location}-hub'
   location: location
   properties: {

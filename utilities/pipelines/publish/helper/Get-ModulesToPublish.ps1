@@ -1,35 +1,4 @@
 #region Helper functions
-
-<#
-.SYNOPSIS
-Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-
-.EXAMPLE
-Get-ModifiedFileList
-
-    Directory: .utilities\pipelines\publish
-
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-la---          08.12.2021    15:50           7133 Script.ps1
-
-Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-#>
-function Get-ModifiedFileList {
-
-    $CurrentBranch = Get-GitBranchName
-    if ($CurrentBranch -eq 'main') {
-        Write-Verbose 'Gathering modified files from the pull request' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
-    } else {
-        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
-    }
-    $ModifiedFiles = $Diff | Get-Item -Force
-
-    return $ModifiedFiles
-}
-
 <#
 .SYNOPSIS
 Get the name of the current checked out branch.
@@ -73,6 +42,9 @@ Mandatory. Paths to include in the search for the closest main.json file.
 .PARAMETER SkipNotVersionedModules
 Optional. Specify if filtering the list by returning only versioned modified modules.
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
 
@@ -97,16 +69,32 @@ function Get-TemplateFileToPublish {
         ),
 
         [Parameter(Mandatory = $false)]
-        [switch] $SkipNotVersionedModules
+        [switch] $SkipNotVersionedModules,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.Parent.Parent.FullName
     )
 
-    $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-    $ModifiedFiles = Get-ModifiedFileList -Verbose
-    Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose
-    $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
 
+    # Adding a `/` at the end of the path (if not present) to avoid that e.g. a filter like `cache/redis` also matches `cache/redis-enterprise`
+    if ($ModuleFolderPath -notmatch '^.+\/$') {
+        $ModuleFolderPath += '/'
+    }
+    Write-Verbose "Looking for modified files under: [$ModuleFolderPath]" -Verbose
+
+    $modifiedModuleFiles = Get-GitDiff -PathFilter $ModuleFolderPath -PathOnly -Verbose
+    $modifiedModuleFilePaths = $modifiedModuleFiles ? $modifiedModuleFiles.FullName : @()
+
+    Write-Verbose ('[{0}] modified files identified in path [{1}]:' -f $modifiedModuleFilePaths.count, ($ModuleFolderPath -split ('{0}[\\|\/]' -f [regex]::Escape($RepoRoot)))[1]) -Verbose
+    $modifiedModuleFilePaths | ForEach-Object {
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+        Write-Verbose " - $RelPath" -Verbose
+    }
+
+    # Only include `main.json' / 'version.json' files
     $relevantPaths = @()
-    foreach ($modifiedFile in $modifiedModuleFiles) {
+    foreach ($modifiedFile in $modifiedModuleFilePaths) {
 
         foreach ($path in  $PathsToInclude) {
             if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path) -ErrorAction 'SilentlyContinue')) {
@@ -115,19 +103,20 @@ function Get-TemplateFileToPublish {
         }
     }
 
+    Write-Verbose ('[{0}] files identified that justify publishing:' -f $relevantPaths.count) -Verbose
+    $relevantPaths | ForEach-Object {
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+        Write-Verbose " - $RelPath" -Verbose
+    }
+
     $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
         Find-TemplateFile -Path $_ -Verbose
     } | Sort-Object -Culture 'en-US' -Unique -Descending
 
-    if ($TemplateFilesToPublish.Count -eq 0) {
-        Write-Verbose 'No template file found in the modified module.' -Verbose
-    }
-
-    Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    Write-Verbose ('[{0}] template(s) for modified modules found:' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        $RelPath = $RelPath.Split('/main.')[0]
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     if ($SkipNotVersionedModules) {
@@ -142,11 +131,10 @@ function Get-TemplateFileToPublish {
         }
     }
 
-    Write-Verbose ('Versioned modules to publish: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    Write-Verbose ('[{0}] versioned modules to publish' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
-        $RelPath = $RelPath.Split('/main.')[0]
-        Write-Verbose " - [$RelPath]" -Verbose
+        Write-Verbose " - $RelPath" -Verbose
     }
 
     return $TemplateFilesToPublish

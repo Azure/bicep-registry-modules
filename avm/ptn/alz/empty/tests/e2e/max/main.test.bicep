@@ -287,10 +287,21 @@ module testDeployment '../../../main.bicep' = [
               value: 'costCenter'
             }
             effect: {
+              value: 'Disabled'
+            }
+          }
+          parameterOverrides: {
+            effect: {
               value: 'Audit'
             }
           }
         }
+      ]
+      managementGroupExcludedPolicyAssignments: [
+        'allowed-vm-skus-root'
+      ]
+      managementGroupDoNotEnforcePolicyAssignments: [
+        'diag-activity-log-lz'
       ]
       managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
       managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions

@@ -10,20 +10,20 @@ param appName string
 @description('Optional. Name of the authorization rule send key to use.')
 param sendKeyName string = 'defaultSender'
 
-resource namespace 'Microsoft.Relay/namespaces@2021-11-01' existing = {
+resource namespace 'Microsoft.Relay/namespaces@2024-01-01' existing = {
   name: split(hybridConnectionResourceId, '/')[8]
   scope: resourceGroup(split(hybridConnectionResourceId, '/')[2], split(hybridConnectionResourceId, '/')[4])
 
-  resource hybridConnection 'hybridConnections@2021-11-01' existing = {
+  resource hybridConnection 'hybridConnections@2024-01-01' existing = {
     name: split(hybridConnectionResourceId, '/')[10]
 
-    resource authorizationRule 'authorizationRules@2021-11-01' existing = {
+    resource authorizationRule 'authorizationRules@2024-01-01' existing = {
       name: sendKeyName
     }
   }
 }
 
-resource hybridConnectionRelay 'Microsoft.Web/sites/hybridConnectionNamespaces/relays@2024-04-01' = {
+resource hybridConnectionRelay 'Microsoft.Web/sites/hybridConnectionNamespaces/relays@2025-03-01' = {
   name: '${appName}/${namespace.name}/${namespace::hybridConnection.name}'
   properties: {
     serviceBusNamespace: namespace.name

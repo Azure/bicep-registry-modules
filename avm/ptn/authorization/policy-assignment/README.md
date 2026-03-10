@@ -2,6 +2,14 @@
 
 This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -12,10 +20,10 @@ This module deploys a Policy Assignment at a Management Group, Subscription or R
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/policyAssignments` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/policyAssignments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_policyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a Policy Assignment at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This module deploys a Policy Assignment at a Management Group scope using minima
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apamgmin001'
@@ -116,6 +125,8 @@ param metadata = {
 
 This module deploys a Policy Assignment at a Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -123,7 +134,6 @@ This module deploys a Policy Assignment at a Management Group scope using common
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apamgmax001'
@@ -173,9 +183,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -299,10 +314,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -397,9 +419,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -436,6 +463,8 @@ param roleDefinitionIds = [
 
 This module deploys a Policy Assignment at a Resource Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.defaults]
+
 
 <details>
 
@@ -443,7 +472,6 @@ This module deploys a Policy Assignment at a Resource Group scope using minimal 
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apargmin001'
@@ -526,6 +554,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Assignment at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
+
 
 <details>
 
@@ -533,7 +563,6 @@ This module deploys a Policy Assignment at a Resource Group scope using common p
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apargmax001'
@@ -573,9 +602,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -684,10 +718,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -781,9 +822,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -823,6 +869,8 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 
 This module deploys a Policy Assignment at a Subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.defaults]
+
 
 <details>
 
@@ -830,7 +878,6 @@ This module deploys a Policy Assignment at a Subscription scope using common par
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apasubmin001'
@@ -914,6 +961,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module deploys a Policy Assignment at a Subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
+
 
 <details>
 
@@ -921,7 +970,6 @@ This module deploys a Policy Assignment at a Subscription scope using common par
 
 ```bicep
 module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<version>' = {
-  name: 'policyAssignmentDeployment'
   params: {
     // Required parameters
     name: 'apasubmax001'
@@ -961,9 +1009,14 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         value: 'Disabled'
       }
     ]
-    parameters: {
+    parameterOverrides: {
       effect: {
         value: 'Disabled'
+      }
+    }
+    parameters: {
+      effect: {
+        value: 'DeployIfNotExists'
       }
       enableCollectionOfSqlQueriesForSecurityResearch: {
         value: false
@@ -1071,10 +1124,17 @@ module policyAssignment 'br/public:avm/ptn/authorization/policy-assignment:<vers
         }
       ]
     },
-    "parameters": {
+    "parameterOverrides": {
       "value": {
         "effect": {
           "value": "Disabled"
+        }
+      }
+    },
+    "parameters": {
+      "value": {
+        "effect": {
+          "value": "DeployIfNotExists"
         },
         "enableCollectionOfSqlQueriesForSecurityResearch": {
           "value": false
@@ -1165,9 +1225,14 @@ param overrides = [
     value: 'Disabled'
   }
 ]
-param parameters = {
+param parameterOverrides = {
   effect: {
     value: 'Disabled'
+  }
+}
+param parameters = {
+  effect: {
+    value: 'DeployIfNotExists'
   }
   enableCollectionOfSqlQueriesForSecurityResearch: {
     value: false
@@ -1230,6 +1295,7 @@ param userAssignedIdentityId = '<userAssignedIdentityId>'
 | [`nonComplianceMessages`](#parameter-noncompliancemessages) | array | The messages that describe why a resource is non-compliant with the policy. |
 | [`notScopes`](#parameter-notscopes) | array | The policy excluded scopes. |
 | [`overrides`](#parameter-overrides) | array | The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition. |
+| [`parameterOverrides`](#parameter-parameteroverrides) | object | Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module. |
 | [`parameters`](#parameter-parameters) | object | Parameters for the policy assignment if needed. |
 | [`resourceGroupName`](#parameter-resourcegroupname) | string | The Target Scope for the Policy. The name of the resource group for the policy assignment. |
 | [`resourceSelectors`](#parameter-resourceselectors) | array | The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location. |
@@ -1385,6 +1451,14 @@ The policy property value override. Allows changing the effect of a policy defin
 - Type: array
 - Default: `[]`
 
+### Parameter: `parameterOverrides`
+
+Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
 ### Parameter: `parameters`
 
 Parameters for the policy assignment if needed.
@@ -1444,4 +1518,4 @@ The Resource ID for the user assigned identity to assign to the policy assignmen
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -10,9 +10,9 @@ This module deploys an Event Grid Topic Event Subscription.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventGrid/topics/eventSubscriptions` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics/eventSubscriptions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventGrid/topics/eventSubscriptions` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_topics_eventsubscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-04-01-preview/topics/eventSubscriptions)</li></ul> |
 
 ## Parameters
 

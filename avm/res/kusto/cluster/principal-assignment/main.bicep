@@ -20,6 +20,7 @@ param principalType string
 @allowed([
   'AllDatabasesAdmin'
   'AllDatabasesViewer'
+  'AllDatabasesMonitor'
 ])
 @description('Required. The Kusto Cluster role to be assigned to the principal id.')
 param role string
@@ -31,7 +32,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 }
 
-resource kustoClusterPrincipalAssignment 'Microsoft.Kusto/clusters/principalAssignments@2023-08-15' = {
+resource kustoClusterPrincipalAssignment 'Microsoft.Kusto/clusters/principalAssignments@2024-04-13' = {
   name: principalId
   parent: kustoCluster
   properties: {

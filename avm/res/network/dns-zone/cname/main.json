@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2517212374743712090"
+      "version": "0.41.2.15936",
+      "templateHash": "2186314486104642452"
     },
     "name": "Public DNS Zone CNAME record",
     "description": "This module deploys a Public DNS Zone CNAME record."
@@ -103,17 +103,23 @@
     },
     "cnameRecord": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/CNAMERecord"
+        },
         "description": "Optional. A CNAME record. Cannot be used in conjuction with the \"targetResource\" property."
-      }
+      },
+      "nullable": true
     },
     "metadata": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/dnsZones/CNAME@2018-05-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. The metadata attached to the record set."
-      }
+      },
+      "nullable": true
     },
     "ttl": {
       "type": "int",
@@ -187,7 +193,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/dnsZones/{0}/CNAME/{1}', parameters('dnsZoneName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/dnsZones/CNAME', parameters('dnsZoneName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/dnsZones/CNAME', parameters('dnsZoneName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

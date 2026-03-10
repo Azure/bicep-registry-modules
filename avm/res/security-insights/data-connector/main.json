@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "3012483961730299706"
+      "version": "0.41.2.15936",
+      "templateHash": "9032900419670748301"
     },
     "name": "Security Insights Data Connectors",
-    "description": "This module deploys a Security Insights Data Connector.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Security Insights Data Connector."
   },
   "definitions": {
     "dataConnectorType": {
@@ -1691,7 +1690,7 @@
     "dataConnector": {
       "type": "Microsoft.SecurityInsights/dataConnectors",
       "apiVersion": "2025-03-01",
-      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
+      "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/')))]",
       "name": "[coalesce(parameters('name'), parameters('properties').kind)]",
       "kind": "[parameters('properties').kind]",
       "properties": "[parameters('properties').properties]"

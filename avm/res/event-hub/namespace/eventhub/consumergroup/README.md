@@ -10,9 +10,9 @@ This module deploys an Event Hub Namespace Event Hub Consumer Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventhub_namespaces_eventhubs_consumergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups)</li></ul> |
 
 ## Parameters
 

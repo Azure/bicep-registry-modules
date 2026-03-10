@@ -25,15 +25,20 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. File shares to create.')
-param shares array?
+param shares fileShareType[]?
 
-var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
+var enableReferencedModulesTelemetry = false
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+// default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind (unless V2 where accessTier is not supported so null is supplied), 'TransactionOptimized' otherwise
+var defaultShareAccessTier = storageAccount.kind == 'FileStorage'
+  ? (startsWith(storageAccount.sku.name, 'PremiumV2_') ? null : 'Premium')
+  : 'TransactionOptimized'
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2025-06-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -78,7 +83,7 @@ resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 
 module fileServices_shares 'share/main.bicep' = [
   for (share, index) in (shares ?? []): {
-    name: '${deployment().name}-shares-${index}'
+    name: '${deployment().name}-FileShare-${index}'
     params: {
       storageAccountName: storageAccount.name
       fileServicesName: fileServices.name
@@ -87,7 +92,10 @@ module fileServices_shares 'share/main.bicep' = [
       enabledProtocols: share.?enabledProtocols
       rootSquash: share.?rootSquash
       shareQuota: share.?shareQuota
+      provisionedBandwidthMibps: share.?provisionedBandwidthMibps
+      provisionedIops: share.?provisionedIops
       roleAssignments: share.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -122,4 +130,36 @@ type corsRuleType = {
 
   @description('Required. The number of seconds that the client/browser should cache a preflight response.')
   maxAgeInSeconds: int
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+
+@export()
+@description('The type for a file share.')
+type fileShareType = {
+  @description('Required. The name of the file share.')
+  name: string
+
+  @description('Optional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.')
+  accessTier: null | 'Premium' | 'Hot' | 'Cool' | 'TransactionOptimized'
+
+  @description('Optional. The authentication protocol that is used for the file share. Can only be specified when creating a share.')
+  enabledProtocols: null | 'NFS' | 'SMB'
+
+  @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
+  rootSquash: null | 'AllSquash' | 'NoRootSquash' | 'RootSquash'
+
+  @description('Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).')
+  shareQuota: int?
+
+  @maxValue(10340)
+  @description('Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.')
+  provisionedBandwidthMibps: int?
+
+  @maxValue(102400)
+  @description('Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.')
+  provisionedIops: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

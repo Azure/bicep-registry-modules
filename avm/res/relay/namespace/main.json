@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "7722614593145679936"
+      "version": "0.41.2.15936",
+      "templateHash": "2863147697655285607"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace"
@@ -75,6 +75,43 @@
         "__bicep_export!": true
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -97,7 +134,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -139,7 +176,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -180,7 +217,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -327,12 +439,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -440,7 +559,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -449,7 +568,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -460,6 +579,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -474,7 +596,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -728,11 +850,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Relay/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Relay/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "namespace"
@@ -745,7 +867,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Relay/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Relay/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -786,7 +908,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Relay/namespaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Relay/namespaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Relay/namespaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -807,7 +929,7 @@
         "count": "[length(parameters('authorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-AuthorizationRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -831,8 +953,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "9619797042754309224"
+              "version": "0.41.2.15936",
+              "templateHash": "15285066873454330558"
             },
             "name": "Relay Namespace Authorization Rules",
             "description": "This module deploys a Relay Namespace Authorization Rule."
@@ -907,7 +1029,7 @@
     "namespace_networkRuleSet": {
       "condition": "[or(not(empty(parameters('networkRuleSets'))), not(empty(parameters('privateEndpoints'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-NetworkRuleSet', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -935,8 +1057,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10108866543013698651"
+              "version": "0.41.2.15936",
+              "templateHash": "3916292453894614868"
             },
             "name": "Relay Namespace Network Rules Sets",
             "description": "This module deploys a Relay Namespace Network Rule Set."
@@ -1033,7 +1155,7 @@
         "count": "[length(parameters('hybridConnections'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-HybridConnection-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1064,8 +1186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1720062733098942743"
+              "version": "0.41.2.15936",
+              "templateHash": "17809023175104165617"
             },
             "name": "Relay Namespace Hybrid Connections",
             "description": "This module deploys a Relay Namespace Hybrid Connection."
@@ -1092,12 +1214,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -1292,11 +1421,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Relay/namespaces/{0}/hybridConnections/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Relay/namespaces/hybridConnections', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "hybridConnection"
@@ -1309,7 +1438,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Relay/namespaces/{0}/hybridConnections/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Relay/namespaces/hybridConnections', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Relay/namespaces/hybridConnections', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1330,7 +1459,7 @@
                 "count": "[length(parameters('authorizationRules'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-AuthorizationRule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1357,8 +1486,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "16320517177577400864"
+                      "version": "0.41.2.15936",
+                      "templateHash": "8411076877837566437"
                     },
                     "name": "Hybrid Connection Authorization Rules",
                     "description": "This module deploys a Hybrid Connection Authorization Rule."
@@ -1470,7 +1599,7 @@
         "count": "[length(parameters('wcfRelays'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-WcfRelay-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1507,8 +1636,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1986849319424891548"
+              "version": "0.41.2.15936",
+              "templateHash": "5796566476424935033"
             },
             "name": "Relay Namespace WCF Relays",
             "description": "This module deploys a Relay Namespace WCF Relay."
@@ -1535,12 +1664,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -1755,11 +1891,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Relay/namespaces/{0}/wcfRelays/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Relay/namespaces/wcfRelays', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "wcfRelay"
@@ -1772,7 +1908,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Relay/namespaces/{0}/wcfRelays/{1}', parameters('namespaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Relay/namespaces/wcfRelays', parameters('namespaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Relay/namespaces/wcfRelays', parameters('namespaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1793,7 +1929,7 @@
                 "count": "[length(parameters('authorizationRules'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-AuthorizationRule-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1820,8 +1956,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "4209715248189250565"
+                      "version": "0.41.2.15936",
+                      "templateHash": "1158047108483997483"
                     },
                     "name": "WCF Relay Authorization Rules",
                     "description": "This module deploys a WCF Relay Authorization Rule."
@@ -1933,7 +2069,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",

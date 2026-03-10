@@ -11,9 +11,12 @@ $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.Parent.Paren
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
+. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-PublishedModuleVersionsList.ps1')
 . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
+. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-SpecsAlignedResourceName.ps1')
+. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
 
 ####################################
 #   Load test-specific functions   #
@@ -299,6 +302,60 @@ function Resolve-ReadMeParameterList {
 }
 
 <#
+.SYNOPSIS
+Get a hashtable of the workflow_dispatch trigger inputs of the given GitHub workflow
+
+.DESCRIPTION
+Get a hashtable of the workflow_dispatch trigger inputs of the given GitHub workflow
+
+.PARAMETER WorkflowPath
+Mandatory. The path of the workflow to get the workflow_dispatch trigger inputs from
+
+.EXAMPLE
+Get-WorkflowWorkflowDispatchTriggerInputsAsObject -WorkflowPath 'C:/bicep-registry-modules/.github/workflows/test.yml'
+
+Get the workflow_dispatch trigger of the given workflow
+#>
+function Get-WorkflowWorkflowDispatchTriggerInputsAsObject {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $WorkflowPath
+    )
+
+    $workflowFileContent = Get-Content -Path $workflowPath -Raw
+    return (ConvertFrom-Yaml -Yaml $workflowFileContent).on.workflow_dispatch.inputs
+}
+<#
+.SYNOPSIS
+Get a hashtable of the push trigger of the given GitHub workflow
+
+.DESCRIPTION
+Get a hashtable of the push trigger of the given GitHub workflow
+
+.PARAMETER WorkflowPath
+Mandatory. The path of the workflow to get the push trigger from
+
+.EXAMPLE
+Get-WorkflowPushTriggerAsObject -WorkflowPath 'C:/bicep-registry-modules/.github/workflows/test.yml'
+
+Get the push trigger of the given workflow
+#>
+function Get-WorkflowPushTriggerAsObject {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $WorkflowPath
+    )
+
+    $workflowFileContent = Get-Content -Path $workflowPath -Raw
+    return (ConvertFrom-Yaml -Yaml $workflowFileContent).on.push
+}
+
+<#
+.SYNOPSIS
 Get a hashtable of all environment variables in the given GitHub workflow
 
 .DESCRIPTION
@@ -310,7 +367,7 @@ Mandatory. The path of the workflow to get the environment variables from
 .EXAMPLE
 Get-WorkflowEnvVariablesAsObject -WorkflowPath 'C:/bicep-registry-modules/.github/workflows/test.yml'
 
-Get the environment variables from the given workflow
+Get the environment variables of the given workflow
 #>
 function Get-WorkflowEnvVariablesAsObject {
 
@@ -320,105 +377,6 @@ function Get-WorkflowEnvVariablesAsObject {
         [string] $WorkflowPath
     )
 
-    $contentFileContent = Get-Content -Path $workflowPath
-
-    $envStartIndex = $contentFileContent.IndexOf('env:')
-
-    if (-not $envStartIndex) {
-        # No env variables defined in the given workflow
-        return @{}
-    }
-
-    $searchIndex = $envStartIndex + 1
-    $envVars = @{}
-
-    while ($searchIndex -lt $contentFileContent.Count) {
-        $line = $contentFileContent[$searchIndex]
-        if ($line -match "^\s+(\w+): (?:`"|')*([^`"'\s]+)(?:`"|')*$") {
-            $envVars[($Matches[1])] = $Matches[2]
-        } else {
-            break
-        }
-        $searchIndex++
-    }
-
-    return $envVars
-}
-
-<#
-Get a list of all versioned parents of a module
-
-.DESCRIPTION
-Get a list of all versioned parents of a module. The function will recursively search the parent directories of the given path until it finds a directory containing a version.json file or reaches the root path.
-The function will return a list of all the directories in the parent hierarchy that contain a version.json file, including the given path.
-The function will return the list in the order from the root path to the given path.
-
-.PARAMETER Path
-Mandatory. The path of the module to search for versioned parents.
-
-.PARAMETER UpperBoundPath
-Optional. The root path to stop the search at. The function will not search above this path.
-
-.PARAMETER Filter
-Optional. Only include module folders in the list (i.e., modules with a `main.json` file), or versioned modules folders (i.e., modules with `version.json` files). The default is to include all folders).
-
-.EXAMPLE
-Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy'
-
-Get all parent folders of the 'immutability-policy' folder up to 'res'. Returns
-
-- <repoPath>\avm\res\storage
-- <repoPath>\avm\res\storage\storage-account
-- <repoPath>\avm\res\storage\storage-account\blob-service
-- <repoPath>\avm\res\storage\storage-account\blob-service\container
-
-.EXAMPLE
-Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy' -RootPath 'C:/bicep-registry-modules/avm/res' -Filter 'OnlyVersionedModules'
-
-Get all versioned parent module folders of the 'immutability-policy' folder up to 'res'. Returns, e.g.,
-- <repoPath>\avm\res\storage\storage-account
-#>
-function Get-ParentFolderPathList {
-
-    param
-    (
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
-
-        [Parameter(Mandatory = $false)]
-        [string] $UpperBoundPath = $repoRootPath,
-
-        [Parameter(Mandatory = $false)]
-        [ValidateSet('OnlyModules', 'OnlyVersionedModules', 'All')]
-        [string] $Filter = 'All'
-    )
-
-    $Item = Get-Item -Path $Path
-    $result = @()
-
-    if ($Item.FullName -ne $UpperBoundPath) {
-
-        $result += Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
-
-        switch ($Filter) {
-            'OnlyModules' {
-                if (Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
-                    $result += $Item.FullName
-                }
-                break
-            }
-            'OnlyVersionedModules' {
-                if ((Test-Path (Join-Path -Path $Item.FullName 'version.json')) -and (Test-Path (Join-Path -Path $Item.FullName 'main.json'))) {
-                    $result += $Item.FullName
-                }
-                break
-            }
-            'All' {
-                $result += $Item.FullName
-                break
-            }
-        }
-    }
-
-    return $result
+    $workflowFileContent = Get-Content -Path $workflowPath -Raw
+    return (ConvertFrom-Yaml -Yaml $workflowFileContent).env
 }

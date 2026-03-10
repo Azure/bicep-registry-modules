@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14256121951310131781"
+      "version": "0.41.2.15936",
+      "templateHash": "5662698881163185171"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application."
@@ -245,10 +245,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
+        },
         "description": "Optional. Tags for all resources."
-      }
+      },
+      "nullable": true
     },
     "customActions": {
       "type": "array",
@@ -308,7 +311,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Compute/galleries/{0}/applications/{1}', parameters('galleryName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

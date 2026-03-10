@@ -2,6 +2,14 @@
 
 This module deploys a Machine Learning Services Workspace.
 
+You can reference the module as follows:
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,17 +22,17 @@ This module deploys a Machine Learning Services Workspace.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
-| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
-| `Microsoft.MachineLearningServices/workspaces/datastores` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/computes` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_computes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/connections` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections)</li></ul> |
+| `Microsoft.MachineLearningServices/workspaces/datastores` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_datastores.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/datastores)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -34,16 +42,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/workspace:<version>`.
 
-- [Creating Azure AI Studio resources](#example-1-creating-azure-ai-studio-resources)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Creating Azure ML managed feature store](#example-4-creating-azure-ml-managed-feature-store)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Creating Azure AI Studio hub resource](#example-1-creating-azure-ai-studio-hub-resource)
+- [Creating Azure AI Studio project resource](#example-2-creating-azure-ai-studio-project-resource)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Creating Azure ML managed feature store](#example-5-creating-azure-ml-managed-feature-store)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Creating Azure AI Studio resources_
+### Example 1: _Creating Azure AI Studio hub resource_
 
 This instance deploys an Azure AI hub workspace.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-hub]
 
 
 <details>
@@ -52,35 +63,14 @@ This instance deploys an Azure AI hub workspace.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'mlswai001'
+    name: 'mlswaih001'
     sku: 'Basic'
     // Non-required parameters
     associatedApplicationInsightsResourceId: '<associatedApplicationInsightsResourceId>'
     associatedKeyVaultResourceId: '<associatedKeyVaultResourceId>'
     associatedStorageAccountResourceId: '<associatedStorageAccountResourceId>'
-    connections: [
-      {
-        category: 'AIServices'
-        connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
-        }
-        metadata: {
-          ApiType: 'Azure'
-          ApiVersion: '2023-07-01-preview'
-          DeploymentApiVersion: '2023-10-01-preview'
-          Location: '<Location>'
-          ResourceId: '<ResourceId>'
-        }
-        name: 'ai'
-        target: '<target>'
-      }
-    ]
     kind: 'Hub'
     location: '<location>'
     workspaceHubConfig: {
@@ -105,7 +95,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
   "parameters": {
     // Required parameters
     "name": {
-      "value": "mlswai001"
+      "value": "mlswaih001"
     },
     "sku": {
       "value": "Basic"
@@ -119,28 +109,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "associatedStorageAccountResourceId": {
       "value": "<associatedStorageAccountResourceId>"
-    },
-    "connections": {
-      "value": [
-        {
-          "category": "AIServices",
-          "connectionProperties": {
-            "authType": "ApiKey",
-            "credentials": {
-              "key": "key"
-            }
-          },
-          "metadata": {
-            "ApiType": "Azure",
-            "ApiVersion": "2023-07-01-preview",
-            "DeploymentApiVersion": "2023-10-01-preview",
-            "Location": "<Location>",
-            "ResourceId": "<ResourceId>"
-          },
-          "name": "ai",
-          "target": "<target>"
-        }
-      ]
     },
     "kind": {
       "value": "Hub"
@@ -169,32 +137,12 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
 using 'br/public:avm/res/machine-learning-services/workspace:<version>'
 
 // Required parameters
-param name = 'mlswai001'
+param name = 'mlswaih001'
 param sku = 'Basic'
 // Non-required parameters
 param associatedApplicationInsightsResourceId = '<associatedApplicationInsightsResourceId>'
 param associatedKeyVaultResourceId = '<associatedKeyVaultResourceId>'
 param associatedStorageAccountResourceId = '<associatedStorageAccountResourceId>'
-param connections = [
-  {
-    category: 'AIServices'
-    connectionProperties: {
-      authType: 'ApiKey'
-      credentials: {
-        key: 'key'
-      }
-    }
-    metadata: {
-      ApiType: 'Azure'
-      ApiVersion: '2023-07-01-preview'
-      DeploymentApiVersion: '2023-10-01-preview'
-      Location: '<Location>'
-      ResourceId: '<ResourceId>'
-    }
-    name: 'ai'
-    target: '<target>'
-  }
-]
 param kind = 'Hub'
 param location = '<location>'
 param workspaceHubConfig = {
@@ -206,9 +154,11 @@ param workspaceHubConfig = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Creating Azure AI Studio project resource_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys an Azure AI project workspace.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-project]
 
 
 <details>
@@ -217,7 +167,86 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    name: 'mlswaip001'
+    sku: 'Basic'
+    // Non-required parameters
+    hubResourceId: '<hubResourceId>'
+    kind: 'Project'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlswaip001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    // Non-required parameters
+    "hubResourceId": {
+      "value": "<hubResourceId>"
+    },
+    "kind": {
+      "value": "Project"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/workspace:<version>'
+
+// Required parameters
+param name = 'mlswaip001'
+param sku = 'Basic'
+// Non-required parameters
+param hubResourceId = '<hubResourceId>'
+param kind = 'Project'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
   params: {
     // Required parameters
     name: 'mlswmin001'
@@ -290,9 +319,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
 
 
 <details>
@@ -301,7 +332,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswecr001'
@@ -460,9 +490,11 @@ param primaryUserAssignedIdentity = '<primaryUserAssignedIdentity>'
 </details>
 <p>
 
-### Example 4: _Creating Azure ML managed feature store_
+### Example 5: _Creating Azure ML managed feature store_
 
 This instance deploys an Azure ML managed feature store.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/feature-store]
 
 
 <details>
@@ -471,7 +503,6 @@ This instance deploys an Azure ML managed feature store.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswfs001'
@@ -566,9 +597,11 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
 
 <details>
@@ -577,7 +610,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswmax001'
@@ -614,19 +646,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
           vmSize: 'STANDARD_DS11_V2'
         }
         sku: 'Basic'
-      }
-    ]
-    connections: [
-      {
-        category: 'ApiKey'
-        connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
-        }
-        name: 'connection'
-        target: 'https://example.com'
       }
     ]
     datastores: [
@@ -807,21 +826,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             "vmSize": "STANDARD_DS11_V2"
           },
           "sku": "Basic"
-        }
-      ]
-    },
-    "connections": {
-      "value": [
-        {
-          "category": "ApiKey",
-          "connectionProperties": {
-            "authType": "ApiKey",
-            "credentials": {
-              "key": "key"
-            }
-          },
-          "name": "connection",
-          "target": "https://example.com"
         }
       ]
     },
@@ -1030,19 +1034,6 @@ param computes = [
     sku: 'Basic'
   }
 ]
-param connections = [
-  {
-    category: 'ApiKey'
-    connectionProperties: {
-      authType: 'ApiKey'
-      credentials: {
-        key: 'key'
-      }
-    }
-    name: 'connection'
-    target: 'https://example.com'
-  }
-]
 param datastores = [
   {
     name: 'datastore'
@@ -1164,9 +1155,11 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -1175,7 +1168,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module workspace 'br/public:avm/res/machine-learning-services/workspace:<version>' = {
-  name: 'workspaceDeployment'
   params: {
     // Required parameters
     name: 'mlswwaf001'
@@ -1619,7 +1611,6 @@ Connections to create in the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2524,7 +2515,6 @@ Datastores to create in the workspace.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2789,6 +2779,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -2808,6 +2799,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3337,6 +3335,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -3356,6 +3355,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -3809,6 +3815,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -3920,4 +3928,4 @@ computes: [
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

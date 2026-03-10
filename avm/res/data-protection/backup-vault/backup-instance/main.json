@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10390013005713732753"
+      "version": "0.41.2.15936",
+      "templateHash": "10099314168513896727"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -159,7 +159,7 @@
     },
     "backupInstance_dataSourceResource_rbac": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-RBAC', deployment().name)]",
       "resourceGroup": "[split(parameters('dataSourceInfo').resourceID, '/')[4]]",
       "properties": {
@@ -181,8 +181,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12922926946246637028"
+              "version": "0.41.2.15936",
+              "templateHash": "7796490744609699993"
             }
           },
           "parameters": {
@@ -207,7 +207,7 @@
               "condition": "[equals(variables('resourceType'), 'Microsoft.Storage/storageAccounts')]",
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('resourceId'), '/')))]",
               "name": "[guid(format('{0}-{1}-Storage-Account-Backup-Contributor', parameters('resourceId'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
@@ -219,7 +219,7 @@
               "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Compute/disks/{0}', last(split(parameters('resourceId'), '/')))]",
+              "scope": "[resourceId('Microsoft.Compute/disks', last(split(parameters('resourceId'), '/')))]",
               "name": "[guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",

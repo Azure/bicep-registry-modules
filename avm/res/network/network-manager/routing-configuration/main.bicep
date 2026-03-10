@@ -13,18 +13,22 @@ param name string
 @sys.description('Optional. A description of the routing configuration.')
 param description string = ''
 
+@sys.description('Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified.')
+param routeTableUsageMode resourceInput<'Microsoft.Network/networkManagers/routingConfigurations@2025-05-01'>.properties.routeTableUsageMode = 'ManagedOnly'
+
 @sys.description('Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules.')
 param ruleCollections routingConfigurationRuleCollectionType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 }
 
-resource routingConfigurations 'Microsoft.Network/networkManagers/routingConfigurations@2024-05-01' = {
+resource routingConfigurations 'Microsoft.Network/networkManagers/routingConfigurations@2025-05-01' = {
   name: name
   parent: networkManager
   properties: {
     description: description
+    routeTableUsageMode: routeTableUsageMode
   }
 }
 

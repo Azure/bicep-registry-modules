@@ -66,22 +66,22 @@ param networkAcls networkAclsType?
 ])
 param publicNetworkAccess string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
 param tags resourceInput<'Microsoft.KeyVault/vaults@2024-11-01'>.tags?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -228,9 +228,9 @@ resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: keyVault
 }
@@ -269,6 +269,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   params: {
     keyVaultName: keyVault.name
     accessPolicies: accessPolicies
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -285,6 +286,7 @@ module keyVault_secrets 'secret/main.bicep' = [
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -306,6 +308,7 @@ module keyVault_keys 'key/main.bicep' = [
       tags: key.?tags ?? tags
       roleAssignments: key.?roleAssignments
       rotationPolicy: key.?rotationPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

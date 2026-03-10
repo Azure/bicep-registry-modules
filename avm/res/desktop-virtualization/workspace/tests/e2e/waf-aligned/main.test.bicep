@@ -23,9 +23,17 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+  }
 }
 
 // Diagnostics
@@ -39,7 +47,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
-    location: resourceLocation
   }
 }
 
@@ -67,6 +74,70 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      privateEndpoints: [
+        {
+          service: 'feed'
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+          ipConfigurations: [
+            {
+              name: 'myIPconfig-feed1'
+              properties: {
+                groupId: 'feed'
+                memberName: 'web-r0'
+                privateIPAddress: '10.0.0.10'
+              }
+            }
+            {
+              name: 'myIPconfig-feed2'
+              properties: {
+                groupId: 'feed'
+                memberName: 'web-r1'
+                privateIPAddress: '10.0.0.13'
+              }
+            }
+          ]
+          customDnsConfigs: []
+        }
+        {
+          service: 'global'
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+          ipConfigurations: [
+            {
+              name: 'myIPconfig-global'
+              properties: {
+                groupId: 'global'
+                memberName: 'web'
+                privateIPAddress: '10.0.0.11'
+              }
+            }
+          ]
+          customDnsConfigs: []
+        }
+      ]
     }
   }
 ]

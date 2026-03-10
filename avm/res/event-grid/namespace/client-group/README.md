@@ -10,9 +10,9 @@ This module deploys an Eventgrid Namespace Client Group.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventGrid/namespaces/clientGroups` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clientGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventGrid/namespaces/clientGroups` | 2023-12-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_namespaces_clientgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/namespaces/clientGroups)</li></ul> |
 
 ## Parameters
 

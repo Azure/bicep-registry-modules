@@ -2,17 +2,26 @@
 
 This module deploys a Storage Account Blob Container Immutability Policy.
 
+You can reference the module as follows:
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account/blob-service/container/immutability-policy:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
 
 ## Parameters
 
@@ -27,8 +36,9 @@ This module deploys a Storage Account Blob Container Immutability Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowProtectedAppendWrites`](#parameter-allowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
-| [`allowProtectedAppendWritesAll`](#parameter-allowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`allowProtectedAppendWrites`](#parameter-allowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false. |
+| [`allowProtectedAppendWritesAll`](#parameter-allowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`immutabilityPeriodSinceCreationInDays`](#parameter-immutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
 
 ### Parameter: `containerName`
@@ -47,15 +57,23 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 ### Parameter: `allowProtectedAppendWrites`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `allowProtectedAppendWritesAll`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -76,3 +94,7 @@ The immutability period for the blobs in the container since the policy creation
 | `name` | string | The name of the deployed immutability policy. |
 | `resourceGroupName` | string | The resource group of the deployed immutability policy. |
 | `resourceId` | string | The resource ID of the deployed immutability policy. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

@@ -29,7 +29,7 @@ var storageAccountName = uniqueString('dep-${namePrefix}-menv-${serviceShort}sto
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -80,11 +80,11 @@ module testDeployment '../../../main.bicep' = [
         replicaCompletionCount: 1
         scale: {
           minExecutions: 1
-          maxExecutions: 1
+          maxExecutions: 10
           pollingInterval: 55
           rules: [
             {
-              name: 'queue'
+              name: 'queue-connectionstring'
               type: 'azure-queue'
               metadata: {
                 queueName: nestedDependencies.outputs.storageQueueName
@@ -92,10 +92,34 @@ module testDeployment '../../../main.bicep' = [
               }
               auth: [
                 {
-                  secretRef: 'connectionString'
+                  secretRef: 'connection-string'
                   triggerParameter: 'connection'
                 }
               ]
+            }
+            {
+              name: 'queue-identity-user'
+              type: 'azure-queue'
+              metadata: {
+                accountName: nestedDependencies.outputs.storageAccountName
+                cloud: 'AzurePublicCloud'
+                queueName: nestedDependencies.outputs.storageQueueName
+                queueLength: '2'
+              }
+              auth: []
+              identity: nestedDependencies.outputs.managedIdentityResourceId
+            }
+            {
+              name: 'queue-identity-system'
+              type: 'azure-queue'
+              metadata: {
+                accountName: nestedDependencies.outputs.storageAccountName
+                cloud: 'AzurePublicCloud'
+                queueName: nestedDependencies.outputs.storageQueueName
+                queueLength: '2'
+              }
+              auth: []
+              identity: 'system'
             }
           ]
         }
@@ -103,11 +127,7 @@ module testDeployment '../../../main.bicep' = [
       secrets: [
         {
           name: 'connection-string'
-          // needed for using listKeys in the secrets, as the storage account is created in the nested deployment and the value needs to exist at the time of deployment
-          value: listKeys(
-            '${resourceGroup.id}/providers/Microsoft.Storage/storageAccounts/${storageAccountName}',
-            '2023-04-01'
-          ).keys[0].value
+          value: nestedDependencies.outputs.storageAccountConnectionString
         }
       ]
       containers: [

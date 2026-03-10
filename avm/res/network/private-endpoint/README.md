@@ -2,6 +2,14 @@
 
 This module deploys a Private Endpoint.
 
+You can reference the module as follows:
+```bicep
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,12 +21,12 @@ This module deploys a Private Endpoint.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npemin001'
@@ -136,6 +145,8 @@ param privateLinkServiceConnections = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -143,7 +154,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npemax001'
@@ -171,6 +181,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
+    ipVersionType: 'IPv4'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -275,6 +286,9 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       ]
     },
+    "ipVersionType": {
+      "value": "IPv4"
+    },
     "location": {
       "value": "<location>"
     },
@@ -377,6 +391,7 @@ param ipConfigurations = [
     }
   }
 ]
+param ipVersionType = 'IPv4'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -436,6 +451,8 @@ param tags = {
 
 This instance deploys the module with a private link service to test the application of an empty list of string for `groupIds`.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private-link]
+
 
 <details>
 
@@ -443,7 +460,6 @@ This instance deploys the module with a private link service to test the applica
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npepls001'
@@ -561,6 +577,8 @@ param privateLinkServiceConnections = [
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -568,7 +586,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
-  name: 'privateEndpointDeployment'
   params: {
     // Required parameters
     name: 'npewaf001'
@@ -769,6 +786,7 @@ param tags = {
 | [`customNetworkInterfaceName`](#parameter-customnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`ipVersionType`](#parameter-ipversiontype) | string | Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`privateDnsZoneGroup`](#parameter-privatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
@@ -796,122 +814,12 @@ A grouping of information about the connection to the remote resource. Used when
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `manualPrivateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
-
-- Required: No
-- Type: string
-
 ### Parameter: `privateLinkServiceConnections`
 
 A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `privateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `privateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
-
-- Required: No
-- Type: string
 
 ### Parameter: `applicationSecurityGroupResourceIds`
 
@@ -926,32 +834,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
-
-### Parameter: `customDnsConfigs.ipAddresses`
-
-A list of private IP addresses of the private endpoint.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customDnsConfigs.fqdn`
-
-FQDN that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
 
 ### Parameter: `customNetworkInterfaceName`
 
@@ -975,55 +857,13 @@ A list of IP configurations of the private endpoint. This will be used to map to
 - Required: No
 - Type: array
 
-**Required parameters**
+### Parameter: `ipVersionType`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-ipconfigurationsname) | string | The name of the resource that is unique within a resource group. |
-| [`properties`](#parameter-ipconfigurationsproperties) | object | Properties of private endpoint IP configurations. |
+Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4.
 
-### Parameter: `ipConfigurations.name`
-
-The name of the resource that is unique within a resource group.
-
-- Required: Yes
+- Required: No
 - Type: string
-
-### Parameter: `ipConfigurations.properties`
-
-Properties of private endpoint IP configurations.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
-| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string. |
-| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
-
-### Parameter: `ipConfigurations.properties.groupId`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `ipConfigurations.properties.memberName`
-
-The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `ipConfigurations.properties.privateIPAddress`
-
-A private IP address obtained from the private endpoint's subnet.
-
-- Required: Yes
-- Type: string
+- Default: `'IPv4'`
 
 ### Parameter: `location`
 
@@ -1046,6 +886,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1065,6 +906,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1261,8 +1109,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

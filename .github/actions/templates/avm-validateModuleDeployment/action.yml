@@ -17,7 +17,6 @@
 ##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'                                |
 ##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'            |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
-##   | subscriptionId             | false    | ''      | The subscriptionId to deploy to                       | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
@@ -39,9 +38,6 @@ inputs:
   deploymentMetadataLocation:
     description: "The location to store the deployment metadata"
     required: true
-  subscriptionId:
-    description: "The subscription ID to deploy to"
-    required: false
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
@@ -105,11 +101,11 @@ runs:
           # List of modules requiring service principal + secret authentication
           $modulePath = "${{ inputs.modulePath }}"
           $exceptionModulePaths = @(
-            'avm/ptn/lz/sub-vending'                             # Failing on resource deletion when trying to delete RBAC at subscription level (hub-spoke test)
             'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/image'                              # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
@@ -132,7 +128,6 @@ runs:
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
       uses: azure/login@v2
       with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
         subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
@@ -217,9 +212,9 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ inputs.subscriptionId }}'
+            subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.ARM_TENANT_ID }}'
+            tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
 
           # Add local (source control) tokens
@@ -265,7 +260,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -345,7 +340,7 @@ runs:
 
           # Prepare general parameters
           # --------------------------
-          $subscriptionId = '${{ inputs.subscriptionId }}'
+          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -422,6 +417,28 @@ runs:
           }
 
           Write-Output '::endgroup::'
+
+    # [Azure login] task(s)
+    # ------------------------------
+    # Default: support both OIDC and service principal with secret
+    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
+    - name: "Azure Login - Default"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      uses: azure/login@v2
+      with:
+        client-id: ${{ env.VALIDATE_CLIENT_ID }}
+        tenant-id: ${{ env.VALIDATE_TENANT_ID }}
+        subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    # Exception: module requires login by using service principal with secret
+    # Should only be leveraged by modules listed in $exceptionModulePaths above
+    - name: "Azure Login - Exception"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
+      uses: azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
 
     # [Post-Deployment test] task(s)
     # ------------------------------
@@ -534,8 +551,8 @@ runs:
             ManagementGroupId = '${{ inputs.managementGroupId }}'
           }
 
-          if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
-              $functionInput['SubscriptionId'] = '${{ inputs.subscriptionId }}'
+          if (-not [String]::IsNullOrEmpty('${{ env.VALIDATE_SUBSCRIPTION_ID }}')) {
+              $functionInput['SubscriptionId'] = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
           }
 
           Write-Verbose 'Invoke task with' -Verbose

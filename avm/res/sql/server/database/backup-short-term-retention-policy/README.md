@@ -10,9 +10,9 @@ This module deploys an Azure SQL Server Database Short-Term Backup Retention Pol
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
 
 ## Parameters
 

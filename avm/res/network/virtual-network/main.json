@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13907244476360982437"
+      "version": "0.41.2.15936",
+      "templateHash": "1472786377929745029"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -112,6 +112,9 @@
             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "subnetType": {
@@ -285,6 +288,9 @@
             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "diagnosticSettingFullType": {
@@ -430,12 +436,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -721,11 +734,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "virtualNetwork"
@@ -738,7 +751,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -779,7 +792,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -802,8 +815,8 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -872,8 +885,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6928993269407282230"
+              "version": "0.41.2.15936",
+              "templateHash": "13992200806189615656"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1187,7 +1200,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Network/virtualNetworks/{0}/subnets/{1}', parameters('virtualNetworkName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1259,8 +1272,8 @@
         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1298,8 +1311,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6667873480569726785"
+              "version": "0.41.2.15936",
+              "templateHash": "6939030350004475953"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1414,8 +1427,8 @@
       },
       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
       "properties": {
@@ -1455,8 +1468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6667873480569726785"
+              "version": "0.41.2.15936",
+              "templateHash": "6939030350004475953"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."

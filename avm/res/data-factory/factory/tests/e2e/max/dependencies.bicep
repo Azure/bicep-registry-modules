@@ -15,7 +15,7 @@ param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -35,11 +35,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.datafactory.azure.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetworkName}-vnetlink'
     location: 'global'
     properties: {
@@ -51,7 +51,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -68,7 +68,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -90,12 +90,12 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'

@@ -2,6 +2,14 @@
 
 This module deploys an App Service Environment.
 
+You can reference the module as follows:
+```bicep
+module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,13 +21,13 @@ This module deploys an App Service Environment.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Web/hostingEnvironments` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments) |
-| `Microsoft.Web/hostingEnvironments/configurations` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments/configurations) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Web/hostingEnvironments` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_hostingenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/hostingEnvironments)</li></ul> |
+| `Microsoft.Web/hostingEnvironments/configurations` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_hostingenvironments_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/hostingEnvironments/configurations)</li></ul> |
 
 ## Usage examples
 
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with a base set of parameters. Note it does include the use of Availability zones by default.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with a base set of parameters. Note it does inc
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemin001'
@@ -98,6 +107,8 @@ param subnetResourceId = '<subnetResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -105,7 +116,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whemax001'
@@ -130,6 +140,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       }
     ]
     internalLoadBalancingMode: 'Web, Publishing'
+    ipsslAddressCount: 0
     kind: 'ASEv3'
     location: '<location>'
     lock: {
@@ -142,6 +153,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
+    multiSize: 'Standard_D2_v2'
     networkConfiguration: {
       properties: {
         allowNewPrivateEndpointConnections: true
@@ -231,6 +243,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
     },
+    "ipsslAddressCount": {
+      "value": 0
+    },
     "kind": {
       "value": "ASEv3"
     },
@@ -250,6 +265,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "multiSize": {
+      "value": "Standard_D2_v2"
     },
     "networkConfiguration": {
       "value": {
@@ -332,6 +350,7 @@ param diagnosticSettings = [
   }
 ]
 param internalLoadBalancingMode = 'Web, Publishing'
+param ipsslAddressCount = 0
 param kind = 'ASEv3'
 param location = '<location>'
 param lock = {
@@ -344,6 +363,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param multiSize = 'Standard_D2_v2'
 param networkConfiguration = {
   properties: {
     allowNewPrivateEndpointConnections: true
@@ -387,6 +407,8 @@ param zoneRedundant = true
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -394,7 +416,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'whewaf001'
@@ -419,6 +440,10 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       }
     ]
     internalLoadBalancingMode: 'Web, Publishing'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -438,6 +463,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
+    zoneRedundant: true
   }
 }
 ```
@@ -493,6 +519,12 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -519,6 +551,9 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "upgradePreference": {
       "value": "Late"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -557,6 +592,10 @@ param diagnosticSettings = [
   }
 ]
 param internalLoadBalancingMode = 'Web, Publishing'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -576,6 +615,7 @@ param tags = {
   resourceType: 'App Service Environment'
 }
 param upgradePreference = 'Late'
+param zoneRedundant = true
 ```
 
 </details>
@@ -604,10 +644,12 @@ param upgradePreference = 'Late'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontEndScaleFactor`](#parameter-frontendscalefactor) | int | Scale factor for frontends. |
 | [`internalLoadBalancingMode`](#parameter-internalloadbalancingmode) | string | Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. "None" Exposes the ASE-hosted apps on an internet-accessible IP address. |
+| [`ipsslAddressCount`](#parameter-ipssladdresscount) | int | Number of IP SSL addresses reserved for the App Service Environment. |
 | [`kind`](#parameter-kind) | string | Kind of resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`multiSize`](#parameter-multisize) | string | Front-end VM size, e.g. "Medium", "Large". |
 | [`networkConfiguration`](#parameter-networkconfiguration) | object | Properties to configure additional networking features. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -650,7 +692,6 @@ Enable the default custom domain suffix to use for all sites deployed on the ASE
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `customDnsSuffixCertificateUrl`
 
@@ -658,7 +699,6 @@ The URL referencing the Azure Key Vault certificate secret that should be used a
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `customDnsSuffixKeyVaultReferenceIdentity`
 
@@ -666,7 +706,6 @@ The user-assigned identity to use for resolving the key vault certificate refere
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `dedicatedHostCount`
 
@@ -674,7 +713,6 @@ The Dedicated Host Count. If `zoneRedundant` is false, and you want physical har
 
 - Required: No
 - Type: int
-- Default: `0`
 
 ### Parameter: `diagnosticSettings`
 
@@ -794,7 +832,6 @@ DNS suffix of the App Service Environment.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -819,15 +856,13 @@ Specifies which endpoints to serve internally in the Virtual Network for the App
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'None'
-    'Publishing'
-    'Web'
-    'Web, Publishing'
-  ]
-  ```
+
+### Parameter: `ipsslAddressCount`
+
+Number of IP SSL addresses reserved for the App Service Environment.
+
+- Required: No
+- Type: int
 
 ### Parameter: `kind`
 
@@ -864,6 +899,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -883,6 +919,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -914,6 +957,13 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `multiSize`
+
+Front-end VM size, e.g. "Medium", "Large".
+
+- Required: No
+- Type: string
 
 ### Parameter: `networkConfiguration`
 
@@ -1039,15 +1089,6 @@ Specify preference for when and how the planned maintenance is applied.
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'Early'
-    'Late'
-    'Manual'
-    'None'
-  ]
-  ```
 
 ### Parameter: `zoneRedundant`
 
@@ -1073,8 +1114,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

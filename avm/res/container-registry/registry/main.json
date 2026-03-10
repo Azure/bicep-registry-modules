@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7725937349396046157"
+      "version": "0.41.2.15936",
+      "templateHash": "13920025132156824812"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -300,6 +300,43 @@
         "description": "The type for a webhook."
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -322,7 +359,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -364,7 +401,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -405,7 +442,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -625,12 +737,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -784,7 +903,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -793,7 +912,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -804,6 +923,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -818,7 +940,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -931,6 +1053,31 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
+    "autoGeneratedDomainNameLabelScope": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "NoReuse",
+        "ResourceGroupReuse",
+        "SubscriptionReuse",
+        "TenantReuse",
+        "Unsecure"
+      ],
+      "metadata": {
+        "description": "Optional. The domain name label reuse scope."
+      }
+    },
+    "roleAssignmentMode": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "AbacRepositoryPermissions",
+        "LegacyRegistryPermissions"
+      ],
+      "metadata": {
+        "description": "Optional. The registry permissions role assignment mode."
+      }
+    },
     "acrSku": {
       "type": "string",
       "defaultValue": "Premium",
@@ -996,13 +1143,13 @@
     },
     "azureADAuthenticationAsArmPolicyStatus": {
       "type": "string",
-      "defaultValue": "enabled",
+      "defaultValue": "disabled",
       "allowedValues": [
         "disabled",
         "enabled"
       ],
       "metadata": {
-        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled."
+        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is disabled."
       }
     },
     "softDeletePolicyStatus": {
@@ -1127,10 +1274,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries@2025-04-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1212,6 +1362,10 @@
       "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
       "AcrQuarantineReader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cdda3590-29a3-44f6-95f2-9f980659eb04')]",
       "AcrQuarantineWriter": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c8d4ff99-41c3-41a8-9f60-21dfdad59608')]",
+      "Container Registry Repository Catalog Lister": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bfdb9389-c9a5-478a-bb2f-ba9ca092c3c7')]",
+      "Container Registry Repository Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2efddaa5-3f1f-4df3-97df-af3f13818f4c')]",
+      "Container Registry Repository Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b93aa761-3e63-49ed-ac28-beffa264f7ac')]",
+      "Container Registry Repository Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a1e307c-b015-4ebd-883e-5b7698a07328')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -1224,7 +1378,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1253,7 +1407,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1262,14 +1416,14 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "registry": {
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-03-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -1280,6 +1434,8 @@
       "properties": {
         "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
         "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
+        "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
+        "roleAssignmentMode": "[parameters('roleAssignmentMode')]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
         "policies": {
           "azureADAuthenticationAsArmPolicy": {
@@ -1309,11 +1465,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "registry"
@@ -1326,7 +1482,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1367,7 +1523,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1388,7 +1544,7 @@
         "count": "[length(coalesce(parameters('scopeMaps'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Registry-Scope-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1416,8 +1572,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11112300500664950599"
+              "version": "0.41.2.15936",
+              "templateHash": "17465217694836744526"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -1505,7 +1661,7 @@
         "count": "[length(coalesce(parameters('replications'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Registry-Replication-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1539,8 +1695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6036875058945996178"
+              "version": "0.41.2.15936",
+              "templateHash": "8221408442125842131"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -1652,7 +1808,7 @@
         "count": "[length(coalesce(parameters('credentialSets'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Registry-CredentialSet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1683,8 +1839,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15848218260506856293"
+              "version": "0.41.2.15936",
+              "templateHash": "3046796758461933908"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
@@ -1836,7 +1992,7 @@
         "count": "[length(coalesce(parameters('cacheRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Registry-Cache-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1867,8 +2023,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3783697279882479947"
+              "version": "0.41.2.15936",
+              "templateHash": "17771847666459415024"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -1962,7 +2118,7 @@
         "count": "[length(coalesce(parameters('webhooks'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Registry-Webhook-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2005,8 +2161,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10084997815751263562"
+              "version": "0.41.2.15936",
+              "templateHash": "14711679489523450608"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -2174,7 +2330,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-registry-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -2230,8 +2386,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2640,7 +2796,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2658,7 +2814,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2746,8 +2902,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2819,12 +2975,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2888,7 +3044,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -2940,7 +3096,7 @@
       "metadata": {
         "description": "The reference to the Azure container registry."
       },
-      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2019-05-01').loginServer]"
+      "value": "[reference('registry').loginServer]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -2962,14 +3118,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('registry', '2025-03-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('registry', '2025-03-01-preview', 'full').location]"
     },
     "credentialSetsSystemAssignedMIPrincipalIds": {
       "type": "array",

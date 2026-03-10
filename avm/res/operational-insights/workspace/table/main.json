@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "315390662258960765"
+      "version": "0.41.2.15936",
+      "templateHash": "14596822136960656169"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table."
@@ -290,11 +290,11 @@
     },
     "retentionInDays": {
       "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "nullable": true,
+      "minValue": 4,
       "maxValue": 730,
       "metadata": {
-        "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
+        "description": "Optional. The table retention in days, between 4 and 730. Don't provide to use the default workspace retention."
       }
     },
     "schema": {
@@ -313,11 +313,11 @@
     },
     "totalRetentionInDays": {
       "type": "int",
-      "defaultValue": -1,
-      "minValue": -1,
+      "nullable": true,
+      "minValue": 4,
       "maxValue": 2555,
       "metadata": {
-        "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
+        "description": "Optional. The table total retention in days, between 4 and 2555. Don't provide use the default table retention."
       }
     },
     "roleAssignments": {
@@ -355,20 +355,20 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[parameters('workspaceName')]"
     },
     "table": {
       "type": "Microsoft.OperationalInsights/workspaces/tables",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "plan": "[parameters('plan')]",
         "restoredLogs": "[parameters('restoredLogs')]",
-        "retentionInDays": "[parameters('retentionInDays')]",
+        "retentionInDays": "[coalesce(parameters('retentionInDays'), -1)]",
         "schema": "[parameters('schema')]",
         "searchResults": "[parameters('searchResults')]",
-        "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
+        "totalRetentionInDays": "[coalesce(parameters('totalRetentionInDays'), -1)]"
       }
     },
     "table_roleAssignments": {
@@ -378,7 +378,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}/tables/{1}', parameters('workspaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

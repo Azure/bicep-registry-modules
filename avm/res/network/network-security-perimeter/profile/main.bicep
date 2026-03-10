@@ -11,11 +11,11 @@ param name string
 @description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
 param accessRules accessRuleType[]?
 
-resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2023-08-01-preview' existing = {
+resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2024-07-01' existing = {
   name: networkPerimeterName
 }
 
-resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPerimeters/profiles@2023-08-01-preview' = {
+resource networkSecurityPerimeter_profile 'Microsoft.Network/networkSecurityPerimeters/profiles@2024-07-01' = {
   name: name
   parent: networkSecurityPerimeter
 }

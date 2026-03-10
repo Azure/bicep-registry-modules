@@ -3,19 +3,6 @@ metadata description = 'This module deploys an Azure Security Center (Defender f
 
 targetScope = 'subscription'
 
-@description('Required. The full resource Id of the Log Analytics workspace to save the data in.')
-param workspaceResourceId string
-
-@description('Required. All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope.')
-param scope string
-
-@description('Optional. Describes what kind of security agent provisioning action to take. - On or Off.')
-@allowed([
-  'On'
-  'Off'
-])
-param autoProvision string = 'On'
-
 @description('Optional. Device Security group data.')
 param deviceSecurityGroupProperties object = {}
 
@@ -49,6 +36,16 @@ param appServicesPricingTier string = 'Free'
   'Standard'
 ])
 param storageAccountsPricingTier string = 'Free'
+
+@description('Optional. If the pricing tier value for StorageAccounts is Standard. Choose the settings for malware scanning.')
+param storageAccountsMalwareScanningSettings {
+  @description('Required. Enable or disable on-upload malware scanning for storage accounts. - True or False.')
+  onUploadMalwareScanningEnabled: ('True' | 'False')
+  @description('Optional. If on-upload malware scanning is enabled, set a cap for the amount of GB per month per storage account that can be scanned. If not set, there will be no cap applied.')
+  capGBPerMonthPerStorageAccount: int?
+  @description('Required. Enable or disable sensitive data discovery for storage accounts. - True or False.')
+  sensitiveDataDiscoveryEnabled: ('True' | 'False')
+}?
 
 @description('Optional. The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.')
 @allowed([
@@ -138,6 +135,7 @@ var pricings = [
   {
     name: 'StorageAccounts'
     pricingTier: storageAccountsPricingTier
+    storageAccountsMalwareScanningSettings: storageAccountsMalwareScanningSettings
   }
   {
     name: 'SqlServerVirtualMachines'
@@ -201,21 +199,35 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 @batchSize(1)
-resource pricingTiers 'Microsoft.Security/pricings@2018-06-01' = [
+resource pricingTiers 'Microsoft.Security/pricings@2024-01-01' = [
   for (pricing, index) in pricings: {
     name: pricing.name
     properties: {
       pricingTier: pricing.pricingTier
+      subPlan: pricing.name == 'VirtualMachines' && pricing.pricingTier == 'Standard'
+        ? 'P2'
+        : pricing.name == 'StorageAccounts' && pricing.pricingTier == 'Standard' ? 'DefenderForStorageV2' : null
+      #disable-next-line BCP187
+      extensions: pricing.name == 'StorageAccounts' && pricing.pricingTier == 'Standard' && !empty(pricing.?storageAccountsMalwareScanningSettings)
+        ? [
+            {
+              name: 'OnUploadMalwareScanning'
+              isEnabled: storageAccountsMalwareScanningSettings.?onUploadMalwareScanningEnabled
+              additionalExtensionProperties: (storageAccountsMalwareScanningSettings.?capGBPerMonthPerStorageAccount != null)
+                ? {
+                    CapGBPerMonthPerStorageAccount: storageAccountsMalwareScanningSettings.?capGBPerMonthPerStorageAccount
+                  }
+                : null
+            }
+            {
+              name: 'SensitiveDataDiscovery'
+              isEnabled: storageAccountsMalwareScanningSettings.?sensitiveDataDiscoveryEnabled
+            }
+          ]
+        : null
     }
   }
 ]
-
-resource autoProvisioningSettings 'Microsoft.Security/autoProvisioningSettings@2017-08-01-preview' = {
-  name: 'default'
-  properties: {
-    autoProvision: autoProvision
-  }
-}
 
 resource deviceSecurityGroups 'Microsoft.Security/deviceSecurityGroups@2019-08-01' = if (!empty(deviceSecurityGroupProperties)) {
   name: 'deviceSecurityGroups'
@@ -235,29 +247,15 @@ module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(io
   }
 }
 
-resource securityContacts 'Microsoft.Security/securityContacts@2017-08-01-preview' = if (!empty(securityContactProperties)) {
+resource securityContacts 'Microsoft.Security/securityContacts@2023-12-01-preview' = if (!empty(securityContactProperties)) {
   name: 'default'
   properties: {
-    email: securityContactProperties.email
-    phone: securityContactProperties.phone
-    alertNotifications: securityContactProperties.alertNotifications
-    alertsToAdmins: securityContactProperties.alertsToAdmins
+    emails: securityContactProperties.emails
+    isEnabled: securityContactProperties.?isEnabled ?? true
+    notificationsByRole: securityContactProperties.notificationsByRole
+    notificationsSources: securityContactProperties.notificationsSources
   }
 }
-
-resource workspaceSettings 'Microsoft.Security/workspaceSettings@2017-08-01-preview' = {
-  name: 'default'
-  properties: {
-    workspaceId: workspaceResourceId
-    scope: scope
-  }
-  dependsOn: [
-    autoProvisioningSettings
-  ]
-}
-
-@description('The resource ID of the used log analytics workspace.')
-output workspaceResourceId string = workspaceResourceId
 
 @description('The name of the security center.')
 output name string = 'Security'

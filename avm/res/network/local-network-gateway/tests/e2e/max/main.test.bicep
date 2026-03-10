@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -52,9 +51,11 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      localAddressPrefixes: [
-        '192.168.1.0/24'
-      ]
+      localNetworkAddressSpace: {
+        addressPrefixes: [
+          '192.168.1.0/24'
+        ]
+      }
       localGatewayPublicIpAddress: '8.8.8.8'
       bgpSettings: {
         localAsn: 65123

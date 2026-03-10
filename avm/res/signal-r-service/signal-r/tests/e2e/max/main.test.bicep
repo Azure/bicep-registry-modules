@@ -37,7 +37,19 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: resourceLocation
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
   }
 }
 
@@ -151,6 +163,14 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      diagnosticSettings: [
+        {
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
     }
   }
 ]

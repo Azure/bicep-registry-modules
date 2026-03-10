@@ -2,6 +2,14 @@
 
 This module deploys a VPN Gateway.
 
+You can reference the module as follows:
+```bicep
+module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,12 +22,12 @@ This module deploys a VPN Gateway.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways) |
-| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules) |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Network/vpnGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways)</li></ul> |
+| `Microsoft.Network/vpnGateways/natRules` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules)</li></ul> |
+| `Microsoft.Network/vpnGateways/vpnConnections` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_vpnconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections)</li></ul> |
 
 ## Usage examples
 
@@ -38,6 +46,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -45,7 +55,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: 'vpnGatewayDeployment'
   params: {
     // Required parameters
     name: 'vpngmin001'
@@ -99,6 +108,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -106,7 +117,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: 'vpnGatewayDeployment'
   params: {
     // Required parameters
     name: 'vpngmax001'
@@ -307,6 +317,8 @@ param vpnConnections = [
 
 This instance deploys the module using NAT rule.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nat-rule]
+
 
 <details>
 
@@ -314,7 +326,6 @@ This instance deploys the module using NAT rule.
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: 'vpnGatewayDeployment'
   params: {
     // Required parameters
     name: 'vpngnat001'
@@ -325,7 +336,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
       peerWeight: 0
     }
     enableTelemetry: true
-    location: '<location>'
     natRules: [
       {
         externalMappings: [
@@ -431,9 +441,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "enableTelemetry": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "natRules": {
       "value": [
         {
@@ -535,7 +542,6 @@ param bgpSettings = {
   peerWeight: 0
 }
 param enableTelemetry = true
-param location = '<location>'
 param natRules = [
   {
     externalMappings: [
@@ -617,6 +623,8 @@ param vpnGatewayScaleUnit = 2
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -624,7 +632,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
-  name: 'vpnGatewayDeployment'
   params: {
     // Required parameters
     name: 'vpngwaf001'
@@ -634,7 +641,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
       asn: 65515
       peerWeight: 0
     }
-    location: '<location>'
     natRules: [
       {
         externalMappings: [
@@ -700,9 +706,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
         "peerWeight": 0
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "natRules": {
       "value": [
         {
@@ -766,7 +769,6 @@ param bgpSettings = {
   asn: 65515
   peerWeight: 0
 }
-param location = '<location>'
 param natRules = [
   {
     externalMappings: [
@@ -820,7 +822,7 @@ param vpnConnections = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. |
+| [`bgpSettings`](#parameter-bgpsettings) | object | BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously. |
 | [`enableBgpRouteTranslationForNat`](#parameter-enablebgproutetranslationfornat) | bool | Enable BGP routes translation for NAT on this VPN gateway. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | Enable routing preference property for the public IP interface of the VPN gateway. |
@@ -847,69 +849,10 @@ The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gatewa
 
 ### Parameter: `bgpSettings`
 
-BGP settings details.
+BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`asn`](#parameter-bgpsettingsasn) | int | The BGP speaker's ASN (Autonomous System Number). |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. |
-| [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
-
-### Parameter: `bgpSettings.asn`
-
-The BGP speaker's ASN (Autonomous System Number).
-
-- Required: Yes
-- Type: int
-- MinValue: 0
-- MaxValue: 4294967295
-
-### Parameter: `bgpSettings.bgpPeeringAddresses`
-
-BGP peering addresses for this VPN Gateway.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses. |
-| [`ipconfigurationId`](#parameter-bgpsettingsbgppeeringaddressesipconfigurationid) | string | The IP configuration ID. |
-
-### Parameter: `bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
-
-The custom BGP peering addresses.
-
-- Required: No
-- Type: array
-
-### Parameter: `bgpSettings.bgpPeeringAddresses.ipconfigurationId`
-
-The IP configuration ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `bgpSettings.peerWeight`
-
-The weight added to routes learned from this BGP speaker.
-
-- Required: No
-- Type: int
-- MinValue: 0
-- MaxValue: 100
 
 ### Parameter: `enableBgpRouteTranslationForNat`
 
@@ -956,6 +899,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -979,13 +923,19 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `natRules`
 
 List of all the NAT Rules to associate with the gateway.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -998,7 +948,7 @@ List of all the NAT Rules to associate with the gateway.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`externalMappings`](#parameter-natrulesexternalmappings) | array | External mappings. |
-| [`internalMappings`](#parameter-natrulesinternalmappings) | array | Internal mappings. |
+| [`internalMappings`](#parameter-natrulesinternalmappings) | array | An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range. |
 | [`ipConfigurationId`](#parameter-natrulesipconfigurationid) | string | IP configuration ID. |
 | [`mode`](#parameter-natrulesmode) | string | NAT rule mode. |
 | [`type`](#parameter-natrulestype) | string | NAT rule type. |
@@ -1017,64 +967,12 @@ External mappings.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressSpace`](#parameter-natrulesexternalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`portRange`](#parameter-natrulesexternalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
-
-### Parameter: `natRules.externalMappings.addressSpace`
-
-Address space for VPN NAT rule mapping.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `natRules.externalMappings.portRange`
-
-Port range for VPN NAT rule mapping.
-
-- Required: No
-- Type: string
-
 ### Parameter: `natRules.internalMappings`
 
-Internal mappings.
+An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressSpace`](#parameter-natrulesinternalmappingsaddressspace) | string | Address space for VPN NAT rule mapping. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`portRange`](#parameter-natrulesinternalmappingsportrange) | string | Port range for VPN NAT rule mapping. |
-
-### Parameter: `natRules.internalMappings.addressSpace`
-
-Address space for VPN NAT rule mapping.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `natRules.internalMappings.portRange`
-
-Port range for VPN NAT rule mapping.
-
-- Required: No
-- Type: string
 
 ### Parameter: `natRules.ipConfigurationId`
 
@@ -1124,7 +1022,6 @@ The VPN connections to create in the VPN gateway.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1140,16 +1037,16 @@ The VPN connections to create in the VPN gateway.
 | [`enableBgp`](#parameter-vpnconnectionsenablebgp) | bool | Enable BGP flag. |
 | [`enableInternetSecurity`](#parameter-vpnconnectionsenableinternetsecurity) | bool | Enable internet security. |
 | [`enableRateLimiting`](#parameter-vpnconnectionsenableratelimiting) | bool | Enable rate limiting. |
-| [`ipsecPolicies`](#parameter-vpnconnectionsipsecpolicies) | array | IPSec policies. |
+| [`ipsecPolicies`](#parameter-vpnconnectionsipsecpolicies) | array | The IPSec policies to be considered by this connection. |
 | [`remoteVpnSiteResourceId`](#parameter-vpnconnectionsremotevpnsiteresourceid) | string | Remote VPN site resource ID. |
-| [`routingConfiguration`](#parameter-vpnconnectionsroutingconfiguration) | object | Routing configuration. |
+| [`routingConfiguration`](#parameter-vpnconnectionsroutingconfiguration) | object | Routing configuration indicating the associated and propagated route tables for this connection. |
 | [`routingWeight`](#parameter-vpnconnectionsroutingweight) | int | Routing weight. |
-| [`sharedKey`](#parameter-vpnconnectionssharedkey) | string | Shared key. |
-| [`trafficSelectorPolicies`](#parameter-vpnconnectionstrafficselectorpolicies) | array | Traffic selector policies. |
+| [`sharedKey`](#parameter-vpnconnectionssharedkey) | securestring | Shared key. |
+| [`trafficSelectorPolicies`](#parameter-vpnconnectionstrafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-vpnconnectionsuselocalazureipaddress) | bool | Use local Azure IP address. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-vpnconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
 | [`vpnConnectionProtocolType`](#parameter-vpnconnectionsvpnconnectionprotocoltype) | string | VPN connection protocol type. |
-| [`vpnLinkConnections`](#parameter-vpnconnectionsvpnlinkconnections) | array | VPN link connections. |
+| [`vpnLinkConnections`](#parameter-vpnconnectionsvpnlinkconnections) | array | List of all VPN site link connections to the gateway. |
 
 ### Parameter: `vpnConnections.name`
 
@@ -1188,154 +1085,10 @@ Enable rate limiting.
 
 ### Parameter: `vpnConnections.ipsecPolicies`
 
-IPSec policies.
+The IPSec policies to be considered by this connection.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dhGroup`](#parameter-vpnconnectionsipsecpoliciesdhgroup) | string | The DH Group used in IKE Phase 1 for initial SA. |
-| [`ikeEncryption`](#parameter-vpnconnectionsipsecpoliciesikeencryption) | string | The IKE encryption algorithm (IKE phase 2). |
-| [`ikeIntegrity`](#parameter-vpnconnectionsipsecpoliciesikeintegrity) | string | The IKE integrity algorithm (IKE phase 2). |
-| [`ipsecEncryption`](#parameter-vpnconnectionsipsecpoliciesipsecencryption) | string | The IPSec encryption algorithm (IKE phase 1). |
-| [`ipsecIntegrity`](#parameter-vpnconnectionsipsecpoliciesipsecintegrity) | string | The IPSec integrity algorithm (IKE phase 1). |
-| [`pfsGroup`](#parameter-vpnconnectionsipsecpoliciespfsgroup) | string | The Pfs Group used in IKE Phase 2 for new child SA. |
-| [`saDataSizeKilobytes`](#parameter-vpnconnectionsipsecpoliciessadatasizekilobytes) | int | The IPSec Security Association payload size in KB for a site to site VPN tunnel. |
-| [`saLifeTimeSeconds`](#parameter-vpnconnectionsipsecpoliciessalifetimeseconds) | int | The IPSec Security Association lifetime in seconds for a site to site VPN tunnel. |
-
-### Parameter: `vpnConnections.ipsecPolicies.dhGroup`
-
-The DH Group used in IKE Phase 1 for initial SA.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DHGroup1'
-    'DHGroup14'
-    'DHGroup2'
-    'DHGroup2048'
-    'DHGroup24'
-    'ECP256'
-    'ECP384'
-    'None'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.ikeEncryption`
-
-The IKE encryption algorithm (IKE phase 2).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AES128'
-    'AES192'
-    'AES256'
-    'DES'
-    'DES3'
-    'GCMAES128'
-    'GCMAES256'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.ikeIntegrity`
-
-The IKE integrity algorithm (IKE phase 2).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'GCMAES128'
-    'GCMAES256'
-    'MD5'
-    'SHA1'
-    'SHA256'
-    'SHA384'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.ipsecEncryption`
-
-The IPSec encryption algorithm (IKE phase 1).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AES128'
-    'AES192'
-    'AES256'
-    'DES'
-    'DES3'
-    'GCMAES128'
-    'GCMAES192'
-    'GCMAES256'
-    'None'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.ipsecIntegrity`
-
-The IPSec integrity algorithm (IKE phase 1).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'GCMAES128'
-    'GCMAES192'
-    'GCMAES256'
-    'MD5'
-    'SHA1'
-    'SHA256'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.pfsGroup`
-
-The Pfs Group used in IKE Phase 2 for new child SA.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ECP256'
-    'ECP384'
-    'None'
-    'PFS1'
-    'PFS14'
-    'PFS2'
-    'PFS2048'
-    'PFS24'
-    'PFSMM'
-  ]
-  ```
-
-### Parameter: `vpnConnections.ipsecPolicies.saDataSizeKilobytes`
-
-The IPSec Security Association payload size in KB for a site to site VPN tunnel.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `vpnConnections.ipsecPolicies.saLifeTimeSeconds`
-
-The IPSec Security Association lifetime in seconds for a site to site VPN tunnel.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `vpnConnections.remoteVpnSiteResourceId`
 
@@ -1346,156 +1099,10 @@ Remote VPN site resource ID.
 
 ### Parameter: `vpnConnections.routingConfiguration`
 
-Routing configuration.
+Routing configuration indicating the associated and propagated route tables for this connection.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`associatedRouteTable`](#parameter-vpnconnectionsroutingconfigurationassociatedroutetable) | object | The associated route table for this connection. |
-| [`propagatedRouteTables`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetables) | object | The propagated route tables for this connection. |
-| [`vnetRoutes`](#parameter-vpnconnectionsroutingconfigurationvnetroutes) | object | The virtual network routes for this connection. |
-
-### Parameter: `vpnConnections.routingConfiguration.associatedRouteTable`
-
-The associated route table for this connection.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-vpnconnectionsroutingconfigurationassociatedroutetableid) | string | The resource ID of the route table. |
-
-### Parameter: `vpnConnections.routingConfiguration.associatedRouteTable.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables`
-
-The propagated route tables for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ids`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetablesids) | array | The list of route table resource IDs to propagate to. |
-| [`labels`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetableslabels) | array | The list of labels to propagate to. |
-
-### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.ids`
-
-The list of route table resource IDs to propagate to.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetablesidsid) | string | The resource ID of the route table. |
-
-### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.ids.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.labels`
-
-The list of labels to propagate to.
-
-- Required: No
-- Type: array
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes`
-
-The virtual network routes for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`staticRoutes`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutes) | array | The list of static routes. |
-| [`staticRoutesConfig`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesconfig) | object | Static routes configuration. |
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes`
-
-The list of static routes.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesaddressprefixes) | array | The address prefixes for the static route. |
-| [`name`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesname) | string | The name of the static route. |
-| [`nextHopIpAddress`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesnexthopipaddress) | string | The next hop IP address for the static route. |
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.addressPrefixes`
-
-The address prefixes for the static route.
-
-- Required: No
-- Type: array
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.name`
-
-The name of the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.nextHopIpAddress`
-
-The next hop IP address for the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig`
-
-Static routes configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`vnetLocalRouteOverrideCriteria`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesconfigvnetlocalrouteoverridecriteria) | string | Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke. |
-
-### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig.vnetLocalRouteOverrideCriteria`
-
-Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Contains'
-    'Equal'
-  ]
-  ```
 
 ### Parameter: `vpnConnections.routingWeight`
 
@@ -1509,34 +1116,13 @@ Routing weight.
 Shared key.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `vpnConnections.trafficSelectorPolicies`
 
-Traffic selector policies.
+The traffic selector policies to be considered by this connection.
 
 - Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`localAddressRanges`](#parameter-vpnconnectionstrafficselectorpolicieslocaladdressranges) | array | A collection of local address spaces in CIDR format. |
-| [`remoteAddressRanges`](#parameter-vpnconnectionstrafficselectorpoliciesremoteaddressranges) | array | A collection of remote address spaces in CIDR format. |
-
-### Parameter: `vpnConnections.trafficSelectorPolicies.localAddressRanges`
-
-A collection of local address spaces in CIDR format.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `vpnConnections.trafficSelectorPolicies.remoteAddressRanges`
-
-A collection of remote address spaces in CIDR format.
-
-- Required: Yes
 - Type: array
 
 ### Parameter: `vpnConnections.useLocalAzureIpAddress`
@@ -1569,375 +1155,10 @@ VPN connection protocol type.
 
 ### Parameter: `vpnConnections.vpnLinkConnections`
 
-VPN link connections.
+List of all VPN site link connections to the gateway.
 
 - Required: No
 - Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-vpnconnectionsvpnlinkconnectionsname) | string | The name of the VPN site link connection. |
-| [`properties`](#parameter-vpnconnectionsvpnlinkconnectionsproperties) | object | Properties of the VPN site link connection. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.name`
-
-The name of the VPN site link connection.
-
-- Required: No
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties`
-
-Properties of the VPN site link connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`connectionBandwidth`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesconnectionbandwidth) | int | Expected bandwidth in MBPS. |
-| [`dpdTimeoutSeconds`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesdpdtimeoutseconds) | int | Dead Peer Detection timeout in seconds for VPN link connection. |
-| [`egressNatRules`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesegressnatrules) | array | List of egress NAT rules. |
-| [`enableBgp`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesenablebgp) | bool | EnableBgp flag. |
-| [`enableRateLimiting`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesenableratelimiting) | bool | EnableBgp flag for rate limiting. |
-| [`ingressNatRules`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesingressnatrules) | array | List of ingress NAT rules. |
-| [`ipsecPolicies`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpolicies) | array | The IPSec Policies to be considered by this connection. |
-| [`routingWeight`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesroutingweight) | int | Routing weight for VPN connection. |
-| [`sharedKey`](#parameter-vpnconnectionsvpnlinkconnectionspropertiessharedkey) | string | SharedKey for the VPN connection. |
-| [`useLocalAzureIpAddress`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesuselocalazureipaddress) | bool | Use local azure ip to initiate connection. |
-| [`usePolicyBasedTrafficSelectors`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesusepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
-| [`vpnConnectionProtocolType`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpnconnectionprotocoltype) | string | Connection protocol used for this connection. |
-| [`vpnGatewayCustomBgpAddresses`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpngatewaycustombgpaddresses) | array | VPN gateway custom BGP addresses used by this connection. |
-| [`vpnLinkConnectionMode`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpnlinkconnectionmode) | string | VPN link connection mode. |
-| [`vpnSiteLink`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpnsitelink) | object | Id of the connected VPN site link. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.connectionBandwidth`
-
-Expected bandwidth in MBPS.
-
-- Required: No
-- Type: int
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.dpdTimeoutSeconds`
-
-Dead Peer Detection timeout in seconds for VPN link connection.
-
-- Required: No
-- Type: int
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.egressNatRules`
-
-List of egress NAT rules.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesegressnatrulesid) | string | Resource ID of the egress NAT rule. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.egressNatRules.id`
-
-Resource ID of the egress NAT rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.enableBgp`
-
-EnableBgp flag.
-
-- Required: No
-- Type: bool
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.enableRateLimiting`
-
-EnableBgp flag for rate limiting.
-
-- Required: No
-- Type: bool
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ingressNatRules`
-
-List of ingress NAT rules.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesingressnatrulesid) | string | Resource ID of the ingress NAT rule. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ingressNatRules.id`
-
-Resource ID of the ingress NAT rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies`
-
-The IPSec Policies to be considered by this connection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dhGroup`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciesdhgroup) | string | The DH Group used in IKE Phase 1 for initial SA. |
-| [`ikeEncryption`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciesikeencryption) | string | The IKE encryption algorithm (IKE phase 2). |
-| [`ikeIntegrity`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciesikeintegrity) | string | The IKE integrity algorithm (IKE phase 2). |
-| [`ipsecEncryption`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciesipsecencryption) | string | The IPSec encryption algorithm (IKE phase 1). |
-| [`ipsecIntegrity`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciesipsecintegrity) | string | The IPSec integrity algorithm (IKE phase 1). |
-| [`pfsGroup`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciespfsgroup) | string | The Pfs Group used in IKE Phase 2 for new child SA. |
-| [`saDataSizeKilobytes`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciessadatasizekilobytes) | int | The IPSec Security Association payload size in KB for a site to site VPN tunnel. |
-| [`saLifeTimeSeconds`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesipsecpoliciessalifetimeseconds) | int | The IPSec Security Association lifetime in seconds for a site to site VPN tunnel. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.dhGroup`
-
-The DH Group used in IKE Phase 1 for initial SA.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DHGroup1'
-    'DHGroup14'
-    'DHGroup2'
-    'DHGroup2048'
-    'DHGroup24'
-    'ECP256'
-    'ECP384'
-    'None'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.ikeEncryption`
-
-The IKE encryption algorithm (IKE phase 2).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AES128'
-    'AES192'
-    'AES256'
-    'DES'
-    'DES3'
-    'GCMAES128'
-    'GCMAES256'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.ikeIntegrity`
-
-The IKE integrity algorithm (IKE phase 2).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'GCMAES128'
-    'GCMAES256'
-    'MD5'
-    'SHA1'
-    'SHA256'
-    'SHA384'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.ipsecEncryption`
-
-The IPSec encryption algorithm (IKE phase 1).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AES128'
-    'AES192'
-    'AES256'
-    'DES'
-    'DES3'
-    'GCMAES128'
-    'GCMAES192'
-    'GCMAES256'
-    'None'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.ipsecIntegrity`
-
-The IPSec integrity algorithm (IKE phase 1).
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'GCMAES128'
-    'GCMAES192'
-    'GCMAES256'
-    'MD5'
-    'SHA1'
-    'SHA256'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.pfsGroup`
-
-The Pfs Group used in IKE Phase 2 for new child SA.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ECP256'
-    'ECP384'
-    'None'
-    'PFS1'
-    'PFS14'
-    'PFS2'
-    'PFS2048'
-    'PFS24'
-    'PFSMM'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.saDataSizeKilobytes`
-
-The IPSec Security Association payload size in KB for a site to site VPN tunnel.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.ipsecPolicies.saLifeTimeSeconds`
-
-The IPSec Security Association lifetime in seconds for a site to site VPN tunnel.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.routingWeight`
-
-Routing weight for VPN connection.
-
-- Required: No
-- Type: int
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.sharedKey`
-
-SharedKey for the VPN connection.
-
-- Required: No
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.useLocalAzureIpAddress`
-
-Use local azure ip to initiate connection.
-
-- Required: No
-- Type: bool
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.usePolicyBasedTrafficSelectors`
-
-Enable policy-based traffic selectors.
-
-- Required: No
-- Type: bool
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnConnectionProtocolType`
-
-Connection protocol used for this connection.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IKEv1'
-    'IKEv2'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnGatewayCustomBgpAddresses`
-
-VPN gateway custom BGP addresses used by this connection.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customBgpIpAddress`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpngatewaycustombgpaddressescustombgpipaddress) | string | The custom BgpPeeringAddress which belongs to IpconfigurationId. |
-| [`ipConfigurationId`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpngatewaycustombgpaddressesipconfigurationid) | string | The IpconfigurationId of ipconfiguration which belongs to gateway. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnGatewayCustomBgpAddresses.customBgpIpAddress`
-
-The custom BgpPeeringAddress which belongs to IpconfigurationId.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnGatewayCustomBgpAddresses.ipConfigurationId`
-
-The IpconfigurationId of ipconfiguration which belongs to gateway.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnLinkConnectionMode`
-
-VPN link connection mode.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Default'
-    'InitiatorOnly'
-    'ResponderOnly'
-  ]
-  ```
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnSiteLink`
-
-Id of the connected VPN site link.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-vpnconnectionsvpnlinkconnectionspropertiesvpnsitelinkid) | string | Resource ID of the VPN site link. |
-
-### Parameter: `vpnConnections.vpnLinkConnections.properties.vpnSiteLink.id`
-
-Resource ID of the VPN site link.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `vpnGatewayScaleUnit`
 
@@ -1964,7 +1185,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 
@@ -2047,4 +1268,4 @@ bgpSettings: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
