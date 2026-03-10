@@ -306,7 +306,8 @@ Set-AVMModule -InvokeForDiff
 Run tests **before** finalizing the commit:
 
 ```powershell
-./utilities/tools/Test-ModuleLocally.ps1 -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -PesterTest
+. ./utilities/tools/Test-ModuleLocally.ps1
+Test-ModuleLocally -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -PesterTest
 ```
 
 > Existing tests do not need updating — the publishing changes don't affect test cases.
