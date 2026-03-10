@@ -269,7 +269,7 @@ module profile_originGroups 'origin-group/main.bicep' = [
       enableTelemetry: enableReferencedModulesTelemetry
       name: origingroup.name
       profileName: profile.name
-      authentication: origingroup.authentication
+      authentication: origingroup.?authentication
       loadBalancingSettings: origingroup.loadBalancingSettings
       healthProbeSettings: origingroup.?healthProbeSettings
       sessionAffinityState: origingroup.?sessionAffinityState
