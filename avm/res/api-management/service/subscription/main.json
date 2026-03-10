@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "15609971169782630649"
+      "templateHash": "3946940313391664514"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
@@ -29,7 +29,7 @@
       "minLength": 1,
       "maxLength": 100,
       "metadata": {
-        "description": "Required. API Management Service Subscriptions name."
+        "description": "Required. API Management Service Subscription name."
       }
     },
     "allowTracing": {

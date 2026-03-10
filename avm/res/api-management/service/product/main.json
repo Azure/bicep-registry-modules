@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1880572548091649589"
+      "templateHash": "17013452819461108616"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -75,7 +75,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
       }
     },
     "description": {
@@ -124,7 +124,7 @@
         "published"
       ],
       "metadata": {
-        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
+        "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators."
       }
     },
     "subscriptionRequired": {
@@ -249,7 +249,7 @@
             "productName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -371,7 +371,7 @@
             "productName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
