@@ -179,9 +179,10 @@ function Set-AVMModule {
     # ======================= #
     #   Module module files   #
     # ======================= #
+    $defaultSplitSize = 50 # The bucket size of templates we want to compile at once (i.e., in each thread)
     if (-not $SkipBuild) {
-        $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize 50
-        if ($relevantTemplatePaths.Count -le 50) {
+        $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize $defaultSplitSize
+        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
             $compilationChunks = , $compilationChunks
         } else {
             $compilationChunks = $compilationChunks
@@ -234,8 +235,8 @@ function Set-AVMModule {
             }
         }
 
-        $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize 50
-        if ($relevantTemplatePaths.Count -le 50) {
+        $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize
+        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
             $compilationChunks = , $compilationChunks
         } else {
             $compilationChunks = $compilationChunks
