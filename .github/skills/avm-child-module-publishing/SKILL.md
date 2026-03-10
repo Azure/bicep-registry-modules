@@ -241,7 +241,7 @@ Update the CHANGELOG.md of **every versioned parent** up to the top-level parent
 Always run the Set-AVMModule utility pointing to ALL modules (parent and child) that have a main.bicep file updated by this workflow:
 
 ```powershell
-Set-AVMModule -ModuleFolderPath '<absolute-path-to-module-with-updated-main-bicep>'
+Set-AVMModule -InvokeForDiff
 ```
 
 > Use `-SkipFileAndFolderSetup -ThrottleLimit 5` parameters when running locally to update an existing module.
@@ -250,7 +250,7 @@ This regenerates READMEs and compiles Bicep files for the entire module tree.
 
 #### Step 3.2 — Test Locally
 
-Run static validation tests locally:
+ALWAYS run static validation tests locally before completing this workflow:
 
 ```powershell
 ./utilities/tools/Test-ModuleLocally.ps1 -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -PesterTest
