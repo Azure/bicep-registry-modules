@@ -14,7 +14,7 @@ param apiManagementServiceName string
 @description('Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.')
 param authorizationEndpoint string
 
-@description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.')
+@description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present.')
 param authorizationMethods resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.authorizationMethods = [
   'GET'
 ]
@@ -49,6 +49,7 @@ param serverDescription string = ''
 @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
 @allowed([
   'authorizationCode'
+  'authorizationCodeWithPkce'
   'clientCredentials'
   'implicit'
   'resourceOwnerPassword'
@@ -65,7 +66,7 @@ param resourceOwnerUsername string = ''
 @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
 param supportState bool = false
 
-@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties.')
+@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}.')
 param tokenBodyParameters resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.tokenBodyParameters = []
 
 @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
@@ -84,7 +85,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-authzserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

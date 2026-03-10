@@ -2,6 +2,14 @@
 
 This module deploys a DNS Resolver.
 
+You can reference the module as follows:
+```bicep
+module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmin001'
@@ -98,6 +107,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -105,7 +116,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrmax001'
@@ -297,6 +307,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -304,7 +316,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
-  name: 'dnsResolverDeployment'
   params: {
     // Required parameters
     name: 'ndrwaf001'

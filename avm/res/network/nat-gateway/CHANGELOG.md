@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/nat-gateway/CHANGELOG.md).
 
+## 2.0.1
+
+### Changes
+
+- Made NAT Gateway SKU configurable to support `StandardV2` for zone-redundant deployments
+- Added `natGatewaySku` parameter with allowed values: `'Standard'` (default) and `'StandardV2'`
+- Public IP addresses created by the module now automatically inherit the NAT Gateway SKU value when not explicitly specified
+- Updated `publicIpType` definition to support `'StandardV2'` SKU option
+
+### Breaking Changes
+
+- None
+
 ## 2.0.0
 
 ### Changes

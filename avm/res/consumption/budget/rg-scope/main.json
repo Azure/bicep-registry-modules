@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8740300349148561856"
+      "version": "0.41.2.15936",
+      "templateHash": "14900929810960509125"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for a Resource Group."

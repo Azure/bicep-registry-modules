@@ -2,6 +2,14 @@
 
 This module deploys a Communication Service
 
+You can reference the module as follows:
+```bicep
+module communicationService 'br/public:avm/res/communication/communication-service:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -17,7 +25,7 @@ This module deploys a Communication Service
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Communication/communicationServices` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_communicationservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/communicationServices)</li></ul> |
+| `Microsoft.Communication/communicationServices` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_communicationservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-09-01/communicationServices)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module communicationService 'br/public:avm/res/communication/communication-service:<version>' = {
-  name: 'communicationServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'Germany'
@@ -105,6 +114,8 @@ param location = 'global'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -112,7 +123,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module communicationService 'br/public:avm/res/communication/communication-service:<version>' = {
-  name: 'communicationServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'Germany'
@@ -339,6 +349,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -346,7 +358,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module communicationService 'br/public:avm/res/communication/communication-service:<version>' = {
-  name: 'communicationServiceDeployment'
   params: {
     // Required parameters
     dataLocation: 'Germany'
@@ -736,6 +747,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Communication and Email Service Owner'`
 
 **Required parameters**
 
@@ -851,8 +863,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

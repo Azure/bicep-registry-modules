@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "12436722688789675678"
+      "version": "0.41.2.15936",
+      "templateHash": "11054119469516634191"
     },
     "name": "Synapse Workspaces Firewall Rules",
     "description": "This module deploys Synapse Workspaces Firewall Rules."

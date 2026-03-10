@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.tags?
+param tags resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.tags?
 
 // =============== //
 //   Deployments   //
@@ -79,15 +79,22 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
-  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+  contains(
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'],
+      dataCollectionRuleProperties.kind
+    )
     ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
+      }
+    : {},
+  contains(['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms'], dataCollectionRuleProperties.kind)
+    ? {
         dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
         streamDeclarations: dataCollectionRuleProperties.?streamDeclarations
       }
@@ -102,7 +109,7 @@ var dataCollectionRulePropertiesUnion = union(
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-datacollectionrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -120,7 +127,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind != 'All') {
+resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2024-03-11' = if (dataCollectionRuleProperties.kind != 'All') {
   kind: dataCollectionRuleProperties.kind
   location: location
   name: name
@@ -130,7 +137,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2023-03-11' 
 }
 
 // Using a separate resource for parameter kind: 'All' as it requires that the "kind' is not set on the resource and 'kind: null' is not allowed for this resource type
-resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2023-03-11' = if (dataCollectionRuleProperties.kind == 'All') {
+resource dataCollectionRuleAll 'Microsoft.Insights/dataCollectionRules@2024-03-11' = if (dataCollectionRuleProperties.kind == 'All') {
   location: location
   name: name
   tags: tags
@@ -188,7 +195,7 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
   : dataCollectionRule.?identity.?principalId
 
 @description('The endpoints of the dataCollectionRule, if created.')
-output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All'
+output endpoints resourceOutput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.endpoints? = dataCollectionRuleProperties.kind == 'All'
   ? dataCollectionRuleAll!.properties.?endpoints
   : dataCollectionRule!.properties.?endpoints
 
@@ -203,33 +210,36 @@ output immutableId string? = dataCollectionRuleProperties.kind == 'All'
 
 @export()
 @discriminator('kind')
-@description('The type for data collection rule properties. Depending on the kind, the properties will be different.')
+@description('Required. The type for data collection rule properties. Depending on the kind, the properties will be different.')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
+  | agentDirectToStoreType
+  | workspaceTransformsDcrPropertiesType
+  | platformTelemetryDcrPropertiesType
 
 @description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Linux'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -237,23 +247,23 @@ type linuxDcrPropertiesType = {
 
 @description('The type for the properties of the \'Windows\' data collection rule.')
 type windowsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Windows'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -261,23 +271,23 @@ type windowsDcrPropertiesType = {
 
 @description('The type for the properties of the data collection rule of the kind \'All\'.')
 type allPlatformsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataSources
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
 
   @description('Required. The specification of data flows.')
-  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Optional. Declaration of custom streams used in this rule.')
-  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations?
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations?
 
   @description('Optional. Description of the data collection rule.')
   description: string?
@@ -285,7 +295,7 @@ type allPlatformsDcrPropertiesType = {
 
 @description('The type for the properties of the \'AgentSettings\' data collection rule.')
 type agentSettingsDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'AgentSettings'
 
   @description('Optional. Description of the data collection rule.')
@@ -312,21 +322,84 @@ type agentSettingType = {
 
 @description('The type for the properties of the \'Direct\' data collection rule.')
 type directDcrPropertiesType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  @description('Required. The kind of the resource.')
   kind: 'Direct'
 
   @description('Required. The specification of data flows.')
-  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.dataFlows
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 
   @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.destinations
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
   dataCollectionEndpointResourceId: string?
 
   @description('Required. Declaration of custom streams used in this rule.')
-  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2023-03-11'>.properties.streamDeclarations
+  streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations
 
   @description('Optional. Description of the data collection rule.')
   description: string?
+}
+
+@description('The type for the properties of the \'AgentDirectToStore\' data collection rule.')
+type agentDirectToStoreType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'AgentDirectToStore'
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
+
+  @description('Required. The specification of data flows.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+@description('The type for the properties of the \'WorkspaceTransforms\' data collection rule.')
+type workspaceTransformsDcrPropertiesType = {
+  @description('Required. The kind of the resource.')
+  kind: 'WorkspaceTransforms'
+
+  @description('Required. The specification of data flows. Should include a separate dataflow for each table that will have a transformation. Use a where clause in the query if only certain records should be transformed.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
+
+  @description('Required. Specification of destinations that can be used in data flows. For WorkspaceTransforms, only one Log Analytics workspace destination is supported.')
+  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+}
+
+@description('The type for the properties of the \'PlatformTelemetry\' data collection rule.')
+type platformTelemetryDcrPropertiesType = {
+  @description('Required. The kind of the resource.')
+  kind: 'PlatformTelemetry'
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
+
+  @description('Required. Specification of data sources that will be collected.')
+  dataSources: {
+    @description('Required. The list of platform telemetry configurations.')
+    platformTelemetry: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources.platformTelemetry
+  }
+
+  @description('Required. Specification of destinations. Choose a single destination type of either logAnalytics, storageAccounts, or eventHubs.')
+  destinations: {
+    @description('Optional. The list of Log Analytics destinations.')
+    logAnalytics: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.logAnalytics?
+
+    @description('Optional. The list of Storage Account destinations.')
+    storageAccounts: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.storageAccounts?
+
+    @description('Optional. The list of Event Hub destinations.')
+    eventHubs: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations.eventHubs?
+  }
+
+  @description('Required. The specification of data flows.')
+  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4967554975737343791"
+      "version": "0.41.2.15936",
+      "templateHash": "7857607625849919931"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution."
@@ -587,7 +587,7 @@
     "vnet": {
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-vnet-{1}', uniqueString(deployment().name, parameters('location')), variables('vnetName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2186,7 +2186,7 @@
     "nsgPrivateLink": {
       "condition": "[variables('createNewVNET')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNamePrivateLink'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2839,7 +2839,7 @@
     "nsgDbwFrontend": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNameDbwFrontend'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -3492,7 +3492,7 @@
     "nsgDbwBackend": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-nsg-{1}', uniqueString(deployment().name, parameters('location')), variables('nsgNameDbwBackend'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4145,7 +4145,7 @@
     "dnsZoneSaBlob": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameSaBlob'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -7207,7 +7207,7 @@
     "log": {
       "condition": "[variables('createNewLog')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-law-{1}', uniqueString(deployment().name, parameters('location')), variables('logName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -9276,7 +9276,7 @@
     "kv": {
       "condition": "[variables('createNewKV')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-vault-{1}', uniqueString(deployment().name, parameters('location')), variables('kvName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -12291,7 +12291,7 @@
     "dnsZoneKv": {
       "condition": "[and(variables('createNewVNET'), variables('createNewKV'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameKv'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -15353,7 +15353,7 @@
     "accessConnector": {
       "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-connector-{1}', uniqueString(deployment().name, parameters('location')), variables('dbwAccessConnectorName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -15695,7 +15695,7 @@
     "dbw": {
       "condition": "[parameters('enableDatabricks')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-workspace-{1}', uniqueString(deployment().name, parameters('location')), variables('dbwName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -18414,7 +18414,7 @@
     "dnsZoneDbw": {
       "condition": "[and(variables('createNewVNET'), parameters('enableDatabricks'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-zone-{1}', uniqueString(deployment().name, parameters('location')), variables('privateDnsZoneNameDbw'))]",
       "properties": {
         "expressionEvaluationOptions": {

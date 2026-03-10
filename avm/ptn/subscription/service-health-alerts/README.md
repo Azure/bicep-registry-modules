@@ -2,6 +2,14 @@
 
 This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services.
 
+You can reference the module as follows:
+```bicep
+module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the maximum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/alerts]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with the maximum set of required parameters.
 
 ```bicep
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
-  name: 'serviceHealthAlertsDeployment'
   params: {
     enableTelemetry: true
     location: '<location>'
@@ -176,6 +185,8 @@ param subscriptionId = '<subscriptionId>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -183,7 +194,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
-  name: 'serviceHealthAlertsDeployment'
   params: {
     enableTelemetry: true
     location: '<location>'
@@ -244,6 +254,8 @@ param subscriptionId = '<subscriptionId>'
 
 This instance deploys the module with a reference to an existing action group.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/existing-action-group]
+
 
 <details>
 
@@ -251,7 +263,6 @@ This instance deploys the module with a reference to an existing action group.
 
 ```bicep
 module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts:<version>' = {
-  name: 'serviceHealthAlertsDeployment'
   params: {
     location: '<location>'
     serviceHealthAlerts: [

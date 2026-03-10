@@ -37,7 +37,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'dep-${namePrefix}-test-${serviceShort}'
+      name: '${namePrefix}-test-${serviceShort}'
       location: 'global'
       sku: 'Standard_AzureFrontDoor'
     }

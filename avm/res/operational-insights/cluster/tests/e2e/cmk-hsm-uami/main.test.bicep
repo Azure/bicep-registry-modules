@@ -42,10 +42,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
-module nestedHsmDependencies 'dependencies.hsm.bicep' = {
-  name: '${uniqueString(deployment().name)}-nestedHSMDependencies'
+module nestedHsmDependencies '../../../../../../../utilities/e2e-template-assets/templates/hsm.dependencies.bicep' = {
+  name: '${uniqueString(deployment().name)}-nestedHsmDependencies'
   params: {
-    hsmKeyName: '${serviceShort}-${namePrefix}-key'
+    primaryHSMKeyName: '${namePrefix}-${serviceShort}-key-${substring(uniqueString(baseTime), 0, 3)}'
     managedHSMName: last(split(managedHSMResourceId, '/'))
   }
   scope: az.resourceGroup(split(managedHSMResourceId, '/')[2], split(managedHSMResourceId, '/')[4])
@@ -60,7 +60,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedHSMResourceId: managedHSMResourceId
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     deploymentScriptName: 'dep-${namePrefix}-ds-hsm-iam-${serviceShort}'
-    keyName: nestedHsmDependencies.outputs.keyName
+    hSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
   }
 }
 
@@ -86,7 +86,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       customerManagedKey: {
-        keyName: nestedHsmDependencies.outputs.keyName
+        keyName: nestedHsmDependencies.outputs.primaryKeyName
         keyVaultResourceId: nestedHsmDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }

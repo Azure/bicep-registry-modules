@@ -63,7 +63,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
   name: maintenanceConfigurationName
   location: location
   properties: {
@@ -345,7 +345,7 @@ resource proximityPlacementGroup 'Microsoft.Compute/proximityPlacementGroups@202
   location: location
 }
 
-resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   name: dcrName
   location: location
   kind: 'Windows'

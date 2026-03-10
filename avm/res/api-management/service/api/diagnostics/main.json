@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "18295485777200437093"
+      "version": "0.41.2.15936",
+      "templateHash": "6787316023898210718"
     },
     "name": "API Management Service APIs Diagnostics.",
     "description": "This module deploys an API Management Service API Diagnostics."
@@ -15,7 +15,7 @@
     "apiManagementServiceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent API Management service."
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
       }
     },
     "apiName": {
@@ -39,7 +39,7 @@
         "local"
       ],
       "metadata": {
-        "description": "Optional. Type of diagnostic resource."
+        "description": "Optional. Name of diagnostic resource."
       }
     },
     "alwaysLog": {
@@ -100,7 +100,7 @@
       "defaultValue": "Name",
       "allowedValues": [
         "Name",
-        "URI"
+        "Url"
       ],
       "metadata": {
         "description": "Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights."
@@ -110,7 +110,7 @@
       "type": "int",
       "defaultValue": 100,
       "metadata": {
-        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged."
+        "description": "Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged."
       }
     },
     "verbosity": {
@@ -155,7 +155,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.apimgm-apidiagnostics.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",

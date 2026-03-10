@@ -8,19 +8,19 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Required. Describes the managedRules structure.')
-param managedRules object
+param managedRules resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01'>.properties.managedRules
 
 @description('Optional. The custom rules inside the policy.')
-param customRules array?
+param customRules resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01'>.properties.customRules?
 
 @description('Optional. The PolicySettings for policy.')
-param policySettings object?
+param policySettings resourceInput<'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01'>.properties.policySettings?
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -41,12 +41,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-03-01' = {
+resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01' = {
   name: name
   location: location
   tags: tags
   properties: {
-    managedRules: managedRules ?? {}
+    managedRules: managedRules
     customRules: customRules
     policySettings: policySettings
   }

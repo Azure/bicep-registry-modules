@@ -2,6 +2,14 @@
 
 This module deploys a Policy Insights Remediation.
 
+You can reference the module as follows:
+```bicep
+module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This module runs a Policy remediation task at Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This module runs a Policy remediation task at Management Group scope using minim
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirmgmin001'
@@ -109,6 +118,8 @@ param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
 
 This module runs a Policy remediation task at Management Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.max]
+
 
 <details>
 
@@ -116,7 +127,6 @@ This module runs a Policy remediation task at Management Group scope using commo
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirmgmax001'
@@ -208,6 +218,8 @@ param resourceCount = 10
 
 This module runs a Policy remediation task at Resource Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.defaults]
+
 
 <details>
 
@@ -215,7 +227,6 @@ This module runs a Policy remediation task at Resource Group scope using minimal
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirrgmin001'
@@ -292,6 +303,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module runs a Policy remediation task at Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.max]
+
 
 <details>
 
@@ -299,7 +312,6 @@ This module runs a Policy remediation task at Resource Group scope using common 
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirrgmax001'
@@ -406,6 +418,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module runs a Policy remediation task at subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.defaults]
+
 
 <details>
 
@@ -413,7 +427,6 @@ This module runs a Policy remediation task at subscription scope using minimal p
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirsubmin001'
@@ -485,6 +498,8 @@ param subscriptionId = '<subscriptionId>'
 
 This module runs a Policy remediation task at subscription scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.max]
+
 
 <details>
 
@@ -492,7 +507,6 @@ This module runs a Policy remediation task at subscription scope using common pa
 
 ```bicep
 module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
-  name: 'remediationDeployment'
   params: {
     // Required parameters
     name: 'pirsubmax001'

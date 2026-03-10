@@ -2,6 +2,14 @@
 
 This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.
 
+You can reference the module as follows:
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -75,6 +83,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -82,7 +92,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawmin002'
@@ -151,6 +160,8 @@ param advancedOptions = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -158,7 +169,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawmax002'
@@ -290,6 +300,8 @@ param tags = {
 
 Isolated network deployment (Minimalistic) - fully private.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/min-priv]
+
 
 <details>
 
@@ -297,7 +309,6 @@ Isolated network deployment (Minimalistic) - fully private.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawminpriv002'
@@ -385,6 +396,8 @@ param tags = {
 
 Isolated network deployment (Minimalistic) - allowed IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/min-pub]
+
 
 <details>
 
@@ -392,7 +405,6 @@ Isolated network deployment (Minimalistic) - allowed IP address.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawminpu002'
@@ -495,6 +507,8 @@ param tags = {
 
 Isolated network deployment - fully private.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-priv]
+
 
 <details>
 
@@ -502,7 +516,6 @@ Isolated network deployment - fully private.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu1pr002'
@@ -590,6 +603,8 @@ param tags = {
 
 Isolated network deployment - allowed IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-pub]
+
 
 <details>
 
@@ -597,7 +612,6 @@ Isolated network deployment - allowed IP address.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu1pu002'
@@ -700,6 +714,8 @@ param tags = {
 
 Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-priv]
+
 
 <details>
 
@@ -707,7 +723,6 @@ Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu2pr002'
@@ -821,6 +836,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-pub]
+
 
 <details>
 
@@ -828,7 +845,6 @@ Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP addr
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu2pu002'
@@ -957,6 +973,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 Integration with existing core Infrastructure - fully private.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-priv]
+
 
 <details>
 
@@ -964,7 +982,6 @@ Integration with existing core Infrastructure - fully private.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu3pr002'
@@ -1088,6 +1105,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 Integration with existing core Infrastructure - allowed IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-pub]
+
 
 <details>
 
@@ -1095,7 +1114,6 @@ Integration with existing core Infrastructure - allowed IP address.
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawu3p002'
@@ -1225,6 +1243,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1232,7 +1252,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
-  name: 'privateAnalyticalWorkspaceDeployment'
   params: {
     // Required parameters
     name: 'dpawwaf002'

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Set the location for the resource deployment.
 
@@ -37,6 +37,7 @@ function Get-AvailableResourceLocation {
             'eastus',
             'uksouth',
             'northeurope',
+            'germanywestcentral',
             'eastasia' # Including as Edge Region for services like static-site
         ),
 

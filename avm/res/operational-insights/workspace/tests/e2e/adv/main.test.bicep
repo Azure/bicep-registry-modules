@@ -67,7 +67,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      dailyQuotaGb: 10
+      dailyQuotaGb: '0.25' // string workaround as 'float' values are not supported in Bicep, yet the resource providers expects them. Related issue: https://github.com/Azure/bicep/issues/1386
       dataSources: [
         {
           eventLogName: 'Application'

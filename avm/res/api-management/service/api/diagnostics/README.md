@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service API Diagnostics.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/api/diagnostics:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -21,7 +29,6 @@ This module deploys an API Management Service API Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. |
 | [`apiName`](#parameter-apiname) | string | The name of the parent API. |
 | [`loggerName`](#parameter-loggername) | string | The name of the logger. |
 
@@ -29,6 +36,7 @@ This module deploys an API Management Service API Diagnostics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 | [`httpCorrelationProtocol`](#parameter-httpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
 | [`metrics`](#parameter-metrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
 | [`operationNameFormat`](#parameter-operationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
@@ -42,16 +50,9 @@ This module deploys an API Management Service API Diagnostics.
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontend`](#parameter-frontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-logclientip) | bool | Log the ClientIP. |
-| [`name`](#parameter-name) | string | Type of diagnostic resource. |
-| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`name`](#parameter-name) | string | Name of diagnostic resource. |
+| [`samplingPercentage`](#parameter-samplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-verbosity) | string | The verbosity level applied to traces emitted by trace policies. |
-
-### Parameter: `apiManagementServiceName`
-
-The name of the parent API Management service.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apiName`
 
@@ -63,6 +64,13 @@ The name of the parent API.
 ### Parameter: `loggerName`
 
 The name of the logger.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiManagementServiceName`
+
+The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
@@ -102,7 +110,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
 
@@ -146,7 +154,7 @@ Log the ClientIP.
 
 ### Parameter: `name`
 
-Type of diagnostic resource.
+Name of diagnostic resource.
 
 - Required: No
 - Type: string
@@ -162,7 +170,7 @@ Type of diagnostic resource.
 
 ### Parameter: `samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
 
 - Required: No
 - Type: int

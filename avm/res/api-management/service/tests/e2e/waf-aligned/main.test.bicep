@@ -23,7 +23,7 @@ param customSecret string = newGuid()
 
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
-var enforcedLocation = 'ukSouth'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. The secondary location to deploy resources to.')
 var secondaryEnforcedLocation = 'northeurope'
@@ -47,6 +47,8 @@ module nestedDependencies 'dependencies.bicep' = {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
+    lawReplicationRegion: secondaryEnforcedLocation
+    location: enforcedLocation
   }
 }
 
@@ -224,8 +226,9 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             enabled: false
             termsOfService: {
-              consentRequired: false
-              enabled: false
+              consentRequired: true
+              enabled: true
+              text: 'Terms of service text'
             }
           }
         }
@@ -253,6 +256,7 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'testArmSubscriptionAllApis'
         }
       ]
+      virtualNetworkType: 'None' // Required for private endpoints
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

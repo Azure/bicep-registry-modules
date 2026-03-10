@@ -7,7 +7,7 @@ param apiManagementServiceName string
 @sys.description('Optional. API Version set name.')
 param name string = 'default'
 
-@sys.description('Required. The display name of the Name of API Version Set.')
+@sys.description('Required. The display name of the API Version Set.')
 @minLength(1)
 @maxLength(100)
 param displayName string
@@ -41,7 +41,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-apiversionset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

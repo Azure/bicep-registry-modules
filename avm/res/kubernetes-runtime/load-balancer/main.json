@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "8148722030488144649"
+      "version": "0.41.2.15936",
+      "templateHash": "2787381338823664040"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -117,7 +117,7 @@
     "loadBalancerConnectedCluster": {
       "type": "Microsoft.KubernetesRuntime/loadBalancers",
       "apiVersion": "2024-03-01",
-      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('clusterName'))]",
+      "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('clusterName'))]",
       "name": "[parameters('name')]",
       "properties": {
         "addresses": "[parameters('addresses')]",
@@ -131,7 +131,7 @@
     },
     "arcnetworking": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-arcnetworking', uniqueString(deployment().name, parameters('clusterName')))]",
       "properties": {
         "expressionEvaluationOptions": {

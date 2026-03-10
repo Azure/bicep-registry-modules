@@ -2,6 +2,14 @@
 
 This module deploys a Bastion Host.
 
+You can reference the module as follows:
+```bicep
+module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,8 +26,8 @@ This module deploys a Bastion Host.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/bastionHosts` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/bastionHosts)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 
 ## Usage examples
 
@@ -40,6 +48,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance does not require a pre-deployed public IP but includes its deployment as part of the Bastion module deployment.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/custompip]
+
 
 <details>
 
@@ -47,7 +57,6 @@ This instance does not require a pre-deployed public IP but includes its deploym
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhctmpip001'
@@ -210,6 +219,8 @@ param publicIPAddressObject = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -217,7 +228,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhmin001'
@@ -279,6 +289,8 @@ param location = '<location>'
 
 This instance deploys the module with the Developer SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/developer]
+
 
 <details>
 
@@ -286,7 +298,6 @@ This instance deploys the module with the Developer SKU.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhdev001'
@@ -353,6 +364,8 @@ param skuName = 'Developer'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -360,7 +373,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhmax001'
@@ -593,6 +605,8 @@ param tags = {
 
 This instance deploys the module as private-only Bastion deployment.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
+
 
 <details>
 
@@ -600,7 +614,6 @@ This instance deploys the module as private-only Bastion deployment.
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhprv001'
@@ -677,6 +690,8 @@ param skuName = 'Premium'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -684,7 +699,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
-  name: 'bastionHostDeployment'
   params: {
     // Required parameters
     name: 'nbhwaf001'
@@ -1842,7 +1856,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.9.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.10.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

@@ -2,6 +2,14 @@
 
 This module deploys an Azure SQL Server.
 
+You can reference the module as follows:
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -62,6 +70,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/admin]
+
 
 <details>
 
@@ -69,7 +79,6 @@ This instance deploys the module with a Microsoft Entra ID identity as SQL admin
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsadmin'
@@ -146,6 +155,8 @@ param location = '<location>'
 
 This instance deploys the module with auditing settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/audit]
+
 
 <details>
 
@@ -153,7 +164,6 @@ This instance deploys the module with auditing settings.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'ssaud001'
@@ -248,6 +258,8 @@ param managedIdentities = {
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -259,10 +271,9 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
-    name: 'sshsm001'
+    name: 'sshsmu001'
     // Non-required parameters
     administrators: {
       azureADOnlyAuthentication: true
@@ -290,7 +301,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ]
         }
         maxSizeBytes: 2147483648
-        name: 'sshsm-db-001'
+        name: 'sshsmu-db-001'
         sku: {
           name: 'Basic'
           tier: 'Basic'
@@ -323,7 +334,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sshsm001"
+      "value": "sshsmu001"
     },
     // Non-required parameters
     "administrators": {
@@ -357,7 +368,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             ]
           },
           "maxSizeBytes": 2147483648,
-          "name": "sshsm-db-001",
+          "name": "sshsmu-db-001",
           "sku": {
             "name": "Basic",
             "tier": "Basic"
@@ -392,7 +403,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
 using 'br/public:avm/res/sql/server:<version>'
 
 // Required parameters
-param name = 'sshsm001'
+param name = 'sshsmu001'
 // Non-required parameters
 param administrators = {
   azureADOnlyAuthentication: true
@@ -420,7 +431,7 @@ param databases = [
       ]
     }
     maxSizeBytes: 2147483648
-    name: 'sshsm-db-001'
+    name: 'sshsmu-db-001'
     sku: {
       name: 'Basic'
       tier: 'Basic'
@@ -444,6 +455,8 @@ param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResou
 
 This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -451,7 +464,6 @@ This instance deploys the module with Customer-Managed-Keys using a User-Assigne
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sscmk001'
@@ -642,6 +654,8 @@ param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResou
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -649,7 +663,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'ssmin001'
@@ -726,6 +739,8 @@ param location = '<location>'
 
 This instance deploys the module with an elastic pool.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/elasticPool]
+
 
 <details>
 
@@ -733,7 +748,6 @@ This instance deploys the module with an elastic pool.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'ssep001'
@@ -865,6 +879,8 @@ param location = '<location>'
 
 This instance deploys the module with failover groups.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/failover-group]
+
 
 <details>
 
@@ -872,7 +888,6 @@ This instance deploys the module with failover groups.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'ssfog001'
@@ -1180,6 +1195,8 @@ param location = '<location>'
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
 
 <details>
 
@@ -1187,7 +1204,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlkvs001'
@@ -1294,6 +1310,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1301,7 +1319,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsmax'
@@ -1903,6 +1920,8 @@ param vulnerabilityAssessmentsObj = {
 
 This instance deploys the module with a secondary database.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secondary]
+
 
 <details>
 
@@ -1910,7 +1929,6 @@ This instance deploys the module with a secondary database.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsec-sec'
@@ -2038,6 +2056,8 @@ param tags = {
 
 This instance deploys the module with a vulnerability assessment.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vulnAssm]
+
 
 <details>
 
@@ -2045,7 +2065,6 @@ This instance deploys the module with a vulnerability assessment.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlsvln'
@@ -2221,6 +2240,8 @@ param vulnerabilityAssessmentsObj = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -2228,7 +2249,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
   params: {
     // Required parameters
     name: 'sqlswaf'

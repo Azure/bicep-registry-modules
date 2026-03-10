@@ -2,6 +2,14 @@
 
 This module deploys an Azure Machine Learning Registry.
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This test deploys the AML Registry module with the minimum required parameters and mocked values.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This test deploys the AML Registry module with the minimum required parameters a
 
 ```bicep
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     name: 'mlsrmin001'
   }
@@ -90,6 +99,8 @@ param name = 'mlsrmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -97,7 +108,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'mlsrmax001'
@@ -377,6 +387,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -384,7 +396,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'mlsrwaf001'

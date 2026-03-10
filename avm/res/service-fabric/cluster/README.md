@@ -2,6 +2,14 @@
 
 This module deploys a Service Fabric Cluster.
 
+You can reference the module as follows:
+```bicep
+module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -37,6 +45,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with client and server certificates using thumbprints and common names.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cert]
+
 
 <details>
 
@@ -44,7 +54,6 @@ This instance deploys the module with client and server certificates using thumb
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
@@ -208,6 +217,8 @@ param clientCertificateThumbprints = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -215,7 +226,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
@@ -341,6 +351,8 @@ param certificate = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -348,7 +360,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcmax001.westeurope.cloudapp.azure.com:19080'
@@ -940,6 +951,8 @@ param vmImage = 'Linux'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -947,7 +960,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     managementEndpoint: 'https://sfcwaf001.westeurope.cloudapp.azure.com:19080'

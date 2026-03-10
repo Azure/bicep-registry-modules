@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualHubName: 'dep-${namePrefix}-vh-${serviceShort}'
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     vpnSiteName: 'dep-${namePrefix}-vs-${serviceShort}'
@@ -51,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
       bgpSettings: {

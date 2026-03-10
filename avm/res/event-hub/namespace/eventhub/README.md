@@ -2,6 +2,14 @@
 
 This module deploys an Event Hub Namespace Event Hub.
 
+You can reference the module as follows:
+```bicep
+module namespace 'br/public:avm/res/event-hub/namespace/eventhub:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)

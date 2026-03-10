@@ -4,6 +4,14 @@ Creates an Azure Container Registry and an Azure Container Apps environment.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case
 
+You can reference the module as follows:
+```bicep
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -46,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with zoneRedundant enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/zone-redundant]
+
 
 <details>
 
@@ -53,7 +63,6 @@ This instance deploys the module with zoneRedundant enabled.
 
 ```bicep
 module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
-  name: 'containerAppsStackDeployment'
   params: {
     // Required parameters
     containerAppsEnvironmentName: 'acaszrcae001'
