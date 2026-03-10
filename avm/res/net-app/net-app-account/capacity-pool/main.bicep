@@ -122,10 +122,12 @@ module capacityPool_volumes 'volume/main.bicep' = [
       smbContinuouslyAvailable: volume.?smbContinuouslyAvailable
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
+      smbAccessBasedEnumeration: volume.?smbAccessBasedEnumeration
       volumeType: volume.?volumeType
       securityStyle: volume.?securityStyle
       unixPermissions: volume.?unixPermissions
       throughputMibps: volume.?throughputMibps
+      isLargeVolume: volume.?isLargeVolume
     }
   }
 ]
@@ -237,6 +239,9 @@ type volumeType = {
   @description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
   smbNonBrowsable: ('Enabled' | 'Disabled')?
 
+  @description('Optional. Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+  smbAccessBasedEnumeration: ('Enabled' | 'Disabled')?
+
   @description('Optional. Define if a volume is KerberosEnabled.')
   kerberosEnabled: bool?
 
@@ -245,6 +250,9 @@ type volumeType = {
 
   @description('Optional. The throughput in MiBps for the NetApp account.')
   throughputMibps: int?
+
+  @description('Optional. Specifies whether volume is a Large Volume or Regular Volume.')
+  isLargeVolume: bool?
 }
 
 // ================ //
