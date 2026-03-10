@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1525318251351651301"
+      "templateHash": "18153206592238696264"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -50,11 +50,21 @@
             "description": "Required. The name of the origin group."
           }
         },
+        "authentication": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/authentication"
+            },
+            "description": "Optional. Settings for Origin Authentication."
+          },
+          "nullable": true
+        },
         "healthProbeSettings": {
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/healthProbeSettings"
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/healthProbeSettings"
             },
             "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
           },
@@ -64,7 +74,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/loadBalancingSettings"
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/loadBalancingSettings"
             },
             "description": "Required. Load balancing settings for a backend pool."
           }
@@ -2081,6 +2091,9 @@
           },
           "profileName": {
             "value": "[parameters('name')]"
+          },
+          "authentication": {
+            "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].authentication]"
           },
           "loadBalancingSettings": {
             "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].loadBalancingSettings]"

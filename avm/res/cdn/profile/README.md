@@ -2546,6 +2546,7 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`authentication`](#parameter-origingroupsauthentication) | object | Settings for Origin Authentication. |
 | [`healthProbeSettings`](#parameter-origingroupshealthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
 | [`sessionAffinityState`](#parameter-origingroupssessionaffinitystate) | string | Whether to allow session affinity on this host. |
 | [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-origingroupstrafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
@@ -2667,6 +2668,13 @@ Weight of the origin in given origin group for load balancing. Must be between 1
 
 - Required: No
 - Type: int
+
+### Parameter: `originGroups.authentication`
+
+Settings for Origin Authentication.
+
+- Required: No
+- Type: object
 
 ### Parameter: `originGroups.healthProbeSettings`
 
