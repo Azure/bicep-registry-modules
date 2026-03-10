@@ -924,6 +924,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     }
     originGroups: [
       {
+        authentication: {
+          scope: '<scope>'
+          type: 'UserAssignedIdentity'
+          userAssignedIdentity: {
+            id: '<id>'
+          }
+        }
         healthProbeSettings: {
           probeIntervalInSeconds: 120
           probePath: '/health'
@@ -952,6 +959,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
       }
       {
+        authentication: {
+          scope: '<scope>'
+          type: 'UserAssignedIdentity'
+          userAssignedIdentity: {
+            id: '<id>'
+          }
+        }
         loadBalancingSettings: {
           additionalLatencyInMilliseconds: 100
           sampleSize: 6
@@ -1156,6 +1170,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "originGroups": {
       "value": [
         {
+          "authentication": {
+            "scope": "<scope>",
+            "type": "UserAssignedIdentity",
+            "userAssignedIdentity": {
+              "id": "<id>"
+            }
+          },
           "healthProbeSettings": {
             "probeIntervalInSeconds": 120,
             "probePath": "/health",
@@ -1184,6 +1205,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 15
         },
         {
+          "authentication": {
+            "scope": "<scope>",
+            "type": "UserAssignedIdentity",
+            "userAssignedIdentity": {
+              "id": "<id>"
+            }
+          },
           "loadBalancingSettings": {
             "additionalLatencyInMilliseconds": 100,
             "sampleSize": 6,
@@ -1378,6 +1406,13 @@ param managedIdentities = {
 }
 param originGroups = [
   {
+    authentication: {
+      scope: '<scope>'
+      type: 'UserAssignedIdentity'
+      userAssignedIdentity: {
+        id: '<id>'
+      }
+    }
     healthProbeSettings: {
       probeIntervalInSeconds: 120
       probePath: '/health'
@@ -1406,6 +1441,13 @@ param originGroups = [
     trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
   }
   {
+    authentication: {
+      scope: '<scope>'
+      type: 'UserAssignedIdentity'
+      userAssignedIdentity: {
+        id: '<id>'
+      }
+    }
     loadBalancingSettings: {
       additionalLatencyInMilliseconds: 100
       sampleSize: 6

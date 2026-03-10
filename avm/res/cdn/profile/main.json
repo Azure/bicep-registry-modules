@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18153206592238696264"
+      "templateHash": "5957282577108175179"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -2093,7 +2093,7 @@
             "value": "[parameters('name')]"
           },
           "authentication": {
-            "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].authentication]"
+            "value": "[tryGet(coalesce(parameters('originGroups'), createArray())[copyIndex()], 'authentication')]"
           },
           "loadBalancingSettings": {
             "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].loadBalancingSettings]"
