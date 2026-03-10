@@ -52,7 +52,7 @@ param diskNamePrefix string = 'dep-disk'
 param waitDeploymentScriptPrefixName string = 'dep-wait'
 
 var clusterNodeNames = ['AzSHOST1', 'AzSHOST2']
-var domainOUPath = 'OU=HCI,DC=jumpstart,DC=local'
+var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {

@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
         defaultGateway: '192.168.1.1'
         deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
         dnsServers: ['192.168.1.254']
-        domainFqdn: 'jumpstart.local'
+        domainFqdn: 'hci.local'
         domainOUPath: nestedDependencies.outputs.domainOUPath
         startingIPAddress: '192.168.1.55'
         endingIPAddress: '192.168.1.65'
