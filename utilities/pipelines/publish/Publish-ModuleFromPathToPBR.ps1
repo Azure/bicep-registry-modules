@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Publish module to Public Bicep Registry.
 
@@ -39,6 +39,8 @@ function Publish-ModuleFromPathToPBR {
 
     # Load used functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-GitHubToken.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'Confirm-ModuleInMAR.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
@@ -66,19 +68,23 @@ function Publish-ModuleFromPathToPBR {
 
         Write-Verbose "### Module:  $moduleFolderRelativePath" -Verbose
 
-        # 3. Calculate the version that we would publish with
+        # 3. Confirm that the module to publish exists in the MAR file and can be published to the MCR
+        $token = Get-GitHubToken -AppPrivateKey $secret:MAR_REPO_ACCESS_APP_PRIVATEKEY -AppID $env:MAR_REPO_ACCESS_APP_ID -Organisation $env:MAR_REPO_ACCESS_ORG -Repository $env:MAR_REPO_ACCESS_REPO
+        Confirm-ModuleInMAR -PublishedModuleName $moduleFolderRelativePath -GitHubToken $token
+
+        # 4. Calculate the version that we would publish with
         $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
-        # 4. Get Target Published Module Name
+        # 5. Get Target Published Module Name
         $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $moduleBicepFilePath
 
-        # 5.Create release tag
+        # 6. Create release tag
         $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
-        # 6. Get the documentation link
+        # 7. Get the documentation link
         $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
 
-        # 7. Replace telemetry version value (in Bicep)
+        # 8. Replace telemetry version value (in Bicep)
         $tokenConfiguration = @{
             FilePathList   = @($moduleBicepFilePath)
             AbsoluteTokens = @{
@@ -101,7 +107,7 @@ function Publish-ModuleFromPathToPBR {
         }
 
         ###################
-        ## 8.  Publish   ##
+        ## 9.  Publish   ##
         ###################
         $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
