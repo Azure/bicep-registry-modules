@@ -9,7 +9,7 @@ param apiManagementServiceName string
 @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
 param displayName string
 
-@description('Optional. KeyVault location details of the namedValue.')
+@description('Optional. Key Vault location details of the namedValue.')
 param keyVault resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
 @description('Required. The name of the named value.')
