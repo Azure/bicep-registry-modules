@@ -925,7 +925,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     originGroups: [
       {
         authentication: {
-          scope: '<scope>'
+          scope: 'https://storage.azure.com/.default'
           type: 'UserAssignedIdentity'
           userAssignedIdentity: {
             id: '<id>'
@@ -960,7 +960,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       }
       {
         authentication: {
-          scope: '<scope>'
+          scope: 'https://storage.azure.com/.default'
           type: 'UserAssignedIdentity'
           userAssignedIdentity: {
             id: '<id>'
@@ -1171,7 +1171,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       "value": [
         {
           "authentication": {
-            "scope": "<scope>",
+            "scope": "https://storage.azure.com/.default",
             "type": "UserAssignedIdentity",
             "userAssignedIdentity": {
               "id": "<id>"
@@ -1206,7 +1206,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         },
         {
           "authentication": {
-            "scope": "<scope>",
+            "scope": "https://storage.azure.com/.default",
             "type": "UserAssignedIdentity",
             "userAssignedIdentity": {
               "id": "<id>"
@@ -1407,7 +1407,7 @@ param managedIdentities = {
 param originGroups = [
   {
     authentication: {
-      scope: '<scope>'
+      scope: 'https://storage.azure.com/.default'
       type: 'UserAssignedIdentity'
       userAssignedIdentity: {
         id: '<id>'
@@ -1442,7 +1442,7 @@ param originGroups = [
   }
   {
     authentication: {
-      scope: '<scope>'
+      scope: 'https://storage.azure.com/.default'
       type: 'UserAssignedIdentity'
       userAssignedIdentity: {
         id: '<id>'
