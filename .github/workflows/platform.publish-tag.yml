@@ -46,10 +46,11 @@ jobs:
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
-          app-id: ${{ secrets.MAR_REPO_ACCESS_APPID }}
-          private-key: ${{ secrets.MAR_REPO_ACCESS_SECRET }}
           owner: ${{ vars.MAR_REPO_OWNER}}
-          repositories: ${{ vars.MAR_REPO_REPOSITORY}}
+          repositories: ${{ vars.MAR_REPO_REPOSITORY }}
+          app-id: ${{ vars.MAR_REPO_ACCESS_APPID }}
+          private-key: ${{ secrets.MAR_REPO_ACCESS_SECRET }}
+          permission-issues: read
       # ensure the module is in the MAR file before publishing
       - name: Confirm module in MAR
         shell: pwsh
