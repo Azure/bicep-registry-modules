@@ -49,8 +49,7 @@ jobs:
           owner: ${{ vars.MAR_REPO_OWNER}}
           repositories: ${{ vars.MAR_REPO_REPOSITORY }}
           app-id: ${{ vars.MAR_REPO_ACCESS_APPID }}
-          private-key: ${{ secrets.MAR_REPO_ACCESS_SECRET }}
-          permission-issues: read
+          private-key: ${{ secrets.MAR_REPO_ACCESS_APP_PRIVATEKEY }}
       # ensure the module is in the MAR file before publishing
       - name: Confirm module in MAR
         shell: pwsh
