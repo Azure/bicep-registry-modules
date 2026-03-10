@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "6678560934955585185"
+      "templateHash": "2036075341673928595"
     },
     "name": "Maintenance Configurations",
     "description": "This module deploys a Maintenance Configuration."
@@ -45,7 +45,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -120,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -165,18 +165,13 @@
     },
     "maintenanceScope": {
       "type": "string",
-      "defaultValue": "Host",
-      "allowedValues": [
-        "Host",
-        "OSImage",
-        "Extension",
-        "InGuestPatch",
-        "SQLDB",
-        "SQLManagedInstance"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/maintenanceScope"
+        },
         "description": "Optional. Gets or sets maintenanceScope of the configuration."
-      }
+      },
+      "defaultValue": "Host"
     },
     "maintenanceWindow": {
       "type": "object",
@@ -217,15 +212,13 @@
     },
     "visibility": {
       "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "",
-        "Custom",
-        "Public"
-      ],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Maintenance/maintenanceConfigurations@2023-04-01#properties/properties/properties/visibility"
+        },
         "description": "Optional. Gets or sets the visibility of the configuration. The default value is 'Custom'."
-      }
+      },
+      "nullable": true
     },
     "installPatches": {
       "type": "object",
@@ -259,7 +252,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
