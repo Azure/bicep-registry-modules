@@ -66,7 +66,8 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    domainAdminPassword: arbLocalAdminAndDeploymentUserPass
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     location: enforcedLocation
   }
 }
