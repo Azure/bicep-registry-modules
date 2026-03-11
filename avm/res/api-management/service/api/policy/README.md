@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service API Policy.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/api/policy:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,7 +43,7 @@ This module deploys an API Management Service API Policy.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`format`](#parameter-format) | string | Format of the policyContent. |
+| [`format`](#parameter-format) | string | Format of the policy content. |
 | [`name`](#parameter-name) | string | The name of the policy. |
 
 ### Parameter: `value`
@@ -69,7 +77,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `format`
 
-Format of the policyContent.
+Format of the policy content.
 
 - Required: No
 - Type: string

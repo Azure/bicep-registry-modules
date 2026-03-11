@@ -68,6 +68,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       identityType: 'UserAssigned'
       identityName: nestedDependencies.outputs.managedIdentityName
+      allowedOrigins: [
+        'https://www.bing.com'
+      ]
       containerRegistryName: nestedDependencies.outputs.containerRegistryName
       identityPrincipalId: nestedDependencies.outputs.managedIdentityPrincipalId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId

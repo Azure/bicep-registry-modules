@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Product API.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/product/api:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -28,7 +36,7 @@ This module deploys an API Management Service Product API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
-| [`productName`](#parameter-productname) | string | The name of the parent Product. Required if the template is used in a standalone deployment. |
+| [`productName`](#parameter-productname) | string | The name of the parent product. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -52,7 +60,7 @@ The name of the parent API Management service. Required if the template is used 
 
 ### Parameter: `productName`
 
-The name of the parent Product. Required if the template is used in a standalone deployment.
+The name of the parent product. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

@@ -94,7 +94,7 @@ param ingressAllowInsecure bool = true
 @description('Optional. Controls how active revisions are handled for the Container app.')
 param revisionMode string = 'Single'
 
-import { secretType } from 'br/public:avm/res/app/container-app:0.18.1'
+import { secretType } from 'br/public:avm/res/app/container-app:0.19.0'
 @description('Optional. The secrets required for the container.')
 param secrets secretType[]?
 
@@ -144,7 +144,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module containerApp 'br/public:avm/res/app/container-app:0.18.1' = {
+module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
   name: '${uniqueString(deployment().name, location)}-container-app'
   params: {
     name: name

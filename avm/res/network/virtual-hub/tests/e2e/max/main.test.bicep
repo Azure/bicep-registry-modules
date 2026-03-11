@@ -98,16 +98,14 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      sku:'Standard'
+      sku: 'Standard'
       virtualRouterAutoScaleConfiguration: {
         minCount: 2
       }
-      preferredRoutingGateway: 'None'
+      preferredRoutingGateway: 'ExpressRoute'
       hubRoutingPreference: 'ASPath'
-      virtualRouterAsn: 100
-      routingIntent: {
-
-      }
+      virtualRouterAsn: 65515
+      routingIntent: {}
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

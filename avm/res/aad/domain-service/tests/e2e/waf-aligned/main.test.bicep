@@ -67,7 +67,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
 }
@@ -76,7 +76,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
 // as of https://azure.github.io/Azure-Verified-Modules/spec/SNFR7 the idem test it is not required
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
@@ -116,10 +116,10 @@ module testDeployment '../../../main.bicep' = {
         subnetId: nestedDependencies.outputs.subnetResourceId
       }
       // replicaset currently are not working, when deployed via Bicep
-      {
-        location: replicaLocation
-        subnetId: nestedDependencies.outputs.replicaSubnetResourceId
-      }
+      // {
+      //   location: replicaLocation
+      //   subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+      // }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'

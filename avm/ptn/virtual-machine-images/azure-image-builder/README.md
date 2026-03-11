@@ -2,6 +2,14 @@
 
 This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.
 
+You can reference the module as follows:
+```bicep
+module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -65,6 +73,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with min features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -72,7 +82,6 @@ This instance deploys the module with min features enabled.
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
@@ -213,6 +222,8 @@ param resourceGroupName = '<resourceGroupName>'
 
 This instance deploys the module with the conditions set up to deploy all resource and build a Linux image.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/deployAll.linux]
+
 
 <details>
 
@@ -220,7 +231,6 @@ This instance deploys the module with the conditions set up to deploy all resour
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
@@ -460,6 +470,8 @@ param storageAccountFilesToUpload = [
 
 This instance deploys the module with the conditions set up to deploy all resource and build a Windows image.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/deployAll.windows]
+
 
 <details>
 
@@ -467,7 +479,6 @@ This instance deploys the module with the conditions set up to deploy all resour
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
@@ -712,6 +723,8 @@ param storageAccountFilesToUpload = [
 
 This instance deploys the module with the conditions set up to only update the assets on the assets storage account and build the image, assuming all dependencies are setup.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/deployOnlyAssetsAndImage]
+
 
 <details>
 
@@ -719,7 +732,6 @@ This instance deploys the module with the conditions set up to only update the a
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
@@ -912,6 +924,8 @@ param virtualNetworkName = '<virtualNetworkName>'
 
 This instance deploys the module with the conditions set up to only deploy the base resources, that is everything but the image.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/deployOnlyBase]
+
 
 <details>
 
@@ -919,7 +933,6 @@ This instance deploys the module with the conditions set up to only deploy the b
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'
@@ -1065,6 +1078,8 @@ param resourceGroupName = '<resourceGroupName>'
 
 This instance deploys the module with the conditions set up to only deploy and bake the image, assuming all dependencies are setup.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/deployOnlyImage]
+
 
 <details>
 
@@ -1072,7 +1087,6 @@ This instance deploys the module with the conditions set up to only deploy and b
 
 ```bicep
 module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:<version>' = {
-  name: 'azureImageBuilderDeployment'
   params: {
     // Required parameters
     computeGalleryImageDefinitionName: '<computeGalleryImageDefinitionName>'

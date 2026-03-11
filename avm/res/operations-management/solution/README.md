@@ -2,6 +2,14 @@
 
 This module deploys an Operations Management Solution.
 
+You can reference the module as follows:
+```bicep
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -34,6 +42,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -41,7 +51,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: 'solutionDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -114,6 +123,8 @@ param location = '<location>'
 
 This instance deploys the module with a Microsoft solution.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ms]
+
 
 <details>
 
@@ -121,7 +132,6 @@ This instance deploys the module with a Microsoft solution.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: 'solutionDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -194,6 +204,8 @@ param location = '<location>'
 
 This instance deploys the module with a third party (Non-Microsoft) solution.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nonms]
+
 
 <details>
 
@@ -201,7 +213,6 @@ This instance deploys the module with a third party (Non-Microsoft) solution.
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: 'solutionDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -280,6 +291,8 @@ param location = '<location>'
 
 This instance deploys the module with the SQLAuditing solution. This solution is authored by Microsoft, but uses a non-standard value for the `product` parameter.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sql-auditing]
+
 
 <details>
 
@@ -287,7 +300,6 @@ This instance deploys the module with the SQLAuditing solution. This solution is
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: 'solutionDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
@@ -363,6 +375,8 @@ param location = '<location>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -370,7 +384,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module solution 'br/public:avm/res/operations-management/solution:<version>' = {
-  name: 'solutionDeployment'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'

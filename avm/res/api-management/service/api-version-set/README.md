@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service API Version Set.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/api-version-set:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -21,8 +29,8 @@ This module deploys an API Management Service API Version Set.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | The display name of the Name of API Version Set. |
-| [`versioningScheme`](#parameter-versioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
+| [`displayName`](#parameter-displayname) | string | The display name of the API Version Set. |
+| [`versioningScheme`](#parameter-versioningscheme) | string | A value that determines where the API Version identifier will be located in an HTTP request. |
 
 **Conditional parameters**
 
@@ -42,14 +50,14 @@ This module deploys an API Management Service API Version Set.
 
 ### Parameter: `displayName`
 
-The display name of the Name of API Version Set.
+The display name of the API Version Set.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `versioningScheme`
 
-An value that determines where the API Version identifier will be located in a HTTP request.
+A value that determines where the API Version identifier will be located in an HTTP request.
 
 - Required: Yes
 - Type: string

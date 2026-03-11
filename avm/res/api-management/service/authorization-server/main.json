@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3719777024451822510"
+      "version": "0.41.2.15936",
+      "templateHash": "67184448709483431"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
@@ -22,7 +22,7 @@
       "type": "string",
       "maxLength": 50,
       "metadata": {
-        "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
+        "description": "Required. API Management Service Authorization Server name. Must be 1 to 50 characters long."
       }
     },
     "apiManagementServiceName": {
@@ -43,7 +43,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/authorizationMethods"
         },
-        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present."
       },
       "defaultValue": [
         "GET"
@@ -113,6 +113,7 @@
       },
       "allowedValues": [
         "authorizationCode",
+        "authorizationCodeWithPkce",
         "clientCredentials",
         "implicit",
         "resourceOwnerPassword"
@@ -148,7 +149,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/authorizationServers@2024-05-01#properties/properties/properties/tokenBodyParameters"
         },
-        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
+        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}."
       },
       "defaultValue": []
     },
@@ -183,7 +184,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.apimgmt-authzserver.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",

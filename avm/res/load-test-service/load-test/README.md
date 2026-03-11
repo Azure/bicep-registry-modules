@@ -2,6 +2,14 @@
 
 This module deploys a Load test.
 
+You can reference the module as follows:
+```bicep
+module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
-  name: 'loadTestDeployment'
   params: {
     // Required parameters
     name: 'ltmin001'
@@ -100,6 +109,8 @@ param location = '<location>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -107,7 +118,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
-  name: 'loadTestDeployment'
   params: {
     // Required parameters
     name: 'ltmax001'
@@ -267,6 +277,8 @@ param tags = {
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/user-assigned-cmk-encryption]
+
 
 <details>
 
@@ -274,7 +286,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
-  name: 'loadTestDeployment'
   params: {
     // Required parameters
     name: 'ltucmk001'
@@ -365,6 +376,8 @@ param managedIdentities = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -372,7 +385,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
-  name: 'loadTestDeployment'
   params: {
     // Required parameters
     name: 'ltwaf001'

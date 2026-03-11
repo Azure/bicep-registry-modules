@@ -92,5 +92,8 @@ output managedIdentityResourceId string = managedIdentity.id
 @description('The name of the created Dev Center Network Connection.')
 output networkConnectionResourceId string = devCenterNetworkConnection.id
 
+@description('The name of the created Dev Center Network Connection.')
+output networkConnectionName string = devCenterNetworkConnection.name
+
 @description('The secret URI of the created Key Vault secret.')
 output keyVaultSecretUri string = keyVault::secret.properties.secretUriWithVersion

@@ -2,6 +2,14 @@
 
 This module deploys an Azure Firewall.
 
+You can reference the module as follows:
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -18,8 +26,9 @@ This module deploys an Azure Firewall.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/azureFirewalls` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_azurefirewalls.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/azureFirewalls)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
+| `Microsoft.Network/azureFirewalls` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_azurefirewalls.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/azureFirewalls)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 
 ## Usage examples
 
@@ -45,6 +54,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module and attaches an existing public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/addpip]
+
 
 <details>
 
@@ -52,7 +63,6 @@ This instance deploys the module and attaches an existing public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafaddpip001'
@@ -60,7 +70,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     additionalPublicIpConfigurations: [
       {
         name: 'ipConfig01'
-        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+        properties: {
+          publicIPAddress: {
+            id: '<id>'
+          }
+        }
       }
     ]
     azureSkuTier: 'Basic'
@@ -101,7 +115,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": [
         {
           "name": "ipConfig01",
-          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
+          "properties": {
+            "publicIPAddress": {
+              "id": "<id>"
+            }
+          }
         }
       ]
     },
@@ -146,7 +164,11 @@ param name = 'nafaddpip001'
 param additionalPublicIpConfigurations = [
   {
     name: 'ipConfig01'
-    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+    properties: {
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
   }
 ]
 param azureSkuTier = 'Basic'
@@ -171,6 +193,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with the Basic SKU.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/basic]
+
 
 <details>
 
@@ -178,7 +202,6 @@ This instance deploys the module with the Basic SKU.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafbasic001'
@@ -255,6 +278,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module and will create a public IP address.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/custompip]
+
 
 <details>
 
@@ -262,7 +287,6 @@ This instance deploys the module and will create a public IP address.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafcstpip001'
@@ -410,6 +434,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -417,7 +443,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmin001'
@@ -479,6 +504,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module a vWAN with an existing IP.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubbyoip]
+
 
 <details>
 
@@ -486,7 +513,6 @@ This instance deploys the module a vWAN with an existing IP.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubbyoip001'
@@ -548,6 +574,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module a vWAN in a typical hub setting.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubcommon]
+
 
 <details>
 
@@ -555,7 +583,6 @@ This instance deploys the module a vWAN in a typical hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubcom001'
@@ -639,6 +666,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module a vWAN minimum hub setting.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/hubmin]
+
 
 <details>
 
@@ -646,7 +675,6 @@ This instance deploys the module a vWAN minimum hub setting.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafhubmin001'
@@ -725,6 +753,8 @@ param virtualHubResourceId = '<virtualHubResourceId>'
 
 This instance deploys the module and sets up a Firewall management nic to support features such as Forced Tunneling and Packet Capture.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managementnic]
+
 
 <details>
 
@@ -732,7 +762,6 @@ This instance deploys the module and sets up a Firewall management nic to suppor
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'naftunn001'
@@ -740,7 +769,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     additionalPublicIpConfigurations: [
       {
         name: 'ipConfig01'
-        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+        properties: {
+          publicIPAddress: {
+            id: '<id>'
+          }
+        }
       }
     ]
     azureSkuTier: 'Standard'
@@ -775,7 +808,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": [
         {
           "name": "ipConfig01",
-          "publicIPAddressResourceId": "<publicIPAddressResourceId>"
+          "properties": {
+            "publicIPAddress": {
+              "id": "<id>"
+            }
+          }
         }
       ]
     },
@@ -816,7 +853,11 @@ param name = 'naftunn001'
 param additionalPublicIpConfigurations = [
   {
     name: 'ipConfig01'
-    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+    properties: {
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
   }
 ]
 param azureSkuTier = 'Standard'
@@ -835,6 +876,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -842,7 +885,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafmax001'
@@ -922,6 +964,10 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    maintenanceConfiguration: {
+      assignmentName: 'myMaintenanceAssignment'
+      maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     }
     networkRuleCollections: [
       {
@@ -1101,6 +1147,12 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "maintenanceConfiguration": {
+      "value": {
+        "assignmentName": "myMaintenanceAssignment",
+        "maintenanceConfigurationResourceId": "<maintenanceConfigurationResourceId>"
+      }
+    },
     "networkRuleCollections": {
       "value": [
         {
@@ -1275,6 +1327,10 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maintenanceConfiguration = {
+  assignmentName: 'myMaintenanceAssignment'
+  maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+}
 param networkRuleCollections = [
   {
     name: 'allow-network-rules'
@@ -1355,6 +1411,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module and will use a public IP prefix.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/publicipprefix]
+
 
 <details>
 
@@ -1362,7 +1420,6 @@ This instance deploys the module and will use a public IP prefix.
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafpip001'
@@ -1480,6 +1537,8 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1487,7 +1546,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
-  name: 'azureFirewallDeployment'
   params: {
     // Required parameters
     name: 'nafwaf001'
@@ -1895,6 +1953,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalProperties`](#parameter-additionalproperties) | object | The additional properties used to further config this azure firewall. Used for DNS proxy configuration (e.g., `Network.DNS.EnableProxy`). |
 | [`additionalPublicIpConfigurations`](#parameter-additionalpublicipconfigurations) | array | This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration. |
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
@@ -1904,9 +1963,11 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableManagementNic`](#parameter-enablemanagementnic) | bool | Enable/Disable to support Forced Tunneling and Packet capture scenarios. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of type local virtual network gateway. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Azure Firewall. |
 | [`managementIPAddressObject`](#parameter-managementipaddressobject) | object | Specifies the properties of the Management Public IP to create and be used by Azure Firewall. If it's not provided and managementIPResourceID is empty, a '-mip' suffix will be appended to the Firewall's name. |
 | [`managementIPResourceID`](#parameter-managementipresourceid) | string | The Management Public IP resource ID to associate to the AzureFirewallManagementSubnet. If empty, then the Management Public IP that is created as part of this module will be applied to the AzureFirewallManagementSubnet. |
 | [`natRuleCollections`](#parameter-natrulecollections) | array | Collection of NAT rule collections used by Azure Firewall. |
@@ -1931,48 +1992,6 @@ IP addresses associated with AzureFirewall. Required if `virtualHubId` is suppli
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | Private IP Address associated with AzureFirewall. |
-| [`publicIPs`](#parameter-hubipaddressespublicips) | object | List of public IP addresses associated with AzureFirewall. |
-
-### Parameter: `hubIPAddresses.privateIPAddress`
-
-Private IP Address associated with AzureFirewall.
-
-- Required: No
-- Type: string
-
-### Parameter: `hubIPAddresses.publicIPs`
-
-List of public IP addresses associated with AzureFirewall.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addresses`](#parameter-hubipaddressespublicipsaddresses) | array | The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained. |
-| [`count`](#parameter-hubipaddressespublicipscount) | int | Public IP address count. |
-
-### Parameter: `hubIPAddresses.publicIPs.addresses`
-
-The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained.
-
-- Required: No
-- Type: array
-
-### Parameter: `hubIPAddresses.publicIPs.count`
-
-Public IP address count.
-
-- Required: No
-- Type: int
-
 ### Parameter: `virtualHubResourceId`
 
 The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.
@@ -1989,6 +2008,13 @@ Shared services Virtual Network resource ID. The virtual network ID containing A
 - Type: string
 - Default: `''`
 
+### Parameter: `additionalProperties`
+
+The additional properties used to further config this azure firewall. Used for DNS proxy configuration (e.g., `Network.DNS.EnableProxy`).
+
+- Required: No
+- Type: object
+
 ### Parameter: `additionalPublicIpConfigurations`
 
 This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.
@@ -2000,179 +2026,6 @@ This is to add any additional Public IP configurations on top of the Public IP w
 ### Parameter: `applicationRuleCollections`
 
 Collection of application rule collections used by Azure Firewall.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-applicationrulecollectionsname) | string | Name of the application rule collection. |
-| [`properties`](#parameter-applicationrulecollectionsproperties) | object | Properties of the azure firewall application rule collection. |
-
-### Parameter: `applicationRuleCollections.name`
-
-Name of the application rule collection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `applicationRuleCollections.properties`
-
-Properties of the azure firewall application rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`action`](#parameter-applicationrulecollectionspropertiesaction) | object | The action type of a rule collection. |
-| [`priority`](#parameter-applicationrulecollectionspropertiespriority) | int | Priority of the application rule collection. |
-| [`rules`](#parameter-applicationrulecollectionspropertiesrules) | array | Collection of rules used by a application rule collection. |
-
-### Parameter: `applicationRuleCollections.properties.action`
-
-The action type of a rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-applicationrulecollectionspropertiesactiontype) | string | The type of action. |
-
-### Parameter: `applicationRuleCollections.properties.action.type`
-
-The type of action.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
-
-### Parameter: `applicationRuleCollections.properties.priority`
-
-Priority of the application rule collection.
-
-- Required: Yes
-- Type: int
-- MinValue: 100
-- MaxValue: 65000
-
-### Parameter: `applicationRuleCollections.properties.rules`
-
-Collection of rules used by a application rule collection.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-applicationrulecollectionspropertiesrulesname) | string | Name of the application rule. |
-| [`protocols`](#parameter-applicationrulecollectionspropertiesrulesprotocols) | array | Array of ApplicationRuleProtocols. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-applicationrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
-| [`fqdnTags`](#parameter-applicationrulecollectionspropertiesrulesfqdntags) | array | List of FQDN Tags for this rule. |
-| [`sourceAddresses`](#parameter-applicationrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
-| [`sourceIpGroups`](#parameter-applicationrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
-| [`targetFqdns`](#parameter-applicationrulecollectionspropertiesrulestargetfqdns) | array | List of FQDNs for this rule. |
-
-### Parameter: `applicationRuleCollections.properties.rules.name`
-
-Name of the application rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `applicationRuleCollections.properties.rules.protocols`
-
-Array of ApplicationRuleProtocols.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`protocolType`](#parameter-applicationrulecollectionspropertiesrulesprotocolsprotocoltype) | string | Protocol type. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`port`](#parameter-applicationrulecollectionspropertiesrulesprotocolsport) | int | Port number for the protocol. |
-
-### Parameter: `applicationRuleCollections.properties.rules.protocols.protocolType`
-
-Protocol type.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Http'
-    'Https'
-    'Mssql'
-  ]
-  ```
-
-### Parameter: `applicationRuleCollections.properties.rules.protocols.port`
-
-Port number for the protocol.
-
-- Required: No
-- Type: int
-- MaxValue: 64000
-
-### Parameter: `applicationRuleCollections.properties.rules.description`
-
-Description of the rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `applicationRuleCollections.properties.rules.fqdnTags`
-
-List of FQDN Tags for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `applicationRuleCollections.properties.rules.sourceAddresses`
-
-List of source IP addresses for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `applicationRuleCollections.properties.rules.sourceIpGroups`
-
-List of source IpGroups for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `applicationRuleCollections.properties.rules.targetFqdns`
-
-List of FQDNs for this rule.
 
 - Required: No
 - Type: array
@@ -2221,14 +2074,6 @@ Tier of an Azure Firewall.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -2392,6 +2237,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `extendedLocation`
+
+The extended location of type local virtual network gateway.
+
+- Required: No
+- Type: object
+
 ### Parameter: `firewallPolicyId`
 
 Resource ID of the Firewall Policy that should be attached.
@@ -2452,6 +2304,34 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `maintenanceConfiguration`
+
+The maintenance configuration to assign to the Azure Firewall.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignmentName`](#parameter-maintenanceconfigurationassignmentname) | string | The name of the maintenance configuration assignment. |
+| [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationmaintenanceconfigurationresourceid) | string | The resource ID of the maintenance configuration to assign to the Azure Firewall. |
+
+### Parameter: `maintenanceConfiguration.assignmentName`
+
+The name of the maintenance configuration assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `maintenanceConfiguration.maintenanceConfigurationResourceId`
+
+The resource ID of the maintenance configuration to assign to the Azure Firewall.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `managementIPAddressObject`
 
 Specifies the properties of the Management Public IP to create and be used by Azure Firewall. If it's not provided and managementIPResourceID is empty, a '-mip' suffix will be appended to the Firewall's name.
@@ -2475,343 +2355,9 @@ Collection of NAT rule collections used by Azure Firewall.
 - Required: No
 - Type: array
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-natrulecollectionsname) | string | Name of the NAT rule collection. |
-| [`properties`](#parameter-natrulecollectionsproperties) | object | Properties of the azure firewall NAT rule collection. |
-
-### Parameter: `natRuleCollections.name`
-
-Name of the NAT rule collection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `natRuleCollections.properties`
-
-Properties of the azure firewall NAT rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`action`](#parameter-natrulecollectionspropertiesaction) | object | The action type of a NAT rule collection. |
-| [`priority`](#parameter-natrulecollectionspropertiespriority) | int | Priority of the NAT rule collection. |
-| [`rules`](#parameter-natrulecollectionspropertiesrules) | array | Collection of rules used by a NAT rule collection. |
-
-### Parameter: `natRuleCollections.properties.action`
-
-The action type of a NAT rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-natrulecollectionspropertiesactiontype) | string | The type of action. |
-
-### Parameter: `natRuleCollections.properties.action.type`
-
-The type of action.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Dnat'
-    'Snat'
-  ]
-  ```
-
-### Parameter: `natRuleCollections.properties.priority`
-
-Priority of the NAT rule collection.
-
-- Required: Yes
-- Type: int
-- MinValue: 100
-- MaxValue: 65000
-
-### Parameter: `natRuleCollections.properties.rules`
-
-Collection of rules used by a NAT rule collection.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-natrulecollectionspropertiesrulesname) | string | Name of the NAT rule. |
-| [`protocols`](#parameter-natrulecollectionspropertiesrulesprotocols) | array | Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-natrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
-| [`destinationAddresses`](#parameter-natrulecollectionspropertiesrulesdestinationaddresses) | array | List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags. |
-| [`destinationPorts`](#parameter-natrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
-| [`sourceAddresses`](#parameter-natrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
-| [`sourceIpGroups`](#parameter-natrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
-| [`translatedAddress`](#parameter-natrulecollectionspropertiesrulestranslatedaddress) | string | The translated address for this NAT rule. |
-| [`translatedFqdn`](#parameter-natrulecollectionspropertiesrulestranslatedfqdn) | string | The translated FQDN for this NAT rule. |
-| [`translatedPort`](#parameter-natrulecollectionspropertiesrulestranslatedport) | string | The translated port for this NAT rule. |
-
-### Parameter: `natRuleCollections.properties.rules.name`
-
-Name of the NAT rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `natRuleCollections.properties.rules.protocols`
-
-Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
-
-- Required: Yes
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Any'
-    'ICMP'
-    'TCP'
-    'UDP'
-  ]
-  ```
-
-### Parameter: `natRuleCollections.properties.rules.description`
-
-Description of the rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
-
-List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.
-
-- Required: No
-- Type: array
-
-### Parameter: `natRuleCollections.properties.rules.destinationPorts`
-
-List of destination ports.
-
-- Required: No
-- Type: array
-
-### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
-
-List of source IP addresses for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
-
-List of source IpGroups for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `natRuleCollections.properties.rules.translatedAddress`
-
-The translated address for this NAT rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
-
-The translated FQDN for this NAT rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `natRuleCollections.properties.rules.translatedPort`
-
-The translated port for this NAT rule.
-
-- Required: No
-- Type: string
-
 ### Parameter: `networkRuleCollections`
 
 Collection of network rule collections used by Azure Firewall.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-networkrulecollectionsname) | string | Name of the network rule collection. |
-| [`properties`](#parameter-networkrulecollectionsproperties) | object | Properties of the azure firewall network rule collection. |
-
-### Parameter: `networkRuleCollections.name`
-
-Name of the network rule collection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `networkRuleCollections.properties`
-
-Properties of the azure firewall network rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`action`](#parameter-networkrulecollectionspropertiesaction) | object | The action type of a rule collection. |
-| [`priority`](#parameter-networkrulecollectionspropertiespriority) | int | Priority of the network rule collection. |
-| [`rules`](#parameter-networkrulecollectionspropertiesrules) | array | Collection of rules used by a network rule collection. |
-
-### Parameter: `networkRuleCollections.properties.action`
-
-The action type of a rule collection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-networkrulecollectionspropertiesactiontype) | string | The type of action. |
-
-### Parameter: `networkRuleCollections.properties.action.type`
-
-The type of action.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
-
-### Parameter: `networkRuleCollections.properties.priority`
-
-Priority of the network rule collection.
-
-- Required: Yes
-- Type: int
-- MinValue: 100
-- MaxValue: 65000
-
-### Parameter: `networkRuleCollections.properties.rules`
-
-Collection of rules used by a network rule collection.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-networkrulecollectionspropertiesrulesname) | string | Name of the network rule. |
-| [`protocols`](#parameter-networkrulecollectionspropertiesrulesprotocols) | array | Array of AzureFirewallNetworkRuleProtocols. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-networkrulecollectionspropertiesrulesdescription) | string | Description of the rule. |
-| [`destinationAddresses`](#parameter-networkrulecollectionspropertiesrulesdestinationaddresses) | array | List of destination IP addresses. |
-| [`destinationFqdns`](#parameter-networkrulecollectionspropertiesrulesdestinationfqdns) | array | List of destination FQDNs. |
-| [`destinationIpGroups`](#parameter-networkrulecollectionspropertiesrulesdestinationipgroups) | array | List of destination IP groups for this rule. |
-| [`destinationPorts`](#parameter-networkrulecollectionspropertiesrulesdestinationports) | array | List of destination ports. |
-| [`sourceAddresses`](#parameter-networkrulecollectionspropertiesrulessourceaddresses) | array | List of source IP addresses for this rule. |
-| [`sourceIpGroups`](#parameter-networkrulecollectionspropertiesrulessourceipgroups) | array | List of source IpGroups for this rule. |
-
-### Parameter: `networkRuleCollections.properties.rules.name`
-
-Name of the network rule.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `networkRuleCollections.properties.rules.protocols`
-
-Array of AzureFirewallNetworkRuleProtocols.
-
-- Required: Yes
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Any'
-    'ICMP'
-    'TCP'
-    'UDP'
-  ]
-  ```
-
-### Parameter: `networkRuleCollections.properties.rules.description`
-
-Description of the rule.
-
-- Required: No
-- Type: string
-
-### Parameter: `networkRuleCollections.properties.rules.destinationAddresses`
-
-List of destination IP addresses.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleCollections.properties.rules.destinationFqdns`
-
-List of destination FQDNs.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleCollections.properties.rules.destinationIpGroups`
-
-List of destination IP groups for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleCollections.properties.rules.destinationPorts`
-
-List of destination ports.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleCollections.properties.rules.sourceAddresses`
-
-List of source IP addresses for this rule.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkRuleCollections.properties.rules.sourceIpGroups`
-
-List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
@@ -2954,14 +2500,6 @@ The operation mode for Threat Intel.
 - Required: No
 - Type: string
 - Default: `'Deny'`
-- Allowed:
-  ```Bicep
-  [
-    'Alert'
-    'Deny'
-    'Off'
-  ]
-  ```
 
 ## Outputs
 
@@ -2983,7 +2521,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

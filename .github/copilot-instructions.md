@@ -47,6 +47,7 @@ Start here to understand which modules are published (with the ModuleStatus bein
 ### Use Microsoft Container Registry (MCR) to fetch AVM Module versions
 
 Use the `#fetch` tool to search for published AVM modules and check available versions:
+
 - **URL Pattern**: `https://mcr.microsoft.com/v2/bicep/{ModuleName as per the AVM Module index}/tags/list`
 - **Example**: `https://mcr.microsoft.com/v2/bicep/avm/res/storage/storage-account/tags/list`
 
@@ -74,6 +75,7 @@ Use the `#fetch` tool to get the Bicep schema for specific resources and explici
 ## Fetching Schemas, API versions and existing Published AVM Modules
 
 You have two options:
+
 1. Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
 2. Use the `#fetch` tool to get information from related URLs.
 
@@ -81,6 +83,7 @@ You have two options:
 > Use only the tools above to retrieve the schema documentation for Bicep for specific versions. Do not use any other method or tool to do this, because `azure_get_schema_for_Bicep` tool does not reliably return the latest stable version.
 
 ### Use Bicep VS Code Extension Tools (Preferred)
+
 - `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.

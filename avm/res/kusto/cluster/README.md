@@ -2,6 +2,14 @@
 
 This module deploys a Kusto Cluster.
 
+You can reference the module as follows:
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -45,6 +53,8 @@ The following section provides usage examples for the module, which were used to
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
 
 <details>
 
@@ -52,7 +62,6 @@ Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](h
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -146,6 +155,8 @@ param tags = {
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -153,7 +164,6 @@ Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](h
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: 'kcuencr0001'
@@ -255,6 +265,8 @@ param tags = {
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -262,7 +274,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: 'kcmin0001'
@@ -342,6 +353,8 @@ param managedIdentities = {
 This instance deploys the module with most of its features enabled.
 Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -349,7 +362,6 @@ Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](h
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: 'kcmax0001'
@@ -710,6 +722,8 @@ param tags = {
 This instance deploys the module with private endpoints.
 Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
 
 <details>
 
@@ -717,7 +731,6 @@ Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](h
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: 'kcpe0001'
@@ -878,6 +891,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -885,7 +900,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
-  name: 'clusterDeployment'
   params: {
     // Required parameters
     name: 'kcwaf0001'
@@ -1032,7 +1046,7 @@ param tier = 'Standard'
 | [`allowedIpRangeList`](#parameter-allowediprangelist) | array | List of IP addresses in CIDR format allowed to connect to the Kusto Cluster. |
 | [`autoScaleMax`](#parameter-autoscalemax) | int | When auto-scale is enabled, the maximum number of instances in the Kusto Cluster. |
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
-| [`availabilityZones`](#parameter-availabilityzones) | array | The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
 | [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1131,7 +1145,7 @@ When auto-scale is enabled, the minimum number of instances in the Kusto Cluster
 
 ### Parameter: `availabilityZones`
 
-The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set.
+The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again.
 
 - Required: No
 - Type: array
@@ -1212,6 +1226,7 @@ The Kusto Cluster role to be assigned to the principal id.
   ```Bicep
   [
     'AllDatabasesAdmin'
+    'AllDatabasesMonitor'
     'AllDatabasesViewer'
   ]
   ```

@@ -2,6 +2,14 @@
 
 This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope.
 
+You can reference the module as follows:
+```bicep
+module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -33,6 +41,8 @@ The following section provides usage examples for the module, which were used to
 
 This module deploys a PIM Eligible Role Assignment at a Management Group scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mg.eligible]
+
 
 <details>
 
@@ -40,7 +50,6 @@ This module deploys a PIM Eligible Role Assignment at a Management Group scope u
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {
@@ -138,6 +147,8 @@ param location = '<location>'
 
 This module deploys a PIM Active Role Assignment at a Resource Group scope using common parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg.active]
+
 
 <details>
 
@@ -145,7 +156,6 @@ This module deploys a PIM Active Role Assignment at a Resource Group scope using
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {
@@ -267,6 +277,8 @@ param ticketInfo = {
 
 This module deploys a PIM permanent Role Assignment at a Subscription scope using minimal parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub.active.permenant]
+
 
 <details>
 
@@ -274,7 +286,6 @@ This module deploys a PIM permanent Role Assignment at a Subscription scope usin
 
 ```bicep
 module pimRoleAssignment 'br/public:avm/ptn/authorization/pim-role-assignment:<version>' = {
-  name: 'pimRoleAssignmentDeployment'
   params: {
     // Required parameters
     pimRoleAssignmentType: {

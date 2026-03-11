@@ -71,7 +71,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
+  name: 'role-asi-mg-${uniqueString(managementGroup().name, managementGroupId, location, roleDefinitionIdOrName, principalId)}'
   scope: managementGroup(managementGroupId)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
@@ -88,7 +88,7 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
 }
 
 module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Module'
+  name: 'role-asi-sub-${uniqueString(managementGroup().name, subscriptionId, location, roleDefinitionIdOrName, principalId)}'
   scope: subscription(subscriptionId)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
@@ -105,7 +105,7 @@ module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscription
 }
 
 module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-RG-Module'
+  name: 'role-asi-rg-${uniqueString(managementGroup().name, subscriptionId, resourceGroupName, location, roleDefinitionIdOrName, principalId)}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName

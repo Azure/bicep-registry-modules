@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Identity Provider.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/identity-provider:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -35,7 +43,7 @@ This module deploys an API Management Service Identity Provider.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. - string. |
+| [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. |
 | [`authority`](#parameter-authority) | string | OpenID Connect discovery endpoint hostname for AAD or AAD B2C. |
 | [`clientLibrary`](#parameter-clientlibrary) | string | The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -78,7 +86,7 @@ Client secret of the Application in external Identity Provider, used to authenti
 
 ### Parameter: `allowedTenants`
 
-List of Allowed Tenants when configuring Azure Active Directory login. - string.
+List of Allowed Tenants when configuring Azure Active Directory login.
 
 - Required: No
 - Type: array

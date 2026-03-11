@@ -27,7 +27,7 @@ var enforcedLocation = 'germanywestcentral'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -39,7 +39,6 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}1'
     actionGroupName: 'dep-${namePrefix}-ag-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -135,7 +134,7 @@ module testDeployment '../../../main.bicep' = [
       scopes: [
         nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       ]
-      suppressForMinutes: 'PT5M'
+      muteActionsDuration: 'PT5M'
       windowSize: 'PT5M'
       tags: {
         'hidden-title': 'This is visible in the resource name'

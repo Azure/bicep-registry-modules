@@ -18,7 +18,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the storage account resource.')
-param tags resourceInput<'Microsoft.Resources/resourceGroups@2021-04-01'>.tags?
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -43,7 +43,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: location
   name: name
   tags: tags
@@ -52,7 +52,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 module resourceGroup_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: '${uniqueString(deployment().name, location)}-RG-Lock'
+  name: '${uniqueString(subscription().id, location)}-RG-Lock'
   params: {
     lock: lock
     name: resourceGroup.name
@@ -61,7 +61,7 @@ module resourceGroup_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) &
 }
 
 module resourceGroup_roleAssignments 'modules/nested_roleAssignments.bicep' = if (!empty(roleAssignments ?? [])) {
-  name: '${uniqueString(deployment().name, location)}-RG-RoleAssignments'
+  name: '${uniqueString(subscription().id, location)}-RG-RoleAssignments'
   params: {
     roleAssignments: roleAssignments
   }

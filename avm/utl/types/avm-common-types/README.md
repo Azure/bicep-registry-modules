@@ -5,6 +5,14 @@ This module provides you with all common variants for AVM interfaces to be used 
 Details for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).
 
 
+You can reference the module as follows:
+```bicep
+module avmCommonTypes 'br/public:avm/utl/types/avm-common-types:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -33,6 +41,8 @@ This example imports all available types of the given module.
 Note: In your module you would import only the types you need.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/import]
+
 
 <details>
 
@@ -54,6 +64,7 @@ Note: In your module you would import only the types you need.
 
 import {
   customerManagedKeyType
+  customerManagedKeyAndVaultOnlyType
   customerManagedKeyWithAutoRotateType
   diagnosticSettingFullType
   diagnosticSettingLogsOnlyType
@@ -312,6 +323,12 @@ param customerManagedKeyWithAutoRotate customerManagedKeyWithAutoRotateType = {
   userAssignedIdentityResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity'
 }
 output customerManagedKeyWithAutoRotateOutput customerManagedKeyWithAutoRotateType = customerManagedKeyWithAutoRotate
+
+param customerManagedKeyAndVaultOnly customerManagedKeyAndVaultOnlyType = {
+  keyName: 'myKey'
+  keyVaultResourceId: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRg/providers/Microsoft.KeyVault/vaults/myVault'
+}
+output customerManagedKeyAndVaultOnly customerManagedKeyAndVaultOnlyType = customerManagedKeyAndVaultOnly
 
 // ================== //
 //   Secrets Export   //

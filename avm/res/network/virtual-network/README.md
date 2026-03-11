@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Network (vNet).
 
+You can reference the module as follows:
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -117,6 +126,8 @@ param location = '<location>'
 
 This instance deploys the module with IP Addresses allocated from the IPAM Pool
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipam]
+
 
 <details>
 
@@ -124,7 +135,6 @@ This instance deploys the module with IP Addresses allocated from the IPAM Pool
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -304,6 +314,8 @@ param subnets = [
 
 This instance deploys the module using an IPv6 address space.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipv6]
+
 
 <details>
 
@@ -311,7 +323,6 @@ This instance deploys the module using an IPv6 address space.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -411,6 +422,8 @@ param subnets = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -418,7 +431,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -827,6 +839,8 @@ param tags = {
 
 This instance deploys the module with both an inbound and outbound peering.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vnetPeering]
+
 
 <details>
 
@@ -834,7 +848,6 @@ This instance deploys the module with both an inbound and outbound peering.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -1007,6 +1020,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1014,7 +1029,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [

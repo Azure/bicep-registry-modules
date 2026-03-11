@@ -2,6 +2,14 @@
 
 This module deploys a Storage Account.
 
+You can reference the module as follows:
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -21,19 +29,19 @@ This module deploys a Storage Account.
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
-| `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/fileServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/localUsers` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/localUsers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/managementPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices/queues)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices/tables)</li></ul> |
 
 ## Usage examples
 
@@ -56,12 +64,15 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set](#example-11-using-large-parameter-set)
 - [Deploying with a NFS File Share](#example-12-deploying-with-a-nfs-file-share)
 - [Using object replication](#example-13-using-object-replication)
-- [Deploying as Storage Account version 1](#example-14-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-15-waf-aligned)
+- [Using premium file shares](#example-14-using-premium-file-shares)
+- [Deploying as Storage Account version 1](#example-15-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-16-waf-aligned)
 
 ### Example 1: _Deploying as a Blob Storage_
 
 This instance deploys the module as a Blob Storage account.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/blob]
 
 
 <details>
@@ -70,7 +81,6 @@ This instance deploys the module as a Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablob001'
@@ -132,6 +142,8 @@ param skuName = 'Standard_LRS'
 
 This instance deploys the module as a Premium Block Blob Storage account.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/block]
+
 
 <details>
 
@@ -139,7 +151,6 @@ This instance deploys the module as a Premium Block Blob Storage account.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssablock001'
@@ -201,6 +212,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the minimum set of required parameters for the changefeed configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/changefeed]
+
 
 <details>
 
@@ -208,7 +221,6 @@ This instance deploys the module with the minimum set of required parameters for
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssachf001'
@@ -276,6 +288,8 @@ param blobServices = {
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
 The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
@@ -287,10 +301,9 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssauhsm001'
+    name: 'ssauhsmu001'
     // Non-required parameters
     blobServices: {
       containers: [
@@ -328,7 +341,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssauhsm001"
+      "value": "ssauhsmu001"
     },
     // Non-required parameters
     "blobServices": {
@@ -370,7 +383,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssauhsm001'
+param name = 'ssauhsmu001'
 // Non-required parameters
 param blobServices = {
   containers: [
@@ -399,6 +412,8 @@ param managedIdentities = {
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
 
 <details>
 
@@ -406,7 +421,6 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: '<name>'
@@ -550,6 +564,8 @@ param privateEndpoints = [
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
 
 <details>
 
@@ -557,7 +573,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssauacr001'
@@ -724,6 +739,8 @@ param privateEndpoints = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -731,10 +748,9 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
-    name: 'ssamin001'
+    name: 'stamin001'
     // Non-required parameters
     allowBlobPublicAccess: false
     networkAcls: {
@@ -759,7 +775,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssamin001"
+      "value": "stamin001"
     },
     // Non-required parameters
     "allowBlobPublicAccess": {
@@ -786,7 +802,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 using 'br/public:avm/res/storage/storage-account:<version>'
 
 // Required parameters
-param name = 'ssamin001'
+param name = 'stamin001'
 // Non-required parameters
 param allowBlobPublicAccess = false
 param networkAcls = {
@@ -810,6 +826,8 @@ This instance deploys the module within an Azure Extended Zone.
 > Please refer to the [documentation](https://learn.microsoft.com/en-us/azure/extended-zones/request-access) for more information.
 
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/extended-location]
+
 
 <details>
 
@@ -817,7 +835,6 @@ This instance deploys the module within an Azure Extended Zone.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaexzn001'
@@ -894,6 +911,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with the immutability policy enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/immutability]
+
 
 <details>
 
@@ -901,7 +920,6 @@ This instance deploys the module with the immutability policy enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaim001'
@@ -1048,6 +1066,8 @@ param networkAcls = {
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
 
 <details>
 
@@ -1055,7 +1075,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'kvref'
@@ -1130,6 +1149,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -1137,7 +1158,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssamax001'
@@ -2769,6 +2789,8 @@ param tags = {
 
 This instance deploys the module with a NFS File Share.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/nfs]
+
 
 <details>
 
@@ -2776,7 +2798,6 @@ This instance deploys the module with a NFS File Share.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssanfs001'
@@ -2864,6 +2885,8 @@ param skuName = 'Premium_LRS'
 
 This instance deploys the module with Object Replication features to async replicate blobs from one account to another.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/object-replication]
+
 
 <details>
 
@@ -2871,7 +2894,6 @@ This instance deploys the module with Object Replication features to async repli
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssaobre001'
@@ -3006,9 +3028,11 @@ param skuName = 'Standard_LRS'
 </details>
 <p>
 
-### Example 14: _Deploying as Storage Account version 1_
+### Example 14: _Using premium file shares_
 
-This instance deploys the module as Storage Account version 1.
+This instance deploys the module with File Services with PremiumV2 SKU and a file share.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/premium-file-share]
 
 
 <details>
@@ -3017,7 +3041,133 @@ This instance deploys the module as Storage Account version 1.
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
+  params: {
+    // Required parameters
+    name: 'ssapfs001'
+    // Non-required parameters
+    allowBlobPublicAccess: false
+    fileServices: {
+      shares: [
+        {
+          name: 'fileshare01'
+          provisionedBandwidthMibps: 200
+          provisionedIops: 5000
+        }
+        {
+          name: 'fileshare02'
+        }
+      ]
+    }
+    kind: 'FileStorage'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
+    skuName: 'PremiumV2_LRS'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssapfs001"
+    },
+    // Non-required parameters
+    "allowBlobPublicAccess": {
+      "value": false
+    },
+    "fileServices": {
+      "value": {
+        "shares": [
+          {
+            "name": "fileshare01",
+            "provisionedBandwidthMibps": 200,
+            "provisionedIops": 5000
+          },
+          {
+            "name": "fileshare02"
+          }
+        ]
+      }
+    },
+    "kind": {
+      "value": "FileStorage"
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny"
+      }
+    },
+    "skuName": {
+      "value": "PremiumV2_LRS"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/storage/storage-account:<version>'
+
+// Required parameters
+param name = 'ssapfs001'
+// Non-required parameters
+param allowBlobPublicAccess = false
+param fileServices = {
+  shares: [
+    {
+      name: 'fileshare01'
+      provisionedBandwidthMibps: 200
+      provisionedIops: 5000
+    }
+    {
+      name: 'fileshare02'
+    }
+  ]
+}
+param kind = 'FileStorage'
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+param skuName = 'PremiumV2_LRS'
+```
+
+</details>
+<p>
+
+### Example 15: _Deploying as Storage Account version 1_
+
+This instance deploys the module as Storage Account version 1.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v1]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   params: {
     // Required parameters
     name: 'ssav1001'
@@ -3070,9 +3220,11 @@ param kind = 'Storage'
 </details>
 <p>
 
-### Example 15: _WAF-aligned_
+### Example 16: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -3081,7 +3233,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: 'storageAccountDeployment'
   params: {
     // Required parameters
     name: 'ssawaf001'
@@ -4157,20 +4308,20 @@ Configure immutability policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowProtectedAppendWrites`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. |
-| [`allowProtectedAppendWritesAll`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. |
+| [`allowProtectedAppendWrites`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwrites) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. Defaults to false. |
+| [`allowProtectedAppendWritesAll`](#parameter-blobservicescontainersimmutabilitypolicyallowprotectedappendwritesall) | bool | This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false. |
 | [`immutabilityPeriodSinceCreationInDays`](#parameter-blobservicescontainersimmutabilitypolicyimmutabilityperiodsincecreationindays) | int | The immutability period for the blobs in the container since the policy creation, in days. |
 
 ### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWrites`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. Defaults to false.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `blobServices.containers.immutabilityPolicy.allowProtectedAppendWritesAll`
 
-This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.
+This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -5086,6 +5237,8 @@ File shares to create.
 | :-- | :-- | :-- |
 | [`accessTier`](#parameter-fileservicessharesaccesstier) | string | Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool. |
 | [`enabledProtocols`](#parameter-fileservicessharesenabledprotocols) | string | The authentication protocol that is used for the file share. Can only be specified when creating a share. |
+| [`provisionedBandwidthMibps`](#parameter-fileservicessharesprovisionedbandwidthmibps) | int | The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340. |
+| [`provisionedIops`](#parameter-fileservicessharesprovisionediops) | int | The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400. |
 | [`roleAssignments`](#parameter-fileservicessharesroleassignments) | array | Array of role assignments to create. |
 | [`rootSquash`](#parameter-fileservicessharesrootsquash) | string | Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares. |
 | [`shareQuota`](#parameter-fileservicessharessharequota) | int | The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB). |
@@ -5126,6 +5279,22 @@ The authentication protocol that is used for the file share. Can only be specifi
     'SMB'
   ]
   ```
+
+### Parameter: `fileServices.shares.provisionedBandwidthMibps`
+
+The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.
+
+- Required: No
+- Type: int
+- MaxValue: 10340
+
+### Parameter: `fileServices.shares.provisionedIops`
+
+The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.
+
+- Required: No
+- Type: int
+- MaxValue: 102400
 
 ### Parameter: `fileServices.shares.roleAssignments`
 
@@ -5534,6 +5703,7 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
   ```Bicep
   [
     'TLS1_2'
+    'TLS1_3'
   ]
   ```
 
@@ -6172,6 +6342,7 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 

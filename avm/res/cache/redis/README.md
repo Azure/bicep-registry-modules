@@ -1,11 +1,14 @@
 # Redis Cache `[Microsoft.Cache/redis]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Redis Cache.
+
+You can reference the module as follows:
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -55,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with clustering enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/clustering]
+
 
 <details>
 
@@ -62,7 +67,6 @@ This instance deploys the module with clustering enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crclst001'
@@ -144,6 +148,8 @@ param skuName = 'Premium'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -151,7 +157,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmin001'
@@ -208,6 +213,8 @@ param location = '<location>'
 
 This instance deploys the module with EntraID authentication.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/entra-id]
+
 
 <details>
 
@@ -215,7 +222,6 @@ This instance deploys the module with EntraID authentication.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crentrid001'
@@ -326,6 +332,8 @@ param redisConfiguration = {
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kv-secrets]
+
 
 <details>
 
@@ -333,7 +341,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'kvref'
@@ -419,6 +426,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -426,7 +435,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmax001'
@@ -878,6 +886,8 @@ param zoneRedundant = true
 
 This instance deploys the module with geo-replication enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passive-geo-replication]
+
 
 <details>
 
@@ -885,7 +895,6 @@ This instance deploys the module with geo-replication enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crpgeo001'
@@ -1018,6 +1027,8 @@ param zoneRedundant = false
 
 This instance deploys the module with data persistence enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/persistence]
+
 
 <details>
 
@@ -1025,7 +1036,6 @@ This instance deploys the module with data persistence enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crper001'
@@ -1107,6 +1117,8 @@ param skuName = 'Premium'
 
 This instance deploys the module with custom Redis configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/redis-config]
+
 
 <details>
 
@@ -1114,7 +1126,6 @@ This instance deploys the module with custom Redis configuration.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crcfg001'
@@ -1191,6 +1202,8 @@ param redisConfiguration = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1198,7 +1211,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crwaf001'

@@ -2,6 +2,14 @@
 
 This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework
 
+You can reference the module as follows:
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -114,6 +122,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -121,7 +131,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
@@ -187,6 +196,8 @@ param workloadName = '<workloadName>'
 
 This instance deploys the module with WAF aligned settings.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -194,7 +205,6 @@ This instance deploys the module with WAF aligned settings.
 
 ```bicep
 module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
   params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'

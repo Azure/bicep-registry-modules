@@ -2,6 +2,14 @@
 
 This module deploys an API Management Service Portal Setting.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/portalsetting:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -77,9 +85,9 @@ Enable/Disable usage telemetry for module.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the API management service portal setting. |
-| `resourceGroupName` | string | The resource group the API management service portal setting was deployed into. |
-| `resourceId` | string | The resource ID of the API management service portal setting. |
+| `name` | string | The name of the API Management service portal setting. |
+| `resourceGroupName` | string | The resource group the API Management service portal setting was deployed into. |
+| `resourceId` | string | The resource ID of the API Management service portal setting. |
 
 ## Data Collection
 

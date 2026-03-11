@@ -12,11 +12,11 @@ param privateDnsZoneConfigs privateDnsZoneGroupConfigType[]
 @description('Optional. The name of the private DNS zone group.')
 param name string = 'default'
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-10-01' existing = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2025-05-01' existing = {
   name: privateEndpointName
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-10-01' = {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2025-05-01' = {
   name: name
   parent: privateEndpoint
   properties: {
