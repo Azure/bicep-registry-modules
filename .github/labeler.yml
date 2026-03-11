@@ -1,0 +1,38 @@
+# Configuration for actions/labeler
+# See: https://github.com/actions/labeler
+
+# =============================================================================
+# Module Class Labels (based on file paths)
+# =============================================================================
+"Class: Resource Module :package:":
+  - changed-files:
+      - any-glob-to-any-file: "avm/res/**"
+
+"Class: Pattern Module :package:":
+  - changed-files:
+      - any-glob-to-any-file: "avm/ptn/**"
+
+"Class: Utility Module :package:":
+  - changed-files:
+      - any-glob-to-any-file: "avm/utl/**"
+
+# =============================================================================
+# Core Team Label (paths owned exclusively by core team per CODEOWNERS)
+# =============================================================================
+"Needs: Core Team :genie:":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "utilities/**"
+          - "scripts/**"
+          - "modules/**"
+          - "*.e2eignore"
+          - "*avm.core.team.tests.ps1"
+          - "bicepconfig.json"
+          - "package.json"
+          - "CODE_OF_CONDUCT.md"
+          - "CONTRIBUTING.md"
+          - "LICENSE"
+          - "README.md"
+          - "SECURITY.md"
+          - "SUPPORT.md"

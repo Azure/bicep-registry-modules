@@ -1,0 +1,22 @@
+# Workflow for automatically labeling PRs based on changed file paths
+name: .Platform - Labeler
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  labeler:
+    name: Label PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          sync-labels: false # Don't remove labels when files no longer match
