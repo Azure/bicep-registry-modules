@@ -255,18 +255,48 @@ $affectedModulePaths = @('<child-module-path-1>', '<child-module-path-2>') | For
 
 ##### 3.1b — Run Set-AVMModule for each affected module
 
-After the user confirms the list, run `Set-AVMModule` for **all** affected modules in a single script block (one confirmation, then all modules are processed):
+After the user confirms the list, run `Set-AVMModule` for each affected module in bottom-up order (deepest child first, top-level parent last).
 
 ```powershell
 . ./utilities/tools/Set-AVMModule.ps1
 foreach ($modulePath in $affectedModulePaths) {
-    Write-Output "Processing: $modulePath"
     Set-AVMModule -ModuleFolderPath $modulePath
 }
 ```
 
 **Correct**: `Set-AVMModule -ModuleFolderPath <folder-path>` for each affected module
 **Wrong**: `Set-AVMModule -ModuleFolderPath '...' -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5`
+
+##### 3.1c — Verify Set-AVMModule output
+
+After all modules have been processed, verify that every affected module's `main.json` and `README.md` were actually regenerated. Each `Set-AVMModule` invocation must produce updated versions of both files for every modified module — there are no exceptions. Bicep may cache compiled child module outputs within a session, causing parent modules to build against stale artifacts. This step detects and automatically fixes any such failures.
+
+```powershell
+$filesToCheck = @('main.json', 'README.md')
+$missing = @()
+foreach ($modulePath in $affectedModulePaths) {
+    foreach ($file in $filesToCheck) {
+        $filePath = Join-Path $modulePath $file
+        if (-not (Test-Path $filePath) -or ((git diff --name-only -- $filePath) -eq $null -and (git diff --name-only --cached -- $filePath) -eq $null)) {
+            $missing += [PSCustomObject]@{ Module = $modulePath; File = $file }
+        }
+    }
+}
+if ($missing) {
+    $modulesToRerun = $missing | Select-Object -ExpandProperty Module -Unique
+    Write-Warning "Set-AVMModule did NOT update the following files:"
+    $missing | ForEach-Object { Write-Warning "  $($_.Module) -> $($_.File)" }
+    Write-Warning "Re-running Set-AVMModule for affected modules..."
+    foreach ($m in $modulesToRerun) {
+        . ./utilities/tools/Set-AVMModule.ps1
+        Set-AVMModule -ModuleFolderPath $m
+    }
+} else {
+    Write-Output "All main.json and README.md files verified as updated."
+}
+```
+
+> **Why this matters**: Bicep can cache child module outputs during a single session, so a parent's `main.json` or `README.md` may silently build against the pre-edit version of a child module. This verification + retry step catches and fixes the problem automatically.
 
 #### Step 3.2 — Run Static Validation Tests
 
