@@ -51,7 +51,7 @@ param diskNamePrefix string = 'dep-disk'
 @description('Required. The name prefix for the wait deployment scripts.')
 param waitDeploymentScriptPrefixName string = 'dep-wait'
 
-var clusterNodeNames = ['AzSHOST1', 'AzSHOST2']
+var clusterNodeNames = ['hcinode1', 'hcinode2']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
