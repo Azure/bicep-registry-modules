@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -2187,6 +2187,31 @@ Describe 'Governance tests' {
         $incorrectLines = $incorrectLines | Sort-Object -Culture 'en-US' -Unique
 
         $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
+    }
+
+    It '[<moduleFolderName>] is in the MAR file' -TestCases $governanceTestCases {
+
+        param(
+            [string] $relativeModulePath,
+            [string] $repoRootPath
+        )
+
+        if (!$env:MAR_REPO_ACCESS_APP_PRIVATEKEY -or !$env:MAR_REPO_ACCESS_APP_ID -or !$env:MAR_REPO_ACCESS_ORG -or !$env:MAR_REPO_ACCESS_REPO) {
+            if ($env:GITHUB_REPOSITORY -eq 'Azure/bicep-registry-modules') {
+                throw 'The MAR repository access credentials are not configured. This test requires the MAR_REPO_ACCESS_APP_PRIVATEKEY secret and the MAR_REPO_ACCESS_APP_ID, MAR_REPO_ACCESS_ORG, MAR_REPO_ACCESS_REPO environment variables to be set.'
+            }
+
+            Set-ItResult -Skipped -Because 'the test requires access to the MAR repository, but the necessary credentials were not provided.'
+            return
+        }
+
+        # Confirm that the module to publish exists in the MAR file and can be published to the MCR
+        try {
+            $token = Get-GitHubToken -AppPrivateKey $env:MAR_REPO_ACCESS_APP_PRIVATEKEY -AppID $env:MAR_REPO_ACCESS_APP_ID -Organisation $env:MAR_REPO_ACCESS_ORG -Repository $env:MAR_REPO_ACCESS_REPO
+            Confirm-ModuleInMAR -PublishedModuleName $relativeModulePath -GitHubToken $token | Should -Be $true -Because 'the module should be listed in the MAR file to be eligible for publication.'
+        } catch {
+            throw ('An error occurred while confirming that the module [{0}] is listed in the MAR file: {1}' -f $relativeModulePath, $_.Exception.Message)
+        }
     }
 }
 
