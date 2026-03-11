@@ -2208,7 +2208,7 @@ Describe 'Governance tests' {
         # Confirm that the module to publish exists in the MAR file and can be published to the MCR
         try {
             $token = Get-GitHubToken -AppPrivateKey $env:MAR_REPO_ACCESS_APP_PRIVATEKEY -AppID $env:MAR_REPO_ACCESS_APP_ID -Organisation $env:MAR_REPO_ACCESS_ORG -Repository $env:MAR_REPO_ACCESS_REPO
-            Confirm-ModuleInMAR -PublishedModuleName $moduleFolderRelativePath -GitHubToken $token | Should -Be $true -Because 'the module should be listed in the MAR file to be eligible for publication.'
+            Confirm-ModuleInMAR -PublishedModuleName $relativeModulePath -GitHubToken $token | Should -Be $true -Because 'the module should be listed in the MAR file to be eligible for publication.'
         } catch {
             throw ('An error occurred while confirming that the module [{0}] is listed in the MAR file: {1}' -f $relativeModulePath, $_.Exception.Message)
         }
