@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-Check if a module in a given path does exist in the MAR file
+Check if a module in a given path does exist in the MAR file. Returns $true or $false.
 
 .DESCRIPTION
 Check if a module in a given path does exist in the MAR file. Only then, it can be published to the MCR.
@@ -56,8 +56,9 @@ function Confirm-ModuleInMAR {
     }
     if ($marFileContent -match "name:\s*public/bicep/$moduleNameForMatch\s") {
         Write-Host "Passed: Found module [$moduleNameForMatch] in the MAR file" -ForegroundColor Green
+        return $true
     } else {
         Write-Host "Failed: Module [$moduleNameForMatch] was not found in the MAR file. Please review." -ForegroundColor Red
-        throw "Module [$moduleNameForMatch] was not found in the MAR file and can't be published. Please review."
+        return $false
     }
 }

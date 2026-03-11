@@ -42,21 +42,6 @@ jobs:
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
 
-      # create a token
-      - uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          owner: ${{ vars.MAR_REPO_OWNER}}
-          repositories: ${{ vars.MAR_REPO_REPOSITORY }}
-          app-id: ${{ vars.MAR_REPO_ACCESS_APPID }}
-          private-key: ${{ secrets.MAR_REPO_ACCESS_APP_PRIVATEKEY }}
-      # ensure the module is in the MAR file before publishing
-      - name: Confirm module in MAR
-        shell: pwsh
-        run: |
-          . './utilities/pipelines/publish/Confirm-ModuleInMAR.ps1'
-          Confirm-ModuleInMAR -PublishedModuleName ${{ github.event.inputs.tag }} -GitHubToken ${{ steps.app-token.outputs.token }}
-
       # Adding a step to install Oras as it's only needed for publishing/validation
       - name: Install Oras
         shell: bash

@@ -61,11 +61,15 @@ function Get-GitHubToken {
 
     # If no PAT provided, use the GitHub App authentication flow to get a token
     if (-not $AppPrivateKey) {
-        throw 'Either a GitHub Personal Access Token (PAT) or a GitHub App private key must be provided for authentication.'
+        throw [System.ArgumentNullException]::new('Either a GitHub Personal Access Token (PAT) or a GitHub App private key must be provided for authentication.')
     }
 
     Write-Host 'Generating JWT for GitHub App authentication...' -Verbose
-    $jwt = New-GitHubJWT -AppID $AppID -AppPrivateKey $AppPrivateKey
+    try {
+        $jwt = New-GitHubJWT -AppID $AppID -AppPrivateKey $AppPrivateKey
+    } catch {
+        throw "Failed to generate JWT for GitHub App authentication. Verify the private key and App ID are correct. Error: $($_.Exception.Message)"
+    }
 
     $headers = @{
         'Accept'        = 'application/vnd.github+json'
@@ -74,16 +78,24 @@ function Get-GitHubToken {
 
     # get the installation id for the app
     Write-Host 'Retrieving GitHub App installation ID... ' -NoNewline -Verbose
-    $res = Invoke-WebRequest -Uri "https://api.github.com/repos/$($Organisation)/$($Repository)/installation" -Headers $headers -Method Get
-    $json_res = ConvertFrom-Json($res.Content)
-    $instanceID = $json_res.id
-    Write-Host "Got instance ID '$instanceID'." -Verbose
+    try {
+        $res = Invoke-WebRequest -Uri "https://api.github.com/repos/$($Organisation)/$($Repository)/installation" -Headers $headers -Method Get
+        $json_res = ConvertFrom-Json($res.Content)
+        $instanceID = $json_res.id
+        Write-Host "Got instance ID '$instanceID'." -Verbose
+    } catch {
+        throw "Failed to retrieve GitHub App installation ID for [$Organisation/$Repository]. Verify the App is installed on the repository. Error: $($_.Exception.Message)"
+    }
 
     # request a new token
     Write-Host 'Requesting access token for GitHub App installation...' -Verbose
-    $res = Invoke-WebRequest -Uri "https://api.github.com/app/installations/$($instanceID)/access_tokens" -Headers $headers -Method Post
-    $json_res = ConvertFrom-Json($res.Content)
-    $token = $json_res.token
+    try {
+        $res = Invoke-WebRequest -Uri "https://api.github.com/app/installations/$($instanceID)/access_tokens" -Headers $headers -Method Post
+        $json_res = ConvertFrom-Json($res.Content)
+        $token = $json_res.token
+    } catch {
+        throw "Failed to request access token for GitHub App installation [$instanceID]. Error: $($_.Exception.Message)"
+    }
 
     return $token
 }
@@ -125,12 +137,16 @@ function New-GitHubJWT {
                     exp = [System.DateTimeOffset]::UtcNow.AddMinutes(5).ToUnixTimeSeconds()
                     iss = $AppID
                 }))).TrimEnd('=').Replace('+', '-').Replace('/', '_')
-    $rsa = [System.Security.Cryptography.RSA]::Create()
-    $rsa.ImportFromPem($AppPrivateKey)
-    $signature = [Convert]::ToBase64String($rsa.SignData(
-            [System.Text.Encoding]::UTF8.GetBytes("$header.$payload"),
-            [System.Security.Cryptography.HashAlgorithmName]::SHA256,
-            [System.Security.Cryptography.RSASignaturePadding]::Pkcs1
-        )).TrimEnd('=').Replace('+', '-').Replace('/', '_')
-    return "$header.$payload.$signature"
+    try {
+        $rsa = [System.Security.Cryptography.RSA]::Create()
+        $rsa.ImportFromPem($AppPrivateKey)
+        $signature = [Convert]::ToBase64String($rsa.SignData(
+                [System.Text.Encoding]::UTF8.GetBytes("$header.$payload"),
+                [System.Security.Cryptography.HashAlgorithmName]::SHA256,
+                [System.Security.Cryptography.RSASignaturePadding]::Pkcs1
+            )).TrimEnd('=').Replace('+', '-').Replace('/', '_')
+        return "$header.$payload.$signature"
+    } catch {
+        throw "Failed to generate JWT signature. Verify the private key is in valid PEM format. Error: $($_.Exception.Message)"
+    }
 }
