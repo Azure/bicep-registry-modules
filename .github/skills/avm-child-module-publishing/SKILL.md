@@ -53,7 +53,7 @@ First, output the version of this skill for tracking purposes:
 ```json
 {
   "skill": "avm-child-module-publishing",
-  "version": "0.4"
+  "version": "0.5"
 }
 ```
 
@@ -265,8 +265,10 @@ foreach ($modulePath in $affectedModulePaths) {
 
 ```powershell
 . ./utilities/tools/Test-ModuleLocally.ps1
-Test-ModuleLocally -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -PesterTest
+Test-ModuleLocally -TemplateFilePath (Resolve-Path '<path-to-top-level-parent>/main.bicep').Path -PesterTest
 ```
+
+> **Important**: The `-TemplateFilePath` parameter requires an **absolute path**. Use `Resolve-Path` to convert relative paths.
 
 > Existing tests do not need updating — the publishing changes don't affect test cases.
 
@@ -278,8 +280,10 @@ Once tests pass, commit all changes (manual edits + generated files) in a single
 
 ```powershell
 git add -A
-git commit -m "feat: enable child module publishing for <child-module-path>"
+git commit -m "feat: enable child module publishing for <child-module-path(s)>"
 ```
+
+> Adjust the commit message to list all child modules if multiple are being published (e.g., `feat: enable child module publishing for .../subnet and .../virtual-network-peering`). If the commit message exceeds 72 characters, use a more general message like `feat: enable child module publishing` without listing specific paths.
 
 ---
 
