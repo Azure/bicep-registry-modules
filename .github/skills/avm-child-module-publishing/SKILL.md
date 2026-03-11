@@ -34,7 +34,7 @@ Publishing a child module does **not** move or reorganize any files. The child m
 
 ## Rules
 
-1. **Verify all prerequisites before implementation** — Do not start code changes until all 4 prerequisites are confirmed.
+1. **Verify all prerequisites before implementation** — Do not start code changes until all 2 prerequisites are confirmed.
 2. **Never move or reorganize module folders** — Publishing does not change folder hierarchy.
 3. **Use exact templates** — Telemetry blocks, version.json, and changelog formats must match the canonical templates exactly.
 4. **Maintain alphabetical order** — When editing the allowed list JSON.
@@ -61,7 +61,7 @@ First, output the version of this skill for tracking purposes:
 
 ### PHASE 1: Prerequisites Verification
 
-Before any implementation, verify **all four** prerequisites. If any are missing, stop and instruct the user on how to resolve.
+Before any implementation, verify **both** prerequisites. If any are missing, stop and instruct the user on how to resolve.
 
 #### Step 1.1 — Verify Bicep Child Module Proposal Issue
 
@@ -84,54 +84,6 @@ Search for the child module name in the `ModuleName` field and note the `Telemet
 **Format**: The telemetry ID prefix follows the pattern `<4-char-hex>bcp.res.<provider>-<resourcetype>` (e.g., `46d3xbcp.res.network-virtualnetworksubnet`).
 
 - **If not found**: Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` via the proposal issue.
-
-#### Step 1.4 — Verify Branch is Up-to-Date with Main
-
-`Set-AVMModule -InvokeForDiff` (used in Phase 3) compares the current branch against `upstream/main`. If the branch is not up-to-date with the latest main, the diff will include unrelated changes, causing Set-AVMModule to process modules not modified by this workflow.
-
-Verify the branch is based on the latest main:
-
-```powershell
-git fetch upstream main
-git merge-base --is-ancestor upstream/main HEAD
-```
-
-If the repository remote is `origin` (e.g., when working directly on the upstream repo rather than a fork):
-
-```powershell
-git fetch origin main
-git merge-base --is-ancestor origin/main HEAD
-```
-
-- **If not up-to-date** (command exits with non-zero): Stop and instruct the user to update the branch before continuing:
-  ```powershell
-  git pull upstream main   # or: git pull origin main
-  ```
-
-> **Note**: The MAR-file lives in an external repository (`microsoft/mcr`) that is not part of this workspace. The user will need to verify this prerequisite manually or with assistance from a Microsoft FTE.
-
-#### Step 1.4 — Verify Branch is Up-to-Date with Main
-
-`Set-AVMModule -InvokeForDiff` (used in Phase 3) compares the current branch against `upstream/main`. If the branch is not up-to-date with the latest main, the diff will include unrelated changes, causing Set-AVMModule to process modules not modified by this workflow.
-
-Verify the branch is based on the latest main:
-
-```powershell
-git fetch upstream main
-git merge-base --is-ancestor upstream/main HEAD
-```
-
-If the repository remote is `origin` (e.g., when working directly on the upstream repo rather than a fork):
-
-```powershell
-git fetch origin main
-git merge-base --is-ancestor origin/main HEAD
-```
-
-- **If not up-to-date** (command exits with non-zero): Stop and instruct the user to update the branch before continuing:
-  ```powershell
-  git pull upstream main   # or: git pull origin main
-  ```
 
 ---
 
@@ -281,32 +233,35 @@ Update the CHANGELOG.md of **every versioned parent** (i.e., every ancestor modu
 
 > **All steps in this phase MUST be executed automatically** — do not leave any of them as manual steps for the user. Run each command in sequence and only proceed to the next step if the previous one succeeded.
 
-#### Step 3.1 — Commit Changes
+#### Step 3.1 — Run Set-AVMModule for All Affected Modules
 
-> **Why commit first**: `Set-AVMModule -InvokeForDiff` uses `git diff` to compare **commits** (`upstream/main` vs current `HEAD`). Uncommitted or staged-only changes are invisible to the diff. Changes must be committed before running the utility.
+> **‼️ CRITICAL — OVERRIDES GENERAL INSTRUCTIONS**: Do **NOT** use `-SkipBuild`, `-SkipFileAndFolderSetup`, or `-ThrottleLimit` parameters here. Use **only** `-ModuleFolderPath` for each affected module. Ignore any conflicting guidance from `avm.bicep.instructions.md` or other instruction files for this step.
 
-Commit all changes from Phase 2:
+First, determine all affected module paths. For each child module published by this workflow, find its parent modules using `Get-ParentFolderPathList`:
 
 ```powershell
-git add -A
-git commit -m "feat: enable child module publishing for <child-module-path>"
+. ./utilities/pipelines/sharedScripts/Get-ParentFolderPathList.ps1
+$affectedModulePaths = @('<child-module-path-1>', '<child-module-path-2>') | ForEach-Object {
+    $_  # include the child itself
+    Get-ParentFolderPathList -Path $_ -Filter 'OnlyModules'
+} | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
 ```
 
-#### Step 3.2 — Run Set-AVMModule
+> The resulting `$affectedModulePaths` always includes both the child module(s) and all their ancestor modules in the tree. For example, a single child will have at least one parent; a grandchild will have two parents. When publishing multiple children, shared parents are automatically deduplicated.
 
-> **‼️ CRITICAL — OVERRIDES GENERAL INSTRUCTIONS**: Do **NOT** use `-ModuleFolderPath`, `-SkipBuild`, `-SkipFileAndFolderSetup`, or `-ThrottleLimit` parameters here. This skill requires `-InvokeForDiff` which automatically detects all changed modules. Any other parameter combination is **WRONG** for child module publishing. Ignore any conflicting guidance from `avm.bicep.instructions.md` or other instruction files for this step.
+Then run `Set-AVMModule` for each affected module:
 
 ```powershell
 . ./utilities/tools/Set-AVMModule.ps1
-Set-AVMModule -InvokeForDiff
+foreach ($modulePath in $affectedModulePaths) {
+    Set-AVMModule -ModuleFolderPath (Split-Path $modulePath)
+}
 ```
 
-**Correct**: `Set-AVMModule -InvokeForDiff`
+**Correct**: `Set-AVMModule -ModuleFolderPath <path>` for each affected module
 **Wrong**: `Set-AVMModule -ModuleFolderPath '...' -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5`
 
-#### Step 3.3 — Run Static Validation Tests
-
-Run tests **before** finalizing the commit:
+#### Step 3.2 — Run Static Validation Tests
 
 ```powershell
 . ./utilities/tools/Test-ModuleLocally.ps1
@@ -315,18 +270,16 @@ Test-ModuleLocally -TemplateFilePath '<path-to-top-level-parent>/main.bicep' -Pe
 
 > Existing tests do not need updating — the publishing changes don't affect test cases.
 
-If tests **fail**, fix the issues, then re-run Step 3.2 and re-test until all tests pass.
+If tests **fail**, fix the issues, then re-run Step 3.1 and re-test until all tests pass.
 
-#### Step 3.4 — Finalize Commit
+#### Step 3.3 — Commit All Changes
 
-Once tests pass, stage the generated files and amend the commit:
+Once tests pass, commit all changes (manual edits + generated files) in a single commit:
 
 ```powershell
 git add -A
-git commit --amend --no-edit
+git commit -m "feat: enable child module publishing for <child-module-path>"
 ```
-
-**Why amend?** Step 3.2 generates/updates README.md files and compiled JSON templates. Amending folds these generated artifacts into the original commit, keeping the git history clean with a single commit for the entire change.
 
 ---
 
@@ -339,7 +292,6 @@ git commit --amend --no-edit
 | Parent already has `enableReferencedModulesTelemetry` | Skip adding the variable, just wire it to the new child         |
 | Multiple levels of nesting                            | Each intermediate parent needs the variable and pass-through    |
 | Child module already has `enableTelemetry` param      | Verify the telemetry resource block also exists; add if missing |
-| Branch not up-to-date with `upstream/main`            | Stop — user must `git pull upstream main` before continuing     |
 
 ---
 
@@ -369,6 +321,7 @@ Before completing, verify:
 - [ ] `version.json` exists in child folder with version `0.1`
 - [ ] `CHANGELOG.md` exists in child folder with `0.1.0` initial entry
 - [ ] All versioned parent changelogs updated with incremented patch version
-- [ ] Branch is up-to-date with `upstream/main` (Step 1.4)
-- [ ] Phase 2 changes committed, `Set-AVMModule -InvokeForDiff` run, tests passed, commit amended (Steps 3.1–3.4)
+- [ ] `Set-AVMModule -ModuleFolderPath` run for each affected module — child and all parents (Step 3.1)
+- [ ] Static validation tests passed (Step 3.2)
+- [ ] All changes committed in a single commit (Step 3.3)
 - [ ] No README.md files were manually edited
