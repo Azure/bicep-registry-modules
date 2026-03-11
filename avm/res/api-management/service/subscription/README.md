@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | API Management Service Subscriptions name. |
+| [`displayName`](#parameter-displayname) | string | API Management Service Subscription name. |
 | [`name`](#parameter-name) | string | Subscription name. |
 
 **Conditional parameters**
@@ -52,7 +52,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ### Parameter: `displayName`
 
-API Management Service Subscriptions name.
+API Management Service Subscription name.
 
 - Required: Yes
 - Type: string
