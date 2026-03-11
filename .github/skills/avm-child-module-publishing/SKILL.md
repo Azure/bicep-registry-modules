@@ -85,25 +85,28 @@ Search for the child module name in the `ModuleName` field and note the `Telemet
 
 - **If not found**: Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` via the proposal issue.
 
-#### Step 1.3 — Verify MAR-file Registration
+#### Step 1.4 — Verify Branch is Up-to-Date with Main
 
-Confirm the child module is registered in the [MAR-file](https://github.com/microsoft/mcr/blob/main/teams/bicep/bicep.yml).
+`Set-AVMModule -InvokeForDiff` (used in Phase 3) compares the current branch against `upstream/main`. If the branch is not up-to-date with the latest main, the diff will include unrelated changes, causing Set-AVMModule to process modules not modified by this workflow.
 
-- **Local path** (if available): `mcr/teams/bicep/bicep.yml`
-- Search for `public/bicep/<child-module-path>` (e.g., `public/bicep/avm/res/network/virtual-network/subnet`).
+Verify the branch is based on the latest main:
 
-The MAR entry follows this format:
-
-```yaml
-- name: public/bicep/<child-module-path>
-  displayName: <Parent DisplayName> - <Child DisplayName>
-  description: AVM Child Module for <Parent DisplayName> - <Child DisplayName>
-  logoUrl: https://raw.githubusercontent.com/Azure/bicep/main/src/vscode-bicep/icons/bicep-logo-256.png
-  supportLink: https://github.com/Azure/bicep-registry-modules/issues
-  documentationLink: https://github.com/Azure/bicep-registry-modules/tree/main/<child-module-path>/README.md
+```powershell
+git fetch upstream main
+git merge-base --is-ancestor upstream/main HEAD
 ```
 
-- **If not found**: The MAR-file can only be modified by Microsoft FTEs. Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` or the parent module owner.
+If the repository remote is `origin` (e.g., when working directly on the upstream repo rather than a fork):
+
+```powershell
+git fetch origin main
+git merge-base --is-ancestor origin/main HEAD
+```
+
+- **If not up-to-date** (command exits with non-zero): Stop and instruct the user to update the branch before continuing:
+  ```powershell
+  git pull upstream main   # or: git pull origin main
+  ```
 
 > **Note**: The MAR-file lives in an external repository (`microsoft/mcr`) that is not part of this workspace. The user will need to verify this prerequisite manually or with assistance from a Microsoft FTE.
 
@@ -263,7 +266,7 @@ Update the CHANGELOG.md of **every versioned parent** (i.e., every ancestor modu
 
 ### Changes
 
-- Enabling child module `<child-module-path>` for publishing (added telemetry option)
+- Publishing child module `<child-module-path>`
 
 ### Breaking Changes
 
@@ -333,11 +336,10 @@ git commit --amend --no-edit
 | ----------------------------------------------------- | --------------------------------------------------------------- |
 | Proposal issue missing                                | Stop — user must create it first                                |
 | Telemetry ID prefix missing                           | Stop — user must contact core team                              |
-| MAR-file entry missing                                | Stop — user must contact core team (requires MS FTE)            |
 | Parent already has `enableReferencedModulesTelemetry` | Skip adding the variable, just wire it to the new child         |
 | Multiple levels of nesting                            | Each intermediate parent needs the variable and pass-through    |
 | Child module already has `enableTelemetry` param      | Verify the telemetry resource block also exists; add if missing |
-| Branch not up-to-date with `upstream/main`             | Stop — user must `git pull upstream main` before continuing      |
+| Branch not up-to-date with `upstream/main`            | Stop — user must `git pull upstream main` before continuing     |
 
 ---
 

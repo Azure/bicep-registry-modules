@@ -18,7 +18,7 @@ Azure Verified Modules (AVM) provides and defines the definition of what a good 
 
 ### Updating README.md Documentation
 
-**🛑 NEVER update README.md documentation or Markdowns directly**: After making changes to any Bicep code, you must always run the [./utilities/tools/Set-AVMModule.ps1](./utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use the `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
+**🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [utilities/tools/Set-AVMModule.ps1](utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files. You must first use `#fetch` tool to get `https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/generate-bicep-module-files/` and read it carefully first.
 
 > [!IMPORTANT]
 > Use `-SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5` parameters when running `Set-AVMModule` when running locally to update an existing module. You must run this prior to committing any changes to a module.
@@ -38,6 +38,7 @@ When generating AVM Bicep code and no relevant examples are found in this reposi
 ### 1. Metadata Block (Always First)
 
 Every main.bicep file MUST start with metadata:
+
 ```bicep
 metadata name = 'Descriptive Module Name'
 metadata description = 'This module deploys a [resource/pattern] with [key features].'
@@ -46,6 +47,7 @@ metadata description = 'This module deploys a [resource/pattern] with [key featu
 ### 2. Parameter Organization (Required Order)
 
 Parameters must follow this exact order:
+
 1. **Required parameters** (`@description('Required. ...')`)
 2. **Optional core parameters** (name, location, basic config)
 3. **AVM common type imports** (see below)
@@ -161,6 +163,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 When creating or updating AVM Bicep modules, ALWAYS follow these best practices:
 
 ### Referencing (Using) existing AVM Bicep Modules
+
 - ✅ **Always** use published AVM modules from MCR when available
 - ✅ **Start** with official examples from AVM documentation
 - ✅ **Pin** module versions for production deployments
@@ -214,9 +217,10 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
 
 #### Referencing modules from local path - For Development purposes only
 
-1. Usage Example -  Storage Account Module
+1. Usage Example - Storage Account Module
 
 When developing or testing modules locally, reference them using relative paths:
+
 ```bicep
 // Reference local AVM module during development
 module storageAccount '../../../avm/res/storage/storage-account/main.bicep' = {
@@ -229,7 +233,6 @@ module storageAccount '../../../avm/res/storage/storage-account/main.bicep' = {
   }
 }
 ```
-
 
 ### Code Quality
 
@@ -310,11 +313,13 @@ Test-ModuleLocally -TemplateFilePath './avm/res/storage/storage-account' -Pester
 # Run validation test - dry-run (RECOMMENDED)
 Test-ModuleLocally -TemplateFilePath './avm/res/storage/storage-account' -ValidationTest -ValidateOrDeployParameters @{subscriptionId='00000000-0000-0000-0000-DEADBEEFDEAD'; managementGroupId='00000000-0000-0000-0000-DEADBEEFDEAD'}
 ```
+
 **Critical**: Use unique `namePrefix` values to avoid token replacement conflicts with module content.
 
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Module Resolution**: Ensure MCR paths are correct and module versions exist
 2. **Parameter Validation**: Check required parameters and data types in module documentation
 3. **Naming Conflicts**: Use `uniqueString()` for globally unique resource names
@@ -322,6 +327,7 @@ Test-ModuleLocally -TemplateFilePath './avm/res/storage/storage-account' -Valida
 5. **Validation Failures**: Run local Pester tests (validation tests) before committing changes
 
 ### Support Resources
+
 - **AVM Documentation**: `https://azure.github.io/Azure-Verified-Modules/` - see `https://azure.github.io/Azure-Verified-Modules/llms.txt` for LLM documentation index
 - **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
 - **GitHub Issues**: Report issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
