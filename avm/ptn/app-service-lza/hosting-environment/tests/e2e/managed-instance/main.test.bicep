@@ -1,5 +1,5 @@
-metadata name = 'Managed Instance with Application Gateway and Bastion.'
-metadata description = 'This instance deploys a Windows Managed Instance App Service Plan with Application Gateway for single-region ingress and a jumpbox VM via Bastion.'
+metadata name = 'Managed Instance'
+metadata description = 'This instance deploys a Managed Instance (Custom Mode) App Service Plan with Application Gateway and a jumpbox VM.'
 
 targetScope = 'subscription'
 
@@ -12,7 +12,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appmgins'
+param serviceShort string = 'apmgi'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       tags: {
         environment: 'test'
-        scenario: 'managed-instance-appgw-bastion'
+        scenario: 'managed-instance'
       }
 
       servicePlanConfig: {

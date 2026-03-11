@@ -43,7 +43,7 @@ param autoscaleMinCapacity int = 2
 param autoscaleMaxCapacity int = 10
 
 @description('Optional. The health probe path.')
-param healthProbePath string = '/healthz'
+param healthProbePath string = '/'
 
 @description('Optional. Diagnostic Settings for the Application Gateway.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -201,7 +201,7 @@ module wafPolicy 'br/public:avm/res/network/application-gateway-web-application-
   }
 }
 
-module applicationGateway 'br/public:avm/res/network/application-gateway:0.8.0' = {
+module applicationGateway 'br/public:avm/res/network/application-gateway:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-appgw'
   params: {
     name: appGwName

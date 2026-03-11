@@ -1,5 +1,5 @@
-metadata name = 'Front Door primary region with Windows.'
-metadata description = 'This instance deploys a regional stamp behind Front Door with a Windows web app. Use with front-door-secondary for multi-region topology.'
+metadata name = 'App Service Environment'
+metadata description = 'This instance deploys ASE v3 with a Linux container workload behind Application Gateway.'
 
 targetScope = 'subscription'
 
@@ -12,13 +12,11 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appmrfd'
+param serviceShort string = 'apase'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
 
-
-// Hardcoded to a region where App Service Premium plans are available
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 
@@ -42,29 +40,34 @@ module diagnosticDependencies './dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-// --- Primary region: Windows web app behind Front Door ---
+// --- ASE v3 + Linux container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}${serviceShort}', 10)
+      workloadName: take('${namePrefix}aselw', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'front-door-primary-windows'
+        scenario: 'ase'
       }
-
-      spokeNetworkConfig: {
-        resourceGroupName: resourceGroupName
-        ingressOption: 'frontDoor'
-      }
-
+      deployAseV3: true
       servicePlanConfig: {
-        kind: 'windows'
+        kind: 'linux'
+        sku: 'I1v2'
       }
       appServiceConfig: {
-        kind: 'app'
+        kind: 'app,linux,container'
+        container: {
+          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        }
+      }
+      spokeNetworkConfig: {
+        resourceGroupName: resourceGroupName
+        ingressOption: 'applicationGateway'
+        appSvcSubnetAddressSpace: '10.240.0.0/24'
+        appGwSubnetAddressSpace: '10.240.12.0/24'
       }
 
       location: enforcedLocation

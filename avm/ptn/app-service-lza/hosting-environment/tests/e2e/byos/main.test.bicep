@@ -1,5 +1,5 @@
-metadata name = 'ASE v3 with Linux container and Application Gateway.'
-metadata description = 'This instance deploys ASE v3 with a Linux container workload behind Application Gateway for single-region ingress.'
+metadata name = 'Bring Your Own Storage'
+metadata description = 'This instance deploys the module with Azure Files mounted as custom storage (BYOS) on a Linux web app behind Application Gateway.'
 
 targetScope = 'subscription'
 
@@ -12,7 +12,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appaselnx'
+param serviceShort string = 'apbyo'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
@@ -20,18 +20,20 @@ param namePrefix string = '#_namePrefix_#'
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 
-// Diagnostics
+// Dependencies
 // ===========
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
 
-module diagnosticDependencies './dependencies.bicep' = {
+module dependencies './dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-dependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    storageAccountName: take('dep${namePrefix}sa${serviceShort}', 24)
+    fileShareName: 'appdata'
     location: enforcedLocation
   }
 }
@@ -40,34 +42,37 @@ module diagnosticDependencies './dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-// --- ASE v3 + Linux container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}aselw', 10)
-      logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      workloadName: take('${namePrefix}${serviceShort}', 10)
+      logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'ase-linux-container-appgw'
+        scenario: 'byos'
       }
 
-      deployAseV3: true
       servicePlanConfig: {
         kind: 'linux'
-        sku: 'I1v2'
       }
       appServiceConfig: {
-        kind: 'app,linux,container'
-        container: {
-          imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+        kind: 'app,linux'
+        storageAccounts: {
+          appdata: {
+            accountName: dependencies.outputs.storageAccountName
+            accessKey: dependencies.outputs.storageAccountKey
+            shareName: dependencies.outputs.fileShareName
+            mountPath: '/mnt/appdata'
+            type: 'AzureFiles'
+            protocol: 'Smb'
+          }
         }
       }
       spokeNetworkConfig: {
         resourceGroupName: resourceGroupName
         ingressOption: 'applicationGateway'
-        appSvcSubnetAddressSpace: '10.240.0.0/24'
         appGwSubnetAddressSpace: '10.240.12.0/24'
       }
 

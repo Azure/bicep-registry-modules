@@ -1,5 +1,5 @@
-metadata name = 'Using all parameters.'
-metadata description = 'This instance deploys the module with the maximum set of parameters, exercising the Application Gateway networking option and Linux container workload.'
+metadata name = 'Application Gateway with Linux container'
+metadata description = 'This instance deploys the module with the Application Gateway networking option, Linux container workload, jumpbox VM, and full diagnostic settings.'
 
 targetScope = 'subscription'
 
@@ -12,7 +12,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appmax'
+param serviceShort string = 'apagw'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
@@ -57,7 +57,7 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'max'
+        scenario: 'app-gateway'
       }
 
       // Networking: Application Gateway path
@@ -197,7 +197,7 @@ module jumpbox './dependencies.bicep' = {
     location: enforcedLocation
     tags: {
       environment: 'test'
-      scenario: 'max-jumpbox'
+      scenario: 'app-gateway-jumpbox'
     }
   }
 }

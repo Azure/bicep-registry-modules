@@ -307,6 +307,9 @@ type appServiceConfigType = {
   @description('Optional. Whether customer-provided storage account is required.')
   storageAccountRequired: bool?
 
+  @description('Optional. Azure Storage account mounts (BYOS). Each key is a mount name; value specifies accountName, shareName, mountPath, accessKey, type (AzureFiles|AzureBlob), and protocol (Smb|Nfs|Http).')
+  storageAccounts: object?
+
   @description('Optional. DNS-related settings for the site.')
   dnsConfiguration: object?
 
@@ -483,6 +486,9 @@ type appInsightsConfigType = {
 type appGatewayConfigType = {
   @description('Optional. Custom name for the Application Gateway. Falls back to naming-module default.')
   name: string?
+
+  @description('Optional. Health probe path for backend health checks. Defaults to "/".')
+  healthProbePath: string?
 
   @description('Optional. SSL certificates for HTTPS termination.')
   sslCertificates: array?

@@ -1,5 +1,5 @@
-metadata name = 'Bring-your-own-service with Windows container and Application Gateway.'
-metadata description = 'This instance validates bring-your-own-service by pre-creating a Windows App Service Plan and deploying a Windows container workload behind Application Gateway.'
+metadata name = 'Existing App Service Plan'
+metadata description = 'This instance validates using a pre-created App Service Plan with a Linux container workload behind Application Gateway.'
 
 targetScope = 'subscription'
 
@@ -12,7 +12,7 @@ targetScope = 'subscription'
 param resourceGroupName string = 'dep-${namePrefix}-ptn.appsvclza-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'appbyowin'
+param serviceShort string = 'apexp'
 
 @description('Optional. Test name prefix.')
 param namePrefix string = '#_namePrefix_#'
@@ -36,17 +36,16 @@ module diagnosticDependencies './dependencies.bicep' = {
   }
 }
 
-// Pre-create a Windows App Service Plan with Hyper-V for container support
-module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
+// Pre-create a Linux App Service Plan to exercise bring-your-own-service
+module existingLinuxPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-existingWindowsPlan'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-existingLinuxPlan'
   params: {
-    name: take('asp-${namePrefix}-${serviceShort}-win', 40)
+    name: take('asp-${namePrefix}-${serviceShort}-lnx', 40)
     location: enforcedLocation
     skuName: 'P1V3'
-    kind: 'Windows'
-    reserved: false
-    hyperV: true
+    kind: 'Linux'
+    reserved: true
     enableTelemetry: true
   }
 }
@@ -55,25 +54,25 @@ module existingWindowsPlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
 // Test Execution //
 // ============== //
 
-// --- BYOS + Windows container + Application Gateway ---
+// --- Existing plan + Linux container + Application Gateway ---
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}byoww', 10)
+      workloadName: take('${namePrefix}${serviceShort}', 10)
       logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'
-        scenario: 'byos-windows-container-appgw'
+        scenario: 'existing-plan'
       }
 
       servicePlanConfig: {
-        existingPlanId: existingWindowsPlan.outputs.resourceId
-        kind: 'windows'
+        existingPlanId: existingLinuxPlan.outputs.resourceId
+        kind: 'linux'
       }
       appServiceConfig: {
-        kind: 'app,container,windows'
+        kind: 'app,linux,container'
         container: {
           imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
         }
