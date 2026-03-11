@@ -1,4 +1,4 @@
-# API Management Workspace Loggers `[Microsoft.apimanagement/service/workspace/logger]`
+# API Management Workspace Loggers `[Microsoft.ApiManagement/service/workspaces/loggers]`
 
 This module deploys a Logger in an API Management Workspace.
 
