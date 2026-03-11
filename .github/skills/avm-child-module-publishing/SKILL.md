@@ -246,8 +246,10 @@ Determine all affected module paths (child modules + their parent modules in the
 $affectedModulePaths = @('<child-module-path-1>', '<child-module-path-2>') | ForEach-Object {
     $_  # include the child itself
     Get-ParentFolderPathList -Path $_ -Filter 'OnlyModules'
-} | Where-Object { Test-Path $_ } | Select-Object -Unique | Sort-Object { ($_ -split '[/\\]').Count } -Descending
+} | Where-Object { Test-Path $_ } | ForEach-Object { (Resolve-Path $_).Path } | Select-Object -Unique | Sort-Object { ($_ -split '[/\\]').Count } -Descending
 ```
+
+> **Path normalization**: The `Resolve-Path` step converts all paths to absolute form before deduplication and sorting. This is necessary because the child paths may be relative while `Get-ParentFolderPathList` returns absolute paths (`$Item.FullName`). Without normalization, `Select-Object -Unique` could fail to deduplicate and `Sort-Object` would compute inconsistent depth counts due to different segment counts.
 
 > The resulting `$affectedModulePaths` contains folder paths for both the child module(s) and all their ancestor modules in the tree, **sorted bottom-up** (deepest child first, top-level parent last). This ordering ensures each child is fully processed by `Set-AVMModule` before its parent. When publishing multiple children, shared parents are automatically deduplicated.
 
