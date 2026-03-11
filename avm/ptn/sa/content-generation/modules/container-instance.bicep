@@ -8,7 +8,7 @@ param name string
 param location string
 
 @description('Optional. Tags for all resources.')
-param tags object = {}
+param tags object?
 
 @description('Required. Container image to deploy.')
 param containerImage string

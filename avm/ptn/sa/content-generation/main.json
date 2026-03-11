@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "4432433230414670086"
+      "templateHash": "14960977682735787951"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4807,12 +4807,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "13822613177861506290"
+              "templateHash": "12733624214040002225"
             }
           },
           "parameters": {
@@ -4847,7 +4848,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags to be applied to the resources."
               }
@@ -4979,8 +4980,8 @@
             "bastionSubnets": "[if(parameters('deployBastionAndJumpbox'), createArray(createObject('name', 'AzureBastionSubnet', 'addressPrefixes', createArray('10.0.10.0/26'), 'networkSecurityGroup', createObject('name', 'nsg-bastion', 'securityRules', createArray(createObject('name', 'AllowGatewayManager', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 2702, 'protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '443', 'sourceAddressPrefix', 'GatewayManager', 'destinationAddressPrefix', '*')), createObject('name', 'AllowHttpsInBound', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 2703, 'protocol', '*', 'sourcePortRange', '*', 'destinationPortRange', '443', 'sourceAddressPrefix', 'Internet', 'destinationAddressPrefix', '*')), createObject('name', 'AllowSshRdpOutbound', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 100, 'protocol', '*', 'sourcePortRange', '*', 'destinationPortRanges', createArray('22', '3389'), 'sourceAddressPrefix', '*', 'destinationAddressPrefix', 'VirtualNetwork')), createObject('name', 'AllowAzureCloudOutbound', 'properties', createObject('access', 'Allow', 'direction', 'Outbound', 'priority', 110, 'protocol', 'Tcp', 'sourcePortRange', '*', 'destinationPortRange', '443', 'sourceAddressPrefix', '*', 'destinationAddressPrefix', 'AzureCloud'))))), createObject('name', 'jumpbox', 'addressPrefixes', createArray('10.0.12.0/23'), 'networkSecurityGroup', createObject('name', 'nsg-jumpbox', 'securityRules', createArray(createObject('name', 'AllowRdpFromBastion', 'properties', createObject('access', 'Allow', 'direction', 'Inbound', 'priority', 100, 'protocol', 'Tcp', 'sourcePortRange', '*', 'destinationPortRange', '3389', 'sourceAddressPrefixes', createArray('10.0.10.0/26'), 'destinationAddressPrefixes', createArray('10.0.12.0/23'))))))), createArray())]",
             "vnetSubnets": "[concat(variables('coreSubnets'), variables('bastionSubnets'))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "nsgs": {
               "copy": {
                 "name": "nsgs",
                 "count": "[length(variables('vnetSubnets'))]",
@@ -5649,7 +5650,7 @@
                 }
               }
             },
-            {
+            "virtualNetwork": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)]",
@@ -5673,7 +5674,7 @@
                       {
                         "name": "value",
                         "count": "[length(variables('vnetSubnets'))]",
-                        "input": "[createObject('name', variables('vnetSubnets')[copyIndex('value')].name, 'addressPrefixes', tryGet(variables('vnetSubnets')[copyIndex('value')], 'addressPrefixes'), 'networkSecurityGroupResourceId', if(not(empty(tryGet(variables('vnetSubnets')[copyIndex('value')], 'networkSecurityGroup'))), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.network-security-group.{0}.{1}', tryGet(variables('vnetSubnets')[copyIndex('value')], 'networkSecurityGroup', 'name'), parameters('resourceSuffix')), 64)), '2025-04-01').outputs.resourceId.value, null()), 'privateEndpointNetworkPolicies', tryGet(variables('vnetSubnets')[copyIndex('value')], 'privateEndpointNetworkPolicies'), 'privateLinkServiceNetworkPolicies', tryGet(variables('vnetSubnets')[copyIndex('value')], 'privateLinkServiceNetworkPolicies'), 'delegation', tryGet(variables('vnetSubnets')[copyIndex('value')], 'delegation'))]"
+                        "input": "[createObject('name', variables('vnetSubnets')[copyIndex('value')].name, 'addressPrefixes', tryGet(variables('vnetSubnets')[copyIndex('value')], 'addressPrefixes'), 'networkSecurityGroupResourceId', if(not(empty(tryGet(variables('vnetSubnets')[copyIndex('value')], 'networkSecurityGroup'))), reference(format('nsgs[{0}]', copyIndex('value'))).outputs.resourceId.value, null()), 'privateEndpointNetworkPolicies', tryGet(variables('vnetSubnets')[copyIndex('value')], 'privateEndpointNetworkPolicies'), 'privateLinkServiceNetworkPolicies', tryGet(variables('vnetSubnets')[copyIndex('value')], 'privateLinkServiceNetworkPolicies'), 'delegation', tryGet(variables('vnetSubnets')[copyIndex('value')], 'delegation'))]"
                       }
                     ]
                   },
@@ -7321,35 +7322,35 @@
                 "nsgs"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.name.value]"
+              "value": "[reference('virtualNetwork').outputs.name.value]"
             },
             "resourceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.resourceId.value]"
+              "value": "[reference('virtualNetwork').outputs.resourceId.value]"
             },
             "webSubnetResourceId": {
               "type": "string",
-              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'web'), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'web')], '')]"
+              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'web'), reference('virtualNetwork').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'web')], '')]"
             },
             "pepsSubnetResourceId": {
               "type": "string",
-              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'peps'), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'peps')], '')]"
+              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'peps'), reference('virtualNetwork').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'peps')], '')]"
             },
             "aciSubnetResourceId": {
               "type": "string",
-              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'aci'), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'aci')], '')]"
+              "value": "[if(contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'aci'), reference('virtualNetwork').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'aci')], '')]"
             },
             "bastionSubnetResourceId": {
               "type": "string",
-              "value": "[if(and(parameters('deployBastionAndJumpbox'), contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'AzureBastionSubnet')), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'AzureBastionSubnet')], '')]"
+              "value": "[if(and(parameters('deployBastionAndJumpbox'), contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'AzureBastionSubnet')), reference('virtualNetwork').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'AzureBastionSubnet')], '')]"
             },
             "jumpboxSubnetResourceId": {
               "type": "string",
-              "value": "[if(and(parameters('deployBastionAndJumpbox'), contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'jumpbox')), reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.network.virtual-network.{0}', parameters('vnetName')), 64)), '2025-04-01').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'jumpbox')], '')]"
+              "value": "[if(and(parameters('deployBastionAndJumpbox'), contains(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'jumpbox')), reference('virtualNetwork').outputs.subnetResourceIds.value[indexOf(map(variables('vnetSubnets'), lambda('subnet', lambdaVariables('subnet').name)), 'jumpbox')], '')]"
             }
           }
         }
@@ -14013,12 +14014,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "12145366722831710017"
+              "templateHash": "29559710278213235"
             }
           },
           "parameters": {
@@ -14050,14 +14052,20 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags to be applied to the resources."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "cogServiceReference": {
+              "existing": true,
+              "type": "Microsoft.CognitiveServices/accounts",
+              "apiVersion": "2025-10-01-preview",
+              "name": "[parameters('aiServicesName')]"
+            },
+            "aiProject": {
               "type": "Microsoft.CognitiveServices/accounts/projects",
               "apiVersion": "2025-10-01-preview",
               "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('name'))]",
@@ -14071,7 +14079,7 @@
                 "displayName": "[parameters('name')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -14092,21 +14100,21 @@
               "metadata": {
                 "description": "Required. API endpoint for the AI project."
               },
-              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('name')), '2025-10-01-preview').endpoints['AI Foundry API']]"
+              "value": "[reference('aiProject').endpoints['AI Foundry API']]"
             },
             "aoaiEndpoint": {
               "type": "string",
               "metadata": {
                 "description": "Contains AI Endpoint."
               },
-              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('aiServicesName')), '2025-10-01-preview').endpoints['OpenAI Language Model Instance API']]"
+              "value": "[reference('cogServiceReference').endpoints['OpenAI Language Model Instance API']]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
               "metadata": {
                 "description": "Required. Principal ID of the AI project system-assigned managed identity."
               },
-              "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('name')), '2025-10-01-preview', 'full').identity.principalId]"
+              "value": "[reference('aiProject', '2025-10-01-preview', 'full').identity.principalId]"
             }
           }
         }
@@ -33254,12 +33262,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "511151538761528258"
+              "templateHash": "14897996362401141983"
             }
           },
           "parameters": {
@@ -33277,7 +33286,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags for all resources."
               }
@@ -33340,8 +33349,8 @@
           "variables": {
             "isPrivateNetworking": "[not(empty(parameters('subnetResourceId')))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-07-01",
@@ -33355,7 +33364,7 @@
                 }
               }
             },
-            {
+            "containerGroup": {
               "type": "Microsoft.ContainerInstance/containerGroups",
               "apiVersion": "2025-09-01",
               "name": "[parameters('name')]",
@@ -33404,7 +33413,7 @@
                 }
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -33425,14 +33434,14 @@
               "metadata": {
                 "description": "The IP address of the container (private or public depending on mode)."
               },
-              "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups', parameters('name')), '2025-09-01').ipAddress.ip]"
+              "value": "[reference('containerGroup').ipAddress.ip]"
             },
             "fqdn": {
               "type": "string",
               "metadata": {
                 "description": "The FQDN of the container (only available for public mode)."
               },
-              "value": "[if(variables('isPrivateNetworking'), '', reference(resourceId('Microsoft.ContainerInstance/containerGroups', parameters('name')), '2025-09-01').ipAddress.fqdn)]"
+              "value": "[if(variables('isPrivateNetworking'), '', reference('containerGroup').ipAddress.fqdn)]"
             }
           }
         }

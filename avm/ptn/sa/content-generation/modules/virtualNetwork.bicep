@@ -193,7 +193,7 @@ var bastionSubnets = deployBastionAndJumpbox
 var vnetSubnets = concat(coreSubnets, bastionSubnets)
 
 @description('Optional. Tags to be applied to the resources.')
-param tags object = {}
+param tags object?
 
 @description('Optional. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string = ''
