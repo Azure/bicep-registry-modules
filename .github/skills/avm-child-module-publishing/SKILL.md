@@ -246,12 +246,12 @@ Determine all affected module paths (child modules + their parent modules in the
 $affectedModulePaths = @('<child-module-path-1>', '<child-module-path-2>') | ForEach-Object {
     $_  # include the child itself
     Get-ParentFolderPathList -Path $_ -Filter 'OnlyModules'
-} | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
+} | Where-Object { Test-Path $_ } | Select-Object -Unique | Sort-Object { ($_ -split '[/\\]').Count } -Descending
 ```
 
-> The resulting `$affectedModulePaths` always includes both the child module(s) and all their ancestor modules in the tree. For example, a single child will have at least one parent; a grandchild will have two parents. When publishing multiple children, shared parents are automatically deduplicated.
+> The resulting `$affectedModulePaths` contains folder paths for both the child module(s) and all their ancestor modules in the tree, **sorted bottom-up** (deepest child first, top-level parent last). This ordering ensures each child is fully processed by `Set-AVMModule` before its parent. When publishing multiple children, shared parents are automatically deduplicated.
 
-**Display the list of detected modules to the user** before proceeding.
+**Display the ordered list of detected modules to the user** before proceeding.
 
 ##### 3.1b — Run Set-AVMModule for each affected module
 
@@ -261,11 +261,11 @@ After the user confirms the list, run `Set-AVMModule` for **all** affected modul
 . ./utilities/tools/Set-AVMModule.ps1
 foreach ($modulePath in $affectedModulePaths) {
     Write-Output "Processing: $modulePath"
-    Set-AVMModule -ModuleFolderPath (Split-Path $modulePath)
+    Set-AVMModule -ModuleFolderPath $modulePath
 }
 ```
 
-**Correct**: `Set-AVMModule -ModuleFolderPath <path>` for each affected module
+**Correct**: `Set-AVMModule -ModuleFolderPath <folder-path>` for each affected module
 **Wrong**: `Set-AVMModule -ModuleFolderPath '...' -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5`
 
 #### Step 3.2 — Run Static Validation Tests
