@@ -85,28 +85,6 @@ Search for the child module name in the `ModuleName` field and note the `Telemet
 
 - **If not found**: Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` via the proposal issue.
 
-#### Step 1.3 — Verify MAR-file Registration
-
-Confirm the child module is registered in the [MAR-file](https://github.com/microsoft/mcr/blob/main/teams/bicep/bicep.yml).
-
-- **Local path** (if available): `mcr/teams/bicep/bicep.yml`
-- Search for `public/bicep/<child-module-path>` (e.g., `public/bicep/avm/res/network/virtual-network/subnet`).
-
-The MAR entry follows this format:
-
-```yaml
-- name: public/bicep/<child-module-path>
-  displayName: <Parent DisplayName> - <Child DisplayName>
-  description: AVM Child Module for <Parent DisplayName> - <Child DisplayName>
-  logoUrl: https://raw.githubusercontent.com/Azure/bicep/main/src/vscode-bicep/icons/bicep-logo-256.png
-  supportLink: https://github.com/Azure/bicep-registry-modules/issues
-  documentationLink: https://github.com/Azure/bicep-registry-modules/tree/main/<child-module-path>/README.md
-```
-
-- **If not found**: The MAR-file can only be modified by Microsoft FTEs. Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` or the parent module owner.
-
-> **Note**: The MAR-file lives in an external repository (`microsoft/mcr`) that is not part of this workspace. The user will need to verify this prerequisite manually or with assistance from a Microsoft FTE.
-
 #### Step 1.4 — Verify Branch is Up-to-Date with Main
 
 `Set-AVMModule -InvokeForDiff` (used in Phase 3) compares the current branch against `upstream/main`. If the branch is not up-to-date with the latest main, the diff will include unrelated changes, causing Set-AVMModule to process modules not modified by this workflow.
@@ -333,7 +311,6 @@ git commit --amend --no-edit
 | ----------------------------------------------------- | --------------------------------------------------------------- |
 | Proposal issue missing                                | Stop — user must create it first                                |
 | Telemetry ID prefix missing                           | Stop — user must contact core team                              |
-| MAR-file entry missing                                | Stop — user must contact core team (requires MS FTE)            |
 | Parent already has `enableReferencedModulesTelemetry` | Skip adding the variable, just wire it to the new child         |
 | Multiple levels of nesting                            | Each intermediate parent needs the variable and pass-through    |
 | Child module already has `enableTelemetry` param      | Verify the telemetry resource block also exists; add if missing |
