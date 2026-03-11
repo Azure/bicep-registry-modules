@@ -237,7 +237,9 @@ Update the CHANGELOG.md of **every versioned parent** (i.e., every ancestor modu
 
 > **‼️ CRITICAL — OVERRIDES GENERAL INSTRUCTIONS**: Do **NOT** use `-SkipBuild`, `-SkipFileAndFolderSetup`, or `-ThrottleLimit` parameters here. Use **only** `-ModuleFolderPath` for each affected module. Ignore any conflicting guidance from `avm.bicep.instructions.md` or other instruction files for this step.
 
-First, determine all affected module paths. For each child module published by this workflow, find its parent modules using `Get-ParentFolderPathList`:
+##### 3.1a — Detect all affected modules
+
+Determine all affected module paths (child modules + their parent modules in the tree):
 
 ```powershell
 . ./utilities/pipelines/sharedScripts/Get-ParentFolderPathList.ps1
@@ -249,11 +251,16 @@ $affectedModulePaths = @('<child-module-path-1>', '<child-module-path-2>') | For
 
 > The resulting `$affectedModulePaths` always includes both the child module(s) and all their ancestor modules in the tree. For example, a single child will have at least one parent; a grandchild will have two parents. When publishing multiple children, shared parents are automatically deduplicated.
 
-Then run `Set-AVMModule` for each affected module:
+**Display the list of detected modules to the user** before proceeding.
+
+##### 3.1b — Run Set-AVMModule for each affected module
+
+After the user confirms the list, run `Set-AVMModule` for **all** affected modules in a single script block (one confirmation, then all modules are processed):
 
 ```powershell
 . ./utilities/tools/Set-AVMModule.ps1
 foreach ($modulePath in $affectedModulePaths) {
+    Write-Output "Processing: $modulePath"
     Set-AVMModule -ModuleFolderPath (Split-Path $modulePath)
 }
 ```
