@@ -2189,7 +2189,7 @@ Describe 'Governance tests' {
         $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
     }
 
-    It '[<moduleFolderName] is in the MAR file' -TestCases $governanceTestCases {
+    It '[<moduleFolderName>] is in the MAR file' -TestCases $governanceTestCases {
 
         param(
             [string] $relativeModulePath,
