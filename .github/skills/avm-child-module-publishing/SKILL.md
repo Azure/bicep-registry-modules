@@ -123,7 +123,7 @@ param enableTelemetry bool = true
 
 ##### 2.2b — Add avmTelemetry deployment resource
 
-Add the telemetry resource block. Replace `<TelemetryIdPrefix>` with the value from the CSV (Step 1.2):
+Add the telemetry resource block. Place it as the **first resource** in the module. Replace `<TelemetryIdPrefix>` with the value from the CSV (Step 1.2):
 
 ```bicep
 #disable-next-line no-deployments-resources
