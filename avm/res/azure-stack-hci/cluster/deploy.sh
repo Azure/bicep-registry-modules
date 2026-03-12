@@ -1,9 +1,13 @@
 #!/bin/bash
 
-set -xe  # Exit on any error
+set -e  # Exit on any error
 
 LOG_DIR="/mnt/azscripts/azscriptoutput"
 LOG_FILE="${LOG_DIR}/hci-deploy.log"
+
+# Redirect all output to log file, only echo key messages to stdout
+exec > >(tee -a "${LOG_FILE}") 2>&1
+
 echo "Starting HCI deployment script..."
 echo "Log file: ${LOG_FILE}"
 
