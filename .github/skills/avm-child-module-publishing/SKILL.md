@@ -269,37 +269,6 @@ foreach ($modulePath in $affectedModulePaths) {
 **Correct**: `Set-AVMModule -ModuleFolderPath <folder-path>` for each affected module
 **Wrong**: `Set-AVMModule -ModuleFolderPath '...' -SkipBuild -SkipFileAndFolderSetup -ThrottleLimit 5`
 
-##### 3.1c — Verify Set-AVMModule output
-
-After all modules have been processed, verify that every affected module's `main.json` and `README.md` were actually regenerated. Each `Set-AVMModule` invocation must produce updated versions of both files for every modified module — there are no exceptions. Bicep may cache compiled child module outputs within a session, causing parent modules to build against stale artifacts. This step detects and automatically fixes any such failures.
-
-```powershell
-$filesToCheck = @('main.json', 'README.md')
-$missing = @()
-foreach ($modulePath in $affectedModulePaths) {
-    foreach ($file in $filesToCheck) {
-        $filePath = Join-Path $modulePath $file
-        if (-not (Test-Path $filePath) -or ((git diff --name-only -- $filePath) -eq $null -and (git diff --name-only --cached -- $filePath) -eq $null)) {
-            $missing += [PSCustomObject]@{ Module = $modulePath; File = $file }
-        }
-    }
-}
-if ($missing) {
-    $modulesToRerun = $missing | Select-Object -ExpandProperty Module -Unique
-    Write-Warning "Set-AVMModule did NOT update the following files:"
-    $missing | ForEach-Object { Write-Warning "  $($_.Module) -> $($_.File)" }
-    Write-Warning "Re-running Set-AVMModule for affected modules..."
-    foreach ($m in $modulesToRerun) {
-        . ./utilities/tools/Set-AVMModule.ps1
-        Set-AVMModule -ModuleFolderPath $m
-    }
-} else {
-    Write-Output "All main.json and README.md files verified as updated."
-}
-```
-
-> **Why this matters**: Bicep can cache child module outputs during a single session, so a parent's `main.json` or `README.md` may silently build against the pre-edit version of a child module. This verification + retry step catches and fixes the problem automatically.
-
 #### Step 3.2 — Run Static Validation Tests
 
 ```powershell
@@ -312,6 +281,16 @@ Test-ModuleLocally -TemplateFilePath (Resolve-Path '<path-to-top-level-parent>/m
 > Existing tests do not need updating — the publishing changes don't affect test cases.
 
 If tests **fail**, fix the issues, then re-run Step 3.1 and re-test until all tests pass.
+
+##### 3.2a — Regenerate parent module after testing
+
+> **Known issue**: `Test-ModuleLocally` may delete the `main.json` file of the top-level parent module. Until this bug is fixed upstream, always re-run `Set-AVMModule` for the top-level parent after testing to restore it.
+
+```powershell
+$topLevelParent = $affectedModulePaths | Select-Object -Last 1
+. ./utilities/tools/Set-AVMModule.ps1
+Set-AVMModule -ModuleFolderPath $topLevelParent
+```
 
 #### Step 3.3 — Commit All Changes
 
