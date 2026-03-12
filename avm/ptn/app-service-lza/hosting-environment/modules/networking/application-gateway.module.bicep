@@ -172,7 +172,7 @@ module publicIp 'br/public:avm/res/network/public-ip-address:0.12.0' = {
   }
 }
 
-module wafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.1' = if (isWaf) {
+module wafPolicy 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.3.0' = if (isWaf) {
   name: '${uniqueString(deployment().name, location)}-appgw-waf'
   params: {
     name: 'waf-${appGwName}'

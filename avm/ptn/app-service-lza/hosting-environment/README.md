@@ -47,7 +47,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Network/applicationGateways` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/applicationGateways)</li></ul> |
-| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
+| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_applicationgatewaywebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/ApplicationGatewayWebApplicationFirewallPolicies)</li></ul> |
 | `Microsoft.Network/FrontDoorWebApplicationFirewallPolicies` | 2024-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_frontdoorwebapplicationfirewallpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-02-01/FrontDoorWebApplicationFirewallPolicies)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 | `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
@@ -95,17 +95,314 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app-service-lza/hosting-environment:<version>`.
 
-- [Application Gateway with Linux container](#example-1-application-gateway-with-linux-container)
-- [App Service Environment](#example-2-app-service-environment)
-- [Bring Your Own Storage](#example-3-bring-your-own-storage)
+- [App Service Environment](#example-1-app-service-environment)
+- [Bring Your Own Storage](#example-2-bring-your-own-storage)
+- [Application Gateway with Linux container and egress lockdown](#example-3-application-gateway-with-linux-container-and-egress-lockdown)
 - [Existing App Service Plan](#example-4-existing-app-service-plan)
-- [Managed Instance](#example-5-managed-instance)
+- [Front Door](#example-5-front-door)
+- [Managed Instance](#example-6-managed-instance)
 
-### Example 1: _Application Gateway with Linux container_
+### Example 1: _App Service Environment_
 
-This instance deploys the module with the Application Gateway networking option, Linux container workload, jumpbox VM, and full diagnostic settings.
+This instance deploys ASE v3 with a Linux container workload behind Application Gateway.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/app-gateway]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      container: {
+        imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+      }
+      kind: 'app,linux,container'
+    }
+    deployAseV3: true
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'linux'
+      sku: 'I1v2'
+    }
+    spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      appSvcSubnetAddressSpace: '10.240.0.0/24'
+      ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'ase'
+    }
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "container": {
+          "imageName": "mcr.microsoft.com/appsvc/staticsite:latest"
+        },
+        "kind": "app,linux,container"
+      }
+    },
+    "deployAseV3": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "linux",
+        "sku": "I1v2"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "appSvcSubnetAddressSpace": "10.240.0.0/24",
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "ase"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  container: {
+    imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
+  }
+  kind: 'app,linux,container'
+}
+deployAseV3: true
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'linux'
+  sku: 'I1v2'
+}
+param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  appSvcSubnetAddressSpace: '10.240.0.0/24'
+  ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'ase'
+}
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
+### Example 2: _Bring Your Own Storage_
+
+This instance deploys the module with Azure Files mounted as custom storage (BYOS) on a Linux web app behind Application Gateway.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app,linux'
+      storageAccounts: {
+        appdata: {
+          accessKey: '<accessKey>'
+          accountName: '<accountName>'
+          mountPath: '/mnt/appdata'
+          protocol: 'Smb'
+          shareName: '<shareName>'
+          type: 'AzureFiles'
+        }
+      }
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'linux'
+    }
+    spokeNetworkConfig: {
+      appGwSubnetAddressSpace: '10.240.12.0/24'
+      ingressOption: 'applicationGateway'
+      resourceGroupName: '<resourceGroupName>'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'byos'
+    }
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app,linux",
+        "storageAccounts": {
+          "appdata": {
+            "accessKey": "<accessKey>",
+            "accountName": "<accountName>",
+            "mountPath": "/mnt/appdata",
+            "protocol": "Smb",
+            "shareName": "<shareName>",
+            "type": "AzureFiles"
+          }
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "linux"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "appGwSubnetAddressSpace": "10.240.12.0/24",
+        "ingressOption": "applicationGateway",
+        "resourceGroupName": "<resourceGroupName>"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "byos"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app,linux'
+  storageAccounts: {
+    appdata: {
+      accessKey: '<accessKey>'
+      accountName: '<accountName>'
+      mountPath: '/mnt/appdata'
+      protocol: 'Smb'
+      shareName: '<shareName>'
+      type: 'AzureFiles'
+    }
+  }
+}
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'linux'
+}
+param spokeNetworkConfig = {
+  appGwSubnetAddressSpace: '10.240.12.0/24'
+  ingressOption: 'applicationGateway'
+  resourceGroupName: '<resourceGroupName>'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'byos'
+}
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
+### Example 3: _Application Gateway with Linux container and egress lockdown_
+
+This instance deploys the module with Application Gateway ingress, Linux container workload, egress lockdown via Azure Firewall UDR, jumpbox VM, and custom diagnostic settings across all resources.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/container]
 
 
 <details>
@@ -485,302 +782,6 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 2: _App Service Environment_
-
-This instance deploys ASE v3 with a Linux container workload behind Application Gateway.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ase]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      container: {
-        imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-      }
-      kind: 'app,linux,container'
-    }
-    deployAseV3: true
-    location: '<location>'
-    servicePlanConfig: {
-      kind: 'linux'
-      sku: 'I1v2'
-    }
-    spokeNetworkConfig: {
-      appGwSubnetAddressSpace: '10.240.12.0/24'
-      appSvcSubnetAddressSpace: '10.240.0.0/24'
-      ingressOption: 'applicationGateway'
-      resourceGroupName: '<resourceGroupName>'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'ase'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "container": {
-          "imageName": "mcr.microsoft.com/appsvc/staticsite:latest"
-        },
-        "kind": "app,linux,container"
-      }
-    },
-    "deployAseV3": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "kind": "linux",
-        "sku": "I1v2"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "appGwSubnetAddressSpace": "10.240.12.0/24",
-        "appSvcSubnetAddressSpace": "10.240.0.0/24",
-        "ingressOption": "applicationGateway",
-        "resourceGroupName": "<resourceGroupName>"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "ase"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  container: {
-    imageName: 'mcr.microsoft.com/appsvc/staticsite:latest'
-  }
-  kind: 'app,linux,container'
-}
-deployAseV3: true
-param location = '<location>'
-param servicePlanConfig = {
-  kind: 'linux'
-  sku: 'I1v2'
-}
-param spokeNetworkConfig = {
-  appGwSubnetAddressSpace: '10.240.12.0/24'
-  appSvcSubnetAddressSpace: '10.240.0.0/24'
-  ingressOption: 'applicationGateway'
-  resourceGroupName: '<resourceGroupName>'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'ase'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 3: _Bring Your Own Storage_
-
-This instance deploys the module with Azure Files mounted as custom storage (BYOS) on a Linux web app behind Application Gateway.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/byos]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  params: {
-    // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    // Non-required parameters
-    appServiceConfig: {
-      kind: 'app,linux'
-      storageAccounts: {
-        appdata: {
-          accessKey: '<accessKey>'
-          accountName: '<accountName>'
-          mountPath: '/mnt/appdata'
-          protocol: 'Smb'
-          shareName: '<shareName>'
-          type: 'AzureFiles'
-        }
-      }
-    }
-    location: '<location>'
-    servicePlanConfig: {
-      kind: 'linux'
-    }
-    spokeNetworkConfig: {
-      appGwSubnetAddressSpace: '10.240.12.0/24'
-      ingressOption: 'applicationGateway'
-      resourceGroupName: '<resourceGroupName>'
-    }
-    tags: {
-      environment: 'test'
-      scenario: 'byos'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    // Non-required parameters
-    "appServiceConfig": {
-      "value": {
-        "kind": "app,linux",
-        "storageAccounts": {
-          "appdata": {
-            "accessKey": "<accessKey>",
-            "accountName": "<accountName>",
-            "mountPath": "/mnt/appdata",
-            "protocol": "Smb",
-            "shareName": "<shareName>",
-            "type": "AzureFiles"
-          }
-        }
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "servicePlanConfig": {
-      "value": {
-        "kind": "linux"
-      }
-    },
-    "spokeNetworkConfig": {
-      "value": {
-        "appGwSubnetAddressSpace": "10.240.12.0/24",
-        "ingressOption": "applicationGateway",
-        "resourceGroupName": "<resourceGroupName>"
-      }
-    },
-    "tags": {
-      "value": {
-        "environment": "test",
-        "scenario": "byos"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-// Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-// Non-required parameters
-param appServiceConfig = {
-  kind: 'app,linux'
-  storageAccounts: {
-    appdata: {
-      accessKey: '<accessKey>'
-      accountName: '<accountName>'
-      mountPath: '/mnt/appdata'
-      protocol: 'Smb'
-      shareName: '<shareName>'
-      type: 'AzureFiles'
-    }
-  }
-}
-param location = '<location>'
-param servicePlanConfig = {
-  kind: 'linux'
-}
-param spokeNetworkConfig = {
-  appGwSubnetAddressSpace: '10.240.12.0/24'
-  ingressOption: 'applicationGateway'
-  resourceGroupName: '<resourceGroupName>'
-}
-param tags = {
-  environment: 'test'
-  scenario: 'byos'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
 ### Example 4: _Existing App Service Plan_
 
 This instance validates using a pre-created App Service Plan with a Linux container workload behind Application Gateway.
@@ -916,7 +917,127 @@ param workloadName = '<workloadName>'
 </details>
 <p>
 
-### Example 5: _Managed Instance_
+### Example 5: _Front Door_
+
+This instance deploys the module with Azure Front Door as the public ingress and a Linux web app.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/front-door]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    // Non-required parameters
+    appServiceConfig: {
+      kind: 'app,linux'
+    }
+    location: '<location>'
+    servicePlanConfig: {
+      kind: 'linux'
+    }
+    spokeNetworkConfig: {
+      ingressOption: 'frontDoor'
+      resourceGroupName: '<resourceGroupName>'
+    }
+    tags: {
+      environment: 'test'
+      scenario: 'front-door'
+    }
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    // Non-required parameters
+    "appServiceConfig": {
+      "value": {
+        "kind": "app,linux"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "servicePlanConfig": {
+      "value": {
+        "kind": "linux"
+      }
+    },
+    "spokeNetworkConfig": {
+      "value": {
+        "ingressOption": "frontDoor",
+        "resourceGroupName": "<resourceGroupName>"
+      }
+    },
+    "tags": {
+      "value": {
+        "environment": "test",
+        "scenario": "front-door"
+      }
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+// Non-required parameters
+param appServiceConfig = {
+  kind: 'app,linux'
+}
+param location = '<location>'
+param servicePlanConfig = {
+  kind: 'linux'
+}
+param spokeNetworkConfig = {
+  ingressOption: 'frontDoor'
+  resourceGroupName: '<resourceGroupName>'
+}
+param tags = {
+  environment: 'test'
+  scenario: 'front-door'
+}
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
+### Example 6: _Managed Instance_
 
 This instance deploys a Managed Instance (Custom Mode) App Service Plan with Application Gateway and a jumpbox VM.
 
@@ -5173,11 +5294,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/cdn/profile:0.18.0` | Remote reference |
+| `br/public:avm/res/cdn/profile:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
-| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.1` | Remote reference |
+| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.3.0` | Remote reference |
 | `br/public:avm/res/network/application-gateway:0.9.0` | Remote reference |
 | `br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.3` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |

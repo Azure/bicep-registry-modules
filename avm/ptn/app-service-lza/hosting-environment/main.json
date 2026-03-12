@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18187943299792554361"
+      "templateHash": "13971864283264605337"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -31791,7 +31791,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7811623531235323299"
+              "templateHash": "1450745778563181172"
             }
           },
           "definitions": {
@@ -32995,7 +32995,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.41.2.15936",
-                      "templateHash": "12593878678116228533"
+                      "templateHash": "3513444489891131538"
                     },
                     "name": "CDN Profiles",
                     "description": "This module deploys a CDN Profile."
@@ -33039,11 +33039,21 @@
                             "description": "Required. The name of the origin group."
                           }
                         },
+                        "authentication": {
+                          "type": "object",
+                          "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/authentication"
+                            },
+                            "description": "Optional. Settings for Origin Authentication."
+                          },
+                          "nullable": true
+                        },
                         "healthProbeSettings": {
                           "type": "object",
                           "metadata": {
                             "__bicep_resource_derived_type!": {
-                              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/healthProbeSettings"
+                              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/healthProbeSettings"
                             },
                             "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
                           },
@@ -33053,7 +33063,7 @@
                           "type": "object",
                           "metadata": {
                             "__bicep_resource_derived_type!": {
-                              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/loadBalancingSettings"
+                              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/loadBalancingSettings"
                             },
                             "description": "Required. Load balancing settings for a backend pool."
                           }
@@ -34142,7 +34152,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('0.18.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('0.19.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -35071,6 +35081,9 @@
                           "profileName": {
                             "value": "[parameters('name')]"
                           },
+                          "authentication": {
+                            "value": "[tryGet(coalesce(parameters('originGroups'), createArray())[copyIndex()], 'authentication')]"
+                          },
                           "loadBalancingSettings": {
                             "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].loadBalancingSettings]"
                           },
@@ -35095,7 +35108,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.41.2.15936",
-                              "templateHash": "12791746770025577752"
+                              "templateHash": "11354323423619918567"
                             },
                             "name": "CDN Profiles Origin Group",
                             "description": "This module deploys a CDN Profile Origin Group."
@@ -35342,7 +35355,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.cdn-profile-origingroup.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.cdn-profile-origingroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -38288,7 +38301,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15085549263286570261"
+              "templateHash": "6700134790213374469"
             }
           },
           "definitions": {
@@ -39569,11 +39582,125 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "3867255808889303130"
+                      "version": "0.41.2.15936",
+                      "templateHash": "782701515477730630"
                     },
                     "name": "Application Gateway Web Application Firewall (WAF) Policies",
                     "description": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy."
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    }
                   },
                   "parameters": {
                     "name": {
@@ -39593,7 +39720,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/tags"
+                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-05-01#properties/tags"
                         },
                         "description": "Optional. Resource tags."
                       },
@@ -39610,7 +39737,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/managedRules"
+                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-05-01#properties/properties/properties/managedRules"
                         },
                         "description": "Required. Describes the managedRules structure."
                       }
@@ -39619,7 +39746,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/customRules"
+                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-05-01#properties/properties/properties/customRules"
                         },
                         "description": "Optional. The custom rules inside the policy."
                       },
@@ -39629,19 +39756,53 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-01-01#properties/properties/properties/policySettings"
+                          "source": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2025-05-01#properties/properties/properties/policySettings"
                         },
                         "description": "Optional. The PolicySettings for policy."
                       },
                       "nullable": true
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "roleAssignments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     }
                   },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-appgwwebappfirewallpolicy.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-appgwwebappfirewallpolicy.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -39659,7 +39820,7 @@
                     },
                     "applicationGatewayWAFPolicy": {
                       "type": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
-                      "apiVersion": "2025-01-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -39668,6 +39829,42 @@
                         "customRules": "[parameters('customRules')]",
                         "policySettings": "[parameters('policySettings')]"
                       }
+                    },
+                    "applicationGatewayWAFPolicy_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('name'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                      },
+                      "dependsOn": [
+                        "applicationGatewayWAFPolicy"
+                      ]
+                    },
+                    "applicationGatewayWAFPolicy_roleAssignments": {
+                      "copy": {
+                        "name": "applicationGatewayWAFPolicy_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      },
+                      "dependsOn": [
+                        "applicationGatewayWAFPolicy"
+                      ]
                     }
                   },
                   "outputs": {
@@ -39697,7 +39894,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('applicationGatewayWAFPolicy', '2025-01-01', 'full').location]"
+                      "value": "[reference('applicationGatewayWAFPolicy', '2025-05-01', 'full').location]"
                     }
                   }
                 }

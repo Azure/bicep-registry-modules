@@ -1,5 +1,5 @@
-metadata name = 'Application Gateway with Linux container'
-metadata description = 'This instance deploys the module with the Application Gateway networking option, Linux container workload, jumpbox VM, and full diagnostic settings.'
+metadata name = 'Application Gateway with Linux container and egress lockdown'
+metadata description = 'This instance deploys the module with Application Gateway ingress, Linux container workload, egress lockdown via Azure Firewall UDR, jumpbox VM, and custom diagnostic settings across all resources.'
 
 targetScope = 'subscription'
 
