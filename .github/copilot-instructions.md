@@ -58,49 +58,17 @@ Use the `#fetch` tool to search for published AVM modules and check available ve
 
 For the list of resource providers or resource types available, latest API versions, and Bicep schema for specific resources, use the `#microsoft_docs_fetch` tool to fetch information from Azure Resource Reference page, available at **https://learn.microsoft.com/en-us/azure/templates/**.
 
-#### Fetching Bicep Schemas
-
-Use the `#fetch` tool to get the Bicep schema for specific resources - use this to find the latest available API version:
-
-- **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
-- **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
-
-#### Fetching Bicep Schemas with API Version
-
-Use the `#fetch` tool to get the Bicep schema for specific resources and explicit API version:
-
-- **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{apiVersion}/{resourceName}`
-- **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts?pivots=deployment-language-bicep`
-
 ## Fetching Schemas, API versions and existing Published AVM Modules
 
-You have two options:
+You have exactly these two options (do not use any other method or tool to do this):
 
-1. Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
-2. Use the `#fetch` tool to get information from related URLs.
-
-> [!IMPORTANT]
-> Use only the tools above to retrieve the schema documentation for Bicep for specific versions. Do not use any other method or tool to do this, because `azure_get_schema_for_Bicep` tool does not reliably return the latest stable version.
+1. **Preferred option**: Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
+2. **Alternative option** (if option 1 fails): Use the `#fetch` tool to get information from related URLs.
+  - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
+  - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
 
 ### Use Bicep VS Code Extension Tools (Preferred)
 
 - `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
-
-## Module File-System Structure (Mandatory)
-
-This repository follows a strict folder and file structure for AVM Bicep modules. Each module must adhere to the following structure:
-
-```
-avm/{res|ptn|utl}/{service}/{resource}/
-├── main.bicep         # Primary module
-├── version.json       # {"version": "0.x"}
-├── tests/e2e/         # Required test scenarios
-│   ├── defaults/      # Minimal params
-│   ├── max/           # Full params
-│   └── waf-aligned/   # Security-focused
-```
-
-> [!IMPORTANT]
-> Ignore all files under the `./modules/` folder. Files under this folder are not compliant with AVM and should never be used as examples, nor should they ever be modified!
