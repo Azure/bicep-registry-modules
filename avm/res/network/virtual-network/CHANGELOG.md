@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.7.3
+
+### Changes
+
+- Added support for private endpoint virtual network policies. These are used to enable virtual networks to support more than 1000 private endpoitns or more than 4000 private endpoints in peered virtual networks.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.2
 
 ### Changes
