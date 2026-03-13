@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1472786377929745029"
+      "version": "0.36.177.2456",
+      "templateHash": "9360760096249136923"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -672,6 +672,17 @@
       "metadata": {
         "description": "Optional. Indicates if VM protection is enabled for all the subnets in the virtual network."
       }
+    },
+    "enablePrivateEndpointVNetPolicies": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Basic",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints."
+      }
     }
   },
   "variables": {
@@ -727,14 +738,15 @@
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]",
-        "enableVmProtection": "[parameters('enableVmProtection')]"
+        "enableVmProtection": "[parameters('enableVmProtection')]",
+        "privateEndpointVNetPolicies": "[parameters('enablePrivateEndpointVNetPolicies')]"
       }
     },
     "virtualNetwork_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
+      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -751,7 +763,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
+      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -792,7 +804,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
+      "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -815,7 +827,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -885,8 +897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13992200806189615656"
+              "version": "0.36.177.2456",
+              "templateHash": "12136770667314155785"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1200,7 +1212,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]",
+              "scope": "[format('Microsoft.Network/virtualNetworks/{0}/subnets/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1272,7 +1284,7 @@
         "count": "[length(coalesce(parameters('peerings'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1311,8 +1323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6939030350004475953"
+              "version": "0.36.177.2456",
+              "templateHash": "16294061454729430905"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1427,7 +1439,7 @@
       },
       "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
       "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
@@ -1468,8 +1480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6939030350004475953"
+              "version": "0.36.177.2456",
+              "templateHash": "16294061454729430905"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
