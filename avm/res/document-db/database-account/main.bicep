@@ -357,9 +357,13 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
         }
       : {})
     minimalTlsVersion: minimumTlsVersion
-    capacity: {
-      totalThroughputLimit: totalThroughputLimit
-    }
+    ...(!contains(capabilitiesToAdd ?? [], 'EnableServerless')
+      ? {
+          capacity: {
+            totalThroughputLimit: totalThroughputLimit
+          }
+        }
+      : {})
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
     locations: !empty(failoverLocations)
       ? map(failoverLocations!, failoverLocation => {
