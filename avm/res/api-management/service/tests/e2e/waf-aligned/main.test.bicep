@@ -23,7 +23,7 @@ param customSecret string = newGuid()
 
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
-var enforcedLocation = 'ukSouth'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. The secondary location to deploy resources to.')
 var secondaryEnforcedLocation = 'northeurope'

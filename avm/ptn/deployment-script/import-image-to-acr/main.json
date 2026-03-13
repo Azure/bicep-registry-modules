@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "1235535733723993239"
+      "version": "0.41.2.15936",
+      "templateHash": "13083754046192417047"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry."
@@ -260,7 +260,7 @@
       "condition": "[and(variables('useExistingManagedIdentity'), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]",
       "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
       "properties": {
         "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])).principalId]",
@@ -275,7 +275,7 @@
       "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
+      "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]",
       "name": "[guid(format('roleAssignment-acr-{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))]",
       "properties": {
         "principalId": "[reference('newManagedIdentity').principalId]",
@@ -288,7 +288,7 @@
     },
     "imageImport": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[coalesce(parameters('name'), format('ACR-Import-{0}', last(split(replace(parameters('image'), ':', '-'), '/'))))]",
       "properties": {
         "expressionEvaluationOptions": {

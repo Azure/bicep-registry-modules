@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9308022896538130813"
+      "version": "0.41.2.15936",
+      "templateHash": "10626129195403054324"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit."
@@ -163,7 +163,7 @@
     },
     "storage": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -209,8 +209,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6263133870299795120"
+              "version": "0.41.2.15936",
+              "templateHash": "1390296371747146784"
             }
           },
           "parameters": {
@@ -302,7 +302,7 @@
             },
             "storageAccount": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -5010,7 +5010,7 @@
             },
             "uploadSettings": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-uploadSettings', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -5570,7 +5570,7 @@
     },
     "dataFactoryResources": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-dataFactoryResources', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -5613,8 +5613,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13505355156582805752"
+              "version": "0.41.2.15936",
+              "templateHash": "1969333731498327196"
             }
           },
           "parameters": {
@@ -6131,7 +6131,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.DataFactory/factories/{0}', parameters('dataFactoryName'))]",
+              "scope": "[resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName'))]",
               "name": "[guid(resourceId('Microsoft.DataFactory/factories', parameters('dataFactoryName')), variables('autoStartRbacRoles')[copyIndex()], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}_triggerManager', parameters('dataFactoryName'))))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('autoStartRbacRoles')[copyIndex()])]",
@@ -6664,7 +6664,7 @@
             },
             "deleteOldResources": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-deleteOldResources', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -7206,7 +7206,7 @@
             },
             "stopHubTriggers": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-stopHubTriggers', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -7755,7 +7755,7 @@
             },
             "startHubTriggers": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-startHubTriggers', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -8326,7 +8326,7 @@
     },
     "keyVault": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-keyVault', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -8373,8 +8373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4828414419580547531"
+              "version": "0.41.2.15936",
+              "templateHash": "17863923437662829415"
             }
           },
           "parameters": {
@@ -8464,7 +8464,7 @@
             },
             "keyVault": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-keyvault', uniqueString(deployment().name, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -8514,7 +8514,7 @@
                       "secureList": [
                         {
                           "name": "[parameters('storageAccountName')]",
-                          "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value]",
+                          "value": "[listKeys('storageRef', '2023-01-01').keys[0].value]",
                           "attributesExp": 1702648632,
                           "attributesNbf": 10000
                         }

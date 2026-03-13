@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.13.1
+
+### Changes
+
+- Fixed identity condition making it impossible to deploy the module without a user-assigned identity
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes
