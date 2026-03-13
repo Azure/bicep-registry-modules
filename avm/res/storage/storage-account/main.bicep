@@ -2,7 +2,7 @@ metadata name = 'Storage Accounts'
 metadata description = 'This module deploys a Storage Account.'
 
 @maxLength(24)
-@description('Required. Name of the Storage Account. Must be lower-case.')
+@description('Required. The name of the Storage Account. Must be lower-case.')
 param name string
 
 @description('Optional. Location for all resources.')

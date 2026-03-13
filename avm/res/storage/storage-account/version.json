@@ -1,4 +1,8 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-version-file-schema#",
+<<<<<<< HEAD
+  "version": "0.28"
+=======
   "version": "0.32"
+>>>>>>> 71226a8ffcc8bfed8a1fcc1dbb52d3a9a27ffef9
 }

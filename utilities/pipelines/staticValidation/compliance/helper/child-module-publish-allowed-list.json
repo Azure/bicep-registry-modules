@@ -64,6 +64,7 @@
     "avm/res/storage/storage-account/queue-service/queue",
     "avm/res/storage/storage-account/table-service/table",
     "avm/res/web/site/config",
-    "avm/res/web/site/slot"
+    "avm/res/web/site/slot",
+    "plus-two"
   ]
 }
