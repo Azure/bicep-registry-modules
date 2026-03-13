@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/communication/email-service/CHANGELOG.md).
 
+## 0.4.4
+
+### Changes
+
+- Updated ARM API version for `Microsoft.Communication/emailServices`, `Microsoft.Communication/emailServices/domains`, and `Microsoft.Communication/emailServices/domains/senderUsernames` from `2023-04-01` to `2025-09-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.3
 
 ### Changes
