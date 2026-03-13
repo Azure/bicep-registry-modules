@@ -118,6 +118,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       flowTimeoutInMinutes: 20
+      enablePrivateEndpointVNetPolicies: 'Basic'
       subnets: [
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
