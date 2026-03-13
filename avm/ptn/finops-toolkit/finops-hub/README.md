@@ -982,6 +982,27 @@ param tags = {
 </details>
 <p>
 
+## Troubleshooting
+
+### Fabric ingestion fails with `Download_Forbidden`
+
+When deploymentType is `fabric`, the Eventhouse reads parquet files directly from the FinOps Hub storage account (`abfss://...`). If ingestion fails with `Download_Forbidden`, verify both **RBAC** and **network access**:
+
+- **RBAC**: The Fabric workspace identity must have **Storage Blob Data Reader** (or higher) on the storage account.
+- **Network access**:
+  - If the storage account firewall is set to **Selected networks**, Fabric cannot reach it. Temporarily set **Public network access** to *Enabled* and retry ingestion.
+  - If you must keep the storage account private, use `networkIsolationMode` = `Managed` or `BringYourOwn` and ensure your private endpoints + private DNS allow access. Fabric still requires storage to be reachable from the Fabric service; if it cannot resolve or reach the DFS endpoint, ingestion will fail.
+
+After fixing RBAC/network access, re-run the ingestion pipeline and validate with:
+
+```
+.show ingestion failures
+| where FailedOn > ago(2h)
+| project FailedOn, Database, Table, IngestionSourcePath, ErrorCode, Details
+| sort by FailedOn desc
+| limit 1
+```
+
 ## Parameters
 
 **Required parameters**
