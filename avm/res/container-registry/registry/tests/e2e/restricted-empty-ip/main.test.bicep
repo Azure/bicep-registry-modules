@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using restricted network access with empty IP ranges'
+metadata description = 'This instance validates restricted network access with explicit empty IP ACL rules.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'crrmin'
+param serviceShort string = 'crrempty'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,9 +41,12 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}crrempty001'
       location: resourceLocation
-      acrSku: 'Standard'
+      acrSku: 'Premium'
+      publicNetworkAccess: 'Disabled'
+      networkRuleSetDefaultAction: 'Deny'
+      networkRuleSetIpRules: []
     }
   }
 ]
