@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## [Unreleased]
+
+### Changes
+
+- Fix conflicting values when setting `totalThroughputLimit` with `enableServerless` capability; now if Serverless is enabled, `totalThroughputLimit` value will be ignored
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes
