@@ -8,7 +8,7 @@ metadata description = 'This test deploys an Azure VM to host a 2 node switched 
 param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.cluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashcwaf'
+param serviceShort string = '#_namePrefix_#waf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -32,7 +32,7 @@ param arbDeploymentSPObjectId string = ''
 #disable-next-line secure-parameter-default
 param arbDeploymentServicePrincipalSecret string = ''
 
-@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the Microsoft.AzureStackHCI provider was registered in the subscription.')
 @secure()
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
@@ -66,7 +66,8 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    domainAdminPassword: arbLocalAdminAndDeploymentUserPass
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -91,7 +92,7 @@ module testDeployment '../../../main.bicep' = [
         defaultGateway: '192.168.1.1'
         deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
         dnsServers: ['192.168.1.254']
-        domainFqdn: 'jumpstart.local'
+        domainFqdn: 'hci.local'
         domainOUPath: nestedDependencies.outputs.domainOUPath
         startingIPAddress: '192.168.1.55'
         endingIPAddress: '192.168.1.65'

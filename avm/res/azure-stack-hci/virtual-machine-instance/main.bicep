@@ -130,20 +130,16 @@ resource virtualMachineInstance 'Microsoft.AzureStackHCI/virtualMachineInstances
       vmSize: empty(hardwareProfile.?vmSize) ? 'Custom' : hardwareProfile.?vmSize
       dynamicMemoryConfig: hardwareProfile.?dynamicMemoryConfig
     }
-    httpProxyConfig: empty(httpProxyConfig) ? null : union(
-      httpProxyConfig,
-      {
-        httpProxy: httpProxy
-        httpsProxy: httpsProxy
-      }
-    )
+    httpProxyConfig: empty(httpProxyConfig)
+      ? null
+      : union(httpProxyConfig, {
+          httpProxy: httpProxy
+          httpsProxy: httpsProxy
+        })
     networkProfile: networkProfile
-    osProfile: union(
-      osProfile,
-      {
-        adminPassword: adminPassword
-      }
-    )
+    osProfile: union(osProfile, {
+      adminPassword: adminPassword
+    })
     securityProfile: empty(securityProfile) ? null : securityProfile
     storageProfile: storageProfile
   }

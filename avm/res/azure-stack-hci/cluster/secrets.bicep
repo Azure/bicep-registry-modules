@@ -68,12 +68,15 @@ param hciResourceProviderObjectId string
 @description('Required. Resource ids of the cluster node Arc Machine resources. These are the id of the Arc Machine resources created when the new HCI nodes were Arc initialized.')
 param arcNodeResourceIds array
 
+@description('Optional. Solution builder extension (SBE) partner credential properties.')
+param partnerCredentialList array = []
+
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
   scope: resourceGroup(witnessStorageAccountSubscriptionId, witnessStorageAccountResourceGroup)
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   name: keyVaultName
 }
 
@@ -101,7 +104,7 @@ resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
   parent: keyVault
   name: '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
 
@@ -115,7 +118,7 @@ resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-
   tags: azureStackLCMUserCredentialTags
 }
 
-resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
   parent: keyVault
   name: '${clusterName}-LocalAdminCredential-${cloudId}'
 
@@ -129,7 +132,7 @@ resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   tags: localAdminCredentialTags
 }
 
-resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
   parent: keyVault
   name: '${clusterName}-WitnessStorageKey-${cloudId}'
   properties: {
@@ -142,7 +145,7 @@ resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   tags: witnessStoragekeyTags
 }
 
-resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
+resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
   parent: keyVault
   name: '${clusterName}-DefaultARBApplication-${cloudId}'
   properties: {
@@ -154,3 +157,16 @@ resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = 
   }
   tags: defaultARBApplicationTags
 }
+
+resource partnerCreds 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = [
+  for credential in partnerCredentialList: {
+    parent: keyVault
+    name: '${clusterName}-${credential.secretName}-${cloudId}'
+    properties: {
+      value: credential.secretValue
+      attributes: {
+        enabled: true
+      }
+    }
+  }
+]

@@ -99,7 +99,13 @@ log "Logging in to Azure with user-assigned managed identity '$($userAssignedMan
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
-$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
+$tokenResult = Get-AzAccessToken -ResourceUrl 'https://management.azure.com'
+# Handle both old (plain string) and new (SecureString) Az.Accounts token formats
+if ($tokenResult.Token -is [System.Security.SecureString]) {
+    $t = [System.Net.NetworkCredential]::new('', $tokenResult.Token).Password
+} else {
+    $t = $tokenResult.Token
+}
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'

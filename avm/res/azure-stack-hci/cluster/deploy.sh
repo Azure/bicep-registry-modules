@@ -2,9 +2,14 @@
 
 set -e  # Exit on any error
 
-exec >/dev/null 2>&1 # Redirect log to avoid ACI issue
+LOG_DIR="/mnt/azscripts/azscriptoutput"
+LOG_FILE="${LOG_DIR}/hci-deploy.log"
+
+# Redirect all output to log file, only echo key messages to stdout
+exec > >(tee -a "${LOG_FILE}") 2>&1
 
 echo "Starting HCI deployment script..."
+echo "Log file: ${LOG_FILE}"
 
 # Check required environment variables
 if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLUSTER_AD_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
