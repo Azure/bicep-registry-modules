@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "17997433515125628702"
+      "templateHash": "14130399851454646570"
     },
-    "name": "Container Registries Cache",
-    "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
+    "name": "Container Registries Tokens",
+    "description": "This module deploys an Azure Container Registry (ACR) Token."
   },
   "parameters": {
     "registryName": {
@@ -20,30 +20,38 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "[replace(replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-'), '*', '')]",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
-        "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
+        "description": "Required. The name of the token."
       }
     },
-    "sourceRepository": {
+    "scopeMapResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. Source repository pulled from upstream."
+        "description": "Required. The resource ID of the scope map to which the token will be associated with."
       }
     },
-    "targetRepository": {
+    "status": {
       "type": "string",
-      "defaultValue": "[parameters('sourceRepository')]",
+      "defaultValue": "enabled",
+      "allowedValues": [
+        "disabled",
+        "enabled"
+      ],
       "metadata": {
-        "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+        "description": "Optional. The status of the token. Default is enabled."
       }
     },
-    "credentialSetResourceId": {
-      "type": "string",
-      "nullable": true,
+    "credentials": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com)."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tokens@2025-11-01#properties/properties/properties/credentials"
+        },
+        "description": "Optional. The credentials associated with the token for authentication."
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -58,7 +66,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.containerregistry-registry-cacherule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-token.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -80,14 +88,14 @@
       "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
-    "cacheRule": {
-      "type": "Microsoft.ContainerRegistry/registries/cacheRules",
+    "token": {
+      "type": "Microsoft.ContainerRegistry/registries/tokens",
       "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
-        "sourceRepository": "[parameters('sourceRepository')]",
-        "targetRepository": "[parameters('targetRepository')]",
-        "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
+        "scopeMapId": "[parameters('scopeMapResourceId')]",
+        "status": "[parameters('status')]",
+        "credentials": "[if(not(empty(coalesce(parameters('credentials'), createArray()))), createObject('certificates', tryGet(parameters('credentials'), 'certificates'), 'passwords', tryGet(parameters('credentials'), 'passwords')), null())]"
       }
     }
   },
@@ -95,23 +103,23 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The Name of the Cache Rule."
+        "description": "The name of the token."
       },
       "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Cache Rule."
+        "description": "The name of the resource group the token was created in."
       },
       "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Cache Rule."
+        "description": "The resource ID of the token."
       },
-      "value": "[resourceId('Microsoft.ContainerRegistry/registries/cacheRules', parameters('registryName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/tokens', parameters('registryName'), parameters('name'))]"
     }
   }
 }

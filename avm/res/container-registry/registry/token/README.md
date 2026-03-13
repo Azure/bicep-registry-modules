@@ -1,10 +1,10 @@
-# Container Registries scopeMaps `[Microsoft.ContainerRegistry/registries/scopeMaps]`
+# Container Registries Tokens `[Microsoft.ContainerRegistry/registries/tokens]`
 
-This module deploys an Azure Container Registry (ACR) scopeMap.
+This module deploys an Azure Container Registry (ACR) Token.
 
 You can reference the module as follows:
 ```bicep
-module registry 'br/public:avm/res/container-registry/registry/scope-map:<version>' = {
+module registry 'br/public:avm/res/container-registry/registry/token:<version>' = {
   params: { (...) }
 }
 ```
@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_scopemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/scopeMaps)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tokens` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tokens.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/tokens)</li></ul> |
 
 ## Parameters
 
@@ -29,7 +29,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`actions`](#parameter-actions) | array | The list of scoped permissions for registry artifacts. |
+| [`name`](#parameter-name) | string | The name of the token. |
+| [`scopeMapResourceId`](#parameter-scopemapresourceid) | string | The resource ID of the scope map to which the token will be associated with. |
 
 **Conditional parameters**
 
@@ -41,16 +42,23 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`description`](#parameter-description) | string | The user friendly description of the scope map. |
+| [`credentials`](#parameter-credentials) | object | The credentials associated with the token for authentication. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`name`](#parameter-name) | string | The name of the scope map. |
+| [`status`](#parameter-status) | string | The status of the token. Default is enabled. |
 
-### Parameter: `actions`
+### Parameter: `name`
 
-The list of scoped permissions for registry artifacts.
+The name of the token.
 
 - Required: Yes
-- Type: array
+- Type: string
+
+### Parameter: `scopeMapResourceId`
+
+The resource ID of the scope map to which the token will be associated with.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `registryName`
 
@@ -59,12 +67,12 @@ The name of the parent registry. Required if the template is used in a standalon
 - Required: Yes
 - Type: string
 
-### Parameter: `description`
+### Parameter: `credentials`
 
-The user friendly description of the scope map.
+The credentials associated with the token for authentication.
 
 - Required: No
-- Type: string
+- Type: object
 
 ### Parameter: `enableTelemetry`
 
@@ -74,21 +82,28 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `name`
+### Parameter: `status`
 
-The name of the scope map.
+The status of the token. Default is enabled.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-scopemaps', parameters('registryName'))]`
+- Default: `'enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+    'enabled'
+  ]
+  ```
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the scope map. |
-| `resourceGroupName` | string | The name of the resource group the scope map was created in. |
-| `resourceId` | string | The resource ID of the scope map. |
+| `name` | string | The name of the token. |
+| `resourceGroupName` | string | The name of the resource group the token was created in. |
+| `resourceId` | string | The resource ID of the token. |
 
 ## Data Collection
 
