@@ -43,8 +43,9 @@ function New-ModuleReleaseTag {
     # 3 Check tag not already existing
     $existingTag = git ls-remote --tags origin $tagName
     if ($existingTag) {
-        Write-Verbose "Tag [$tagName] already exists" -Verbose
-        return $tagName
+        # Write-Verbose "Tag [$tagName] already exists" -Verbose
+        # return $tagName
+        throw "Tag [$tagName] already exists."
     }
 
 
