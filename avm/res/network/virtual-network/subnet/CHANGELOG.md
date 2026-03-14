@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- None
+- Added test cases for defaultOutboundAccess property
 
 ### Breaking Changes
 

@@ -489,6 +489,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -516,12 +517,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -529,6 +532,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-004'
         natGatewayResourceId: ''
         networkSecurityGroupResourceId: ''
@@ -641,6 +645,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -668,12 +673,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -681,6 +688,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-004",
           "natGatewayResourceId": "",
           "networkSecurityGroupResourceId": "",
@@ -775,6 +783,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -802,12 +811,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -815,6 +826,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-004'
     natGatewayResourceId: ''
     networkSecurityGroupResourceId: ''
@@ -1068,6 +1080,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -1085,12 +1098,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -1173,6 +1188,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -1190,12 +1206,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -1266,6 +1284,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -1283,12 +1302,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
