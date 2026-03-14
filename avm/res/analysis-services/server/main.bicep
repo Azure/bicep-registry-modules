@@ -22,7 +22,7 @@ param firewallSettings resourceInput<'Microsoft.AnalysisServices/servers@2017-08
   enablePowerBIService: true
 }
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'

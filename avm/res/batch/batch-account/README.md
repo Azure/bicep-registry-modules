@@ -908,7 +908,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Azure Batch. |
+| [`name`](#parameter-name) | string | The name of the Azure Batch. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to be used for auto-storage account. |
 
 **Conditional parameters**
@@ -939,7 +939,7 @@ param tags = {
 
 ### Parameter: `name`
 
-Name of the Azure Batch.
+The name of the Azure Batch.
 
 - Required: Yes
 - Type: string
