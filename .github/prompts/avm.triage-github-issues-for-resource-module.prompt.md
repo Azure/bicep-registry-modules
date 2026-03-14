@@ -1,5 +1,5 @@
 ---
-name: Triage-GitHub-Issues-for-Resource-Module
+name: AVM-Triage-GitHub-Issues-for-Resource-Module
 description: 'Triage Open GitHub Issues related to the specific resource module.'
 agent: agent
 model: Auto (copilot)

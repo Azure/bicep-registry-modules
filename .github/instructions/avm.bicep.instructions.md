@@ -328,7 +328,6 @@ Test-ModuleLocally -TemplateFilePath './avm/res/storage/storage-account' -Valida
 
 ### Support Resources
 
-- **AVM Documentation**: `https://azure.github.io/Azure-Verified-Modules/` - see `https://azure.github.io/Azure-Verified-Modules/llms.txt` for LLM documentation index
 - **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
 - **GitHub Issues**: Report issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
 - **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`

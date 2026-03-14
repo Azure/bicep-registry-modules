@@ -1,5 +1,5 @@
 ---
-name: 'AVM-Update-module-with-latest-ARM-API-versions'
+name: 'AVM-Update-module-to-latest-API-versions'
 description: 'Analyze Azure Verified Module (AVM) Bicep files for ARM API version updates and create implementation plans.'
 argument-hint: Provide the name of the module you want to update
 agent: agent
