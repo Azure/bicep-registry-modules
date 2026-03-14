@@ -80,10 +80,10 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       enableTelemetry: enableTelemetry
       name: appGWName
-      zones: [
-        '1'
-        '2'
-        '3'
+      availabilityZones: [
+        1
+        2
+        3
       ]
       firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       backendAddressPools: [
@@ -435,7 +435,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: 'Network Contributor'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }

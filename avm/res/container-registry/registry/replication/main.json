@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6036875058945996178"
+      "version": "0.41.2.15936",
+      "templateHash": "12980845414799245990"
     },
     "name": "Azure Container Registry (ACR) Replications",
     "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -55,18 +55,45 @@
       "metadata": {
         "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-replication.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "replication": {
       "type": "Microsoft.ContainerRegistry/registries/replications",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -103,7 +130,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('replication', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('replication', '2025-11-01', 'full').location]"
     }
   }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "5669695679737021968"
+      "version": "0.41.2.15936",
+      "templateHash": "14211067850218893281"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -555,7 +555,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -597,7 +597,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -638,7 +638,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -760,7 +760,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -785,12 +785,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -918,6 +925,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -932,7 +942,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1007,7 +1017,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1371,11 +1381,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "keyVault"
@@ -1388,7 +1398,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1429,7 +1439,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1447,7 +1457,7 @@
     "keyVault_accessPolicies": {
       "condition": "[not(empty(parameters('accessPolicies')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-KeyVault-AccessPolicies', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1460,6 +1470,9 @@
           },
           "accessPolicies": {
             "value": "[parameters('accessPolicies')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1469,8 +1482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "10958657547953938402"
+              "version": "0.41.2.15936",
+              "templateHash": "4317231688156773496"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy."
@@ -1628,9 +1641,36 @@
               "metadata": {
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.keyvault-accesspolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
@@ -1639,7 +1679,7 @@
             },
             "policies": {
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "copy": [
@@ -1692,7 +1732,7 @@
         "count": "[length(coalesce(parameters('secrets'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-KeyVault-Secret-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1726,6 +1766,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('secrets'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1735,8 +1778,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "2929149431927742782"
+              "version": "0.41.2.15936",
+              "templateHash": "17638768712999286282"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret."
@@ -1813,7 +1856,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1837,7 +1880,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -1886,6 +1929,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -1910,6 +1960,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
@@ -1938,7 +2008,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2003,7 +2073,7 @@
         "count": "[length(coalesce(parameters('keys'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-KeyVault-Key-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2045,6 +2115,9 @@
           },
           "rotationPolicy": {
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2054,8 +2127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13194636282705261955"
+              "version": "0.41.2.15936",
+              "templateHash": "4777855062233224678"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key."
@@ -2212,7 +2285,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -2336,6 +2409,13 @@
               "metadata": {
                 "description": "Optional. Key rotation policy properties object."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -2361,6 +2441,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.keyvault-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
@@ -2381,7 +2481,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2446,7 +2546,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-keyVault-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",

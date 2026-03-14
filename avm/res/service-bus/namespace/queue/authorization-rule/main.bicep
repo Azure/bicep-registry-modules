@@ -18,15 +18,15 @@ param queueName string
 ])
 param rights array = []
 
-resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = {
   name: namespaceName
 
-  resource queue 'queues@2022-10-01-preview' existing = {
+  resource queue 'queues@2024-01-01' existing = {
     name: queueName
   }
 }
 
-resource authorizationRule 'Microsoft.ServiceBus/namespaces/queues/authorizationRules@2022-10-01-preview' = {
+resource authorizationRule 'Microsoft.ServiceBus/namespaces/queues/authorizationRules@2024-01-01' = {
   name: name
   parent: namespace::queue
   properties: {

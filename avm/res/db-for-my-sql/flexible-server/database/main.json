@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "2955956350764800573"
+      "version": "0.41.2.15936",
+      "templateHash": "6533320862908773227"
     },
     "name": "DBforMySQL Flexible Server Databases",
     "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -41,7 +41,7 @@
   "resources": [
     {
       "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-      "apiVersion": "2023-12-30",
+      "apiVersion": "2024-12-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",

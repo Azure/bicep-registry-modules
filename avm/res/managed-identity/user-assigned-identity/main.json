@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5938818482007362057"
+      "version": "0.41.2.15936",
+      "templateHash": "15645374768035806195"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -69,12 +69,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -197,16 +204,30 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "isolationScope": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "None",
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
       }
     }
   },
@@ -254,17 +275,18 @@
       "apiVersion": "2024-11-30",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "tags": "[parameters('tags')]",
+      "properties": "[if(not(equals(parameters('isolationScope'), null())), createObject('isolationScope', parameters('isolationScope')), createObject())]"
     },
     "userAssignedIdentity_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "userAssignedIdentity"
@@ -277,7 +299,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -300,8 +322,8 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -330,8 +352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "13656021764446440473"
+              "version": "0.41.2.15936",
+              "templateHash": "15666888232849771098"
             },
             "name": "User Assigned Identity Federated Identity Credential",
             "description": "This module deploys a User Assigned Identity Federated Identity Credential."

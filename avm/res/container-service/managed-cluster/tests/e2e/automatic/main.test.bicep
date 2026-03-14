@@ -1,13 +1,12 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults and use AKS Automatic mode (PREVIEW)'
+metadata name = 'Using only defaults and use AKS Automatic mode'
 metadata description = '''
-This instance deploys the module with the set of automatic parameters.'
+This instance deploys the module with the set of automatic parameters.
 
-Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
-Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
-
-MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+AKS Automatic provides an opinionated, fully-managed cluster experience that automates node provisioning,
+scaling, security, and other operational tasks. For more information, see the
+[AKS Automatic documentation](https://learn.microsoft.com/azure/aks/intro-aks-automatic).
 '''
 
 // ========== //
@@ -33,7 +32,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -45,14 +44,15 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+      autoUpgradeProfile: {
+        nodeOSUpgradeChannel: 'NodeImage'
+      }
       disableLocalAccounts: true
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
-      kedaAddon: true
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
       maintenanceConfigurations: [
         {
@@ -77,7 +77,9 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      nodeProvisioningProfileMode: 'Auto'
+      nodeProvisioningProfile: {
+        mode: 'Auto'
+      }
       nodeResourceGroupProfile: {
         restrictionLevel: 'ReadOnly'
       }
@@ -92,7 +94,14 @@ module testDeployment '../../../main.bicep' = [
       ]
       publicNetworkAccess: 'Enabled'
       skuName: 'Automatic'
-      vpaAddon: true
+      workloadAutoScalerProfile: {
+        keda: {
+          enabled: true
+        }
+        verticalPodAutoscaler: {
+          enabled: true
+        }
+      }
       webApplicationRoutingEnabled: true
       defaultIngressControllerType: 'Internal'
     }

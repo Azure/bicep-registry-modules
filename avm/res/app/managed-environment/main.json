@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "8385270521150412415"
+      "version": "0.41.2.15936",
+      "templateHash": "5067057666809728097"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -41,7 +41,7 @@
           }
         },
         "certificatePassword": {
-          "type": "string",
+          "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. The password of the certificate."
@@ -53,6 +53,23 @@
           "metadata": {
             "description": "Optional. A key vault reference."
           }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location for the resource."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+            },
+            "description": "Optional. Tags of the resource."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -89,7 +106,7 @@
             "description": "Required. Storage account name."
           }
         },
-        "shareName": {
+        "name": {
           "type": "string",
           "metadata": {
             "description": "Required. File share name."
@@ -103,44 +120,60 @@
     },
     "appLogsConfigurationType": {
       "type": "object",
-      "properties": {
-        "destination": {
-          "type": "string",
-          "allowedValues": [
-            "azure-monitor",
-            "log-analytics",
-            "none"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The destination of the logs."
-          }
-        },
-        "logAnalyticsConfiguration": {
-          "type": "object",
-          "properties": {
-            "customerId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Log Analytics Workspace ID."
-              }
-            },
-            "sharedKey": {
-              "type": "securestring",
-              "metadata": {
-                "description": "Required. The shared key of the Log Analytics workspace."
-              }
-            }
+      "discriminator": {
+        "propertyName": "destination",
+        "mapping": {
+          "azure-monitor": {
+            "$ref": "#/definitions/appLogsConfigurationMonitorType"
           },
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`."
+          "log-analytics": {
+            "$ref": "#/definitions/appLogsConfigurationLawType"
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for the App Logs Configuration."
+      }
+    },
+    "appLogsConfigurationMonitorType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "allowedValues": [
+            "azure-monitor"
+          ],
+          "metadata": {
+            "description": "Required. The destination of the logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the App Logs Configuration if using azure-monitor."
+      }
+    },
+    "appLogsConfigurationLawType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "allowedValues": [
+            "log-analytics"
+          ],
+          "metadata": {
+            "description": "Required. The destination of the logs."
+          }
+        },
+        "logAnalyticsWorkspaceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Existing Log Analytics Workspace resource ID."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the App Logs Configuration if using log-analytics."
       }
     },
     "certificateKeyVaultPropertiesType": {
@@ -187,12 +220,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -316,10 +356,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -352,6 +395,46 @@
         "description": "Optional. Application Insights connection string."
       }
     },
+    "daprConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/daprConfiguration"
+        },
+        "description": "Optional. The configuration of Dapr component."
+      },
+      "nullable": true
+    },
+    "ingressConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/ingressConfiguration"
+        },
+        "description": "Optional. Ingress configuration for the Managed Environment."
+      },
+      "nullable": true
+    },
+    "kedaConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/kedaConfiguration"
+        },
+        "description": "Optional. The configuration of Keda component."
+      },
+      "nullable": true
+    },
+    "peerAuthentication": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/peerAuthentication"
+        },
+        "description": "Optional. Peer authentication settings for the Managed Environment."
+      },
+      "nullable": true
+    },
     "daprAIConnectionString": {
       "type": "securestring",
       "defaultValue": "",
@@ -375,7 +458,7 @@
     },
     "infrastructureSubnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if \"internal\" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
@@ -384,7 +467,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
+        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetResourceId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "platformReservedCidr": {
@@ -435,7 +518,7 @@
     },
     "certificateValue": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Certificate to use for the custom domain. PFX or PEM."
       }
@@ -456,17 +539,23 @@
     },
     "openTelemetryConfiguration": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-02-02-preview#properties/properties/properties/openTelemetryConfiguration"
+        },
         "description": "Optional. Open Telemetry configuration."
-      }
+      },
+      "nullable": true
     },
     "workloadProfiles": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/workloadProfiles"
+        },
         "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
-      }
+      },
+      "nullable": true
     },
     "infrastructureResourceGroupName": {
       "type": "string",
@@ -509,7 +598,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -519,22 +608,6 @@
     }
   },
   "resources": {
-    "managedEnvironment::storage": {
-      "copy": {
-        "name": "managedEnvironment::storage",
-        "count": "[length(coalesce(parameters('storages'), createArray()))]"
-      },
-      "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2024-10-02-preview",
-      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
-      "properties": {
-        "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
-        "azureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'SMB'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'accountName', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName), '2023-01-01').keys[0].value, 'shareName', coalesce(parameters('storages'), createArray())[copyIndex()].shareName), null())]"
-      },
-      "dependsOn": [
-        "managedEnvironment"
-      ]
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -555,9 +628,18 @@
         }
       }
     },
+    "logAnalyticsWorkspace": {
+      "condition": "[not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2025-02-01",
+      "subscriptionId": "[split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/'))]"
+    },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2024-10-02-preview",
+      "apiVersion": "2025-10-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -566,16 +648,20 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": "[parameters('appLogsConfiguration')]",
+        "daprConfiguration": "[parameters('daprConfiguration')]",
+        "ingressConfiguration": "[parameters('ingressConfiguration')]",
+        "kedaConfiguration": "[parameters('kedaConfiguration')]",
+        "peerAuthentication": "[parameters('peerAuthentication')]",
+        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), shallowMerge(createArray(createObject('destination', parameters('appLogsConfiguration').destination), if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey)), createObject()))), null())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {
           "certificatePassword": "[parameters('certificatePassword')]",
-          "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
+          "certificateValue": "[parameters('certificateValue')]",
           "dnsSuffix": "[parameters('dnsSuffix')]",
           "certificateKeyVaultProperties": "[if(not(empty(tryGet(parameters('certificate'), 'certificateKeyVaultProperties'))), createObject('identity', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'identityResourceId'), 'keyVaultUrl', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'keyVaultUrl')), null())]"
         },
-        "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
+        "openTelemetryConfiguration": "[parameters('openTelemetryConfiguration')]",
         "peerTrafficConfiguration": {
           "encryption": {
             "enabled": "[parameters('peerTrafficEncryption')]"
@@ -584,15 +670,18 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
-          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('infrastructureSubnetResourceId'), null())]",
+          "infrastructureSubnetId": "[parameters('infrastructureSubnetResourceId')]",
           "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('dockerBridgeCidr'), null())]",
           "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedCidr'), null())]",
           "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedDnsIP'), null())]"
         },
-        "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
+        "workloadProfiles": "[parameters('workloadProfiles')]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-      }
+      },
+      "dependsOn": [
+        "logAnalyticsWorkspace"
+      ]
     },
     "managedEnvironment_roleAssignments": {
       "copy": {
@@ -601,7 +690,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.App/managedEnvironments/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.App/managedEnvironments', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.App/managedEnvironments', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -620,11 +709,136 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.App/managedEnvironments/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.App/managedEnvironments', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+      },
+      "dependsOn": [
+        "managedEnvironment"
+      ]
+    },
+    "managedEnvironment_storage": {
+      "copy": {
+        "name": "managedEnvironment_storage",
+        "count": "[length(coalesce(parameters('storages'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Managed-Environment-Storage-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('storages'), createArray())[copyIndex()].name]"
+          },
+          "managedEnvironmentName": {
+            "value": "[parameters('name')]"
+          },
+          "kind": {
+            "value": "[coalesce(parameters('storages'), createArray())[copyIndex()].kind]"
+          },
+          "accessMode": {
+            "value": "[coalesce(parameters('storages'), createArray())[copyIndex()].accessMode]"
+          },
+          "storageAccountName": {
+            "value": "[coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "12148192527952992187"
+            },
+            "name": "App ManagedEnvironments Certificates",
+            "description": "This module deploys a App Managed Environment Certificate."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the file share."
+              }
+            },
+            "managedEnvironmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
+              }
+            },
+            "accessMode": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The access mode for the storage."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "allowedValues": [
+                "NFS",
+                "SMB"
+              ],
+              "metadata": {
+                "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Storage account name."
+              }
+            }
+          },
+          "resources": {
+            "managedEnvironment": {
+              "existing": true,
+              "type": "Microsoft.App/managedEnvironments",
+              "apiVersion": "2025-10-02-preview",
+              "name": "[parameters('managedEnvironmentName')]"
+            },
+            "storage": {
+              "type": "Microsoft.App/managedEnvironments/storages",
+              "apiVersion": "2025-10-02-preview",
+              "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
+              "properties": {
+                "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",
+                "azureFile": "[if(equals(parameters('kind'), 'SMB'), createObject('accessMode', parameters('accessMode'), 'accountName', parameters('storageAccountName'), 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-01-01').keys[0].value, 'shareName', parameters('name')), null())]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the file share."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the file share."
+              },
+              "value": "[resourceId('Microsoft.App/managedEnvironments/storages', parameters('managedEnvironmentName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the file share was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
       },
       "dependsOn": [
         "managedEnvironment"
@@ -633,7 +847,7 @@
     "managedEnvironment_certificate": {
       "condition": "[not(empty(parameters('certificate')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Managed-Environment-Certificate', uniqueString(deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -658,6 +872,12 @@
           },
           "certificatePassword": {
             "value": "[tryGet(parameters('certificate'), 'certificatePassword')]"
+          },
+          "location": {
+            "value": "[tryGet(parameters('certificate'), 'location')]"
+          },
+          "tags": {
+            "value": "[tryGet(parameters('certificate'), 'tags')]"
           }
         },
         "template": {
@@ -667,8 +887,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "18123249047188753287"
+              "version": "0.41.2.15936",
+              "templateHash": "3685452564310390968"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -750,22 +970,25 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2024-10-02-preview",
+              "apiVersion": "2025-10-02-preview",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "managedEnvironmentCertificate": {
               "type": "Microsoft.App/managedEnvironments/certificates",
-              "apiVersion": "2024-10-02-preview",
+              "apiVersion": "2025-10-02-preview",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -795,7 +1018,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the batch account was deployed into."
+                "description": "The resource group the certificate was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
@@ -820,7 +1043,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedEnvironment', '2024-10-02-preview', 'full').location]"
+      "value": "[reference('managedEnvironment', '2025-10-02-preview', 'full').location]"
     },
     "name": {
       "type": "string",
@@ -842,7 +1065,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedEnvironment', '2024-10-02-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedEnvironment', '2025-10-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "defaultDomain": {
       "type": "string",

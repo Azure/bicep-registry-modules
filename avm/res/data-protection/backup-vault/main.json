@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "18129990982185634757"
+      "version": "0.41.2.15936",
+      "templateHash": "1157616472688643287"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -112,7 +112,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -184,12 +184,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -217,7 +224,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -315,7 +322,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -404,10 +411,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataProtection/backupVaults@2025-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the backup vault resource."
-      }
+      },
+      "nullable": true
     },
     "dataStoreType": {
       "type": "string",
@@ -463,10 +473,13 @@
     },
     "featureSettings": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataProtection/backupVaults@2025-07-01#properties/properties/properties/featureSettings"
+        },
         "description": "Optional. Feature settings for the backup vault."
-      }
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -488,17 +501,36 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2025-05-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "cMKKeyVault": {
+      "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2025-05-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -519,24 +551,6 @@
           }
         }
       }
-    },
-    "cMKKeyVault": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
-    },
-    "cMKUserAssignedIdentity": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "backupVault": {
       "type": "Microsoft.DataProtection/backupVaults",
@@ -559,7 +573,7 @@
         ],
         "featureSettings": "[parameters('featureSettings')]",
         "securitySettings": {
-          "encryptionSettings": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('infrastructureEncryption'), 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'identityType', 'UserAssigned'), createObject('identityType', 'SystemAssigned')), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion))), 'state', 'Enabled'), null())]",
+          "encryptionSettings": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('infrastructureEncryption'), 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'identityType', 'UserAssigned'), createObject('identityType', 'SystemAssigned')), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))), 'state', 'Enabled'), null())]",
           "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
           "softDeleteSettings": "[parameters('softDeleteSettings')]"
         }
@@ -572,11 +586,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.DataProtection/backupVaults/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DataProtection/backupVaults', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "backupVault"
@@ -589,7 +603,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.DataProtection/backupVaults/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DataProtection/backupVaults', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DataProtection/backupVaults', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -610,7 +624,7 @@
         "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-BV-BackupPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -634,8 +648,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12332562471547164783"
+              "version": "0.41.2.15936",
+              "templateHash": "3962392207834124724"
             },
             "name": "Data Protection Backup Vault Backup Policies",
             "description": "This module deploys a Data Protection Backup Vault Backup Policy."
@@ -707,7 +721,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-BV-BackupInstance-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -738,8 +752,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10390013005713732753"
+              "version": "0.41.2.15936",
+              "templateHash": "10099314168513896727"
             },
             "name": "Data Protection Backup Vault Backup Instances",
             "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -892,7 +906,7 @@
             },
             "backupInstance_dataSourceResource_rbac": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-RBAC', deployment().name)]",
               "resourceGroup": "[split(parameters('dataSourceInfo').resourceID, '/')[4]]",
               "properties": {
@@ -914,8 +928,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12922926946246637028"
+                      "version": "0.41.2.15936",
+                      "templateHash": "7796490744609699993"
                     }
                   },
                   "parameters": {
@@ -940,7 +954,7 @@
                       "condition": "[equals(variables('resourceType'), 'Microsoft.Storage/storageAccounts')]",
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "scope": "[resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('resourceId'), '/')))]",
                       "name": "[guid(format('{0}-{1}-Storage-Account-Backup-Contributor', parameters('resourceId'), parameters('principalId')))]",
                       "properties": {
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
@@ -952,7 +966,7 @@
                       "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Compute/disks/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "scope": "[resourceId('Microsoft.Compute/disks', last(split(parameters('resourceId'), '/')))]",
                       "name": "[guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId')))]",
                       "properties": {
                         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",

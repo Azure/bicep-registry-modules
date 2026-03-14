@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10084997815751263562"
+      "version": "0.41.2.15936",
+      "templateHash": "9011949422641008747"
     },
     "name": "Azure Container Registry (ACR) Webhooks",
     "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -28,7 +28,7 @@
       }
     },
     "serviceUri": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Required. The service URI for the webhook to post notifications."
       }
@@ -87,18 +87,45 @@
       "metadata": {
         "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-webhook.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "webhook": {
       "type": "Microsoft.ContainerRegistry/registries/webhooks",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -159,7 +186,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('webhook', '2023-06-01-preview', 'full').location]"
+      "value": "[reference('webhook', '2025-11-01', 'full').location]"
     }
   }
 }

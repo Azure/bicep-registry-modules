@@ -10,9 +10,9 @@ This module deploys an access policy for Redis Cache.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Cache/redis/accessPolicies` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Cache/redis/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies)</li></ul> |
 
 ## Parameters
 

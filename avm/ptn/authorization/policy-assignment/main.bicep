@@ -19,6 +19,9 @@ param policyDefinitionId string
 @sys.description('Optional. Parameters for the policy assignment if needed.')
 param parameters object = {}
 
+@sys.description('Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.')
+param parameterOverrides object = {}
+
 @sys.description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning \'Modify\' policy definitions.')
 @allowed([
   'SystemAssigned'
@@ -82,6 +85,8 @@ param definitionVersion string?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var parametersMerged = union(parameters, parameterOverrides)
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
@@ -106,14 +111,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-PolicyAssignment-MG-Module'
+  name: 'pol-asi-mg-${uniqueString(managementGroup().name, managementGroupId, location, name)}'
   scope: managementGroup(managementGroupId)
   params: {
     name: name
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []
@@ -134,14 +139,14 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
 // Create additional role assignments at different management group scopes if needed
 
 module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-PolicyAssignment-Sub-Module'
+  name: 'pol-asi-sub-${uniqueString(managementGroup().name, subscriptionId, location, name)}'
   scope: subscription(subscriptionId)
   params: {
     name: name
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []
@@ -158,14 +163,14 @@ module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscripti
 }
 
 module policyAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
-  name: '${uniqueString(deployment().name, location)}-PolicyAssignment-RG-Module'
+  name: 'pol-asi-rg-${uniqueString(managementGroup().name, subscriptionId, resourceGroupName, location, name)}'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     name: name
     policyDefinitionId: policyDefinitionId
     displayName: !empty(displayName) ? displayName : ''
     description: !empty(description) ? description : ''
-    parameters: !empty(parameters) ? parameters : {}
+    parameters: !empty(parametersMerged) ? parametersMerged : {}
     identity: identity
     userAssignedIdentityId: userAssignedIdentityId
     roleDefinitionIds: !empty(roleDefinitionIds) ? roleDefinitionIds : []

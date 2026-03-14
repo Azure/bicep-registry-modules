@@ -11,9 +11,12 @@ param name string
 @description('Optional. A name-value pair that represents queue metadata.')
 param metadata resourceInput<'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01'>.properties.metadata = {}
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -72,15 +75,34 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-queue.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 
-  resource queueServices 'queueServices@2024-01-01' existing = {
+  resource queueServices 'queueServices@2025-06-01' existing = {
     name: 'default'
   }
 }
 
-resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01' = {
+resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2025-06-01' = {
   name: name
   parent: storageAccount::queueServices
   properties: {

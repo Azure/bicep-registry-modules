@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "13047107798240909624"
+      "version": "0.41.2.15936",
+      "templateHash": "15385587664538577405"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -412,6 +412,43 @@
         "description": "The synapse workspace SQL Pool definition."
       }
     },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -434,7 +471,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -476,7 +513,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -517,7 +554,82 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -852,12 +964,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
         }
       }
     },
@@ -985,7 +1104,7 @@
           }
         },
         "lock": {
-          "$ref": "#/definitions/lockType",
+          "$ref": "#/definitions/_1.lockType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
@@ -994,7 +1113,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1005,6 +1124,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -1019,7 +1141,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1149,10 +1271,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Synapse/workspaces@2021-06-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -1299,7 +1424,7 @@
         "description": "Optional. List of SQL Pools to be created in the workspace."
       }
     },
-    "purviewResourceID": {
+    "purviewResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -1408,7 +1533,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1437,7 +1562,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1446,7 +1571,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -1472,7 +1597,7 @@
         "managedVirtualNetwork": "[if(parameters('managedVirtualNetwork'), 'default', null())]",
         "managedVirtualNetworkSettings": "[if(parameters('managedVirtualNetwork'), createObject('allowedAadTenantIdsForLinking', parameters('allowedAadTenantIdsForLinking'), 'linkedAccessCheckOnTargetResource', parameters('linkedAccessCheckOnTargetResource'), 'preventDataExfiltration', parameters('preventDataExfiltration')), null())]",
         "publicNetworkAccess": "[if(parameters('managedVirtualNetwork'), parameters('publicNetworkAccess'), null())]",
-        "purviewConfiguration": "[if(not(empty(parameters('purviewResourceID'))), createObject('purviewResourceId', parameters('purviewResourceID')), null())]",
+        "purviewConfiguration": "[if(not(empty(parameters('purviewResourceId'))), createObject('purviewResourceId', parameters('purviewResourceId')), null())]",
         "sqlAdministratorLogin": "[parameters('sqlAdministratorLogin')]",
         "sqlAdministratorLoginPassword": "[if(not(empty(parameters('sqlAdministratorLoginPassword'))), parameters('sqlAdministratorLoginPassword'), null())]",
         "workspaceRepositoryConfiguration": "[parameters('workspaceRepositoryConfiguration')]"
@@ -1485,11 +1610,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Synapse/workspaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Synapse/workspaces', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "workspace"
@@ -1502,7 +1627,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Synapse/workspaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Synapse/workspaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Synapse/workspaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1524,7 +1649,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Synapse/workspaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Synapse/workspaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1555,7 +1680,7 @@
         "count": "[length(parameters('integrationRuntimes'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-Synapse-IntegrationRuntime-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1582,8 +1707,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "9279927566463061804"
+              "version": "0.41.2.15936",
+              "templateHash": "5240203767096972344"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime."
@@ -1659,7 +1784,7 @@
     "workspace_cmk_rbac": {
       "condition": "[parameters('encryptionActivateWorkspace')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-cmk-rbac', parameters('name'))]",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
@@ -1681,8 +1806,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1494622020432530922"
+              "version": "0.41.2.15936",
+              "templateHash": "6873264596770709620"
             }
           },
           "parameters": {
@@ -1702,7 +1827,7 @@
               "condition": "[parameters('usesRbacAuthorization')]",
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyvaultName'))]",
+              "scope": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyvaultName'))]",
               "name": "[guid(format('{0}-{1}-Key-Vault-Crypto-User', resourceId('Microsoft.KeyVault/vaults', parameters('keyvaultName')), parameters('workspaceIndentityPrincipalId')))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
@@ -1713,7 +1838,7 @@
             {
               "condition": "[not(parameters('usesRbacAuthorization'))]",
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('keyvaultName'), 'add')]",
               "properties": {
                 "accessPolicies": [
@@ -1742,8 +1867,8 @@
     "workspace_key": {
       "condition": "[parameters('encryptionActivateWorkspace')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-cmk-activation', parameters('name'))]",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('{0}-cmk-activation', parameters('name')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1769,8 +1894,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6494553890280141768"
+              "version": "0.41.2.15936",
+              "templateHash": "6215319480716904490"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key."
@@ -1808,7 +1933,7 @@
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "isActiveCMK": "[parameters('isActiveCMK')]",
-                "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2023-02-01').keyUri]"
+                "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2024-11-01').keyUri]"
               }
             }
           ],
@@ -1845,7 +1970,7 @@
     "workspace_administrator": {
       "condition": "[not(empty(parameters('administrator')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-administrator', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1875,8 +2000,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "15011697165765272657"
+              "version": "0.41.2.15936",
+              "templateHash": "11276950346518911923"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators."
@@ -1962,7 +2087,7 @@
         "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-workspace-FirewallRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1989,8 +2114,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "12436722688789675678"
+              "version": "0.41.2.15936",
+              "templateHash": "11054119469516634191"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules."
@@ -2067,7 +2192,7 @@
         "count": "[length(coalesce(parameters('bigDataPools'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-workspace-bdp-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2146,8 +2271,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "1105798698592936047"
+              "version": "0.41.2.15936",
+              "templateHash": "117329475103458317"
             },
             "name": "Synapse Workspaces Big Data Pools",
             "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -2377,12 +2502,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -2689,11 +2821,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "bigDataPool"
@@ -2706,7 +2838,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -2747,7 +2879,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2798,7 +2930,7 @@
         "count": "[length(coalesce(parameters('sqlPools'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-workspace-sqlp-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2856,8 +2988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "9532374176310788818"
+              "version": "0.41.2.15936",
+              "templateHash": "12635433225115226466"
             },
             "name": "Synapse Workspaces SQL Pools",
             "description": "This module deploys a Synapse Workspaces SQL Pool."
@@ -3006,12 +3138,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
                 }
               }
             },
@@ -3278,11 +3417,11 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/sqlPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/sqlPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "sqlPool"
@@ -3295,7 +3434,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/sqlPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/sqlPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -3336,7 +3475,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Synapse/workspaces/{0}/sqlPools/{1}', parameters('workspaceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Synapse/workspaces/sqlPools', parameters('workspaceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Synapse/workspaces/sqlPools', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3387,7 +3526,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-workspace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",

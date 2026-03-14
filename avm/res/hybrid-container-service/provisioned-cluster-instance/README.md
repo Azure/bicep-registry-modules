@@ -2,6 +2,14 @@
 
 Deploy a provisioned cluster instance.
 
+You can reference the module as follows:
+```bicep
+module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -12,13 +20,13 @@ Deploy a provisioned cluster instance.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.HybridContainerService/provisionedClusterInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances) |
-| `Microsoft.Kubernetes/connectedClusters` | [2024-07-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
-| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.HybridContainerService/provisionedClusterInstances` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcontainerservice_provisionedclusterinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances)</li></ul> |
+| `Microsoft.Kubernetes/connectedClusters` | 2024-07-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
 ## Usage examples
 
@@ -36,6 +44,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -43,7 +53,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>' = {
-  name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
     cloudProviderProfile: {
@@ -128,6 +137,8 @@ param keyVaultName = '<keyVaultName>'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -135,7 +146,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>' = {
-  name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
     cloudProviderProfile: {
@@ -398,6 +408,8 @@ param storageProfile = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -405,7 +417,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>' = {
-  name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
     cloudProviderProfile: {
@@ -1324,4 +1335,4 @@ Tags of the resource.
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

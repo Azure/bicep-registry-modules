@@ -2,6 +2,14 @@
 
 This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
+You can reference the module as follows:
+```bicep
+module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -12,14 +20,12 @@ This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Security/autoProvisioningSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/autoProvisioningSettings) |
-| `Microsoft.Security/deviceSecurityGroups` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/deviceSecurityGroups) |
-| `Microsoft.Security/iotSecuritySolutions` | [2019-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/iotSecuritySolutions) |
-| `Microsoft.Security/pricings` | [2018-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2018-06-01/pricings) |
-| `Microsoft.Security/securityContacts` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/securityContacts) |
-| `Microsoft.Security/workspaceSettings` | [2017-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2017-08-01-preview/workspaceSettings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Security/deviceSecurityGroups` | 2019-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.security_devicesecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/deviceSecurityGroups)</li></ul> |
+| `Microsoft.Security/iotSecuritySolutions` | 2019-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.security_iotsecuritysolutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2019-08-01/iotSecuritySolutions)</li></ul> |
+| `Microsoft.Security/pricings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.security_pricings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2024-01-01/pricings)</li></ul> |
+| `Microsoft.Security/securityContacts` | 2023-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.security_securitycontacts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Security/2023-12-01-preview/securityContacts)</li></ul> |
 
 ## Usage examples
 
@@ -37,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with default parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -44,13 +52,26 @@ This instance deploys the module with default parameters.
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
-    // Required parameters
-    scope: '<scope>'
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
+    appServicesPricingTier: 'Standard'
+    armPricingTier: 'Standard'
+    containerRegistryPricingTier: 'Standard'
+    containersTier: 'Standard'
+    cosmosDbsTier: 'Standard'
+    dnsPricingTier: 'Standard'
+    keyVaultsPricingTier: 'Standard'
+    kubernetesServicePricingTier: 'Standard'
     location: '<location>'
+    openSourceRelationalDatabasesTier: 'Standard'
+    sqlServersPricingTier: 'Standard'
+    sqlServerVirtualMachinesPricingTier: 'Standard'
+    storageAccountsMalwareScanningSettings: {
+      capGBPerMonthPerStorageAccount: 5000
+      onUploadMalwareScanningEnabled: 'True'
+      sensitiveDataDiscoveryEnabled: 'True'
+    }
+    storageAccountsPricingTier: 'Standard'
+    virtualMachinesPricingTier: 'Standard'
   }
 }
 ```
@@ -67,16 +88,54 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "scope": {
-      "value": "<scope>"
+    "appServicesPricingTier": {
+      "value": "Standard"
     },
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
+    "armPricingTier": {
+      "value": "Standard"
     },
-    // Non-required parameters
+    "containerRegistryPricingTier": {
+      "value": "Standard"
+    },
+    "containersTier": {
+      "value": "Standard"
+    },
+    "cosmosDbsTier": {
+      "value": "Standard"
+    },
+    "dnsPricingTier": {
+      "value": "Standard"
+    },
+    "keyVaultsPricingTier": {
+      "value": "Standard"
+    },
+    "kubernetesServicePricingTier": {
+      "value": "Standard"
+    },
     "location": {
       "value": "<location>"
+    },
+    "openSourceRelationalDatabasesTier": {
+      "value": "Standard"
+    },
+    "sqlServersPricingTier": {
+      "value": "Standard"
+    },
+    "sqlServerVirtualMachinesPricingTier": {
+      "value": "Standard"
+    },
+    "storageAccountsMalwareScanningSettings": {
+      "value": {
+        "capGBPerMonthPerStorageAccount": 5000,
+        "onUploadMalwareScanningEnabled": "True",
+        "sensitiveDataDiscoveryEnabled": "True"
+      }
+    },
+    "storageAccountsPricingTier": {
+      "value": "Standard"
+    },
+    "virtualMachinesPricingTier": {
+      "value": "Standard"
     }
   }
 }
@@ -92,11 +151,25 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/security/security-center:<version>'
 
-// Required parameters
-param scope = '<scope>'
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
+param appServicesPricingTier = 'Standard'
+param armPricingTier = 'Standard'
+param containerRegistryPricingTier = 'Standard'
+param containersTier = 'Standard'
+param cosmosDbsTier = 'Standard'
+param dnsPricingTier = 'Standard'
+param keyVaultsPricingTier = 'Standard'
+param kubernetesServicePricingTier = 'Standard'
 param location = '<location>'
+param openSourceRelationalDatabasesTier = 'Standard'
+param sqlServersPricingTier = 'Standard'
+param sqlServerVirtualMachinesPricingTier = 'Standard'
+param storageAccountsMalwareScanningSettings = {
+  capGBPerMonthPerStorageAccount: 5000
+  onUploadMalwareScanningEnabled: 'True'
+  sensitiveDataDiscoveryEnabled: 'True'
+}
+param storageAccountsPricingTier = 'Standard'
+param virtualMachinesPricingTier = 'Standard'
 ```
 
 </details>
@@ -106,6 +179,8 @@ param location = '<location>'
 
 This instance deploys the module with default parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -113,21 +188,48 @@ This instance deploys the module with default parameters.
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
-    // Required parameters
-    scope: '<scope>'
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
+    appServicesPricingTier: 'Standard'
+    armPricingTier: 'Standard'
+    containerRegistryPricingTier: 'Standard'
+    containersTier: 'Standard'
+    cosmosDbsTier: 'Standard'
     deviceSecurityGroupProperties: {}
+    dnsPricingTier: 'Standard'
     ioTSecuritySolutionProperties: {}
+    keyVaultsPricingTier: 'Standard'
+    kubernetesServicePricingTier: 'Standard'
     location: '<location>'
+    openSourceRelationalDatabasesTier: 'Standard'
     securityContactProperties: {
-      alertNotifications: 'Off'
-      alertsToAdmins: 'Off'
-      email: 'foo@contoso.com'
-      phone: '+12345678'
+      emails: 'foo@contoso.com'
+      isEnabled: true
+      notificationsByRole: {
+        roles: [
+          'owner'
+        ]
+        state: 'On'
+      }
+      notificationsSources: [
+        {
+          minimalSeverity: 'High'
+          sourceType: 'Alert'
+        }
+        {
+          minimalRiskLevel: 'High'
+          sourceType: 'AttackPath'
+        }
+      ]
     }
+    sqlServersPricingTier: 'Standard'
+    sqlServerVirtualMachinesPricingTier: 'Standard'
+    storageAccountsMalwareScanningSettings: {
+      capGBPerMonthPerStorageAccount: 5000
+      onUploadMalwareScanningEnabled: 'True'
+      sensitiveDataDiscoveryEnabled: 'True'
+    }
+    storageAccountsPricingTier: 'Standard'
+    virtualMachinesPricingTier: 'Standard'
   }
 }
 ```
@@ -144,30 +246,82 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "scope": {
-      "value": "<scope>"
+    "appServicesPricingTier": {
+      "value": "Standard"
     },
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
+    "armPricingTier": {
+      "value": "Standard"
     },
-    // Non-required parameters
+    "containerRegistryPricingTier": {
+      "value": "Standard"
+    },
+    "containersTier": {
+      "value": "Standard"
+    },
+    "cosmosDbsTier": {
+      "value": "Standard"
+    },
     "deviceSecurityGroupProperties": {
       "value": {}
+    },
+    "dnsPricingTier": {
+      "value": "Standard"
     },
     "ioTSecuritySolutionProperties": {
       "value": {}
     },
+    "keyVaultsPricingTier": {
+      "value": "Standard"
+    },
+    "kubernetesServicePricingTier": {
+      "value": "Standard"
+    },
     "location": {
       "value": "<location>"
     },
+    "openSourceRelationalDatabasesTier": {
+      "value": "Standard"
+    },
     "securityContactProperties": {
       "value": {
-        "alertNotifications": "Off",
-        "alertsToAdmins": "Off",
-        "email": "foo@contoso.com",
-        "phone": "+12345678"
+        "emails": "foo@contoso.com",
+        "isEnabled": true,
+        "notificationsByRole": {
+          "roles": [
+            "owner"
+          ],
+          "state": "On"
+        },
+        "notificationsSources": [
+          {
+            "minimalSeverity": "High",
+            "sourceType": "Alert"
+          },
+          {
+            "minimalRiskLevel": "High",
+            "sourceType": "AttackPath"
+          }
+        ]
       }
+    },
+    "sqlServersPricingTier": {
+      "value": "Standard"
+    },
+    "sqlServerVirtualMachinesPricingTier": {
+      "value": "Standard"
+    },
+    "storageAccountsMalwareScanningSettings": {
+      "value": {
+        "capGBPerMonthPerStorageAccount": 5000,
+        "onUploadMalwareScanningEnabled": "True",
+        "sensitiveDataDiscoveryEnabled": "True"
+      }
+    },
+    "storageAccountsPricingTier": {
+      "value": "Standard"
+    },
+    "virtualMachinesPricingTier": {
+      "value": "Standard"
     }
   }
 }
@@ -183,19 +337,47 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/security/security-center:<version>'
 
-// Required parameters
-param scope = '<scope>'
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
+param appServicesPricingTier = 'Standard'
+param armPricingTier = 'Standard'
+param containerRegistryPricingTier = 'Standard'
+param containersTier = 'Standard'
+param cosmosDbsTier = 'Standard'
 param deviceSecurityGroupProperties = {}
+param dnsPricingTier = 'Standard'
 param ioTSecuritySolutionProperties = {}
+param keyVaultsPricingTier = 'Standard'
+param kubernetesServicePricingTier = 'Standard'
 param location = '<location>'
+param openSourceRelationalDatabasesTier = 'Standard'
 param securityContactProperties = {
-  alertNotifications: 'Off'
-  alertsToAdmins: 'Off'
-  email: 'foo@contoso.com'
-  phone: '+12345678'
+  emails: 'foo@contoso.com'
+  isEnabled: true
+  notificationsByRole: {
+    roles: [
+      'owner'
+    ]
+    state: 'On'
+  }
+  notificationsSources: [
+    {
+      minimalSeverity: 'High'
+      sourceType: 'Alert'
+    }
+    {
+      minimalRiskLevel: 'High'
+      sourceType: 'AttackPath'
+    }
+  ]
 }
+param sqlServersPricingTier = 'Standard'
+param sqlServerVirtualMachinesPricingTier = 'Standard'
+param storageAccountsMalwareScanningSettings = {
+  capGBPerMonthPerStorageAccount: 5000
+  onUploadMalwareScanningEnabled: 'True'
+  sensitiveDataDiscoveryEnabled: 'True'
+}
+param storageAccountsPricingTier = 'Standard'
+param virtualMachinesPricingTier = 'Standard'
 ```
 
 </details>
@@ -205,6 +387,8 @@ param securityContactProperties = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -212,13 +396,26 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
-  name: 'securityCenterDeployment'
   params: {
-    // Required parameters
-    scope: '<scope>'
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
+    appServicesPricingTier: 'Standard'
+    armPricingTier: 'Standard'
+    containerRegistryPricingTier: 'Standard'
+    containersTier: 'Standard'
+    cosmosDbsTier: 'Standard'
+    dnsPricingTier: 'Standard'
+    keyVaultsPricingTier: 'Standard'
+    kubernetesServicePricingTier: 'Standard'
     location: '<location>'
+    openSourceRelationalDatabasesTier: 'Standard'
+    sqlServersPricingTier: 'Standard'
+    sqlServerVirtualMachinesPricingTier: 'Standard'
+    storageAccountsMalwareScanningSettings: {
+      capGBPerMonthPerStorageAccount: 5000
+      onUploadMalwareScanningEnabled: 'True'
+      sensitiveDataDiscoveryEnabled: 'True'
+    }
+    storageAccountsPricingTier: 'Standard'
+    virtualMachinesPricingTier: 'Standard'
   }
 }
 ```
@@ -235,16 +432,54 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "scope": {
-      "value": "<scope>"
+    "appServicesPricingTier": {
+      "value": "Standard"
     },
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
+    "armPricingTier": {
+      "value": "Standard"
     },
-    // Non-required parameters
+    "containerRegistryPricingTier": {
+      "value": "Standard"
+    },
+    "containersTier": {
+      "value": "Standard"
+    },
+    "cosmosDbsTier": {
+      "value": "Standard"
+    },
+    "dnsPricingTier": {
+      "value": "Standard"
+    },
+    "keyVaultsPricingTier": {
+      "value": "Standard"
+    },
+    "kubernetesServicePricingTier": {
+      "value": "Standard"
+    },
     "location": {
       "value": "<location>"
+    },
+    "openSourceRelationalDatabasesTier": {
+      "value": "Standard"
+    },
+    "sqlServersPricingTier": {
+      "value": "Standard"
+    },
+    "sqlServerVirtualMachinesPricingTier": {
+      "value": "Standard"
+    },
+    "storageAccountsMalwareScanningSettings": {
+      "value": {
+        "capGBPerMonthPerStorageAccount": 5000,
+        "onUploadMalwareScanningEnabled": "True",
+        "sensitiveDataDiscoveryEnabled": "True"
+      }
+    },
+    "storageAccountsPricingTier": {
+      "value": "Standard"
+    },
+    "virtualMachinesPricingTier": {
+      "value": "Standard"
     }
   }
 }
@@ -260,11 +495,25 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/security/security-center:<version>'
 
-// Required parameters
-param scope = '<scope>'
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
+param appServicesPricingTier = 'Standard'
+param armPricingTier = 'Standard'
+param containerRegistryPricingTier = 'Standard'
+param containersTier = 'Standard'
+param cosmosDbsTier = 'Standard'
+param dnsPricingTier = 'Standard'
+param keyVaultsPricingTier = 'Standard'
+param kubernetesServicePricingTier = 'Standard'
 param location = '<location>'
+param openSourceRelationalDatabasesTier = 'Standard'
+param sqlServersPricingTier = 'Standard'
+param sqlServerVirtualMachinesPricingTier = 'Standard'
+param storageAccountsMalwareScanningSettings = {
+  capGBPerMonthPerStorageAccount: 5000
+  onUploadMalwareScanningEnabled: 'True'
+  sensitiveDataDiscoveryEnabled: 'True'
+}
+param storageAccountsPricingTier = 'Standard'
+param virtualMachinesPricingTier = 'Standard'
 ```
 
 </details>
@@ -272,20 +521,12 @@ param location = '<location>'
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`scope`](#parameter-scope) | string | All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope. |
-| [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The full resource Id of the Log Analytics workspace to save the data in. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appServicesPricingTier`](#parameter-appservicespricingtier) | string | The pricing tier value for AppServices. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`armPricingTier`](#parameter-armpricingtier) | string | The pricing tier value for ARM. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
-| [`autoProvision`](#parameter-autoprovision) | string | Describes what kind of security agent provisioning action to take. - On or Off. |
 | [`containerRegistryPricingTier`](#parameter-containerregistrypricingtier) | string | The pricing tier value for ContainerRegistry. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`containersTier`](#parameter-containerstier) | string | The pricing tier value for containers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`cosmosDbsTier`](#parameter-cosmosdbstier) | string | The pricing tier value for CosmosDbs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
@@ -300,22 +541,9 @@ param location = '<location>'
 | [`securityContactProperties`](#parameter-securitycontactproperties) | object | Security contact data. |
 | [`sqlServersPricingTier`](#parameter-sqlserverspricingtier) | string | The pricing tier value for SqlServers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`sqlServerVirtualMachinesPricingTier`](#parameter-sqlservervirtualmachinespricingtier) | string | The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
+| [`storageAccountsMalwareScanningSettings`](#parameter-storageaccountsmalwarescanningsettings) | object | If the pricing tier value for StorageAccounts is Standard. Choose the settings for malware scanning. |
 | [`storageAccountsPricingTier`](#parameter-storageaccountspricingtier) | string | The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
 | [`virtualMachinesPricingTier`](#parameter-virtualmachinespricingtier) | string | The pricing tier value for VMs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard. |
-
-### Parameter: `scope`
-
-All the VMs in this scope will send their security data to the mentioned workspace unless overridden by a setting with more specific scope.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaceResourceId`
-
-The full resource Id of the Log Analytics workspace to save the data in.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `appServicesPricingTier`
 
@@ -344,21 +572,6 @@ The pricing tier value for ARM. Azure Security Center is provided in two pricing
   [
     'Free'
     'Standard'
-  ]
-  ```
-
-### Parameter: `autoProvision`
-
-Describes what kind of security agent provisioning action to take. - On or Off.
-
-- Required: No
-- Type: string
-- Default: `'On'`
-- Allowed:
-  ```Bicep
-  [
-    'Off'
-    'On'
   ]
   ```
 
@@ -537,6 +750,61 @@ The pricing tier value for SqlServerVirtualMachines. Azure Security Center is pr
   ]
   ```
 
+### Parameter: `storageAccountsMalwareScanningSettings`
+
+If the pricing tier value for StorageAccounts is Standard. Choose the settings for malware scanning.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`onUploadMalwareScanningEnabled`](#parameter-storageaccountsmalwarescanningsettingsonuploadmalwarescanningenabled) | string | Enable or disable on-upload malware scanning for storage accounts. - True or False. |
+| [`sensitiveDataDiscoveryEnabled`](#parameter-storageaccountsmalwarescanningsettingssensitivedatadiscoveryenabled) | string | Enable or disable sensitive data discovery for storage accounts. - True or False. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capGBPerMonthPerStorageAccount`](#parameter-storageaccountsmalwarescanningsettingscapgbpermonthperstorageaccount) | int | If on-upload malware scanning is enabled, set a cap for the amount of GB per month per storage account that can be scanned. If not set, there will be no cap applied. |
+
+### Parameter: `storageAccountsMalwareScanningSettings.onUploadMalwareScanningEnabled`
+
+Enable or disable on-upload malware scanning for storage accounts. - True or False.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'False'
+    'True'
+  ]
+  ```
+
+### Parameter: `storageAccountsMalwareScanningSettings.sensitiveDataDiscoveryEnabled`
+
+Enable or disable sensitive data discovery for storage accounts. - True or False.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'False'
+    'True'
+  ]
+  ```
+
+### Parameter: `storageAccountsMalwareScanningSettings.capGBPerMonthPerStorageAccount`
+
+If on-upload malware scanning is enabled, set a cap for the amount of GB per month per storage account that can be scanned. If not set, there will be no cap applied.
+
+- Required: No
+- Type: int
+
 ### Parameter: `storageAccountsPricingTier`
 
 The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard.
@@ -572,8 +840,7 @@ The pricing tier value for VMs. Azure Security Center is provided in two pricing
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the security center. |
-| `workspaceResourceId` | string | The resource ID of the used log analytics workspace. |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

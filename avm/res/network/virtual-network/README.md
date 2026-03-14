@@ -2,6 +2,14 @@
 
 This module deploys a Virtual Network (vNet).
 
+You can reference the module as follows:
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,14 +22,14 @@ This module deploys a Virtual Network (vNet).
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Usage examples
 
@@ -42,6 +50,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -49,7 +59,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -117,6 +126,8 @@ param location = '<location>'
 
 This instance deploys the module with IP Addresses allocated from the IPAM Pool
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipam]
+
 
 <details>
 
@@ -124,7 +135,6 @@ This instance deploys the module with IP Addresses allocated from the IPAM Pool
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -304,6 +314,8 @@ param subnets = [
 
 This instance deploys the module using an IPv6 address space.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipv6]
+
 
 <details>
 
@@ -311,7 +323,6 @@ This instance deploys the module using an IPv6 address space.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -411,6 +422,8 @@ param subnets = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -418,7 +431,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -827,6 +839,8 @@ param tags = {
 
 This instance deploys the module with both an inbound and outbound peering.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vnetPeering]
+
 
 <details>
 
@@ -834,7 +848,6 @@ This instance deploys the module with both an inbound and outbound peering.
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -1007,6 +1020,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1014,7 +1029,6 @@ This instance deploys the module in alignment with the best-practices of the Wel
 
 ```bicep
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
-  name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
     addressPrefixes: [
@@ -1551,6 +1565,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1570,6 +1585,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2132,6 +2154,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Notes
 
@@ -2155,4 +2178,4 @@ As the virtual network peering array allows you to deploy not only a one-way but
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

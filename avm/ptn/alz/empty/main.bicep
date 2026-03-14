@@ -62,6 +62,12 @@ param managementGroupCustomPolicySetDefinitions policySetDefinitionsType[]?
 @description('Optional. Array of policy assignments to create on the management group.')
 param managementGroupPolicyAssignments policyAssignmentType[]?
 
+@description('Optional. An array of policy assignment names (not display names) to prevent from being assigned (created/updated from a CRUD perspective) at all (not a policy exclusion (`notScope`) or exemption). This is useful if you want to exclude certain policy assignments from being created or updated by the module if included in the `managementGroupPolicyAssignments` parameter via other automation.')
+param managementGroupExcludedPolicyAssignments string[] = []
+
+@description('Optional. An array of policy assignment names (not display names) to set the [`enforcementMode`](https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#enforcement-mode) to `DoNotEnforce`.')
+param managementGroupDoNotEnforcePolicyAssignments string[] = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -133,26 +139,67 @@ var formattedRoleAssignments = [
   })
 ]
 
+// Reserve 4 chars for "-<idx>" (supports up to 999 iterations) for wait deployment names to avoid truncating the index (which must remain unique)
+var deploymentNameIndexSuffixReserve = 4
+var deploymentNameBaseMax = 64 - deploymentNameIndexSuffixReserve
+var deploymentNamePerItemSuffixReserve = 14
+var deploymentNamePerItemBaseMax = 64 - deploymentNamePerItemSuffixReserve
+
 var deploymentNames = {
-  mg: '${uniqueString(deployment().name, location)}-alz-mg-${managementGroupName}'
-  mgSubPlacement: '${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}'
-  mgSubPlacementWait: '${uniqueString(deployment().name, location)}-alz-sub-place-wait-${managementGroupName}'
-  mgRoleAssignments: '${uniqueString(deployment().name, location)}-alz-mg-rbac-asi-${managementGroupName}'
-  mgRoleDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}'
-  mgRoleDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-rbac-def-wait-${managementGroupName}'
-  mgRoleAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-rbac-asi-wait-${managementGroupName}'
-  mgCustomPolicyDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-def-wait-${managementGroupName}'
-  mgCustomPolicySetDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-init-wait-${managementGroupName}'
-  mgPolicyDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}'
-  mgPolicySetDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}'
-  mgPolicyAssignments: '${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}'
-  mgPolicyAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-pol-asi-wait${managementGroupName}'
+  mg: take('${uniqueString(managementGroupName, location)}-alz-mg-${managementGroupName}', 64)
+  mgSubPlacement: take('${uniqueString(managementGroupName, location)}-alz-sub-place-${managementGroupName}', 64)
+  mgSubPlacementWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-sub-place-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgRoleAssignments: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-rbac-asi-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
+  mgRoleDefinitions: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-rbac-def-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
+  mgRoleDefinitionsWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-rbac-def-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgRoleAssignmentsWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-rbac-asi-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgCustomPolicyDefinitionsWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-pol-def-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgCustomPolicySetDefinitionsWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-pol-init-wait-${managementGroupName}',
+    deploymentNameBaseMax
+  )
+  mgPolicyDefinitions: take('${uniqueString(managementGroupName, location)}-alz-mg-pol-def-${managementGroupName}', 64)
+  mgPolicySetDefinitions: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-pol-init-${managementGroupName}',
+    64
+  )
+  mgPolicyAssignments: take(
+    '${uniqueString(managementGroupName, location)}-alz-mg-pol-asi-${managementGroupName}',
+    deploymentNamePerItemBaseMax
+  )
+  mgPolicyAssignmentsWait: take(
+    '${uniqueString(managementGroupName, location)}-alz-pol-asi-wait${managementGroupName}',
+    deploymentNameBaseMax
+  )
 }
+
+var filteredManagementGroupPolicyAssignments = filter(
+  (managementGroupPolicyAssignments ?? []),
+  polAsi => !contains(managementGroupExcludedPolicyAssignments, polAsi.name)
+)
 
 // Modules
 // Telemetry
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.alz-empty.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
@@ -193,6 +240,10 @@ resource mgExisting 'Microsoft.Management/managementGroups@2023-04-01' existing 
 module mgSubPlacementWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeSubPlacement): if (waitForConsistencyCounterBeforeSubPlacement > 0 && !empty(subscriptionsToPlaceInManagementGroup)) {
     name: '${deploymentNames.mgSubPlacementWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -201,7 +252,7 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
     scope: tenant()
     name: createOrUpdateManagementGroup ? '${managementGroupName}/${sub}' : '${mgExisting.name}/${sub}'
     dependsOn: [
-      mg
+      mgSubPlacementWait
     ]
   }
 ]
@@ -211,6 +262,10 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 module mgCustomPolicyDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicyDefinitions): if (waitForConsistencyCounterBeforeCustomPolicyDefinitions > 0 && !(empty(managementGroupCustomPolicyDefinitions))) {
     name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -230,35 +285,38 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions.bicep' = if (!empty
 module mgCustomPolicySetDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicySetDefinitions): if (waitForConsistencyCounterBeforeCustomPolicySetDefinitions > 0 && !empty(managementGroupCustomPolicySetDefinitions)) {
     name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
+    dependsOn: [
+      mgCustomPolicyDefinitions
+    ]
   }
 ]
 
 module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
   scope: managementGroup(managementGroupName)
-  dependsOn: [
-    mgCustomPolicyDefinitions
-    mgCustomPolicySetDefinitionsWait
-  ]
   name: deploymentNames.mgPolicySetDefinitions
   params: {
     managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
   }
+  dependsOn: [
+    mgCustomPolicySetDefinitionsWait
+  ]
 }
 
 // Policy Assignments Created on Management Group (Optional)
 @batchSize(1)
 module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
-  for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(managementGroupPolicyAssignments)) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(filteredManagementGroupPolicyAssignments)) {
     name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
+    dependsOn: [
+      mgCustomPolicySetDefinitions
+    ]
   }
 ]
 
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.4.0' = [
-  for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.5.3' = [
+  for (polAsi, index) in (filteredManagementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
-      mgCustomPolicyDefinitions
-      mgCustomPolicySetDefinitions
       mgPolicyAssignmentsWait
     ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
@@ -268,12 +326,15 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
       location: polAsi.?location ?? location
       description: polAsi.?description
       displayName: polAsi.?displayName
-      enforcementMode: polAsi.?enforcementMode ?? 'Default'
+      enforcementMode: contains(managementGroupDoNotEnforcePolicyAssignments, polAsi.name)
+        ? 'DoNotEnforce'
+        : polAsi.?enforcementMode ?? 'Default'
       identity: polAsi.?identity ?? 'None'
       userAssignedIdentityId: polAsi.?userAssignedIdentityId
       roleDefinitionIds: polAsi.?roleDefinitionIds
       parameters: polAsi.?parameters
-      managementGroupId: createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+      parameterOverrides: polAsi.?parameterOverrides
+      managementGroupId: createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
       nonComplianceMessages: polAsi.?nonComplianceMessages
       metadata: polAsi.?metadata
       overrides: polAsi.?overrides
@@ -293,6 +354,10 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
 module mgRoleDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomRoleDefinitions): if (waitForConsistencyCounterBeforeCustomRoleDefinitions > 0 && !empty(managementGroupCustomRoleDefinitions)) {
     name: '${deploymentNames.mgRoleDefinitionsWait}-${index}'
+    dependsOn: [
+      mg
+      mgExisting
+    ]
   }
 ]
 
@@ -323,17 +388,20 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.1'
 module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeRoleAssignments): if (waitForConsistencyCounterBeforeRoleAssignments > 0 && !empty(formattedRoleAssignments)) {
     name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
+    dependsOn: [
+      mgRoleDefinitions
+    ]
   }
 ]
 
-module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: take(
       '${deploymentNames.mgRoleAssignments}-${uniqueString(managementGroupName, roleAssignment.principalId, roleAssignment.roleDefinitionId)}',
       64
     )
     params: {
-      managementGroupId: createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+      managementGroupId: createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
       principalId: roleAssignment.principalId
       roleDefinitionIdOrName: roleAssignment.roleDefinitionId
       description: roleAssignment.?description
@@ -344,7 +412,6 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2'
       enableTelemetry: enableTelemetry
     }
     dependsOn: [
-      mgRoleDefinitions
       mgRoleAssignmentsWait
     ]
   }
@@ -352,15 +419,15 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.2'
 
 // Outputs
 @description('The resource ID of the management group.')
-output managementGroupResourceId string = createOrUpdateManagementGroup ? mg.outputs.resourceId : mgExisting.id
+output managementGroupResourceId string = createOrUpdateManagementGroup ? mg!.outputs.resourceId : mgExisting.id
 
 @description('The ID of the management group.')
-output managementGroupId string = createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+output managementGroupId string = createOrUpdateManagementGroup ? mg!.outputs.name : mgExisting.name
 
 @description('The parent management group ID of the management group.')
 output managementGroupParentId string = createOrUpdateManagementGroup
   ? (managementGroupParentId ?? tenant().tenantId)
-  : mgExisting.properties.details.parent.id // Only doing this as think i've found a bug in Bicep/ARM, see: https://github.com/Azure/bicep/issues/15642
+  : mgExisting!.properties.details.parent.id // Only doing this as think i've found a bug in Bicep/ARM, see: https://github.com/Azure/bicep/issues/15642
 
 @description('The custom role definitions created on the management group.')
 output managementGroupCustomRoleDefinitionIds array = [
@@ -390,7 +457,10 @@ type policyAssignmentType = {
   policyDefinitionId: string
 
   @description('Optional. Parameters for the policy assignment if needed.')
-  parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
+  parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2025-01-01'>.properties.parameters?
+
+  @description('Optional. Parameter Overrides for the policy assignment if needed, useful when passing in parameters via a JSON or YAML file via the `loadJsonContent`, `loadYamlContent` or `loadTextContent` functions. Parameters specified here will override the parameters and their corresponding values provided in the `parameters` parameter of this module.')
+  parameterOverrides: resourceInput<'Microsoft.Authorization/policyAssignments@2025-01-01'>.properties.parameters?
 
   @description('Required. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
   identity: 'SystemAssigned' | 'UserAssigned' | 'None'

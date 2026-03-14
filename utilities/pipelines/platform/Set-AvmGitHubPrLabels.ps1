@@ -46,19 +46,21 @@ function Set-AvmGitHubPrLabels {
         # core team is already assigned, no or more than one module reviewer team is assigned
         if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
             gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-        }
-        else {
+        } else {
             $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
 
             # no members in module team or only one and that user submitted the PR
             if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
                 gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-            }
-            else {
+            } else {
                 gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
+                # add team members as reviewers
+                $teamMembers | ForEach-Object {
+                    gh pr edit $pr.url --add-reviewer $_ --repo $Repo
+                }
             }
 
-            # check for orphanded module
+            # check for orphaned module
             $moduleName = $teamNames[0]
             $moduleIndex = $moduleName.StartsWith('avm-res') ? 'Bicep-Resource' : ($moduleName.StartsWith('avm-ptn') ? 'Bicep-Pattern' : 'Bicep-Utility')
             # get CSV data

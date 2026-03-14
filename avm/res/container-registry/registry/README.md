@@ -2,6 +2,14 @@
 
 This module deploys an Azure Container Registry (ACR).
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,19 +21,21 @@ This module deploys an Azure Container Registry (ACR).
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.ContainerRegistry/registries` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-06-01-preview/registries)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_cacherules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/cacheRules)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_credentialsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/credentialSets)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/replications` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/replications)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_scopemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/scopeMaps)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tasks` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tasks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-03-01-preview/registries/tasks)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tokens` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tokens.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/tokens)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/webhooks` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/webhooks)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -38,12 +48,15 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using `scopeMaps` in parameter set](#example-4-using-scopemaps-in-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using restricted network access with empty IP ranges](#example-4-using-restricted-network-access-with-empty-ip-ranges)
+- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -52,7 +65,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrmin001'
@@ -114,6 +126,8 @@ param location = '<location>'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -121,7 +135,6 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrencr001'
@@ -222,6 +235,8 @@ param publicNetworkAccess = 'Disabled'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -229,14 +244,24 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrmax001'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
+    autoGeneratedDomainNameLabelScope: 'SubscriptionReuse'
+    azureADAuthenticationAsArmPolicyStatus: 'disabled'
+    cacheRules: [
+      {
+        sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      }
+      {
+        name: 'crrmaxCacheRule'
+        sourceRepository: 'mcr.microsoft.com/hello-world'
+        targetRepository: 'cached-hello-world'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -303,6 +328,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '<name>'
       }
     ]
+    roleAssignmentMode: 'AbacRepositoryPermissions'
     roleAssignments: [
       {
         name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
@@ -322,6 +348,15 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/*/content/read'
+        ]
+        description: 'A test scope map'
+        name: 'crrmaxScopeMap'
+      }
+    ]
     softDeletePolicyDays: 7
     softDeletePolicyStatus: 'disabled'
     tags: {
@@ -329,6 +364,36 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    tasks: [
+      {
+        name: 'crrmaxTask1'
+        platform: {
+          architecture: 'amd64'
+          os: 'Linux'
+        }
+        status: 'Disabled'
+        step: {
+          encodedTaskContent: '<encodedTaskContent>'
+          type: 'EncodedTask'
+        }
+        trigger: {
+          timerTriggers: [
+            {
+              name: 'dailyTimer'
+              schedule: '0 12 * * *'
+              status: 'Disabled'
+            }
+          ]
+        }
+      }
+    ]
+    tokens: [
+      {
+        name: 'crrmaxToken'
+        scopeMapResourceId: '<scopeMapResourceId>'
+        status: 'enabled'
+      }
+    ]
     trustPolicyStatus: 'enabled'
     webhooks: [
       {
@@ -363,8 +428,23 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "acrSku": {
       "value": "Premium"
     },
+    "autoGeneratedDomainNameLabelScope": {
+      "value": "SubscriptionReuse"
+    },
     "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
+      "value": "disabled"
+    },
+    "cacheRules": {
+      "value": [
+        {
+          "sourceRepository": "mcr.microsoft.com/azuredocs/aci-helloworld"
+        },
+        {
+          "name": "crrmaxCacheRule",
+          "sourceRepository": "mcr.microsoft.com/hello-world",
+          "targetRepository": "cached-hello-world"
+        }
+      ]
     },
     "diagnosticSettings": {
       "value": [
@@ -450,6 +530,9 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
+    "roleAssignmentMode": {
+      "value": "AbacRepositoryPermissions"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -471,6 +554,17 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/*/content/read"
+          ],
+          "description": "A test scope map",
+          "name": "crrmaxScopeMap"
+        }
+      ]
+    },
     "softDeletePolicyDays": {
       "value": 7
     },
@@ -483,6 +577,40 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "tasks": {
+      "value": [
+        {
+          "name": "crrmaxTask1",
+          "platform": {
+            "architecture": "amd64",
+            "os": "Linux"
+          },
+          "status": "Disabled",
+          "step": {
+            "encodedTaskContent": "<encodedTaskContent>",
+            "type": "EncodedTask"
+          },
+          "trigger": {
+            "timerTriggers": [
+              {
+                "name": "dailyTimer",
+                "schedule": "0 12 * * *",
+                "status": "Disabled"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "tokens": {
+      "value": [
+        {
+          "name": "crrmaxToken",
+          "scopeMapResourceId": "<scopeMapResourceId>",
+          "status": "enabled"
+        }
+      ]
     },
     "trustPolicyStatus": {
       "value": "enabled"
@@ -514,7 +642,18 @@ param name = 'crrmax001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
+param autoGeneratedDomainNameLabelScope = 'SubscriptionReuse'
+param azureADAuthenticationAsArmPolicyStatus = 'disabled'
+param cacheRules = [
+  {
+    sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+  }
+  {
+    name: 'crrmaxCacheRule'
+    sourceRepository: 'mcr.microsoft.com/hello-world'
+    targetRepository: 'cached-hello-world'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -581,6 +720,7 @@ param replications = [
     name: '<name>'
   }
 ]
+param roleAssignmentMode = 'AbacRepositoryPermissions'
 param roleAssignments = [
   {
     name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
@@ -600,6 +740,15 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param scopeMaps = [
+  {
+    actions: [
+      'repositories/*/content/read'
+    ]
+    description: 'A test scope map'
+    name: 'crrmaxScopeMap'
+  }
+]
 param softDeletePolicyDays = 7
 param softDeletePolicyStatus = 'disabled'
 param tags = {
@@ -607,6 +756,36 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param tasks = [
+  {
+    name: 'crrmaxTask1'
+    platform: {
+      architecture: 'amd64'
+      os: 'Linux'
+    }
+    status: 'Disabled'
+    step: {
+      encodedTaskContent: '<encodedTaskContent>'
+      type: 'EncodedTask'
+    }
+    trigger: {
+      timerTriggers: [
+        {
+          name: 'dailyTimer'
+          schedule: '0 12 * * *'
+          status: 'Disabled'
+        }
+      ]
+    }
+  }
+]
+param tokens = [
+  {
+    name: 'crrmaxToken'
+    scopeMapResourceId: '<scopeMapResourceId>'
+    status: 'enabled'
+  }
+]
 param trustPolicyStatus = 'enabled'
 param webhooks = [
   {
@@ -619,9 +798,11 @@ param webhooks = [
 </details>
 <p>
 
-### Example 4: _Using `scopeMaps` in parameter set_
+### Example 4: _Using restricted network access with empty IP ranges_
 
-This instance deploys the module with the scopeMaps feature.
+This instance validates restricted network access with explicit empty IP ACL rules.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/restricted-empty-ip]
 
 
 <details>
@@ -630,7 +811,91 @@ This instance deploys the module with the scopeMaps feature.
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrempty001'
+    // Non-required parameters
+    acrSku: 'Premium'
+    location: '<location>'
+    networkRuleSetDefaultAction: 'Deny'
+    networkRuleSetIpRules: []
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrempty001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Premium"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkRuleSetDefaultAction": {
+      "value": "Deny"
+    },
+    "networkRuleSetIpRules": {
+      "value": []
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrempty001'
+// Non-required parameters
+param acrSku = 'Premium'
+param location = '<location>'
+param networkRuleSetDefaultAction = 'Deny'
+param networkRuleSetIpRules = []
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 5: _Using `scopeMaps` in parameter set_
+
+This instance deploys the module with the scopeMaps feature.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/scope]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
     name: 'crrs001'
@@ -717,9 +982,11 @@ param scopeMaps = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
 
 <details>
@@ -728,14 +995,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
-  name: 'registryDeployment'
   params: {
     // Required parameters
     name: 'crrwaf001'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
-    azureADAuthenticationAsArmPolicyStatus: 'enabled'
+    autoGeneratedDomainNameLabelScope: 'NoReuse'
+    azureADAuthenticationAsArmPolicyStatus: 'disabled'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -765,6 +1032,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         name: '<name>'
       }
     ]
+    roleAssignmentMode: 'AbacRepositoryPermissions'
     softDeletePolicyDays: 7
     softDeletePolicyStatus: 'disabled'
     tags: {
@@ -800,8 +1068,11 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "acrSku": {
       "value": "Premium"
     },
+    "autoGeneratedDomainNameLabelScope": {
+      "value": "NoReuse"
+    },
     "azureADAuthenticationAsArmPolicyStatus": {
-      "value": "enabled"
+      "value": "disabled"
     },
     "diagnosticSettings": {
       "value": [
@@ -844,6 +1115,9 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         }
       ]
     },
+    "roleAssignmentMode": {
+      "value": "AbacRepositoryPermissions"
+    },
     "softDeletePolicyDays": {
       "value": 7
     },
@@ -879,7 +1153,8 @@ param name = 'crrwaf001'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
-param azureADAuthenticationAsArmPolicyStatus = 'enabled'
+param autoGeneratedDomainNameLabelScope = 'NoReuse'
+param azureADAuthenticationAsArmPolicyStatus = 'disabled'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -909,6 +1184,7 @@ param replications = [
     name: '<name>'
   }
 ]
+param roleAssignmentMode = 'AbacRepositoryPermissions'
 param softDeletePolicyDays = 7
 param softDeletePolicyStatus = 'disabled'
 param tags = {
@@ -937,7 +1213,8 @@ param trustPolicyStatus = 'enabled'
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled. |
+| [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | The domain name label reuse scope. |
+| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is disabled. |
 | [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
 | [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -950,18 +1227,21 @@ param trustPolicyStatus = 'enabled'
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`networkRuleBypassOptions`](#parameter-networkrulebypassoptions) | string | Whether to allow trusted Azure services to access a network restricted registry. |
 | [`networkRuleSetDefaultAction`](#parameter-networkrulesetdefaultaction) | string | The default action of allow or deny when no other rules match. |
-| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. |
+| [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'acrSku' to be 'Premium'. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.  Note, requires the 'acrSku' to be 'Premium'. |
 | [`quarantinePolicyStatus`](#parameter-quarantinepolicystatus) | string | The value that indicates whether the quarantine policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`replications`](#parameter-replications) | array | All replications to create. |
 | [`retentionPolicyDays`](#parameter-retentionpolicydays) | int | The number of days to retain an untagged manifest after which it gets purged. |
 | [`retentionPolicyStatus`](#parameter-retentionpolicystatus) | string | The value that indicates whether the retention policy is enabled or not. |
+| [`roleAssignmentMode`](#parameter-roleassignmentmode) | string | The registry permissions role assignment mode. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopeMaps`](#parameter-scopemaps) | array | Scope maps setting. |
 | [`softDeletePolicyDays`](#parameter-softdeletepolicydays) | int | The number of days after which a soft-deleted item is permanently deleted. |
 | [`softDeletePolicyStatus`](#parameter-softdeletepolicystatus) | string | Soft Delete policy status. Default is disabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tasks`](#parameter-tasks) | array | Array of ACR Tasks to create. |
+| [`tokens`](#parameter-tokens) | array | Tokens to create for the container registry. |
 | [`trustPolicyStatus`](#parameter-trustpolicystatus) | string | The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'. |
 | [`webhooks`](#parameter-webhooks) | array | All webhooks to create. |
 | [`zoneRedundancy`](#parameter-zoneredundancy) | string | Whether or not zone redundancy is enabled for this container registry. |
@@ -1005,13 +1285,30 @@ Enables registry-wide pull from unauthenticated clients. It's in preview and ava
 - Type: bool
 - Default: `False`
 
-### Parameter: `azureADAuthenticationAsArmPolicyStatus`
+### Parameter: `autoGeneratedDomainNameLabelScope`
 
-The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled.
+The domain name label reuse scope.
 
 - Required: No
 - Type: string
-- Default: `'enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+    'Unsecure'
+  ]
+  ```
+
+### Parameter: `azureADAuthenticationAsArmPolicyStatus`
+
+The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is disabled.
+
+- Required: No
+- Type: string
+- Default: `'disabled'`
 - Allowed:
   ```Bicep
   [
@@ -1415,6 +1712,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1434,6 +1732,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1498,7 +1803,7 @@ The default action of allow or deny when no other rules match.
 
 ### Parameter: `networkRuleSetIpRules`
 
-The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'.
+The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs.
 
 - Required: No
 - Type: array
@@ -1682,6 +1987,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1701,6 +2007,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1999,13 +2312,6 @@ Whether or not zone redundancy is enabled for this container registry.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `retentionPolicyDays`
 
@@ -2030,6 +2336,20 @@ The value that indicates whether the retention policy is enabled or not.
   ]
   ```
 
+### Parameter: `roleAssignmentMode`
+
+The registry permissions role assignment mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AbacRepositoryPermissions'
+    'LegacyRegistryPermissions'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -2043,6 +2363,10 @@ Array of role assignments to create.
   - `'AcrPush'`
   - `'AcrQuarantineReader'`
   - `'AcrQuarantineWriter'`
+  - `'Container Registry Repository Catalog Lister'`
+  - `'Container Registry Repository Contributor'`
+  - `'Container Registry Repository Reader'`
+  - `'Container Registry Repository Writer'`
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
@@ -2210,6 +2534,197 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `tasks`
+
+Array of ACR Tasks to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tasksname) | string | The name of the task. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentConfiguration`](#parameter-tasksagentconfiguration) | object | The agent configuration for the task. |
+| [`agentPoolName`](#parameter-tasksagentpoolname) | string | The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents. |
+| [`isSystemTask`](#parameter-tasksissystemtask) | bool | Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration. |
+| [`location`](#parameter-taskslocation) | string | Location for all resources. |
+| [`logTemplate`](#parameter-taskslogtemplate) | string | The log template for the task to use when creating logs in Log Analytics. |
+| [`platform`](#parameter-tasksplatform) | object | The platform properties for the task. |
+| [`status`](#parameter-tasksstatus) | string | The status of the task at the time the operation was called. |
+| [`step`](#parameter-tasksstep) | object | The step properties for the task. |
+| [`tags`](#parameter-taskstags) | object | Tags of the resource. |
+| [`timeout`](#parameter-taskstimeout) | int | The timeout in seconds for the task to run before it is automatically disabled. |
+| [`trigger`](#parameter-taskstrigger) | object | The trigger properties for the task. |
+
+### Parameter: `tasks.name`
+
+The name of the task.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tasks.agentConfiguration`
+
+The agent configuration for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.agentPoolName`
+
+The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.isSystemTask`
+
+Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration.
+
+- Required: No
+- Type: bool
+
+### Parameter: `tasks.location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.logTemplate`
+
+The log template for the task to use when creating logs in Log Analytics.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.platform`
+
+The platform properties for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.status`
+
+The status of the task at the time the operation was called.
+
+- Required: No
+- Type: string
+
+### Parameter: `tasks.step`
+
+The step properties for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `tasks.timeout`
+
+The timeout in seconds for the task to run before it is automatically disabled.
+
+- Required: No
+- Type: int
+
+### Parameter: `tasks.trigger`
+
+The trigger properties for the task.
+
+- Required: No
+- Type: object
+
+### Parameter: `tokens`
+
+Tokens to create for the container registry.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokensname) | string | The name of the token. |
+| [`scopeMapResourceId`](#parameter-tokensscopemapresourceid) | string | The resource ID of the scope map which defines the permissions for this token. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentials`](#parameter-tokenscredentials) | array | The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential. |
+| [`status`](#parameter-tokensstatus) | string | The status of the token at the time the operation was called. |
+
+### Parameter: `tokens.name`
+
+The name of the token.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.scopeMapResourceId`
+
+The resource ID of the scope map which defines the permissions for this token.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials`
+
+The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-tokenscredentialsname) | string | The name of the credential. |
+| [`passwordSecretIdentifier`](#parameter-tokenscredentialspasswordsecretidentifier) | string | KeyVault Secret URI for accessing the password. |
+| [`usernameSecretIdentifier`](#parameter-tokenscredentialsusernamesecretidentifier) | string | KeyVault Secret URI for accessing the username. |
+
+### Parameter: `tokens.credentials.name`
+
+The name of the credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials.passwordSecretIdentifier`
+
+KeyVault Secret URI for accessing the password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.credentials.usernameSecretIdentifier`
+
+KeyVault Secret URI for accessing the username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `tokens.status`
+
+The status of the token at the time the operation was called.
+
+- Required: No
+- Type: string
+
 ### Parameter: `trustPolicyStatus`
 
 The value that indicates whether the trust policy is enabled or not. Note, requires the 'acrSku' to be 'Premium'.
@@ -2298,13 +2813,6 @@ The status of the webhook at the time the operation was called.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'disabled'
-    'enabled'
-  ]
-  ```
 
 ### Parameter: `webhooks.tags`
 
@@ -2348,9 +2856,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

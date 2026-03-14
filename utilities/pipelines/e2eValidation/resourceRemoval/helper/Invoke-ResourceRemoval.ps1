@@ -61,6 +61,26 @@ function Invoke-ResourceRemoval {
             Write-Verbose ('[/] Skipping resource [{0}] of type [{1}]. Reason: It is handled by different logic.' -f $resourceName, $Type) -Verbose
             break
         }
+        'Microsoft.KeyVault/managedHSMs/keys' {
+            $parentName = $ResourceId.Split('/')[8]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $hSMKeyUri = 'https://{0}.managedhsm.azure.net/keys/{1}' -f $parentName, $resourceName
+
+            # Remove resource
+            if ($PSCmdlet.ShouldProcess("Managed HSM key [$hSMKeyUri]", 'Remove')) {
+                $hSMKeyApiUri = '{0}?api-version=2025-05-01' -f $hSMKeyUri
+                $removeRequestInputObject = @{
+                    Method = 'DELETE'
+                    Uri    = $hSMKeyApiUri
+                }
+                $hSMKeyState = Invoke-AzRestMethod @removeRequestInputObject
+                $hSMKeyStateContent = $hSMKeyState.Content | ConvertFrom-Json
+                if ($hSMKeyState.StatusCode -notlike '2*') {
+                    throw ('{0} : {1}' -f $hSMKeyStateContent.error.code, $hSMKeyStateContent.error.message)
+                }
+            }
+            break
+        }
         'Microsoft.ServiceBus/namespaces/authorizationRules' {
             if ((Split-Path $ResourceId '/')[-1] -eq 'RootManageSharedAccessKey') {
                 Write-Verbose ('[/] Skipping resource [RootManageSharedAccessKey] of type [{0}]. Reason: The Service Bus''s default authorization key cannot be removed' -f $Type) -Verbose
@@ -151,6 +171,20 @@ function Invoke-ResourceRemoval {
                     RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
                 }
                 $null = New-AzRoleAssignmentScheduleRequest @removalInputObject
+            }
+            break
+        }
+        'Microsoft.Cdn/profiles' {
+            # Removing custom removal logic as the default `Remove-AzResource` does not correctly handle the resource's inner workings
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $cdnProfile = az cdn profile show --resource-group $resourceGroupName --name $resourceName
+            if ($cdnProfile) {
+                if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
+                    az cdn profile delete --resource-group $resourceGroupName --name $resourceName
+                }
+            } else {
+                Write-Warning "Unable to find CDN profile [$resourceName] in resource group [$resourceGroupName]"
             }
             break
         }
@@ -348,6 +382,7 @@ function Invoke-ResourceRemoval {
                             $retryCount++
                         }
                     } while (($workspaceStateContent.properties.replication.enabled -or $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') -and $retryCount -lt $retryLimit)
+                    Start-Sleep -Seconds 30  # Additional wait to ensure replication is fully disabled and avoid leftovers in the Entra ID
 
                     if ($retryCount -ge $retryLimit) {
                         Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
@@ -490,8 +525,108 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.ApiManagement/service' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
+
+            # Check if the APIM service exists
+            $apimService = az apim show --resource-group $resourceGroupName --name $resourceName 2>$null
+            if ($apimService) {
+                $apimLocation = ($apimService | ConvertFrom-Json).location
+
+                # Delete the APIM service (with retry for ServiceLocked / transitioning state)
+                $retryCount = 0
+                $retryLimit = 30
+                $retryInterval = 60
+                $deleteSucceeded = $false
+
+                do {
+                    $retryCount++
+                    Write-Verbose ('[*] Removing API Management service [{0}] from resource group [{1}] (attempt [{2}/{3}])' -f $resourceName, $resourceGroupName, $retryCount, $retryLimit) -Verbose
+
+                    if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Remove')) {
+                        $deleteOutput = az apim delete --resource-group $resourceGroupName --name $resourceName --yes 2>&1
+
+                        if ($LASTEXITCODE -eq 0) {
+                            $deleteSucceeded = $true
+                            Write-Verbose ('[✔️] Successfully initiated deletion of API Management service [{0}]' -f $resourceName) -Verbose
+                        } else {
+                            $deleteOutputString = $deleteOutput | Out-String
+                            if ($deleteOutputString -match 'ServiceLocked|transitioning') {
+                                Write-Verbose ('    [⏱️] API Management service [{0}] is transitioning. Waiting {1} seconds before retrying. [{2}/{3}]' -f $resourceName, $retryInterval, $retryCount, $retryLimit) -Verbose
+                                Start-Sleep -Seconds $retryInterval
+                            } else {
+                                Write-Warning ('[!] Failed to delete API Management service [{0}]: {1}' -f $resourceName, $deleteOutputString)
+                                break
+                            }
+                        }
+                    } else {
+                        break
+                    }
+                } while (-not $deleteSucceeded -and $retryCount -lt $retryLimit)
+
+                if (-not $deleteSucceeded) {
+                    if ($retryCount -ge $retryLimit) {
+                        Write-Warning ('[!] Failed to delete API Management service [{0}] after [{1}] attempts.' -f $resourceName, $retryCount)
+                    }
+                    break
+                }
+
+                # Wait for the service to be fully soft-deleted before attempting purge
+                $retryCount = 0
+                $retryLimit = 60
+                $retryInterval = 30
+                $serviceSoftDeleted = $false
+
+                do {
+                    $retryCount++
+                    $existingService = az apim show --resource-group $resourceGroupName --name $resourceName 2>$null
+                    if (-not $existingService) {
+                        $serviceSoftDeleted = $true
+                        Write-Verbose ('[✔️] API Management service [{0}] has been soft-deleted.' -f $resourceName) -Verbose
+                    } else {
+                        Write-Verbose ('    [⏱️] Waiting {0} seconds for API Management service [{1}] to be soft-deleted. [{2}/{3}]' -f $retryInterval, $resourceName, $retryCount, $retryLimit) -Verbose
+                        Start-Sleep -Seconds $retryInterval
+                    }
+                } while (-not $serviceSoftDeleted -and $retryCount -lt $retryLimit)
+
+                if (-not $serviceSoftDeleted) {
+                    Write-Warning ('[!] API Management service [{0}] was not soft-deleted after [{1}] seconds. Skipping purge.' -f $resourceName, ($retryCount * $retryInterval))
+                    break
+                }
+
+                # Purge the soft-deleted APIM service to ensure complete removal
+                $softDeletedService = az apim deletedservice show --service-name $resourceName --location $apimLocation 2>$null
+                if ($softDeletedService) {
+                    Write-Verbose ('[*] Purging soft-deleted API Management service [{0}] in location [{1}]' -f $resourceName, $apimLocation) -Verbose
+                    if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Purge')) {
+                        az apim deletedservice purge --service-name $resourceName --location $apimLocation
+                    }
+                } else {
+                    Write-Verbose ('[/] No soft-deleted API Management service [{0}] found in location [{1}]. Skipping purge.' -f $resourceName, $apimLocation) -Verbose
+                }
+            } else {
+                # Service not found - check if it exists as a soft-deleted service and purge if so
+                Write-Verbose ('[/] API Management service [{0}] not found in resource group [{1}]. Checking for soft-deleted instance.' -f $resourceName, $resourceGroupName) -Verbose
+                $softDeletedServices = az apim deletedservice list 2>$null
+                if ($softDeletedServices) {
+                    $matchingDeleted = ($softDeletedServices | ConvertFrom-Json) | Where-Object { $_.name -eq $resourceName }
+                    if ($matchingDeleted) {
+                        $apimLocation = $matchingDeleted.location
+                        Write-Verbose ('[*] Purging soft-deleted API Management service [{0}] in location [{1}]' -f $resourceName, $apimLocation) -Verbose
+                        if ($PSCmdlet.ShouldProcess("API Management service [$resourceName]", 'Purge')) {
+                            az apim deletedservice purge --service-name $resourceName --location $apimLocation
+                        }
+                    } else {
+                        Write-Warning "Unable to find API Management service [$resourceName] (active or soft-deleted)"
+                    }
+                }
+            }
+            break
+        }
         ### CODE LOCATION: Add custom removal action here
-        Default {
+        default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
             }

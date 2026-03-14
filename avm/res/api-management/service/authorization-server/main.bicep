@@ -4,7 +4,7 @@ metadata description = 'This module deploys an API Management Service Authorizat
 @description('Required. Identifier of the authorization server.')
 param name string
 
-@description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+@description('Required. API Management Service Authorization Server name. Must be 1 to 50 characters long.')
 @maxLength(50)
 param displayName string
 
@@ -14,18 +14,18 @@ param apiManagementServiceName string
 @description('Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.')
 param authorizationEndpoint string
 
-@description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.')
-param authorizationMethods array = [
+@description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present.')
+param authorizationMethods resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.authorizationMethods = [
   'GET'
 ]
 
 @description('Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.')
-param bearerTokenSendingMethods array = [
+param bearerTokenSendingMethods resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.bearerTokenSendingMethods = [
   'authorizationHeader'
 ]
 
 @description('Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.')
-param clientAuthenticationMethod array = [
+param clientAuthenticationMethod resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.clientAuthenticationMethod = [
   'Basic'
 ]
 
@@ -49,6 +49,7 @@ param serverDescription string = ''
 @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
 @allowed([
   'authorizationCode'
+  'authorizationCodeWithPkce'
   'clientCredentials'
   'implicit'
   'resourceOwnerPassword'
@@ -65,22 +66,44 @@ param resourceOwnerUsername string = ''
 @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
 param supportState bool = false
 
-@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties.')
-param tokenBodyParameters tokenBodyParameterType[] = []
+@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}.')
+param tokenBodyParameters resourceInput<'Microsoft.ApiManagement/service/authorizationServers@2024-05-01'>.properties.tokenBodyParameters = []
 
 @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
 param tokenEndpoint string = ''
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var defaultAuthorizationMethods = [
   'GET'
 ]
 var setAuthorizationMethods = union(authorizationMethods, defaultAuthorizationMethods)
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource authorizationServer 'Microsoft.ApiManagement/service/authorizationServers@2022-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-authzserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource authorizationServer 'Microsoft.ApiManagement/service/authorizationServers@2024-05-01' = {
   name: name
   parent: service
   properties: {
@@ -111,17 +134,3 @@ output resourceId string = authorizationServer.id
 
 @description('The resource group the API management service authorization server was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a token body parameter.')
-type tokenBodyParameterType = {
-  @description('Required. Body parameter name.')
-  name: string
-
-  @description('Required. Body parameter value.')
-  value: string
-}

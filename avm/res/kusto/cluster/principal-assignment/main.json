@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16949506945296697955"
+      "version": "0.41.2.15936",
+      "templateHash": "4499566946564443095"
     },
     "name": "Kusto Cluster Principal Assignments",
     "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -40,7 +40,8 @@
       "type": "string",
       "allowedValues": [
         "AllDatabasesAdmin",
-        "AllDatabasesViewer"
+        "AllDatabasesViewer",
+        "AllDatabasesMonitor"
       ],
       "metadata": {
         "description": "Required. The Kusto Cluster role to be assigned to the principal id."
@@ -57,7 +58,7 @@
   "resources": [
     {
       "type": "Microsoft.Kusto/clusters/principalAssignments",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('principalId'))]",
       "properties": {
         "principalId": "[parameters('principalId')]",

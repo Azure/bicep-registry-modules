@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Public IP to create.')
 param existingPipName string
 
-resource existingPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource existingPip 'Microsoft.Network/publicIPAddresses@2024-10-01' = {
   name: existingPipName
   location: location
   sku: {

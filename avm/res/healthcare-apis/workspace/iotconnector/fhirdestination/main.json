@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "2699016435767184247"
+      "version": "0.41.2.15936",
+      "templateHash": "16900810739814604113"
     },
     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."

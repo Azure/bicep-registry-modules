@@ -2,26 +2,25 @@
 name: .Platform - Set AVM GitHub PR labels
 
 on:
-  pull_request_target:
+  pull_request: # Temporarily using `pull_request` while `pull_request_target` usage is under discussion
     types: [opened, ready_for_review]
 
 jobs:
   SetAvmGitHubPrLabels:
-    if: github.repository == 'Azure/bicep-registry-modules'
     name: Set-AvmGitHubPrLabels
     runs-on: ubuntu-latest
     permissions:
-      issues: write
+      pull-requests: write
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: tibdex/github-app-token@v2
+      - uses: actions/create-github-app-token@v2
         id: generate-token
         with:
-          app_id: ${{ secrets.TEAM_LINTER_APP_ID }}
-          private_key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+          app-id: ${{ secrets.TEAM_LINTER_APP_ID }}
+          private-key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
       - name: "Run scripts"
         shell: pwsh
         env:

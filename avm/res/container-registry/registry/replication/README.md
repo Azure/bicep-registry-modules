@@ -2,17 +2,26 @@
 
 This module deploys an Azure Container Registry (ACR) Replication.
 
+You can reference the module as follows:
+```bicep
+module registry 'br/public:avm/res/container-registry/registry/replication:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ContainerRegistry/registries/replications` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/replications)</li></ul> |
 
 ## Parameters
 
@@ -32,6 +41,7 @@ This module deploys an Azure Container Registry (ACR) Replication.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`regionEndpointEnabled`](#parameter-regionendpointenabled) | bool | Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -50,6 +60,14 @@ The name of the parent registry. Required if the template is used in a standalon
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `location`
 
@@ -97,3 +115,7 @@ Whether or not zone redundancy is enabled for this container registry.
 | `name` | string | The name of the replication. |
 | `resourceGroupName` | string | The name of the resource group the replication was created in. |
 | `resourceId` | string | The resource ID of the replication. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

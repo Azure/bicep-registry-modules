@@ -2,21 +2,30 @@
 
 This module deploys an API Management Service API.
 
+You can reference the module as follows:
+```bicep
+module service 'br/public:avm/res/api-management/service/api:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.ApiManagement/service/apis` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/diagnostics` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics) |
-| `Microsoft.ApiManagement/service/apis/operations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations) |
-| `Microsoft.ApiManagement/service/apis/operations/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/operations/policies) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/policies) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.ApiManagement/service/apis` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis)</li></ul> |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_diagnostics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics)</li></ul> |
+| `Microsoft.ApiManagement/service/apis/operations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations)</li></ul> |
+| `Microsoft.ApiManagement/service/apis/operations/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_operations_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations/policies)</li></ul> |
+| `Microsoft.ApiManagement/service/apis/policies` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apimanagement_service_apis_policies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/policies)</li></ul> |
 
 ## Parameters
 
@@ -24,7 +33,7 @@ This module deploys an API Management Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | API name. Must be 1 to 300 characters long. |
+| [`displayName`](#parameter-displayname) | string | API display name. |
 | [`name`](#parameter-name) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
 | [`path`](#parameter-path) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
 
@@ -40,19 +49,20 @@ This module deploys an API Management Service API.
 | :-- | :-- | :-- |
 | [`apiRevision`](#parameter-apirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
 | [`apiRevisionDescription`](#parameter-apirevisiondescription) | string | Description of the API Revision. |
-| [`apiType`](#parameter-apitype) | string | Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API. |
+| [`apiType`](#parameter-apitype) | string | Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API. |
 | [`apiVersion`](#parameter-apiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetName`](#parameter-apiversionsetname) | string | The name of the API version set to link. |
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
 | [`description`](#parameter-description) | string | Description of the API. May include HTML formatting tags. |
 | [`diagnostics`](#parameter-diagnostics) | array | Array of diagnostics to apply to the Service API. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
 | [`operations`](#parameter-operations) | array | The operations of the api. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
-| [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
-| [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
+| [`protocols`](#parameter-protocols) | array | Describes on which protocols the operations in this API can be invoked. |
+| [`serviceUrl`](#parameter-serviceurl) | string | Absolute URL of the backend service implementing this API. |
 | [`sourceApiId`](#parameter-sourceapiid) | string | API identifier of the source API. |
 | [`subscriptionKeyParameterNames`](#parameter-subscriptionkeyparameternames) | object | Protocols over which API is made available. |
 | [`subscriptionRequired`](#parameter-subscriptionrequired) | bool | Specifies whether an API or Product subscription is required for accessing the API. |
@@ -62,7 +72,7 @@ This module deploys an API Management Service API.
 
 ### Parameter: `displayName`
 
-API name. Must be 1 to 300 characters long.
+API display name.
 
 - Required: Yes
 - Type: string
@@ -104,7 +114,7 @@ Description of the API Revision.
 
 ### Parameter: `apiType`
 
-Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.
+Type of API to create.<p>* `http` creates a REST API<p>* `soap` creates a SOAP pass-through API<p>* `websocket` creates websocket API<p>* `graphql` creates GraphQL API.
 
 - Required: No
 - Type: string
@@ -165,7 +175,7 @@ Array of diagnostics to apply to the Service API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`loggerName`](#parameter-diagnosticsloggername) | string | The name of the logger. |
+| [`loggerName`](#parameter-diagnosticsloggername) | string | The name of the target logger. |
 
 **Conditional parameters**
 
@@ -183,13 +193,13 @@ Array of diagnostics to apply to the Service API.
 | [`backend`](#parameter-diagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
 | [`frontend`](#parameter-diagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
 | [`logClientIp`](#parameter-diagnosticslogclientip) | bool | Log the ClientIP. |
-| [`name`](#parameter-diagnosticsname) | string | Type of diagnostic resource. |
-| [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`name`](#parameter-diagnosticsname) | string | The identifier of the Diagnostic. |
+| [`samplingPercentage`](#parameter-diagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. |
 | [`verbosity`](#parameter-diagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
 
 ### Parameter: `diagnostics.loggerName`
 
-The name of the logger.
+The name of the target logger.
 
 - Required: Yes
 - Type: string
@@ -226,7 +236,7 @@ The format of the Operation Name for Application Insights telemetries. Required 
   ```Bicep
   [
     'Name'
-    'URI'
+    'Url'
   ]
   ```
 
@@ -236,6 +246,12 @@ Specifies for what type of messages sampling settings should not apply.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'allErrors'
+  ]
+  ```
 
 ### Parameter: `diagnostics.backend`
 
@@ -260,7 +276,7 @@ Log the ClientIP.
 
 ### Parameter: `diagnostics.name`
 
-Type of diagnostic resource.
+The identifier of the Diagnostic.
 
 - Required: No
 - Type: string
@@ -275,10 +291,12 @@ Type of diagnostic resource.
 
 ### Parameter: `diagnostics.samplingPercentage`
 
-Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `diagnostics.verbosity`
 
@@ -295,6 +313,14 @@ The verbosity level applied to traces emitted by trace policies.
   ]
   ```
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `format`
 
 Format of the Content in which the API is getting imported.
@@ -305,6 +331,11 @@ Format of the Content in which the API is getting imported.
 - Allowed:
   ```Bicep
   [
+    'graphql-link'
+    'grpc'
+    'grpc-link'
+    'odata'
+    'odata-link'
     'openapi'
     'openapi-link'
     'openapi+json'
@@ -339,7 +370,7 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-operationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-operationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
-| [`name`](#parameter-operationsname) | string | The name of the policy. |
+| [`name`](#parameter-operationsname) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-operationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Optional parameters**
@@ -349,7 +380,7 @@ The operations of the api.
 | [`description`](#parameter-operationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
 | [`policies`](#parameter-operationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-operationsrequest) | object | An entity containing request details. |
-| [`responses`](#parameter-operationsresponses) | array | An entity containing request details. |
+| [`responses`](#parameter-operationsresponses) | array | Array of Operation responses. |
 | [`templateParameters`](#parameter-operationstemplateparameters) | array | Collection of URL template parameters. |
 
 ### Parameter: `operations.displayName`
@@ -368,7 +399,7 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 
 ### Parameter: `operations.name`
 
-The name of the policy.
+The name of the operation.
 
 - Required: Yes
 - Type: string
@@ -398,15 +429,27 @@ The policies to apply to the operation.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`value`](#parameter-operationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`format`](#parameter-operationspoliciesformat) | string | Format of the policyContent. |
 | [`name`](#parameter-operationspoliciesname) | string | The name of the policy. |
-| [`value`](#parameter-operationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+### Parameter: `operations.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `operations.policies.format`
 
 Format of the policyContent.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -422,14 +465,7 @@ Format of the policyContent.
 
 The name of the policy.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `operations.policies.value`
-
-Contents of the Policy as defined by the format.
-
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `operations.request`
@@ -441,7 +477,7 @@ An entity containing request details.
 
 ### Parameter: `operations.responses`
 
-An entity containing request details.
+Array of Operation responses.
 
 - Required: No
 - Type: array
@@ -505,7 +541,7 @@ The name of the policy.
 
 ### Parameter: `protocols`
 
-Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.
+Describes on which protocols the operations in this API can be invoked.
 
 - Required: No
 - Type: array
@@ -515,10 +551,19 @@ Describes on which protocols the operations in this API can be invoked. - HTTP o
     'https'
   ]
   ```
+- Allowed:
+  ```Bicep
+  [
+    'http'
+    'https'
+    'ws'
+    'wss'
+  ]
+  ```
 
 ### Parameter: `serviceUrl`
 
-Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.
+Absolute URL of the backend service implementing this API.
 
 - Required: No
 - Type: string
@@ -556,7 +601,9 @@ Type of API.
   ```Bicep
   [
     'graphql'
+    'grpc'
     'http'
+    'odata'
     'soap'
     'websocket'
   ]
@@ -581,5 +628,9 @@ Criteria to limit import of WSDL to a subset of the document.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the API management service API. |
-| `resourceGroupName` | string | The resource group the API management service API was deployed to. |
+| `resourceGroupName` | string | The resource group the API Management service API was deployed into. |
 | `resourceId` | string | The resource ID of the API management service API. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

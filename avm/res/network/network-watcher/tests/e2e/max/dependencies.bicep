@@ -7,12 +7,6 @@ param virtualNetworkName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-@description('Required. The name of the first Network Security Group to create.')
-param firstNetworkSecurityGroupName string
-
-@description('Required. The name of the second Network Security Group to create.')
-param secondNetworkSecurityGroupName string
-
 @description('Required. The name of the Virtual Machine to create.')
 param virtualMachineName string
 
@@ -22,7 +16,7 @@ param password string = newGuid()
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -42,22 +36,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource firstNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
-  name: firstNetworkSecurityGroupName
-  location: location
-}
-
-resource secondNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
-  name: secondNetworkSecurityGroupName
-  location: location
-}
-
-resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
+resource networkInterface 'Microsoft.Network/networkInterfaces@2024-10-01' = {
   name: '${virtualMachineName}-nic'
   location: location
   properties: {
@@ -74,7 +58,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   }
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-08-01' = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   name: virtualMachineName
   location: location
   properties: {
@@ -115,7 +99,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-08-01' = {
   }
 }
 
-resource extension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
+resource extension 'Microsoft.Compute/virtualMachines/extensions@2025-04-01' = {
   name: 'NetworkWatcherAgent'
   parent: virtualMachine
   location: location
@@ -137,8 +121,8 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created Virtual Machine.')
 output virtualMachineResourceId string = virtualMachine.id
 
-@description('The resource ID of the first created Network Security Group.')
-output firstNetworkSecurityGroupResourceId string = firstNetworkSecurityGroup.id
+@description('The resource ID of the created Virtual Network.')
+output virtualNetworkResourceId string = virtualNetwork.id
 
-@description('The resource ID of the second created Network Security Group.')
-output secondNetworkSecurityGroupResourceId string = secondNetworkSecurityGroup.id
+@description('The resource ID of the created Virtual Network Subnet.')
+output virtualNetworkSubnetResourceId string = virtualNetwork.properties.subnets[0].id

@@ -24,7 +24,7 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// Pipeline is selecting random regions which don't have constraints when creating MySQL Flexible Servers
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
 
@@ -34,7 +34,7 @@ var enforcedLocation = 'northeurope'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -44,7 +44,6 @@ module nestedDependencies1 'dependencies1.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies1'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    location: enforcedLocation
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
     pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
@@ -57,7 +56,6 @@ module nestedDependencies2 'dependencies2.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: enforcedLocation
     geoBackupKeyVaultName: 'dep-${namePrefix}-kvp-${serviceShort}-${substring(uniqueString(baseTime), 0, 2)}'
     geoBackupManagedIdentityName: 'dep-${namePrefix}-msip-${serviceShort}'
     geoBackupLocation: nestedDependencies1.outputs.pairedRegionName
@@ -74,7 +72,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: enforcedLocation
   }
 }
 
@@ -141,6 +138,18 @@ module testDeployment '../../../main.bicep' = [
           collation: 'ascii_general_ci'
         }
       ]
+      configurations: [
+        {
+          name: 'max_connections'
+          source: 'user-override'
+          value: '200'
+        }
+        {
+          name: 'innodb_buffer_pool_size'
+          source: 'user-override'
+          value: '1073741824'
+        }
+      ]
       publicNetworkAccess: 'Enabled'
       firewallRules: [
         {
@@ -159,7 +168,7 @@ module testDeployment '../../../main.bicep' = [
           startIpAddress: '100.100.100.1'
         }
       ]
-      highAvailability: 'ZoneRedundant'
+      highAvailability: 'Disabled'
       storageAutoGrow: 'Enabled'
       version: '8.0.21'
       customerManagedKey: {

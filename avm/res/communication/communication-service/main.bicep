@@ -9,22 +9,22 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = 'global'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.Communication/communicationServices@2025-09-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -64,6 +64,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
+  'Communication and Email Service Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '09976791-48a7-449e-bb21-39d1a415f350'
+  )
 }
 
 var formattedRoleAssignments = [
@@ -82,7 +86,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.communication-communicationservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -100,7 +104,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource communicationService 'Microsoft.Communication/communicationServices@2023-04-01' = {
+resource communicationService 'Microsoft.Communication/communicationServices@2025-09-01' = {
   name: name
   location: location
   identity: identity
@@ -115,9 +119,9 @@ resource communicationService_lock 'Microsoft.Authorization/locks@2020-05-01' = 
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: communicationService
 }
@@ -189,3 +193,6 @@ output location string = communicationService.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = communicationService.?identity.?principalId
+
+@description('The endpoint (hostname) of the communication service.')
+output endpoint string = communicationService.properties.hostName

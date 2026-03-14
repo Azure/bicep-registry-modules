@@ -58,7 +58,7 @@ var createVirtualMachine = createVirtualNetwork && virtualMachineConfiguration.?
 
 var createDefaultNsg = virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId == null
 
-var subnetResourceId = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : null
+var subnetResourceId = createVirtualNetwork ? virtualNetwork!.outputs.subnetResourceIds[0] : null
 
 var mlTargetSubResource = 'amlworkspace'
 
@@ -70,6 +70,65 @@ var mlPrivateDnsZones = {
 var storagePrivateDnsZones = {
   'privatelink.blob.${environment().suffixes.storage}': 'blob'
   'privatelink.file.${environment().suffixes.storage}': 'file'
+}
+
+// Location pairs mapping for replication (no primary == secondary)
+var locationPairs = {
+  // North America
+  canadacentral: 'centralus'
+  canadaeast: 'canadacentral'
+  centralus: 'eastus'
+  eastus: 'westus'
+  eastus2: 'westus2'
+  northcentralus: 'centralus'
+  southcentralus: 'westus'
+  westcentralus: 'westus'
+  westus: 'westus2'
+  westus2: 'westus'
+  westus3: 'westus2'
+  // South America
+  brazilsouth: 'brazilsoutheast'
+  brazilsoutheast: 'brazilsouth'
+  // Europe
+  francecentral: 'westeurope'
+  francesouth: 'francecentral'
+  germanynorth: 'northeurope'
+  germanywestcentral: 'northeurope'
+  italynorth: 'francecentral'
+  northeurope: 'westeurope'
+  norwayeast: 'northeurope'
+  norwaywest: 'northeurope'
+  polandcentral: 'northeurope'
+  uksouth: 'westeurope'
+  spaincentral: 'francecentral'
+  swedencentral: 'northeurope'
+  swedensouth: 'northeurope'
+  switzerlandnorth: 'westeurope'
+  switzerlandwest: 'westeurope'
+  westeurope: 'northeurope'
+  ukwest: 'uksouth'
+  // Middle East
+  qatarcentral: 'uaecentral'
+  uaecentral: 'uaenorth'
+  uaenorth: 'qatarcentral'
+  // India
+  centralindia: 'southindia'
+  southindia: 'centralindia'
+  // Asia Pacific
+  eastasia: 'japaneast'
+  japaneast: 'koreacentral'
+  japanwest: 'japaneast'
+  koreacentral: 'eastasia'
+  koreasouth: 'koreacentral'
+  southeastasia: 'eastasia'
+  // Oceania
+  australiacentral: 'australiaeast'
+  australiacentral2: 'australiacentral'
+  australiaeast: 'australiasoutheast'
+  australiasoutheast: 'australiaeast'
+  // Africa
+  southafricanorth: 'southafricawest'
+  southafricawest: 'southafricanorth'
 }
 
 // ============== //
@@ -103,7 +162,7 @@ module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zon
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+          virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
         }
       ]
     }
@@ -118,13 +177,13 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
-          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+          virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
         }
       ]
       roleAssignments: managedIdentityName != null
         ? [
             {
-              principalId: userAssignedIdentity.properties.principalId
+              principalId: userAssignedIdentity!.properties.principalId
               roleDefinitionIdOrName: 'Contributor'
               principalType: 'ServicePrincipal'
             }
@@ -178,7 +237,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.4.0' = if (cr
           addressPrefix: virtualNetworkConfiguration.?subnet.addressPrefix ?? '10.0.0.0/24'
           name: virtualNetworkConfiguration.?subnet.name ?? 'default'
           networkSecurityGroupResourceId: createDefaultNsg
-            ? defaultNetworkSecurityGroup.outputs.resourceId
+            ? defaultNetworkSecurityGroup!.outputs.resourceId
             : virtualNetworkConfiguration.?subnet.networkSecurityGroupResourceId
         }
       ],
@@ -203,7 +262,7 @@ module bastion 'br/public:avm/res/network/bastion-host:0.2.2' = if (createBastio
     location: location
     skuName: bastionConfiguration.?sku ?? 'Standard'
     enableTelemetry: enableTelemetry
-    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
     disableCopyPaste: bastionConfiguration.?disableCopyPaste
     enableFileCopy: bastionConfiguration.?enableFileCopy
     enableIpConnect: bastionConfiguration.?enableIpConnect
@@ -232,7 +291,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.5.3' = if (cr
           {
             name: virtualMachineConfiguration.?nicConfigurationConfiguration.ipConfigName ?? 'nic-vm-${name}-ipconfig'
             privateIPAllocationMethod: virtualMachineConfiguration.?nicConfigurationConfiguration.privateIPAllocationMethod ?? 'Dynamic'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[0]
           }
         ]
       }
@@ -276,9 +335,15 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: managedIdentityName ?? 'null'
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsConfiguration.?name ?? 'log-${name}'
   location: location
+  properties: {
+    replication: {
+      enabled: true
+      location: locationPairs[location]
+    }
+  }
   tags: tags
 }
 
@@ -289,7 +354,7 @@ resource resourceGroup_roleAssignment 'Microsoft.Authorization/roleAssignments@2
       'Microsoft.Authorization/roleDefinitions',
       'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
     )
-    principalId: userAssignedIdentity.properties.principalId
+    principalId: userAssignedIdentity!.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -313,12 +378,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.6.2' = {
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Key Vault Administrator'
             principalType: 'ServicePrincipal'
           }
@@ -366,17 +431,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Storage Blob Data Contributor'
             principalType: 'ServicePrincipal'
           }
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
             principalType: 'ServicePrincipal'
           }
@@ -388,7 +453,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   dependsOn: storageAccount_privateDnsZones
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryConfiguration.?name ?? 'cr${name}'
@@ -399,15 +464,16 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.3.1' =
     networkRuleBypassOptions: 'AzureServices'
     zoneRedundancy: 'Enabled'
     trustPolicyStatus: containerRegistryConfiguration.?trustPolicyStatus ?? 'enabled'
+    replications: containerRegistryConfiguration.?replications
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'AcrPull'
             principalType: 'ServicePrincipal'
           }
@@ -428,7 +494,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.3.1' = {
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
@@ -486,7 +552,7 @@ module workspaceHub 'br/public:avm/res/machine-learning-services/workspace:0.5.0
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
@@ -511,7 +577,7 @@ module workspaceProject 'br/public:avm/res/machine-learning-services/workspace:0
     roleAssignments: managedIdentityName != null
       ? [
           {
-            principalId: userAssignedIdentity.properties.principalId
+            principalId: userAssignedIdentity!.properties.principalId
             roleDefinitionIdOrName: 'Contributor'
             principalType: 'ServicePrincipal'
           }
@@ -592,28 +658,28 @@ output workspaceProjectResourceId string = workspaceProject.outputs.resourceId
 output workspaceProjectName string = workspaceProject.outputs.name
 
 @description('The resource ID of the virtual network.')
-output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork.outputs.resourceId : ''
+output virtualNetworkResourceId string = createVirtualNetwork ? virtualNetwork!.outputs.resourceId : ''
 
 @description('The name of the virtual network.')
-output virtualNetworkName string = createVirtualNetwork ? virtualNetwork.outputs.name : ''
+output virtualNetworkName string = createVirtualNetwork ? virtualNetwork!.outputs.name : ''
 
 @description('The resource ID of the subnet in the virtual network.')
-output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork.outputs.subnetResourceIds[0] : ''
+output virtualNetworkSubnetResourceId string = createVirtualNetwork ? virtualNetwork!.outputs.subnetResourceIds[0] : ''
 
 @description('The name of the subnet in the virtual network.')
-output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork.outputs.subnetNames[0] : ''
+output virtualNetworkSubnetName string = createVirtualNetwork ? virtualNetwork!.outputs.subnetNames[0] : ''
 
 @description('The resource ID of the Azure Bastion host.')
-output bastionResourceId string = createBastion ? bastion.outputs.resourceId : ''
+output bastionResourceId string = createBastion ? bastion!.outputs.resourceId : ''
 
 @description('The name of the Azure Bastion host.')
-output bastionName string = createBastion ? bastion.outputs.name : ''
+output bastionName string = createBastion ? bastion!.outputs.name : ''
 
 @description('The resource ID of the virtual machine.')
-output virtualMachineResourceId string = createVirtualMachine ? virtualMachine.outputs.resourceId : ''
+output virtualMachineResourceId string = createVirtualMachine ? virtualMachine!.outputs.resourceId : ''
 
 @description('The name of the virtual machine.')
-output virtualMachineName string = createVirtualMachine ? virtualMachine.outputs.name : ''
+output virtualMachineName string = createVirtualMachine ? virtualMachine!.outputs.name : ''
 
 // ================ //
 // Definitions      //
@@ -657,6 +723,7 @@ type storageAccountConfigurationType = {
   allowSharedKeyAccess: bool?
 }
 
+import { replicationType } from 'br/public:avm/res/container-registry/registry:0.9.3'
 @export()
 @description('The type for a container registry configuration.')
 type containerRegistryConfigurationType = {
@@ -665,6 +732,9 @@ type containerRegistryConfigurationType = {
 
   @description('Optional. Whether the trust policy is enabled for the container registry. Defaults to \'enabled\'.')
   trustPolicyStatus: 'enabled' | 'disabled'?
+
+  @description('Optional. The list of container replications to create.')
+  replications: replicationType[]?
 }
 
 @export()

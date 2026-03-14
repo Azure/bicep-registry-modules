@@ -1,6 +1,19 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an App Managed Environment (also known as a Container App Environment).
+
+You can reference the module as follows:
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
@@ -13,13 +26,13 @@ This module deploys an App Managed Environment (also known as a Container App En
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
-| `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
-| `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Usage examples
 
@@ -33,11 +46,14 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [Enable public access](#example-4-enable-public-access)
-- [WAF-aligned](#example-5-waf-aligned)
+- [With an external certificate](#example-5-with-an-external-certificate)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _No App Logging_
 
 This instance deploys the module to use Azure Monitor for logging.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/azure-monitor]
 
 
 <details>
@@ -46,7 +62,6 @@ This instance deploys the module to use Azure Monitor for logging.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'ameamon001'
@@ -165,6 +180,8 @@ param workloadProfiles = [
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -172,7 +189,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'amemin001'
@@ -280,6 +296,8 @@ param workloadProfiles = [
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -287,7 +305,6 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'amemax001'
@@ -295,10 +312,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     certificate: {
       certificateKeyVaultProperties: {
@@ -360,13 +374,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       {
         accessMode: 'ReadWrite'
         kind: 'SMB'
-        shareName: 'smbfileshare'
+        name: 'smbfileshare'
         storageAccountName: '<storageAccountName>'
       }
       {
         accessMode: 'ReadWrite'
         kind: 'NFS'
-        shareName: 'nfsfileshare'
+        name: 'nfsfileshare'
         storageAccountName: '<storageAccountName>'
       }
     ]
@@ -409,10 +423,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "certificate": {
@@ -504,13 +515,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         {
           "accessMode": "ReadWrite",
           "kind": "SMB",
-          "shareName": "smbfileshare",
+          "name": "smbfileshare",
           "storageAccountName": "<storageAccountName>"
         },
         {
           "accessMode": "ReadWrite",
           "kind": "NFS",
-          "shareName": "nfsfileshare",
+          "name": "nfsfileshare",
           "storageAccountName": "<storageAccountName>"
         }
       ]
@@ -551,10 +562,7 @@ param name = 'amemax001'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param certificate = {
   certificateKeyVaultProperties: {
@@ -616,13 +624,13 @@ param storages = [
   {
     accessMode: 'ReadWrite'
     kind: 'SMB'
-    shareName: 'smbfileshare'
+    name: 'smbfileshare'
     storageAccountName: '<storageAccountName>'
   }
   {
     accessMode: 'ReadWrite'
     kind: 'NFS'
-    shareName: 'nfsfileshare'
+    name: 'nfsfileshare'
     storageAccountName: '<storageAccountName>'
   }
 ]
@@ -647,6 +655,8 @@ param workloadProfiles = [
 
 This instance deploys the module with public access enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public-access]
+
 
 <details>
 
@@ -654,18 +664,10 @@ This instance deploys the module with public access enabled.
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
-    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
@@ -702,15 +704,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
-    "appLogsConfiguration": {
-      "value": {
-        "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
-      }
-    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -759,13 +752,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
-param appLogsConfiguration = {
-  destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
-}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
@@ -786,9 +772,11 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 5: _With an external certificate_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module with its certificate being located in a different resource group.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secondary-rg]
 
 
 <details>
@@ -797,22 +785,177 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    name: 'amecert001'
+    // Non-required parameters
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amecert'
+    }
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
+    internal: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "amecert001"
+    },
+    // Non-required parameters
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amecert"
+      }
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param name = 'amecert001'
+// Non-required parameters
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amecert'
+}
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
   params: {
     // Required parameters
     name: 'amewaf001'
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
+    managedIdentities: {
+      systemAssigned: true
+    }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     tags: {
@@ -851,10 +994,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "dockerBridgeCidr": {
@@ -868,6 +1008,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "internal": {
       "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -910,15 +1055,15 @@ param name = 'amewaf001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
+param managedIdentities = {
+  systemAssigned: true
+}
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param tags = {
@@ -953,7 +1098,7 @@ param workloadProfiles = [
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -969,12 +1114,16 @@ param workloadProfiles = [
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
+| [`daprConfiguration`](#parameter-daprconfiguration) | object | The configuration of Dapr component. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ingressConfiguration`](#parameter-ingressconfiguration) | object | Ingress configuration for the Managed Environment. |
+| [`kedaConfiguration`](#parameter-kedaconfiguration) | object | The configuration of Keda component. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerAuthentication`](#parameter-peerauthentication) | object | Peer authentication settings for the Managed Environment. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1011,11 +1160,10 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `internal`
 
-Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: bool
@@ -1043,7 +1191,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `appInsightsConnectionString`
 
@@ -1059,61 +1206,70 @@ The AppLogsConfiguration for the Managed Environment.
 
 - Required: No
 - Type: object
+- Discriminator: `destination`
 
-**Conditional parameters**
+<h4>The available variants are:</h4>
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The Log Analytics configuration. Required if `destination` is `log-analytics`. |
+| Variant | Description |
+| :-- | :-- |
+| [`azure-monitor`](#variant-applogsconfigurationdestination-azure-monitor) | The type for the App Logs Configuration if using azure-monitor. |
+| [`log-analytics`](#variant-applogsconfigurationdestination-log-analytics) | The type for the App Logs Configuration if using log-analytics. |
 
-**Optional parameters**
+### Variant: `appLogsConfiguration.destination-azure-monitor`
+The type for the App Logs Configuration if using azure-monitor.
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
-
-The Log Analytics configuration. Required if `destination` is `log-analytics`.
-
-- Required: No
-- Type: object
+To use this variant, set the property `destination` to `azure-monitor`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The Log Analytics Workspace ID. |
-| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
+| [`destination`](#parameter-applogsconfigurationdestination-azure-monitordestination) | string | The destination of the logs. |
 
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
-
-The Log Analytics Workspace ID.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
-
-The shared key of the Log Analytics workspace.
-
-- Required: Yes
-- Type: securestring
-
-### Parameter: `appLogsConfiguration.destination`
+### Parameter: `appLogsConfiguration.destination-azure-monitor.destination`
 
 The destination of the logs.
 
-- Required: No
+- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
     'azure-monitor'
-    'log-analytics'
-    'none'
   ]
   ```
+
+### Variant: `appLogsConfiguration.destination-log-analytics`
+The type for the App Logs Configuration if using log-analytics.
+
+To use this variant, set the property `destination` to `log-analytics`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination-log-analyticsdestination) | string | The destination of the logs. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationdestination-log-analyticsloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.destination`
+
+The destination of the logs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'log-analytics'
+  ]
+  ```
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.logAnalyticsWorkspaceResourceId`
+
+Existing Log Analytics Workspace resource ID.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `certificate`
 
@@ -1127,10 +1283,12 @@ A Managed Environment Certificate.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
-| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
 | [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`location`](#parameter-certificatelocation) | string | The location for the resource. |
 | [`name`](#parameter-certificatename) | string | The name of the certificate. |
+| [`tags`](#parameter-certificatetags) | object | Tags of the resource. |
 
 ### Parameter: `certificate.certificateKeyVaultProperties`
 
@@ -1165,7 +1323,7 @@ A key vault URL referencing the wildcard certificate that will be used for the c
 The password of the certificate.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `certificate.certificateType`
 
@@ -1188,12 +1346,26 @@ The value of the certificate. PFX or PEM blob.
 - Required: No
 - Type: string
 
+### Parameter: `certificate.location`
+
+The location for the resource.
+
+- Required: No
+- Type: string
+
 ### Parameter: `certificate.name`
 
 The name of the certificate.
 
 - Required: No
 - Type: string
+
+### Parameter: `certificate.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `certificatePassword`
 
@@ -1209,7 +1381,6 @@ Certificate to use for the custom domain. PFX or PEM.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `daprAIConnectionString`
 
@@ -1227,6 +1398,13 @@ Azure Monitor instrumentation key used by Dapr to export Service to Service comm
 - Type: securestring
 - Default: `''`
 
+### Parameter: `daprConfiguration`
+
+The configuration of Dapr component.
+
+- Required: No
+- Type: object
+
 ### Parameter: `dnsSuffix`
 
 DNS suffix for the environment domain.
@@ -1242,6 +1420,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `ingressConfiguration`
+
+Ingress configuration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+### Parameter: `kedaConfiguration`
+
+The configuration of Keda component.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -1264,6 +1456,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1283,6 +1476,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1321,7 +1521,13 @@ Open Telemetry configuration.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+### Parameter: `peerAuthentication`
+
+Peer authentication settings for the Managed Environment.
+
+- Required: No
+- Type: object
 
 ### Parameter: `peerTrafficEncryption`
 
@@ -1462,7 +1668,7 @@ The list of storages to mount on the environment.
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
 | [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
-| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`name`](#parameter-storagesname) | string | File share name. |
 | [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
 
 ### Parameter: `storages.accessMode`
@@ -1493,7 +1699,7 @@ Type of storage: "SMB" or "NFS".
   ]
   ```
 
-### Parameter: `storages.shareName`
+### Parameter: `storages.name`
 
 File share name.
 
@@ -1542,7 +1748,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

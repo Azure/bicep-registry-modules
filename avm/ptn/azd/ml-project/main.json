@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3918865125256539339"
+      "version": "0.41.2.15936",
+      "templateHash": "15920841578357904337"
     },
     "name": "Azd Machine Learning workspace",
-    "description": "Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
+    "description": "DEPRECATED - Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -197,7 +197,7 @@
     },
     "project": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-project', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4002,7 +4002,7 @@
     },
     "mlServiceRoleAssigned": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-roleassignment', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {

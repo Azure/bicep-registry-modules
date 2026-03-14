@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15848218260506856293"
+      "version": "0.41.2.15936",
+      "templateHash": "12293214947057934525"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set."
@@ -53,7 +53,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -92,21 +92,48 @@
       "metadata": {
         "description": "Required. The credentials are stored for this upstream or login server."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]"
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-credset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "credentialSet": {
       "type": "Microsoft.ContainerRegistry/registries/credentialSets",
-      "apiVersion": "2023-11-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "identity": "[variables('identity')]",
       "properties": {
@@ -143,7 +170,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('credentialSet', '2023-11-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('credentialSet', '2025-11-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

@@ -2,6 +2,14 @@
 
 This module deploys a Virtual WAN.
 
+You can reference the module as follows:
+```bicep
+module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,11 +21,11 @@ This module deploys a Virtual WAN.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/virtualWans` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualWans) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Network/virtualWans` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualwans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualWans)</li></ul> |
 
 ## Usage examples
 
@@ -35,6 +43,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -42,7 +52,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     name: 'nvwmin001'
   }
@@ -88,6 +97,8 @@ param name = 'nvwmin001'
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -95,14 +106,11 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     name: 'nvwmax001'
     // Non-required parameters
     allowBranchToBranchTraffic: true
-    allowVnetToVnetTraffic: true
-    disableVpnEncryption: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -155,12 +163,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     },
     // Non-required parameters
     "allowBranchToBranchTraffic": {
-      "value": true
-    },
-    "allowVnetToVnetTraffic": {
-      "value": true
-    },
-    "disableVpnEncryption": {
       "value": true
     },
     "location": {
@@ -221,8 +223,6 @@ using 'br/public:avm/res/network/virtual-wan:<version>'
 param name = 'nvwmax001'
 // Non-required parameters
 param allowBranchToBranchTraffic = true
-param allowVnetToVnetTraffic = true
-param disableVpnEncryption = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -262,6 +262,8 @@ param type = 'Basic'
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -269,14 +271,11 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
-  name: 'virtualWanDeployment'
   params: {
     // Required parameters
     name: 'nvwwaf001'
     // Non-required parameters
     allowBranchToBranchTraffic: true
-    allowVnetToVnetTraffic: true
-    disableVpnEncryption: true
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -307,12 +306,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:<version>' = {
     "allowBranchToBranchTraffic": {
       "value": true
     },
-    "allowVnetToVnetTraffic": {
-      "value": true
-    },
-    "disableVpnEncryption": {
-      "value": true
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -341,8 +334,6 @@ using 'br/public:avm/res/network/virtual-wan:<version>'
 param name = 'nvwwaf001'
 // Non-required parameters
 param allowBranchToBranchTraffic = true
-param allowVnetToVnetTraffic = true
-param disableVpnEncryption = true
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -367,8 +358,6 @@ param type = 'Basic'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowBranchToBranchTraffic`](#parameter-allowbranchtobranchtraffic) | bool | True if branch to branch traffic is allowed. |
-| [`allowVnetToVnetTraffic`](#parameter-allowvnettovnettraffic) | bool | True if VNET to VNET traffic is allowed. |
-| [`disableVpnEncryption`](#parameter-disablevpnencryption) | bool | VPN encryption to be disabled or not. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -389,23 +378,7 @@ True if branch to branch traffic is allowed.
 
 - Required: No
 - Type: bool
-- Default: `False`
-
-### Parameter: `allowVnetToVnetTraffic`
-
-True if VNET to VNET traffic is allowed.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `disableVpnEncryption`
-
-VPN encryption to be disabled or not.
-
-- Required: No
-- Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -436,6 +409,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -455,6 +429,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -600,8 +581,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

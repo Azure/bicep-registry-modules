@@ -7,12 +7,12 @@ param managedIdentityName string
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {

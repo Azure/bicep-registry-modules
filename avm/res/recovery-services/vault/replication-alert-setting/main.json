@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7655757666522414851"
+      "version": "0.41.2.15936",
+      "templateHash": "6579617173941959097"
     },
     "name": "Recovery Services Vault Replication Alert Settings",
     "description": "This module deploys a Recovery Services Vault Replication Alert Settings."

@@ -8,13 +8,16 @@ param privateDnsZoneName string
 param name string
 
 @description('Optional. The list of AAAA records in the record set.')
-param aaaaRecords array?
+param aaaaRecords resourceInput<'Microsoft.Network/privateDnsZones/AAAA@2024-06-01'>.properties.aaaaRecords?
 
 @description('Optional. The metadata attached to the record set.')
-param metadata object?
+param metadata resourceInput<'Microsoft.Network/privateDnsZones/AAAA@2024-06-01'>.properties.metadata?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
@@ -52,6 +55,24 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.nw-privdnszoneaaaa.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateDnsZoneName

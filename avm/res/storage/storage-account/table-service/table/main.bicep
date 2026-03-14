@@ -5,12 +5,15 @@ metadata description = 'This module deploys a Storage Account Table.'
 @description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Required. Name of the table.')
 param name string
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -61,15 +64,34 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-table.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 
-  resource tableServices 'tableServices@2024-01-01' existing = {
+  resource tableServices 'tableServices@2025-06-01' existing = {
     name: 'default'
   }
 }
 
-resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2025-06-01' = {
   name: name
   parent: storageAccount::tableServices
 }
@@ -90,11 +112,11 @@ resource table_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-@description('The name of the deployed file share service.')
+@description('The name of the deployed table.')
 output name string = table.name
 
-@description('The resource ID of the deployed file share service.')
+@description('The resource ID of the deployed table.')
 output resourceId string = table.id
 
-@description('The resource group of the deployed file share service.')
+@description('The resource group of the deployed table.')
 output resourceGroupName string = resourceGroup().name

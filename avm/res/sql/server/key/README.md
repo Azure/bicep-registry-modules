@@ -10,9 +10,9 @@ This module deploys an Azure SQL Server Key.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Sql/servers/keys` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Sql/servers/keys` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys)</li></ul> |
 
 ## Parameters
 

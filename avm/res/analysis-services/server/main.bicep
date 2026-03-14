@@ -11,7 +11,7 @@ param skuName string = 'S0'
 param skuCapacity int = 1
 
 @description('Optional. The inbound firewall rules to define on the server. If not specified, firewall is disabled.')
-param firewallSettings object = {
+param firewallSettings resourceInput<'Microsoft.AnalysisServices/servers@2017-08-01'>.properties.ipV4FirewallSettings = {
   firewallRules: [
     {
       firewallRuleName: 'AllowFromAll'
@@ -25,15 +25,15 @@ param firewallSettings object = {
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -104,9 +104,9 @@ resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: server
 }

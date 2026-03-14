@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "458512009828846782"
+      "version": "0.41.2.15936",
+      "templateHash": "17270492693709645569"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -98,7 +98,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -140,7 +140,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -181,7 +181,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -303,7 +303,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -328,12 +328,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -354,7 +361,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -481,6 +488,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
           }
         },
@@ -495,7 +505,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -570,7 +580,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -599,10 +609,13 @@
     },
     "authenticationCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/authenticationCertificates"
+        },
         "description": "Optional. Authentication certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "autoscaleMaxCapacity": {
       "type": "int",
@@ -620,24 +633,33 @@
     },
     "backendAddressPools": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendAddressPools"
+        },
         "description": "Optional. Backend address pool of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "backendHttpSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendHttpSettingsCollection"
+        },
         "description": "Optional. Backend http settings of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "customErrorConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/customErrorConfigurations"
+        },
         "description": "Optional. Custom error configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableFips": {
       "type": "bool",
@@ -662,24 +684,33 @@
     },
     "frontendIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/frontendIPConfigurations"
+        },
         "description": "Optional. Frontend IP addresses of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "frontendPorts": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/frontendPorts"
+        },
         "description": "Optional. Frontend ports of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "gatewayIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/gatewayIPConfigurations"
+        },
         "description": "Optional. Subnets of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableRequestBuffering": {
       "type": "bool",
@@ -695,19 +726,35 @@
         "description": "Optional. Enable response buffering."
       }
     },
+    "entraJWTValidationConfigs": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/entraJWTValidationConfigs"
+        },
+        "description": "Optional. Entra JWT validation configurations."
+      },
+      "defaultValue": []
+    },
     "httpListeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/httpListeners"
+        },
         "description": "Optional. Http listeners of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "loadDistributionPolicies": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/loadDistributionPolicies"
+        },
         "description": "Optional. Load distribution policies of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "privateEndpoints": {
       "type": "array",
@@ -721,38 +768,53 @@
     },
     "privateLinkConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/privateLinkConfigurations"
+        },
         "description": "Optional. PrivateLink configurations on application gateway."
-      }
+      },
+      "defaultValue": []
     },
     "probes": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/probes"
+        },
         "description": "Optional. Probes of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "redirectConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/redirectConfigurations"
+        },
         "description": "Optional. Redirect configurations of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "requestRoutingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/requestRoutingRules"
+        },
         "description": "Optional. Request routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "rewriteRuleSets": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/rewriteRuleSets"
+        },
         "description": "Optional. Rewrite rules for the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sku": {
       "type": "string",
@@ -770,57 +832,33 @@
       "type": "int",
       "defaultValue": 2,
       "minValue": 0,
-      "maxValue": 10,
+      "maxValue": 125,
       "metadata": {
         "description": "Optional. The number of Application instances to be configured."
       }
     },
     "sslCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslCertificates"
+        },
         "description": "Optional. SSL certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "sslPolicyCipherSuites": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslPolicy/properties/cipherSuites"
+        },
+        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
+      },
       "defaultValue": [
         "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
         "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
-      ],
-      "allowedValues": [
-        "TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
-        "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-        "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-        "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_RSA_WITH_AES_128_CBC_SHA256",
-        "TLS_RSA_WITH_AES_128_GCM_SHA256",
-        "TLS_RSA_WITH_AES_256_CBC_SHA",
-        "TLS_RSA_WITH_AES_256_CBC_SHA256",
-        "TLS_RSA_WITH_AES_256_GCM_SHA384"
-      ],
-      "metadata": {
-        "description": "Optional. Ssl cipher suites to be enabled in the specified order to application gateway."
-      }
+      ]
     },
     "sslPolicyMinProtocolVersion": {
       "type": "string",
@@ -864,41 +902,61 @@
     },
     "sslProfiles": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/sslProfiles"
+        },
         "description": "Optional. SSL profiles of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedClientCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/trustedClientCertificates"
+        },
         "description": "Optional. Trusted client certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "trustedRootCertificates": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/trustedRootCertificates"
+        },
         "description": "Optional. Trusted Root certificates of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "urlPathMaps": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/urlPathMaps"
+        },
         "description": "Optional. URL path map of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
-    "zones": {
+    "availabilityZones": {
       "type": "array",
+      "items": {
+        "type": "int"
+      },
       "defaultValue": [
         1,
         2,
         3
       ],
+      "allowedValues": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting where the resource needs to come from."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
       }
     },
     "diagnosticSettings": {
@@ -930,31 +988,43 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/tags"
+        },
         "description": "Optional. Resource tags."
-      }
+      },
+      "nullable": true
     },
     "backendSettingsCollection": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/backendSettingsCollection"
+        },
         "description": "Optional. Backend settings of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "listeners": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/listeners"
+        },
         "description": "Optional. Listeners of the application gateway resource. For default limits, see [Application Gateway limits](https://learn.microsoft.com/en-us/azure/azure-subscription-service-limits#application-gateway-limits)."
-      }
+      },
+      "defaultValue": []
     },
     "routingRules": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/applicationGateways@2025-05-01#properties/properties/properties/routingRules"
+        },
         "description": "Optional. Routing rules of the application gateway resource."
-      }
+      },
+      "defaultValue": []
     },
     "enableTelemetry": {
       "type": "bool",
@@ -973,12 +1043,13 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
@@ -987,7 +1058,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-appgw.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1006,23 +1077,23 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', if(and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', parameters('sku'), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
-      "zones": "[parameters('zones')]"
+      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'entraJWTValidationConfigs', parameters('entraJWTValidationConfigs'), 'firewallPolicy', if(and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', parameters('sku'), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
+      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]"
     },
     "applicationGateway_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "applicationGateway"
@@ -1035,7 +1106,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1076,7 +1147,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/applicationGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/applicationGateways', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1097,7 +1168,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-applicationGateway-PrEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -1153,8 +1224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "12389807800450456797"
+              "version": "0.41.2.15936",
+              "templateHash": "18436885663402767850"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1181,115 +1252,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "ipConfigurationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "privateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "customDnsConfigType": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of a private dns zone group."
               }
             },
             "lockType": {
@@ -1313,12 +1277,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -1340,6 +1311,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a private DNS zone group configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
@@ -1416,7 +1388,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -1453,13 +1425,23 @@
             },
             "ipConfigurations": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/ipConfigurationType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
+                },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-              }
+              },
+              "nullable": true
+            },
+            "ipVersionType": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                },
+                "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+              },
+              "defaultValue": "IPv4"
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -1494,40 +1476,43 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
+                },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-              }
+              },
+              "nullable": true
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
+                },
                 "description": "Optional. Custom DNS configurations."
-              }
+              },
+              "nullable": true
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "privateLinkServiceConnections": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/privateLinkServiceConnectionType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
+                },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",
@@ -1562,8 +1547,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1581,7 +1566,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1602,18 +1587,19 @@
                 "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
-                }
+                },
+                "ipVersionType": "[parameters('ipVersionType')]"
               }
             },
             "privateEndpoint_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -1626,7 +1612,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1644,7 +1630,7 @@
             "privateEndpoint_privateDnsZoneGroup": {
               "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1669,8 +1655,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "13997305779829540948"
+                      "version": "0.41.2.15936",
+                      "templateHash": "9935179114830442414"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -1694,7 +1680,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a private DNS zone group configuration."
                       }
                     }
                   },
@@ -1724,33 +1711,30 @@
                       }
                     }
                   },
-                  "variables": {
-                    "copy": [
-                      {
-                        "name": "privateDnsZoneConfigsVar",
-                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
-                        "input": {
-                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
-                          "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
-                          }
-                        }
-                      }
-                    ]
-                  },
                   "resources": {
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
-                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                        "copy": [
+                          {
+                            "name": "privateDnsZoneConfigs",
+                            "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                            "input": {
+                              "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId, '/')))]",
+                              "properties": {
+                                "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigs')].privateDnsZoneResourceId]"
+                              }
+                            }
+                          }
+                        ]
                       }
                     }
                   },
@@ -1811,14 +1795,15 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/customDnsConfigType"
-              },
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
+                  "output": true
+                },
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
@@ -1876,7 +1861,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2024-05-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2025-05-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",

@@ -7,12 +7,12 @@ param keyVaultName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
   name: keyVaultName
   location: location
   properties: {
@@ -30,7 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-02-01' = {
+  resource key 'keys@2024-12-01-preview' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

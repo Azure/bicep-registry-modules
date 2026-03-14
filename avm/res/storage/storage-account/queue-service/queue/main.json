@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "4374879850096827769"
+      "version": "0.41.2.15936",
+      "templateHash": "12812824360066955039"
     },
     "name": "Storage Account Queues",
     "description": "This module deploys a Storage Account Queue."
@@ -83,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -121,6 +121,13 @@
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -151,18 +158,38 @@
     "storageAccount::queueServices": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/queueServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.storage-queue.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('storageAccountName')]"
     },
     "queue": {
       "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
       "properties": {
         "metadata": "[parameters('metadata')]"
@@ -175,7 +202,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}/queues/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

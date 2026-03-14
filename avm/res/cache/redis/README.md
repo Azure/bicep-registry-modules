@@ -2,6 +2,14 @@
 
 This module deploys a Redis Cache.
 
+You can reference the module as follows:
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -14,19 +22,19 @@ This module deploys a Redis Cache.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Cache/redis` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis) |
-| `Microsoft.Cache/redis/accessPolicies` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies) |
-| `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicyAssignments) |
-| `Microsoft.Cache/redis/firewallRules` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules) |
-| `Microsoft.Cache/redis/linkedServers` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Cache/redis` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis)</li></ul> |
+| `Microsoft.Cache/redis/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies)</li></ul> |
+| `Microsoft.Cache/redis/accessPolicyAssignments` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicyAssignments)</li></ul> |
+| `Microsoft.Cache/redis/firewallRules` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules)</li></ul> |
+| `Microsoft.Cache/redis/linkedServers` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_linkedservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-12-01-preview/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -50,6 +58,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with clustering enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/clustering]
+
 
 <details>
 
@@ -57,7 +67,6 @@ This instance deploys the module with clustering enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crclst001'
@@ -139,6 +148,8 @@ param skuName = 'Premium'
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -146,7 +157,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmin001'
@@ -203,6 +213,8 @@ param location = '<location>'
 
 This instance deploys the module with EntraID authentication.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/entra-id]
+
 
 <details>
 
@@ -210,7 +222,6 @@ This instance deploys the module with EntraID authentication.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crentrid001'
@@ -321,6 +332,8 @@ param redisConfiguration = {
 
 This instance deploys the module saving all its secrets in a key vault.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kv-secrets]
+
 
 <details>
 
@@ -328,7 +341,6 @@ This instance deploys the module saving all its secrets in a key vault.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'kvref'
@@ -414,6 +426,8 @@ param secretsExportConfiguration = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -421,11 +435,14 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crmax001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -542,11 +559,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
+    zonalAllocationPolicy: 'UserDefined'
     zoneRedundant: true
-    zones: [
-      1
-      2
-    ]
   }
 }
 ```
@@ -568,6 +582,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crmax001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2
+      ]
+    },
     "capacity": {
       "value": 2
     },
@@ -712,14 +732,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "resourceType": "Redis Cache"
       }
     },
+    "zonalAllocationPolicy": {
+      "value": "UserDefined"
+    },
     "zoneRedundant": {
       "value": true
-    },
-    "zones": {
-      "value": [
-        1,
-        2
-      ]
     }
   }
 }
@@ -738,6 +755,10 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crmax001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -854,11 +875,8 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
+param zonalAllocationPolicy = 'UserDefined'
 param zoneRedundant = true
-param zones = [
-  1
-  2
-]
 ```
 
 </details>
@@ -868,6 +886,8 @@ param zones = [
 
 This instance deploys the module with geo-replication enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passive-geo-replication]
+
 
 <details>
 
@@ -875,7 +895,6 @@ This instance deploys the module with geo-replication enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crpgeo001'
@@ -1008,6 +1027,8 @@ param zoneRedundant = false
 
 This instance deploys the module with data persistence enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/persistence]
+
 
 <details>
 
@@ -1015,7 +1036,6 @@ This instance deploys the module with data persistence enabled.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crper001'
@@ -1097,6 +1117,8 @@ param skuName = 'Premium'
 
 This instance deploys the module with custom Redis configuration.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/redis-config]
+
 
 <details>
 
@@ -1104,7 +1126,6 @@ This instance deploys the module with custom Redis configuration.
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crcfg001'
@@ -1181,6 +1202,8 @@ param redisConfiguration = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -1188,11 +1211,15 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
-  name: 'redisDeployment'
   params: {
     // Required parameters
     name: 'crwaf001'
     // Non-required parameters
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     capacity: 2
     diagnosticSettings: [
       {
@@ -1243,12 +1270,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       resourceType: 'Redis Cache'
     }
+    zonalAllocationPolicy: 'UserDefined'
     zoneRedundant: true
-    zones: [
-      1
-      2
-      3
-    ]
   }
 }
 ```
@@ -1270,6 +1293,13 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crwaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
     "capacity": {
       "value": 2
     },
@@ -1346,15 +1376,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "resourceType": "Redis Cache"
       }
     },
+    "zonalAllocationPolicy": {
+      "value": "UserDefined"
+    },
     "zoneRedundant": {
       "value": true
-    },
-    "zones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
     }
   }
 }
@@ -1373,6 +1399,11 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crwaf001'
 // Non-required parameters
+param availabilityZones = [
+  1
+  2
+  3
+]
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -1423,12 +1454,8 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   resourceType: 'Redis Cache'
 }
+param zonalAllocationPolicy = 'UserDefined'
 param zoneRedundant = true
-param zones = [
-  1
-  2
-  3
-]
 ```
 
 </details>
@@ -1448,12 +1475,13 @@ param zones = [
 | :-- | :-- | :-- |
 | [`accessPolicies`](#parameter-accesspolicies) | array | Array of access policies to create. |
 | [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Array of access policy assignments. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
 | [`enableNonSslPort`](#parameter-enablenonsslport) | bool | Specifies whether the non-ssl Redis server port (6379) is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
+| [`firewallRules`](#parameter-firewallrules) | array | The firewall rules of the Redis Cache. |
 | [`geoReplicationObject`](#parameter-georeplicationobject) | object | The geo-replication settings of the service. Requires a Premium SKU. Geo-replication is not supported on a cache with multiple replicas per primary. Secondary cache VM Size must be same or higher as compared to the primary cache VM Size. Geo-replication between a vnet and non vnet cache (and vice-a-versa) not supported. |
 | [`location`](#parameter-location) | string | The location to deploy the Redis cache service. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1473,8 +1501,8 @@ param zones = [
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
+| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
-| [`zones`](#parameter-zones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 
 ### Parameter: `name`
 
@@ -1489,7 +1517,6 @@ Array of access policies to create.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1518,7 +1545,6 @@ Array of access policy assignments.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1561,6 +1587,29 @@ The name of the Access Policy Assignment.
 
 - Required: No
 - Type: string
+
+### Parameter: `availabilityZones`
+
+If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacity`
 
@@ -1754,11 +1803,39 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `firewallRules`
 
-The firewall rules to create in the PostgreSQL flexible server.
+The firewall rules of the Redis Cache.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIP`](#parameter-firewallrulesendip) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+| [`name`](#parameter-firewallrulesname) | string | The name of the Redis Cache Firewall Rule. |
+| [`startIP`](#parameter-firewallrulesstartip) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
+
+### Parameter: `firewallRules.endIP`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.name`
+
+The name of the Redis Cache Firewall Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.startIP`
+
+The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `geoReplicationObject`
 
@@ -1766,7 +1843,40 @@ The geo-replication settings of the service. Requires a Premium SKU. Geo-replica
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`linkedRedisCacheResourceId`](#parameter-georeplicationobjectlinkedrediscacheresourceid) | string | The resource ID of the linked server. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`linkedRedisCacheLocation`](#parameter-georeplicationobjectlinkedrediscachelocation) | string | The location of the linked server. If not provided, the location of the primary Redis cache is used. |
+| [`name`](#parameter-georeplicationobjectname) | string | The name of the secondary Redis cache. If not provided, the primary Redis cache name is used. |
+
+### Parameter: `geoReplicationObject.linkedRedisCacheResourceId`
+
+The resource ID of the linked server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `geoReplicationObject.linkedRedisCacheLocation`
+
+The location of the linked server. If not provided, the location of the primary Redis cache is used.
+
+- Required: No
+- Type: string
+
+### Parameter: `geoReplicationObject.name`
+
+The name of the secondary Redis cache. If not provided, the primary Redis cache name is used.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -1789,6 +1899,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1808,6 +1919,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2035,6 +2153,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -2054,6 +2173,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -2273,11 +2399,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -2289,7 +2413,6 @@ All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `redisVersion`
 
@@ -2531,7 +2654,6 @@ Static IP address. Optionally, may be specified when deploying a Redis cache ins
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subnetResourceId`
 
@@ -2539,7 +2661,6 @@ The full resource ID of a subnet in a virtual network to deploy the Redis cache 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 
@@ -2556,6 +2677,21 @@ A dictionary of tenant settings.
 - Type: object
 - Default: `{}`
 
+### Parameter: `zonalAllocationPolicy`
+
+Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'NoZones'
+    'UserDefined'
+  ]
+  ```
+
 ### Parameter: `zoneRedundant`
 
 When true, replicas will be provisioned in availability zones specified in the zones parameter.
@@ -2563,21 +2699,6 @@ When true, replicas will be provisioned in availability zones specified in the z
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `zones`
-
-If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
@@ -2600,8 +2721,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 
@@ -2640,4 +2763,4 @@ userAssignedIdentities: {
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

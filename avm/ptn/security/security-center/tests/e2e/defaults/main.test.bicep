@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
 
@@ -49,9 +48,25 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      scope: '/subscriptions/${subscription().subscriptionId}'
-      workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      appServicesPricingTier: 'Standard'
+      dnsPricingTier: 'Standard'
+      armPricingTier: 'Standard'
+      containerRegistryPricingTier: 'Standard'
+      containersTier: 'Standard'
+      cosmosDbsTier: 'Standard'
+      keyVaultsPricingTier: 'Standard'
+      kubernetesServicePricingTier: 'Standard'
+      openSourceRelationalDatabasesTier: 'Standard'
+      sqlServersPricingTier: 'Standard'
+      sqlServerVirtualMachinesPricingTier: 'Standard'
+      storageAccountsPricingTier: 'Standard'
+      storageAccountsMalwareScanningSettings: {
+        onUploadMalwareScanningEnabled: 'True'
+        capGBPerMonthPerStorageAccount: 5000
+        sensitiveDataDiscoveryEnabled: 'True'
+      }
+      virtualMachinesPricingTier: 'Standard'
     }
   }
 ]

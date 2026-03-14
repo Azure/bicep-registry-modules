@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16462212043812771881"
+      "version": "0.41.2.15936",
+      "templateHash": "7310589100082145738"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -183,7 +183,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -208,12 +208,19 @@
           "metadata": {
             "description": "Optional. Specify the type of lock."
           }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     }
@@ -348,10 +355,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {
@@ -384,11 +394,11 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Sql/managedInstances/{0}/databases/{1}', parameters('managedInstanceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Sql/managedInstances/databases', parameters('managedInstanceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
       },
       "dependsOn": [
         "database"
@@ -401,7 +411,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Sql/managedInstances/{0}/databases/{1}', parameters('managedInstanceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Sql/managedInstances/databases', parameters('managedInstanceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -429,7 +439,7 @@
     "database_backupShortTermRetentionPolicy": {
       "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-BackupShortTRetPol', deployment().name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -456,8 +466,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11456772619785800996"
+              "version": "0.41.2.15936",
+              "templateHash": "3476613659229782501"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -532,7 +542,7 @@
     "database_backupLongTermRetentionPolicy": {
       "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-BackupLongTRetPol', deployment().name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -568,8 +578,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4471544038808802530"
+              "version": "0.41.2.15936",
+              "templateHash": "13192049005064821728"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."

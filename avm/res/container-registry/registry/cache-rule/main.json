@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3783697279882479947"
+      "version": "0.41.2.15936",
+      "templateHash": "17997433515125628702"
     },
     "name": "Container Registries Cache",
     "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -42,20 +42,47 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
+        "description": "Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com)."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-cacherule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('registryName')]"
     },
     "cacheRule": {
       "type": "Microsoft.ContainerRegistry/registries/cacheRules",
-      "apiVersion": "2023-06-01-preview",
+      "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
       "properties": {
         "sourceRepository": "[parameters('sourceRepository')]",

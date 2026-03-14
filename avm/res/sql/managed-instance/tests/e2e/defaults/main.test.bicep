@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -42,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: resourceLocation
   }
 }
 

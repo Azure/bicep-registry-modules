@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5878735365178041988"
+      "version": "0.41.2.15936",
+      "templateHash": "10989166933524995137"
     },
     "name": "Dns Forwarding Rulesets Forwarding Rules",
     "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."

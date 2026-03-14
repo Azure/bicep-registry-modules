@@ -27,23 +27,16 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
 
-resource resourceGroupDependencies 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: 'dep-${namePrefix}-network.networkwatcher-${serviceShort}-rg'
-  location: enforcedLocation
-}
-
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroupDependencies
+  scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    firstNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-1-${serviceShort}'
-    secondNetworkSecurityGroupName: 'dep-${namePrefix}-nsg-2-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation
@@ -53,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Diagnostics
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroupDependencies
+  scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
@@ -131,15 +124,15 @@ module testDeployment '../../../main.bicep' = [
       flowLogs: [
         {
           enabled: false
-          storageId: diagnosticDependencies.outputs.storageAccountResourceId
-          targetResourceId: nestedDependencies.outputs.firstNetworkSecurityGroupResourceId
+          storageResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          targetResourceId: nestedDependencies.outputs.virtualNetworkResourceId
         }
         {
           formatVersion: 1
           name: '${namePrefix}-${serviceShort}-fl-001'
           retentionInDays: 8
-          storageId: diagnosticDependencies.outputs.storageAccountResourceId
-          targetResourceId: nestedDependencies.outputs.secondNetworkSecurityGroupResourceId
+          storageResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          targetResourceId: nestedDependencies.outputs.virtualNetworkSubnetResourceId
           trafficAnalyticsInterval: 10
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }

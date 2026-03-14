@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -40,7 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -58,6 +57,10 @@ module testDeployment '../../../main.bicep' = [
       availabilityZone: -1
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
+      authConfig: {
+        activeDirectoryAuth: 'Enabled'
+        passwordAuth: 'Enabled'
+      }
       skuName: 'Standard_D2ds_v5'
       tier: 'GeneralPurpose'
       geoRedundantBackup: 'Enabled'

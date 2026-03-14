@@ -17,8 +17,8 @@ param name string
   'Cool'
   'TransactionOptimized'
 ])
-@description('Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized (default), Hot, and Cool.')
-param accessTier string = 'TransactionOptimized'
+@description('Conditional. Access tier for specific share. Required if the Storage Account kind is set to FileStorage (should be set to "Premium"). GpV2 account can choose between TransactionOptimized, Hot, and Cool.')
+param accessTier string?
 
 @description('Optional. The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5120 (5TB). For Large File Shares, the maximum size is 102400 (100TB).')
 param shareQuota int = 5120
@@ -38,7 +38,20 @@ param enabledProtocols string = 'SMB'
 @description('Optional. Permissions for NFS file shares are enforced by the client OS rather than the Azure Files service. Toggling the root squash behavior reduces the rights of the root user for NFS shares.')
 param rootSquash string = 'NoRootSquash'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+@maxValue(10340)
+@minValue(0)
+@description('Optional. The provisioned bandwidth of the share, in mebibytes per second. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 10340.')
+param provisionedBandwidthMibps int?
+
+@maxValue(102400)
+@minValue(0)
+@description('Optional. The provisioned IOPS of the share. Only applicable to FileStorage storage accounts (premium file shares). Must be between 0 and 102400.')
+param provisionedIops int?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -95,15 +108,34 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-fileshare.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 
-  resource fileService 'fileServices@2024-01-01' existing = {
+  resource fileService 'fileServices@2025-01-01' existing = {
     name: fileServicesName
   }
 }
 
-resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-01-01' = {
   name: name
   parent: storageAccount::fileService
   properties: {
@@ -111,6 +143,8 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-0
     shareQuota: shareQuota
     rootSquash: enabledProtocols == 'NFS' ? rootSquash : null
     enabledProtocols: enabledProtocols
+    provisionedBandwidthMibps: storageAccount.kind == 'FileStorage' ? provisionedBandwidthMibps : null
+    provisionedIops: storageAccount.kind == 'FileStorage' ? provisionedIops : null
   }
 }
 

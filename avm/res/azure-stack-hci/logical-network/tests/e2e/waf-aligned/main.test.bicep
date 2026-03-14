@@ -13,10 +13,6 @@ param serviceShort string = 'ashlnwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
-@secure()
-param localAdminAndDeploymentUserPass string = newGuid()
-
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
@@ -190,8 +186,12 @@ module testDeployment '../../../main.bicep' = {
     vmSwitchName: azlocal.outputs.vSwitchName
     ipAllocationMethod: 'Static'
     addressPrefix: '192.168.1.0/24'
-    startingAddress: '192.168.1.171'
-    endingAddress: '192.168.1.190'
+    ipPools: [
+      {
+        start: '192.168.1.171'
+        end: '192.168.1.190'
+      }
+    ]
     defaultGateway: '192.168.1.1'
     dnsServers: ['192.168.1.254']
     routeName: 'default'

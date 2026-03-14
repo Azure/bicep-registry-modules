@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
 param federatedIdentityCredentials federatedIdentityCredentialType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -19,10 +19,17 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: "None", "Regional".')
+@allowed([
+  'None'
+  'Regional'
+])
+param isolationScope string?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -80,15 +87,16 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   name: name
   location: location
   tags: tags
+  properties: isolationScope != null ? { isolationScope: isolationScope } : {}
 }
 
 resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete'
+    notes: lock.?notes ?? (lock.?kind == 'CanNotDelete'
       ? 'Cannot delete resource or child resources.'
-      : 'Cannot delete or modify the resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.')
   }
   scope: userAssignedIdentity
 }
@@ -96,7 +104,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
 @batchSize(1)
 module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCred-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserMSI-FederatedIdentityCred-${index}'
     params: {
       name: federatedIdentityCredential.name
       userAssignedIdentityName: userAssignedIdentity.name

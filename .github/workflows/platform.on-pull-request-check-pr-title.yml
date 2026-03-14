@@ -1,7 +1,7 @@
 name: .Platform - Semantic PR Check
 
 on:
-  pull_request_target:
+  pull_request: # Temporarily using `pull_request` while `pull_request_target` usage is under discussion
     types:
       - opened
       - edited
@@ -12,6 +12,6 @@ jobs:
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v5
+      - uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

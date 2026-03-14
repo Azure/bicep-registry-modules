@@ -89,7 +89,7 @@ function Publish-ModuleFromPathToPBR {
         $null = Convert-TokensInFileList @tokenConfiguration
 
         # Double-check that tokens are correctly replaced
-        $templateContent = bicep build $moduleBicepFilePath --stdout
+        $templateContent = Get-Content -Path $moduleBicepFilePath
         $incorrectLines = @()
         for ($index = 0; $index -lt $templateContent.Count; $index++) {
             if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {

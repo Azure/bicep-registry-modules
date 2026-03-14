@@ -10,9 +10,9 @@ This module deploys an Event Grid System Topic Event Subscription.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics/eventSubscriptions) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | 2025-02-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_systemtopics_eventsubscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics/eventSubscriptions)</li></ul> |
 
 ## Parameters
 

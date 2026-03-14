@@ -202,7 +202,7 @@ var regionServiceTag = regionSpecificServiceTags[?locationLowered] ?? locationLo
 
 // Networking resources
 // -----------------
-module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant) {
+module nsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg'
   params: {
     name: 'nsg-${name}'
@@ -213,7 +213,7 @@ module nsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRe
   }
 }
 
-module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && !empty(workloadProfiles)) {
+module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.1' = if (zoneRedundant && !empty(workloadProfiles)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
     name: 'nsg-workload-${name}'
@@ -335,7 +335,7 @@ module nsg_workload_plan 'br/public:avm/res/network/network-security-group:0.5.0
   }
 }
 
-module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.5.0' = if (zoneRedundant && empty(workloadProfiles)) {
+module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.5.1' = if (zoneRedundant && empty(workloadProfiles)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-nsg-workload'
   params: {
     name: 'nsg-consumption-${name}'
@@ -510,7 +510,7 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundant) {
+module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -522,12 +522,12 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundan
       {
         name: 'private-endpoints-subnet'
         addressPrefix: privateEndpointSubnetAddressPrefix
-        networkSecurityGroupResourceId: nsg.outputs.resourceId
+        networkSecurityGroupResourceId: nsg!.outputs.resourceId
       }
       {
         name: 'deploymentscript-subnet'
         addressPrefix: deploymentscriptSubnetAddressPrefix
-        networkSecurityGroupResourceId: nsg.outputs.resourceId
+        networkSecurityGroupResourceId: nsg!.outputs.resourceId
         serviceEndpoints: ['Microsoft.Storage']
         delegation: 'Microsoft.ContainerInstance/containerGroups'
       }
@@ -535,8 +535,8 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundan
         name: 'workload-subnet'
         addressPrefix: workloadSubnetAddressPrefix
         networkSecurityGroupResourceId: !empty(workloadProfiles)
-          ? nsg_workload_plan.outputs.resourceId
-          : nsg_consumption_plan.outputs.resourceId
+          ? nsg_workload_plan!.outputs.resourceId
+          : nsg_consumption_plan!.outputs.resourceId
         delegation: deployInVnet ? 'Microsoft.App/environments' : null // don't delegate if used for zoneRedundant consumption plan
       }
     ]
@@ -546,7 +546,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (zoneRedundan
   }
 }
 
-module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (deployInVnet && deployDnsZoneKeyVault) {
+module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (deployInVnet && deployDnsZoneKeyVault) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneKeyVault'
   params: {
     name: 'privatelink.vaultcore.azure.net'
@@ -555,31 +555,31 @@ module dnsZoneKeyVault_new 'br/public:avm/res/network/private-dns-zone:0.7.0' = 
     lock: lock
     virtualNetworkLinks: [
       {
-        name: '${vnet.outputs.name}-KeyVault-link-${name}'
-        virtualNetworkResourceId: vnet.outputs.resourceId
+        name: '${vnet!.outputs.name}-KeyVault-link-${name}'
+        virtualNetworkResourceId: vnet!.outputs.resourceId
         registrationEnabled: false
       }
     ]
   }
 }
 
-resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneKeyVault) {
+resource dnsZoneKeyVault_existing 'Microsoft.Network/privateDnsZones@2024-06-01' existing = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'privatelink.vaultcore.azure.net'
 }
 
-resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
+resource dnsZoneKeyVault_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (deployInVnet && !deployDnsZoneKeyVault) {
   name: 'KeyVault-link-${name}'
   parent: dnsZoneKeyVault_existing
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: vnet.outputs.resourceId
+      id: vnet!.outputs.resourceId
     }
   }
 }
 
-module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (deployInVnet && deployDnsZoneContainerRegistry) {
+module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (deployInVnet && deployDnsZoneContainerRegistry) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-dnsZoneContainerRegistry'
   params: {
     name: 'privatelink.azurecr.io'
@@ -588,36 +588,36 @@ module dnsZoneContainerRegistry_new 'br/public:avm/res/network/private-dns-zone:
     lock: lock
     virtualNetworkLinks: [
       {
-        name: '${vnet.outputs.name}-ContainerRegistry-link-${name}'
-        virtualNetworkResourceId: vnet.outputs.resourceId
+        name: '${vnet!.outputs.name}-ContainerRegistry-link-${name}'
+        virtualNetworkResourceId: vnet!.outputs.resourceId
         registrationEnabled: false
       }
     ]
   }
 }
 
-resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2020-06-01' existing = if (deployInVnet && !deployDnsZoneContainerRegistry) {
+resource dnsZoneContainerRegistry_existing 'Microsoft.Network/privateDnsZones@2024-06-01' existing = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'privatelink.azurecr.io'
 }
 
-resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
+resource dnsZoneContainerRegistry_vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = if (deployInVnet && !deployDnsZoneContainerRegistry) {
   name: 'ContainerRegistry-link-${name}'
   parent: dnsZoneContainerRegistry_existing
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: vnet.outputs.resourceId
+      id: vnet!.outputs.resourceId
     }
   }
 }
 
-module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.9.0' = if (deployInVnet) {
+module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.11.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_KeyVault'
   params: {
     name: 'pe-KeyVault-${name}'
     enableTelemetry: enableTelemetry
-    subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
+    subnetResourceId: vnet!.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
     customNetworkInterfaceName: 'pe-KeyVault-nic-${name}'
     location: location
     tags: tags
@@ -627,7 +627,7 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.9.
         {
           name: 'default'
           privateDnsZoneResourceId: deployDnsZoneKeyVault
-            ? dnsZoneKeyVault_new.outputs.resourceId
+            ? dnsZoneKeyVault_new!.outputs.resourceId
             : dnsZoneKeyVault_existing.id
         }
       ]
@@ -646,12 +646,12 @@ module privateEndpoint_KeyVault 'br/public:avm/res/network/private-endpoint:0.9.
   }
 }
 
-module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.9.0' = if (deployInVnet) {
+module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endpoint:0.11.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-privateEndpoint_ContainerRegistry'
   params: {
     name: 'pe-ContainerRegistry-${name}'
     enableTelemetry: enableTelemetry
-    subnetResourceId: vnet.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
+    subnetResourceId: vnet!.outputs.subnetResourceIds[0] // first subnet is the private endpoint subnet
     customNetworkInterfaceName: 'pe-ContainerRegistry-nic-${name}'
     location: location
     tags: tags
@@ -661,7 +661,7 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
         {
           name: 'default'
           privateDnsZoneResourceId: deployDnsZoneContainerRegistry
-            ? dnsZoneContainerRegistry_new.outputs.resourceId
+            ? dnsZoneContainerRegistry_new!.outputs.resourceId
             : dnsZoneContainerRegistry_existing.id
         }
       ]
@@ -682,13 +682,13 @@ module privateEndpoint_ContainerRegistry 'br/public:avm/res/network/private-endp
 
 // Identity resources
 // -----------------
-resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (managedIdentityResourceId == null) {
+resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (managedIdentityResourceId == null) {
   name: managedIdentityName ?? 'jobsUserIdentity-${name}'
   location: location
   tags: union(tags, { 'used-by': 'container-job-toolkit' })
 }
 
-resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
+resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (managedIdentityResourceId != null) {
   name: last(split(managedIdentityResourceId!, '/'))
   // get the resource group from the managed identity, as it could be in another resource group
   scope: resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4])
@@ -696,7 +696,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.11.0' = {
+module vault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName, subscription().subscriptionId)}-vault'
   params: {
     name: keyVaultName
@@ -723,8 +723,8 @@ module vault 'br/public:avm/res/key-vault/vault:0.11.0' = {
       [
         {
           principalId: managedIdentityResourceId != null
-            ? userIdentity_existing.properties.principalId
-            : userIdentity_new.properties.principalId
+            ? userIdentity_existing!.properties.principalId
+            : userIdentity_new!.properties.principalId
           principalType: 'ServicePrincipal'
           roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' // Key Vault Secrets User
         }
@@ -736,7 +736,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.11.0' = {
   }
 }
 
-module registry 'br/public:avm/res/container-registry/registry:0.6.0' = {
+module registry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
@@ -758,14 +758,14 @@ module registry 'br/public:avm/res/container-registry/registry:0.6.0' = {
   }
 }
 
-module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
+module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
   for registryRole in registryRbacRoles: {
     name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry-rbac-${registryRole}'
     params: {
       enableTelemetry: enableTelemetry
       principalId: managedIdentityResourceId != null
-        ? userIdentity_existing.properties.principalId
-        : userIdentity_new.properties.principalId
+        ? userIdentity_existing!.properties.principalId
+        : userIdentity_new!.properties.principalId
       principalType: 'ServicePrincipal'
       roleDefinitionId: registryRole
       resourceId: registry.outputs.resourceId
@@ -773,7 +773,7 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
   }
 ]
 
-module storage 'br/public:avm/res/storage/storage-account:0.15.0' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.25.1' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, location, resourceGroupName, subscription().subscriptionId)
@@ -790,7 +790,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = if (deployIn
       bypass: 'AzureServices'
       virtualNetworkRules: [
         {
-          id: vnet.outputs.subnetResourceIds[1] // second subnet is the service endpoint subnet
+          id: vnet!.outputs.subnetResourceIds[1] // second subnet is the service endpoint subnet
           action: 'Allow'
         }
       ]
@@ -799,8 +799,8 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = if (deployIn
     roleAssignments: [
       for storageRole in storageAccountRbacRoles: {
         principalId: managedIdentityResourceId != null
-          ? userIdentity_existing.properties.principalId
-          : userIdentity_new.properties.principalId
+          ? userIdentity_existing!.properties.principalId
+          : userIdentity_new!.properties.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: storageRole
       }
@@ -808,7 +808,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.15.0' = if (deployIn
   }
 }
 
-module law 'br/public:avm/res/operational-insights/workspace:0.9.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
+module law_new 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (empty(logAnalyticsWorkspaceResourceId)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-law'
   params: {
     name: 'la-${name}'
@@ -819,16 +819,30 @@ module law 'br/public:avm/res/operational-insights/workspace:0.9.0' = if (empty(
   }
 }
 
+resource law_existing 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
+  name: last(split(logAnalyticsWorkspaceResourceId!, '/'))
+  // get the resource group from the log analytics workspace, as it could be in another resource group
+  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId!, '/')[2], split(logAnalyticsWorkspaceResourceId!, '/')[4])
+}
+
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'
     enableTelemetry: enableTelemetry
-    logAnalyticsWorkspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
-      ? logAnalyticsWorkspaceResourceId!
-      : law.outputs.resourceId
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: empty(logAnalyticsWorkspaceResourceId)
+          ? law_new!.outputs.logAnalyticsWorkspaceId
+          : law_existing!.properties.customerId
+        sharedKey: empty(logAnalyticsWorkspaceResourceId)
+          ? law_new!.outputs.primarySharedKey
+          : listKeys(law_existing!.id, law_existing!.apiVersion).primarySharedKey
+      }
+    }
     location: location
     tags: union(tags, { 'used-by': 'container-job-toolkit' })
     lock: lock
@@ -837,7 +851,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
     infrastructureResourceGroupName: '${resourceGroupName}-infrastructure'
     // vnet configuration
     internal: deployInVnet ? true : false
-    infrastructureSubnetId: deployInVnet || !empty(addressPrefix) ? vnet.outputs.subnetResourceIds[2] : null // third subnet is the workload subnet
+    infrastructureSubnetResourceId: deployInVnet || !empty(addressPrefix) ? vnet!.outputs.subnetResourceIds[2] : null // third subnet is the workload subnet
     dockerBridgeCidr: deployInVnet ? dockerBridgeCidr : null
     platformReservedCidr: deployInVnet ? platformReservedCidr : null
     platformReservedDnsIP: deployInVnet ? platformReservedDnsIP : null
@@ -847,7 +861,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.8.1' = {
 @description('The resouce ID of the Log Analytics Workspace (passed as parameter value or from the newly created Log Analytics Workspace).')
 output logAnalyticsResourceId string = !empty(logAnalyticsWorkspaceResourceId)
   ? logAnalyticsWorkspaceResourceId!
-  : law.outputs.resourceId
+  : law_new!.outputs.resourceId
 
 @description('The name of the Key Vault instance.')
 output vaultName string = vault.outputs.name
@@ -873,14 +887,14 @@ output userManagedIdentityResourceId string = managedIdentityResourceId == null
 
 @description('The principal ID of the (new or existing) managed identity.')
 output userManagedIdentityPrincipalId string = managedIdentityResourceId == null
-  ? userIdentity_new.properties.principalId
-  : userIdentity_existing.properties.principalId
+  ? userIdentity_new!.properties.principalId
+  : userIdentity_existing!.properties.principalId
 
 @description('The resource ID of the storage account instance.')
-output storageAccountResourceId string = deployInVnet ? storage.outputs.resourceId : ''
+output storageAccountResourceId string = deployInVnet ? storage!.outputs.resourceId : ''
 
 @description('The resource ID of the virtual network instance.')
-output vnetResourceId string = deployInVnet ? vnet.outputs.resourceId : ''
+output vnetResourceId string = deployInVnet ? vnet!.outputs.resourceId : ''
 
 @description('The address prefix of the private endpoint subnet.')
 output privateEndpointSubnetAddressPrefix string = deployInVnet ? privateEndpointSubnetAddressPrefix : ''
@@ -892,7 +906,7 @@ output deploymentscriptSubnetAddressPrefix string = deployInVnet ? deploymentscr
 output workloadSubnetAddressPrefix string = deployInVnet ? workloadSubnetAddressPrefix : '' // also used for zoneRedundant configuration
 
 @description('The resource ID of the subnet, the deployment script is using.')
-output subnetResourceId_deploymentScript string = deployInVnet ? vnet.outputs.subnetResourceIds[1] : ''
+output subnetResourceId_deploymentScript string = deployInVnet ? vnet!.outputs.subnetResourceIds[1] : ''
 
 @description('The CIDR of the Docker bridge.')
 output dockerBridgeCidr string = dockerBridgeCidr

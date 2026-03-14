@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "14383983573401363041"
+      "version": "0.41.2.15936",
+      "templateHash": "18296343961934322910"
     },
     "name": "Machine Learning Services Workspaces Datastores",
     "description": "This module creates a datastore in a Machine Learning Services workspace."

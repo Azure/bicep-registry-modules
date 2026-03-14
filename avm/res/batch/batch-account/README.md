@@ -2,6 +2,14 @@
 
 This module deploys a Batch Account.
 
+You can reference the module as follows:
+```bicep
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -13,14 +21,14 @@ This module deploys a Batch Account.
 
 ## Resource Types
 
-| Resource Type | API Version |
-| :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Batch/batchAccounts` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Batch/2022-06-01/batchAccounts) |
-| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+| `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
+| `Microsoft.Batch/batchAccounts` | 2022-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.batch_batchaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Batch/2022-06-01/batchAccounts)</li></ul> |
+| `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -39,6 +47,8 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module with the minimum set of required parameters.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
 
 <details>
 
@@ -46,13 +56,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamin001'
-    storageAccountId: '<storageAccountId>'
-    // Non-required parameters
-    location: '<location>'
+    storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
 ```
@@ -73,12 +80,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbamin001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     }
   }
 }
@@ -96,9 +99,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbamin001'
-param storageAccountId = '<storageAccountId>'
-// Non-required parameters
-param location = '<location>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 ```
 
 </details>
@@ -108,6 +109,8 @@ param location = '<location>'
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
 
 <details>
 
@@ -115,17 +118,15 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbaencr001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -133,9 +134,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     }
     poolAllocationMode: 'BatchService'
     storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-    }
   }
 }
 ```
@@ -156,8 +154,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbaencr001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -165,9 +163,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -181,11 +176,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     },
     "storageAuthenticationMode": {
       "value": "BatchAccountManagedIdentity"
-    },
-    "tags": {
-      "value": {
-        "hidden-title": "This is visible in the resource name"
-      }
     }
   }
 }
@@ -203,13 +193,12 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbaencr001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -217,9 +206,6 @@ param managedIdentities = {
 }
 param poolAllocationMode = 'BatchService'
 param storageAuthenticationMode = 'BatchAccountManagedIdentity'
-param tags = {
-  'hidden-title': 'This is visible in the resource name'
-}
 ```
 
 </details>
@@ -229,6 +215,8 @@ param tags = {
 
 This instance deploys the module with most of its features enabled.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
 
 <details>
 
@@ -236,11 +224,10 @@ This instance deploys the module with most of its features enabled.
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbamax001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -405,8 +392,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbamax001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -590,7 +577,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbamax001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -744,6 +731,8 @@ param tags = {
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
 
 <details>
 
@@ -751,11 +740,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 ```bicep
 module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
-  name: 'batchAccountDeployment'
   params: {
     // Required parameters
     name: 'bbawaf001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -765,11 +753,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -814,8 +797,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbawaf001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -827,15 +810,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -889,7 +863,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbawaf001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -899,11 +873,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
@@ -940,7 +909,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Batch. |
-| [`storageAccountId`](#parameter-storageaccountid) | string | The resource ID of the storage account to be used for auto-storage account. |
+| [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to be used for auto-storage account. |
 
 **Conditional parameters**
 
@@ -975,7 +944,7 @@ Name of the Azure Batch.
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountId`
+### Parameter: `storageAccountResourceId`
 
 The resource ID of the storage account to be used for auto-storage account.
 
@@ -1236,6 +1205,7 @@ The lock settings of the service.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-lockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-locknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `lock.kind`
 
@@ -1255,6 +1225,13 @@ Specify the type of lock.
 ### Parameter: `lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1416,7 +1393,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1572,6 +1549,7 @@ Specify the type of lock.
 | :-- | :-- | :-- |
 | [`kind`](#parameter-privateendpointslockkind) | string | Specify the type of lock. |
 | [`name`](#parameter-privateendpointslockname) | string | Specify the name of lock. |
+| [`notes`](#parameter-privateendpointslocknotes) | string | Specify the notes of the lock. |
 
 ### Parameter: `privateEndpoints.lock.kind`
 
@@ -1591,6 +1569,13 @@ Specify the type of lock.
 ### Parameter: `privateEndpoints.lock.name`
 
 Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.lock.notes`
+
+Specify the notes of the lock.
 
 - Required: No
 - Type: string
@@ -1675,9 +1660,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1698,7 +1683,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1803,11 +1788,9 @@ Whether or not public network access is allowed for this resource. For security 
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -1962,9 +1945,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

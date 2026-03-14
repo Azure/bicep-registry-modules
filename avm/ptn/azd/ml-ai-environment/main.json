@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3964144045768197576"
+      "version": "0.41.2.15936",
+      "templateHash": "1797319759374918322"
     },
     "name": "Azd Azure Machine Learning Environment",
-    "description": "Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
+    "description": "DEPRECATED - Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "parameters": {
     "hubName": {
@@ -150,7 +150,7 @@
     },
     "hubDependencies": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-mlHubDependenciesDeployment', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -18937,7 +18937,7 @@
     },
     "hub": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-hub', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -18985,8 +18985,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18307563031871806132"
+              "version": "0.41.2.15936",
+              "templateHash": "5342949611821476699"
             }
           },
           "parameters": {
@@ -19089,7 +19089,7 @@
           "resources": [
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "hub-workspace",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -22913,11 +22913,11 @@
             },
             "resourceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub-workspace'), '2022-09-01').outputs.resourceId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub-workspace'), '2025-04-01').outputs.resourceId.value]"
             },
             "principalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub-workspace'), '2022-09-01').outputs.systemAssignedMIPrincipalId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', 'hub-workspace'), '2025-04-01').outputs.systemAssignedMIPrincipalId.value]"
             }
           }
         }
@@ -22928,7 +22928,7 @@
     },
     "project": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-project', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {

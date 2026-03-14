@@ -26,7 +26,7 @@ var enforcedSecondLocation = 'westus3'
 // ============== //
 // General resources
 // ============== //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-multi-region'
-    automaticFailover: true
+    enableAutomaticFailover: true
     enableMultipleWriteLocations: true
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
