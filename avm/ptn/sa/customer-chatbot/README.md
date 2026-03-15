@@ -207,6 +207,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -237,6 +238,9 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "cosmosDbReplicaLocation": {
+      "value": "canadacentral"
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -281,6 +285,7 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -302,6 +307,12 @@ param virtualMachineAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for all AI service resources. This should be one of the supported Azure AI Service locations. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true. |
 
 **Optional parameters**
 
@@ -353,6 +364,13 @@ Location for all AI service resources. This should be one of the supported Azure
     'westus'
   ]
   ```
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.
+
+- Required: No
+- Type: string
 
 ### Parameter: `azureAiAgentApiVersion`
 

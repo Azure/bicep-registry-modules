@@ -26,7 +26,7 @@ param customSecret string = newGuid()
 
 // Enforcing location due to limited availability of the APIM Worskpace Gateway SKU in certain regions.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'germanywestcentral'
 
 // ============ //
 // Dependencies //
