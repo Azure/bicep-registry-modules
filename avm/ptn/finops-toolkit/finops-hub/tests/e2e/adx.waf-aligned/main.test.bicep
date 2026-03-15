@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'ADX with Managed Network'
-metadata description = 'This instance deploys the module with Azure Data Explorer and networkIsolationMode=Managed. This is the RECOMMENDED production configuration - ADX with full private networking, all managed by the module.'
+metadata name = 'ADX WAF-aligned'
+metadata description = 'This instance deploys the module with Azure Data Explorer in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.'
 
 // ========== //
 // Parameters //
@@ -20,7 +20,7 @@ param resourceLocation string = deployment().location
 var enforcedLocation = 'italynorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fhadm'
+param serviceShort string = 'fhwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 // Uses subscription + namePrefix + serviceShort so the name is identical across runs.
 var deploymentSuffix = take(uniqueString(subscription().subscriptionId, namePrefix, serviceShort), 4)
 
-@description('Optional. Principal ID of the deployer to grant ADX and storage access for testing.')
+@description('Optional. Principal ID of the deployer to grant ADX access for testing. If not provided, only the ADF managed identity will have access.')
 param deployerPrincipalId string = ''
 
 // ============ //
@@ -44,9 +44,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-03-01' = {
   location: enforcedLocation
 }
 
-// NOTE: No dependencies.bicep needed for Managed mode!
-// The module creates its own VNet, subnet, private DNS zones, and private endpoints.
-// This includes Kusto DNS zone for ADX private endpoints.
+// Deploy networking dependencies (VNet, subnets, private DNS zones)
+module dependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-dependencies'
+  params: {
+    location: enforcedLocation
+    namePrefix: '${namePrefix}${serviceShort}'
+  }
+}
 
 // ============== //
 // Test Execution //
@@ -60,65 +66,50 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // Required parameters - include deployment suffix to avoid Key Vault naming conflicts
       hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
-      
       // Non-required parameters
       location: enforcedLocation
-      
-      // =====================================================
-      // ADX Configuration
-      // =====================================================
+
+      // WAF-aligned configuration with ADX
+      deploymentConfiguration: 'waf-aligned'
       deploymentType: 'adx'
       dataExplorerClusterName: '${namePrefix}${serviceShort}adx${deploymentSuffix}'
-      deploymentConfiguration: 'waf-aligned'
-      
-      // =====================================================
-      // KEY SETTING: Managed Network Isolation
-      // =====================================================
-      // This mode creates a self-contained deployment with:
-      // - VNet with /24 address space
-      // - Subnet for private endpoints
-      // - NSG with secure defaults
-      // - Private DNS zones for Storage, Key Vault, Data Factory, AND Kusto
-      // - Private endpoints for all resources including ADX cluster
-      //
-      // Benefits:
-      // - Just redeploy to upgrade - no customization to maintain
-      // - Module handles all networking complexity including ADX
-      // - Enterprise network teams can add their own PEs to access the resources
-      networkIsolationMode: 'Managed'
-      
+
+      // WAF-aligned automatically enables:
+      // - Premium_ZRS storage for HA/DR
+      // - Purge protection for Key Vault
+      // - Disables public network access
+
+      // BringYourOwn network isolation - customer manages subnet and DNS zones
+      networkIsolationMode: 'BringYourOwn'
+      byoSubnetResourceId: dependencies.outputs.privateEndpointSubnetResourceId
+      byoBlobDnsZoneResourceId: dependencies.outputs.storageBlobPrivateDnsZoneResourceId
+      byoDfsDnsZoneResourceId: dependencies.outputs.storageDfsPrivateDnsZoneResourceId
+      byoVaultDnsZoneResourceId: dependencies.outputs.keyVaultPrivateDnsZoneResourceId
+      byoDataFactoryDnsZoneResourceId: dependencies.outputs.dataFactoryPrivateDnsZoneResourceId
+      enablePrivateDnsZoneGroups: true
+
       // ADX admin access for testing
       adxAdminPrincipalIds: []
       deployerPrincipalId: deployerPrincipalId
-      
+
       // Telemetry
       enableTelemetry: true
-      
-      // Tags
+
+      // WAF: AZR-000119 (KeyVault.Logs) - audit diagnostics for Key Vault
+      diagnosticSettings: [
+        {
+          workspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceId
+        }
+      ]
+
+      // Tags following WAF recommendations
       tags: {
         SecurityControl: 'Ignore'
         Environment: 'Production'
-        'hidden-title': 'FinOps Hub - ADX Managed Network'
+        'hidden-title': 'FinOps Hub - ADX WAF Aligned'
         CostCenter: 'FinOps'
         Criticality: 'High'
-        NetworkMode: 'Managed'
       }
     }
   }
 ]
-
-// ============== //
-// Outputs        //
-// ============== //
-
-@description('The network isolation mode used.')
-output networkIsolationMode string = testDeployment[0].outputs.networkIsolationMode
-
-@description('The VNet resource ID (created by the module).')
-output vnetResourceId string = testDeployment[0].outputs.vnetResourceId
-
-@description('The ADX cluster name.')
-output dataExplorerName string = testDeployment[0].outputs.dataExplorerName
-
-@description('The ADX cluster endpoint.')
-output dataExplorerEndpoint string = testDeployment[0].outputs.dataExplorerEndpoint

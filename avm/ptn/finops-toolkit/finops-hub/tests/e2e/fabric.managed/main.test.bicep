@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Fabric WAF-aligned'
-metadata description = 'This instance deploys the module with Microsoft Fabric Eventhouse in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.'
+metadata name = 'Fabric Managed Networking'
+metadata description = 'This instance deploys the module with Microsoft Fabric Eventhouse using managed networking with private endpoints.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-finops-hub-${serviceShort}-r
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fhfaw'
+param serviceShort string = 'fhfwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

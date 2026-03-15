@@ -2,7 +2,10 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/finops-toolkit/finops-hub/CHANGELOG.md).
 
-## 0.2.0
+## 0.12.0
+
+> **Why version 0.12?**
+> Versions 0.2–0.11 were released in the upstream [FinOps toolkit](https://github.com/microsoft/finops-toolkit) but were not published as AVM modules. This AVM module now aligns with FinOps toolkit v0.12 to maintain version parity with the upstream project.
 
 ### Changes
 
@@ -24,3 +27,15 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Parameter `exportScopes` removed (not applicable to new architecture)
 - Container names now follow FinOps toolkit standard: `config`, `msexports`, `ingestion`
 - New required parameter `hubName` constraints: 3-24 characters
+
+## 0.1.1
+
+### Changes
+
+- Bug fixes and minor improvements
+
+## 0.1.0
+
+### Changes
+
+- Initial release of FinOps Hub pattern module

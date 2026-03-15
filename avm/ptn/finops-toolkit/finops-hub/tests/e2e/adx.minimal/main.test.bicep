@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'ADX WAF-aligned'
-metadata description = 'This instance deploys the module with Azure Data Explorer in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.'
+metadata name = 'Using Azure Data Explorer with minimal configuration'
+metadata description = 'This instance deploys the module with Azure Data Explorer in a cost-effective dev/test configuration.'
 
 // ========== //
 // Parameters //
@@ -20,7 +20,7 @@ param resourceLocation string = deployment().location
 var enforcedLocation = 'italynorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fhaxw'
+param serviceShort string = 'fhamin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -44,16 +44,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-03-01' = {
   location: enforcedLocation
 }
 
-// Deploy networking dependencies (VNet, subnets, private DNS zones)
-module dependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-dependencies'
-  params: {
-    location: enforcedLocation
-    namePrefix: '${namePrefix}${serviceShort}'
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -68,49 +58,24 @@ module testDeployment '../../../main.bicep' = [
       hubName: '${namePrefix}${serviceShort}${deploymentSuffix}'
       // Non-required parameters
       location: enforcedLocation
-
-      // WAF-aligned configuration with ADX
-      deploymentConfiguration: 'waf-aligned'
+      deploymentConfiguration: 'minimal'
       deploymentType: 'adx'
       dataExplorerClusterName: '${namePrefix}${serviceShort}adx${deploymentSuffix}'
-
-      // WAF-aligned automatically enables:
-      // - Premium_ZRS storage for HA/DR
-      // - Purge protection for Key Vault
-      // - Disables public network access
-
-      // BringYourOwn network isolation - customer manages subnet and DNS zones
-      // ⚠️ You own upgrades when using BringYourOwn - test before deploying new versions
-      // For easier upgrades, consider networkIsolationMode: 'Managed'
-      networkIsolationMode: 'BringYourOwn'
-      byoSubnetResourceId: dependencies.outputs.privateEndpointSubnetResourceId
-      byoBlobDnsZoneResourceId: dependencies.outputs.storageBlobPrivateDnsZoneResourceId
-      byoDfsDnsZoneResourceId: dependencies.outputs.storageDfsPrivateDnsZoneResourceId
-      byoVaultDnsZoneResourceId: dependencies.outputs.keyVaultPrivateDnsZoneResourceId
-      byoDataFactoryDnsZoneResourceId: dependencies.outputs.dataFactoryPrivateDnsZoneResourceId
-      enablePrivateDnsZoneGroups: true
-
-      // ADX admin access for testing
+      enableTelemetry: true
+      // Grant deployer access to ADX for testing/verification
       adxAdminPrincipalIds: []
       deployerPrincipalId: deployerPrincipalId
-
-      // Telemetry
-      enableTelemetry: true
-
-      // WAF: AZR-000119 (KeyVault.Logs) - audit diagnostics for Key Vault
-      diagnosticSettings: [
-        {
-          workspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceId
-        }
-      ]
-
-      // Tags following WAF recommendations
+      // Use Dev SKU for testing - cheapest option with modern AMD EPYC v4 hardware
+      // Standard_E2a_v4: 2 vCPUs, 16GB RAM, ~$0.15/hr (cheaper than D11_v2)
+      dataExplorerSku: 'Dev(No SLA)_Standard_E2a_v4'
+      dataExplorerCapacity: 1 // Dev SKU supports single node
+      // Minimal config with Dev SKU:
+      // - Dev(No SLA)_Standard_E2a_v4 with 1 node (no SLA, but cheapest + modern)
+      // - enableAutoStop: true (saves costs when idle)
       tags: {
         SecurityControl: 'Ignore'
-        Environment: 'Production'
-        'hidden-title': 'FinOps Hub - ADX WAF Aligned'
-        CostCenter: 'FinOps'
-        Criticality: 'High'
+        Environment: 'Development'
+        'hidden-title': 'FinOps Hub - ADX Minimal'
       }
     }
   }
