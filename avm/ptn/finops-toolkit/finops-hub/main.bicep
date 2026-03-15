@@ -1,28 +1,10 @@
-// ============================================================================
-// FinOps Hub - Azure Verified Modules Pattern
-// ============================================================================
-// Deploys a FinOps Hub using AVM for cost visibility across Azure and multi-cloud.
-// Supports: Azure Data Explorer, Microsoft Fabric, or storage-only deployments.
-// Reference: https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/hubs/finops-hubs-overview
-// ============================================================================
-
 metadata name = 'FinOps Hub'
 metadata description = 'Deploys a FinOps Hub for cloud cost analytics using Azure Verified Modules.'
-metadata version = '0.2.0'
-metadata owner = 'FinOps Team'
 
 targetScope = 'resourceGroup'
 
-// ============================================================================
-// AVM COMMON TYPE IMPORTS
-// ============================================================================
-
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-
-// ============================================================================
-// PARAMETERS
-// ============================================================================
 
 @description('Required. Name of the FinOps Hub instance. Used for resource naming.')
 @minLength(3)
@@ -185,10 +167,6 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Enable automatic trigger start/stop for idempotent redeployments. Requires shared key access on storage.')
 param enableTriggerManagement bool = false
 
-// ============================================================================
-// VARIABLES
-// ============================================================================
-
 // Storage configuration: minimal=Standard_LRS, waf-aligned=Premium_ZRS
 var storageSku = deploymentConfiguration == 'waf-aligned' ? 'Premium_ZRS' : 'Standard_LRS'
 var storageKind = deploymentConfiguration == 'waf-aligned' ? 'BlockBlobStorage' : 'StorageV2'
@@ -277,12 +255,8 @@ var allTags = union(tags, {
   'deployment-configuration': deploymentConfiguration
 })
 
-// ============================================================================
-// TELEMETRY
-// ============================================================================
-
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -299,10 +273,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
     }
   }
 }
-
-// ============================================================================
-// RESOURCES
-// ============================================================================
 
 // --- Managed Network (when networkIsolationMode is 'Managed') ---
 module managedNetwork 'modules/network.bicep' = if (effectiveNetworkIsolationMode == 'Managed') {
@@ -380,7 +350,7 @@ var effectiveIdentityResourceId = useExistingIdentity
 var effectiveIdentityName = useExistingIdentity ? existingIdentityName : managedIdentity!.outputs.name
 
 // --- Storage Account (ADLS Gen2) ---
-module storageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
     name: storageAccountName
@@ -671,7 +641,7 @@ module managedExportsPipelines 'modules/managedExportsPipelines.bicep' = if (ena
 }
 
 // --- Azure Data Explorer ---
-module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.1' = if (createNewAdx) {
+module dataExplorer 'br/public:avm/res/kusto/cluster:0.9.2' = if (createNewAdx) {
   name: '${uniqueString(deployment().name, location)}-adx'
   dependsOn: effectiveNetworkIsolationMode == 'Managed' ? [managedNetwork] : []
   params: {
@@ -948,10 +918,6 @@ module startTriggers 'modules/triggerManagement.bicep' = if (enableTriggerManage
 // upstream FinOps toolkit approach. Setting the policy during ARM deployment is unreliable
 // due to permission propagation delays between the ARM control plane and ADX data plane.
 // See adx-pg-message.txt for the full analysis sent to the Kusto product group.
-
-// ============================================================================
-// OUTPUTS
-// ============================================================================
 
 @description('Name of the deployed FinOps Hub.')
 output hubName string = hubName

@@ -66,19 +66,19 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/fileServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
-| `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/localUsers` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/localUsers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/managementPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices/queues)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices/tables)</li></ul> |
 
 ## Usage examples
 
@@ -88,145 +88,18 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/finops-toolkit/finops-hub:<version>`.
 
-- [ADX with Managed Network](#example-1-adx-with-managed-network)
-- [Using Azure Data Explorer with minimal configuration](#example-2-using-azure-data-explorer-with-minimal-configuration)
-- [ADX WAF-aligned](#example-3-adx-waf-aligned)
+- [Using Azure Data Explorer with minimal configuration](#example-1-using-azure-data-explorer-with-minimal-configuration)
+- [ADX WAF-aligned](#example-2-adx-waf-aligned)
+- [Fabric Managed Networking](#example-3-fabric-managed-networking)
 - [Using Microsoft Fabric with minimal configuration](#example-4-using-microsoft-fabric-with-minimal-configuration)
-- [Fabric WAF-aligned](#example-5-fabric-waf-aligned)
-- [Managed Network Isolation](#example-6-managed-network-isolation)
-- [Storage Minimal](#example-7-storage-minimal)
+- [Storage Defaults](#example-5-storage-defaults)
+- [Storage Minimal](#example-6-storage-minimal)
 
-### Example 1: _ADX with Managed Network_
-
-This instance deploys the module with Azure Data Explorer and networkIsolationMode=Managed. This is the RECOMMENDED production configuration - ADX with full private networking, all managed by the module.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-managed-network]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  params: {
-    // Required parameters
-    hubName: '<hubName>'
-    // Non-required parameters
-    adxAdminPrincipalIds: []
-    dataExplorerClusterName: '<dataExplorerClusterName>'
-    deployerPrincipalId: '<deployerPrincipalId>'
-    deploymentConfiguration: 'waf-aligned'
-    deploymentType: 'adx'
-    enableTelemetry: true
-    location: '<location>'
-    networkIsolationMode: 'Managed'
-    tags: {
-      CostCenter: 'FinOps'
-      Criticality: 'High'
-      Environment: 'Production'
-      'hidden-title': 'FinOps Hub - ADX Managed Network'
-      NetworkMode: 'Managed'
-      SecurityControl: 'Ignore'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubName": {
-      "value": "<hubName>"
-    },
-    // Non-required parameters
-    "adxAdminPrincipalIds": {
-      "value": []
-    },
-    "dataExplorerClusterName": {
-      "value": "<dataExplorerClusterName>"
-    },
-    "deployerPrincipalId": {
-      "value": "<deployerPrincipalId>"
-    },
-    "deploymentConfiguration": {
-      "value": "waf-aligned"
-    },
-    "deploymentType": {
-      "value": "adx"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "networkIsolationMode": {
-      "value": "Managed"
-    },
-    "tags": {
-      "value": {
-        "CostCenter": "FinOps",
-        "Criticality": "High",
-        "Environment": "Production",
-        "hidden-title": "FinOps Hub - ADX Managed Network",
-        "NetworkMode": "Managed",
-        "SecurityControl": "Ignore"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
-
-// Required parameters
-param hubName = '<hubName>'
-// Non-required parameters
-param adxAdminPrincipalIds = []
-param dataExplorerClusterName = '<dataExplorerClusterName>'
-param deployerPrincipalId = '<deployerPrincipalId>'
-param deploymentConfiguration = 'waf-aligned'
-param deploymentType = 'adx'
-param enableTelemetry = true
-param location = '<location>'
-param networkIsolationMode = 'Managed'
-param tags = {
-  CostCenter: 'FinOps'
-  Criticality: 'High'
-  Environment: 'Production'
-  'hidden-title': 'FinOps Hub - ADX Managed Network'
-  NetworkMode: 'Managed'
-  SecurityControl: 'Ignore'
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using Azure Data Explorer with minimal configuration_
+### Example 1: _Using Azure Data Explorer with minimal configuration_
 
 This instance deploys the module with Azure Data Explorer in a cost-effective dev/test configuration.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-minimal]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx.minimal]
 
 
 <details>
@@ -344,11 +217,11 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _ADX WAF-aligned_
+### Example 2: _ADX WAF-aligned_
 
 This instance deploys the module with Azure Data Explorer in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx-waf-aligned]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adx.waf-aligned]
 
 
 <details>
@@ -514,123 +387,11 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using Microsoft Fabric with minimal configuration_
+### Example 3: _Fabric Managed Networking_
 
-This instance deploys the module with Microsoft Fabric Eventhouse in a cost-effective dev/test configuration.
+This instance deploys the module with Microsoft Fabric Eventhouse using managed networking with private endpoints.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fabric-minimal]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
-  params: {
-    // Required parameters
-    hubName: '<hubName>'
-    // Non-required parameters
-    deploymentConfiguration: 'minimal'
-    deploymentType: 'fabric'
-    enableTelemetry: true
-    fabricDatabaseName: 'finops'
-    fabricIngestionUri: '<fabricIngestionUri>'
-    fabricQueryUri: '<fabricQueryUri>'
-    location: '<location>'
-    tags: {
-      Environment: 'Development'
-      'hidden-title': 'FinOps Hub - Fabric Minimal'
-      SecurityControl: 'Ignore'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubName": {
-      "value": "<hubName>"
-    },
-    // Non-required parameters
-    "deploymentConfiguration": {
-      "value": "minimal"
-    },
-    "deploymentType": {
-      "value": "fabric"
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "fabricDatabaseName": {
-      "value": "finops"
-    },
-    "fabricIngestionUri": {
-      "value": "<fabricIngestionUri>"
-    },
-    "fabricQueryUri": {
-      "value": "<fabricQueryUri>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Development",
-        "hidden-title": "FinOps Hub - Fabric Minimal",
-        "SecurityControl": "Ignore"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
-
-// Required parameters
-param hubName = '<hubName>'
-// Non-required parameters
-param deploymentConfiguration = 'minimal'
-param deploymentType = 'fabric'
-param enableTelemetry = true
-param fabricDatabaseName = 'finops'
-param fabricIngestionUri = '<fabricIngestionUri>'
-param fabricQueryUri = '<fabricQueryUri>'
-param location = '<location>'
-param tags = {
-  Environment: 'Development'
-  'hidden-title': 'FinOps Hub - Fabric Minimal'
-  SecurityControl: 'Ignore'
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Fabric WAF-aligned_
-
-This instance deploys the module with Microsoft Fabric Eventhouse in alignment with the best-practices of the Azure Well-Architected Framework, including private endpoints.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fabric-waf-aligned]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fabric.managed]
 
 
 <details>
@@ -769,11 +530,11 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Managed Network Isolation_
+### Example 4: _Using Microsoft Fabric with minimal configuration_
 
-This instance deploys the module with networkIsolationMode=Managed, which creates a self-contained VNet, private endpoints, and DNS zones. This is the RECOMMENDED approach for production - enables clean upgrades without customization.
+This instance deploys the module with Microsoft Fabric Eventhouse in a cost-effective dev/test configuration.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managed-network]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fabric.minimal]
 
 
 <details>
@@ -786,18 +547,16 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
     // Required parameters
     hubName: '<hubName>'
     // Non-required parameters
-    deployerPrincipalId: '<deployerPrincipalId>'
-    deploymentConfiguration: 'waf-aligned'
-    deploymentType: 'storage-only'
+    deploymentConfiguration: 'minimal'
+    deploymentType: 'fabric'
     enableTelemetry: true
+    fabricDatabaseName: 'finops'
+    fabricIngestionUri: '<fabricIngestionUri>'
+    fabricQueryUri: '<fabricQueryUri>'
     location: '<location>'
-    networkIsolationMode: 'Managed'
     tags: {
-      CostCenter: 'FinOps'
-      Criticality: 'High'
-      Environment: 'Production'
-      'hidden-title': 'FinOps Hub - Managed Network Isolation'
-      NetworkMode: 'Managed'
+      Environment: 'Development'
+      'hidden-title': 'FinOps Hub - Fabric Minimal'
       SecurityControl: 'Ignore'
     }
   }
@@ -821,31 +580,31 @@ module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
       "value": "<hubName>"
     },
     // Non-required parameters
-    "deployerPrincipalId": {
-      "value": "<deployerPrincipalId>"
-    },
     "deploymentConfiguration": {
-      "value": "waf-aligned"
+      "value": "minimal"
     },
     "deploymentType": {
-      "value": "storage-only"
+      "value": "fabric"
     },
     "enableTelemetry": {
       "value": true
     },
+    "fabricDatabaseName": {
+      "value": "finops"
+    },
+    "fabricIngestionUri": {
+      "value": "<fabricIngestionUri>"
+    },
+    "fabricQueryUri": {
+      "value": "<fabricQueryUri>"
+    },
     "location": {
       "value": "<location>"
     },
-    "networkIsolationMode": {
-      "value": "Managed"
-    },
     "tags": {
       "value": {
-        "CostCenter": "FinOps",
-        "Criticality": "High",
-        "Environment": "Production",
-        "hidden-title": "FinOps Hub - Managed Network Isolation",
-        "NetworkMode": "Managed",
+        "Environment": "Development",
+        "hidden-title": "FinOps Hub - Fabric Minimal",
         "SecurityControl": "Ignore"
       }
     }
@@ -866,18 +625,16 @@ using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
 // Required parameters
 param hubName = '<hubName>'
 // Non-required parameters
-param deployerPrincipalId = '<deployerPrincipalId>'
-param deploymentConfiguration = 'waf-aligned'
-param deploymentType = 'storage-only'
+param deploymentConfiguration = 'minimal'
+param deploymentType = 'fabric'
 param enableTelemetry = true
+param fabricDatabaseName = 'finops'
+param fabricIngestionUri = '<fabricIngestionUri>'
+param fabricQueryUri = '<fabricQueryUri>'
 param location = '<location>'
-param networkIsolationMode = 'Managed'
 param tags = {
-  CostCenter: 'FinOps'
-  Criticality: 'High'
-  Environment: 'Production'
-  'hidden-title': 'FinOps Hub - Managed Network Isolation'
-  NetworkMode: 'Managed'
+  Environment: 'Development'
+  'hidden-title': 'FinOps Hub - Fabric Minimal'
   SecurityControl: 'Ignore'
 }
 ```
@@ -885,11 +642,108 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Storage Minimal_
+### Example 5: _Storage Defaults_
+
+This instance deploys the module with the minimum set of required parameters for storage-only mode using WAF-aligned defaults.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/storage.defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module finopsHub 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>' = {
+  params: {
+    // Required parameters
+    hubName: '<hubName>'
+    // Non-required parameters
+    deploymentConfiguration: 'waf-aligned'
+    deploymentType: 'storage-only'
+    enableTelemetry: true
+    location: '<location>'
+    tags: {
+      Environment: 'Development'
+      'hidden-title': 'FinOps Hub - Storage Only Test'
+      SecurityControl: 'Ignore'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "hubName": {
+      "value": "<hubName>"
+    },
+    // Non-required parameters
+    "deploymentConfiguration": {
+      "value": "waf-aligned"
+    },
+    "deploymentType": {
+      "value": "storage-only"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Development",
+        "hidden-title": "FinOps Hub - Storage Only Test",
+        "SecurityControl": "Ignore"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/finops-toolkit/finops-hub:<version>'
+
+// Required parameters
+param hubName = '<hubName>'
+// Non-required parameters
+param deploymentConfiguration = 'waf-aligned'
+param deploymentType = 'storage-only'
+param enableTelemetry = true
+param location = '<location>'
+param tags = {
+  Environment: 'Development'
+  'hidden-title': 'FinOps Hub - Storage Only Test'
+  SecurityControl: 'Ignore'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Storage Minimal_
 
 This instance deploys the module with the minimum set of required parameters for storage-only mode.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/storage-minimal]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/storage.minimal]
 
 
 <details>
@@ -981,27 +835,6 @@ param tags = {
 
 </details>
 <p>
-
-## Troubleshooting
-
-### Fabric ingestion fails with `Download_Forbidden`
-
-When deploymentType is `fabric`, the Eventhouse reads parquet files directly from the FinOps Hub storage account (`abfss://...`). If ingestion fails with `Download_Forbidden`, verify both **RBAC** and **network access**:
-
-- **RBAC**: The Fabric workspace identity must have **Storage Blob Data Reader** (or higher) on the storage account.
-- **Network access**:
-  - If the storage account firewall is set to **Selected networks**, Fabric cannot reach it. Temporarily set **Public network access** to *Enabled* and retry ingestion.
-  - If you must keep the storage account private, use `networkIsolationMode` = `Managed` or `BringYourOwn` and ensure your private endpoints + private DNS allow access. Fabric still requires storage to be reachable from the Fabric service; if it cannot resolve or reach the DFS endpoint, ingestion will fail.
-
-After fixing RBAC/network access, re-run the ingestion pipeline and validate with:
-
-```
-.show ingestion failures
-| where FailedOn > ago(2h)
-| project FailedOn, Database, Table, IngestionSourcePath, ErrorCode, Details
-| sort by FailedOn desc
-| limit 1
-```
 
 ## Parameters
 
@@ -1672,12 +1505,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/data-factory/factory:0.11.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
-| `br/public:avm/res/kusto/cluster:0.9.1` | Remote reference |
+| `br/public:avm/res/kusto/cluster:0.9.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.2` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.31.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.32.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
