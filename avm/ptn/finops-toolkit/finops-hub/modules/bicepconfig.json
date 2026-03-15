@@ -1,0 +1,33 @@
+{
+  // Linter overrides for FinOps Hub sub-modules.
+  // These rules are disabled because the module uses Azure Data Explorer, Data Factory,
+  // and deployment scripts that require patterns the linter flags but are intentional.
+  // See https://github.com/Azure/bicep-registry-modules/pull/6549 for details.
+  "$schema": "https://raw.githubusercontent.com/Azure/bicep-types-az/main/generated/schemas/bicepconfig.schema.json",
+  "analyzers": {
+    "core": {
+      "rules": {
+        // Kusto (*.kusto.windows.net) and ARM (management.azure.com) URLs are required
+        // in ADF pipeline activities and ADX managed private endpoints (~17 occurrences).
+        "no-hardcoded-env-urls": {
+          "level": "off"
+        },
+        // utcNow() is used intentionally in deployment script forceUpdateTag params
+        // to ensure re-execution on each deployment (~6 occurrences).
+        "use-stable-resource-identifiers": {
+          "level": "off"
+        },
+        // Deployment script outputs are accessed via .properties.outputs which
+        // cannot use optional chaining without breaking the logic (~13 occurrences).
+        "use-safe-access": {
+          "level": "off"
+        },
+        // Deployment script output values (e.g., connection strings) are flagged
+        // but are not actual secrets — they are configuration values (~4 occurrences).
+        "outputs-should-not-contain-secrets": {
+          "level": "off"
+        }
+      }
+    }
+  }
+}
