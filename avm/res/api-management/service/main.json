@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "6998727092285280690"
+      "templateHash": "672662303648190434"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -25,7 +25,7 @@
           "type": "string",
           "maxLength": 50,
           "metadata": {
-            "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
+            "description": "Required. API Management Service Authorization Server name. Must be 1 to 50 characters long."
           }
         },
         "authorizationEndpoint": {
@@ -407,7 +407,7 @@
           "minLength": 1,
           "maxLength": 100,
           "metadata": {
-            "description": "Required. The display name of the Name of API Version Set."
+            "description": "Required. The display name of the API Version Set."
           }
         },
         "versioningScheme": {
@@ -418,7 +418,7 @@
             "Segment"
           ],
           "metadata": {
-            "description": "Required. An value that determines where the API Version identifier will be located in a HTTP request."
+            "description": "Required. A value that determines where the API Version identifier will be located in an HTTP request."
           }
         },
         "description": {
@@ -660,7 +660,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
+            "description": "Optional. Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
           }
         },
         "serviceFabricCluster": {
@@ -762,7 +762,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Original uri of entity in external system cache points to."
+            "description": "Optional. Original URI of entity in external system cache points to."
           }
         },
         "useFromLocation": {
@@ -786,7 +786,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/identityProviders@2024-05-01#properties/properties/properties/allowedTenants"
             },
-            "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+            "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login."
           },
           "nullable": true
         },
@@ -923,7 +923,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+            "description": "Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
           }
         },
         "credentials": {
@@ -959,7 +959,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/keyVault"
             },
-            "description": "Optional. KeyVault location details of the namedValue."
+            "description": "Optional. Key Vault location details of the namedValue."
           },
           "nullable": true
         },
@@ -1020,7 +1020,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Format of the policyContent."
+            "description": "Optional. Format of the policy content."
           }
         },
         "value": {
@@ -1153,7 +1153,7 @@
           "minLength": 1,
           "maxLength": 100,
           "metadata": {
-            "description": "Required. API Management Service Subscriptions name."
+            "description": "Required. API Management Service Subscription name."
           }
         },
         "allowTracing": {
@@ -1383,7 +1383,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+            "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
           }
         },
         "description": {
@@ -1432,7 +1432,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
+            "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators."
           }
         },
         "subscriptionRequired": {
@@ -1544,21 +1544,21 @@
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Otional. Ask user for consent to the terms of service."
+                    "description": "Optional. Ask user for consent to the terms of service."
                   }
                 },
                 "enabled": {
                   "type": "bool",
                   "nullable": true,
                   "metadata": {
-                    "description": "Otional. Display terms of service during a sign-up process."
+                    "description": "Optional. Display terms of service during a sign-up process."
                   }
                 },
                 "text": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Otional. A terms of service text."
+                    "description": "Optional. A terms of service text."
                   }
                 }
               },
@@ -4418,7 +4418,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15465455858893780194"
+              "templateHash": "2687316272169656580"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -5046,7 +5046,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.41.2.15936",
-                      "templateHash": "11797839067641751383"
+                      "templateHash": "5204741291266602280"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy."
@@ -5081,7 +5081,7 @@
                         "xml-link"
                       ],
                       "metadata": {
-                        "description": "Optional. Format of the policyContent."
+                        "description": "Optional. Format of the policy content."
                       }
                     },
                     "value": {
@@ -5223,10 +5223,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.41.2.15936",
-                      "templateHash": "6787316023898210718"
+                      "templateHash": "8831683591503293949"
                     },
-                    "name": "API Management Service APIs Diagnostics.",
-                    "description": "This module deploys an API Management Service API Diagnostics."
+                    "name": "API Management Service API Diagnostics",
+                    "description": "This module deploys an API Management Service API Diagnostic."
                   },
                   "parameters": {
                     "apiManagementServiceName": {
@@ -5832,7 +5832,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the API management service API was deployed to."
+                "description": "The resource group the API Management service API was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
@@ -5892,7 +5892,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "6756200995642926268"
+              "templateHash": "2206211711037534357"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set."
@@ -5927,7 +5927,7 @@
                 "Segment"
               ],
               "metadata": {
-                "description": "Required. An value that determines where the API Version identifier will be located in a HTTP request."
+                "description": "Required. A value that determines where the API Version identifier will be located in an HTTP request."
               }
             },
             "description": {
@@ -6112,7 +6112,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "16640928470427151934"
+              "templateHash": "67184448709483431"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server."
@@ -6128,7 +6128,7 @@
               "type": "string",
               "maxLength": 50,
               "metadata": {
-                "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
+                "description": "Required. API Management Service Authorization Server name. Must be 1 to 50 characters long."
               }
             },
             "apiManagementServiceName": {
@@ -6486,7 +6486,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
+                "description": "Optional. Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools."
               }
             },
             "serviceFabricCluster": {
@@ -6706,7 +6706,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Original uri of entity in external system cache points to."
+                "description": "Optional. Original URI of entity in external system cache points to."
               }
             },
             "useFromLocation": {
@@ -6856,7 +6856,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7332213838615511629"
+              "templateHash": "16134680049045134167"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider."
@@ -6874,7 +6874,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/identityProviders@2024-05-01#properties/properties/properties/allowedTenants"
                 },
-                "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+                "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login."
               },
               "defaultValue": []
             },
@@ -7147,7 +7147,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+                "description": "Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
               }
             },
             "credentials": {
@@ -7279,7 +7279,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "466210836797381741"
+              "templateHash": "2224048089254766558"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value."
@@ -7305,7 +7305,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/keyVault"
                 },
-                "description": "Optional. KeyVault location details of the namedValue."
+                "description": "Optional. Key Vault location details of the namedValue."
               },
               "nullable": true
             },
@@ -7523,21 +7523,21 @@
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the API management service portal setting."
+                "description": "The resource ID of the API Management service portal setting."
               },
               "value": "[resourceId('Microsoft.ApiManagement/service/portalsettings', parameters('apiManagementServiceName'), parameters('name'))]"
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the API management service portal setting."
+                "description": "The name of the API Management service portal setting."
               },
               "value": "[parameters('name')]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the API management service portal setting was deployed into."
+                "description": "The resource group the API Management service portal setting was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
@@ -7585,7 +7585,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "13479766327890392746"
+              "templateHash": "16762589263583809429"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy."
@@ -7614,7 +7614,7 @@
                 "xml-link"
               ],
               "metadata": {
-                "description": "Optional. Format of the policyContent."
+                "description": "Optional. Format of the policy content."
               }
             },
             "value": {
@@ -7753,7 +7753,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "1880572548091649589"
+              "templateHash": "17013452819461108616"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
@@ -7822,7 +7822,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+                "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false."
               }
             },
             "description": {
@@ -7871,7 +7871,7 @@
                 "published"
               ],
               "metadata": {
-                "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators."
+                "description": "Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators."
               }
             },
             "subscriptionRequired": {
@@ -7996,7 +7996,7 @@
                     "productName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                        "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
@@ -8118,7 +8118,7 @@
                     "productName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                        "description": "Conditional. The name of the parent product. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
@@ -8430,7 +8430,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15609971169782630649"
+              "templateHash": "3946940313391664514"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription."
@@ -8453,7 +8453,7 @@
               "minLength": 1,
               "maxLength": 100,
               "metadata": {
-                "description": "Required. API Management Service Subscriptions name."
+                "description": "Required. API Management Service Subscription name."
               }
             },
             "allowTracing": {
@@ -14918,7 +14918,7 @@
         "$ref": "#/definitions/privateEndpointOutputType"
       },
       "metadata": {
-        "description": "The private endpoints of the key vault."
+        "description": "The private endpoints of the API Management service."
       },
       "copy": {
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",

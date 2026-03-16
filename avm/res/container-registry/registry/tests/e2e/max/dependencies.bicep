@@ -48,7 +48,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
@@ -65,7 +65,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: pairedRegionScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -76,7 +76,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
