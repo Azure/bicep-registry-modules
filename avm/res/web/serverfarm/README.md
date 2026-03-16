@@ -396,7 +396,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         type: 'DWORD'
       }
     ]
-    skuCapacity: 3
+    skuCapacity: 1
     skuName: 'P1v4'
     storageMounts: [
       {
@@ -420,6 +420,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       Role: 'DeploymentValidation'
     }
     virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    zoneRedundant: false
   }
 }
 ```
@@ -496,7 +497,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       ]
     },
     "skuCapacity": {
-      "value": 3
+      "value": 1
     },
     "skuName": {
       "value": "P1v4"
@@ -528,6 +529,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "virtualNetworkSubnetId": {
       "value": "<virtualNetworkSubnetId>"
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -584,7 +588,7 @@ param registryAdapters = [
     type: 'DWORD'
   }
 ]
-param skuCapacity = 3
+param skuCapacity = 1
 param skuName = 'P1v4'
 param storageMounts = [
   {
@@ -608,6 +612,7 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param virtualNetworkSubnetId = '<virtualNetworkSubnetId>'
+param zoneRedundant = false
 ```
 
 </details>

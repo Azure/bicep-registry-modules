@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "7857154799964810859"
+      "version": "0.41.2.15936",
+      "templateHash": "15349778902795195860"
     },
     "name": "Application Gateway for Containers Security Policy",
     "description": "This module deploys an Application Gateway for Containers Security Policy"

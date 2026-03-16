@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "8391946559642957222"
+      "version": "0.41.2.15936",
+      "templateHash": "10642848035749708880"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2961,7 +2961,7 @@
       "condition": "[not(empty(parameters('maintenanceConfigurationResourceId')))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[format('{0}assignment', parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -2976,7 +2976,7 @@
       "condition": "[not(empty(parameters('configurationProfile')))]",
       "type": "Microsoft.Automanage/configurationProfileAssignments",
       "apiVersion": "2022-05-04",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "default",
       "properties": {
         "configurationProfile": "[parameters('configurationProfile')]"
@@ -3013,7 +3013,7 @@
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
       "apiVersion": "2024-03-11",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].name]",
       "properties": {
         "dataCollectionRuleId": "[parameters('extensionMonitoringAgentConfig').dataCollectionRuleAssociations[copyIndex()].dataCollectionRuleResourceId]"
@@ -3036,7 +3036,7 @@
       "condition": "[not(empty(parameters('guestConfiguration')))]",
       "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
       "apiVersion": "2024-04-05",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('guestConfiguration'), 'name'), 'AzureWindowsBaseline')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -3051,7 +3051,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -3068,7 +3068,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/virtualMachines', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3142,8 +3142,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "716745708639313461"
+              "version": "0.41.2.15936",
+              "templateHash": "4645756764602776197"
             }
           },
           "definitions": {
@@ -6100,8 +6100,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6329,8 +6329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6561,8 +6561,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6788,8 +6788,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7020,8 +7020,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7247,8 +7247,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7482,8 +7482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7722,8 +7722,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7956,8 +7956,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8185,8 +8185,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8423,8 +8423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8657,8 +8657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "8391598897118491777"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8877,8 +8877,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "3866626825190424174"
+              "version": "0.41.2.15936",
+              "templateHash": "17448691641471706096"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."

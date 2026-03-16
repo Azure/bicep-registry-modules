@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "15180421612793324069"
+      "version": "0.41.2.15936",
+      "templateHash": "13303542914499073606"
     },
     "name": "Default interface types for AVM modules",
     "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n"

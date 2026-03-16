@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4166303424618131775"
+      "version": "0.41.2.15936",
+      "templateHash": "11664145668698708282"
     },
     "name": "App Configuration Stores Key Values",
     "description": "This module deploys an App Configuration Store Key Value."
