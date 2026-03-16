@@ -131,7 +131,7 @@ param trafficWeight int = 100
 param dapr resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.dapr?
 
 @description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
-param identitySettings resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.identitySettings?
+param identitySettings resourceInput<'Microsoft.App/containerApps@2025-07-01'>.properties.configuration.identitySettings?
 
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
@@ -212,7 +212,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
