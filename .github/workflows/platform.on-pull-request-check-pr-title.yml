@@ -1,7 +1,7 @@
 name: .Platform - Semantic PR Check
 
 on:
-  pull_request_target:
+  pull_request: # Temporarily using `pull_request` while `pull_request_target` usage is under discussion
     types:
       - opened
       - edited

@@ -50,7 +50,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`protocol`](#parameter-protocol) | string | Backend communication protocol. http or soap. Not supported for Backend Pools. |
 | [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
-| [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-resourceid) | string | Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
 | [`serviceFabricCluster`](#parameter-servicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-title) | string | Backend Title. |
 | [`tls`](#parameter-tls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
@@ -130,7 +130,7 @@ Backend Proxy Contract Properties. Not supported for Backend Pools.
 
 ### Parameter: `resourceId`
 
-Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
+Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
 
 - Required: No
 - Type: string

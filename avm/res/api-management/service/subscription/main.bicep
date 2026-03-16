@@ -7,7 +7,7 @@ param apiManagementServiceName string
 @description('Required. Subscription name.')
 param name string
 
-@description('Required. API Management Service Subscriptions name.')
+@description('Required. API Management Service Subscription name.')
 @minLength(1)
 @maxLength(100)
 param displayName string
