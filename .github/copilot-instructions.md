@@ -1,6 +1,6 @@
 ---
 name: Global-Instructions
-description: Instructions for working with Azure Verified Modules (AVM) Bicep repository
+description: Instructions for working with Azure Verified Modules (AVM) Bicep repository. Rules of generating and maintaining Bicep modules with AVM best practices and formatting guidelines with GitHub Copilot.
 ---
 
 # Azure Verified Modules (AVM) - General Instructions
@@ -19,8 +19,22 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ### Parsing ALL module specifications
 
-** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: All changes MUST comply with Azure Verified Modules (AVM) standards. Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
+** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
 For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
+
+### Running local validation tests
+
+**⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories and any of the files in the `./avm/**` folder are changed, the following local validation tests MUST be executed before any pull request is created or updated: `./utilities/tools/Test-ModuleLocally.ps1`. **Failure to run these tests will cause PR validation failures and prevent successful merges.** Do not run deployment tests unless it is asked for by the user or other instructions/prompts/skills.
+
+### Updating README.md Documentation
+
+**🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [utilities/tools/Set-AVMModule.ps1](utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files.
+1. When the script is only used for Readme generation, use the `-SkipBuild` switch, unless you are instructed otherwise by the user or other instructions/prompts/skills.
+2. In all other cases, when the `main.bicep` file is updated, you need to update the related `main.json` file - which needs to be done via the same script by not using the `-SkipBuild` switch, targeting the explicit path of the `main.bicep` file.
+
+### Fallback to Use Quick Starts as a last resort
+
+When required information or relevant example is not available in the Bicep schema or in the Azure Resource Reference when generating new AVM Bicep code, as a last effort, you can refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#search_code` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
 
 ## Use Available Tools
 
@@ -72,3 +86,31 @@ You have exactly these two options (do not use any other method or tool to do th
 - `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
+
+## Quality Assurance and Troubleshooting
+
+### Code Quality
+
+- ✅ **Always** validate Bicep syntax before committing
+- ✅ **Use** meaningful parameter and variable names
+- ✅ **Add** proper metadata and descriptions
+- ✅ **Follow** Azure naming conventions and constraints
+- ✅ **Test** with all required test scenarios (defaults/max/waf-aligned)
+- ✅ **Document** any customizations or deviations from examples
+
+### Common Issues
+
+1. **Module Resolution**: When referencing modules, make sure MCR paths exist with the correct versions
+2. **Parameter Validation**: Check required parameters and data types in module documentation
+3. **Naming Conflicts**: Use `uniqueString()` for globally unique resource names
+4. **API Version Compatibility**: Verify ARM API versions match module requirements
+5. **Validation Failures**: Run local Pester tests (validation tests) before committing changes
+
+### Support Resources
+
+1. Official documentation:
+  - **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
+
+2. Community forums - **ALWAYS consult the user** before taking a decision or action based on information you found on the following pages:
+  - **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
+  - **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
