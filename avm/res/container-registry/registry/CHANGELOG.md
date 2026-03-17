@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Fixed restricted network access failing when `networkRuleSetIpRules` is set to an empty array. The module now correctly applies `publicNetworkAccess: 'Disabled'` and omits `networkRuleSet` when no IP rules are provided. ([#2539](https://github.com/Azure/bicep-registry-modules/issues/2539))
+- Clarified that `credentialSetResourceId` in cache rules is optional and only required for authenticated upstream registries (e.g., Docker Hub). Anonymous public registries such as MCR do not need credentials. ([#3072](https://github.com/Azure/bicep-registry-modules/issues/3072))
+- Added new `task` child module (`registries/tasks`) to support ACR Tasks for automating container image builds and workflows. Supports Docker build, encoded task, and file task step types, along with timer, source, and base image triggers. ([#3156](https://github.com/Azure/bicep-registry-modules/issues/3156))
+- Added new `token` and `webhook` child modules (`registries/tokens` and `registries/webhooks`) and wired them into the parent registry module deployment flow.
+- Added independent child-module packaging metadata (`version.json`, `CHANGELOG.md`) for `cache-rule`, `credential-set`, `replication`, `scope-map`, `task`, `token`, and `webhook`.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes

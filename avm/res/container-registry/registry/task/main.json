@@ -1,0 +1,272 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "14036144006333362944"
+    },
+    "name": "Container Registries Tasks",
+    "description": "This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
+  },
+  "definitions": {
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The name of the task."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/tags"
+        },
+        "description": "Optional. Tags of the resource."
+      },
+      "nullable": true
+    },
+    "platform": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/platform"
+        },
+        "description": "Optional. The platform properties against which the task has to run."
+      },
+      "nullable": true
+    },
+    "step": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/step"
+        },
+        "description": "Optional. The task step properties. Exactly one of dockerBuildStep, encodedTaskStep, or fileTaskStep must be provided."
+      },
+      "nullable": true
+    },
+    "trigger": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/trigger"
+        },
+        "description": "Optional. The properties that describe all triggers for the task."
+      },
+      "nullable": true
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. The current status of task."
+      }
+    },
+    "timeout": {
+      "type": "int",
+      "defaultValue": 3600,
+      "minValue": 300,
+      "maxValue": 28800,
+      "metadata": {
+        "description": "Optional. Run timeout in seconds."
+      }
+    },
+    "agentConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/agentConfiguration"
+        },
+        "description": "Optional. The machine configuration of the run agent."
+      },
+      "nullable": true
+    },
+    "agentPoolName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The dedicated agent pool for the task."
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview#properties/properties/properties/credentials"
+        },
+        "description": "Optional. The properties that describe the credentials that will be used when the task is invoked."
+      },
+      "nullable": true
+    },
+    "isSystemTask": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The value of this property indicates whether the task resource is system task or not."
+      }
+    },
+    "logTemplate": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The template that describes the repository and tag information for run log artifact."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.containerregistry-registry-task.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2025-11-01",
+      "name": "[parameters('registryName')]"
+    },
+    "task": {
+      "type": "Microsoft.ContainerRegistry/registries/tasks",
+      "apiVersion": "2025-03-01-preview",
+      "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "identity": "[variables('identity')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "agentConfiguration": "[parameters('agentConfiguration')]",
+        "agentPoolName": "[parameters('agentPoolName')]",
+        "credentials": "[parameters('credentials')]",
+        "isSystemTask": "[parameters('isSystemTask')]",
+        "logTemplate": "[parameters('logTemplate')]",
+        "platform": "[parameters('platform')]",
+        "status": "[parameters('status')]",
+        "step": "[parameters('step')]",
+        "timeout": "[parameters('timeout')]",
+        "trigger": "[parameters('trigger')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the task."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the task was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the task."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('registryName'), parameters('name'))]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('task', '2025-03-01-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('task', '2025-03-01-preview', 'full'), 'identity'), 'principalId')]"
+    }
+  }
+}
