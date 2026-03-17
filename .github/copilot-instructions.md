@@ -24,12 +24,13 @@ For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) 
 
 ### Running local validation tests
 
-**⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories and any of the files in the `./avm/**` folder are changed, the following local validation tests MUST be executed before any pull request is created or updated: `./utilities/tools/Test-ModuleLocally.ps1`. **Failure to run these tests will cause PR validation failures and prevent successful merges.** Do not run deployment tests unless it is asked for by the user or other instructions/prompts/skills.
+**⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories and any of the files in the `./avm/**` folder are changed, the following local validation tests MUST be executed before any pull request is created or updated: `./utilities/tools/Test-ModuleLocally.ps1`. **Failure to run these tests will cause PR validation failures and prevent successful merges.** Do not run deployment tests unless it is asked for by the user or other instructions.
 
 ### Updating README.md Documentation
 
 **🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [utilities/tools/Set-AVMModule.ps1](utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files.
-1. When the script is only used for Readme generation, use the `-SkipBuild` switch, unless you are instructed otherwise by the user or other instructions/prompts/skills.
+
+1. When the script is only used for Readme generation, use the `-SkipBuild` switch, unless you are instructed otherwise by the user or other instructions.
 2. In all other cases, when the `main.bicep` file is updated, you need to update the related `main.json` file - which needs to be done via the same script by not using the `-SkipBuild` switch, targeting the explicit path of the `main.bicep` file.
 
 ### Fallback to Use Quick Starts as a last resort
@@ -78,8 +79,9 @@ You have exactly these two options (do not use any other method or tool to do th
 
 1. **Preferred option**: Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
 2. **Alternative option** (if option 1 fails): Use the `#fetch` tool to get information from related URLs.
-  - **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
-  - **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
+
+- **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
+- **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
 
 ### Use Bicep VS Code Extension Tools (Preferred)
 
@@ -109,8 +111,18 @@ You have exactly these two options (do not use any other method or tool to do th
 ### Support Resources
 
 1. Official documentation:
-  - **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
+
+- **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
 
 2. Community forums - **ALWAYS consult the user** before taking a decision or action based on information you found on the following pages:
-  - **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
-  - **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
+
+- **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
+- **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
+
+## Skills
+
+When a user asks to perform a task that falls within the domain of a skill below, use the `read_file` tool to acquire the full instructions from the file path before proceeding.
+
+| Skill                       | Description                                                                                                                                                                                      | File                                                  |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| AVM-Child-Module-Publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
