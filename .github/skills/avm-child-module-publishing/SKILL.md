@@ -292,17 +292,6 @@ $topLevelParent = $affectedModulePaths | Select-Object -Last 1
 Set-AVMModule -ModuleFolderPath $topLevelParent
 ```
 
-#### Step 3.3 — Commit All Changes
-
-Once tests pass, commit all changes (manual edits + generated files) in a single commit:
-
-```powershell
-git add -A
-git commit -m "feat: enable child module publishing for <child-module-path(s)>"
-```
-
-> Adjust the commit message to list all child modules if multiple are being published (e.g., `feat: enable child module publishing for .../subnet and .../virtual-network-peering`). If the commit message exceeds 72 characters, use a more general message like `feat: enable child module publishing` without listing specific paths.
-
 ---
 
 ## Decision Points
