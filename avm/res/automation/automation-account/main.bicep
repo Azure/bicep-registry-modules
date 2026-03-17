@@ -442,7 +442,7 @@ module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep'
     name: '${uniqueString(subscription().id, resourceGroup().id)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
     params: {
       automationAccountName: automationAccount.name
-      hybridRunbookWorkerGroupWorkers: group.hybridRunbookWorkerGroupWorkers
+      hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
       name: group.name
       credentialName: group.?credentialName
     }

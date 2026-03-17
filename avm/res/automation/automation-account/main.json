@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "396227416063432931"
+      "templateHash": "7398090800600964396"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -3287,7 +3287,7 @@
             "value": "[parameters('name')]"
           },
           "hybridRunbookWorkerGroupWorkers": {
-            "value": "[coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()].hybridRunbookWorkerGroupWorkers]"
+            "value": "[tryGet(coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()], 'hybridRunbookWorkerGroupWorkers')]"
           },
           "name": {
             "value": "[coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()].name]"
