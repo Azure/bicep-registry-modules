@@ -1,6 +1,6 @@
 ---
 name: AVM-Child-Module-Publishing
-description: "Publish Bicep child modules to the Azure Verified Modules (AVM) public registry. Covers the full end-to-end workflow: prerequisite verification, allowed-list registration, telemetry instrumentation, version file creation, changelog updates, parent module updates, and final validation. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list, bicep child module publishing. DO NOT USE FOR: creating new child module functionality (use AVM-Plan/AVM-Implement agents), publishing top-level parent modules, Terraform modules."
+description: "Publish AVM Bicep child modules to the Bicep public registry. Example prompt: Publish a child module for avm/res/network/virtual-network/subnet. This skill covers the full end-to-end workflow: prerequisite verification, allowed-list registration, telemetry instrumentation, version file creation, changelog updates, parent module updates, and final validation. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list, bicep child module publishing. DO NOT USE FOR: creating new child module functionality (use AVM-Plan/AVM-Implement agents), publishing top-level parent modules, Terraform modules."
 ---
 
 # AVM Bicep Child Module Publishing
