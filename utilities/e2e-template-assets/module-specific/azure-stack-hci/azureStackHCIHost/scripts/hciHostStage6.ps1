@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [String]
@@ -271,16 +271,33 @@ if (![string]::IsNullOrEmpty($proxyServerEndpoint) -and ![string]::IsNullOrEmpty
     log "Skipping proxy settings because both -proxyServerEndpoint and -proxyBypassString were not passed... (proxyServerEndpoint: '$proxyServerEndpoint', proxyBypassString:'$proxyBypassString')"
 }
 
-## test node internet connection - required for Azure Arc initialization
+## test node internet connection with retry - required for Azure Arc initialization
 $firstVM = Get-VM | Select-Object -First 1
-log "Testing node internet connection on VM '$($firstVM.Name)'..."
-$testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
-    [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing)
+log "Testing node internet connection on VM '$($firstVM.Name)' with retry..."
+$testNodeInternetConnection = $false
+$internetRetryCount = 0
+$internetMaxRetries = 6
+while (!$testNodeInternetConnection -and $internetRetryCount -lt $internetMaxRetries) {
+    try {
+        $testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
+            [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing -TimeoutSec 30)
+        } -ErrorAction SilentlyContinue
+    } catch {
+        log "Internet test attempt $($internetRetryCount + 1) failed: $_"
+    }
+    if (!$testNodeInternetConnection) {
+        $internetRetryCount++
+        if ($internetRetryCount -lt $internetMaxRetries) {
+            log "Node '$($firstVM.Name)' internet check failed (attempt $internetRetryCount/$internetMaxRetries). Restarting RRAS NAT and retrying in 30s..."
+            Restart-Service RemoteAccess -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 30
+        }
+    }
 }
 
 If (!$testNodeInternetConnection) {
-    log "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
-    Write-Error "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
+    log "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
+    Write-Error "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
     Exit 1
 } Else {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"

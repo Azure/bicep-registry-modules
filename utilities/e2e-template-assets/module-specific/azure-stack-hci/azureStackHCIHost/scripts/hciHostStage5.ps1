@@ -104,6 +104,32 @@ If (!$?) {
     Write-Error $message
 }
 
+# Verify and retry NAT configuration (JumpStart-inspired reliability pattern)
+log 'Verifying NAT configuration with retry...'
+$natRetryCount = 0
+$natMaxRetries = 3
+while ($natRetryCount -lt $natMaxRetries) {
+    Start-Sleep -Seconds 10
+    $natInterfaces = netsh routing ip nat show interface
+    if ($natInterfaces -match 'external' -and $natInterfaces -match 'hciNodeMgmtInternal') {
+        log "NAT configuration verified successfully (attempt $($natRetryCount + 1))"
+        break
+    }
+    $natRetryCount++
+    log "NAT verification failed (attempt $natRetryCount/$natMaxRetries). Retrying NAT setup..."
+    Restart-Service RemoteAccess -Force
+    Start-Sleep -Seconds 15
+    netsh routing ip nat uninstall
+    netsh routing ip nat install
+    netsh routing ip nat set global tcptimeoutmins=1440 udptimeoutmins=1 loglevel=ERROR
+    netsh routing ip nat add interface name="vEthernet (external)" mode=FULL
+    netsh routing ip nat add interface name="vEthernet (hciNodeCompInternal)" mode=PRIVATE
+    netsh routing ip nat add interface name="vEthernet (hciNodeMgmtInternal)" mode=PRIVATE
+}
+if ($natRetryCount -ge $natMaxRetries) {
+    log 'WARNING: NAT configuration could not be fully verified after retries. Proceeding anyway...'
+}
+
 # create DHCP scopes
 log 'Creating DHCP scopes...'
 $existingScopes = Get-DhcpServerv4Scope
