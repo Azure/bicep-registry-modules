@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "524287010104293451"
+      "templateHash": "16326539869181940808"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1123,7 +1123,7 @@
         }
       },
       "properties": {
-        "azCliVersion": "2.50.0",
+        "azCliVersion": "2.67.0",
         "timeout": "PT5H",
         "retentionInterval": "PT26H",
         "cleanupPreference": "OnExpiration",

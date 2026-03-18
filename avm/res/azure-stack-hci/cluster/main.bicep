@@ -380,7 +380,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     }
   }
   properties: {
-    azCliVersion: '2.50.0'
+    azCliVersion: '2.67.0'
     timeout: 'PT5H'
     retentionInterval: 'PT26H'
     cleanupPreference: 'OnExpiration'
