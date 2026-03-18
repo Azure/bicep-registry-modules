@@ -238,13 +238,23 @@ fi
 
 echo "✅ nested/deployment-setting.bicep file found and ready for deployment"
 
-# Execute deployment with parameter file
+# Pre-compile Bicep to JSON ARM template to avoid runtime compilation in ACI (which can cause OOM)
+echo "Pre-compiling Bicep to ARM JSON template..."
+az bicep build --file "nested/deployment-setting.bicep" --outfile "nested/deployment-setting.json" --only-show-errors
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to compile Bicep template"
+    exit 1
+fi
+echo "✅ Bicep compiled to JSON successfully ($(wc -c < nested/deployment-setting.json) bytes)"
+
+# Execute deployment with pre-compiled JSON template (not Bicep) and suppress output to prevent ACI overflow
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
     --name "$DEPLOYMENT_NAME" \
-    --template-file "nested/deployment-setting.bicep" \
+    --template-file "nested/deployment-setting.json" \
     --parameters "@$PARAM_FILE" \
-    --only-show-errors
+    --only-show-errors \
+    -o none
 
 DEPLOYMENT_STATUS=$?
 
