@@ -75,16 +75,58 @@ module testDeployment '../../../main.bicep' = [
       }
       diagnosticSettings: [
         {
-          name: 'customSetting'
-          // metricCategories: [
-          //   {
-          //     category: 'AllMetrics'
-          //   }
-          // ]
+          name: 'customSettingDef'
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+        {
+          name: 'customSettingOnlyLog'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logCategoriesAndGroups: [
+            {
+              category: 'Engine'
+            }
+            {
+              category: 'Service'
+            }
+          ]
+        }
+        {
+          name: 'customSettingOnlyMetric'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+        }
+        {
+          name: 'customSettingExpl'
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          logCategoriesAndGroups: [
+            {
+              category: 'Engine'
+            }
+            {
+              category: 'Service'
+            }
+          ]
         }
       ]
       tags: {
