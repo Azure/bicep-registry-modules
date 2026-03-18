@@ -171,7 +171,6 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Publishing"
-        # if: github.run_attempt == 1
         uses: ./.github/actions/templates/avm-publishModule
         with:
           templateFilePath: "${{ inputs.modulePath }}/main.bicep"

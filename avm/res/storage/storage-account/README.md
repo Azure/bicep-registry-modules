@@ -4026,7 +4026,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Storage Account. Must be lower-case. |
+| [`name`](#parameter-name) | string | Name of the Storage Account. Must be lower-case. |
 
 **Conditional parameters**
 
@@ -4084,7 +4084,7 @@ param tags = {
 
 ### Parameter: `name`
 
-The name of the Storage Account. Must be lower-case.
+Name of the Storage Account. Must be lower-case.
 
 - Required: Yes
 - Type: string

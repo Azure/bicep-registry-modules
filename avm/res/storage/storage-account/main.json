@@ -1912,7 +1912,7 @@
       "type": "string",
       "maxLength": 24,
       "metadata": {
-        "description": "Required. The name of the Storage Account. Must be lower-case."
+        "description": "Required. Name of the Storage Account. Must be lower-case."
       }
     },
     "location": {

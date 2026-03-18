@@ -51,15 +51,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # - name: Failing step only the first attempt
-    #   shell: bash
-    #   run: |
-    #     if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
-    #       echo "Re-run, continuing."
-    #     else
-    #       echo "First run, failing."
-    #       exit 1
-    #     fi
 
     - name: Get workflow input parameters
       id: get-input-param-action
