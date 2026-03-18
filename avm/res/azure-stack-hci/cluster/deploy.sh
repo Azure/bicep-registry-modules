@@ -244,7 +244,7 @@ az deployment group create \
     --name "$DEPLOYMENT_NAME" \
     --template-file "nested/deployment-setting.bicep" \
     --parameters "@$PARAM_FILE" \
-    --verbose
+    --only-show-errors
 
 DEPLOYMENT_STATUS=$?
 
