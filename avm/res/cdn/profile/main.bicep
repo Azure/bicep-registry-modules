@@ -123,6 +123,8 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -244,6 +246,7 @@ module profile_customDomains 'custom-domain/main.bicep' = [
       profile_secrets
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: customDomain.name
       profileName: profile.name
       hostName: customDomain.hostName
@@ -263,8 +266,10 @@ module profile_originGroups 'origin-group/main.bicep' = [
   for (origingroup, index) in (originGroups ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: origingroup.name
       profileName: profile.name
+      authentication: origingroup.?authentication
       loadBalancingSettings: origingroup.loadBalancingSettings
       healthProbeSettings: origingroup.?healthProbeSettings
       sessionAffinityState: origingroup.?sessionAffinityState
@@ -281,6 +286,7 @@ module profile_ruleSets 'rule-set/main.bicep' = [
       profile_originGroups
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: ruleSet.name
       profileName: profile.name
       rules: ruleSet.?rules
@@ -316,6 +322,7 @@ module profile_securityPolicies 'security-policy/main.bicep' = [
       profile_customDomains
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: securityPolicy.name
       profileName: profile.name
       associations: securityPolicy.associations
@@ -389,11 +396,14 @@ type originGroupType = {
   @description('Required. The name of the origin group.')
   name: string
 
+  @description('Optional. Settings for Origin Authentication.')
+  authentication: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
+
   @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
+  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.healthProbeSettings?
 
   @description('Required. Load balancing settings for a backend pool.')
-  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
+  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.loadBalancingSettings
 
   @description('Optional. Whether to allow session affinity on this host.')
   sessionAffinityState: 'Enabled' | 'Disabled' | null

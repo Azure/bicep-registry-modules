@@ -31,7 +31,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cdn/profiles/customDomains` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_customdomains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/customDomains)</li></ul> |
 | `Microsoft.Cdn/profiles/endpoints` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/endpoints)</li></ul> |
 | `Microsoft.Cdn/profiles/endpoints/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_endpoints_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/endpoints/origins)</li></ul> |
-| `Microsoft.Cdn/profiles/originGroups` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups)</li></ul> |
+| `Microsoft.Cdn/profiles/originGroups` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-06-01/profiles/originGroups)</li></ul> |
 | `Microsoft.Cdn/profiles/originGroups/origins` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_origingroups_origins.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/originGroups/origins)</li></ul> |
 | `Microsoft.Cdn/profiles/ruleSets` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_rulesets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/ruleSets)</li></ul> |
 | `Microsoft.Cdn/profiles/ruleSets/rules` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cdn_profiles_rulesets_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/ruleSets/rules)</li></ul> |
@@ -841,7 +841,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
               'test1-cdnpmax-custom-domain'
             ]
             enabledState: 'Enabled'
-            forwardingProtocol: 'MatchRequest'
+            forwardingProtocol: 'HttpsOnly'
             httpsRedirect: 'Enabled'
             linkToDefaultDomain: 'Enabled'
             name: 'test-cdnpmax-afd-route-1'
@@ -924,6 +924,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     }
     originGroups: [
       {
+        authentication: {
+          scope: 'https://storage.azure.com/.default'
+          type: 'UserAssignedIdentity'
+          userAssignedIdentity: {
+            id: '<id>'
+          }
+        }
         healthProbeSettings: {
           probeIntervalInSeconds: 120
           probePath: '/health'
@@ -952,6 +959,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
       }
       {
+        authentication: {
+          scope: 'https://storage.azure.com/.default'
+          type: 'UserAssignedIdentity'
+          userAssignedIdentity: {
+            id: '<id>'
+          }
+        }
         loadBalancingSettings: {
           additionalLatencyInMilliseconds: 100
           sampleSize: 6
@@ -1061,7 +1075,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
                 "test1-cdnpmax-custom-domain"
               ],
               "enabledState": "Enabled",
-              "forwardingProtocol": "MatchRequest",
+              "forwardingProtocol": "HttpsOnly",
               "httpsRedirect": "Enabled",
               "linkToDefaultDomain": "Enabled",
               "name": "test-cdnpmax-afd-route-1",
@@ -1156,6 +1170,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
     "originGroups": {
       "value": [
         {
+          "authentication": {
+            "scope": "https://storage.azure.com/.default",
+            "type": "UserAssignedIdentity",
+            "userAssignedIdentity": {
+              "id": "<id>"
+            }
+          },
           "healthProbeSettings": {
             "probeIntervalInSeconds": 120,
             "probePath": "/health",
@@ -1184,6 +1205,13 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": 15
         },
         {
+          "authentication": {
+            "scope": "https://storage.azure.com/.default",
+            "type": "UserAssignedIdentity",
+            "userAssignedIdentity": {
+              "id": "<id>"
+            }
+          },
           "loadBalancingSettings": {
             "additionalLatencyInMilliseconds": 100,
             "sampleSize": 6,
@@ -1295,7 +1323,7 @@ param afdEndpoints = [
           'test1-cdnpmax-custom-domain'
         ]
         enabledState: 'Enabled'
-        forwardingProtocol: 'MatchRequest'
+        forwardingProtocol: 'HttpsOnly'
         httpsRedirect: 'Enabled'
         linkToDefaultDomain: 'Enabled'
         name: 'test-cdnpmax-afd-route-1'
@@ -1378,6 +1406,13 @@ param managedIdentities = {
 }
 param originGroups = [
   {
+    authentication: {
+      scope: 'https://storage.azure.com/.default'
+      type: 'UserAssignedIdentity'
+      userAssignedIdentity: {
+        id: '<id>'
+      }
+    }
     healthProbeSettings: {
       probeIntervalInSeconds: 120
       probePath: '/health'
@@ -1406,6 +1441,13 @@ param originGroups = [
     trafficRestorationTimeToHealedOrNewEndpointsInMinutes: 15
   }
   {
+    authentication: {
+      scope: 'https://storage.azure.com/.default'
+      type: 'UserAssignedIdentity'
+      userAssignedIdentity: {
+        id: '<id>'
+      }
+    }
     loadBalancingSettings: {
       additionalLatencyInMilliseconds: 100
       sampleSize: 6
@@ -2546,6 +2588,7 @@ Array of origin group objects. Required if the afdEndpoints is specified.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`authentication`](#parameter-origingroupsauthentication) | object | Settings for Origin Authentication. |
 | [`healthProbeSettings`](#parameter-origingroupshealthprobesettings) | object | Health probe settings to the origin that is used to determine the health of the origin. |
 | [`sessionAffinityState`](#parameter-origingroupssessionaffinitystate) | string | Whether to allow session affinity on this host. |
 | [`trafficRestorationTimeToHealedOrNewEndpointsInMinutes`](#parameter-origingroupstrafficrestorationtimetohealedornewendpointsinminutes) | int | Time in minutes to shift the traffic to the endpoint gradually when an unhealthy endpoint comes healthy or a new endpoint is added. Default is 10 mins. |
@@ -2667,6 +2710,13 @@ Weight of the origin in given origin group for load balancing. Must be between 1
 
 - Required: No
 - Type: int
+
+### Parameter: `originGroups.authentication`
+
+Settings for Origin Authentication.
+
+- Required: No
+- Type: object
 
 ### Parameter: `originGroups.healthProbeSettings`
 

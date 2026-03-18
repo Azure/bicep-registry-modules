@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/private-endpoint/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Updated API versions for all resources to the latest available
+- Updated 'avm-common-types version' to `0.7.0`
+- Added new parameter `ipVersionType` to support both IPv4 and IPv6 private endpoints
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

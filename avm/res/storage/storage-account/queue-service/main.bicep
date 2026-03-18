@@ -18,6 +18,8 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the queue services
 var name = 'default'
 
+var enableReferencedModulesTelemetry = false
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
 }
@@ -71,6 +73,7 @@ module queueServices_queues 'queue/main.bicep' = [
       name: queue.name
       metadata: queue.?metadata
       roleAssignments: queue.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

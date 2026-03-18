@@ -14,7 +14,7 @@ param name string
 @maxLength(300)
 param displayName string
 
-@sys.description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product\'s APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product\'s APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
+@sys.description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product\'s APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product\'s APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
 param approvalRequired bool = false
 
 @maxLength(1000)
@@ -34,7 +34,7 @@ param policies productPolicyType[]?
   'notPublished'
   'published'
 ])
-@sys.description('Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators.')
+@sys.description('Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators.')
 param state string = 'published'
 
 @sys.description('Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it\'s value is assumed to be true.')
@@ -56,7 +56,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-product.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -118,7 +118,7 @@ module product_policies 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: apiManagementServiceName
       productName: product.name
-      name: policy.name
+      name: policy.?name
       format: policy.?format
       value: policy.value
     }
