@@ -20,18 +20,8 @@ param solutionName string = 'macae'
 param solutionUniqueText string = take(uniqueString(subscription().id, resourceGroup().name, solutionName), 5)
 
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+@description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
+param location string = resourceGroup().location
 
 //Get the current deployer's information
 var deployerInfo = deployer()
@@ -61,10 +51,10 @@ param gptModelVersion string = '2025-04-14'
 
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
-param gpt4_1ModelName string = 'gpt-4.1'
+param gpt41ModelName string = 'gpt-4.1'
 
 @description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
-param gpt4_1ModelVersion string = '2025-04-14'
+param gpt41ModelVersion string = '2025-04-14'
 
 @minLength(1)
 @description('Optional. Name of the GPT Reasoning model to deploy.')
@@ -85,7 +75,7 @@ param azureAiAgentAPIVersion string = '2025-01-01-preview'
   'GlobalStandard'
 ])
 @description('Optional. GPT model deployment type. Defaults to GlobalStandard.')
-param gpt4_1ModelDeploymentType string = 'GlobalStandard'
+param gpt41ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
 @allowed([
@@ -107,7 +97,7 @@ param gptReasoningModelDeploymentType string = 'GlobalStandard'
 param gptModelCapacity int = 50
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
-param gpt4_1ModelCapacity int = 150
+param gpt41ModelCapacity int = 150
 
 @description('Optional. AI model deployment token capacity. Defaults to 50 for optimal performance.')
 param gptReasoningModelCapacity int = 50
@@ -156,13 +146,13 @@ param frontendContainerImageName string = 'macaefrontend'
 param frontendContainerImageTag string = 'latest_v4'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
-param MCPContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 
 @description('Optional. The Container Image Name to deploy on the MCP.')
-param MCPContainerImageName string = 'macaemcp'
+param mcpContainerImageName string = 'macaemcp'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param MCPContainerImageTag string = 'latest_v4'
+param mcpContainerImageTag string = 'latest_v4'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -730,13 +720,13 @@ var aiFoundryAiServicesModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-var aiFoundryAiServices4_1ModelDeployment = {
+var aiFoundryAiServices41ModelDeployment = {
   format: 'OpenAI'
-  name: gpt4_1ModelName
-  version: gpt4_1ModelVersion
+  name: gpt41ModelName
+  version: gpt41ModelVersion
   sku: {
-    name: gpt4_1ModelDeploymentType
-    capacity: gpt4_1ModelCapacity
+    name: gpt41ModelDeploymentType
+    capacity: gpt41ModelCapacity
   }
   raiPolicyName: 'Microsoft.Default'
 }
@@ -781,16 +771,16 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         }
       }
       {
-        name: aiFoundryAiServices4_1ModelDeployment.name
+        name: aiFoundryAiServices41ModelDeployment.name
         model: {
-          format: aiFoundryAiServices4_1ModelDeployment.format
-          name: aiFoundryAiServices4_1ModelDeployment.name
-          version: aiFoundryAiServices4_1ModelDeployment.version
+          format: aiFoundryAiServices41ModelDeployment.format
+          name: aiFoundryAiServices41ModelDeployment.name
+          version: aiFoundryAiServices41ModelDeployment.version
         }
-        raiPolicyName: aiFoundryAiServices4_1ModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServices41ModelDeployment.raiPolicyName
         sku: {
-          name: aiFoundryAiServices4_1ModelDeployment.sku.name
-          capacity: aiFoundryAiServices4_1ModelDeployment.sku.capacity
+          name: aiFoundryAiServices41ModelDeployment.sku.name
+          capacity: aiFoundryAiServices41ModelDeployment.sku.capacity
         }
       }
       {
@@ -1099,7 +1089,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.20.0' = {
           }
           {
             name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
-            value: aiFoundryAiServices4_1ModelDeployment.name
+            value: aiFoundryAiServices41ModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -1272,7 +1262,7 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.20.0' = {
     containers: [
       {
         name: 'mcp'
-        image: '${MCPContainerRegistryHostname}/${MCPContainerImageName}:${MCPContainerImageTag}'
+        image: '${mcpContainerRegistryHostname}/${mcpContainerImageName}:${mcpContainerImageTag}'
         resources: {
           cpu: 2
           memory: '4Gi'
@@ -1526,6 +1516,7 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
   name: take('avm.res.search.update.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
+    enableTelemetry: enableTelemetry
     disableLocalAuth: true
     hostingMode: 'Default'
     managedIdentities: {

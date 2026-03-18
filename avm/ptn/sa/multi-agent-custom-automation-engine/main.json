@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.37.4.10188",
-      "templateHash": "3677826679112849237"
+      "templateHash": "16899378745669713413"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -31,21 +31,12 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "centralus",
-        "eastasia",
-        "eastus2",
-        "japaneast",
-        "northeurope",
-        "southeastasia",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
+        "description": "Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions)."
       }
     },
     "azureAiServiceLocation": {
@@ -87,7 +78,7 @@
         "description": "Optional. Version of the GPT model to deploy. Defaults to 2025-04-14."
       }
     },
-    "gpt4_1ModelName": {
+    "gpt41ModelName": {
       "type": "string",
       "defaultValue": "gpt-4.1",
       "minLength": 1,
@@ -95,7 +86,7 @@
         "description": "Optional. Name of the GPT model to deploy."
       }
     },
-    "gpt4_1ModelVersion": {
+    "gpt41ModelVersion": {
       "type": "string",
       "defaultValue": "2025-04-14",
       "metadata": {
@@ -131,7 +122,7 @@
         "description": "Optional. Version of the Azure AI Agent API version. Defaults to 2025-01-01-preview."
       }
     },
-    "gpt4_1ModelDeploymentType": {
+    "gpt41ModelDeploymentType": {
       "type": "string",
       "defaultValue": "GlobalStandard",
       "allowedValues": [
@@ -174,7 +165,7 @@
         "description": "Optional. AI model deployment token capacity. Defaults to 50 for optimal performance."
       }
     },
-    "gpt4_1ModelCapacity": {
+    "gpt41ModelCapacity": {
       "type": "int",
       "defaultValue": 150,
       "metadata": {
@@ -282,21 +273,21 @@
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
     },
-    "MCPContainerRegistryHostname": {
+    "mcpContainerRegistryHostname": {
       "type": "string",
       "defaultValue": "biabcontainerreg.azurecr.io",
       "metadata": {
         "description": "Optional. The Container Registry hostname where the docker images for the MCP are located."
       }
     },
-    "MCPContainerImageName": {
+    "mcpContainerImageName": {
       "type": "string",
       "defaultValue": "macaemcp",
       "metadata": {
         "description": "Optional. The Container Image Name to deploy on the MCP."
       }
     },
-    "MCPContainerImageTag": {
+    "mcpContainerImageTag": {
       "type": "string",
       "defaultValue": "latest_v4",
       "metadata": {
@@ -398,13 +389,13 @@
       },
       "raiPolicyName": "Microsoft.Default"
     },
-    "aiFoundryAiServices4_1ModelDeployment": {
+    "aiFoundryAiServices41ModelDeployment": {
       "format": "OpenAI",
-      "name": "[parameters('gpt4_1ModelName')]",
-      "version": "[parameters('gpt4_1ModelVersion')]",
+      "name": "[parameters('gpt41ModelName')]",
+      "version": "[parameters('gpt41ModelVersion')]",
       "sku": {
-        "name": "[parameters('gpt4_1ModelDeploymentType')]",
-        "capacity": "[parameters('gpt4_1ModelCapacity')]"
+        "name": "[parameters('gpt41ModelDeploymentType')]",
+        "capacity": "[parameters('gpt41ModelCapacity')]"
       },
       "raiPolicyName": "Microsoft.Default"
     },
@@ -24284,16 +24275,16 @@
                 }
               },
               {
-                "name": "[variables('aiFoundryAiServices4_1ModelDeployment').name]",
+                "name": "[variables('aiFoundryAiServices41ModelDeployment').name]",
                 "model": {
-                  "format": "[variables('aiFoundryAiServices4_1ModelDeployment').format]",
-                  "name": "[variables('aiFoundryAiServices4_1ModelDeployment').name]",
-                  "version": "[variables('aiFoundryAiServices4_1ModelDeployment').version]"
+                  "format": "[variables('aiFoundryAiServices41ModelDeployment').format]",
+                  "name": "[variables('aiFoundryAiServices41ModelDeployment').name]",
+                  "version": "[variables('aiFoundryAiServices41ModelDeployment').version]"
                 },
-                "raiPolicyName": "[variables('aiFoundryAiServices4_1ModelDeployment').raiPolicyName]",
+                "raiPolicyName": "[variables('aiFoundryAiServices41ModelDeployment').raiPolicyName]",
                 "sku": {
-                  "name": "[variables('aiFoundryAiServices4_1ModelDeployment').sku.name]",
-                  "capacity": "[variables('aiFoundryAiServices4_1ModelDeployment').sku.capacity]"
+                  "name": "[variables('aiFoundryAiServices41ModelDeployment').sku.name]",
+                  "capacity": "[variables('aiFoundryAiServices41ModelDeployment').sku.capacity]"
                 }
               },
               {
@@ -26810,9 +26801,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -34171,7 +34162,7 @@
                   },
                   {
                     "name": "AZURE_OPENAI_RAI_DEPLOYMENT_NAME",
-                    "value": "[variables('aiFoundryAiServices4_1ModelDeployment').name]"
+                    "value": "[variables('aiFoundryAiServices41ModelDeployment').name]"
                   },
                   {
                     "name": "AZURE_OPENAI_API_VERSION",
@@ -35905,7 +35896,7 @@
             "value": [
               {
                 "name": "mcp",
-                "image": "[format('{0}/{1}:{2}', parameters('MCPContainerRegistryHostname'), parameters('MCPContainerImageName'), parameters('MCPContainerImageTag'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('mcpContainerRegistryHostname'), parameters('mcpContainerImageName'), parameters('mcpContainerImageTag'))]",
                 "resources": {
                   "cpu": 2,
                   "memory": "4Gi"
@@ -48409,6 +48400,9 @@
         "parameters": {
           "name": {
             "value": "[variables('searchServiceName')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "disableLocalAuth": {
             "value": true
