@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "11272763779591037591"
+    },
+    "name": "Automation Account Hybrid Runbook Worker Group Workers",
+    "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Hybrid Runbook Worker Group Worker."
+      }
+    },
+    "hybridRunbookWorkerGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Hybrid Runbook Worker Group. Required if the template is used in a standalone deployment."
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "vmResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Azure Resource Manager Id for a virtual machine."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers",
+      "apiVersion": "2024-10-23",
+      "name": "[format('{0}/{1}/{2}', parameters('automationAccountName'), parameters('hybridRunbookWorkerGroupName'), parameters('name'))]",
+      "properties": {
+        "vmResourceId": "[parameters('vmResourceId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed hybrid runbook worker."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed hybrid runbook worker."
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers', parameters('automationAccountName'), parameters('hybridRunbookWorkerGroupName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed hybrid runbook worker."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -63,6 +63,8 @@ module container 'container/main.bicep' = [
         ? -1
         : container.?throughput
       uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+      vectorEmbeddingPolicy: container.?vectorEmbeddingPolicy
+      fullTextPolicy: container.?fullTextPolicy
     }
   }
 ]
@@ -117,6 +119,12 @@ type containerType = {
 
   @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
+
+  @description('Optional. The vector embedding policy for the container.')
+  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+
+  @description('Optional. The full text policy for the container.')
+  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
 
   @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
   kind: ('Hash' | 'MultiHash')?
