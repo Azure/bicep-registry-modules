@@ -248,7 +248,7 @@ output name string = api.name
 @sys.description('The resource ID of the API management service API.')
 output resourceId string = api.id
 
-@sys.description('The resource group the API management service API was deployed to.')
+@sys.description('The resource group the API Management service API was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 // =============== //

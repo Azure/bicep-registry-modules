@@ -7,7 +7,7 @@ param registryName string
 @description('Required. The name of the credential set.')
 param name string
 
-import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlySysAssignedType?
 
@@ -17,17 +17,40 @@ param authCredentials authCredentialsType[]
 @description('Required. The credentials are stored for this upstream or login server.')
 param loginServer string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
     }
   : null
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  #disable-next-line BCP332
+  name: '46d3xbcp.res.containerregistry-registry-credset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: registryName
 }
 
-resource credentialSet 'Microsoft.ContainerRegistry/registries/credentialSets@2023-11-01-preview' = {
+resource credentialSet 'Microsoft.ContainerRegistry/registries/credentialSets@2025-11-01' = {
   name: name
   parent: registry
   identity: identity
