@@ -21,7 +21,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
   name: automationAccountName
 }
 
-resource credential 'Microsoft.Automation/automationAccounts/credentials@2023-11-01' = {
+resource credential 'Microsoft.Automation/automationAccounts/credentials@2024-10-23' = {
   name: name
   parent: automationAccount
   properties: {
