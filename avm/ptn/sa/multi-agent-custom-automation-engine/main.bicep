@@ -1540,7 +1540,7 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
       bypass: 'AzureServices'
     }
     partitionCount: 1
-    replicaCount: 1
+    replicaCount: 3
     sku: enableScalability ? 'standard' : 'basic'
     tags: tags
     roleAssignments: [
