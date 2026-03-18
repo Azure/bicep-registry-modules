@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Calculates the module target patch version.
 
@@ -41,7 +41,7 @@ function Get-ModuleTargetPatchVersion {
     $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
 
     # Get all released module tags (using upstream specifically to work in forks)
-    $existingTagList = git ls-remote --tag origin "$ModuleRelativeFolderPath/$MajMinVersion*"
+    $existingTagList = git ls-remote --tag 'https://github.com/Azure/bicep-registry-modules.git' "$ModuleRelativeFolderPath/$MajMinVersion*"
     if ( $existingTagList.count -eq 0 ) {
         # If first module tag, reset patch
         Write-Verbose "No existing tag for module [$ModuleRelativeFolderPath] starting with version [$MajMinVersion]" -Verbose
@@ -51,22 +51,9 @@ function Get-ModuleTargetPatchVersion {
         # Otherwise get latest patch
         $patchList = $existingTagList | ForEach-Object { [int](($_ -split '\.')[-1]) }
         $latestPatch = ($patchList | Measure-Object -Maximum).Maximum
-        $latestTag = "$ModuleRelativeFolderPath/$MajMinVersion.$latestPatch"
-        Write-Verbose "Latest tag is [$latestTag]." -Verbose
-        Write-Verbose 'Checking if latest tag commit is already corresponding to the current commit.' -Verbose
-
-        $currentCommit = git rev-parse HEAD
-        $latestTagCommit = git rev-list -n 1 $latestTag
-
-        if ($currentCommit -eq $latestTagCommit) {
-            # Return latest patch (we're likely in a rerun)
-            Write-Warning 'The latest tag commit corresponds to the current commit. Publishing will be skipped.' -Verbose
-            $patch = $latestPatch
-        } else {
-            # Increase patch count
-            Write-Verbose 'The latest tag commit does not correspond to the current commit. Bumping patch.' -Verbose
-            $patch = $latestPatch + 1
-        }
+        Write-Verbose "Latest tag is [$ModuleRelativeFolderPath/$MajMinVersion.$latestPatch]. Bumping patch." -Verbose
+        # Increase patch count
+        $patch = $latestPatch + 1
     }
 
     # Return PATCH
