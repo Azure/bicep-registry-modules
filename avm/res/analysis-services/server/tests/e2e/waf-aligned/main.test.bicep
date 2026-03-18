@@ -33,14 +33,47 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies1 '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies1'
   params: {
     storageAccountName: 'dep${namePrefix}azsa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}1'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}1'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}1'
+    location: resourceLocation
+  }
+}
+module diagnosticDependencies2 '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies2'
+  params: {
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}02'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}2'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}2'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}2'
+    location: resourceLocation
+  }
+}
+module diagnosticDependencies3 '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies3'
+  params: {
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}3'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}3'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    location: resourceLocation
+  }
+}
+module diagnosticDependencies4 '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies4'
+  params: {
+    storageAccountName: 'dep${namePrefix}azsa${serviceShort}04'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}4'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}4'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}4'
     location: resourceLocation
   }
 }
@@ -76,17 +109,17 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings: [
         {
           name: 'customSettingDef'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          eventHubName: diagnosticDependencies1.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies1.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies1.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies1.outputs.logAnalyticsWorkspaceResourceId
         }
         {
           name: 'customSettingOnlyLog'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          eventHubName: diagnosticDependencies2.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies2.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies2.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies2.outputs.logAnalyticsWorkspaceResourceId
           logCategoriesAndGroups: [
             {
               category: 'Engine'
@@ -98,10 +131,10 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'customSettingOnlyMetric'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          eventHubName: diagnosticDependencies3.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies3.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies3.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies3.outputs.logAnalyticsWorkspaceResourceId
           metricCategories: [
             {
               category: 'AllMetrics'
@@ -110,10 +143,10 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'customSettingExpl'
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          eventHubName: diagnosticDependencies4.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies4.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies4.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies4.outputs.logAnalyticsWorkspaceResourceId
           metricCategories: [
             {
               category: 'AllMetrics'
@@ -135,8 +168,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      diagnosticDependencies
-    ]
   }
 ]
