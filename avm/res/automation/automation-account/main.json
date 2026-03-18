@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "11381716391372303219"
+      "templateHash": "7398090800600964396"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -277,6 +277,38 @@
         "description": "The type of a source control configuration."
       }
     },
+    "hybridRunbookWorkerGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Hybrid Runbook Worker Group."
+          }
+        },
+        "credentialName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Gets or sets the name of the credential."
+          }
+        },
+        "hybridRunbookWorkerGroupWorkers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hybridRunbookWorkerGroupWorkerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a hybrid runbook worker group configuration."
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -542,6 +574,22 @@
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+        }
+      }
+    },
+    "hybridRunbookWorkerGroupWorkerType": {
+      "type": "object",
+      "properties": {
+        "vmResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Azure Resource Manager Id for a virtual machine."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "hybrid-runbook-worker-group/main.bicep"
         }
       }
     },
@@ -1080,6 +1128,16 @@
       "metadata": {
         "description": "Optional. The source control configurations."
       }
+    },
+    "hybridRunbookWorkerGroups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/hybridRunbookWorkerGroupType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Hybrid Runbook Worker Groups to be created in the automation account."
+      }
     }
   },
   "variables": {
@@ -1288,7 +1346,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "17898130604711299619"
+              "templateHash": "6269467288357023674"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1335,7 +1393,7 @@
             },
             "credential": {
               "type": "Microsoft.Automation/automationAccounts/credentials",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "properties": {
                 "password": "[parameters('password')]",
@@ -1699,7 +1757,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15474840974511860228"
+              "templateHash": "8070887000006360544"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -1747,7 +1805,7 @@
             },
             "python3package": {
               "type": "Microsoft.Automation/automationAccounts/python3Packages",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1785,7 +1843,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('python3package', '2023-11-01', 'full').location]"
+              "value": "[reference('python3package', '2024-10-23', 'full').location]"
             }
           }
         }
@@ -1832,7 +1890,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "1039893728941924730"
+              "templateHash": "13895702098097251931"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -1880,7 +1938,7 @@
             },
             "python2package": {
               "type": "Microsoft.Automation/automationAccounts/python2Packages",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1918,7 +1976,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('python2package', '2023-11-01', 'full').location]"
+              "value": "[reference('python2package', '2024-10-23', 'full').location]"
             }
           }
         }
@@ -2160,7 +2218,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15600321824113800129"
+              "templateHash": "16714730608787185165"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2279,7 +2337,7 @@
             },
             "runbook": {
               "type": "Microsoft.Automation/automationAccounts/runbooks",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-10-23",
               "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2317,7 +2375,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('runbook', '2023-11-01', 'full').location]"
+              "value": "[reference('runbook', '2024-10-23', 'full').location]"
             }
           }
         }
@@ -3209,6 +3267,243 @@
       },
       "dependsOn": [
         "automationAccount_linkedService"
+      ]
+    },
+    "hybridRunbookWorkerGroup_workers": {
+      "copy": {
+        "name": "hybridRunbookWorkerGroup_workers",
+        "count": "[length(coalesce(parameters('hybridRunbookWorkerGroups'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-AutoAccount-HybridWorkerGroup-Worker-{1}', uniqueString(subscription().id, resourceGroup().id), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "hybridRunbookWorkerGroupWorkers": {
+            "value": "[tryGet(coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()], 'hybridRunbookWorkerGroupWorkers')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()].name]"
+          },
+          "credentialName": {
+            "value": "[tryGet(coalesce(parameters('hybridRunbookWorkerGroups'), createArray())[copyIndex()], 'credentialName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "735215568717308534"
+            },
+            "name": "Automation Account Hybrid Runbook Worker Groups",
+            "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
+          },
+          "definitions": {
+            "hybridRunbookWorkerGroupWorkerType": {
+              "type": "object",
+              "properties": {
+                "vmResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Azure Resource Manager Id for a virtual machine."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Hybrid Runbook Worker Group."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "credentialName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Gets or sets the name of the credential."
+              }
+            },
+            "hybridRunbookWorkerGroupWorkers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/hybridRunbookWorkerGroupWorkerType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2024-10-23",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "hybridRunbookWorkerGroup": {
+              "type": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups",
+              "apiVersion": "2024-10-23",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "properties": {
+                "credential": "[if(not(empty(parameters('credentialName'))), createObject('name', parameters('credentialName')), null())]"
+              }
+            },
+            "hybridRunbookWorkerGroup_workers": {
+              "copy": {
+                "name": "hybridRunbookWorkerGroup_workers",
+                "count": "[length(coalesce(parameters('hybridRunbookWorkerGroupWorkers'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-AutoAccount-HybridWorkerGroup-Worker-{1}', uniqueString(subscription().id, resourceGroup().id), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('hybridRunbookWorkerGroupWorkers'), createArray())[copyIndex()].name]"
+                  },
+                  "hybridRunbookWorkerGroupName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "automationAccountName": {
+                    "value": "[parameters('automationAccountName')]"
+                  },
+                  "vmResourceId": {
+                    "value": "[coalesce(parameters('hybridRunbookWorkerGroupWorkers'), createArray())[copyIndex()].vmResourceId]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "11272763779591037591"
+                    },
+                    "name": "Automation Account Hybrid Runbook Worker Group Workers",
+                    "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the Hybrid Runbook Worker Group Worker."
+                      }
+                    },
+                    "hybridRunbookWorkerGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Hybrid Runbook Worker Group. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "automationAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "vmResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Azure Resource Manager Id for a virtual machine."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers",
+                      "apiVersion": "2024-10-23",
+                      "name": "[format('{0}/{1}/{2}', parameters('automationAccountName'), parameters('hybridRunbookWorkerGroupName'), parameters('name'))]",
+                      "properties": {
+                        "vmResourceId": "[parameters('vmResourceId')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed hybrid runbook worker."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed hybrid runbook worker."
+                      },
+                      "value": "[resourceId('Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers', parameters('automationAccountName'), parameters('hybridRunbookWorkerGroupName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed hybrid runbook worker."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "hybridRunbookWorkerGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed hybrid runbook worker group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed hybrid runbook worker group."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed hybrid runbook worker group."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount",
+        "automationAccount_credentials"
       ]
     },
     "automationAccount_privateEndpoints": {

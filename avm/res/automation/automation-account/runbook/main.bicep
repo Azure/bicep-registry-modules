@@ -73,7 +73,7 @@ var publishContentLink = empty(uri)
       version: !empty(version) ? version : null
     }
 
-resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
+resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' = {
   name: name
   parent: automationAccount
   location: location

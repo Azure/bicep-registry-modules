@@ -42,6 +42,12 @@ param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDat
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
 param uniqueKeyPolicyKeys resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
+@description('Optional. The vector embedding policy for the container.')
+param vectorEmbeddingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+
+@description('Optional. The full text policy for the container.')
+param fullTextPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
+
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
   'Hash'
@@ -82,6 +88,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
             uniqueKeys: uniqueKeyPolicyKeys
           }
         : null
+      ...(vectorEmbeddingPolicy != null ? { vectorEmbeddingPolicy: vectorEmbeddingPolicy } : {})
+      ...(fullTextPolicy != null ? { fullTextPolicy: fullTextPolicy } : {})
       ...(analyticalStorageTtl != 0
         ? {
             analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
