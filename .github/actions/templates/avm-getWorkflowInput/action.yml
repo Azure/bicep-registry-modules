@@ -51,7 +51,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-
     - name: Get workflow input parameters
       id: get-input-param-action
       run: |
