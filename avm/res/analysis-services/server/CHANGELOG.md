@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/analysis-services/server/CHANGELOG.md).
 
+## 0.3.6
+
+### Changes
+
+- Update diagnostic implementation to not automatically enable all metrics / logs if either other one is specified.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.5
 
 ### Changes
