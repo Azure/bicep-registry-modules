@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1039893728941924730"
+      "templateHash": "13895702098097251931"
     },
     "name": "Automation Account Python 2 Packages",
     "description": "This module deploys a Python2 Package in the Automation Account."
@@ -54,7 +54,7 @@
     },
     "python2package": {
       "type": "Microsoft.Automation/automationAccounts/python2Packages",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-10-23",
       "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -92,7 +92,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('python2package', '2023-11-01', 'full').location]"
+      "value": "[reference('python2package', '2024-10-23', 'full').location]"
     }
   }
 }
