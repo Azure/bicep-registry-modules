@@ -247,16 +247,56 @@ if [ $? -ne 0 ]; then
 fi
 echo "✅ Bicep compiled to JSON successfully ($(wc -c < nested/deployment-setting.json) bytes)"
 
-# Execute deployment with pre-compiled JSON template (not Bicep) and suppress output to prevent ACI overflow
+# Execute deployment with --no-wait to avoid ACI memory pressure from long-running ARM operations
+# The deployment runs asynchronously in ARM; we poll for completion
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
     --name "$DEPLOYMENT_NAME" \
     --template-file "nested/deployment-setting.json" \
     --parameters "@$PARAM_FILE" \
     --only-show-errors \
+    --no-wait \
     -o none
 
-DEPLOYMENT_STATUS=$?
+echo "Deployment started asynchronously. Polling for completion..."
+
+# Poll deployment status every 60 seconds
+while true; do
+    STATUS=$(az deployment group show \
+        --resource-group "$RESOURCE_GROUP_NAME" \
+        --name "$DEPLOYMENT_NAME" \
+        --query "properties.provisioningState" \
+        --output tsv 2>/dev/null)
+
+    if [ -z "$STATUS" ]; then
+        echo "Deployment not found yet. Waiting..."
+        sleep 30
+        continue
+    fi
+
+    echo "Deployment status: $STATUS"
+
+    case "$STATUS" in
+        "Succeeded")
+            DEPLOYMENT_STATUS=0
+            break
+            ;;
+        "Failed"|"Canceled")
+            echo "Deployment failed with status: $STATUS"
+            az deployment group show \
+                --resource-group "$RESOURCE_GROUP_NAME" \
+                --name "$DEPLOYMENT_NAME" \
+                --query "properties.error" \
+                --output json 2>/dev/null || echo "Could not get error details"
+            DEPLOYMENT_STATUS=1
+            break
+            ;;
+        *)
+            # Running, Accepted, etc.
+            sleep 60
+            ;;
+    esac
+done
 
 if [ $DEPLOYMENT_STATUS -eq 0 ]; then
     echo "✅ Deployment completed successfully"
