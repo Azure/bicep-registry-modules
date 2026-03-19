@@ -12,7 +12,7 @@ This module deploys a Python2 Package in the Automation Account.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/python2Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python2Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python2Packages)</li></ul> |
 
 ## Parameters
 

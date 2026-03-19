@@ -282,6 +282,12 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      hybridRunbookWorkerGroups: [
+        {
+          name: 'myGroup'
+          credentialName: 'Credential01'
+        }
+      ]
     }
   }
 ]
