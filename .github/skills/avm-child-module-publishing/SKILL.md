@@ -81,7 +81,7 @@ Look up the child module's telemetry ID prefix using one of these methods (in or
 
 Search for the child module name in the `ModuleName` field and note the `TelemetryIdPrefix` value.
 
-**Format**: The telemetry ID prefix follows the pattern `<4-char-hex>bcp.res.<provider>-<resourcetype>` (e.g., `46d3xbcp.res.network-virtualnetworksubnet`).
+**Format**: The telemetry ID prefix follows the pattern `46d3xbcp.res.<provider>-<resourcetype>` (e.g., `46d3xbcp.res.network-virtualnetworksubnet`).
 
 - **If not found**: Instruct the user to reach out to `@Azure/avm-core-team-technical-bicep` via the proposal issue.
 

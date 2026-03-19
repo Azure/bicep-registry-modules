@@ -1,6 +1,5 @@
 ---
-name: Global-Instructions
-description: Instructions for working with Azure Verified Modules (AVM) Bicep repository. Rules of generating and maintaining Bicep modules with AVM best practices and formatting guidelines with GitHub Copilot.
+description: "Instructions for working with Azure Verified Modules (AVM) Bicep repository. Rules of generating and maintaining Bicep modules with AVM best practices and formatting guidelines with GitHub Copilot."
 ---
 
 # Azure Verified Modules (AVM) - General Instructions
@@ -17,7 +16,7 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ## Critical Compliance Requirements
 
-### Parsing ALL module specifications
+### Compliance with ALL AVM Bicep and Shared specifications
 
 ** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
 For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
@@ -35,14 +34,14 @@ For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) 
 
 ### Fallback to Use Quick Starts as a last resort
 
-When required information or relevant example is not available in the Bicep schema or in the Azure Resource Reference when generating new AVM Bicep code, as a last effort, you can refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#search_code` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
+When required information or relevant example is not available in the Bicep schema or in the Azure Resource Reference when generating new AVM Bicep code, as a last effort, you can refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#github/search_code` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
 
 ## Use Available Tools
 
-**⚠️ MANDATORY if tool available**:Always use these tools if available:
+**⚠️ MANDATORY if tool available**: Always use these tools if available:
 
 - `#azure_get_deployment_best_practices` to ensure meeting deployment best practices.
-- `#microsoft.docs.mcp` to fetch Microsoft documentation.
+- `#microsoft_docs_fetch` to fetch Microsoft documentation.
 - `#list_az_resource_types_for_provider` to list resource types for an Azure resource provider.
 - `#get_az_resource_type_schema` to get the schema for a resource type.
 - `#list_avm_metadata` to list AVM module metadata.
@@ -121,7 +120,7 @@ You have exactly these two options (do not use any other method or tool to do th
 
 ## Skills
 
-When a user asks to perform a task that falls within the domain of a skill below, use the `read_file` tool to acquire the full instructions from the file path before proceeding.
+When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding to acquire the full instructions from the file path before proceeding.
 
 | Skill                       | Description                                                                                                                                                                                      | File                                                  |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
