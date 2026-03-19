@@ -296,7 +296,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2025-10-01' = {
   ]
 }
 
-module secrets './secrets.bicep' = if (useSharedKeyVault) {
+module secrets './modules/secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
   scope: resourceGroup(
     keyvaultSubscriptionId ?? subscription().subscriptionId,
@@ -397,44 +397,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         name: 'CLUSTER_NAME'
         value: cluster.name
       }
-      {
-        name: 'CLUSTER_AD_NAME'
-        value: clusterADName ?? cluster.name
-      }
-      {
-        name: 'CLOUD_ID'
-        value: cluster.properties.cloudId
-      }
-      {
-        name: 'USE_SHARED_KEYVAULT'
-        value: string(useSharedKeyVault)
-      }
-      {
-        name: 'DEPLOYMENT_OPERATIONS'
-        value: join(sortedDeploymentOperations, ',')
-      }
-      {
-        name: 'OPERATION_TYPE'
-        value: operationType
-      }
-      {
-        name: 'DEPLOYMENT_SETTINGS'
-        value: string(deploymentSettings)
-      }
-      {
-        name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
-        value: base64(loadTextContent('./nested/deployment-setting.bicep'))
-      }
-      {
-        name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
-        value: base64(loadTextContent('./deployment-setting/main.bicep'))
-      }
-      {
-        name: 'NEED_ARB_SECRET'
-        value: empty(servicePrincipalId) || empty(servicePrincipalSecret) ? string(false) : string(true)
-      }
     ]
-    scriptContent: loadTextContent('./deploy.sh')
+    scriptContent: loadTextContent('./src/deploy.sh')
   }
   dependsOn: [
     edgeDevices
@@ -450,7 +414,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
 }
 
 // Deploy the deployment settings directly via Bicep (not via deploy.sh) to avoid ACI container memory limits
-module clusterDeploymentSettings './nested/deployment-setting.bicep' = {
+module clusterDeploymentSettings './modules/deployment-setting.bicep' = {
   name: 'hci-deploymentSettings-${uniqueString(resourceGroup().id)}'
   params: {
     deploymentOperations: sortedDeploymentOperations

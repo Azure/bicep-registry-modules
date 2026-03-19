@@ -16,6 +16,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -25,6 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.AzureStackHCI/clusters` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters/deploymentSettings)</li></ul> |
 | `Microsoft.AzureStackHCI/edgeDevices` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/edgeDevices)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2021-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-06-01-preview/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -59,7 +61,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     deploymentSettings: {
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-      customLocationName: '#_namePrefix_#min-location'
+      customLocationName: 'ashclmin-location'
       defaultGateway: '192.168.1.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
@@ -173,7 +175,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       "value": {
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
-        "customLocationName": "#_namePrefix_#min-location",
+        "customLocationName": "ashclmin-location",
         "defaultGateway": "192.168.1.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
@@ -301,7 +303,7 @@ using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 param deploymentSettings = {
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-  customLocationName: '#_namePrefix_#min-location'
+  customLocationName: 'ashclmin-location'
   defaultGateway: '192.168.1.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [
@@ -419,7 +421,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       bitlockerDataVolumes: true
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-      customLocationName: '#_namePrefix_#waf-location'
+      customLocationName: 'ashclwaf-location'
       defaultGateway: '192.168.1.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
@@ -544,7 +546,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "bitlockerDataVolumes": true,
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
-        "customLocationName": "#_namePrefix_#waf-location",
+        "customLocationName": "ashclwaf-location",
         "defaultGateway": "192.168.1.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
@@ -685,7 +687,7 @@ param deploymentSettings = {
   bitlockerDataVolumes: true
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
-  customLocationName: '#_namePrefix_#waf-location'
+  customLocationName: 'ashclwaf-location'
   defaultGateway: '192.168.1.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [
@@ -1830,6 +1832,14 @@ Tags of the witness storage key.
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
 | `vSwitchName` | string | The name of the vSwitch. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
