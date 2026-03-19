@@ -449,6 +449,33 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   ]
 }
 
+// Deploy the deployment settings directly via Bicep (not via deploy.sh) to avoid ACI container memory limits
+module clusterDeploymentSettings './nested/deployment-setting.bicep' = {
+  name: 'hci-deploymentSettings-${uniqueString(resourceGroup().id)}'
+  params: {
+    deploymentOperations: sortedDeploymentOperations
+    deploymentSettings: deploymentSettings
+    useSharedKeyVault: useSharedKeyVault
+    operationType: operationType
+    clusterName: cluster.name
+    clusterADName: clusterADName ?? cluster.name
+    cloudId: cluster.properties.cloudId
+    needArbSecret: !(empty(servicePrincipalId) || empty(servicePrincipalSecret))
+  }
+  dependsOn: [
+    deploymentScript // Wait for secrets + cleanup to complete first
+    edgeDevices
+    spConnectedMachineResourceManagerRolePermissions
+    nodeAzureConnectedMachineResourceManagerRolePermissions
+    nodeazureStackHCIDeviceManagementRole
+    nodereaderRoleIDPermissions
+    roleAssignmentContributor
+    roleAssignmentReader
+    roleAssignmentRBACAdmin
+    secrets
+  ]
+}
+
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(cluster.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)

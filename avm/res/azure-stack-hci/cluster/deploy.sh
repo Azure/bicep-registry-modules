@@ -236,114 +236,18 @@ if [ ! -f "nested/deployment-setting.bicep" ]; then
     exit 1
 fi
 
-echo "✅ nested/deployment-setting.bicep file found and ready for deployment"
+# NOTE: The actual deployment of nested/deployment-setting.bicep is now handled
+# directly by the parent Bicep module (main.bicep) as a native module call,
+# bypassing ACI container resource limits. This script only handles
+# idempotency checks and cleanup of stale deploymentSettings resources.
 
-# Pre-compile Bicep to JSON ARM template to avoid runtime compilation in ACI (which can cause OOM)
-echo "Pre-compiling Bicep to ARM JSON template..."
-az bicep build --file "nested/deployment-setting.bicep" --outfile "nested/deployment-setting.json" --only-show-errors
-if [ $? -ne 0 ]; then
-    echo "Error: Failed to compile Bicep template"
-    exit 1
-fi
-echo "✅ Bicep compiled to JSON successfully ($(wc -c < nested/deployment-setting.json) bytes)"
-
-# Execute deployment with --no-wait to avoid ACI memory pressure from long-running ARM operations
-# The deployment runs asynchronously in ARM; we poll for completion
-az deployment group create \
-    --resource-group "$RESOURCE_GROUP_NAME" \
-    --name "$DEPLOYMENT_NAME" \
-    --template-file "nested/deployment-setting.json" \
-    --parameters "@$PARAM_FILE" \
-    --only-show-errors \
-    --no-wait \
-    -o none
-
-echo "Deployment started asynchronously. Polling for completion..."
-
-# Poll deployment status every 60 seconds
-while true; do
-    STATUS=$(az deployment group show \
-        --resource-group "$RESOURCE_GROUP_NAME" \
-        --name "$DEPLOYMENT_NAME" \
-        --query "properties.provisioningState" \
-        --output tsv 2>/dev/null)
-
-    if [ -z "$STATUS" ]; then
-        echo "Deployment not found yet. Waiting..."
-        sleep 30
-        continue
-    fi
-
-    echo "Deployment status: $STATUS"
-
-    case "$STATUS" in
-        "Succeeded")
-            DEPLOYMENT_STATUS=0
-            break
-            ;;
-        "Failed"|"Canceled")
-            echo "Deployment failed with status: $STATUS"
-            az deployment group show \
-                --resource-group "$RESOURCE_GROUP_NAME" \
-                --name "$DEPLOYMENT_NAME" \
-                --query "properties.error" \
-                --output json 2>/dev/null || echo "Could not get error details"
-            DEPLOYMENT_STATUS=1
-            break
-            ;;
-        *)
-            # Running, Accepted, etc.
-            sleep 60
-            ;;
-    esac
-done
-
-if [ $DEPLOYMENT_STATUS -eq 0 ]; then
-    echo "✅ Deployment completed successfully"
-
-    # Get deployment outputs
-    echo "Deployment outputs:"
-    az deployment group show \
-        --resource-group "$RESOURCE_GROUP_NAME" \
-        --name "$DEPLOYMENT_NAME" \
-        --query "properties.outputs" \
-        --output table
-else
-    echo "❌ Deployment failed with status: $DEPLOYMENT_STATUS"
-
-    # Get deployment error details
-    echo "Deployment error details:"
-    az deployment group show \
-        --resource-group "$RESOURCE_GROUP_NAME" \
-        --name "$DEPLOYMENT_NAME" \
-        --query "properties.error" \
-        --output json
-
-    # Also show the deployment operations for more details
-    echo "Deployment operations:"
-    az deployment operation group list \
-        --resource-group "$RESOURCE_GROUP_NAME" \
-        --name "$DEPLOYMENT_NAME" \
-        --query "[?properties.provisioningState=='Failed'].{operation: operationId, code: properties.statusCode, message: properties.statusMessage}" \
-        --output table
-
-    exit $DEPLOYMENT_STATUS
-fi
-
-# Clean up temporary files
-rm -f "$PARAM_FILE"
-rm -f "nested/deployment-setting.bicep"
-rm -rf "deployment-setting"
-
-echo "Completed deployment"
-
-echo "🎉 HCI deployment completed successfully!"
+echo "✅ Deployment script completed — secrets stored, cleanup done."
+echo "The deploymentSettings resource will be created by the parent Bicep module directly."
 
 # Set output for Bicep usage
 cat > $AZ_SCRIPTS_OUTPUT_PATH << EOF
 {
   "status": "success",
-  "message": "Deployment completed successfully",
-  "operations": $OPERATIONS_JSON
+  "message": "Script completed - secrets stored, idempotency handled"
 }
 EOF
