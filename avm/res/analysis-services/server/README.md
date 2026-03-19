@@ -412,10 +412,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
       ]
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     skuCapacity: 1
     skuName: 'S0'
     tags: {
@@ -470,12 +466,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "skuCapacity": {
       "value": 1
     },
@@ -526,10 +516,6 @@ param firewallSettings = {
   ]
 }
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param skuCapacity = 1
 param skuName = 'S0'
 param tags = {

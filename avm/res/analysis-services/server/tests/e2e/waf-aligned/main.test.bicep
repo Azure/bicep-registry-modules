@@ -57,10 +57,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}'
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       skuName: 'S0'
       skuCapacity: 1
       firewallSettings: {
