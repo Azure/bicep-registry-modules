@@ -602,9 +602,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
       }
     ]
     extensionAadJoinConfig: {
-      enabled: true
-      tags: tags
-      typeHandlerVersion: '1.0'
+      enabled: false
     }
     extensionAntiMalwareConfig: {
       enabled: true
@@ -989,7 +987,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionSuffix}'
-module containerApp 'br/public:avm/res/app/container-app:0.20.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -1197,7 +1195,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.20.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppMcpResourceName = 'ca-mcp-${solutionSuffix}'
-module containerAppMcp 'br/public:avm/res/app/container-app:0.20.0' = {
+module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppMcpResourceName}', 64)
   params: {
     name: containerAppMcpResourceName
