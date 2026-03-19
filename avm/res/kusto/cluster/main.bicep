@@ -338,7 +338,7 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
 ]
 
 @batchSize(1)
-module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
     scope: resourceGroup(
