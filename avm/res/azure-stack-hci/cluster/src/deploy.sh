@@ -1,253 +1,67 @@
 #!/bin/bash
+# ==============================================================================
+# HCI Deployment Script - Idempotency & Cleanup
+# ==============================================================================
+# This script handles:
+#   1. Cleanup of stale deploymentSettings resources (e.g., leftover Validate mode)
+#   2. Idempotency check: skip if Deploy+Succeeded already exists
+#
+# The actual deploymentSettings resource creation is handled by a native Bicep
+# module call in main.bicep, bypassing ACI container memory limits.
+# ==============================================================================
 
-set -e  # Exit on any error
+set -e
 
-LOG_DIR="/mnt/azscripts/azscriptoutput"
-LOG_FILE="${LOG_DIR}/hci-deploy.log"
+echo "=== HCI Deployment Script - Idempotency & Cleanup ==="
 
-echo "Starting HCI deployment script..."
-echo "Log file: ${LOG_FILE}"
-
-# Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$CLUSTER_AD_NAME" ] || [ -z "$CLOUD_ID" ] || [ -z "$USE_SHARED_KEYVAULT" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ] || [ -z "$NEED_ARB_SECRET" ] || [ -z "$OPERATION_TYPE" ]; then
-    echo "Error: Required environment variables are missing"
+# Validate required environment variables
+if [ -z "$SUBSCRIPTION_ID" ] || [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$CLUSTER_NAME" ]; then
+    echo "Error: Required environment variables are missing (SUBSCRIPTION_ID, RESOURCE_GROUP_NAME, CLUSTER_NAME)"
     exit 1
 fi
 
 # Set subscription context
-echo "Setting subscription context to: $SUBSCRIPTION_ID"
+echo "Setting subscription to: $SUBSCRIPTION_ID"
 az account set --subscription "$SUBSCRIPTION_ID"
 
-# Create directory structure and decode base64 files
-echo "Creating required directory structure and bicep files..."
-
-# Create nested directory
-mkdir -p nested
-# Create deployment-setting directory
-mkdir -p deployment-setting
-
-# Decode and create deployment-setting.bicep file
-echo "Creating deployment-setting.bicep file from base64 encoded content..."
-echo "$DEPLOYMENT_SETTING_BICEP_BASE64" | base64 -d > nested/deployment-setting.bicep
-
-# Decode and create deployment-setting/main.bicep file
-echo "Creating deployment-setting/main.bicep file from base64 encoded content..."
-echo "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" | base64 -d > deployment-setting/main.bicep
-
-# Verify the files were created successfully
-if [ ! -f "nested/deployment-setting.bicep" ] || [ ! -s "nested/deployment-setting.bicep" ]; then
-    echo "Error: Failed to create nested/deployment-setting.bicep file or file is empty"
-    exit 1
-fi
-
-if [ ! -f "deployment-setting/main.bicep" ] || [ ! -s "deployment-setting/main.bicep" ]; then
-    echo "Error: Failed to create deployment-setting/main.bicep file or file is empty"
-    exit 1
-fi
-
-echo "✅ All bicep files created successfully"
-echo "nested/deployment-setting.bicep size: $(wc -c < nested/deployment-setting.bicep) bytes"
-echo "deployment-setting/main.bicep size: $(wc -c < deployment-setting/main.bicep) bytes"
-
-# List current directory structure for debugging
-echo "Current directory structure:"
-find . -name "*.bicep" -type f
-
-# Parse deployment operations into JSON array format
-IFS=',' read -ra OPERATIONS <<< "$DEPLOYMENT_OPERATIONS"
-echo "Deployment operations: ${OPERATIONS[@]}"
-
-# Convert operations array to JSON format
-OPERATIONS_JSON="["
-for i in "${!OPERATIONS[@]}"; do
-    if [ $i -gt 0 ]; then
-        OPERATIONS_JSON+=","
-    fi
-    OPERATIONS_JSON+="\"${OPERATIONS[$i]}\""
-done
-OPERATIONS_JSON+="]"
-
-echo "Deployment operations JSON: $OPERATIONS_JSON"
-
-# Convert boolean values to proper JSON format
-USE_SHARED_KEYVAULT_JSON=$(echo "$USE_SHARED_KEYVAULT" | tr '[:upper:]' '[:lower:]')
-if [ "$USE_SHARED_KEYVAULT_JSON" = "true" ] || [ "$USE_SHARED_KEYVAULT_JSON" = "1" ]; then
-    USE_SHARED_KEYVAULT_JSON="true"
-else
-    USE_SHARED_KEYVAULT_JSON="false"
-fi
-
-echo "Use shared key vault: $USE_SHARED_KEYVAULT_JSON"
-
-NEED_ARB_SECRET_JSON=$(echo "$NEED_ARB_SECRET" | tr '[:upper:]' '[:lower:]')
-if [ "$NEED_ARB_SECRET_JSON" = "true" ] || [ "$NEED_ARB_SECRET_JSON" = "1" ]; then
-    NEED_ARB_SECRET_JSON="true"
-else
-    NEED_ARB_SECRET_JSON="false"
-fi
-
-echo "Use shared key vault: $NEED_ARB_SECRET_JSON"
-
-# Debug: Check the content of DEPLOYMENT_SETTINGS
-echo "Debug: DEPLOYMENT_SETTINGS type check..."
-echo "First 100 chars of DEPLOYMENT_SETTINGS: ${DEPLOYMENT_SETTINGS:0:100}"
-
-# Validate if DEPLOYMENT_SETTINGS is valid JSON
-if ! echo "$DEPLOYMENT_SETTINGS" | jq empty 2>/dev/null; then
-    echo "Error: DEPLOYMENT_SETTINGS is not valid JSON"
-    echo "Content: $DEPLOYMENT_SETTINGS"
-    exit 1
-fi
-
-# Create parameter file for deployment
-PARAM_FILE="deployment-params.json"
-
-# Create a proper parameter file with JSON object
-echo "Creating parameter file..."
-cat > "$PARAM_FILE" << EOF
-{
-  "\$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "deploymentOperations": {
-      "value": $OPERATIONS_JSON
-    },
-    "deploymentSettings": {
-      "value": $DEPLOYMENT_SETTINGS
-    },
-    "useSharedKeyVault": {
-      "value": $USE_SHARED_KEYVAULT_JSON
-    },
-    "clusterName": {
-      "value": "$CLUSTER_NAME"
-    },
-    "clusterADName": {
-      "value": "$CLUSTER_AD_NAME"
-    },
-    "operationType": {
-      "value": "$OPERATION_TYPE"
-    },
-    "cloudId": {
-      "value": "$CLOUD_ID"
-    },
-    "needArbSecret": {
-      "value": $NEED_ARB_SECRET_JSON
-    }
-  }
-}
-EOF
-
-# Validate the parameter file
-echo "Validating parameter file..."
-if ! jq empty "$PARAM_FILE" 2>/dev/null; then
-    echo "Error: Generated parameter file is not valid JSON"
-    cat "$PARAM_FILE"
-    exit 1
-fi
-
-echo "✅ Parameter file created and validated successfully"
-
-# Print parameter file content for debugging
-echo "============================================"
-echo "Parameter file content:"
-echo "============================================"
-cat "$PARAM_FILE" | jq '.'
-echo "============================================"
-
-# Check if deployment-settings resource exists
-echo "Checking if deployment-settings resource already exists..."
-
-# Construct the resource ID for deployment-settings
+# Construct the resource ID for deploymentSettings
 DEPLOYMENT_SETTINGS_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.AzureStackHCI/clusters/$CLUSTER_NAME/deploymentSettings/default"
-
 echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
 
-# Check if the deployment-settings resource exists
-# Redirect both stdout and stderr to suppress all output, only check exit code
+# Check if the deploymentSettings resource already exists
 if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; then
-    echo "✅ Deployment-settings resource already exists. Checking status..."
-
-    # Get the provisioning state and deployment mode
     PROVISIONING_STATE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.provisioningState" --output tsv 2>/dev/null)
     DEPLOYMENT_MODE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.deploymentMode" --output tsv 2>/dev/null)
 
-    echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
-    echo "Provisioning State: $PROVISIONING_STATE"
-    echo "Deployment Mode: $DEPLOYMENT_MODE"
+    echo "Existing resource — Mode: $DEPLOYMENT_MODE, State: $PROVISIONING_STATE"
 
-    # First check deployment mode
     if [ "$DEPLOYMENT_MODE" = "Validate" ]; then
-        echo "🗑️  Deployment mode is 'Validate'. Removing the validation resource..."
-
-        # Delete the resource
-        if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --verbose; then
-            echo "✅ Validation resource deleted successfully."
-            echo "📝 Proceeding with deployment..."
+        echo "Removing stale Validate-mode resource..."
+        if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
+            echo "Validation resource deleted. Bicep module will recreate."
         else
-            echo "❌ Failed to delete the validation resource. Please check permissions and try again."
+            echo "Failed to delete validation resource."
             exit 1
         fi
-    elif [ "$DEPLOYMENT_MODE" = "Deploy" ]; then
-        # Check if deployment is successful
-        if [ "$PROVISIONING_STATE" = "Succeeded" ]; then
-            echo "✅ Deployment resource is in successful state. Skipping deployment."
-
-            # Show existing resource details
-            echo "Existing deployment-settings details:"
-            az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
-
-            exit 0
-        else
-            echo "❌ Deployment resource exists but is not in successful state!"
-            echo "Expected: Succeeded, Actual: $PROVISIONING_STATE"
-
-            # Show resource details for debugging
-            echo "Resource details:"
-            az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
-
-            exit 1
-        fi
+    elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" = "Succeeded" ]; then
+        echo "Deploy+Succeeded — Bicep module will handle idempotent re-apply."
+    elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" != "Succeeded" ]; then
+        echo "Deploy mode in state: $PROVISIONING_STATE (not Succeeded). Failing."
+        exit 1
     else
-        echo "⚠️  Unknown deployment mode: $DEPLOYMENT_MODE"
-        echo "Expected 'Validate' or 'Deploy'"
-
-        # Show resource details for debugging
-        echo "Resource details:"
-        az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
-
+        echo "Unknown deployment mode: $DEPLOYMENT_MODE. Failing."
         exit 1
     fi
 else
-    echo "📝 Deployment-settings resource does not exist. Proceeding with deployment..."
+    echo "No existing deploymentSettings resource. Bicep module will create."
 fi
 
-# Execute Bicep deployment
-DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
+echo "=== Script completed — cleanup done ==="
 
-echo "Starting deployment: $DEPLOYMENT_NAME"
-echo "Using template: nested/deployment-setting.bicep"
-echo "Using parameter file: $PARAM_FILE"
-
-# Check if nested/deployment-setting.bicep file was created successfully
-if [ ! -f "nested/deployment-setting.bicep" ]; then
-    echo "Error: nested/deployment-setting.bicep file was not created successfully"
-    echo "Current directory contents:"
-    ls -la
-    exit 1
-fi
-
-# NOTE: The actual deployment of nested/deployment-setting.bicep is now handled
-# directly by the parent Bicep module (main.bicep) as a native module call,
-# bypassing ACI container resource limits. This script only handles
-# idempotency checks and cleanup of stale deploymentSettings resources.
-
-echo "✅ Deployment script completed — secrets stored, cleanup done."
-echo "The deploymentSettings resource will be created by the parent Bicep module directly."
-
-# Set output for Bicep usage
+# Set output for Bicep deployment script resource
 cat > $AZ_SCRIPTS_OUTPUT_PATH << EOF
 {
   "status": "success",
-  "message": "Script completed - secrets stored, idempotency handled"
+  "message": "Idempotency check and cleanup completed"
 }
 EOF
