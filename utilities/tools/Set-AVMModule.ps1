@@ -197,7 +197,7 @@ function Set-AVMModule {
             ThrottleLimit = $ThrottleLimit
             ProgressText  = 'Compiled [{0}/{1}] template file batches'
         }
-        if ($PSCmdlet.ShouldProcess(('Compiling templaes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+        if ($PSCmdlet.ShouldProcess(('Compiling templates of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
             Invoke-Async @compilationInputObject
         }
     }
