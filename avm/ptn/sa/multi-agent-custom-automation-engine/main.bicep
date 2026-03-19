@@ -42,6 +42,9 @@ var deployingUserPrincipalId = deployerInfo.objectId
 @description('Required. Location for all AI service resources. This should be one of the supported Azure AI Service locations.')
 param azureAiServiceLocation string
 
+@description('Optional. Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string = 'canadacentral'
+
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
 param gptModelName string = 'gpt-4.1-mini'
@@ -170,22 +173,6 @@ var solutionSuffix = toLower(trim(replace(
   '*',
   ''
 )))
-
-// Region pairs list based on article in [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported high availability regions for CosmosDB.
-var cosmosDbZoneRedundantHaRegionPairs = {
-  australiaeast: 'uksouth'
-  centralus: 'eastus2'
-  eastasia: 'southeastasia'
-  eastus: 'centralus'
-  eastus2: 'centralus'
-  japaneast: 'australiaeast'
-  northeurope: 'westeurope'
-  southeastasia: 'eastasia'
-  uksouth: 'westeurope'
-  westeurope: 'northeurope'
-}
-// Paired location calculated based on 'location' parameter. This location will be used by applicable resources if `enableScalability` is set to `true`
-var cosmosDbHaLocation = cosmosDbZoneRedundantHaRegionPairs[location]
 
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {
@@ -677,21 +664,9 @@ var dnsZoneIndex = {
   keyVault: 6
 }
 
-// List of DNS zone indices that correspond to AI-related services.
-var aiRelatedDnsZoneIndices = [
-  dnsZoneIndex.cognitiveServices
-  dnsZoneIndex.openAI
-  dnsZoneIndex.aiServices
-]
-
-// ===================================================
-// DEPLOY PRIVATE DNS ZONES
-// - Deploys all zones if no existing Foundry project is used
-// - Excludes AI-related zones when using with an existing Foundry project
-// ===================================================
 @batchSize(5)
 module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
-  for (zone, i) in privateDnsZones: if (enablePrivateNetworking && !contains(aiRelatedDnsZoneIndices, i)) {
+  for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
       name: zone
@@ -953,7 +928,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: cosmosDbHaLocation
+            locationName: cosmosDbReplicaLocation
           }
         ]
       : [
@@ -1178,10 +1153,6 @@ module containerApp 'br/public:avm/res/app/container-app:0.20.0' = {
           {
             name: 'SUPPORTED_MODELS'
             value: '["o3","o4-mini","gpt-4.1","gpt-4.1-mini"]'
-          }
-          {
-            name: 'AZURE_AI_SEARCH_API_KEY'
-            secretRef: 'azure-ai-search-api-key'
           }
           {
             name: 'AZURE_STORAGE_BLOB_URL'

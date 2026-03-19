@@ -336,6 +336,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
 | [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
@@ -426,6 +427,14 @@ The Container Registry hostname where the docker images for the backend are loca
 - Required: No
 - Type: string
 - Default: `'biabcontainerreg.azurecr.io'`
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. This location is used when enableRedundancy is set to true.
+
+- Required: No
+- Type: string
+- Default: `'canadacentral'`
 
 ### Parameter: `createdBy`
 
