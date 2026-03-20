@@ -34,7 +34,7 @@ param eventHubNamespaceEventHubName string
 @description('Custom tags to be applied to resources as necessary.')
 param tags object
 
-resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-07-01' = {
+resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
   name: azureFirewallPolicyName
   location: resourceGroup().location
   properties: {
@@ -44,7 +44,7 @@ resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-07-01' = {
   }
 }
 
-resource vnet1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource vnet1 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetwork1Name
   location: virtualNetwork1Location
   properties: {
@@ -56,7 +56,7 @@ resource vnet1 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-resource vnet2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource vnet2 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   name: virtualNetwork2Name
   location: virtualNetwork2Location
   properties: {
@@ -68,7 +68,7 @@ resource vnet2 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-module testDeploymentPort 'br/public:avm/res/network/express-route-port:0.3.1' = {
+module expressRoutePort 'br/public:avm/res/network/express-route-port:0.3.1' = {
   name: expressRoutePortName
   params: {
     name: expressRoutePortName
@@ -85,7 +85,7 @@ module testDeploymentPort 'br/public:avm/res/network/express-route-port:0.3.1' =
   }
 }
 
-module testDeploymentCircuit 'br/public:avm/res/network/express-route-circuit:0.8.0' = {
+module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:0.8.0' = {
   name: expressRouteCircuitName
   params: {
     name: expressRouteCircuitName
@@ -96,7 +96,7 @@ module testDeploymentCircuit 'br/public:avm/res/network/express-route-circuit:0.
     skuTier: 'Premium'
     skuFamily: 'MeteredData'
     globalReachEnabled: true
-    expressRoutePortResourceId: testDeploymentPort.outputs.resourceId
+    expressRoutePortResourceId: expressRoutePort.outputs.resourceId
     authorizationNames: [
       'globalReachAuth1'
     ]
@@ -162,7 +162,7 @@ output virtualNetwork2Location string = vnet2.location
 output virtualHub2Location string = vnet2.location
 
 @description('The resource ID of the ExpressRoute circuit.')
-output expressRouteCircuitId string = testDeploymentCircuit.outputs.resourceId
+output expressRouteCircuitId string = expressRouteCircuit.outputs.resourceId
 
 @description('The resource ID of the Log Analytics Workspace.')
 output logAnalyticsWorkspaceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId

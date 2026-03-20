@@ -33,7 +33,7 @@ param virtualHub2Location string = 'westus2'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }

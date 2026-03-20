@@ -20,7 +20,7 @@ param lock lockType?
 param enableTelemetry bool = true
 
 @description('Optional. Tags to be applied to all resources.')
-param tags resourceInput<'Microsoft.Network/virtualWans@2024-10-01'>.tags = {}
+param tags resourceInput<'Microsoft.Network/virtualWans@2025-01-01'>.tags = {}
 
 // ============ //
 // Variables    //
@@ -95,7 +95,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.3' = [
   }
 ]
 
-module firewallModule 'br/public:avm/res/network/azure-firewall:0.9.2' = [
+module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
   for config in hubConfigurations: if (config.deploySecureHub) {
     name: config.hub.?secureHubParameters.?azureFirewallName!
     params: {
@@ -175,7 +175,7 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.3' = [
   }
 ]
 
-module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.2' = [
+module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.3.0' = [
   for config in hubConfigurations: if (config.deployS2sGateway) {
     name: config.hub.?s2sVpnParameters.?vpnGatewayName!
     params: {
@@ -218,7 +218,7 @@ module expressRouteGatewayModule 'br/public:avm/res/network/express-route-gatewa
 ]
 
 // Deploy routing intent after firewall is created
-resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2024-07-01' = [
+resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2025-01-01' = [
   for config in hubConfigurations: if (config.deploySecureHub && config.hub.?secureHubParameters.?routingIntent != null) {
     name: '${config.hub.hubName}/routingIntent'
     properties: {
@@ -251,7 +251,7 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2024-07-01' 
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.network-virtualwan.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -424,7 +424,7 @@ type virtualWanParameterType = {
   }[]?
 
   @description('Optional. Tags to be applied to the Virtual WAN.')
-  tags: resourceInput<'Microsoft.Network/virtualWans@2024-10-01'>.tags?
+  tags: resourceInput<'Microsoft.Network/virtualWans@2025-01-01'>.tags?
 
   @description('Optional. The type of Virtual WAN. Allowed values are Standard or Basic.')
   type: ('Standard' | 'Basic')?
@@ -743,7 +743,7 @@ type virtualHubParameterType = {
   sku: ('Standard' | 'Basic')?
 
   @description('Optional. Tags to be applied to the Virtual Hub.')
-  tags: resourceInput<'Microsoft.Network/virtualHubs@2024-10-01'>.tags?
+  tags: resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.tags?
 
   @description('Optional. ASN for the Virtual Router.')
   virtualRouterAsn: int?
