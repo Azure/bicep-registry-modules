@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
         'rdb-backup-max-snapshot-count': '1'
         'preferred-data-persistence-auth-method': 'ManagedIdentity'
         'storage-subscription-id': subscription().subscriptionId
-        'rdb-storage-connection-string': 'DefaultEndpointsProtocol=https;AccountName=${nestedDependencies.outputs.storageAccountName};EndpointSuffix=${environment().suffixes.storage}'
+        'rdb-storage-connection-string': 'https://${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}/'
       }
     }
   }
