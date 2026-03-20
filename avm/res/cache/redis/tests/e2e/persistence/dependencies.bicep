@@ -8,9 +8,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   sku: {
-    name: 'Premium_LRS'
+    name: 'Standard_LRS'
   }
-  kind: 'BlockBlobStorage'
+  kind: 'StorageV2'
   properties: {
     allowSharedKeyAccess: true
   }
