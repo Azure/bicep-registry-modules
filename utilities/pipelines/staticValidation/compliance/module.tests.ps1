@@ -1,4 +1,4 @@
-﻿#Requires -Version 7
+#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
