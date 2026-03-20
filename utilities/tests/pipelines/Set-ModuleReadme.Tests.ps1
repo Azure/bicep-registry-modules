@@ -1,4 +1,12 @@
-﻿param(
+﻿<#
+The below file tests the `Set-ModuleReadMe` function in the `Set-AVMModule` script.
+Said function is responsible for generating/updating the ReadMe file of a module based on a set of inputs such as the module's main bicep file, cross reference list, telemetry info, etc...
+To run the tests, the file uses a set of test files and representative, yet trimmed down test modules you can find in the `/src` subfolder.
+
+The tests can be run locally and are part of the `platform.ci-tests.yml` pipeline run.
+#>
+
+param(
     [Parameter(Mandatory = $false)]
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
 )
@@ -22,7 +30,7 @@ Describe 'Test ReadMe generation' {
         Mock Get-CrossReferencedModuleList { return ((Get-Content -Path (Join-Path $repoRootPath 'utilities' 'tests' 'pipelines' 'src' 'crossReferences.json')) | ConvertFrom-Json -AsHashtable) }
         Mock Invoke-WebRequest { return @{ Content = (Get-Content -Path (Join-Path $repoRootPath 'utilities' 'tests' 'pipelines' 'src' 'apiSpecs.json') -Raw) } } -ParameterFilter { $Uri -eq 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json' }
         Mock Test-Url { return $true }
-        # Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -like '*\README.md' }
+        Mock Set-Content { Write-Verbose 'TEST-LOG: Test readme generation completed' -Verbose } -ParameterFilter { $Path -like '*\README.md' }
     }
 
     It '[Set-ModuleReadMe] Parent module: Should generate correct readme' {
