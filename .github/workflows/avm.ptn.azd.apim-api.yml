@@ -43,33 +43,33 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-    ###########################
-    #   Initialize pipeline   #
-    ###########################
-    job_initialize_pipeline:
-      runs-on: ubuntu-latest
-      name: "Initialize pipeline"
-      if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
-      steps:
-        - name: "Checkout"
-          uses: actions/checkout@v5
-          with:
-            fetch-depth: 0
-        - name: "Set input parameters to output variables"
-          id: get-workflow-param
-          uses: ./.github/actions/templates/avm-getWorkflowInput
-          with:
-            workflowPath: "${{ env.workflowPath}}"
-        - name: "Get module test file paths"
-          id: get-module-test-file-paths
-          uses: ./.github/actions/templates/avm-getModuleTestFiles
-          with:
-            modulePath: "${{ env.modulePath }}"
-      outputs:
-        workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
-        moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
-        psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
-        modulePath: "${{ env.modulePath }}"
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+      - name: "Get module test file paths"
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
+        with:
+          modulePath: "${{ env.modulePath }}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
+      modulePath: "${{ env.modulePath }}"
 
   ##############################
   #   Call reusable workflow   #
