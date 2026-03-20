@@ -470,8 +470,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     ]
     availabilityZones: [
-      1
-      2
+      '1'
+      '2'
     ]
     capacity: 2
     diagnosticSettings: [
@@ -648,8 +648,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "availabilityZones": {
       "value": [
-        1,
-        2
+        "1",
+        "2"
       ]
     },
     "capacity": {
@@ -850,8 +850,8 @@ param accessPolicyAssignments = [
   }
 ]
 param availabilityZones = [
-  1
-  2
+  '1'
+  '2'
 ]
 param capacity = 2
 param diagnosticSettings = [
@@ -1348,9 +1348,9 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     name: 'crwaf001'
     // Non-required parameters
     availabilityZones: [
-      1
-      2
-      3
+      '1'
+      '2'
+      '3'
     ]
     capacity: 2
     diagnosticSettings: [
@@ -1427,9 +1427,9 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Non-required parameters
     "availabilityZones": {
       "value": [
-        1,
-        2,
-        3
+        "1",
+        "2",
+        "3"
       ]
     },
     "capacity": {
@@ -1532,9 +1532,9 @@ using 'br/public:avm/res/cache/redis:<version>'
 param name = 'crwaf001'
 // Non-required parameters
 param availabilityZones = [
-  1
-  2
-  3
+  '1'
+  '2'
+  '3'
 ]
 param capacity = 2
 param diagnosticSettings = [
@@ -1729,17 +1729,17 @@ If the zoneRedundant parameter is true, replicas will be provisioned in the avai
 - Default:
   ```Bicep
   [
-    1
-    2
-    3
+    '1'
+    '2'
+    '3'
   ]
   ```
 - Allowed:
   ```Bicep
   [
-    1
-    2
-    3
+    '1'
+    '2'
+    '3'
   ]
   ```
 

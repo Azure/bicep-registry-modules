@@ -107,7 +107,7 @@ module testDeployment '../../../main.bicep' = [
       }
       minimumTlsVersion: '1.2'
       zoneRedundant: true
-      availabilityZones: [1, 2]
+      availabilityZones: ['1', '2']
       zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [
         {
