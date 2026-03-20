@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Parse a Pester output containing checks & results and generate formatted markdown file out of it.
 
