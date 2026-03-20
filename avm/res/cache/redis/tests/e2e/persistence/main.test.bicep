@@ -54,6 +54,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       skuName: 'Premium'
+      replicasPerMaster: 1
+      replicasPerPrimary: 1
+      zoneRedundant: false
       redisConfiguration: {
         'rdb-backup-enabled': 'true'
         'rdb-backup-frequency': '60'
