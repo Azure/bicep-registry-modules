@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Changed `availabilityZones` type from `int[]` to `string[]`
 - Fixed `persistence` test to use Managed Identity for connection to Storage Account
 - Fixed `passive-geo-replication` test to use latest Az PowerShell module
-- Updated resource API versions to use letest versions
+- Updated resource API versions to use latest versions
 
 ### Breaking Changes
 
