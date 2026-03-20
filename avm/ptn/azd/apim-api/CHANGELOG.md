@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled template with latest Bicep version
+- Regenerate main.json ARM template with latest Bicep
 
 ### Breaking Changes
 

@@ -1,5 +1,5 @@
-metadata name = 'API Management Service APIs Diagnostics.'
-metadata description = 'This module deploys an API Management Service API Diagnostics.'
+metadata name = 'API Management Service API Diagnostics'
+metadata description = 'This module deploys an API Management Service API Diagnostic.'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -75,7 +75,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgm-apidiagnostics.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

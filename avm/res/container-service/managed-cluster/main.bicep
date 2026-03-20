@@ -15,30 +15,30 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Advanced Networking profile for enabling observability and security feature suite on a cluster. For more information see https://aka.ms/aksadvancednetworking.')
-param advancedNetworking resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.advancedNetworking?
+param advancedNetworking resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.advancedNetworking?
 
 @description('Optional. The IP families used for the cluster.')
-param ipFamilies resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.ipFamilies = [
+param ipFamilies resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.ipFamilies = [
   'IPv4'
 ]
 
 @description('Optional. NAT Gateway profile for the cluster.')
-param natGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.natGatewayProfile?
+param natGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.natGatewayProfile?
 
 @description('Optional. Network mode used for building the Kubernetes network.')
-param networkMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkMode?
+param networkMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.networkMode?
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
-param networkDataplane resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkDataplane?
+param networkDataplane resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.networkDataplane?
 
 @description('Optional. Specifies the network plugin used for building Kubernetes network.')
-param networkPlugin resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPlugin?
+param networkPlugin resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.networkPlugin?
 
 @description('Optional. Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin.')
-param networkPluginMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPluginMode?
+param networkPluginMode resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.networkPluginMode?
 
 @description('Optional. Specifies the network policy used for building Kubernetes network. - calico or azure.')
-param networkPolicy resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.networkPolicy?
+param networkPolicy resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.networkPolicy?
 
 @description('Optional. Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used.')
 param podCidr string?
@@ -53,13 +53,13 @@ param serviceCidrs string[]?
 param podCidrs string[]?
 
 @description('Optional. Static egress gateway profile for the cluster.')
-param staticEgressGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.staticEgressGatewayProfile?
+param staticEgressGatewayProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.staticEgressGatewayProfile?
 
 @description('Optional. Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr.')
 param dnsServiceIP string?
 
 @description('Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.')
-param loadBalancerSku resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.loadBalancerSku = 'standard'
+param loadBalancerSku resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.loadBalancerSku = 'standard'
 
 @description('Optional. Outbound IP Count for the Load balancer.')
 param managedOutboundIPCount int = 0
@@ -77,28 +77,28 @@ param outboundPublicIPResourceIds string[]?
 param outboundPublicIPPrefixResourceIds string[]?
 
 @description('Optional. The type of the managed inbound Load Balancer BackendPool.')
-param backendPoolType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.loadBalancerProfile.backendPoolType = 'NodeIPConfiguration'
+param backendPoolType resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.loadBalancerProfile.backendPoolType = 'NodeIPConfiguration'
 
 @description('Optional. Specifies outbound (egress) routing method.')
-param outboundType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.networkProfile.outboundType = 'loadBalancer'
+param outboundType resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.networkProfile.outboundType = 'loadBalancer'
 
 @description('Optional. Name of a managed cluster SKU.')
-param skuName resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.sku.name = 'Base'
+param skuName resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.sku.name = 'Base'
 
 @description('Optional. Tier of a managed cluster SKU.')
-param skuTier resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.sku.tier = 'Standard'
+param skuTier resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.sku.tier = 'Standard'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
 param kubernetesVersion string?
 
 @description('Optional. The profile for Linux VMs in the Managed Cluster.')
-param linuxProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.linuxProfile?
+param linuxProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.linuxProfile?
 
 @description('Optional. Enable Azure Active Directory integration.')
-param aadProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.aadProfile?
+param aadProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.aadProfile?
 
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
-param aksServicePrincipalProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.servicePrincipalProfile?
+param aksServicePrincipalProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.servicePrincipalProfile?
 
 @description('Optional. Whether to enable Kubernetes Role-Based Access Control.')
 param enableRBAC bool = true
@@ -107,16 +107,16 @@ param enableRBAC bool = true
 param disableLocalAccounts bool = true
 
 @description('Optional. Node provisioning settings that apply to the whole cluster.')
-param nodeProvisioningProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.nodeProvisioningProfile?
+param nodeProvisioningProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.nodeProvisioningProfile?
 
 @description('Optional. Name of the resource group containing agent pool nodes.')
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 
 @description('Optional. The node resource group configuration profile.')
-param nodeResourceGroupProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.nodeResourceGroupProfile?
+param nodeResourceGroupProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.nodeResourceGroupProfile?
 
 @description('Optional. The access profile for managed cluster API server.')
-param apiServerAccessProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.apiServerAccessProfile?
+param apiServerAccessProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.apiServerAccessProfile?
 
 @description('Optional. Allow or deny public network access for AKS.')
 @allowed([
@@ -148,7 +148,7 @@ param webApplicationRoutingEnabled bool = false
 param dnsZoneResourceId string?
 
 @description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
-param defaultIngressControllerType resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.ingressProfile.webAppRouting.nginx.defaultIngressControllerType?
+param defaultIngressControllerType resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.ingressProfile.webAppRouting.nginx.defaultIngressControllerType?
 
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
@@ -183,21 +183,21 @@ param enableKeyvaultSecretsProvider bool = false
 param enableSecretRotation bool = false
 
 @description('Optional. Parameters to be applied to the cluster-autoscaler when enabled.')
-param autoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoScalerProfile?
+param autoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.autoScalerProfile?
 
 @description('Optional. The auto upgrade configuration.')
-param autoUpgradeProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.autoUpgradeProfile = {
+param autoUpgradeProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.autoUpgradeProfile = {
   upgradeChannel: 'stable'
 }
 
 @description('Optional. The pod identity profile of the Managed Cluster. See [use AAD pod identity](https://learn.microsoft.com/azure/aks/use-azure-ad-pod-identity) for more details on AAD pod identity integration.')
-param podIdentityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.podIdentityProfile?
+param podIdentityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.podIdentityProfile?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
 
 @description('Optional. Security profile for the managed cluster.')
-param securityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.securityProfile?
+param securityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.securityProfile?
 
 @description('Optional. Whether the AzureBlob CSI Driver for the storage profile is enabled.')
 param enableStorageProfileBlobCSIDriver bool = false
@@ -212,7 +212,7 @@ param enableStorageProfileFileCSIDriver bool = false
 param enableStorageProfileSnapshotController bool = false
 
 @description('Optional. The support plan for the Managed Cluster.')
-param supportPlan resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.supportPlan = 'KubernetesOfficial'
+param supportPlan resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.supportPlan = 'KubernetesOfficial'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -239,7 +239,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.tags?
+param tags resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.tags?
 
 @description('Optional. The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided.')
 param diskEncryptionSetResourceId string?
@@ -248,34 +248,34 @@ param diskEncryptionSetResourceId string?
 param fluxExtension extensionType?
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.httpProxyConfig?
+param httpProxyConfig resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.httpProxyConfig?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.identityProfile?
+param identityProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.identityProfile?
 
 @description('Optional. Workload Auto-scaler profile for the managed cluster.')
-param workloadAutoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.workloadAutoScalerProfile?
+param workloadAutoScalerProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.workloadAutoScalerProfile?
 
 @description('Optional. Azure Monitor addon profiles for monitoring the managed cluster.')
-param azureMonitorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.azureMonitorProfile?
+param azureMonitorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.azureMonitorProfile?
 
 @description('Optional. Service mesh profile for a managed cluster.')
-param serviceMeshProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.serviceMeshProfile?
+param serviceMeshProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.serviceMeshProfile?
 
 @description('Optional. AI toolchain operator settings that apply to the whole cluster.')
-param aiToolchainOperatorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.aiToolchainOperatorProfile?
+param aiToolchainOperatorProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.aiToolchainOperatorProfile?
 
 @description('Optional. Profile of the cluster bootstrap configuration.')
-param bootstrapProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.bootstrapProfile?
+param bootstrapProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.bootstrapProfile?
 
 @description('Optional. The FQDN subdomain of the private cluster with custom private dns zone. This cannot be updated once the Managed Cluster has been created.')
 param fqdnSubdomain string?
 
 @description('Optional. Settings for upgrading the cluster with override options.')
-param upgradeSettings resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.upgradeSettings?
+param upgradeSettings resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.upgradeSettings?
 
 @description('Optional. The profile for Windows VMs in the Managed Cluster.')
-param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.windowsProfile?
+param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.windowsProfile?
 
 // =========== //
 // Variables   //
@@ -406,7 +406,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-09-01' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' = {
   name: name
   location: location
   tags: tags
@@ -872,7 +872,7 @@ output location string = managedCluster.location
 output oidcIssuerUrl string? = managedCluster.properties.?oidcIssuerProfile.?issuerURL
 
 @description('The addonProfiles of the Kubernetes cluster.')
-output addonProfiles resourceOutput<'Microsoft.ContainerService/managedClusters@2025-09-01'>.properties.addonProfiles? = managedCluster.properties.?addonProfiles
+output addonProfiles resourceOutput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.addonProfiles? = managedCluster.properties.?addonProfiles
 
 @description('The Object ID of Web Application Routing.')
 output webAppRoutingIdentityObjectId string? = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId
@@ -915,28 +915,28 @@ type agentPoolType = {
   enableUltraSSD: bool?
 
   @description('Optional. Represents the Gateway node pool configuration.')
-  gatewayProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gatewayProfile?
+  gatewayProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.gatewayProfile?
 
   @description('Optional. The GPU instance profile of the agent pool.')
-  gpuInstanceProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuInstanceProfile?
+  gpuInstanceProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.gpuInstanceProfile?
 
   @description('Optional. GPU settings.')
-  gpuProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.gpuProfile?
+  gpuProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.gpuProfile?
 
   @description('Optional. Host group resource ID.')
   hostGroupResourceId: string?
 
   @description('Optional. Kubelet configuration on agent pool nodes.')
-  kubeletConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletConfig?
+  kubeletConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.kubeletConfig?
 
   @description('Optional. The kubelet disk type of the agent pool.')
-  kubeletDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.kubeletDiskType?
+  kubeletDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.kubeletDiskType?
 
   @description('Optional. The Linux OS configuration of the agent pool.')
-  linuxOSConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.linuxOSConfig?
+  linuxOSConfig: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.linuxOSConfig?
 
   @description('Optional. Local DNS configuration.')
-  localDNSProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.localDNSProfile?
+  localDNSProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.localDNSProfile?
 
   @description('Optional. A message of the day will be a multi-line message that is prepended to the command prompt and the SSH login message.')
   messageOfTheDay: string?
@@ -954,13 +954,13 @@ type agentPoolType = {
   minPods: int?
 
   @description('Optional. The mode of the agent pool.')
-  mode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.mode?
+  mode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.mode?
 
   @description('Optional. Network profile to be used for agent pool nodes.')
-  networkProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.networkProfile?
+  networkProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.networkProfile?
 
   @description('Optional. The node labels of the agent pool.')
-  nodeLabels: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.nodeLabels?
+  nodeLabels: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.nodeLabels?
 
   @description('Optional. The node public IP prefix ID of the agent pool.')
   nodePublicIpPrefixResourceId: string?
@@ -975,7 +975,7 @@ type agentPoolType = {
   osDiskSizeGB: int?
 
   @description('Optional. The OS disk type of the agent pool.')
-  osDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osDiskType?
+  osDiskType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.osDiskType?
 
   @description('Optional. The OS SKU of the agent pool.')
   osSKU: (
@@ -990,58 +990,58 @@ type agentPoolType = {
     | 'Windows2025')?
 
   @description('Optional. The OS type of the agent pool.')
-  osType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.osType?
+  osType: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.osType?
 
   @description('Optional. Pod IP allocation mode.')
-  podIPAllocationMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.podIPAllocationMode?
+  podIPAllocationMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.podIPAllocationMode?
 
   @description('Optional. The pod subnet ID of the agent pool.')
   podSubnetResourceId: string?
 
   @description('Optional. Power State of the agent pool.')
-  powerState: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.powerState?
+  powerState: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.powerState?
 
   @description('Optional. The proximity placement group resource ID of the agent pool.')
   proximityPlacementGroupResourceId: string?
 
   @description('Optional. The scale down mode of the agent pool.')
-  scaleDownMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleDownMode?
+  scaleDownMode: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.scaleDownMode?
 
   @description('Optional. The scale set eviction policy of the agent pool.')
-  scaleSetEvictionPolicy: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetEvictionPolicy?
+  scaleSetEvictionPolicy: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.scaleSetEvictionPolicy?
 
   @description('Optional. The scale set priority of the agent pool.')
-  scaleSetPriority: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.scaleSetPriority?
+  scaleSetPriority: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.scaleSetPriority?
 
   @description('Optional. The security settings of an agent pool.')
-  securityProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.securityProfile?
+  securityProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.securityProfile?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
 
   @description('Optional. The tags of the agent pool.')
-  tags: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.tags?
+  tags: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.tags?
 
   @description('Optional. The type of the agent pool.')
   type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
 
   @description('Optional. Upgrade settings.')
-  upgradeSettings: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.upgradeSettings?
+  upgradeSettings: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.upgradeSettings?
 
   @description('Optional. The VM size of the agent pool.')
   vmSize: string?
 
   @description('Optional. Virtual Machines resource status.')
-  virtualMachinesProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.virtualMachinesProfile?
+  virtualMachinesProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.virtualMachinesProfile?
 
   @description('Optional. The VNet subnet ID of the agent pool.')
   vnetSubnetResourceId: string?
 
   @description('Optional. The workload runtime of the agent pool.')
-  workloadRuntime: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.workloadRuntime?
+  workloadRuntime: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.workloadRuntime?
 
   @description('Optional. The Windows profile of the agent pool.')
-  windowsProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-09-01'>.properties.windowsProfile?
+  windowsProfile: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.windowsProfile?
 
   @description('Optional. The enable default telemetry of the agent pool.')
   enableDefaultTelemetry: bool?
@@ -1082,11 +1082,11 @@ type maintenanceConfigurationType = {
   name: ('aksManagedAutoUpgradeSchedule' | 'aksManagedNodeOSUpgradeSchedule')
 
   @description('Required. Maintenance window for the maintenance configuration.')
-  maintenanceWindow: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.maintenanceWindow
+  maintenanceWindow: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-10-01'>.properties.maintenanceWindow
 
   @description('Optional. Time slots on which upgrade is not allowed.')
-  notAllowedTime: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.notAllowedTime?
+  notAllowedTime: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-10-01'>.properties.notAllowedTime?
 
   @description('Optional. Time slots during the week when planned maintenance is allowed to proceed.')
-  timeInWeek: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-09-01'>.properties.timeInWeek?
+  timeInWeek: resourceInput<'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-10-01'>.properties.timeInWeek?
 }
