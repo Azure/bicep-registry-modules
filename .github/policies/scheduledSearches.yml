@@ -175,17 +175,16 @@ configuration:
               label: "Type: AVM :a: :v: :m:"
           - noActivitySince:
               days: 7
+          - isNotLabeledWith:
+              label: "Needs: Immediate Attention :bangbang:"
         actions:
-          - mentionUsers:
-              mentionees:
-                - Azure/bicep-admins
-              replyTemplate: |
+          - addReply:
+              reply: |
                 > [!CAUTION]
-                > **Tagging the Bicep PG team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
+                > Adding the "Needs: Immediate Attention :bangbang:" label due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.
 
                 > [!TIP]
-                > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
-                > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
+                > - Remove the "Status: Response Overdue :triangular_flag_on_post:" and "Needs: Immediate Attention :bangbang:" labels once the issue has been responded to.
           - addLabel:
               label: "Needs: Immediate Attention :bangbang:"
 

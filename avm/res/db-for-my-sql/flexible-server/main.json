@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "14757123298981101249"
+      "version": "0.41.2.15936",
+      "templateHash": "10662328377526333209"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -933,7 +933,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/properties/properties/maintenanceWindow"
         },
-        "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
+        "description": "Optional. Properties for the maintenance window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
       },
       "defaultValue": {}
     },
@@ -1044,7 +1044,9 @@
       "defaultValue": "8.0.21",
       "allowedValues": [
         "5.7",
-        "8.0.21"
+        "8.0.21",
+        "8.4",
+        "9.3"
       ],
       "metadata": {
         "description": "Optional. MySQL Server version."
@@ -1272,7 +1274,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1289,7 +1291,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1311,7 +1313,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1378,8 +1380,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "10495770980913019819"
+              "version": "0.41.2.15936",
+              "templateHash": "6533320862908773227"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1485,8 +1487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13800907243219973298"
+              "version": "0.41.2.15936",
+              "templateHash": "6970604422315317017"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1593,8 +1595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "7944828652001704644"
+              "version": "0.41.2.15936",
+              "templateHash": "17121983716363089930"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1709,8 +1711,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "3649567738710959920"
+              "version": "0.41.2.15936",
+              "templateHash": "13735044502576063060"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1816,8 +1818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "16225854850224564968"
+              "version": "0.41.2.15936",
+              "templateHash": "3958694796655298438"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."

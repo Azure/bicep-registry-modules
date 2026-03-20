@@ -1,5 +1,9 @@
-metadata name = 'Azure Front Doors'
-metadata description = 'DEPRECATED - This module deploys an Azure Front Door.'
+metadata name = 'Azure Front Doors (Classic)'
+metadata description = '''DEPRECATED - This module deploys an Azure Front Door (Classic).
+
+Please note that the Azure Front Door (Classic) service is being deprecated in favor of the new Azure Front Door Standard/Premium offerings ([ref(https://learn.microsoft.com/en-us/azure/frontdoor/classic-overview)]).
+You can use the `avm/res/cdn/profile` module to deploy the new Azure Front Door Standard/Premium services.
+'''
 
 @description('Required. The name of the frontDoor.')
 @minLength(5)

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "8998217148988690277"
+      "version": "0.41.2.15936",
+      "templateHash": "5941982233391462523"
     },
     "name": "Dev Center Project Policy",
     "description": "This module deploys a Dev Center Project Policy."

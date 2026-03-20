@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "11653198489330209085"
+      "version": "0.41.2.15936",
+      "templateHash": "5116232625791379014"
     },
     "name": "Email Services",
     "description": "This module deploys an Email Service"
@@ -34,7 +34,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
+              "source": "Microsoft.Communication/emailServices/domains@2025-09-01#properties/tags"
             },
             "description": "Optional. Endpoint tags."
           },
@@ -129,7 +129,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -204,7 +204,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -266,7 +266,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Communication/emailServices@2023-04-01#properties/tags"
+          "source": "Microsoft.Communication/emailServices@2025-09-01#properties/tags"
         },
         "description": "Optional. Endpoint tags."
       },
@@ -327,7 +327,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.communication-emailservice.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -346,7 +346,7 @@
     },
     "email": {
       "type": "Microsoft.Communication/emailServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2025-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -358,7 +358,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Communication/emailServices/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Communication/emailServices', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -375,7 +375,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Communication/emailServices/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Communication/emailServices', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Communication/emailServices', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -439,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7644722574448944629"
+              "version": "0.41.2.15936",
+              "templateHash": "11316330965372950910"
             },
             "name": "Email Services Domains",
             "description": "This module deploys an Email Service Domain"
@@ -507,7 +507,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -582,7 +582,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -613,7 +613,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Communication/emailServices/domains@2023-04-01#properties/tags"
+                  "source": "Microsoft.Communication/emailServices/domains@2025-09-01#properties/tags"
                 },
                 "description": "Optional. Endpoint tags."
               },
@@ -690,12 +690,12 @@
             "emailService": {
               "existing": true,
               "type": "Microsoft.Communication/emailServices",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2025-09-01",
               "name": "[parameters('emailServiceName')]"
             },
             "domain": {
               "type": "Microsoft.Communication/emailServices/domains",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2025-09-01",
               "name": "[format('{0}/{1}', parameters('emailServiceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -708,7 +708,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Communication/emailServices/{0}/domains/{1}', parameters('emailServiceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -725,7 +725,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Communication/emailServices/{0}/domains/{1}', parameters('emailServiceName'), parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Communication/emailServices/domains', parameters('emailServiceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -776,8 +776,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "7017896381373476636"
+                      "version": "0.41.2.15936",
+                      "templateHash": "5118036937740143259"
                     },
                     "name": "Sender Usernames",
                     "description": "This module deploys an Sender"
@@ -818,7 +818,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Communication/emailServices/domains/senderUsernames",
-                      "apiVersion": "2023-04-01",
+                      "apiVersion": "2025-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('emailServiceName'), parameters('domainName'), parameters('name'))]",
                       "properties": {
                         "username": "[parameters('username')]",
@@ -882,12 +882,26 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+                  "source": "Microsoft.Communication/emailServices/domains@2025-09-01#properties/properties/properties/verificationRecords",
                   "output": true
                 },
                 "description": "The verification records for the domain."
               },
               "value": "[reference('domain').verificationRecords]"
+            },
+            "fromSenderDomain": {
+              "type": "string",
+              "metadata": {
+                "description": "The from sender domain for the domain."
+              },
+              "value": "[reference('domain').fromSenderDomain]"
+            },
+            "mailFromSenderDomain": {
+              "type": "string",
+              "metadata": {
+                "description": "The mail from sender domain for the domain."
+              },
+              "value": "[reference('domain').mailFromSenderDomain]"
             }
           }
         }
@@ -924,7 +938,7 @@
       "metadata": {
         "description": "The location the email service was deployed into."
       },
-      "value": "[reference('email', '2023-04-01', 'full').location]"
+      "value": "[reference('email', '2025-09-01', 'full').location]"
     },
     "domainResourceIds": {
       "type": "array",
@@ -958,7 +972,7 @@
         "type": "object",
         "metadata": {
           "__bicep_resource_derived_type!": {
-            "source": "Microsoft.Communication/emailServices/domains@2025-05-01#properties/properties/properties/verificationRecords",
+            "source": "Microsoft.Communication/emailServices/domains@2025-09-01#properties/properties/properties/verificationRecords",
             "output": true
           }
         }
@@ -969,6 +983,32 @@
       "copy": {
         "count": "[length(coalesce(parameters('domains'), createArray()))]",
         "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.verificationRecords.value]"
+      }
+    },
+    "domainFromSenderDomains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The list of from sender domains for each domain."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.fromSenderDomain.value]"
+      }
+    },
+    "domainMailFromSenderDomains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The list of mail from sender domains for each domain."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('domains'), createArray()))]",
+        "input": "[reference(format('email_domains[{0}]', copyIndex())).outputs.mailFromSenderDomain.value]"
       }
     }
   }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "7208612049911487646"
+      "version": "0.41.2.15936",
+      "templateHash": "10043259817320236470"
     },
     "name": "Policy Assignments (Subscription scope)",
     "description": "This module deploys a Policy Assignment at a Subscription scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity."
@@ -257,7 +257,7 @@
       },
       "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-Additional-RBAC-Subs', uniqueString(deployment().name, parameters('location'), coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].roleDefinitionId, parameters('name')))]",
       "subscriptionId": "[coalesce(variables('expandedSubRoleAssignments'), createArray())[copyIndex()].subscriptionId]",
       "location": "[deployment().location]",
@@ -283,8 +283,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "15693612242134961904"
+              "version": "0.41.2.15936",
+              "templateHash": "18088738465077785416"
             }
           },
           "parameters": {
@@ -341,7 +341,7 @@
       },
       "condition": "[not(empty(parameters('managedIdentities')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-PolicyAssignment-MG-Module-RBAC-RG-Sub-{1}', uniqueString(deployment().name, parameters('location'), variables('expandedRgRoleAssignments')[copyIndex()].roleDefinitionId, parameters('name'), variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId), substring(split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2], 0, 8))]",
       "subscriptionId": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[2]]",
       "resourceGroup": "[split(variables('expandedRgRoleAssignments')[copyIndex()].resourceGroupId, '/')[4]]",
@@ -367,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "17042098734231137435"
+              "version": "0.41.2.15936",
+              "templateHash": "4670376022289736393"
             }
           },
           "parameters": {

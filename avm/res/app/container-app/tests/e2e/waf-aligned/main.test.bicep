@@ -72,7 +72,6 @@ module testDeployment '../../../main.bicep' = [
               category: 'AllMetrics'
             }
           ]
-          logCategoriesAndGroups: []
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
