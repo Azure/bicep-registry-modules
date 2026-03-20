@@ -94,6 +94,9 @@ param enableTelemetry bool = true
 @description('Optional. The source control configurations.')
 param sourceControlConfigurations sourceControlConfigurationType[]?
 
+@description('Optional. The Hybrid Runbook Worker Groups to be created in the automation account.')
+param hybridRunbookWorkerGroups hybridRunbookWorkerGroupType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -434,6 +437,21 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
   }
 ]
 
+module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep' = [
+  for (group, index) in (hybridRunbookWorkerGroups ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
+      name: group.name
+      credentialName: group.?credentialName
+    }
+    dependsOn: [
+      automationAccount_credentials
+    ]
+  }
+]
+
 resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -697,4 +715,18 @@ type sourceControlConfigurationType = {
 
   @description('Optional. The authorization token for the repo of the source control.')
   securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
+}
+
+import { hybridRunbookWorkerGroupWorkerType } from 'hybrid-runbook-worker-group/main.bicep'
+@export()
+@description('The type of a hybrid runbook worker group configuration.')
+type hybridRunbookWorkerGroupType = {
+  @description('Required. Name of the Hybrid Runbook Worker Group.')
+  name: string
+
+  @description('Optional. Gets or sets the name of the credential.')
+  credentialName: string?
+
+  @description('Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.')
+  hybridRunbookWorkerGroupWorkers: hybridRunbookWorkerGroupWorkerType[]?
 }

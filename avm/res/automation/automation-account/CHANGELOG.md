@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- Added support for the `hybridRunbookWorkerGroups` & its workers via the `hybridRunbookWorkerGroups` parameter
+
+### Breaking Changes
+
+- None
+
 ## 0.17.2
 
 ### Changes
