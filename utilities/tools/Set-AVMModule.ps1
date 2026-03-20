@@ -176,9 +176,9 @@ function Set-AVMModule {
         Test-BicepVersion
     }
 
-    # ======================= #
-    #   Module module files   #
-    # ======================= #
+    # ====================== #
+    #   Build module files   #
+    # ====================== #
     $defaultSplitSize = 50 # The bucket size of templates we want to compile at once (i.e., in each thread)
     if (-not $SkipBuild) {
         $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize $defaultSplitSize
