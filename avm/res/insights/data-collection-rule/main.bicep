@@ -79,13 +79,13 @@ var dataCollectionRulePropertiesUnion = union(
   {
     description: dataCollectionRuleProperties.?description
   },
-  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry', 'AgentDirectToStore'], dataCollectionRuleProperties.kind)
+  contains(['Linux', 'Windows', 'All', 'PlatformTelemetry'], dataCollectionRuleProperties.kind)
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
       }
     : {},
   contains(
-      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry', 'AgentDirectToStore'],
+      ['Linux', 'Windows', 'All', 'Direct', 'WorkspaceTransforms', 'PlatformTelemetry'],
       dataCollectionRuleProperties.kind
     )
     ? {
@@ -217,7 +217,6 @@ type dataCollectionRulePropertiesType =
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
-  | agentDirectToStoreType
   | workspaceTransformsDcrPropertiesType
   | platformTelemetryDcrPropertiesType
 
@@ -336,24 +335,6 @@ type directDcrPropertiesType = {
 
   @description('Required. Declaration of custom streams used in this rule.')
   streamDeclarations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.streamDeclarations
-
-  @description('Optional. Description of the data collection rule.')
-  description: string?
-}
-
-@description('The type for the properties of the \'AgentDirectToStore\' data collection rule.')
-type agentDirectToStoreType = {
-  @description('Required. The platform type specifies the type of resources this rule can apply to.')
-  kind: 'AgentDirectToStore'
-
-  @description('Required. Specification of data sources that will be collected.')
-  dataSources: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataSources
-
-  @description('Required. The specification of data flows.')
-  dataFlows: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.dataFlows
-
-  @description('Required. Specification of destinations that can be used in data flows.')
-  destinations: resourceInput<'Microsoft.Insights/dataCollectionRules@2024-03-11'>.properties.destinations
 
   @description('Optional. Description of the data collection rule.')
   description: string?
