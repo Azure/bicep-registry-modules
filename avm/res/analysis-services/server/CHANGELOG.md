@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Update diagnostic implementation to not automatically enable all metrics / logs if either other one is specified.
+- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ### Breaking Changes
 
