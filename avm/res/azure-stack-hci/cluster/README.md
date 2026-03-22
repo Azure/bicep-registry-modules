@@ -62,15 +62,15 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
       customLocationName: 'ashclmin-location'
-      defaultGateway: '192.168.1.1'
+      defaultGateway: '172.20.0.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
-        '192.168.1.254'
+        '172.20.0.1'
       ]
       domainFqdn: 'hci.local'
       domainOUPath: '<domainOUPath>'
       enableStorageAutoIp: true
-      endingIPAddress: '192.168.1.65'
+      endingIPAddress: '172.20.0.65'
       keyVaultName: '<keyVaultName>'
       networkIntents: [
         {
@@ -129,7 +129,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           }
         }
       ]
-      startingIPAddress: '192.168.1.55'
+      startingIPAddress: '172.20.0.55'
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
@@ -176,15 +176,15 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
         "customLocationName": "ashclmin-location",
-        "defaultGateway": "192.168.1.1",
+        "defaultGateway": "172.20.0.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
-          "192.168.1.254"
+          "172.20.0.1"
         ],
         "domainFqdn": "hci.local",
         "domainOUPath": "<domainOUPath>",
         "enableStorageAutoIp": true,
-        "endingIPAddress": "192.168.1.65",
+        "endingIPAddress": "172.20.0.65",
         "keyVaultName": "<keyVaultName>",
         "networkIntents": [
           {
@@ -243,7 +243,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             }
           }
         ],
-        "startingIPAddress": "192.168.1.55",
+        "startingIPAddress": "172.20.0.55",
         "storageConnectivitySwitchless": false,
         "storageNetworks": [
           {
@@ -304,15 +304,15 @@ param deploymentSettings = {
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
   customLocationName: 'ashclmin-location'
-  defaultGateway: '192.168.1.1'
+  defaultGateway: '172.20.0.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [
-    '192.168.1.254'
+    '172.20.0.1'
   ]
   domainFqdn: 'hci.local'
   domainOUPath: '<domainOUPath>'
   enableStorageAutoIp: true
-  endingIPAddress: '192.168.1.65'
+  endingIPAddress: '172.20.0.65'
   keyVaultName: '<keyVaultName>'
   networkIntents: [
     {
@@ -371,7 +371,7 @@ param deploymentSettings = {
       }
     }
   ]
-  startingIPAddress: '192.168.1.55'
+  startingIPAddress: '172.20.0.55'
   storageConnectivitySwitchless: false
   storageNetworks: [
     {
@@ -422,16 +422,16 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
       customLocationName: 'ashclwaf-location'
-      defaultGateway: '192.168.1.1'
+      defaultGateway: '172.20.0.1'
       deploymentPrefix: '<deploymentPrefix>'
       dnsServers: [
-        '192.168.1.254'
+        '172.20.0.1'
       ]
       domainFqdn: 'hci.local'
       domainOUPath: '<domainOUPath>'
       driftControlEnforced: true
       enableStorageAutoIp: true
-      endingIPAddress: '192.168.1.65'
+      endingIPAddress: '172.20.0.65'
       keyVaultName: '<keyVaultName>'
       networkIntents: [
         {
@@ -493,7 +493,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       sideChannelMitigationEnforced: true
       smbClusterEncryption: true
       smbSigningEnforced: true
-      startingIPAddress: '192.168.1.55'
+      startingIPAddress: '172.20.0.55'
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
@@ -547,16 +547,16 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "clusterNodeNames": "<clusterNodeNames>",
         "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
         "customLocationName": "ashclwaf-location",
-        "defaultGateway": "192.168.1.1",
+        "defaultGateway": "172.20.0.1",
         "deploymentPrefix": "<deploymentPrefix>",
         "dnsServers": [
-          "192.168.1.254"
+          "172.20.0.1"
         ],
         "domainFqdn": "hci.local",
         "domainOUPath": "<domainOUPath>",
         "driftControlEnforced": true,
         "enableStorageAutoIp": true,
-        "endingIPAddress": "192.168.1.65",
+        "endingIPAddress": "172.20.0.65",
         "keyVaultName": "<keyVaultName>",
         "networkIntents": [
           {
@@ -618,7 +618,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "sideChannelMitigationEnforced": true,
         "smbClusterEncryption": true,
         "smbSigningEnforced": true,
-        "startingIPAddress": "192.168.1.55",
+        "startingIPAddress": "172.20.0.55",
         "storageConnectivitySwitchless": false,
         "storageNetworks": [
           {
@@ -688,16 +688,16 @@ param deploymentSettings = {
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
   customLocationName: 'ashclwaf-location'
-  defaultGateway: '192.168.1.1'
+  defaultGateway: '172.20.0.1'
   deploymentPrefix: '<deploymentPrefix>'
   dnsServers: [
-    '192.168.1.254'
+    '172.20.0.1'
   ]
   domainFqdn: 'hci.local'
   domainOUPath: '<domainOUPath>'
   driftControlEnforced: true
   enableStorageAutoIp: true
-  endingIPAddress: '192.168.1.65'
+  endingIPAddress: '172.20.0.65'
   keyVaultName: '<keyVaultName>'
   networkIntents: [
     {
@@ -759,7 +759,7 @@ param deploymentSettings = {
   sideChannelMitigationEnforced: true
   smbClusterEncryption: true
   smbSigningEnforced: true
-  startingIPAddress: '192.168.1.55'
+  startingIPAddress: '172.20.0.55'
   storageConnectivitySwitchless: false
   storageNetworks: [
     {
