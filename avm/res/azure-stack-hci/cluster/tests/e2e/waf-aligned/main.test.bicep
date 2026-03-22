@@ -89,13 +89,13 @@ module testDeployment '../../../main.bicep' = [
         customLocationName: '${namePrefix}${serviceShort}-location'
         clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
         clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-        defaultGateway: '192.168.1.1'
+        defaultGateway: '172.20.0.1'
         deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-        dnsServers: ['192.168.1.254']
+        dnsServers: ['172.20.0.1']
         domainFqdn: 'hci.local'
         domainOUPath: nestedDependencies.outputs.domainOUPath
-        startingIPAddress: '192.168.1.55'
-        endingIPAddress: '192.168.1.65'
+        startingIPAddress: '172.20.0.55'
+        endingIPAddress: '172.20.0.65'
         enableStorageAutoIp: true
         keyVaultName: nestedDependencies.outputs.keyVaultName
         networkIntents: [
