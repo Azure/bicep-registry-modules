@@ -205,3 +205,39 @@ $ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     }
 }
 log "IP change output: $ipChangeOutput"
+
+# change dynamically assigned FABRIC2 IP addresses to static IPs as required by validation
+log 'Changing dynamically assigned FABRIC2 IP addresses to static IPs on HCI nodes...'
+$ipChangeOutput2 = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    $dhcpIpConfig2 = Get-NetIPConfiguration -InterfaceAlias 'FABRIC2'
+    $prefixLength2 = Get-NetIPAddress -InterfaceAlias 'FABRIC2' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+
+    try {
+        If (!(Get-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'FABRIC2'..."
+        } Else {
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'FABRIC2'..."
+            Set-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Disabled
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+
+    try {
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -InterfaceAlias 'FABRIC2' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'FABRIC2'..."
+            New-NetIPAddress -InterfaceAlias 'FABRIC2' -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -AddressFamily IPv4 -PrefixLength $prefixLength2
+        } Else {
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'FABRIC2'..."
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+}
+log "IP change output (FABRIC2): $ipChangeOutput2"
