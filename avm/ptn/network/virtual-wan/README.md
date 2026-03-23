@@ -621,7 +621,7 @@ param tags = {
 
 ### Example 3: _Multiple hub deployment_
 
-This instance deploys a Virtual WAN with multiple Virtual Hubs.
+This instance deploys a Virtual WAN with multiple Virtual Hubs in different regions with heterogeneous gateway configurations.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiple-hubs]
 
@@ -646,10 +646,18 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           deployP2SVpnGateway: false
         }
         s2sVpnParameters: {
-          deployS2SVpnGateway: false
+          bgpSettings: {
+            asn: 65515
+          }
+          deployS2SVpnGateway: true
+          vpnGatewayName: 'dep-s2s-gw-nvwanmultihub'
+          vpnGatewayScaleUnit: 1
         }
         secureHubParameters: {
           deploySecureHub: false
+        }
+        tags: {
+          HubRole: 'BranchConnectivity'
         }
       }
       {
@@ -659,6 +667,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        hubRoutingPreference: 'ExpressRoute'
         p2sVpnParameters: {
           deployP2SVpnGateway: false
         }
@@ -667,6 +676,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         }
         secureHubParameters: {
           deploySecureHub: false
+        }
+        tags: {
+          HubRole: 'Transit'
         }
       }
     ]
@@ -704,10 +716,18 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "deployP2SVpnGateway": false
           },
           "s2sVpnParameters": {
-            "deployS2SVpnGateway": false
+            "bgpSettings": {
+              "asn": 65515
+            },
+            "deployS2SVpnGateway": true,
+            "vpnGatewayName": "dep-s2s-gw-nvwanmultihub",
+            "vpnGatewayScaleUnit": 1
           },
           "secureHubParameters": {
             "deploySecureHub": false
+          },
+          "tags": {
+            "HubRole": "BranchConnectivity"
           }
         },
         {
@@ -717,6 +737,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubAddressPrefix": "10.0.1.0/24",
           "hubLocation": "<hubLocation>",
           "hubName": "<hubName>",
+          "hubRoutingPreference": "ExpressRoute",
           "p2sVpnParameters": {
             "deployP2SVpnGateway": false
           },
@@ -725,6 +746,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           },
           "secureHubParameters": {
             "deploySecureHub": false
+          },
+          "tags": {
+            "HubRole": "Transit"
           }
         }
       ]
@@ -762,10 +786,18 @@ param virtualHubParameters = [
       deployP2SVpnGateway: false
     }
     s2sVpnParameters: {
-      deployS2SVpnGateway: false
+      bgpSettings: {
+        asn: 65515
+      }
+      deployS2SVpnGateway: true
+      vpnGatewayName: 'dep-s2s-gw-nvwanmultihub'
+      vpnGatewayScaleUnit: 1
     }
     secureHubParameters: {
       deploySecureHub: false
+    }
+    tags: {
+      HubRole: 'BranchConnectivity'
     }
   }
   {
@@ -775,6 +807,7 @@ param virtualHubParameters = [
     hubAddressPrefix: '10.0.1.0/24'
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
+    hubRoutingPreference: 'ExpressRoute'
     p2sVpnParameters: {
       deployP2SVpnGateway: false
     }
@@ -783,6 +816,9 @@ param virtualHubParameters = [
     }
     secureHubParameters: {
       deploySecureHub: false
+    }
+    tags: {
+      HubRole: 'Transit'
     }
   }
 ]
@@ -1202,17 +1238,41 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
         hubRoutingPreference: 'ExpressRoute'
+        hubVirtualNetworkConnections: [
+          {
+            enableInternetSecurity: true
+            name: 'dep-vnetconn-nvwanwaf'
+            remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+          }
+        ]
         p2sVpnParameters: {
-          connectionConfigurationsName: 'default'
           deployP2SVpnGateway: false
-          vpnClientAddressPoolAddressPrefixes: []
-          vpnGatewayName: 'unused'
         }
         s2sVpnParameters: {
           deployS2SVpnGateway: false
         }
         secureHubParameters: {
-          deploySecureHub: false
+          azureFirewallName: 'dep-fw-nvwanwaf'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          diagnosticSettings: [
+            {
+              metricCategories: [
+                {
+                  category: 'AllMetrics'
+                }
+              ]
+              name: 'waf-diag'
+              storageAccountResourceId: '<storageAccountResourceId>'
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
         }
         tags: {
           ResourceType: 'VirtualHub'
@@ -1270,17 +1330,41 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubLocation": "<hubLocation>",
           "hubName": "<hubName>",
           "hubRoutingPreference": "ExpressRoute",
+          "hubVirtualNetworkConnections": [
+            {
+              "enableInternetSecurity": true,
+              "name": "dep-vnetconn-nvwanwaf",
+              "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
+            }
+          ],
           "p2sVpnParameters": {
-            "connectionConfigurationsName": "default",
-            "deployP2SVpnGateway": false,
-            "vpnClientAddressPoolAddressPrefixes": [],
-            "vpnGatewayName": "unused"
+            "deployP2SVpnGateway": false
           },
           "s2sVpnParameters": {
             "deployS2SVpnGateway": false
           },
           "secureHubParameters": {
-            "deploySecureHub": false
+            "azureFirewallName": "dep-fw-nvwanwaf",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "diagnosticSettings": [
+              {
+                "metricCategories": [
+                  {
+                    "category": "AllMetrics"
+                  }
+                ],
+                "name": "waf-diag",
+                "storageAccountResourceId": "<storageAccountResourceId>",
+                "workspaceResourceId": "<workspaceResourceId>"
+              }
+            ],
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
           },
           "tags": {
             "ResourceType": "VirtualHub"
@@ -1342,17 +1426,41 @@ param virtualHubParameters = [
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
     hubRoutingPreference: 'ExpressRoute'
+    hubVirtualNetworkConnections: [
+      {
+        enableInternetSecurity: true
+        name: 'dep-vnetconn-nvwanwaf'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+      }
+    ]
     p2sVpnParameters: {
-      connectionConfigurationsName: 'default'
       deployP2SVpnGateway: false
-      vpnClientAddressPoolAddressPrefixes: []
-      vpnGatewayName: 'unused'
     }
     s2sVpnParameters: {
       deployS2SVpnGateway: false
     }
     secureHubParameters: {
-      deploySecureHub: false
+      azureFirewallName: 'dep-fw-nvwanwaf'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: 'waf-diag'
+          storageAccountResourceId: '<storageAccountResourceId>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
     }
     tags: {
       ResourceType: 'VirtualHub'
@@ -1566,7 +1674,7 @@ Properties of the ExpressRoute connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authorizationKey`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesauthorizationkey) | string | Authorization key for the connection. |
+| [`authorizationKey`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesauthorizationkey) | securestring | Authorization key for the connection. |
 | [`enableInternetSecurity`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesenableinternetsecurity) | bool | Enable internet security for the connection. |
 | [`enablePrivateLinkFastPath`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesenableprivatelinkfastpath) | bool | Enable private link fast path. |
 | [`expressRouteGatewayBypass`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesexpressroutegatewaybypass) | bool | Enable FastPath to vWan Firewall hub. |
@@ -1598,7 +1706,7 @@ Resource ID of the ExpressRoute circuit peering (e.g., /subscriptions/{subscript
 Authorization key for the connection.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.enableInternetSecurity`
 
@@ -1627,152 +1735,6 @@ Routing configuration for the connection.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`associatedRouteTable`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationassociatedroutetable) | object | The associated route table for this connection. |
-| [`propagatedRouteTables`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationpropagatedroutetables) | object | The propagated route tables for this connection. |
-| [`vnetRoutes`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutes) | object | The virtual network routes for this connection. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.associatedRouteTable`
-
-The associated route table for this connection.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationassociatedroutetableid) | string | The resource ID of the route table. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.associatedRouteTable.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.propagatedRouteTables`
-
-The propagated route tables for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ids`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationpropagatedroutetablesids) | array | The list of route table resource IDs to propagate to. |
-| [`labels`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationpropagatedroutetableslabels) | array | The list of labels to propagate to. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.propagatedRouteTables.ids`
-
-The list of route table resource IDs to propagate to.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationpropagatedroutetablesidsid) | string | The resource ID of the route table. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.propagatedRouteTables.ids.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.propagatedRouteTables.labels`
-
-The list of labels to propagate to.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes`
-
-The virtual network routes for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`staticRoutes`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutes) | array | The list of static routes. |
-| [`staticRoutesConfig`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutesconfig) | object | Static routes configuration. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutes`
-
-The list of static routes.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutesaddressprefixes) | array | The address prefixes for the static route. |
-| [`name`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutesname) | string | The name of the static route. |
-| [`nextHopIpAddress`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutesnexthopipaddress) | string | The next hop IP address for the static route. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutes.addressPrefixes`
-
-The address prefixes for the static route.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutes.name`
-
-The name of the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutes.nextHopIpAddress`
-
-The next hop IP address for the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutesConfig`
-
-Static routes configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`vnetLocalRouteOverrideCriteria`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionspropertiesroutingconfigurationvnetroutesstaticroutesconfigvnetlocalrouteoverridecriteria) | string | Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingConfiguration.vnetRoutes.staticRoutesConfig.vnetLocalRouteOverrideCriteria`
-
-Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Contains'
-    'Equal'
-  ]
-  ```
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.properties.routingWeight`
 
@@ -2455,7 +2417,7 @@ VPN connections for the VPN Gateway.
 | [`remoteVpnSiteResourceId`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsremotevpnsiteresourceid) | string | Resource ID of the remote VPN site. |
 | [`routingConfiguration`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfiguration) | object | Routing configuration for the connection. |
 | [`routingWeight`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingweight) | int | Routing weight for the connection. |
-| [`sharedKey`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionssharedkey) | string | Shared key for the connection. |
+| [`sharedKey`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionssharedkey) | securestring | Shared key for the connection. |
 | [`trafficSelectorPolicies`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionstrafficselectorpolicies) | array | Traffic selector policies for the connection. |
 | [`useLocalAzureIpAddress`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsuselocalazureipaddress) | bool | Use local Azure IP address. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
@@ -2518,152 +2480,6 @@ Routing configuration for the connection.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`associatedRouteTable`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationassociatedroutetable) | object | The associated route table for this connection. |
-| [`propagatedRouteTables`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationpropagatedroutetables) | object | The propagated route tables for this connection. |
-| [`vnetRoutes`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutes) | object | The virtual network routes for this connection. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.associatedRouteTable`
-
-The associated route table for this connection.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationassociatedroutetableid) | string | The resource ID of the route table. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.associatedRouteTable.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.propagatedRouteTables`
-
-The propagated route tables for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ids`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationpropagatedroutetablesids) | array | The list of route table resource IDs to propagate to. |
-| [`labels`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationpropagatedroutetableslabels) | array | The list of labels to propagate to. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.propagatedRouteTables.ids`
-
-The list of route table resource IDs to propagate to.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationpropagatedroutetablesidsid) | string | The resource ID of the route table. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.propagatedRouteTables.ids.id`
-
-The resource ID of the route table.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.propagatedRouteTables.labels`
-
-The list of labels to propagate to.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes`
-
-The virtual network routes for this connection.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`staticRoutes`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutes) | array | The list of static routes. |
-| [`staticRoutesConfig`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutesconfig) | object | Static routes configuration. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutes`
-
-The list of static routes.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutesaddressprefixes) | array | The address prefixes for the static route. |
-| [`name`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutesname) | string | The name of the static route. |
-| [`nextHopIpAddress`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutesnexthopipaddress) | string | The next hop IP address for the static route. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.addressPrefixes`
-
-The address prefixes for the static route.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.name`
-
-The name of the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.nextHopIpAddress`
-
-The next hop IP address for the static route.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig`
-
-Static routes configuration.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`vnetLocalRouteOverrideCriteria`](#parameter-virtualhubparameterss2svpnparametersvpnconnectionsroutingconfigurationvnetroutesstaticroutesconfigvnetlocalrouteoverridecriteria) | string | Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke. |
-
-### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig.vnetLocalRouteOverrideCriteria`
-
-Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Contains'
-    'Equal'
-  ]
-  ```
-
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingWeight`
 
 Routing weight for the connection.
@@ -2676,7 +2492,7 @@ Routing weight for the connection.
 Shared key for the connection.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.trafficSelectorPolicies`
 
@@ -3212,7 +3028,7 @@ Point-to-site VPN server configuration parameters for the Virtual WAN.
 | [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. Required if using RADIUS authentication. |
 | [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. Required if using RADIUS authentication. |
 | [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. Required if using RADIUS authentication. |
-| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. Required if using RADIUS authentication. |
+| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | securestring | RADIUS server secret. Required if using RADIUS authentication. |
 
 **Optional parameters**
 
@@ -3293,7 +3109,7 @@ List of RADIUS servers. Required if using RADIUS authentication.
 RADIUS server secret. Required if using RADIUS authentication.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
 
@@ -3603,11 +3419,11 @@ Tags to be applied to all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `deploymentSummary` | object | Required. Deployment summary with component counts. |
-| `resourceGroupName` | string | Required. The resource group where the resource is deployed. |
-| `virtualHubs` | array | Required. The array containing the Virtual Hub information with deployment status. |
-| `virtualWan` | object | Required. Object containing the Virtual WAN information. |
-| `vpnServerConfigurationResourceId` | string | Conditional. The resource ID of the VPN Server Configuration, if created. |
+| `deploymentSummary` | object | Deployment summary with component counts. |
+| `resourceGroupName` | string | The resource group where the resource is deployed. |
+| `virtualHubs` | array | The array containing the Virtual Hub information with deployment status. |
+| `virtualWan` | object | Object containing the Virtual WAN information. |
+| `vpnServerConfigurationResourceId` | string | The resource ID of the VPN Server Configuration, if created. |
 
 ## Cross-referenced modules
 
