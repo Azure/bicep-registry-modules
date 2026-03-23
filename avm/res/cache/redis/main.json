@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13278886072797099579"
+      "templateHash": "11160681384452178290"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -988,17 +988,17 @@
     "availabilityZones": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "int"
       },
       "defaultValue": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ],
       "allowedValues": [
-        "1",
-        "2",
-        "3"
+        1,
+        2,
+        3
       ],
       "metadata": {
         "description": "Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed."
