@@ -40,7 +40,7 @@ param hciResourceProviderObjectId string = ''
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -72,9 +72,11 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   }
 }
 
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}-${iteration}'
+// Note: Azure Stack HCI deploymentSettings does not support idempotent re-deployment.
+// The API returns 'HciCluster is already registered, Unregister cluster to start re-deployment' on repeated deploys.
+// Therefore, the standard 'idem' iteration is skipped for this module.
+module testDeployment '../../../main.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
     scope: resourceGroup
     params: {
       name: nestedDependencies.outputs.clusterName
@@ -180,5 +182,4 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-  }
-]
+}
