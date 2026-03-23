@@ -51,6 +51,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 resource profile 'Microsoft.Cdn/profiles@2025-06-01' existing = {
   name: profileName
 }
@@ -85,6 +87,7 @@ module originGroup_origins 'origin/main.bicep' = [
       priority: origin.?priority
       weight: origin.?weight
       sharedPrivateLinkResource: origin.?sharedPrivateLinkResource
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
