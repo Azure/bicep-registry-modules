@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Multiple hub deployment'
-metadata description = 'This instance deploys a Virtual WAN with multiple Virtual Hubs.'
+metadata description = 'This instance deploys a Virtual WAN with multiple Virtual Hubs in different regions with heterogeneous gateway configurations.'
 
 // ========== //
 // Parameters //
@@ -25,7 +25,6 @@ param virtualHub1Location string = resourceLocation
 
 @description('Optional. The location for the second virtual hub. Defaults to westus2.')
 param virtualHub2Location string = 'westus2'
-
 
 // ============ //
 // Dependencies //
@@ -61,7 +60,12 @@ module testDeployment '../../../main.bicep' = [
             deployP2SVpnGateway: false
           }
           s2sVpnParameters: {
-            deployS2SVpnGateway: false
+            deployS2SVpnGateway: true
+            vpnGatewayName: 'dep-${namePrefix}-s2s-gw-${serviceShort}'
+            vpnGatewayScaleUnit: 1
+            bgpSettings: {
+              asn: 65515
+            }
           }
           expressRouteParameters: {
             deployExpressRouteGateway: false
@@ -69,11 +73,15 @@ module testDeployment '../../../main.bicep' = [
           secureHubParameters: {
             deploySecureHub: false
           }
+          tags: {
+            HubRole: 'BranchConnectivity'
+          }
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
           hubLocation: virtualHub2Location
           hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
+          hubRoutingPreference: 'ExpressRoute'
           p2sVpnParameters: {
             deployP2SVpnGateway: false
           }
@@ -85,6 +93,9 @@ module testDeployment '../../../main.bicep' = [
           }
           secureHubParameters: {
             deploySecureHub: false
+          }
+          tags: {
+            HubRole: 'Transit'
           }
         }
       ]

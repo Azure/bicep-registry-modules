@@ -31,6 +31,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    azureFirewallPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -60,11 +73,15 @@ module testDeployment '../../../main.bicep' = [
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           allowBranchToBranchTraffic: false
           hubRoutingPreference: 'ExpressRoute'
+          hubVirtualNetworkConnections: [
+            {
+              name: 'dep-${namePrefix}-vnetconn-${serviceShort}'
+              remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
+              enableInternetSecurity: true
+            }
+          ]
           p2sVpnParameters: {
             deployP2SVpnGateway: false
-            connectionConfigurationsName: 'default'
-            vpnGatewayName: 'unused'
-            vpnClientAddressPoolAddressPrefixes: []
           }
           s2sVpnParameters: {
             deployS2SVpnGateway: false
@@ -73,7 +90,27 @@ module testDeployment '../../../main.bicep' = [
             deployExpressRouteGateway: false
           }
           secureHubParameters: {
-            deploySecureHub: false
+            deploySecureHub: true
+            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            azureFirewallName: 'dep-${namePrefix}-fw-${serviceShort}'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+            routingIntent: {
+              internetToFirewall: true
+              privateToFirewall: true
+            }
+            diagnosticSettings: [
+              {
+                name: 'waf-diag'
+                storageAccountResourceId: nestedDependencies.outputs.storageAccountId
+                workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceId
+                metricCategories: [
+                  {
+                    category: 'AllMetrics'
+                  }
+                ]
+              }
+            ]
           }
           tags: {
             ResourceType: 'VirtualHub'
