@@ -25,7 +25,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/ipGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_ipgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/ipGroups)</li></ul> |
+| `Microsoft.Network/ipGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_ipgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/ipGroups)</li></ul> |
 
 ## Usage examples
 
@@ -54,6 +54,9 @@ You can find the full example and the setup of its dependencies in the deploymen
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   params: {
     // Required parameters
+    ipAddresses: [
+      '10.0.0.1'
+    ]
     name: 'nigmin001'
     // Non-required parameters
     location: '<location>'
@@ -74,6 +77,11 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "ipAddresses": {
+      "value": [
+        "10.0.0.1"
+      ]
+    },
     "name": {
       "value": "nigmin001"
     },
@@ -96,6 +104,9 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 using 'br/public:avm/res/network/ip-group:<version>'
 
 // Required parameters
+param ipAddresses = [
+  '10.0.0.1'
+]
 param name = 'nigmin001'
 // Non-required parameters
 param location = '<location>'
@@ -119,12 +130,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   params: {
     // Required parameters
-    name: 'nigmax001'
-    // Non-required parameters
     ipAddresses: [
       '10.0.0.1'
       '10.0.0.2'
     ]
+    name: 'nigmax001'
+    // Non-required parameters
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -171,16 +182,16 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nigmax001"
-    },
-    // Non-required parameters
     "ipAddresses": {
       "value": [
         "10.0.0.1",
         "10.0.0.2"
       ]
     },
+    "name": {
+      "value": "nigmax001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -233,12 +244,12 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 using 'br/public:avm/res/network/ip-group:<version>'
 
 // Required parameters
-param name = 'nigmax001'
-// Non-required parameters
 param ipAddresses = [
   '10.0.0.1'
   '10.0.0.2'
 ]
+param name = 'nigmax001'
+// Non-required parameters
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -288,12 +299,12 @@ You can find the full example and the setup of its dependencies in the deploymen
 module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   params: {
     // Required parameters
-    name: 'nigwaf001'
-    // Non-required parameters
     ipAddresses: [
       '10.0.0.1'
       '10.0.0.2'
     ]
+    name: 'nigwaf001'
+    // Non-required parameters
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -317,16 +328,16 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nigwaf001"
-    },
-    // Non-required parameters
     "ipAddresses": {
       "value": [
         "10.0.0.1",
         "10.0.0.2"
       ]
     },
+    "name": {
+      "value": "nigwaf001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -352,12 +363,12 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
 using 'br/public:avm/res/network/ip-group:<version>'
 
 // Required parameters
-param name = 'nigwaf001'
-// Non-required parameters
 param ipAddresses = [
   '10.0.0.1'
   '10.0.0.2'
 ]
+param name = 'nigwaf001'
+// Non-required parameters
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
@@ -375,6 +386,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`ipAddresses`](#parameter-ipaddresses) | array | IpAddresses/IpAddressPrefixes in the IP Group resource. |
 | [`name`](#parameter-name) | string | The name of the IP Group. |
 
 **Optional parameters**
@@ -382,11 +394,17 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipAddresses`](#parameter-ipaddresses) | array | IpAddresses/IpAddressPrefixes in the IP Group resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
+
+### Parameter: `ipAddresses`
+
+IpAddresses/IpAddressPrefixes in the IP Group resource.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -402,14 +420,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `ipAddresses`
-
-IpAddresses/IpAddressPrefixes in the IP Group resource.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -589,7 +599,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
