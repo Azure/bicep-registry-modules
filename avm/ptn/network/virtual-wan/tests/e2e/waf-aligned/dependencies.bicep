@@ -24,9 +24,6 @@ resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
       tier: 'Standard'
     }
     threatIntelMode: 'Deny'
-    intrusionDetection: {
-      mode: 'Alert'
-    }
   }
 }
 
