@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "17087951072540091395"
+      "templateHash": "1395480145401928611"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
@@ -1004,6 +1004,18 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Routing intent for the Azure Firewall."
+              }
+            },
+            "availabilityZones": {
+              "type": "array",
+              "allowedValues": [
+                1,
+                2,
+                3
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Zone numbers e.g. 1,2,3."
               }
             },
             "diagnosticSettings": {
@@ -2891,6 +2903,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "availabilityZones": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'availabilityZones')]"
           },
           "diagnosticSettings": {
             "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'diagnosticSettings')]"

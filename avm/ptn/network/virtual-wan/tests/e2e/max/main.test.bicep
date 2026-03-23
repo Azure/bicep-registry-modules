@@ -151,6 +151,7 @@ module testDeployment '../../../main.bicep' = [
             azureFirewallName: 'dep-${namePrefix}-azfw-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
+            availabilityZones: []
             routingIntent: {
               internetToFirewall: true
               privateToFirewall: true

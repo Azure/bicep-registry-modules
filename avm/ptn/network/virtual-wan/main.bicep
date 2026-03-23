@@ -114,6 +114,7 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
       //managementIPAddressObject: config.hub.?secureHubParameters.?managementIPAddressObject
       //managementIPResourceID: config.hub.?secureHubParameters.?managementIPResourceID
       enableTelemetry: enableTelemetry
+      availabilityZones: config.hub.?secureHubParameters.?availabilityZones
       diagnosticSettings: config.hub.?secureHubParameters.?diagnosticSettings
       tags: config.hubTags
       lock: computedLock
@@ -740,6 +741,9 @@ type virtualHubParameterType = {
     @description('Optional. Resource ID of the management public IP address.')
     managementIPResourceID: string?
     */
+
+    @description('Optional. Zone numbers e.g. 1,2,3.')
+    availabilityZones: (1 | 2 | 3)[]?
 
     @description('Optional. Diagnostic settings for the Azure Firewall in the Secure Hub.')
     diagnosticSettings: diagnosticSettingFullType[]?

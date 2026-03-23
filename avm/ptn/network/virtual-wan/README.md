@@ -278,6 +278,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           vpnGatewayScaleUnit: 1
         }
         secureHubParameters: {
+          availabilityZones: []
           azureFirewallName: 'dep-azfw-nvwanmax'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
@@ -417,6 +418,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "vpnGatewayScaleUnit": 1
           },
           "secureHubParameters": {
+            "availabilityZones": [],
             "azureFirewallName": "dep-azfw-nvwanmax",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
@@ -558,6 +560,7 @@ param virtualHubParameters = [
       vpnGatewayScaleUnit: 1
     }
     secureHubParameters: {
+      availabilityZones: []
       azureFirewallName: 'dep-azfw-nvwanmax'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
@@ -1252,6 +1255,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           deployS2SVpnGateway: false
         }
         secureHubParameters: {
+          availabilityZones: []
           azureFirewallName: 'dep-fw-nvwanwaf'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
@@ -1344,6 +1348,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "deployS2SVpnGateway": false
           },
           "secureHubParameters": {
+            "availabilityZones": [],
             "azureFirewallName": "dep-fw-nvwanwaf",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
@@ -1440,6 +1445,7 @@ param virtualHubParameters = [
       deployS2SVpnGateway: false
     }
     secureHubParameters: {
+      availabilityZones: []
       azureFirewallName: 'dep-fw-nvwanwaf'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
@@ -2569,6 +2575,7 @@ Secure Hub parameters for the Virtual Hub.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurationResourceIds`](#parameter-virtualhubparameterssecurehubparametersadditionalpublicipconfigurationresourceids) | array | Additional public IP configuration resource IDs. |
+| [`availabilityZones`](#parameter-virtualhubparameterssecurehubparametersavailabilityzones) | array | Zone numbers e.g. 1,2,3. |
 | [`diagnosticSettings`](#parameter-virtualhubparameterssecurehubparametersdiagnosticsettings) | array | Diagnostic settings for the Azure Firewall in the Secure Hub. |
 | [`firewallPolicyResourceId`](#parameter-virtualhubparameterssecurehubparametersfirewallpolicyresourceid) | string | Resource ID of the firewall policy. |
 | [`publicIPAddressObject`](#parameter-virtualhubparameterssecurehubparameterspublicipaddressobject) | object | Public IP address object for the Azure Firewall. |
@@ -2619,6 +2626,21 @@ Additional public IP configuration resource IDs.
 
 - Required: No
 - Type: array
+
+### Parameter: `virtualHubParameters.secureHubParameters.availabilityZones`
+
+Zone numbers e.g. 1,2,3.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `virtualHubParameters.secureHubParameters.diagnosticSettings`
 
