@@ -12,7 +12,7 @@ param virtualWanParameters virtualWanParameterType
 @description('Required. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType[]
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
 param lock lockType?
 
@@ -52,7 +52,6 @@ var hubConfigurations = [
   }
 ]
 
-#disable-next-line BCP081
 module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.3' = {
   name: '${uniqueString(deployment().name, location)}-${virtualWanParameters.virtualWanName}'
   params: {
@@ -69,7 +68,6 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.4.3' = {
   }
 }
 
-#disable-next-line BCP081
 module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.3' = [
   for config in hubConfigurations: {
     name: '${uniqueString(deployment().name, location)}-${config.hub.hubName}'
@@ -272,18 +270,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 // Outputs      //
 // ============ //
 
-@description('Required. The resource group where the resource is deployed.')
+@description('The resource group where the resource is deployed.')
 output resourceGroupName string = resourceGroup().name
 
-@description('Required. Object containing the Virtual WAN information.')
+@description('Object containing the Virtual WAN information.')
 output virtualWan object = {
   name: virtualWan.outputs.name
   resourceId: virtualWan.outputs.resourceId
   resourceGroupName: virtualWan.outputs.resourceGroupName
 }
 
-@description('Required. The array containing the Virtual Hub information with deployment status.')
+@description('The array containing the Virtual Hub information with deployment status.')
 output virtualHubs array = [
+  #disable-next-line outputs-should-not-contain-secrets // hubConfigurations references @secure() authorizationKey/sharedKey but this output only exposes resource IDs and deployment flags
   for config in hubConfigurations: {
     name: virtualHubModule[config.index].outputs.name
     resourceId: virtualHubModule[config.index].outputs.resourceId
@@ -298,21 +297,27 @@ output virtualHubs array = [
   }
 ]
 
-@description('Conditional. The resource ID of the VPN Server Configuration, if created.')
+@description('The resource ID of the VPN Server Configuration, if created.')
 output vpnServerConfigurationResourceId string = createP2sVpnServerConfig
   ? vpnServerConfiguration!.outputs.resourceId
   : ''
 
-@description('Required. Deployment summary with component counts.')
+@description('Deployment summary with component counts.')
+#disable-next-line outputs-should-not-contain-secrets // hubConfigurations references @secure() authorizationKey/sharedKey but this output only exposes counts and flags
 output deploymentSummary object = {
   virtualWanName: virtualWan.outputs.name
   virtualWanType: virtualWanParameters.?type ?? 'Standard'
+  #disable-next-line outputs-should-not-contain-secrets // false positive - only computing length, not exposing secrets
   totalHubs: length(virtualHubParameters ?? [])
   p2sVpnServerConfigured: createP2sVpnServerConfig
   componentCounts: {
+    #disable-next-line outputs-should-not-contain-secrets // false positive - only computing count, not exposing secrets
     secureHubs: length(filter(hubConfigurations, config => config.deploySecureHub))
+    #disable-next-line outputs-should-not-contain-secrets // false positive - only computing count, not exposing secrets
     p2sGateways: length(filter(hubConfigurations, config => config.deployP2sGateway))
+    #disable-next-line outputs-should-not-contain-secrets // false positive - only computing count, not exposing secrets
     s2sGateways: length(filter(hubConfigurations, config => config.deployS2sGateway))
+    #disable-next-line outputs-should-not-contain-secrets // false positive - only computing count, not exposing secrets
     expressRouteGateways: length(filter(hubConfigurations, config => config.deployExpressRoute))
   }
 }
@@ -327,10 +332,7 @@ import { vnetRoutesStaticRoutesType } from 'br/public:avm/res/network/p2s-vpn-ga
 import { hubVirtualNetworkConnectionType, routingIntentType, hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.3'
 
 @description('Imports the full diagnostic setting type from the AVM common types module.')
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-
-@description('Imports the routing configuration type from the VPN Gateway module.')
-import { routingConfigurationType } from 'br/public:avm/res/network/vpn-gateway:0.2.2'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 type virtualWanParameterType = {
   @description('Required. The name of the Virtual WAN.')
@@ -375,6 +377,7 @@ type virtualWanParameterType = {
     radiusServerRootCertificates: array?
 
     @description('Conditional. RADIUS server secret. Required if using RADIUS authentication.')
+    @secure()
     radiusServerSecret: string?
 
     @description('Conditional. List of RADIUS servers. Required if using RADIUS authentication.')
@@ -586,12 +589,13 @@ type virtualHubParameterType = {
       enableRateLimiting: bool?
 
       @description('Optional. Routing configuration for the connection.')
-      routingConfiguration: routingConfigurationType?
+      routingConfiguration: resourceInput<'Microsoft.Network/vpnGateways/vpnConnections@2025-01-01'>.properties.routingConfiguration?
 
       @description('Optional. Routing weight for the connection.')
       routingWeight: int?
 
       @description('Optional. Shared key for the connection.')
+      @secure()
       sharedKey: string?
 
       @description('Optional. Use local Azure IP address.')
@@ -645,6 +649,7 @@ type virtualHubParameterType = {
         }
 
         @description('Optional. Authorization key for the connection.')
+        @secure()
         authorizationKey: string?
 
         @description('Optional. Routing weight for the connection (0-32000).')
@@ -660,7 +665,7 @@ type virtualHubParameterType = {
         enablePrivateLinkFastPath: bool?
 
         @description('Optional. Routing configuration for the connection.')
-        routingConfiguration: routingConfigurationType?
+        routingConfiguration: resourceInput<'Microsoft.Network/expressRouteGateways/expressRouteConnections@2025-01-01'>.properties.routingConfiguration?
       }
     }[]?
   }?
