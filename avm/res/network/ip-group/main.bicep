@@ -8,8 +8,9 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. IpAddresses/IpAddressPrefixes in the IP Group resource.')
-param ipAddresses array = []
+@description('Required. IpAddresses/IpAddressPrefixes in the IP Group resource.')
+@minLength(1)
+param ipAddresses array
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')

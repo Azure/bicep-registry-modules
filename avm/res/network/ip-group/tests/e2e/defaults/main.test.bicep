@@ -41,5 +41,8 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: resourceLocation
+    ipAddresses: [
+      '10.0.0.1'
+    ]
   }
 }
