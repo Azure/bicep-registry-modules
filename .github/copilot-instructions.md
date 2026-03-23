@@ -10,9 +10,9 @@ Azure Verified Modules (AVM) are pre-built, tested, and validated Bicep modules 
 
 This repository contains **Azure Verified Modules (AVM)** for Bicep - the official Microsoft standard for reusable Azure infrastructure modules. The codebase follows strict AVM specifications and is organized into three main module types:
 
-- **`avm/res/`** - Resource modules (individual Azure resources)
-- **`avm/ptn/`** - Pattern modules (multi-resource solutions)
-- **`avm/utl/`** - Utility modules (shared types and functions)
+- **`avm/res/`** - Resource modules (individual Azure resources) - [Resource module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv)
+- **`avm/ptn/`** - Pattern modules (multi-resource solutions) - [Pattern module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv)
+- **`avm/utl/`** - Utility modules (shared types and functions) - [Utility module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv)
 
 ## Critical Compliance Requirements
 
@@ -20,10 +20,6 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
 For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
-
-### Running local validation tests
-
-**⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories and any of the files in the `./avm/**` folder are changed, the following local validation tests MUST be executed before any pull request is created or updated: `./utilities/tools/Test-ModuleLocally.ps1`. **Failure to run these tests will cause PR validation failures and prevent successful merges.** Do not run deployment tests unless it is asked for by the user or other instructions.
 
 ### Updating README.md Documentation
 
@@ -87,6 +83,35 @@ You have exactly these two options (do not use any other method or tool to do th
 - `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
+
+## Running PowerShell Scripts
+
+**🛑 NEVER use the `&` (call) operator to invoke PowerShell scripts.** The `&` operator loads and invokes a script in a single step, which is not permitted.
+
+Instead, always use the **dot-source** (`. `) approach:
+
+1. **Dot-source the script** to load its functions into the current session:
+
+   ```powershell
+   . .\utilities\tools\Set-AVMModule.ps1
+   ```
+
+2. **Call the function by name** with any required parameters:
+
+   ```powershell
+   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network' -Recurse
+   ```
+
+> [!IMPORTANT]
+> - **Correct** (two-step, dot-source then call):
+>   ```powershell
+>   . .\utilities\tools\Set-AVMModule.ps1
+>   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+> - **Wrong** (single-step `&` invocation — **NEVER** do this):
+>   ```powershell
+>   & .\utilities\tools\Set-AVMModule.ps1 -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
 
 ## Quality Assurance and Troubleshooting
 
