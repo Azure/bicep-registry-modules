@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "14851224651264049352"
+      "templateHash": "11354323423619918567"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group."
@@ -158,7 +158,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Cdn/profiles/originGroups/origins@2025-04-15#properties/properties/properties/sharedPrivateLinkResource"
+              "source": "Microsoft.Cdn/profiles/originGroups/origins@2025-06-01#properties/properties/properties/sharedPrivateLinkResource"
             },
             "description": "Optional. The properties of the private link resource for private origin."
           },
@@ -188,7 +188,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/healthProbeSettings"
+          "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/healthProbeSettings"
         },
         "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
       },
@@ -198,10 +198,20 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/loadBalancingSettings"
+          "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/loadBalancingSettings"
         },
         "description": "Required. Load balancing settings for a backend pool."
       }
+    },
+    "authentication": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/authentication"
+        },
+        "description": "Optional. Settings for Origin Authentication."
+      },
+      "nullable": true
     },
     "sessionAffinityState": {
       "type": "string",
@@ -262,14 +272,15 @@
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('profileName')]"
     },
     "originGroup": {
       "type": "Microsoft.Cdn/profiles/originGroups",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
+        "authentication": "[parameters('authentication')]",
         "healthProbeSettings": "[parameters('healthProbeSettings')]",
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
@@ -514,7 +525,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('profile', '2025-04-15', 'full').location]"
+      "value": "[reference('profile', '2025-06-01', 'full').location]"
     }
   }
 }

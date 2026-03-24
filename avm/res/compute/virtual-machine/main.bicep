@@ -562,7 +562,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         : null
     }
     storageProfile: {
-      #disable-next-line BCP321
       imageReference: imageReference
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
