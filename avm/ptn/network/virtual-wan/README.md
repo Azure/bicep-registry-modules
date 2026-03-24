@@ -3442,9 +3442,11 @@ Tags to be applied to all resources.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `deploymentSummary` | object | Deployment summary with component counts. |
+| `location` | string | The location of the Virtual WAN. |
+| `name` | string | The name of the Virtual WAN. |
 | `resourceGroupName` | string | The resource group where the resource is deployed. |
+| `resourceId` | string | The resource ID of the Virtual WAN. |
 | `virtualHubs` | array | The array containing the Virtual Hub information with deployment status. |
-| `virtualWan` | object | Object containing the Virtual WAN information. |
 | `vpnServerConfigurationResourceId` | string | The resource ID of the VPN Server Configuration, if created. |
 
 ## Cross-referenced modules

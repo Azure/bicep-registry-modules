@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1395480145401928611"
+      "templateHash": "8495377656034110111"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
@@ -7253,23 +7253,33 @@
     }
   },
   "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Virtual WAN."
+      },
+      "value": "[reference('virtualWan').outputs.resourceId.value]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Virtual WAN."
+      },
+      "value": "[reference('virtualWan').outputs.name.value]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Virtual WAN."
+      },
+      "value": "[reference('virtualWan').outputs.location.value]"
+    },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The resource group where the resource is deployed."
       },
       "value": "[resourceGroup().name]"
-    },
-    "virtualWan": {
-      "type": "object",
-      "metadata": {
-        "description": "Object containing the Virtual WAN information."
-      },
-      "value": {
-        "name": "[reference('virtualWan').outputs.name.value]",
-        "resourceId": "[reference('virtualWan').outputs.resourceId.value]",
-        "resourceGroupName": "[reference('virtualWan').outputs.resourceGroupName.value]"
-      }
     },
     "virtualHubs": {
       "type": "array",

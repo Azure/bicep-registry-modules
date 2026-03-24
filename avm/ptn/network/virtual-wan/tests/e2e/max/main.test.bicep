@@ -188,7 +188,7 @@ module testVpnSite 'br/public:avm/res/network/vpn-site:0.4.0' = {
   scope: resourceGroup
   params: {
     name: 'dep-${namePrefix}-vpnSite-${serviceShort}'
-    virtualWanResourceId: testDeployment[0].outputs.virtualWan.resourceId
+    virtualWanResourceId: testDeployment[0].outputs.resourceId
     vpnSiteLinks: [
       {
         name: '${namePrefix}-vSite-${serviceShort}'

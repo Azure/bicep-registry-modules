@@ -271,15 +271,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 // Outputs      //
 // ============ //
 
+@description('The resource ID of the Virtual WAN.')
+output resourceId string = virtualWan.outputs.resourceId
+
+@description('The name of the Virtual WAN.')
+output name string = virtualWan.outputs.name
+
+@description('The location of the Virtual WAN.')
+output location string = virtualWan.outputs.location
+
 @description('The resource group where the resource is deployed.')
 output resourceGroupName string = resourceGroup().name
-
-@description('Object containing the Virtual WAN information.')
-output virtualWan object = {
-  name: virtualWan.outputs.name
-  resourceId: virtualWan.outputs.resourceId
-  resourceGroupName: virtualWan.outputs.resourceGroupName
-}
 
 @description('The array containing the Virtual Hub information with deployment status.')
 output virtualHubs array = [

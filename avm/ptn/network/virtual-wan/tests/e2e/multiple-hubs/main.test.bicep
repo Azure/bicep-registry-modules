@@ -23,8 +23,9 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. The location for the first virtual hub. Defaults to the main resource location.')
 param virtualHub1Location string = resourceLocation
 
-@description('Optional. The location for the second virtual hub. Defaults to westus2.')
-param virtualHub2Location string = 'westus2'
+// Note, we enforce the second hub's location to test multi-region hub deployments
+#disable-next-line no-hardcoded-location
+var enforcedLocation2 = 'westus2'
 
 // ============ //
 // Dependencies //
@@ -79,8 +80,8 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
-          hubLocation: virtualHub2Location
-          hubName: 'dep-${namePrefix}-hub-${virtualHub2Location}-${serviceShort}'
+          hubLocation: enforcedLocation2
+          hubName: 'dep-${namePrefix}-hub-${enforcedLocation2}-${serviceShort}'
           hubRoutingPreference: 'ExpressRoute'
           p2sVpnParameters: {
             deployP2SVpnGateway: false
