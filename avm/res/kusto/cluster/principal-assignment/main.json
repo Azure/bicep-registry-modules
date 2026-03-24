@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "4499566946564443095"
+      "templateHash": "15516949031513950325"
     },
     "name": "Kusto Cluster Principal Assignments",
     "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -59,7 +59,7 @@
     {
       "type": "Microsoft.Kusto/clusters/principalAssignments",
       "apiVersion": "2024-04-13",
-      "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('principalId'))]",
+      "name": "[format('{0}/{1}', parameters('kustoClusterName'), guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId')))]",
       "properties": {
         "principalId": "[parameters('principalId')]",
         "principalType": "[parameters('principalType')]",
@@ -74,14 +74,14 @@
       "metadata": {
         "description": "The name of the deployed Kusto Cluster Principal Assignment."
       },
-      "value": "[parameters('principalId')]"
+      "value": "[guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource id of the deployed Kusto Cluster Principal Assignment."
       },
-      "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), parameters('principalId'))]"
+      "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId')))]"
     },
     "resourceGroupName": {
       "type": "string",

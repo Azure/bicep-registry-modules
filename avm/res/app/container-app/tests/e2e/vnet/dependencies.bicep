@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Environment to create.')
 param managedEnvironmentName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-07-01' = {
   name: managedEnvironmentName
   location: location
   properties: {
@@ -15,7 +15,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-previe
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: '${managedEnvironmentName}-vnet'
   location: location
   properties: {
@@ -27,11 +27,19 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-10-01' = {
   }
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-10-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2025-05-01' = {
   name: 'default'
   parent: vnet
   properties: {
     addressPrefix: '10.0.0.0/23'
+    delegations: [
+      {
+        name: 'Microsoft.App.environments'
+        properties: {
+          serviceName: 'Microsoft.App/environments'
+        }
+      }
+    ]
   }
 }
 

@@ -25,6 +25,7 @@
     "avm/res/cdn/profile/afd-endpoint/route",
     "avm/res/cdn/profile/custom-domain",
     "avm/res/cdn/profile/origin-group",
+    "avm/res/cdn/profile/origin-group/origin",
     "avm/res/cdn/profile/rule-set",
     "avm/res/cdn/profile/security-policy",
     "avm/res/consumption/budget/mg-scope",
