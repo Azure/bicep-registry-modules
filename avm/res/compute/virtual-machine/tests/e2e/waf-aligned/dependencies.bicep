@@ -280,7 +280,7 @@ resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignmen
 }
 
 // Wait for backup management service KV role assignment to propagate before VM backup registration
-resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (!empty(backupManagementServiceApplicationObjectId)) {
+resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   dependsOn: [backupServiceKeyVaultPermissions]
   name: waitDeploymentScriptName
   location: location
