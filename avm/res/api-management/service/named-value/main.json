@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "466210836797381741"
+      "templateHash": "2224048089254766558"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -32,7 +32,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/namedValues@2024-05-01#properties/properties/properties/keyVault"
         },
-        "description": "Optional. KeyVault location details of the namedValue."
+        "description": "Optional. Key Vault location details of the namedValue."
       },
       "nullable": true
     },

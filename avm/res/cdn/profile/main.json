@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1525318251351651301"
+      "templateHash": "18332972276882672820"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -50,11 +50,21 @@
             "description": "Required. The name of the origin group."
           }
         },
+        "authentication": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/authentication"
+            },
+            "description": "Optional. Settings for Origin Authentication."
+          },
+          "nullable": true
+        },
         "healthProbeSettings": {
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/healthProbeSettings"
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/healthProbeSettings"
             },
             "description": "Optional. Health probe settings to the origin that is used to determine the health of the origin."
           },
@@ -64,7 +74,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Cdn/profiles/originGroups@2025-04-15#properties/properties/properties/loadBalancingSettings"
+              "source": "Microsoft.Cdn/profiles/originGroups@2025-06-01#properties/properties/properties/loadBalancingSettings"
             },
             "description": "Required. Load balancing settings for a backend pool."
           }
@@ -2082,6 +2092,9 @@
           "profileName": {
             "value": "[parameters('name')]"
           },
+          "authentication": {
+            "value": "[tryGet(coalesce(parameters('originGroups'), createArray())[copyIndex()], 'authentication')]"
+          },
           "loadBalancingSettings": {
             "value": "[coalesce(parameters('originGroups'), createArray())[copyIndex()].loadBalancingSettings]"
           },
@@ -2106,7 +2119,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "11354323423619918567"
+              "templateHash": "5061933363497485536"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2348,6 +2361,9 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -2434,6 +2450,9 @@
                   },
                   "sharedPrivateLinkResource": {
                     "value": "[tryGet(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2444,7 +2463,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.41.2.15936",
-                      "templateHash": "9365226509800420471"
+                      "templateHash": "5162864735965281576"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2536,6 +2555,13 @@
                       "metadata": {
                         "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -2544,6 +2570,26 @@
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.cdn-profile-origingroup-origin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "profile": {
                       "existing": true,

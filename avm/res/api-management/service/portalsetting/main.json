@@ -77,21 +77,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the API management service portal setting."
+        "description": "The resource ID of the API Management service portal setting."
       },
       "value": "[resourceId('Microsoft.ApiManagement/service/portalsettings', parameters('apiManagementServiceName'), parameters('name'))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the API management service portal setting."
+        "description": "The name of the API Management service portal setting."
       },
       "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the API management service portal setting was deployed into."
+        "description": "The resource group the API Management service portal setting was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

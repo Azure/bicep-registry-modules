@@ -85,9 +85,9 @@ Enable/Disable usage telemetry for module.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the API management service portal setting. |
-| `resourceGroupName` | string | The resource group the API management service portal setting was deployed into. |
-| `resourceId` | string | The resource ID of the API management service portal setting. |
+| `name` | string | The name of the API Management service portal setting. |
+| `resourceGroupName` | string | The resource group the API Management service portal setting was deployed into. |
+| `resourceId` | string | The resource ID of the API Management service portal setting. |
 
 ## Data Collection
 

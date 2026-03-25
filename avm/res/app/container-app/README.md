@@ -1033,7 +1033,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: []
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -1112,7 +1111,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [],
           "metricCategories": [
             {
               "category": "AllMetrics"
@@ -1191,7 +1189,6 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: []
     metricCategories: [
       {
         category: 'AllMetrics'

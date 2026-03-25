@@ -269,6 +269,7 @@ module profile_originGroups 'origin-group/main.bicep' = [
       enableTelemetry: enableReferencedModulesTelemetry
       name: origingroup.name
       profileName: profile.name
+      authentication: origingroup.?authentication
       loadBalancingSettings: origingroup.loadBalancingSettings
       healthProbeSettings: origingroup.?healthProbeSettings
       sessionAffinityState: origingroup.?sessionAffinityState
@@ -395,11 +396,14 @@ type originGroupType = {
   @description('Required. The name of the origin group.')
   name: string
 
+  @description('Optional. Settings for Origin Authentication.')
+  authentication: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
+
   @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
+  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.healthProbeSettings?
 
   @description('Required. Load balancing settings for a backend pool.')
-  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
+  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.loadBalancingSettings
 
   @description('Optional. Whether to allow session affinity on this host.')
   sessionAffinityState: 'Enabled' | 'Disabled' | null
