@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "6449047083386397208"
+      "templateHash": "11143615951092233640"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
@@ -1004,6 +1004,120 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Routing intent for the Azure Firewall."
+              }
+            },
+            "enableManagementNic": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable the management NIC to support forced tunneling and packet capture scenarios."
+              }
+            },
+            "managementIPAddressObject": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the management public IP address."
+                  }
+                },
+                "managementIPPrefixResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the management public IP prefix."
+                  }
+                },
+                "managementIPAllocationMethod": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Static"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Allocation method for the management public IP address."
+                  }
+                },
+                "skuName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Standard"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. SKU name for the management public IP address."
+                  }
+                },
+                "skuTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Regional"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. SKU tier for the management public IP address."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. Management public IP address object for the Azure Firewall. Required if enableManagementNic is true and managementIPResourceID is not provided."
+              }
+            },
+            "managementIPResourceID": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of an existing management public IP address."
+              }
+            },
+            "autoscaleMaxCapacity": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The maximum number of capacity units for the Azure Firewall. Use null to reset to the service default."
+              }
+            },
+            "autoscaleMinCapacity": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The minimum number of capacity units for the Azure Firewall. Use null to reset to the service default."
+              }
+            },
+            "threatIntelMode": {
+              "type": "string",
+              "allowedValues": [
+                "Alert",
+                "Deny",
+                "Off"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The operation mode for Threat Intelligence."
+              }
+            },
+            "maintenanceConfiguration": {
+              "type": "object",
+              "properties": {
+                "assignmentName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the maintenance configuration assignment."
+                  }
+                },
+                "maintenanceConfigurationResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the maintenance configuration to assign to the Azure Firewall."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The maintenance configuration to assign to the Azure Firewall."
               }
             },
             "availabilityZones": {
@@ -2903,6 +3017,27 @@
           },
           "additionalPublicIpConfigurations": {
             "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'additionalPublicIpConfigurationResourceIds')]"
+          },
+          "enableManagementNic": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'enableManagementNic')]"
+          },
+          "managementIPAddressObject": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'managementIPAddressObject')]"
+          },
+          "managementIPResourceID": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'managementIPResourceID')]"
+          },
+          "autoscaleMaxCapacity": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'autoscaleMaxCapacity')]"
+          },
+          "autoscaleMinCapacity": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'autoscaleMinCapacity')]"
+          },
+          "threatIntelMode": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'threatIntelMode')]"
+          },
+          "maintenanceConfiguration": {
+            "value": "[tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'maintenanceConfiguration')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Single secure hub deployment'
-metadata description = 'This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.'
+metadata description = 'This instance deploys a Virtual WAN with a single Secure Hub utilizing Azure Firewall.'
 
 // ========== //
 // Parameters //
@@ -11,9 +11,8 @@ metadata description = 'This instance deploys a Virtual WAN with a single Secure
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${serviceShort}-rg'
 
-@description('Optional. The location for the virtual hub. Enforced region to work around capacity constraints.')
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'nvwansechub'
@@ -29,7 +28,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -38,7 +37,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     azureFirewallPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
   }
@@ -48,17 +47,17 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       virtualWanParameters: {
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
-        location: enforcedLocation
+        location: resourceLocation
       }
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: enforcedLocation
-          hubName: 'dep-${namePrefix}-hub-${enforcedLocation}-${serviceShort}'
+          hubLocation: resourceLocation
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           p2sVpnParameters: {
             deployP2SVpnGateway: false
             connectionConfigurationsName: 'default'
@@ -74,9 +73,10 @@ module testDeployment '../../../main.bicep' = [
           secureHubParameters: {
             deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-${enforcedLocation}-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-${resourceLocation}-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
+            availabilityZones: []
             routingIntent: {
               internetToFirewall: true
               privateToFirewall: true

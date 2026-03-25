@@ -50,11 +50,12 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/virtual-wan:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Multiple hub deployment](#example-3-multiple-hub-deployment)
-- [Multiple secure hub deployment](#example-4-multiple-secure-hub-deployment)
-- [Single secure hub deployment](#example-5-single-secure-hub-deployment)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Secure hub with firewall management NIC](#example-2-secure-hub-with-firewall-management-nic)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Multiple hub deployment](#example-4-multiple-hub-deployment)
+- [Multiple secure hub deployment](#example-5-multiple-secure-hub-deployment)
+- [Single secure hub deployment](#example-6-single-secure-hub-deployment)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -198,7 +199,162 @@ param tags = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Secure hub with firewall management NIC_
+
+This instance deploys a Virtual WAN with a Secure Hub and Azure Firewall with the management NIC enabled for forced tunneling and packet capture scenarios.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/fw-mgmt-nic]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        expressRouteParameters: {
+          deployExpressRouteGateway: false
+        }
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        p2sVpnParameters: {
+          deployP2SVpnGateway: false
+        }
+        s2sVpnParameters: {
+          deployS2SVpnGateway: false
+        }
+        secureHubParameters: {
+          availabilityZones: []
+          azureFirewallName: 'dep-fw-nvwanfwmgtnic'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          enableManagementNic: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanfwmgtnic'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": false
+          },
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "p2sVpnParameters": {
+            "deployP2SVpnGateway": false
+          },
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": false
+          },
+          "secureHubParameters": {
+            "availabilityZones": [],
+            "azureFirewallName": "dep-fw-nvwanfwmgtnic",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "enableManagementNic": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanfwmgtnic"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    expressRouteParameters: {
+      deployExpressRouteGateway: false
+    }
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    p2sVpnParameters: {
+      deployP2SVpnGateway: false
+    }
+    s2sVpnParameters: {
+      deployS2SVpnGateway: false
+    }
+    secureHubParameters: {
+      availabilityZones: []
+      azureFirewallName: 'dep-fw-nvwanfwmgtnic'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      enableManagementNic: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanfwmgtnic'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with a large parameter set.
 
@@ -622,7 +778,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Multiple hub deployment_
+### Example 4: _Multiple hub deployment_
 
 This instance deploys a Virtual WAN with multiple Virtual Hubs in different regions with heterogeneous gateway configurations.
 
@@ -834,7 +990,7 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 4: _Multiple secure hub deployment_
+### Example 5: _Multiple secure hub deployment_
 
 This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Firewall.
 
@@ -1058,9 +1214,9 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 5: _Single secure hub deployment_
+### Example 6: _Single secure hub deployment_
 
-This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
+This instance deploys a Virtual WAN with a single Secure Hub utilizing Azure Firewall.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secure-hub]
 
@@ -1091,6 +1247,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           deployS2SVpnGateway: false
         }
         secureHubParameters: {
+          availabilityZones: []
           azureFirewallName: '<azureFirewallName>'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
@@ -1143,6 +1300,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "deployS2SVpnGateway": false
           },
           "secureHubParameters": {
+            "availabilityZones": [],
             "azureFirewallName": "<azureFirewallName>",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
@@ -1195,6 +1353,7 @@ param virtualHubParameters = [
       deployS2SVpnGateway: false
     }
     secureHubParameters: {
+      availabilityZones: []
       azureFirewallName: '<azureFirewallName>'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
@@ -1216,7 +1375,7 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the Well-Architected Framework principles.
 
@@ -1277,6 +1436,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             internetToFirewall: true
             privateToFirewall: true
           }
+          threatIntelMode: 'Deny'
         }
         tags: {
           ResourceType: 'VirtualHub'
@@ -1369,7 +1529,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "routingIntent": {
               "internetToFirewall": true,
               "privateToFirewall": true
-            }
+            },
+            "threatIntelMode": "Deny"
           },
           "tags": {
             "ResourceType": "VirtualHub"
@@ -1467,6 +1628,7 @@ param virtualHubParameters = [
         internetToFirewall: true
         privateToFirewall: true
       }
+      threatIntelMode: 'Deny'
     }
     tags: {
       ResourceType: 'VirtualHub'
@@ -2569,18 +2731,25 @@ Secure Hub parameters for the Virtual Hub.
 | [`azureFirewallName`](#parameter-virtualhubparameterssecurehubparametersazurefirewallname) | string | Name of the Azure Firewall. Required if deploySecureHub is true. |
 | [`azureFirewallPublicIPCount`](#parameter-virtualhubparameterssecurehubparametersazurefirewallpublicipcount) | int | Number of public IPs for the Azure Firewall (1-100). Required if deploySecureHub is true. |
 | [`azureFirewallSku`](#parameter-virtualhubparameterssecurehubparametersazurefirewallsku) | string | SKU for the Azure Firewall. Required if deploySecureHub is true. |
+| [`managementIPAddressObject`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobject) | object | Management public IP address object for the Azure Firewall. Required if enableManagementNic is true and managementIPResourceID is not provided. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurationResourceIds`](#parameter-virtualhubparameterssecurehubparametersadditionalpublicipconfigurationresourceids) | array | Additional public IP configuration resource IDs. |
+| [`autoscaleMaxCapacity`](#parameter-virtualhubparameterssecurehubparametersautoscalemaxcapacity) | int | The maximum number of capacity units for the Azure Firewall. Use null to reset to the service default. |
+| [`autoscaleMinCapacity`](#parameter-virtualhubparameterssecurehubparametersautoscalemincapacity) | int | The minimum number of capacity units for the Azure Firewall. Use null to reset to the service default. |
 | [`availabilityZones`](#parameter-virtualhubparameterssecurehubparametersavailabilityzones) | array | Zone numbers e.g. 1,2,3. |
 | [`diagnosticSettings`](#parameter-virtualhubparameterssecurehubparametersdiagnosticsettings) | array | Diagnostic settings for the Azure Firewall in the Secure Hub. |
+| [`enableManagementNic`](#parameter-virtualhubparameterssecurehubparametersenablemanagementnic) | bool | Enable the management NIC to support forced tunneling and packet capture scenarios. |
 | [`firewallPolicyResourceId`](#parameter-virtualhubparameterssecurehubparametersfirewallpolicyresourceid) | string | Resource ID of the firewall policy. |
+| [`maintenanceConfiguration`](#parameter-virtualhubparameterssecurehubparametersmaintenanceconfiguration) | object | The maintenance configuration to assign to the Azure Firewall. |
+| [`managementIPResourceID`](#parameter-virtualhubparameterssecurehubparametersmanagementipresourceid) | string | Resource ID of an existing management public IP address. |
 | [`publicIPAddressObject`](#parameter-virtualhubparameterssecurehubparameterspublicipaddressobject) | object | Public IP address object for the Azure Firewall. |
 | [`publicIPResourceID`](#parameter-virtualhubparameterssecurehubparameterspublicipresourceid) | string | Resource ID of the public IP address. |
 | [`routingIntent`](#parameter-virtualhubparameterssecurehubparametersroutingintent) | object | Routing intent for the Azure Firewall. |
+| [`threatIntelMode`](#parameter-virtualhubparameterssecurehubparametersthreatintelmode) | string | The operation mode for Threat Intelligence. |
 
 ### Parameter: `virtualHubParameters.secureHubParameters.deploySecureHub`
 
@@ -2620,12 +2789,96 @@ SKU for the Azure Firewall. Required if deploySecureHub is true.
   ]
   ```
 
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject`
+
+Management public IP address object for the Azure Firewall. Required if enableManagementNic is true and managementIPResourceID is not provided.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managementIPAllocationMethod`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobjectmanagementipallocationmethod) | string | Allocation method for the management public IP address. |
+| [`managementIPPrefixResourceId`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobjectmanagementipprefixresourceid) | string | Resource ID of the management public IP prefix. |
+| [`name`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobjectname) | string | Name of the management public IP address. |
+| [`skuName`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobjectskuname) | string | SKU name for the management public IP address. |
+| [`skuTier`](#parameter-virtualhubparameterssecurehubparametersmanagementipaddressobjectskutier) | string | SKU tier for the management public IP address. |
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject.managementIPAllocationMethod`
+
+Allocation method for the management public IP address.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Static'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject.managementIPPrefixResourceId`
+
+Resource ID of the management public IP prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject.name`
+
+Name of the management public IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject.skuName`
+
+SKU name for the management public IP address.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+  ]
+  ```
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPAddressObject.skuTier`
+
+SKU tier for the management public IP address.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Regional'
+  ]
+  ```
+
 ### Parameter: `virtualHubParameters.secureHubParameters.additionalPublicIpConfigurationResourceIds`
 
 Additional public IP configuration resource IDs.
 
 - Required: No
 - Type: array
+
+### Parameter: `virtualHubParameters.secureHubParameters.autoscaleMaxCapacity`
+
+The maximum number of capacity units for the Azure Firewall. Use null to reset to the service default.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualHubParameters.secureHubParameters.autoscaleMinCapacity`
+
+The minimum number of capacity units for the Azure Firewall. Use null to reset to the service default.
+
+- Required: No
+- Type: int
 
 ### Parameter: `virtualHubParameters.secureHubParameters.availabilityZones`
 
@@ -2788,9 +3041,51 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `virtualHubParameters.secureHubParameters.enableManagementNic`
+
+Enable the management NIC to support forced tunneling and packet capture scenarios.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `virtualHubParameters.secureHubParameters.firewallPolicyResourceId`
 
 Resource ID of the firewall policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.maintenanceConfiguration`
+
+The maintenance configuration to assign to the Azure Firewall.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignmentName`](#parameter-virtualhubparameterssecurehubparametersmaintenanceconfigurationassignmentname) | string | The name of the maintenance configuration assignment. |
+| [`maintenanceConfigurationResourceId`](#parameter-virtualhubparameterssecurehubparametersmaintenanceconfigurationmaintenanceconfigurationresourceid) | string | The resource ID of the maintenance configuration to assign to the Azure Firewall. |
+
+### Parameter: `virtualHubParameters.secureHubParameters.maintenanceConfiguration.assignmentName`
+
+The name of the maintenance configuration assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.maintenanceConfiguration.maintenanceConfigurationResourceId`
+
+The resource ID of the maintenance configuration to assign to the Azure Firewall.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.managementIPResourceID`
+
+Resource ID of an existing management public IP address.
 
 - Required: No
 - Type: string
@@ -2899,6 +3194,21 @@ Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
 
 - Required: No
 - Type: bool
+
+### Parameter: `virtualHubParameters.secureHubParameters.threatIntelMode`
+
+The operation mode for Threat Intelligence.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Alert'
+    'Deny'
+    'Off'
+  ]
+  ```
 
 ### Parameter: `virtualHubParameters.sku`
 

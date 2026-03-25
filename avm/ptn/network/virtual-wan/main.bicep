@@ -110,9 +110,13 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
       publicIPAddressObject: config.hub.?secureHubParameters.?publicIPAddressObject
       publicIPResourceID: config.hub.?secureHubParameters.?publicIPResourceID
       additionalPublicIpConfigurations: config.hub.?secureHubParameters.?additionalPublicIpConfigurationResourceIds
-      //enableForcedTunneling: config.hub.?secureHubParameters.?enableForcedTunneling
-      //managementIPAddressObject: config.hub.?secureHubParameters.?managementIPAddressObject
-      //managementIPResourceID: config.hub.?secureHubParameters.?managementIPResourceID
+      enableManagementNic: config.hub.?secureHubParameters.?enableManagementNic
+      managementIPAddressObject: config.hub.?secureHubParameters.?managementIPAddressObject
+      managementIPResourceID: config.hub.?secureHubParameters.?managementIPResourceID
+      autoscaleMaxCapacity: config.hub.?secureHubParameters.?autoscaleMaxCapacity
+      autoscaleMinCapacity: config.hub.?secureHubParameters.?autoscaleMinCapacity
+      threatIntelMode: config.hub.?secureHubParameters.?threatIntelMode
+      maintenanceConfiguration: config.hub.?secureHubParameters.?maintenanceConfiguration
       enableTelemetry: enableTelemetry
       availabilityZones: config.hub.?secureHubParameters.?availabilityZones
       diagnosticSettings: config.hub.?secureHubParameters.?diagnosticSettings
@@ -721,31 +725,47 @@ type virtualHubParameterType = {
     @description('Optional. Routing intent for the Azure Firewall.')
     routingIntent: routingIntentType?
 
-    // Force-tunneling for Azure Firewall is not currently supported, but is currently being worked and support is expected in the near future; leaving for future use.
-    /*
-    @description('Optional. Enable forced tunneling for the Azure Firewall.')
-    enableForcedTunneling: bool?
+    @description('Optional. Enable the management NIC to support forced tunneling and packet capture scenarios.')
+    enableManagementNic: bool?
 
-    @description('Optional. Management public IP address object for the Azure Firewall.')
+    @description('Conditional. Management public IP address object for the Azure Firewall. Required if enableManagementNic is true and managementIPResourceID is not provided.')
     managementIPAddressObject: {
-      @description('Required. Name of the management public IP address.')
-      name: string
+      @description('Optional. Name of the management public IP address.')
+      name: string?
 
-      @description('Required. Allocation method for the management public IP address.')
-      publicIPAllocationMethod: ('Static')
+      @description('Optional. Resource ID of the management public IP prefix.')
+      managementIPPrefixResourceId: string?
 
-      @description('Required. Resource ID of the management public IP prefix.')
-      publicIPPrefixResourceId: string
+      @description('Optional. Allocation method for the management public IP address.')
+      managementIPAllocationMethod: ('Static')?
 
-      @description('Required. SKU name for the management public IP address.')
-      skuName: ('Standard')
+      @description('Optional. SKU name for the management public IP address.')
+      skuName: ('Standard')?
 
-      @description('Required. SKU tier for the management public IP address.')
-      skuTier: ('Regional')
+      @description('Optional. SKU tier for the management public IP address.')
+      skuTier: ('Regional')?
     }?
-    @description('Optional. Resource ID of the management public IP address.')
+
+    @description('Optional. Resource ID of an existing management public IP address.')
     managementIPResourceID: string?
-    */
+
+    @description('Optional. The maximum number of capacity units for the Azure Firewall. Use null to reset to the service default.')
+    autoscaleMaxCapacity: int?
+
+    @description('Optional. The minimum number of capacity units for the Azure Firewall. Use null to reset to the service default.')
+    autoscaleMinCapacity: int?
+
+    @description('Optional. The operation mode for Threat Intelligence.')
+    threatIntelMode: ('Alert' | 'Deny' | 'Off')?
+
+    @description('Optional. The maintenance configuration to assign to the Azure Firewall.')
+    maintenanceConfiguration: {
+      @description('Required. The name of the maintenance configuration assignment.')
+      assignmentName: string
+
+      @description('Required. The resource ID of the maintenance configuration to assign to the Azure Firewall.')
+      maintenanceConfigurationResourceId: string
+    }?
 
     @description('Optional. Zone numbers e.g. 1,2,3.')
     availabilityZones: (1 | 2 | 3)[]?
