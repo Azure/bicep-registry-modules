@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "8495377656034110111"
+      "templateHash": "6449047083386397208"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.",
@@ -1581,9 +1581,12 @@
         "routingPolicies": "[concat(if(equals(tryGet(tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'routingIntent'), 'internetToFirewall'), true()), createArray(createObject('name', 'InternetTrafficPolicy', 'destinations', createArray('Internet'), 'nextHop', tryGet(if(variables('hubConfigurations')[variables('hubConfigurations')[copyIndex()].index].deploySecureHub, reference(format('firewallModule[{0}]', variables('hubConfigurations')[copyIndex()].index)), null()), 'outputs', 'resourceId', 'value'))), createArray()), if(equals(tryGet(tryGet(tryGet(variables('hubConfigurations')[copyIndex()].hub, 'secureHubParameters'), 'routingIntent'), 'privateToFirewall'), true()), createArray(createObject('name', 'PrivateTrafficPolicy', 'destinations', createArray('PrivateTraffic'), 'nextHop', tryGet(if(variables('hubConfigurations')[variables('hubConfigurations')[copyIndex()].index].deploySecureHub, reference(format('firewallModule[{0}]', variables('hubConfigurations')[copyIndex()].index)), null()), 'outputs', 'resourceId', 'value'))), createArray()))]"
       },
       "dependsOn": [
+        "[format('expressRouteGatewayModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
         "[format('firewallModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
         "[format('firewallModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
         "[format('firewallModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
+        "[format('p2sVpnGatewayModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
+        "[format('s2sVpnGatewayModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]",
         "[format('virtualHubModule[{0}]', variables('hubConfigurations')[copyIndex()].index)]"
       ]
     },

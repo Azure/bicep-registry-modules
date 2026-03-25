@@ -245,6 +245,9 @@ resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2025-01-01' 
     dependsOn: [
       virtualHubModule[config.index]
       firewallModule[config.index]
+      p2sVpnGatewayModule[config.index]
+      s2sVpnGatewayModule[config.index]
+      expressRouteGatewayModule[config.index]
     ]
   }
 ]
