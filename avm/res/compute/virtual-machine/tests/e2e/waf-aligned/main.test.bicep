@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'spaincentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinwaf'
+param serviceShort string = 'vmwinwaf'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -57,6 +57,7 @@ module nestedDependencies 'dependencies.bicep' = {
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
   }
 }
 
@@ -89,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
-        sku: '2019-datacenter'
+        sku: '2019-datacenter-gensecond'
         version: 'latest'
       }
       nicConfigurations: [
@@ -174,7 +175,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2s_v6'
       adminPassword: password
       availabilityZone: 2
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
@@ -276,7 +277,7 @@ module testDeployment '../../../main.bicep' = [
       extensionAadJoinConfig: {
         enabled: true
         settings: {
-          mdmId: '' // '0000000a-0000-0000-c000-000000000000'
+          // mdmId: '0000000a-0000-0000-c000-000000000000' // Uncomment and provide valid mdmId for Intune enrollment
         }
         tags: {
           'hidden-title': 'This is visible in the resource name'
