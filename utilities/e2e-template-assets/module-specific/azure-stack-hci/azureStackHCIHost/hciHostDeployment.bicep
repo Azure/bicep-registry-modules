@@ -409,9 +409,8 @@ resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: '${waitDeploymentScriptPrefixName}-wait2'
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: loadTextContent('./scripts/hciHostWait2-adHealthPoll.ps1')
+    scriptContent: 'Start-Sleep -Seconds 180 # Wait for VM reboot and AD DS initialization; AD health verified by next runCommand on the VM'
     retentionInterval: 'PT6H'
-    timeout: 'PT30M'
   }
   dependsOn: [
     runCommand4
