@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3407827372475505816"
+      "version": "0.40.2.10011",
+      "templateHash": "8558713921733088772"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -129,7 +129,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/properties/properties/identifier"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/properties/properties/identifier"
         },
         "description": "Required. The gallery image identifier configuration containing publisher, offer, and SKU."
       }
@@ -167,7 +167,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/properties/properties/version"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/properties/properties/version"
         },
         "description": "Required. Gallery image version configuration."
       }
@@ -176,7 +176,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview#properties/tags"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/tags"
         },
         "description": "Optional. Tags for the marketplace gallery image."
       },
@@ -213,7 +213,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('46d3xbcp.res.azurestackhci-markplgalleryimg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -232,7 +232,7 @@
     },
     "marketplaceGalleryImage": {
       "type": "Microsoft.AzureStackHCI/marketplaceGalleryImages",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -303,7 +303,7 @@
       "metadata": {
         "description": "The location of the marketplace gallery image."
       },
-      "value": "[reference('marketplaceGalleryImage', '2025-04-01-preview', 'full').location]"
+      "value": "[reference('marketplaceGalleryImage', '2024-01-01', 'full').location]"
     }
   }
 }
