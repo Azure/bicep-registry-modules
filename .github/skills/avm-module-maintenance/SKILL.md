@@ -49,7 +49,11 @@ Work through each step in order. Use `manage_todo_list` to track progress. Each 
 ### Step 1: Validate Module and Gather Context
 
 1. Confirm the module path exists and identify the module type (`res`, `ptn`, or `utl`) from the path.
-2. List all files in the module directory tree (Bicep files, tests, docs, metadata).
+2. Build a complete file inventory of the module directory tree. Categorize every file by type:
+   - **Bicep files**: `main.bicep`, child module `.bicep` files, test `.bicep` files
+   - **Documentation**: `README.md`, `CHANGELOG.md`, and any other `.md` files
+   - **Metadata/Configuration**: `version.json`, any other `.json` files
+   - **Tests**: All files under `tests/` including `main.test.bicep`, `dependencies.bicep`, and shared test utilities
 3. Read the module's `main.bicep` to understand its structure: parameters, variables, resources, outputs, and child module references.
 4. Fetch the AVM documentation index from `https://azure.github.io/Azure-Verified-Modules/llms.txt` for spec compliance checking in later steps.
 
@@ -79,12 +83,13 @@ Status values:
 
 ---
 
-### Step 3: Check Module Versions
+### Step 3: Check Module Versions and Metadata
 
 1. Call `mcp_bicep_list_avm_metadata` to get the list of all published AVM modules.
-2. Read the module's `version.json` file.
+2. Read the module's `version.json` file and verify it follows the expected schema (`$schema`, `version` fields).
 3. Check if the module references other AVM modules (via `br/public:avm/...` references in Bicep files). For each referenced module, verify it is using the latest published version.
-4. Record any outdated module references.
+4. Inspect all other JSON configuration files in the module tree (e.g., `bicepconfig.json` overrides, pipeline files) for consistency and correctness.
+5. Record any outdated module references or metadata inconsistencies.
 
 ---
 
@@ -97,7 +102,20 @@ Status values:
 
 ---
 
-### Step 5: Check Azure Resource Reference for Gaps
+### Step 5: Analyze Code Quality
+
+Perform an explicit code quality analysis across all Bicep files in the module (main and child modules). Check for:
+
+1. **Decorators and metadata**: Verify every parameter has an `@description` decorator. Check for appropriate use of `@allowed`, `@minLength`, `@maxLength`, `@minValue`, `@maxValue`, and `@secure` decorators where applicable.
+2. **Naming consistency**: Confirm all parameter, variable, resource, and output names follow lower camelCase convention. Flag any naming inconsistencies.
+3. **Resource structure**: Check that resource declarations are well-organized, related resources are grouped logically, and `existing` references are used correctly.
+4. **Code patterns**: Look for anti-patterns such as unnecessary complexity, redundant conditions, hardcoded values that should be parameterized, or missing null-safety operators (`?`, `!`).
+5. **Best practice violations**: Identify use of deprecated features, missing `#disable-next-line` justifications, or patterns that conflict with Bicep best practices.
+6. Record each code quality issue with the file path, line number, and a specific description of the problem.
+
+---
+
+### Step 6: Check Azure Resource Reference for Gaps
 
 1. For each resource type declared in the module, fetch the full schema at the **latest stable API version** using `mcp_bicep_get_az_resource_type_schema`.
 2. Compare the schema properties against what the module currently exposes as parameters and configuration options. Look for:
@@ -109,7 +127,7 @@ Status values:
 
 ---
 
-### Step 6: Check Open Issues
+### Step 7: Check Open Issues
 
 1. Search for open GitHub issues related to the module using `mcp_github_github_search_issues`:
    - Query: `repo:Azure/bicep-registry-modules state:open "{module path}"` (e.g., `avm/res/storage/storage-account`).
@@ -124,7 +142,7 @@ Status values:
 
 ---
 
-### Step 7: Audit Test Coverage
+### Step 8: Audit Test Coverage
 
 1. List all test scenario directories under the module's `tests/e2e/` folder.
 2. Read the module's `main.bicep` and extract every input parameter (name, type, whether it's required or optional, and its default value).
@@ -142,9 +160,14 @@ Status values:
 | `sku`     | string | No       | —        | Yes | Yes         | —           | Yes     |
 | `tags`    | object | No       | —        | —   | —           | —           | **No**  |
 
+7. Beyond parameter coverage, also examine each test file for quality issues:
+   - **Consistency**: Are parameter values consistent across test scenarios where they overlap?
+   - **Completeness**: Does testing cover realistic scenarios and edge cases?
+   - **Quality**: Are there hardcoded values, missing descriptions, or other problems in test files?
+
 ---
 
-### Step 8: Audit Type Safety
+### Step 9: Audit Type Safety
 
 1. Review every parameter and output in `main.bicep` and all child modules.
 2. Flag any parameter typed as a generic `object` or `array` without further type constraints.
@@ -155,7 +178,7 @@ Status values:
 
 ---
 
-### Step 9: Check AVM Specification Compliance
+### Step 10: Check AVM Specification Compliance
 
 1. Determine the module class from the path: `res` → Resource, `ptn` → Pattern, `utl` → Utility.
 2. Fetch the relevant AVM specifications. Use the documentation index from Step 1 (`llms.txt`) to find the spec URLs. The applicable specs for each module class are determined by the `tags` in their front matter:
@@ -171,6 +194,50 @@ Status values:
    - **Code style** (Bicep linting rules, decorators, descriptions)
    - **Release/publishing** (version.json, CHANGELOG.md)
 4. Record each violation or gap with the spec ID, spec title, severity, and what needs to change.
+
+---
+
+### Step 11: Analyze Documentation Files
+
+Review all documentation files (`README.md`, `CHANGELOG.md`, and any other `.md` files) in the module directory tree for accuracy, completeness, and consistency:
+
+1. **Spelling and grammar**: Check for spelling mistakes, typos, and grammatical errors in all Markdown files.
+2. **Accuracy**: Verify that documented parameter names, types, descriptions, and default values match what is actually defined in `main.bicep`.
+3. **Completeness**: Check that every parameter, output, and notable behavior is documented. Flag any undocumented parameters or missing sections.
+4. **Outdated information**: Look for references to old API versions, deprecated features, or stale links.
+5. **CHANGELOG completeness**: Verify the `CHANGELOG.md` covers the current version and recent changes.
+6. Record all documentation issues with the file path, line/section, and the specific correction needed.
+
+---
+
+### Step 12: Cross-Reference Documentation Examples with Tests
+
+Validate that the code examples shown in the module's `README.md` are consistent with what the test files actually implement:
+
+1. Read the usage examples from `README.md` and extract the parameter names and values used in each example.
+2. For each documented example, find the corresponding test scenario under `tests/e2e/` and compare:
+   - Do the documented parameter names and values match the test implementation?
+   - Are there test scenarios that are not reflected in the documentation examples?
+   - Are there documented examples that have no corresponding test scenario?
+3. Check for conflicting information — for instance, a documented default value that differs from the actual default in `main.bicep`, or an example that uses a parameter name that has since been renamed.
+4. Record all discrepancies between documentation and test implementations.
+
+---
+
+### Step 13: Compile and Categorize Findings
+
+Before producing the final report, compile all findings from the previous steps into a categorized inventory:
+
+1. **Classify every identified issue** into one of these categories:
+   - **Documentation**: Spelling errors, outdated information, missing sections
+   - **Code Quality**: Missing decorators, inconsistent naming, poor structure, anti-patterns
+   - **Examples**: Incorrect values in examples, missing scenarios, inconsistent approaches
+   - **Compliance**: AVM specification violations, missing required elements
+   - **Consistency**: Conflicting information between files, inconsistent patterns across the module
+   - **Testing**: Missing test scenarios, inadequate coverage, incorrect test implementations
+2. **Assign severity** (Low / Medium / High / Critical) and **priority** to each issue.
+3. **Deduplicate**: Merge issues that appeared in multiple analysis steps into a single finding.
+4. Verify completeness: ensure no analysis step was skipped and all findings are accounted for.
 
 ---
 
@@ -191,7 +258,7 @@ For each analysis step above, include one section with:
 
 #### Finding: {Title}
 
-- **Category**: {API Versions | Module Versions | Bicep Diagnostics | Resource Gaps | Open Issues | Test Coverage | Type Safety | Spec Compliance}
+- **Category**: {API Versions | Module Versions | Bicep Diagnostics | Code Quality | Resource Gaps | Open Issues | Test Coverage | Type Safety | Spec Compliance | Documentation | Examples | Consistency}
 - **Severity**: {Low | Medium | High | Critical}
 - **File(s)**: {affected file paths}
 - **Location**: {specific line numbers or sections}
@@ -212,14 +279,18 @@ A numbered list of recommended actions sorted by priority (Critical → High →
 
 Before finalizing the report, verify all steps were completed:
 
-- [ ] Step 1: Module validated and context gathered
+- [ ] Step 1: Module validated and context gathered (file inventory built)
 - [ ] Step 2: ARM API versions checked against latest stable
-- [ ] Step 3: Referenced AVM module versions checked
+- [ ] Step 3: Referenced AVM module versions and metadata checked
 - [ ] Step 4: Bicep diagnostics collected
-- [ ] Step 5: Azure Resource Reference gaps identified
-- [ ] Step 6: Open GitHub issues reviewed
-- [ ] Step 7: Test coverage audited for all parameters
-- [ ] Step 8: Type safety audited (no untyped objects/arrays)
-- [ ] Step 9: AVM specification compliance verified
+- [ ] Step 5: Code quality analyzed (decorators, naming, structure, patterns)
+- [ ] Step 6: Azure Resource Reference gaps identified
+- [ ] Step 7: Open GitHub issues reviewed
+- [ ] Step 8: Test coverage audited for all parameters
+- [ ] Step 9: Type safety audited (no untyped objects/arrays)
+- [ ] Step 10: AVM specification compliance verified
+- [ ] Step 11: Documentation files analyzed for accuracy, spelling, and completeness
+- [ ] Step 12: Documentation examples cross-referenced with test implementations
+- [ ] Step 13: All findings compiled, categorized, deduplicated, and prioritized
 
 > If any step could not be completed (e.g., tool unavailable), note it explicitly in the report rather than skipping silently.
