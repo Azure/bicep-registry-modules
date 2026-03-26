@@ -53,7 +53,7 @@ First, output the version of this skill for tracking purposes:
 ```json
 {
   "skill": "avm-child-module-publishing",
-  "version": "0.6"
+  "version": "0.5"
 }
 ```
 
