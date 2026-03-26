@@ -25,7 +25,7 @@ param customLocationResourceId string
 param osType string
 
 @description('Required. The gallery image identifier configuration containing publisher, offer, and SKU.')
-param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview'>.properties.identifier
+param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.identifier
 
 @description('Optional. The hypervisor generation of the Virtual Machine.')
 @allowed([
@@ -46,10 +46,10 @@ param cloudInitDataSource string?
 param containerResourceId string?
 
 @description('Required. Gallery image version configuration.')
-param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview'>.properties.version
+param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.version
 
 @description('Optional. Tags for the marketplace gallery image.')
-param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview'>.tags?
+param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.tags?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -107,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview' = {
+resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview' = {
   name: name
   location: location
   tags: tags
