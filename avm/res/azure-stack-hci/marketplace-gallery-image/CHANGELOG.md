@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Migrated marketplaceGalleryImages resource from preview API (2025-04-01-preview) to stable API (2024-01-01)
+- Updated marketplaceGalleryImages API to latest docs-recommended version (2025-09-01-preview)
+- Added 'NA' option to hyperVGeneration parameter enum (additive, non-breaking)
 - Fixed typo in roleAssignment conditional: 'condtion' to 'condition'
 
 ### Breaking Changes

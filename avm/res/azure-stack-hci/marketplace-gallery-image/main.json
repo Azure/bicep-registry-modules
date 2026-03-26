@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "8558713921733088772"
+      "templateHash": "10197966149136366917"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -129,7 +129,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/properties/properties/identifier"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview#properties/properties/properties/identifier"
         },
         "description": "Required. The gallery image identifier configuration containing publisher, offer, and SKU."
       }
@@ -139,7 +139,8 @@
       "defaultValue": "V2",
       "allowedValues": [
         "V1",
-        "V2"
+        "V2",
+        "NA"
       ],
       "metadata": {
         "description": "Optional. The hypervisor generation of the Virtual Machine."
@@ -167,7 +168,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/properties/properties/version"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview#properties/properties/properties/version"
         },
         "description": "Required. Gallery image version configuration."
       }
@@ -176,7 +177,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01#properties/tags"
+          "source": "Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-09-01-preview#properties/tags"
         },
         "description": "Optional. Tags for the marketplace gallery image."
       },
@@ -232,7 +233,7 @@
     },
     "marketplaceGalleryImage": {
       "type": "Microsoft.AzureStackHCI/marketplaceGalleryImages",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-09-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -303,7 +304,7 @@
       "metadata": {
         "description": "The location of the marketplace gallery image."
       },
-      "value": "[reference('marketplaceGalleryImage', '2024-01-01', 'full').location]"
+      "value": "[reference('marketplaceGalleryImage', '2025-09-01-preview', 'full').location]"
     }
   }
 }
