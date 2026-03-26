@@ -402,15 +402,16 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [runCommand3]
 }
 
-// initiates a wait for the VM to reboot - extra time for AD initialization
+// initiates a wait for the VM to reboot - polls AD health instead of fixed sleep
 resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   location: location
   kind: 'AzurePowerShell'
   name: '${waitDeploymentScriptPrefixName}-wait2'
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: 'Start-Sleep -Seconds 300 #enough time for AD start-up'
+    scriptContent: loadTextContent('./scripts/hciHostWait2-adHealthPoll.ps1')
     retentionInterval: 'PT6H'
+    timeout: 'PT30M'
   }
   dependsOn: [
     runCommand4
@@ -559,6 +560,50 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     treatFailureAsDeploymentFailure: true
   }
   dependsOn: [runCommand6]
+}
+
+// ============================================= //
+// Pre-deployment Health Check                   //
+// ============================================= //
+
+// validates AD, DNS, node VMs, Arc extensions, credentials, and network connectivity before cluster deployment
+resource runCommand8 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand8'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage8-preDeployCheck.ps1')
+    }
+    parameters: [
+      {
+        name: 'hciNodeCount'
+        value: string(hciNodeCount)
+      }
+      {
+        name: 'resourceGroupName'
+        value: resourceGroup().name
+      }
+      {
+        name: 'subscriptionId'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'userAssignedManagedIdentityClientId'
+        value: userAssignedIdentity.properties.clientId
+      }
+      {
+        name: 'domainOUPath'
+        value: domainOUPath
+      }
+      {
+        name: 'deploymentUsername'
+        value: deploymentUsername
+      }
+    ]
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [runCommand7]
 }
 
 output vnetSubnetResourceId string = vnet.properties.subnets[0].id
