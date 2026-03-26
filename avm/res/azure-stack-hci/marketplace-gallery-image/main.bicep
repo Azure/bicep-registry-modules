@@ -25,7 +25,7 @@ param customLocationResourceId string
 param osType string
 
 @description('Required. The gallery image identifier configuration containing publisher, offer, and SKU.')
-param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.identifier
+param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01'>.properties.identifier
 
 @description('Optional. The hypervisor generation of the Virtual Machine.')
 @allowed([
@@ -45,10 +45,10 @@ param cloudInitDataSource string?
 param containerResourceId string?
 
 @description('Required. Gallery image version configuration.')
-param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.properties.version
+param version resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01'>.properties.version
 
 @description('Optional. Tags for the marketplace gallery image.')
-param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview'>.tags?
+param tags resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01'>.tags?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -85,7 +85,7 @@ var formattedRoleAssignments = [
 // ============= //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.azurestackhci-markplgalleryimg.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -106,7 +106,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2025-04-01-preview' = {
+resource marketplaceGalleryImage 'Microsoft.AzureStackHCI/marketplaceGalleryImages@2024-01-01' = {
   name: name
   location: location
   tags: tags
@@ -141,7 +141,7 @@ resource marketplaceGalleryImage_roleAssignments 'Microsoft.Authorization/roleAs
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: marketplaceGalleryImage
