@@ -107,12 +107,6 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
           count: config.hub.?secureHubParameters.?azureFirewallPublicIPCount
         }
       }
-      publicIPAddressObject: config.hub.?secureHubParameters.?publicIPAddressObject
-      publicIPResourceID: config.hub.?secureHubParameters.?publicIPResourceID
-      additionalPublicIpConfigurations: config.hub.?secureHubParameters.?additionalPublicIpConfigurationResourceIds
-      enableManagementNic: config.hub.?secureHubParameters.?enableManagementNic
-      managementIPAddressObject: config.hub.?secureHubParameters.?managementIPAddressObject
-      managementIPResourceID: config.hub.?secureHubParameters.?managementIPResourceID
       autoscaleMaxCapacity: config.hub.?secureHubParameters.?autoscaleMaxCapacity
       autoscaleMinCapacity: config.hub.?secureHubParameters.?autoscaleMinCapacity
       threatIntelMode: config.hub.?secureHubParameters.?threatIntelMode
@@ -699,55 +693,8 @@ type virtualHubParameterType = {
     @description('Conditional. Number of public IPs for the Azure Firewall (1-100). Required if deploySecureHub is true.')
     azureFirewallPublicIPCount: int?
 
-    @description('Optional. Public IP address object for the Azure Firewall.')
-    publicIPAddressObject: {
-      @description('Required. Name of the public IP address.')
-      name: string
-
-      @description('Required. Allocation method for the public IP address.')
-      publicIPAllocationMethod: ('Static')
-
-      @description('Required. Resource ID of the public IP prefix.')
-      publicIPPrefixResourceId: string
-
-      @description('Required. SKU name for the public IP address.')
-      skuName: ('Standard')
-
-      @description('Required. SKU tier for the public IP address.')
-      skuTier: ('Regional')
-    }?
-    @description('Optional. Resource ID of the public IP address.')
-    publicIPResourceID: string?
-
-    @description('Optional. Additional public IP configuration resource IDs.')
-    additionalPublicIpConfigurationResourceIds: array?
-
     @description('Optional. Routing intent for the Azure Firewall.')
     routingIntent: routingIntentType?
-
-    @description('Optional. Enable the management NIC to support forced tunneling and packet capture scenarios.')
-    enableManagementNic: bool?
-
-    @description('Conditional. Management public IP address object for the Azure Firewall. Required if enableManagementNic is true and managementIPResourceID is not provided.')
-    managementIPAddressObject: {
-      @description('Optional. Name of the management public IP address.')
-      name: string?
-
-      @description('Optional. Resource ID of the management public IP prefix.')
-      managementIPPrefixResourceId: string?
-
-      @description('Optional. Allocation method for the management public IP address.')
-      managementIPAllocationMethod: ('Static')?
-
-      @description('Optional. SKU name for the management public IP address.')
-      skuName: ('Standard')?
-
-      @description('Optional. SKU tier for the management public IP address.')
-      skuTier: ('Regional')?
-    }?
-
-    @description('Optional. Resource ID of an existing management public IP address.')
-    managementIPResourceID: string?
 
     @description('Optional. The maximum number of capacity units for the Azure Firewall. Use null to reset to the service default.')
     autoscaleMaxCapacity: int?
