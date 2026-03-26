@@ -30,7 +30,8 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.1' = [
+#disable-next-line BCP081
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.12.0' = [
   for (ipConfiguration, index) in ipConfigurations: if (!empty(ipConfiguration.?pipConfiguration) && empty(ipConfiguration.?pipConfiguration.?publicIPAddressResourceId)) {
     name: '${deployment().name}-publicIP-${index}'
     params: {

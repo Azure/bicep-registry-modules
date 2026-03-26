@@ -235,7 +235,7 @@ function Set-AVMModule {
             }
         }
 
-        $compilationChunks = Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize
+        $compilationChunks = $testFilePaths ? (Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize) : @()
         if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
             $compilationChunks = , $compilationChunks
         } else {
