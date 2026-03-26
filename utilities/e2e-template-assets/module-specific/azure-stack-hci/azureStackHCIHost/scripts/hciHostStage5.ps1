@@ -381,9 +381,27 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         Write-Error "Failed to start HCI node VMs. $_"
     }
 
-    #wait for vms to boot
-    log 'Waiting 300s for VMs to boot and apply sysprep...'
-    Start-Sleep -Seconds 300
+    #wait for vms to boot - poll heartbeat instead of fixed sleep
+    log 'Waiting for VMs to boot and apply sysprep (polling heartbeat, max 10 min)...'
+    $bootTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $allReady = $false
+    while (-not $allReady -and $bootTimer.Elapsed.TotalMinutes -lt 10) {
+        $vms = Get-VM
+        $readyVMs = $vms | Where-Object { $_.Heartbeat -eq 'OkApplicationsHealthy' -or $_.Heartbeat -eq 'OkApplicationsUnknown' }
+        if ($readyVMs.Count -eq $vms.Count) {
+            log "All $($vms.Count) VMs have heartbeat after $([math]::Round($bootTimer.Elapsed.TotalSeconds))s."
+            $allReady = $true
+        } else {
+            log "[$([math]::Round($bootTimer.Elapsed.TotalSeconds))s] $($readyVMs.Count)/$($vms.Count) VMs ready (heartbeat). Waiting 30s..."
+            Start-Sleep -Seconds 30
+        }
+    }
+    if (-not $allReady) {
+        log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
+    }
+    # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
+    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 60
 } Else {
     log 'HCI node VMs are already running.'
 }

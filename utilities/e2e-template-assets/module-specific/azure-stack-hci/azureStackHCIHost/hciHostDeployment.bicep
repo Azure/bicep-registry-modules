@@ -350,7 +350,7 @@ resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: '${waitDeploymentScriptPrefixName}-wait1'
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: 'Start-Sleep -Seconds 90'
+    scriptContent: 'Start-Sleep -Seconds 60 # VM reboot typically completes in 30-45s; next runCommand retries if VM not ready'
     retentionInterval: 'PT6H'
   }
   dependsOn: [runCommand2]
