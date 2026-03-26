@@ -110,7 +110,6 @@ jobs:
     name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
-    timeout-minutes: 600
     if: |
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
