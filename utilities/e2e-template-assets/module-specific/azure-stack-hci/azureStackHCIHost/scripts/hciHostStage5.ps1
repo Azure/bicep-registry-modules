@@ -155,7 +155,6 @@ for ($r = 1; $r -le $dhcpRetries; $r++) {
         }
     }
 }
-}
 
 If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 172.20.0.1 }
 
