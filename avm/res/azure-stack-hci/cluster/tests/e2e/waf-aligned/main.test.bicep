@@ -37,16 +37,17 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+@description('Optional. The location to deploy resources into. Defaults to southeastasia. Can be overridden via the CI customLocation input when quota is unavailable.')
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region is used as default in the AVM testing subscription
+param resourceLocation string = 'southeastasia'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/dependencies.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
     clusterName: '${namePrefix}${serviceShort}1'
@@ -68,7 +69,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
     waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -76,7 +77,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
 // The API returns 'HciCluster is already registered, Unregister cluster to start re-deployment' on repeated deploys.
 // Therefore, the standard 'idem' iteration is skipped for this module.
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-clustermodule-${serviceShort}'
     scope: resourceGroup
     params: {
       name: nestedDependencies.outputs.clusterName
