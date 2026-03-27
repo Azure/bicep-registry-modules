@@ -267,7 +267,7 @@ $connectivityOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCre
                 $wait = $asyncResult.AsyncWaitHandle.WaitOne(10000, $false) # 10s timeout
                 if ($wait -and $tcp.Connected) {
                     $tcp.EndConnect($asyncResult)
-                    Write-Output "[$env:COMPUTERNAME] OK: $($ep.Host)`:$($ep.Port) ($($ep.Description))"
+                    Write-Output ("[$env:COMPUTERNAME] OK: {0}:{1} ({2})" -f $ep.Host, $ep.Port, $ep.Description)
                     $connected = $true
                     $tcp.Close()
                     break
@@ -276,12 +276,12 @@ $connectivityOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCre
                     throw "Connection timed out"
                 }
             } catch {
-                Write-Output "[$env:COMPUTERNAME] RETRY $retry/$maxRetries: $($ep.Host)`:$($ep.Port) - $($_.Exception.Message)"
+                    Write-Output ("[$env:COMPUTERNAME] RETRY {0}/{1}: {2}:{3} - {4}" -f $retry, $maxRetries, $ep.Host, $ep.Port, $_.Exception.Message)
                 if ($retry -lt $maxRetries) { Start-Sleep -Seconds 10 }
             }
         }
         if (-not $connected) {
-            Write-Output "[$env:COMPUTERNAME] FAIL: $($ep.Host)`:$($ep.Port) ($($ep.Description)) - unreachable after $maxRetries attempts"
+            Write-Output ("[$env:COMPUTERNAME] FAIL: {0}:{1} ({2}) - unreachable after {3} attempts" -f $ep.Host, $ep.Port, $ep.Description, $maxRetries)
             $allPassed = $false
         }
     }

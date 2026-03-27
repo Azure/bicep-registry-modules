@@ -137,14 +137,24 @@ While (!(Test-ADConnection) -and $count -lt 120) {
     $count++
 }
 
-# authorize DHCP servers in AD for DNS updates
 log 'Authorizing DHCP servers in AD for DNS updates...'
-try {
-    $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
-} catch {
-    log 'Failed to query authorized DHCP servers in AD. Waiting 120 seconds before retrying...'
-    Start-Sleep -Seconds 120
-    $existingAuthorizedServers = Get-DhcpServerInDC
+$dhcpRetries = 5
+$existingAuthorizedServers = $null
+for ($r = 1; $r -le $dhcpRetries; $r++) {
+    try {
+        $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
+        log "Successfully queried authorized DHCP servers (attempt $r)"
+        break
+    } catch {
+        log "Failed to query authorized DHCP servers in AD (attempt $r/$dhcpRetries): $($_.Exception.Message)"
+        if ($r -lt $dhcpRetries) {
+            log "Waiting 60 seconds before retrying..."
+            Start-Sleep -Seconds 60
+        } else {
+            throw "Failed to query DHCP servers after $dhcpRetries attempts: $($_.Exception.Message)"
+        }
+    }
+}
 }
 
 If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 172.20.0.1 }
