@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "16088833112752789419"
+      "templateHash": "4154028585186114781"
     },
     "name": "Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned",
     "description": "This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned."
@@ -68,7 +68,7 @@
         "description": "Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the Microsoft.AzureStackHCI provider was registered in the subscription."
       }
     },
-    "resourceLocation": {
+    "enforcedLocation": {
       "type": "string",
       "defaultValue": "southeastasia",
       "metadata": {
@@ -81,12 +81,12 @@
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2025-04-01",
       "name": "[parameters('resourceGroupName')]",
-      "location": "[parameters('resourceLocation')]"
+      "location": "[parameters('enforcedLocation')]"
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))]",
+      "name": "[format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -152,7 +152,7 @@
             "value": "[format('dep-{0}-wds-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
           },
           "location": {
-            "value": "[parameters('resourceLocation')]"
+            "value": "[parameters('enforcedLocation')]"
           }
         },
         "template": {
@@ -1615,7 +1615,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-test-clustermodule-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))]",
+      "name": "[format('{0}-test-clustermodule-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1624,7 +1624,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterName.value]"
           },
           "deploymentUser": {
             "value": "deployUser"
@@ -1650,19 +1650,19 @@
           "deploymentSettings": {
             "value": {
               "customLocationName": "[format('{0}{1}-location', parameters('namePrefix'), parameters('serviceShort'))]",
-              "clusterNodeNames": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterNodeNames.value]",
-              "clusterWitnessStorageAccountName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterWitnessStorageAccountName.value]",
+              "clusterNodeNames": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterNodeNames.value]",
+              "clusterWitnessStorageAccountName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))), '2025-04-01').outputs.clusterWitnessStorageAccountName.value]",
               "defaultGateway": "172.20.0.1",
               "deploymentPrefix": "[format('a{0}', take(uniqueString(parameters('namePrefix'), parameters('serviceShort')), 7))]",
               "dnsServers": [
                 "172.20.0.1"
               ],
               "domainFqdn": "hci.local",
-              "domainOUPath": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))), '2025-04-01').outputs.domainOUPath.value]",
+              "domainOUPath": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))), '2025-04-01').outputs.domainOUPath.value]",
               "startingIPAddress": "172.20.0.55",
               "endingIPAddress": "172.20.0.65",
               "enableStorageAutoIp": true,
-              "keyVaultName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'))), '2025-04-01').outputs.keyVaultName.value]",
+              "keyVaultName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort'))), '2025-04-01').outputs.keyVaultName.value]",
               "networkIntents": [
                 {
                   "adapter": [
@@ -4641,7 +4641,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-test-nestedDependencies-{1}', uniqueString(deployment().name, parameters('enforcedLocation')), parameters('serviceShort')))]",
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
       ]
     }
