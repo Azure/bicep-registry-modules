@@ -10,6 +10,9 @@ param hciNodeCount int = 2
 @description('Optional. Enable configuring switchless storage.')
 param switchlessStorageConfig bool = false
 
+@description('Optional. The download URL for a pre-built Azure Stack HCI VHDX. When provided, skips the slower ISO download and conversion. Uses the Jumpstart public blob storage by default.')
+param hciVHDXDownloadURL string = 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx'
+
 @description('Optional. The download URL for the Azure Stack HCI ISO.')
 param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 
@@ -372,7 +375,7 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: ''
+        value: hciVHDXDownloadURL
       }
       {
         name: 'hciISODownloadURL'
