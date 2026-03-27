@@ -1165,7 +1165,7 @@ output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = vm.location
 
-import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.7.0'
+import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.3'
 @description('The list of NIC configurations of the virtual machine.')
 output nicConfigurations nicConfigurationOutputType[] = [
   for (nicConfiguration, index) in nicConfigurations: {
@@ -1282,7 +1282,7 @@ type publicKeyType = {
 
 import { ipConfigurationType } from 'modules/nic-configuration.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-import { subResourceType } from 'br/public:avm/res/network/network-interface:0.7.0'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.3'
 
 @export()
 @description('The type for the NIC configuration.')
