@@ -188,7 +188,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cache-redis.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -237,6 +237,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
 }
 
 // Deploy access policies
+@batchSize(1)
 module redis_accessPolicies 'access-policy/main.bicep' = [
   for (policy, index) in (accessPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
@@ -249,6 +250,7 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
 ]
 
 // Deploy access policy assignments
+@batchSize(1)
 module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
   for (assignment, index) in (accessPolicyAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
@@ -321,7 +323,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
