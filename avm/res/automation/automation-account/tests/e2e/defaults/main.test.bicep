@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       managedIdentities: {
-        systemAssigned: false
+        systemAssigned: true
       }
     }
   }
