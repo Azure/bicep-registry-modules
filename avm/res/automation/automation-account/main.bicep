@@ -105,11 +105,11 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) && (managedIdentities.?systemAssigned ?? false || !empty(formattedUserAssignedIdentities))
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : null)
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : 'UserAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
