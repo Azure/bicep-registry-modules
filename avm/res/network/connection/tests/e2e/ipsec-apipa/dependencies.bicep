@@ -63,8 +63,8 @@ resource primaryVirtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@
       ]
     }
     sku: {
-      name: 'VpnGw1'
-      tier: 'VpnGw1'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
     ipConfigurations: [
       {

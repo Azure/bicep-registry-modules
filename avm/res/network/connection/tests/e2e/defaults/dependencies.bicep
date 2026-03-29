@@ -72,8 +72,8 @@ resource primaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01
     vpnType: 'RouteBased'
     vpnGatewayGeneration: 'Generation2'
     sku: {
-      name: 'VpnGw2'
-      tier: 'VpnGw2'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
   }
 }
@@ -131,8 +131,8 @@ resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-
     vpnType: 'RouteBased'
     vpnGatewayGeneration: 'Generation2'
     sku: {
-      name: 'VpnGw2'
-      tier: 'VpnGw2'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
   }
 }
