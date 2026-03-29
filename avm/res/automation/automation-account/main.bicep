@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Basic'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -65,23 +65,23 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -94,6 +94,9 @@ param enableTelemetry bool = true
 @description('Optional. The source control configurations.')
 param sourceControlConfigurations sourceControlConfigurationType[]?
 
+@description('Optional. The Hybrid Runbook Worker Groups to be created in the automation account.')
+param hybridRunbookWorkerGroups hybridRunbookWorkerGroupType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -105,8 +108,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -153,7 +156,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -372,7 +375,7 @@ module automationAccount_webhook 'webhook/main.bicep' = [
 
 module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
   for (configuration, index) in (sourceControlConfigurations ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-SC-${index}'
     params: {
       automationAccountName: automationAccount.name
       branch: configuration.branch
@@ -434,6 +437,21 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
   }
 ]
 
+module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep' = [
+  for (group, index) in (hybridRunbookWorkerGroups ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
+      name: group.name
+      credentialName: group.?credentialName
+    }
+    dependsOn: [
+      automationAccount_credentials
+    ]
+  }
+]
+
 resource automationAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -474,7 +492,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
@@ -697,4 +715,18 @@ type sourceControlConfigurationType = {
 
   @description('Optional. The authorization token for the repo of the source control.')
   securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
+}
+
+import { hybridRunbookWorkerGroupWorkerType } from 'hybrid-runbook-worker-group/main.bicep'
+@export()
+@description('The type of a hybrid runbook worker group configuration.')
+type hybridRunbookWorkerGroupType = {
+  @description('Required. Name of the Hybrid Runbook Worker Group.')
+  name: string
+
+  @description('Optional. Gets or sets the name of the credential.')
+  credentialName: string?
+
+  @description('Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.')
+  hybridRunbookWorkerGroupWorkers: hybridRunbookWorkerGroupWorkerType[]?
 }

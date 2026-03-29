@@ -49,6 +49,9 @@ module testDeployment '../../../main.bicep' = {
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     applicationGatewayCertificateKeyName: certificateName
+    acrGeoReplicationLocations: [
+      'westeurope'
+    ]
   }
 }
 

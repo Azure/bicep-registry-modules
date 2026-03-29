@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "951237617128820742"
+      "version": "0.41.2.15936",
+      "templateHash": "15823712854568820369"
     },
     "name": "Azure Virtual Desktop Application Group Application",
     "description": "This module deploys an Azure Virtual Desktop Application Group Application."

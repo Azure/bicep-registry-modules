@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4069661147816092581"
+      "version": "0.41.2.15936",
+      "templateHash": "1613664886283149718"
     },
     "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
     "description": "This module deploys a Subscription wide export of the Activity Log."

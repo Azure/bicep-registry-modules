@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "7311831232712089460"
+      "version": "0.41.2.15936",
+      "templateHash": "319132526797752020"
     },
     "name": "Web Site Slot Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."

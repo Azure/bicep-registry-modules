@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "6879925552604645750"
+      "version": "0.41.2.15936",
+      "templateHash": "6971644227452167087"
     },
     "name": "Application Gateway for Containers Frontend",
     "description": "This module deploys an Application Gateway for Containers Frontend"

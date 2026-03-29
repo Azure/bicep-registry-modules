@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "15044964085158775292"
+      "version": "0.41.2.15936",
+      "templateHash": "18145549684078987782"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint."
@@ -127,8 +127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "6330077596434134380"
+              "version": "0.41.2.15936",
+              "templateHash": "730586843445522115"
             },
             "name": "CDN Profiles Endpoints Origins",
             "description": "This module deploys a CDN Profile Endpoint Origin."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "11050242102011513557"
+      "version": "0.41.2.15936",
+      "templateHash": "14562220858854486640"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."

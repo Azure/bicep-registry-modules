@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "9719705873192175921"
+      "version": "0.41.2.15936",
+      "templateHash": "7641583415110009849"
     },
     "name": "Private DNS Zone TXT record",
     "description": "This module deploys a Private DNS Zone TXT record."
@@ -208,7 +208,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/privateDnsZones/{0}/TXT/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/privateDnsZones/TXT', parameters('privateDnsZoneName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateDnsZones/TXT', parameters('privateDnsZoneName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

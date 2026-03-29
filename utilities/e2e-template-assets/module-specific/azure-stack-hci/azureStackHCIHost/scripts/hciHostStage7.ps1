@@ -159,49 +159,85 @@ $vmNicLocalNamingOut = Invoke-Command -VMName (Get-VM).Name -Credential $adminCr
 }
 log "VM NIC local naming output: $vmNicLocalNamingOut"
 
-# change dynamically assigned mgmt IP addresses to static IPs as required by validation
-log 'Changing dynamically assigned mgmt IP addresses to static IPs on HCI nodes...'
+# change dynamically assigned FABRIC IP addresses to static IPs as required by validation
+log 'Changing dynamically assigned FABRIC IP addresses to static IPs on HCI nodes...'
 $ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
 
-    $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'mgmt'
-    $prefixLength = Get-NetIPAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
-    $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
+    $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'FABRIC'
+    $prefixLength = Get-NetIPAddress -InterfaceAlias 'FABRIC' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+    $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'FABRIC' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
 
     try {
-        If (!(Get-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
-            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'mgmt'..."
+        If (!(Get-NetIPInterface -InterfaceAlias 'FABRIC' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'FABRIC'..."
         } Else {
-            Write-Output "[$env:computerName]Disabling DHCP on network interface 'mgmt'..."
-            Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'FABRIC'..."
+            Set-NetIPInterface -InterfaceAlias 'FABRIC' -Dhcp Disabled
         }
     } catch {
-        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 
     try {
-        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -InterfaceAlias 'mgmt' -ErrorAction SilentlyContinue)) {
-            Write-Output "[$env:computerName]Setting static IP address on network interface 'mgmt'..."
-            New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -InterfaceAlias 'FABRIC' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'FABRIC'..."
+            New-NetIPAddress -InterfaceAlias 'FABRIC' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
         } Else {
-            Write-Output "[$env:computerName]Static IP address already set on network interface 'mgmt'..."
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'FABRIC'..."
         }
     } catch {
-        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 
     try {
-        Write-Output "[$env:computerName]Setting DNS server addresses on network interface 'mgmt' to '$dnsClientConfig'..."
-        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ResetServerAddresses
-        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ServerAddresses $dnsClientConfig
+        Write-Output "[$env:computerName]Setting DNS server addresses on network interface 'FABRIC' to '$dnsClientConfig'..."
+        Set-DnsClientServerAddress -InterfaceAlias 'FABRIC' -ResetServerAddresses
+        Set-DnsClientServerAddress -InterfaceAlias 'FABRIC' -ServerAddresses $dnsClientConfig
     } catch {
-        Write-Output "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to set DNS server addresses on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set DNS server addresses on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 }
 log "IP change output: $ipChangeOutput"
+
+# change dynamically assigned FABRIC2 IP addresses to static IPs as required by validation
+log 'Changing dynamically assigned FABRIC2 IP addresses to static IPs on HCI nodes...'
+$ipChangeOutput2 = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    $dhcpIpConfig2 = Get-NetIPConfiguration -InterfaceAlias 'FABRIC2'
+    $prefixLength2 = Get-NetIPAddress -InterfaceAlias 'FABRIC2' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+
+    try {
+        If (!(Get-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'FABRIC2'..."
+        } Else {
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'FABRIC2'..."
+            Set-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Disabled
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+
+    try {
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -InterfaceAlias 'FABRIC2' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'FABRIC2'..."
+            New-NetIPAddress -InterfaceAlias 'FABRIC2' -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -AddressFamily IPv4 -PrefixLength $prefixLength2
+        } Else {
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'FABRIC2'..."
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+}
+log "IP change output (FABRIC2): $ipChangeOutput2"

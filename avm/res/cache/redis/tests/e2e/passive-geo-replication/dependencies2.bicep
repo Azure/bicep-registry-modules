@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Redis Cache to create.')
 param redisName string
 
-resource redis 'Microsoft.Cache/redis@2023-08-01' = {
+resource redis 'Microsoft.Cache/redis@2024-11-01' = {
   name: redisName
   location: location
   properties: {

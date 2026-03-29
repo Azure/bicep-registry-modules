@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "15709403792257280801"
+      "version": "0.41.2.15936",
+      "templateHash": "13166454970735057169"
     },
     "name": "Automation Account Powershell72 Modules",
     "description": "This module deploys a Powershell72 Module in the Automation Account."

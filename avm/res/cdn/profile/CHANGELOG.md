@@ -1,6 +1,72 @@
 # Changelog
 
-The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/CHANGELOG.md).
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
+
+## 0.19.1
+
+### Changes
+
+- Publishing child module `avm/res/cdn/profile/origin-group/origin`
+
+### Breaking Changes
+
+- None
+
+## 0.19.0
+
+### Changes
+
+- Add `authentication` parameter to `originGroupType` and pass through to child originGroups from `avm/res/cdn/profile` (#6630)
+
+### Breaking Changes
+
+- None
+
+## 0.18.0
+
+### Changes
+
+- Add `authentication` parameter to Origin Group (#6630) and update resource API version.
+
+### Breaking Changes
+
+- None
+
+## 0.17.3
+
+### Changes
+
+- Published the following child modules for standalone use:
+  - `custom-domain`
+  - `origin-group`
+  - `rule-set`
+  - `security-policy`
+  - `afd-endpoint/route`
+- Added `enableReferencedModulesTelemetry` variable to parent and `afd-endpoint` modules to disable telemetry for child modules when called from parent.
+
+### Breaking Changes
+
+- None
+
+## 0.17.2
+
+### Changes
+
+- Fixed `identity` variable to check `formattedUserAssignedIdentities` instead of `formattedRoleAssignments` when determining identity type. This bug was introduced in v0.17.0 and led to unintended logical behavior. (#6538)
+
+### Breaking Changes
+
+- None
+
+## 0.17.1
+
+### Changes
+
+- Updated test files to use generic dummy hostname for URL redirect action parameters.
+
+### Breaking Changes
+
+- None
 
 ## 0.17.0
 
