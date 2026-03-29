@@ -159,6 +159,7 @@ module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0
       name: publicIPPrefix.?name ?? '${name}-pip'
       location: location
       lock: publicIPPrefix.?lock ?? lock
+      skuName: publicIPPrefix.?skuName ?? natGatewaySku
       prefixLength: publicIPPrefix.prefixLength
       customIPPrefix: publicIPPrefix.?customIPPrefix
       roleAssignments: publicIPPrefix.?roleAssignments
@@ -223,6 +224,7 @@ module natGateway_publicIPPrefixesV6 'br/public:avm/res/network/public-ip-prefix
       name: publicIPPrefix.?name ?? '${name}-pipv6'
       location: location
       lock: publicIPPrefix.?lock ?? lock
+      skuName: publicIPPrefix.?skuName ?? natGatewaySku
       prefixLength: publicIPPrefix.prefixLength
       customIPPrefix: publicIPPrefix.?customIPPrefix
       roleAssignments: publicIPPrefix.?roleAssignments
@@ -371,6 +373,9 @@ type publicIPPrefixType = {
   @description('Required. The name of the Public IP Prefix.')
   @minLength(1)
   name: string
+
+  @description('Optional. Name of a public IP prefix SKU.')
+  skuName: ('Standard' | 'StandardV2')?
 
   @description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
   tier: ('Global' | 'Regional')?

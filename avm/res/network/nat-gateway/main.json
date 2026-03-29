@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "237024122580920943"
+      "templateHash": "3507510501751778108"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway."
@@ -174,6 +174,17 @@
           "minLength": 1,
           "metadata": {
             "description": "Required. The name of the Public IP Prefix."
+          }
+        },
+        "skuName": {
+          "type": "string",
+          "allowedValues": [
+            "Standard",
+            "StandardV2"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of a public IP prefix SKU."
           }
         },
         "tier": {
@@ -1647,6 +1658,9 @@
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixes'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
+          "skuName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixes'), createArray())[copyIndex()], 'skuName'), parameters('natGatewaySku'))]"
+          },
           "prefixLength": {
             "value": "[coalesce(parameters('publicIPPrefixes'), createArray())[copyIndex()].prefixLength]"
           },
@@ -2891,6 +2905,9 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixesV6'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "skuName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixesV6'), createArray())[copyIndex()], 'skuName'), parameters('natGatewaySku'))]"
           },
           "prefixLength": {
             "value": "[coalesce(parameters('publicIPPrefixesV6'), createArray())[copyIndex()].prefixLength]"

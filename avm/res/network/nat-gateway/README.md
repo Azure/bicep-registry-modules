@@ -2163,6 +2163,7 @@ Specifies the properties of the Public IP Prefixes to create and be used by the 
 | [`lock`](#parameter-publicipprefixeslock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipprefixespublicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-publicipprefixesroleassignments) | array | Array of role assignments to create. |
+| [`skuName`](#parameter-publicipprefixesskuname) | string | Name of a public IP prefix SKU. |
 | [`tags`](#parameter-publicipprefixestags) | object | Tags of the resource. |
 | [`tier`](#parameter-publicipprefixestier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
 
@@ -2401,6 +2402,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `publicIPPrefixes.skuName`
+
+Name of a public IP prefix SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+    'StandardV2'
+  ]
+  ```
+
 ### Parameter: `publicIPPrefixes.tags`
 
 Tags of the resource.
@@ -2447,6 +2462,7 @@ Specifies the properties of the Public IPv6 Prefixes to create and be used by th
 | [`lock`](#parameter-publicipprefixesv6lock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipprefixesv6publicipaddressversion) | string | The public IP address version. |
 | [`roleAssignments`](#parameter-publicipprefixesv6roleassignments) | array | Array of role assignments to create. |
+| [`skuName`](#parameter-publicipprefixesv6skuname) | string | Name of a public IP prefix SKU. |
 | [`tags`](#parameter-publicipprefixesv6tags) | object | Tags of the resource. |
 | [`tier`](#parameter-publicipprefixesv6tier) | string | Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty. |
 
@@ -2682,6 +2698,20 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `publicIPPrefixesV6.skuName`
+
+Name of a public IP prefix SKU.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+    'StandardV2'
   ]
   ```
 
