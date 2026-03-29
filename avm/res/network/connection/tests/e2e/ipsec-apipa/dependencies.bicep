@@ -44,9 +44,9 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
     publicIPAllocationMethod: 'Static'
   }
   zones: [
-    1
-    2
-    3
+    '1'
+    '2'
+    '3'
   ]
 }
 

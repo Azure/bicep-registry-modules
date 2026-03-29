@@ -49,9 +49,9 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
     name: 'Standard'
   }
   zones: [
-    1
-    2
-    3
+    '1'
+    '2'
+    '3'
   ]
 }
 
@@ -113,9 +113,9 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
     name: 'Standard'
   }
   zones: [
-    1
-    2
-    3
+    '1'
+    '2'
+    '3'
   ]
 }
 
