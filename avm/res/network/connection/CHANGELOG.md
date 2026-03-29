@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated VPN Gateway SKUs in all e2e test dependencies from non-AZ (`VpnGw2`, `VpnGw1`) to AZ-enabled (`VpnGw2AZ`) to fix `NonAzSkusNotAllowedForVPNGateway` deployment errors, as Azure no longer supports non-AZ VPN Gateway SKUs.
+- Added `zones: [1, 2, 3]` to all Standard Public IP resources in e2e test dependencies, as required by AZ VPN Gateway SKUs.
 
 ### Breaking Changes
 

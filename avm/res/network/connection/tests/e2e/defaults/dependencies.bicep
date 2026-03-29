@@ -48,6 +48,11 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   sku: {
     name: 'Standard'
   }
+  zones: [
+    1
+    2
+    3
+  ]
 }
 
 resource primaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01' = {
@@ -106,7 +111,12 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   }
   sku: {
     name: 'Standard'
-  } 
+  }
+  zones: [
+    1
+    2
+    3
+  ]
 }
 
 resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01' = {
