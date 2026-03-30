@@ -1,5 +1,5 @@
 ---
-name: "AVM-Boostrap"
+name: "AVM-Bootstrap"
 description: "Bootstrap Azure Verified Modules work in this repository"
 agent: agent
 model: "Claude Opus 4.6 (copilot)"
