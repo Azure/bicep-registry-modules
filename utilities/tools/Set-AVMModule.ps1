@@ -1,4 +1,4 @@
-﻿#requires -version 7.3
+#requires -version 7.3
 <#
 .SYNOPSIS
 Create/update all content of an AVM module that can be generated for the user
