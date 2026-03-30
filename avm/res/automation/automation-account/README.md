@@ -26,13 +26,15 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Automation/automationAccounts` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts)</li></ul> |
-| `Microsoft.Automation/automationAccounts/credentials` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/credentials` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_hybridrunbookworkergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/hybridRunbookWorkerGroups)</li></ul> |
+| `Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_hybridrunbookworkergroups_hybridrunbookworkers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers)</li></ul> |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_jobschedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/jobSchedules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/modules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/modules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/powerShell72Modules` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_powershell72modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules)</li></ul> |
-| `Microsoft.Automation/automationAccounts/python2Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages)</li></ul> |
-| `Microsoft.Automation/automationAccounts/python3Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages)</li></ul> |
-| `Microsoft.Automation/automationAccounts/runbooks` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python2Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python2Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python3Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python3Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/runbooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/runbooks)</li></ul> |
 | `Microsoft.Automation/automationAccounts/schedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/sourceControls` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_sourcecontrols.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/sourceControls)</li></ul> |
 | `Microsoft.Automation/automationAccounts/variables` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables)</li></ul> |
@@ -250,6 +252,12 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           product: 'OMSGallery/Updates'
           publisher: 'Microsoft'
         }
+      }
+    ]
+    hybridRunbookWorkerGroups: [
+      {
+        credentialName: 'Credential01'
+        name: 'myGroup'
       }
     ]
     jobSchedules: [
@@ -488,6 +496,14 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
             "product": "OMSGallery/Updates",
             "publisher": "Microsoft"
           }
+        }
+      ]
+    },
+    "hybridRunbookWorkerGroups": {
+      "value": [
+        {
+          "credentialName": "Credential01",
+          "name": "myGroup"
         }
       ]
     },
@@ -748,6 +764,12 @@ param gallerySolutions = [
       product: 'OMSGallery/Updates'
       publisher: 'Microsoft'
     }
+  }
+]
+param hybridRunbookWorkerGroups = [
+  {
+    credentialName: 'Credential01'
+    name: 'myGroup'
   }
 ]
 param jobSchedules = [
@@ -1419,6 +1441,7 @@ param variables = [
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the linked log analytics workspace. |
+| [`hybridRunbookWorkerGroups`](#parameter-hybridrunbookworkergroups) | array | The Hybrid Runbook Worker Groups to be created in the automation account. |
 | [`jobSchedules`](#parameter-jobschedules) | array | List of jobSchedules to be created in the automation account. |
 | [`linkedWorkspaceResourceId`](#parameter-linkedworkspaceresourceid) | string | ID of the log analytics workspace to be linked to the deployed automation account. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1766,6 +1789,60 @@ Name of the solution to be created.<p>For solutions authored by Microsoft, the n
 The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
 
 - Required: No
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups`
+
+The Hybrid Runbook Worker Groups to be created in the automation account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hybridrunbookworkergroupsname) | string | Name of the Hybrid Runbook Worker Group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentialName`](#parameter-hybridrunbookworkergroupscredentialname) | string | Gets or sets the name of the credential. |
+| [`hybridRunbookWorkerGroupWorkers`](#parameter-hybridrunbookworkergroupshybridrunbookworkergroupworkers) | array | An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group. |
+
+### Parameter: `hybridRunbookWorkerGroups.name`
+
+Name of the Hybrid Runbook Worker Group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups.credentialName`
+
+Gets or sets the name of the credential.
+
+- Required: No
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups.hybridRunbookWorkerGroupWorkers`
+
+An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`vmResourceId`](#parameter-hybridrunbookworkergroupshybridrunbookworkergroupworkersvmresourceid) | string | Azure Resource Manager Id for a virtual machine. |
+
+### Parameter: `hybridRunbookWorkerGroups.hybridRunbookWorkerGroupWorkers.vmResourceId`
+
+Azure Resource Manager Id for a virtual machine.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `jobSchedules`

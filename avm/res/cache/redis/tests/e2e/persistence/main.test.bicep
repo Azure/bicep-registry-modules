@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -54,11 +55,21 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       skuName: 'Premium'
+      replicasPerMaster: 1
+      replicasPerPrimary: 1
+      zoneRedundant: false
+      managedIdentities: {
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       redisConfiguration: {
         'rdb-backup-enabled': 'true'
         'rdb-backup-frequency': '60'
         'rdb-backup-max-snapshot-count': '1'
-        'rdb-storage-connection-string': nestedDependencies.outputs.storageConnectionString
+        'preferred-data-persistence-auth-method': 'ManagedIdentity'
+        'storage-subscription-id': subscription().subscriptionId
+        'rdb-storage-connection-string': 'https://${nestedDependencies.outputs.storageAccountName}.blob.${environment().suffixes.storage}/'
       }
     }
   }

@@ -106,6 +106,12 @@ param endingIPAddress string
 @description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')
 param dnsServers string[]
 
+@description('Optional. If true, the infrastructure network uses DHCP. If false, static IP pools are used.')
+param useDhcp bool = false
+
+@description('Optional. Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices.')
+param physicalNodesSettings array = []
+
 @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
 param networkIntents array
 
@@ -125,6 +131,13 @@ param customLocationName string
 @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
 param clusterWitnessStorageAccountName string
 
+@description('Optional. Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload.')
+@allowed([
+  'Cloud'
+  'No Witness'
+])
+param witnessType string = 'Cloud'
+
 @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster.')
 param keyVaultName string
 
@@ -137,6 +150,27 @@ param cloudId string?
   'ClusterUpgrade'
 ])
 param operationType string = 'ClusterProvisioning'
+
+@description('Optional. Solution builder extension (SBE) version.')
+param sbeVersion string = ''
+
+@description('Optional. Solution builder extension (SBE) family value.')
+param sbeFamily string = ''
+
+@description('Optional. Solution builder extension (SBE) publisher name.')
+param sbePublisher string = ''
+
+@description('Optional. Solution builder extension (SBE) manifest source.')
+param sbeManifestSource string = ''
+
+@description('Optional. Solution builder extension (SBE) creation date.')
+param sbeManifestCreationDate string = ''
+
+@description('Optional. Solution builder extension (SBE) partner properties.')
+param partnerProperties array = []
+
+@description('Optional. Solution builder extension (SBE) partner credential properties.')
+param partnerCredentialList array = []
 
 var arcNodeResourceIds = [
   for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
@@ -151,7 +185,33 @@ var storageNetworksArray = [
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
+var translatedNetworkIntents = [
+  for intent in networkIntents: {
+    ...intent
+    qosPolicyOverrides: (intent.?qosPolicyOverrides == null) ? null : {
+      bandwidthPercentage_SMB: intent.qosPolicyOverrides.?bandwidthPercentageSMB ?? ''
+      priorityValue8021Action_Cluster: intent.qosPolicyOverrides.?priorityValue8021ActionCluster ?? ''
+      priorityValue8021Action_SMB: intent.qosPolicyOverrides.?priorityValue8021ActionSMB ?? ''
+    }
+  }
+]
+
+var sbeCredentialList = [
+  for credential in partnerCredentialList: {
+    secretName: empty(cloudId) ? credential.secretName : '${clusterName}-${credential.secretName}-${cloudId}'
+    eceSecretName: credential.secretName
+    secretLocation: empty(cloudId)
+      ? 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${credential.secretName}'
+      : 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${clusterName}-${credential.secretName}-${cloudId}'
+  }
+]
+
+var witnessTypeVar = witnessType == 'No Witness' ? '' : 'Cloud'
+var clusterWitnessStorageAccountNameVar = witnessType == 'No Witness' ? '' : clusterWitnessStorageAccountName
+var azureServiceEndpointVar = witnessType == 'No Witness' ? '' : environment().suffixes.storage
+
+
+resource cluster 'Microsoft.AzureStackHCI/clusters@2025-10-01' existing = {
   name: clusterName
 }
 
@@ -163,7 +223,7 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-09-01-preview' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2025-10-01' = {
   name: name
   parent: cluster
   properties: {
@@ -171,7 +231,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
     deploymentMode: deploymentMode
     operationType: operationType == 'ClusterUpgrade' ? operationType : null
     deploymentConfiguration: {
-      version: operationType == 'ClusterUpgrade' ? '10.1.0.0' : '10.0.0.0'
+      version: operationType == 'ClusterUpgrade' ? '1#_moduleVersion_#.0' : '10.0.0.0'
       scaleUnits: [
         {
           deploymentData: {
@@ -196,10 +256,10 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
             }
             cluster: {
               name: clusterADName
-              witnessType: 'Cloud'
+              witnessType: witnessTypeVar
               witnessPath: ''
-              cloudAccountName: clusterWitnessStorageAccountName
-              azureServiceEndpoint: environment().suffixes.storage
+              cloudAccountName: clusterWitnessStorageAccountNameVar
+              azureServiceEndpoint: azureServiceEndpointVar
             }
             storage: {
               configurationMode: storageConfigurationMode
@@ -217,25 +277,30 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                   }
                 ]
                 dnsServers: dnsServers
+                useDhcp: useDhcp
               }
             ]
             physicalNodes: [
-              for hciNode in arcNodeResourceIds: {
-                name: reference(hciNode, '2022-12-27', 'Full').properties.displayName
+              for (hciNode, index) in arcNodeResourceIds: {
+                name: !empty(physicalNodesSettings)
+                  ? physicalNodesSettings[index].name
+                  : reference(hciNode, '2022-12-27', 'Full').properties.displayName
                 // Getting the IP from the first NIC of the node with a default gateway. Only the first management pNIC should have a gateway defined.
                 // This reference call requires that the 'DeviceManagementExtension' extension be fully initialized on each node, which creates the
                 // edgeDevices sub-resource queried below, containing the IP configuration. View the edgedevice to troubleshoot by appending
                 // `/providers/microsoft.azurestackhci/edgedevices/default` to the end the HCI Arc Machine resource id and using `az resource show --id <id>`
-                ipv4Address: (filter(
-                  reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails,
-                  nic => nic.?defaultGateway != null
-                ))[0].ip4Address
+                ipv4Address: !empty(physicalNodesSettings)
+                  ? physicalNodesSettings[index].ipv4Address
+                  : (filter(
+                      reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails,
+                      nic => nic.?defaultGateway != null
+                    ))[0].ip4Address
               }
             ]
             hostNetwork: operationType == 'ClusterUpgrade'
               ? null
               : {
-                  intents: networkIntents
+                  intents: translatedNetworkIntents
                   storageConnectivitySwitchless: storageConnectivitySwitchless
                   storageNetworks: storageNetworksArray
                   enableStorageAutoIp: enableStorageAutoIp
@@ -254,6 +319,17 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                   : 'https://${keyVaultName}${environment().suffixes.keyvaultDns}/secrets/${clusterName}-${secretName}-${cloudId}'
               }
             ]
+          }
+          sbePartnerInfo: {
+            sbeDeploymentInfo: {
+              version: sbeVersion
+              family: sbeFamily
+              publisher: sbePublisher
+              sbeManifestSource: sbeManifestSource
+              sbeManifestCreationDate: empty(sbeManifestCreationDate) ? null : sbeManifestCreationDate
+            }
+            partnerProperties: partnerProperties
+            credentialList: sbeCredentialList
           }
         }
       ]

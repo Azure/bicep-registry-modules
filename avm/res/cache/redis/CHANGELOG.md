@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis/CHANGELOG.md).
 
+## 0.16.5
+
+### Changes
+
+- Fixed a bug when deploying multiple `accessPolicies` and `accessPolicyAssignments`
+- Fixed `persistence` test to use Managed Identity for connection to Storage Account
+- Fixed `passive-geo-replication` test to use latest Az PowerShell module
+- Updated resource API versions to use latest versions
+
+### Breaking Changes
+
+- None
+
 ## 0.16.4
 
 ### Changes
