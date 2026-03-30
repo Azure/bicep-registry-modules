@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
-## 0.7.3
+## 0.8.0
 
 ### Changes
 
@@ -10,7 +10,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Set default value for private endpoint virtual network policies (parameter `enablePrivateEndpointVNetPolicies`) to 'Disabled'. Any virtual networks deployed before this version which enabled high scale private endpoints need to add a parameter or risk that feature being disabled by this new default value.
 
 ## 0.7.2
 
