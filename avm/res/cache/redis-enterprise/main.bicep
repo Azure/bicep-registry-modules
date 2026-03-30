@@ -118,17 +118,9 @@ param capacity int = 2
 @description('Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.')
 param skuName string = 'Balanced_B5'
 
-@allowed([
-  1
-  2
-  3
-])
 @description('Optional. The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.')
-param availabilityZones int[] = [
-  1
-  2
-  3
-]
+@allowed([1, 2, 3])
+param availabilityZones int[] = pickZones('Microsoft.Cache', 'redisEnterprise', location, 3)
 
 // ================ //
 // Database params  //
@@ -158,8 +150,6 @@ var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptim
   'FlashOptimized'
 ) || startsWith(skuName, 'MemoryOptimized')
 var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'EnterpriseFlash')
-
-var zones = isEnterprise ? map(availabilityZones, zone => string(zone)) : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -282,7 +272,7 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
     capacity: isEnterprise ? capacity : null
     name: skuName
   }
-  zones: !empty(zones) ? zones : null
+  zones: isEnterprise ? map(availabilityZones, zone => string(zone)) : null
 }
 
 module redisCluster_database 'database/main.bicep' = {
