@@ -6,12 +6,40 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "14610700480298713032"
+      "templateHash": "14767118554124456505"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway."
   },
   "definitions": {
+    "radiusServersType": {
+      "type": "object",
+      "properties": {
+        "radiusServerAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The address of this radius server."
+          }
+        },
+        "radiusServerScore": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The initial score assigned to this radius server."
+          }
+        },
+        "radiusServerSecret": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secret used for this radius server."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "vpnClientIpsecPoliciesType": {
       "type": "object",
       "properties": {
@@ -64,7 +92,7 @@
             "description": "Optional. The size of the SA data in kilobytes. Required if using IKEv2."
           }
         },
-        "salfetimeSeconds": {
+        "saLifeTimeSeconds": {
           "type": "int",
           "nullable": true,
           "metadata": {
@@ -179,6 +207,9 @@
     },
     "radiusServers": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/radiusServersType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers."
@@ -242,7 +273,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/vpnServerConfigurations@2023-11-01#properties/tags"
+          "source": "Microsoft.Network/vpnServerConfigurations@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -267,7 +298,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('46d3xbcp.res.network-vpnserverconfiguration.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -286,7 +317,7 @@
     },
     "vpnServerConfig": {
       "type": "Microsoft.Network/vpnServerConfigurations",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -325,8 +356,8 @@
             "count": "[length(coalesce(parameters('radiusServers'), createArray()))]",
             "input": {
               "radiusServerAddress": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerAddress]",
-              "radiusServerScore": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerScore]",
-              "radiusServerSecret": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerSecret]"
+              "radiusServerScore": "[tryGet(coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')], 'radiusServerScore')]",
+              "radiusServerSecret": "[tryGet(coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')], 'radiusServerSecret')]"
             }
           },
           {
@@ -413,7 +444,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vpnServerConfig', '2023-11-01', 'full').location]"
+      "value": "[reference('vpnServerConfig', '2025-05-01', 'full').location]"
     }
   }
 }
