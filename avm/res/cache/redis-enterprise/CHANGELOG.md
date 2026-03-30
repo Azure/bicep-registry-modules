@@ -7,7 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Fixed a bug in which the `availabilityZones` integer-based parameter was not correctly passed to `string` before passing it to the resource provider
-- Minor template internal restructuring
+- Minor template-internal restructuring
 
 ### Breaking Changes
 
