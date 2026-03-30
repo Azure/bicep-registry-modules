@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "16450098592492229110"
+      "templateHash": "1123980432021397139"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -100,6 +100,26 @@
               "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
             },
             "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+          },
+          "nullable": true
+        },
+        "vectorEmbeddingPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
+            },
+            "description": "Optional. The vector embedding policy for the container."
+          },
+          "nullable": true
+        },
+        "fullTextPolicy": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/fullTextPolicy"
+            },
+            "description": "Optional. The full text policy for the container."
           },
           "nullable": true
         },
@@ -252,6 +272,12 @@
           "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput')))]",
           "uniqueKeyPolicyKeys": {
             "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'uniqueKeyPolicyKeys')]"
+          },
+          "vectorEmbeddingPolicy": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'vectorEmbeddingPolicy')]"
+          },
+          "fullTextPolicy": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'fullTextPolicy')]"
           }
         },
         "template": {
@@ -262,7 +288,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "14703901962876517060"
+              "templateHash": "16468576643921480623"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -368,6 +394,26 @@
               },
               "nullable": true
             },
+            "vectorEmbeddingPolicy": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
+                },
+                "description": "Optional. The vector embedding policy for the container."
+              },
+              "nullable": true
+            },
+            "fullTextPolicy": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/fullTextPolicy"
+                },
+                "description": "Optional. The full text policy for the container."
+              },
+              "nullable": true
+            },
             "kind": {
               "type": "string",
               "defaultValue": "Hash",
@@ -419,7 +465,7 @@
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
+                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
                 "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [

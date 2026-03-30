@@ -86,8 +86,37 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
   }
 }
 
-// optional VNET and subnet for the HCI host Azure VM
-resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+// NAT Gateway for reliable outbound internet (JumpStart pattern - replaces flaky RRAS NAT)
+resource natGatewayPublicIp 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
+  name: '${virtualNetworkName}-natgw-pip'
+  location: location
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv4'
+  }
+}
+
+resource natGateway 'Microsoft.Network/natGateways@2024-07-01' = {
+  name: '${virtualNetworkName}-natgw'
+  location: location
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    idleTimeoutInMinutes: 10
+    publicIpAddresses: [
+      {
+        id: natGatewayPublicIp.id
+      }
+    ]
+  }
+}
+
+// VNET and subnet for the HCI host Azure VM - with NAT Gateway for reliable outbound
+resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -99,6 +128,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
         name: 'subnet01'
         properties: {
           addressPrefix: '10.0.0.0/24'
+          natGateway: {
+            id: natGateway.id
+          }
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
@@ -147,7 +179,6 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-0
 resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = {
   name: HCIHostVirtualMachineScaleSetName
   location: location
-  zones: ['1', '2', '3']
   properties: {
     orchestrationMode: 'Flexible'
     platformFaultDomainCount: 1
@@ -180,7 +211,6 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
   for diskNum in range(1, hciNodeCount): {
     name: '${diskNamePrefix}${string(diskNum)}'
     location: location
-    zones: ['1']
     sku: {
       name: 'Premium_LRS'
     }
@@ -198,7 +228,6 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   location: location
   name: virtualMachineName
-  zones: ['1']
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -229,7 +258,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
       }
       osDisk: {
         createOption: 'FromImage'
-        diskSizeGB: 128
+        diskSizeGB: 1024
         deleteOption: 'Delete'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
