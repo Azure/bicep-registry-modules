@@ -22,6 +22,7 @@ param httpProxyConfig resourceInput<'Microsoft.AzureStackHCI/virtualMachineInsta
 @description('Required. Network profile configuration.')
 param networkProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.networkProfile
 
+@secure()
 @description('Required. OS profile configuration.')
 param osProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.osProfile
 

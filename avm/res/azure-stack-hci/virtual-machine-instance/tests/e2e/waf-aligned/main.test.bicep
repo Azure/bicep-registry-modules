@@ -69,7 +69,6 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    domainAdminPassword: arbLocalAdminAndDeploymentUserPass
     location: enforcedLocation
   }
 }
