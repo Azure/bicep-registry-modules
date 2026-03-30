@@ -44,24 +44,28 @@ Publishing a child module does **not** move or reorganize any files. The child m
 
 ---
 
-## Workflow
-
-Follow instructions in the [AVM Bicep Child Module Publishing](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/child-module-publishing/) documentation for the full step-by-step process, including code snippets and file templates.
+## Prerequisites
 
 ### Step 0: Skill version output
 
-First, output the version of this skill for tracking purposes:
+> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
 
 <!-- Comment for the reviewer: make sure this version block is removed before merging. -->
 
 ```json
 {
   "skill": "avm-child-module-publishing",
-  "version": "0.6"
+  "version": "0.6",
+  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
+  "model": "<your model name>"
 }
 ```
 
-> Output this version block visibly to the user at the start of the workflow for traceability.
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST STOP IMMEDIATELY** and inform the user that they are using an unsupported configuration for this skill. This skill is only compatible with agent-mode `agent` and model `Claude Opus 4.6`. Do not proceed with any steps if the configuration is incorrect. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+
+## Workflow
+
+Follow instructions in the [AVM Bicep Child Module Publishing](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/child-module-publishing/) documentation for the full step-by-step process, including code snippets and file templates.
 
 ## Decision Points
 
@@ -102,6 +106,5 @@ Before completing, verify:
 - [ ] `CHANGELOG.md` exists in child folder with `0.1.0` initial entry
 - [ ] All versioned parent changelogs updated with incremented patch version
 - [ ] `Set-AVMModule -ModuleFolderPath` run for each affected module — child and all parents (Step 3.1)
-- [ ] Static validation tests passed (Step 3.2)
 - [ ] All changes committed in a single commit (Step 3.3)
 - [ ] No README.md files were manually edited
