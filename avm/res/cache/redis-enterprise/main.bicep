@@ -198,7 +198,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cache-redisenterprise.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -343,7 +343,7 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
