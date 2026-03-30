@@ -99,7 +99,7 @@ param zoneRedundant bool = true
 
 @description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
 @allowed([1, 2, 3])
-param availabilityZones int[] = pickZones('Microsoft.Cache', 'redis', location, 3)
+param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
 @allowed([

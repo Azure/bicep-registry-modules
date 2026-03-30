@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      availabilityZones: pickZones('Microsoft.Cache', 'redis', resourceLocation, 3)
       skuName: 'Premium'
       capacity: 3
       shardCount: 3
