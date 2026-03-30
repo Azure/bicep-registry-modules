@@ -269,6 +269,7 @@ resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
   }
 ]
 
+@batchSize(1) // Serialize edgeDevice creation to avoid HCI RP race condition when provisioning multiple nodes simultaneously
 resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2025-10-01' = [
   for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
     name: 'default'
