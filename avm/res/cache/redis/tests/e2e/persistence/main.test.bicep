@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Premium'
       replicasPerMaster: 1
       replicasPerPrimary: 1
-      zoneRedundant: false
+      availabilityZones: []
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId

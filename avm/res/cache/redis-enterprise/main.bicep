@@ -120,7 +120,7 @@ param skuName string = 'Balanced_B5'
 
 @description('Optional. The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.')
 @allowed([1, 2, 3])
-param availabilityZones int[] = pickZones('Microsoft.Cache', 'redisEnterprise', location, 3)
+param availabilityZones int[] = [1, 2, 3]
 
 // ================ //
 // Database params  //

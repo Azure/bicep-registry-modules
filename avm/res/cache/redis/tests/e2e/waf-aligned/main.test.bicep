@@ -79,7 +79,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       minimumTlsVersion: '1.2'
-      zoneRedundant: true
       availabilityZones: map(pickZones('Microsoft.Cache', 'redis', resourceLocation, 3), zone => int(zone))
       zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [

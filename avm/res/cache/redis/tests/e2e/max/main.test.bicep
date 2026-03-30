@@ -104,7 +104,6 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       minimumTlsVersion: '1.2'
-      zoneRedundant: true
       availabilityZones: [1, 2]
       zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [

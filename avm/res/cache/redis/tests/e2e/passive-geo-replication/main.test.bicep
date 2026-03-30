@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = [
       capacity: 2
       enableNonSslPort: true
       minimumTlsVersion: '1.2'
-      zoneRedundant: false
+      availabilityZones: []
       replicasPerPrimary: 1
       replicasPerMaster: 1
       geoReplicationObject: {
