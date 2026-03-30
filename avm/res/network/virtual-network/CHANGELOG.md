@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for private endpoint virtual network policies. These are used to enable virtual networks to support more than 1000 private endpoints or more than 4000 private endpoints in peered virtual networks.
+- Added support for private endpoint virtual network policies (parameter `enablePrivateEndpointVNetPolicies`). These are used to enable virtual networks to support more than 1000 private endpoints or more than 4000 private endpoints in peered virtual networks.
 
 ### Breaking Changes
 
