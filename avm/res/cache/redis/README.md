@@ -32,9 +32,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cache/redis/firewallRules` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules)</li></ul> |
 | `Microsoft.Cache/redis/linkedServers` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_linkedservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-12-01-preview/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -439,6 +439,36 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crmax001'
     // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Read Only Policy'
+        permissions: '+@read'
+      }
+      {
+        name: 'Write Only Policy'
+        permissions: '+@write'
+      }
+      {
+        name: 'Admin Policy'
+        permissions: '+@all'
+      }
+      {
+        name: 'Custom Pattern Policy'
+        permissions: '+@read +set ~cache:*'
+      }
+    ]
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Custom Pattern Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi-crmax'
+      }
+      {
+        accessPolicyName: 'Admin Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi2-crmax'
+      }
+    ]
     availabilityZones: [
       1
       2
@@ -582,6 +612,40 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crmax001"
     },
     // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Read Only Policy",
+          "permissions": "+@read"
+        },
+        {
+          "name": "Write Only Policy",
+          "permissions": "+@write"
+        },
+        {
+          "name": "Admin Policy",
+          "permissions": "+@all"
+        },
+        {
+          "name": "Custom Pattern Policy",
+          "permissions": "+@read +set ~cache:*"
+        }
+      ]
+    },
+    "accessPolicyAssignments": {
+      "value": [
+        {
+          "accessPolicyName": "Custom Pattern Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi-crmax"
+        },
+        {
+          "accessPolicyName": "Admin Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi2-crmax"
+        }
+      ]
+    },
     "availabilityZones": {
       "value": [
         1,
@@ -755,6 +819,36 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crmax001'
 // Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Read Only Policy'
+    permissions: '+@read'
+  }
+  {
+    name: 'Write Only Policy'
+    permissions: '+@write'
+  }
+  {
+    name: 'Admin Policy'
+    permissions: '+@all'
+  }
+  {
+    name: 'Custom Pattern Policy'
+    permissions: '+@read +set ~cache:*'
+  }
+]
+param accessPolicyAssignments = [
+  {
+    accessPolicyName: 'Custom Pattern Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi-crmax'
+  }
+  {
+    accessPolicyName: 'Admin Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi2-crmax'
+  }
+]
 param availabilityZones = [
   1
   2
@@ -1041,13 +1135,23 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     name: 'crper001'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     redisConfiguration: {
+      'preferred-data-persistence-auth-method': 'ManagedIdentity'
       'rdb-backup-enabled': 'true'
       'rdb-backup-frequency': '60'
       'rdb-backup-max-snapshot-count': '1'
       'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+      'storage-subscription-id': '<storage-subscription-id>'
     }
+    replicasPerMaster: 1
+    replicasPerPrimary: 1
     skuName: 'Premium'
+    zoneRedundant: false
   }
 }
 ```
@@ -1072,16 +1176,34 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "redisConfiguration": {
       "value": {
+        "preferred-data-persistence-auth-method": "ManagedIdentity",
         "rdb-backup-enabled": "true",
         "rdb-backup-frequency": "60",
         "rdb-backup-max-snapshot-count": "1",
-        "rdb-storage-connection-string": "<rdb-storage-connection-string>"
+        "rdb-storage-connection-string": "<rdb-storage-connection-string>",
+        "storage-subscription-id": "<storage-subscription-id>"
       }
+    },
+    "replicasPerMaster": {
+      "value": 1
+    },
+    "replicasPerPrimary": {
+      "value": 1
     },
     "skuName": {
       "value": "Premium"
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1101,13 +1223,23 @@ using 'br/public:avm/res/cache/redis:<version>'
 param name = 'crper001'
 // Non-required parameters
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param redisConfiguration = {
+  'preferred-data-persistence-auth-method': 'ManagedIdentity'
   'rdb-backup-enabled': 'true'
   'rdb-backup-frequency': '60'
   'rdb-backup-max-snapshot-count': '1'
   'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+  'storage-subscription-id': '<storage-subscription-id>'
 }
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
 param skuName = 'Premium'
+param zoneRedundant = false
 ```
 
 </details>
@@ -2721,7 +2853,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

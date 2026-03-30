@@ -33,7 +33,7 @@ param action string[] = [
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-11-01'>.tags?
 
 @description('Optional. Custom headers that will be added to the webhook notifications.')
 param customHeaders object?

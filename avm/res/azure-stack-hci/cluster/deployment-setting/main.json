@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "4541676312408025254"
+      "templateHash": "1860718588717434139"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -216,6 +216,20 @@
         "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
       }
     },
+    "useDhcp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If true, the infrastructure network uses DHCP. If false, static IP pools are used."
+      }
+    },
+    "physicalNodesSettings": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices."
+      }
+    },
     "networkIntents": {
       "type": "array",
       "metadata": {
@@ -253,6 +267,17 @@
         "description": "Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster."
       }
     },
+    "witnessType": {
+      "type": "string",
+      "defaultValue": "Cloud",
+      "allowedValues": [
+        "Cloud",
+        "No Witness"
+      ],
+      "metadata": {
+        "description": "Optional. Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload."
+      }
+    },
     "keyVaultName": {
       "type": "string",
       "metadata": {
@@ -276,6 +301,55 @@
       "metadata": {
         "description": "Optional. The intended operation for a cluster."
       }
+    },
+    "sbeVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) version."
+      }
+    },
+    "sbeFamily": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) family value."
+      }
+    },
+    "sbePublisher": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) publisher name."
+      }
+    },
+    "sbeManifestSource": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) manifest source."
+      }
+    },
+    "sbeManifestCreationDate": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) creation date."
+      }
+    },
+    "partnerProperties": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) partner properties."
+      }
+    },
+    "partnerCredentialList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Solution builder extension (SBE) partner credential properties."
+      }
     }
   },
   "variables": {
@@ -294,8 +368,25 @@
           "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworksArray')].vlan]",
           "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworksArray')], 'storageAdapterIPInfo')]"
         }
+      },
+      {
+        "name": "translatedNetworkIntents",
+        "count": "[length(parameters('networkIntents'))]",
+        "input": "[shallowMerge(createArray(parameters('networkIntents')[copyIndex('translatedNetworkIntents')], createObject('qosPolicyOverrides', if(equals(tryGet(parameters('networkIntents')[copyIndex('translatedNetworkIntents')], 'qosPolicyOverrides'), null()), null(), createObject('bandwidthPercentage_SMB', coalesce(tryGet(parameters('networkIntents')[copyIndex('translatedNetworkIntents')].qosPolicyOverrides, 'bandwidthPercentageSMB'), ''), 'priorityValue8021Action_Cluster', coalesce(tryGet(parameters('networkIntents')[copyIndex('translatedNetworkIntents')].qosPolicyOverrides, 'priorityValue8021ActionCluster'), ''), 'priorityValue8021Action_SMB', coalesce(tryGet(parameters('networkIntents')[copyIndex('translatedNetworkIntents')].qosPolicyOverrides, 'priorityValue8021ActionSMB'), ''))))))]"
+      },
+      {
+        "name": "sbeCredentialList",
+        "count": "[length(parameters('partnerCredentialList'))]",
+        "input": {
+          "secretName": "[if(empty(parameters('cloudId')), parameters('partnerCredentialList')[copyIndex('sbeCredentialList')].secretName, format('{0}-{1}-{2}', parameters('clusterName'), parameters('partnerCredentialList')[copyIndex('sbeCredentialList')].secretName, parameters('cloudId')))]",
+          "eceSecretName": "[parameters('partnerCredentialList')[copyIndex('sbeCredentialList')].secretName]",
+          "secretLocation": "[if(empty(parameters('cloudId')), format('https://{0}{1}/secrets/{2}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('partnerCredentialList')[copyIndex('sbeCredentialList')].secretName), format('https://{0}{1}/secrets/{2}-{3}-{4}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('clusterName'), parameters('partnerCredentialList')[copyIndex('sbeCredentialList')].secretName, parameters('cloudId')))]"
+        }
       }
     ],
+    "witnessTypeVar": "[if(equals(parameters('witnessType'), 'No Witness'), '', 'Cloud')]",
+    "clusterWitnessStorageAccountNameVar": "[if(equals(parameters('witnessType'), 'No Witness'), '', parameters('clusterWitnessStorageAccountName'))]",
+    "azureServiceEndpointVar": "[if(equals(parameters('witnessType'), 'No Witness'), '', environment().suffixes.storage)]",
     "baseSecretNames": [
       "LocalAdminCredential",
       "AzureStackLCMUserCredential",
@@ -307,19 +398,19 @@
     "cluster": {
       "existing": true,
       "type": "Microsoft.AzureStackHCI/clusters",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2025-10-01",
       "name": "[parameters('clusterName')]"
     },
     "deploymentSettings": {
       "type": "Microsoft.AzureStackHCI/clusters/deploymentSettings",
-      "apiVersion": "2024-09-01-preview",
+      "apiVersion": "2025-10-01",
       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('name'))]",
       "properties": {
         "arcNodeResourceIds": "[variables('arcNodeResourceIds')]",
         "deploymentMode": "[parameters('deploymentMode')]",
         "operationType": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), parameters('operationType'), null())]",
         "deploymentConfiguration": {
-          "version": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), '10.1.0.0', '10.0.0.0')]",
+          "version": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), '1#_moduleVersion_#.0', '10.0.0.0')]",
           "scaleUnits": [
             {
               "deploymentData": {
@@ -328,8 +419,8 @@
                     "name": "physicalNodes",
                     "count": "[length(variables('arcNodeResourceIds'))]",
                     "input": {
-                      "name": "[reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2022-12-27', 'Full').properties.displayName]",
-                      "ipv4Address": "[filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address]"
+                      "name": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].name, reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2022-12-27', 'Full').properties.displayName)]",
+                      "ipv4Address": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].ipv4Address, filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address)]"
                     }
                   },
                   {
@@ -350,10 +441,10 @@
                 },
                 "cluster": {
                   "name": "[parameters('clusterADName')]",
-                  "witnessType": "Cloud",
+                  "witnessType": "[variables('witnessTypeVar')]",
                   "witnessPath": "",
-                  "cloudAccountName": "[parameters('clusterWitnessStorageAccountName')]",
-                  "azureServiceEndpoint": "[environment().suffixes.storage]"
+                  "cloudAccountName": "[variables('clusterWitnessStorageAccountNameVar')]",
+                  "azureServiceEndpoint": "[variables('azureServiceEndpointVar')]"
                 },
                 "storage": {
                   "configurationMode": "[parameters('storageConfigurationMode')]"
@@ -370,15 +461,27 @@
                         "endingAddress": "[parameters('endingIPAddress')]"
                       }
                     ],
-                    "dnsServers": "[parameters('dnsServers')]"
+                    "dnsServers": "[parameters('dnsServers')]",
+                    "useDhcp": "[parameters('useDhcp')]"
                   }
                 ],
-                "hostNetwork": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), null(), createObject('intents', parameters('networkIntents'), 'storageConnectivitySwitchless', parameters('storageConnectivitySwitchless'), 'storageNetworks', variables('storageNetworksArray'), 'enableStorageAutoIp', parameters('enableStorageAutoIp')))]",
+                "hostNetwork": "[if(equals(parameters('operationType'), 'ClusterUpgrade'), null(), createObject('intents', variables('translatedNetworkIntents'), 'storageConnectivitySwitchless', parameters('storageConnectivitySwitchless'), 'storageNetworks', variables('storageNetworksArray'), 'enableStorageAutoIp', parameters('enableStorageAutoIp')))]",
                 "adouPath": "[parameters('domainOUPath')]",
                 "secretsLocation": "[format('https://{0}{1}', parameters('keyVaultName'), environment().suffixes.keyvaultDns)]",
                 "optionalServices": {
                   "customLocation": "[parameters('customLocationName')]"
                 }
+              },
+              "sbePartnerInfo": {
+                "sbeDeploymentInfo": {
+                  "version": "[parameters('sbeVersion')]",
+                  "family": "[parameters('sbeFamily')]",
+                  "publisher": "[parameters('sbePublisher')]",
+                  "sbeManifestSource": "[parameters('sbeManifestSource')]",
+                  "sbeManifestCreationDate": "[if(empty(parameters('sbeManifestCreationDate')), null(), parameters('sbeManifestCreationDate'))]"
+                },
+                "partnerProperties": "[parameters('partnerProperties')]",
+                "credentialList": "[variables('sbeCredentialList')]"
               }
             }
           ]

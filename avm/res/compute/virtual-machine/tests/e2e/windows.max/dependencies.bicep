@@ -37,6 +37,9 @@ param backupManagementServiceApplicationObjectId string
 @description('Required. The name of the data collection rule.')
 param dcrName string
 
+@description('Required. The name of the deployment script used to wait for backup role propagation.')
+param waitDeploymentScriptName string
+
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
 param logAnalyticsWorkspaceResourceId string
 
@@ -271,6 +274,26 @@ resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignmen
   }
 }
 
+// Wait for backup management service KV role assignment to propagate before VM backup registration
+resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (!empty(backupManagementServiceApplicationObjectId)) {
+  dependsOn: [backupServiceKeyVaultPermissions]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
+  }
+}
+
 resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
   scope: keyVault::key
@@ -291,6 +314,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+  properties: {
+    allowSharedKeyAccess: true // Required for deployment script authentication
+  }
 
   resource blobService 'blobServices@2025-01-01' = {
     name: 'default'

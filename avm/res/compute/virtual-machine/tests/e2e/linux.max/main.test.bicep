@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlimax'
+param serviceShort string = 'vmlimax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -52,6 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
   }
 }
@@ -84,7 +85,7 @@ module testDeployment '../../../main.bicep' = {
     imageReference: {
       publisher: 'Canonical'
       offer: '0001-com-ubuntu-server-focal'
-      sku: '20_04-lts-gen2' // Note: 22.04 does not support OMS extension
+      sku: '20_04-lts-gen2' // Note: 22.04 does not support DependencyAgent
       version: 'latest'
     }
     nicConfigurations: [
@@ -203,7 +204,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
