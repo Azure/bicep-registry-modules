@@ -37,8 +37,9 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+@description('Optional. The location to deploy resources into. Defaults to southeastasia. Can be overridden via the CI customLocation input when quota is unavailable.')
+#disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region is used as default in the AVM testing subscription
+param enforcedLocation string = 'southeastasia'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName

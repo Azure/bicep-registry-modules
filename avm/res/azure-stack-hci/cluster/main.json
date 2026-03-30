@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "13891747386119604530"
+      "version": "0.40.2.10011",
+      "templateHash": "14214986118321837633"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1034,7 +1034,9 @@
     "edgeDevices": {
       "copy": {
         "name": "edgeDevices",
-        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]"
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.AzureStackHCI/edgeDevices",
       "apiVersion": "2025-10-01",
@@ -1267,8 +1269,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "883695079130765038"
+              "version": "0.40.2.10011",
+              "templateHash": "2346034291780393388"
             }
           },
           "parameters": {
@@ -1573,8 +1575,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "4864867031636249831"
+              "version": "0.40.2.10011",
+              "templateHash": "1477279511291639459"
             }
           },
           "definitions": {
@@ -2314,8 +2316,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "1860718588717434139"
+                      "version": "0.40.2.10011",
+                      "templateHash": "4264041033743477945"
                     },
                     "name": "Azure Stack HCI Cluster Deployment Settings",
                     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
