@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [string]
@@ -218,15 +218,46 @@ PARTITION_MSFT_RECOVERY_GUID - de94bba4-06d1-4d40-a16a-bfd50179d6ac   # Recovery
         $systemPartition | Remove-PartitionAccessPath -AccessPath $systemPartition.AccessPaths[0]
     } finally {
         Write-ActionInfo "Dismounting $VHDFormat..."
-        Dismount-VHD -Path $VhdxPath
+        try {
+            Dismount-VHD -Path $VhdxPath -ErrorAction Stop
+        } catch {
+            Write-ActionInfo "WARNING: Dismount-VHD failed: $_. Continuing cleanup..."
+        }
 
         #ejecting .iso - releasing drive letter.
         Write-ActionInfo 'Dismounting .iso...'
-        Dismount-DiskImage -ImagePath $IsoPath
+        $dismountRetries = 3
+        for ($r = 1; $r -le $dismountRetries; $r++) {
+            try {
+                Dismount-DiskImage -ImagePath $IsoPath -ErrorAction Stop
+                Write-ActionInfo 'ISO dismounted successfully.'
+                break
+            } catch {
+                Write-ActionInfo "Dismount-DiskImage attempt $r/$dismountRetries failed: $_"
+                if ($r -lt $dismountRetries) {
+                    Start-Sleep -Seconds 5
+                } else {
+                    Write-ActionInfo 'WARNING: Could not dismount ISO after retries. The VHDX was created successfully; continuing.'
+                }
+            }
+        }
     }
 }
 
 $ErrorActionPreference = 'Stop'
+
+# Clean up any leftover ISO mount from a previous failed run
+if (Test-Path 'c:\isos\hci_os.iso') {
+    try {
+        $diskImage = Get-DiskImage -ImagePath 'c:\isos\hci_os.iso' -ErrorAction SilentlyContinue
+        if ($diskImage -and $diskImage.Attached) {
+            log 'Found leftover mounted ISO from previous run, dismounting...'
+            Dismount-DiskImage -ImagePath 'c:\isos\hci_os.iso' -ErrorAction SilentlyContinue
+        }
+    } catch {
+        log "WARNING: Could not check/dismount leftover ISO: $_"
+    }
+}
 
 # download HCI VHDX or ISO
 If (!(Test-Path -Path 'c:\ISOs')) {

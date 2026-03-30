@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [String]
@@ -99,7 +99,13 @@ log "Logging in to Azure with user-assigned managed identity '$($userAssignedMan
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
-$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
+$tokenResult = Get-AzAccessToken -ResourceUrl 'https://management.azure.com'
+# Handle both old (plain string) and new (SecureString) Az.Accounts token formats
+if ($tokenResult.Token -is [System.Security.SecureString]) {
+    $t = [System.Net.NetworkCredential]::new('', $tokenResult.Token).Password
+} else {
+    $t = $tokenResult.Token
+}
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
@@ -265,16 +271,33 @@ if (![string]::IsNullOrEmpty($proxyServerEndpoint) -and ![string]::IsNullOrEmpty
     log "Skipping proxy settings because both -proxyServerEndpoint and -proxyBypassString were not passed... (proxyServerEndpoint: '$proxyServerEndpoint', proxyBypassString:'$proxyBypassString')"
 }
 
-## test node internet connection - required for Azure Arc initialization
+## test node internet connection with retry - required for Azure Arc initialization
 $firstVM = Get-VM | Select-Object -First 1
-log "Testing node internet connection on VM '$($firstVM.Name)'..."
-$testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
-    [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing)
+log "Testing node internet connection on VM '$($firstVM.Name)' with retry..."
+$testNodeInternetConnection = $false
+$internetRetryCount = 0
+$internetMaxRetries = 6
+while (!$testNodeInternetConnection -and $internetRetryCount -lt $internetMaxRetries) {
+    try {
+        $testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
+            [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing -TimeoutSec 30)
+        } -ErrorAction SilentlyContinue
+    } catch {
+        log "Internet test attempt $($internetRetryCount + 1) failed: $_"
+    }
+    if (!$testNodeInternetConnection) {
+        $internetRetryCount++
+        if ($internetRetryCount -lt $internetMaxRetries) {
+            log "Node '$($firstVM.Name)' internet check failed (attempt $internetRetryCount/$internetMaxRetries). Restarting RRAS NAT and retrying in 30s..."
+            Restart-Service RemoteAccess -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 30
+        }
+    }
 }
 
 If (!$testNodeInternetConnection) {
-    log "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
-    Write-Error "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
+    log "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
+    Write-Error "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
     Exit 1
 } Else {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
@@ -376,27 +399,28 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
         Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
 
-        Write-Output 'Waiting for Edge device resource to be ready'
-        Start-Sleep -Seconds 600
+        Write-Output 'Polling Edge device resource for readiness (no fixed sleep, max 30 min)...'
         $waitInterval = 60
-        $maxWaitCount = 15
+        $maxWaitCount = 30
         $ready = $false
-        for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
-            $headers = @{
-                'Authorization' = "Bearer $t";
-            }
+        for ($waitCount = 0; $waitCount -lt $maxWaitCount; $waitCount++) {
             try {
+                $headers = @{
+                    'Authorization' = "Bearer $t";
+                }
                 $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
                 if ($response.properties.provisioningState -eq 'Succeeded') {
+                    Write-Output "Edge device resource is ready after $($waitCount * $waitInterval) seconds."
                     $ready = $true
                     break
+                } elseif ($response.properties.provisioningState -eq 'Failed') {
+                    throw "Edge device provisioning failed with state 'Failed': $($response.properties | ConvertTo-Json -Compress -Depth 5)"
                 }
-            } catch {
-                Write-Output "Failed to get Edge device resource: $_"
-            } finally {
-                Write-Output 'Waiting for Edge device resource to be ready'
-                Start-Sleep -Seconds $waitInterval
+                Write-Output "[$waitCount/$maxWaitCount] Edge device state: $($response.properties.provisioningState). Waiting ${waitInterval}s..."
+            } catch [System.Net.WebException], [Microsoft.PowerShell.Commands.HttpResponseException] {
+                Write-Output "[$waitCount/$maxWaitCount] Edge device HTTP check failed (will retry): $_"
             }
+            Start-Sleep -Seconds $waitInterval
         }
 
         if (!$ready) {
