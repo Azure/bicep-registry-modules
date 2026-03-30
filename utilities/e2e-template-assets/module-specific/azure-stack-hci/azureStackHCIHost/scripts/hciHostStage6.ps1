@@ -399,27 +399,28 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
         Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
 
-        Write-Output 'Waiting for Edge device resource to be ready'
-        Start-Sleep -Seconds 600
+        Write-Output 'Polling Edge device resource for readiness (no fixed sleep, max 30 min)...'
         $waitInterval = 60
-        $maxWaitCount = 15
+        $maxWaitCount = 30
         $ready = $false
-        for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
-            $headers = @{
-                'Authorization' = "Bearer $t";
-            }
+        for ($waitCount = 0; $waitCount -lt $maxWaitCount; $waitCount++) {
             try {
+                $headers = @{
+                    'Authorization' = "Bearer $t";
+                }
                 $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
                 if ($response.properties.provisioningState -eq 'Succeeded') {
+                    Write-Output "Edge device resource is ready after $($waitCount * $waitInterval) seconds."
                     $ready = $true
                     break
+                } elseif ($response.properties.provisioningState -eq 'Failed') {
+                    throw "Edge device provisioning failed with state 'Failed': $($response.properties | ConvertTo-Json -Compress -Depth 5)"
                 }
-            } catch {
-                Write-Output "Failed to get Edge device resource: $_"
-            } finally {
-                Write-Output 'Waiting for Edge device resource to be ready'
-                Start-Sleep -Seconds $waitInterval
+                Write-Output "[$waitCount/$maxWaitCount] Edge device state: $($response.properties.provisioningState). Waiting ${waitInterval}s..."
+            } catch [System.Net.WebException], [Microsoft.PowerShell.Commands.HttpResponseException] {
+                Write-Output "[$waitCount/$maxWaitCount] Edge device HTTP check failed (will retry): $_"
             }
+            Start-Sleep -Seconds $waitInterval
         }
 
         if (!$ready) {
