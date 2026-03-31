@@ -137,14 +137,23 @@ While (!(Test-ADConnection) -and $count -lt 120) {
     $count++
 }
 
-# authorize DHCP servers in AD for DNS updates
 log 'Authorizing DHCP servers in AD for DNS updates...'
-try {
-    $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
-} catch {
-    log 'Failed to query authorized DHCP servers in AD. Waiting 120 seconds before retrying...'
-    Start-Sleep -Seconds 120
-    $existingAuthorizedServers = Get-DhcpServerInDC
+$dhcpRetries = 5
+$existingAuthorizedServers = $null
+for ($r = 1; $r -le $dhcpRetries; $r++) {
+    try {
+        $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
+        log "Successfully queried authorized DHCP servers (attempt $r)"
+        break
+    } catch {
+        log "Failed to query authorized DHCP servers in AD (attempt $r/$dhcpRetries): $($_.Exception.Message)"
+        if ($r -lt $dhcpRetries) {
+            log "Waiting 60 seconds before retrying..."
+            Start-Sleep -Seconds 60
+        } else {
+            throw "Failed to query DHCP servers after $dhcpRetries attempts: $($_.Exception.Message)"
+        }
+    }
 }
 
 If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 172.20.0.1 }
@@ -381,9 +390,27 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         Write-Error "Failed to start HCI node VMs. $_"
     }
 
-    #wait for vms to boot
-    log 'Waiting 300s for VMs to boot and apply sysprep...'
-    Start-Sleep -Seconds 300
+    #wait for vms to boot - poll heartbeat instead of fixed sleep
+    log 'Waiting for VMs to boot and apply sysprep (polling heartbeat, max 10 min)...'
+    $bootTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $allReady = $false
+    while (-not $allReady -and $bootTimer.Elapsed.TotalMinutes -lt 10) {
+        $vms = Get-VM
+        $readyVMs = $vms | Where-Object { $_.Heartbeat -eq 'OkApplicationsHealthy' -or $_.Heartbeat -eq 'OkApplicationsUnknown' }
+        if ($readyVMs.Count -eq $vms.Count) {
+            log "All $($vms.Count) VMs have heartbeat after $([math]::Round($bootTimer.Elapsed.TotalSeconds))s."
+            $allReady = $true
+        } else {
+            log "[$([math]::Round($bootTimer.Elapsed.TotalSeconds))s] $($readyVMs.Count)/$($vms.Count) VMs ready (heartbeat). Waiting 30s..."
+            Start-Sleep -Seconds 30
+        }
+    }
+    if (-not $allReady) {
+        log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
+    }
+    # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
+    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 60
 } Else {
     log 'HCI node VMs are already running.'
 }
