@@ -456,6 +456,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       '10.0.1.4'
       '10.0.1.5'
     ]
+    enablePrivateEndpointVNetPolicies: 'Basic'
     flowTimeoutInMinutes: 20
     location: '<location>'
     lock: {
@@ -488,6 +489,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -515,12 +517,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -528,6 +532,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-004'
         natGatewayResourceId: ''
         networkSecurityGroupResourceId: ''
@@ -596,6 +601,9 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         "10.0.1.5"
       ]
     },
+    "enablePrivateEndpointVNetPolicies": {
+      "value": "Basic"
+    },
     "flowTimeoutInMinutes": {
       "value": 20
     },
@@ -637,6 +645,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -664,12 +673,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -677,6 +688,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-004",
           "natGatewayResourceId": "",
           "networkSecurityGroupResourceId": "",
@@ -738,6 +750,7 @@ param dnsServers = [
   '10.0.1.4'
   '10.0.1.5'
 ]
+param enablePrivateEndpointVNetPolicies = 'Basic'
 param flowTimeoutInMinutes = 20
 param location = '<location>'
 param lock = {
@@ -770,6 +783,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -797,12 +811,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -810,6 +826,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-004'
     natGatewayResourceId: ''
     networkSecurityGroupResourceId: ''
@@ -1063,6 +1080,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -1080,12 +1098,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -1168,6 +1188,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -1185,12 +1206,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -1261,6 +1284,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -1278,12 +1302,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -1325,6 +1351,7 @@ param tags = {
 | [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
+| [`enablePrivateEndpointVNetPolicies`](#parameter-enableprivateendpointvnetpolicies) | string | Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
@@ -1512,6 +1539,21 @@ DNS Servers associated to the Virtual Network.
 
 - Required: No
 - Type: array
+
+### Parameter: `enablePrivateEndpointVNetPolicies`
+
+Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Disabled'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
