@@ -16,6 +16,19 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ## Critical Compliance Requirements
 
+### Pre-flight check
+
+> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
+
+```json
+{
+  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
+  "model": "<your model name>"
+}
+```
+
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+
 ### Compliance with ALL AVM Bicep and Shared specifications
 
 ** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
@@ -103,6 +116,7 @@ Instead, always use the **dot-source** (`. `) approach:
    ```
 
 > [!IMPORTANT]
+>
 > - **Correct** (two-step, dot-source then call):
 >   ```powershell
 >   . .\utilities\tools\Set-AVMModule.ps1
@@ -142,6 +156,20 @@ Instead, always use the **dot-source** (`. `) approach:
 
 - **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
 - **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
+
+## Output and formatting
+
+### Files Modified (Summary)
+
+Whenever you modify, create or delete any files, you MUST summarize the changes in a table format with three columns: `#` (numbered list of changes), `File` (file path), and `Change` (brief description of the change made).
+
+For example:
+
+| #   | Change type                              | File                                                            | Change                                      |
+| --- | ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| 1   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| ..  | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| n   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
 
 ## Skills
 
