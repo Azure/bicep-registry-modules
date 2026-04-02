@@ -57,9 +57,6 @@ param projectName string
 @description('Optional: Description  for the project which needs to be created.')
 param projectDescription string
 
-@description('Optional: Provide the existing project resource id in case if it needs to be reused')
-param azureExistingAIProjectResourceId string = ''
-
 var builtInRoleNames = {
   'Cognitive Services Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -353,7 +350,7 @@ module secretsExport './keyVaultExport.bicep' = if (secretsExportConfiguration !
   }
 }
 
-module aiProject 'project.bicep' = if (!empty(projectName) || !empty(azureExistingAIProjectResourceId)) {
+module aiProject 'project.bicep' = if (!empty(projectName)) {
   name: take('${name}-ai-project-${projectName}-deployment', 64)
   params: {
     name: projectName
@@ -361,14 +358,13 @@ module aiProject 'project.bicep' = if (!empty(projectName) || !empty(azureExisti
     aiServicesName: cognitiveService.name
     location: location
     tags: tags
-    azureExistingAIProjectResourceId: azureExistingAIProjectResourceId
   }
 }
 
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-#disable-next-line BCP318 // Conditional access on secretsExport is guarded by secretsExportConfiguration != null
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  #disable-next-line BCP318 // Conditional access on secretsExport is guarded by secretsExportConfiguration != null
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
@@ -384,7 +380,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 import { aiProjectOutputType } from 'project.bicep'
-#disable-next-line BCP318 // Conditional access on aiProject module is guarded by projectName/azureExistingAIProjectResourceId
+#disable-next-line BCP318 // Conditional access on aiProject module is guarded by projectName check
 output aiProjectInfo aiProjectOutputType = aiProject.outputs.aiProjectInfo
 
 // ================ //

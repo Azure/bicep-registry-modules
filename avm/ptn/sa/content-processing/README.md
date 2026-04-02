@@ -473,8 +473,6 @@ param vmAdminUsername = 'adminuser'
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`existingFoundryProjectResourceId`](#parameter-existingfoundryprojectresourceid) | string | Use this parameter to use an existing AI project resource ID. |
-| [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Existing Log Analytics Workspace Resource ID. |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1 |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
@@ -613,22 +611,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `existingFoundryProjectResourceId`
-
-Use this parameter to use an existing AI project resource ID.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `existingLogAnalyticsWorkspaceId`
-
-Existing Log Analytics Workspace Resource ID.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `gptDeploymentCapacity`
 

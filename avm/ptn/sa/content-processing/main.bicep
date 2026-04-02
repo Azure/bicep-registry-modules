@@ -107,12 +107,6 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
   location: resourceGroup().location
 }
 
-@description('Optional. Existing Log Analytics Workspace Resource ID.')
-param existingLogAnalyticsWorkspaceId string = ''
-
-@description('Optional. Use this parameter to use an existing AI project resource ID.')
-param existingFoundryProjectResourceId string = ''
-
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
 param vmSize string = ''
 
@@ -140,8 +134,6 @@ var solutionSuffix = toLower(trim(replace(
 // ============== //
 // Resources      //
 // ============== //
-
-var existingProjectResourceId = trim(existingFoundryProjectResourceId)
 
 // ========== AVM Telemetry ========== //
 #disable-next-line no-deployments-resources
@@ -531,7 +523,6 @@ module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enabl
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    existingLogAnalyticsWorkspaceId: existingLogAnalyticsWorkspaceId
     enablePrivateNetworking: enablePrivateNetworking
     enableRedundancy: enableRedundancy
     replicaLocation: replicaLocation
@@ -713,7 +704,6 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
     name: 'aif-${solutionSuffix}'
     projectName: 'proj-${solutionSuffix}'
     projectDescription: 'proj-${solutionSuffix}'
-    existingFoundryProjectResourceId: existingProjectResourceId
     location: aiServiceLocation
     sku: 'S0'
     allowProjectManagement: true
@@ -780,7 +770,7 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
   }
 }
 
-module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking && empty(existingProjectResourceId)) {
+module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
   name: take('avm.res.network.private-endpoint.${solutionSuffix}', 64)
   params: {
     name: 'pep-aiservices-${solutionSuffix}'
