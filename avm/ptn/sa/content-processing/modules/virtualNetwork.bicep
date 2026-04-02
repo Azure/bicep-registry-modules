@@ -180,20 +180,20 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-admin'
       securityRules: [
-        {
-          name: 'Deny-hop-outbound'
-          properties: {
-            access: 'Deny'
-            direction: 'Outbound'
-            priority: 200
-            protocol: '*'
-            sourcePortRange: '*'
-            destinationPortRanges: ['3389', '22']
-            sourceAddressPrefix: 'VirtualNetwork'
-            destinationAddressPrefix: '*'
-          }
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
         }
-      ]
+      }
+    ]
     }
   }
 ]
@@ -212,10 +212,12 @@ param resourceSuffix string
 
 // VM Size Notes:
 // 1 B-series VMs (like Standard_B2ms) do not support accelerated networking.
-// 2 Pick a VM size that does support accelerated networking (the usual jump-box candidates):
-//     Standard_DS2_v2 (2 vCPU, 7 GiB RAM, Premium SSD) // The most broadly available (it’s a legacy SKU supported in virtually every region).
-//     Standard_D2s_v3 (2 vCPU, 8 GiB RAM, Premium SSD) //  next most common
-//     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD)  // Newest, so fewer regions availabl
+// 2 Pick a VM size that supports accelerated networking + Premium SSD (the usual jump-box candidates):
+//     Standard_D2s_v5 (2 vCPU, 8 GiB RAM, Premium SSD/v2/Ultra) // DEFAULT - current-gen Intel, broad regional availability.
+//     Standard_D2as_v5 (2 vCPU, 8 GiB RAM, Premium SSD/Ultra) // AMD alternative, typically ~15% cheaper.
+//     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD) // Previous gen, also broadly available.
+//     Standard_DS2_v2 (2 vCPU, 7 GiB RAM, Premium SSD) // Legacy SKU, being retired from some regions - avoid for new deployments.
+// 3 A-series (Av2) is NOT suitable: no Premium SSD support, no accelerated networking.
 
 // Subnet Classless Inter-Doman Routing (CIDR)  Sizing Reference Table (Best Practices)
 // | CIDR      | # of Addresses | # of /24s | Notes                                 |
@@ -251,7 +253,7 @@ param resourceSuffix string
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
@@ -268,7 +270,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.0' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
     name: name

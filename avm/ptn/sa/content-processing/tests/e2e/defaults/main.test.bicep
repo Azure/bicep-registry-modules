@@ -1,27 +1,21 @@
 targetScope = 'subscription'
 
-metadata name = 'Waf-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the Content Processing Solution Accelerator'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the Content Processing Solution Accelerator using only the required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'scpdef'
+
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
-param serviceShort string = 'scpegwaf'
-
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to set for the Virtual Machine.')
-@secure()
-param virtualMachineAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -44,19 +38,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
       location: enforcedLocation
       aiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 10
-      enableScalability: true
+      enablePrivateNetworking: false
+      enableMonitoring: false
+      enableRedundancy: false
+      enableScalability: false
       enableTelemetry: true
-      enablePrivateNetworking: true
-      enableMonitoring: true
-      enableRedundancy: true
-      vmAdminUsername: 'adminuser'
-      vmAdminPassword: virtualMachineAdminPassword
     }
   }
 ]
