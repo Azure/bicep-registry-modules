@@ -18,6 +18,18 @@ BeforeDiscovery {
     Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
     Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
+    # Normalize moduleFolderPaths to be rooted under repoRootPath.
+    # This handles the case where a user-supplied TemplateFilePath resolves through
+    # a different root (e.g. a directory junction/symlink) than the repo scripts.
+    $moduleFolderPaths = $moduleFolderPaths | ForEach-Object {
+        $parts = ($_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')
+        if ($parts.Count -ge 3) {
+            Join-Path $repoRootPath 'avm' $parts[1] $parts[2]
+        } else {
+            $_
+        }
+    }
+
     $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
     $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
     $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
