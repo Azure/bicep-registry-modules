@@ -87,7 +87,7 @@ function Get-ModuleList {
     $absolutePath = Resolve-Path -Path (Join-Path $RepoRoot $Path) -ErrorAction Stop
     $repoRootNormalized = $RepoRoot -replace '[\\/]$', ''
 
-    # Discover all module folders (contain a main.bicep) and convert to module names (e.g. avm/res/storage/storage-account)
+    # Discover all module folders (i.e., containing a main.bicep) and convert to module names (e.g., avm/res/storage/storage-account)
     $modules = Get-ChildItem -Path $absolutePath -Filter 'main.bicep' -Recurse -File | ForEach-Object {
         $_.Directory.FullName -replace [regex]::Escape($repoRootNormalized), '' -replace '^[\\/]', '' -replace '\\', '/'
     }
