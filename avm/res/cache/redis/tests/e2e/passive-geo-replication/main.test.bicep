@@ -61,15 +61,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       capacity: 2
       enableNonSslPort: true
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       minimumTlsVersion: '1.2'
-      zoneRedundant: false
+      availabilityZones: []
       replicasPerPrimary: 1
       replicasPerMaster: 1
       geoReplicationObject: {
