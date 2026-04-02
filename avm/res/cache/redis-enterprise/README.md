@@ -29,8 +29,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cache/redisEnterprise/databases` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases)</li></ul> |
 | `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redisenterprise_databases_accesspolicyassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-07-01/redisEnterprise/databases/accessPolicyAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -79,7 +79,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         ]
       }
     }
-    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -117,9 +116,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -153,7 +149,6 @@ param database = {
     ]
   }
 }
-param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
@@ -1006,6 +1001,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'crewaf001'
     // Non-required parameters
+    availabilityZones: '<availabilityZones>'
     database: {
       diagnosticSettings: [
         {
@@ -1085,6 +1081,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "crewaf001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": "<availabilityZones>"
+    },
     "database": {
       "value": {
         "diagnosticSettings": [
@@ -1172,6 +1171,7 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'crewaf001'
 // Non-required parameters
+param availabilityZones = '<availabilityZones>'
 param database = {
   diagnosticSettings: [
     {
@@ -2703,7 +2703,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

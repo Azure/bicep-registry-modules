@@ -234,7 +234,7 @@ param resourceSuffix string
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
