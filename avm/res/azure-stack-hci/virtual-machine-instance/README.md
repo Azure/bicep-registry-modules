@@ -574,6 +574,7 @@ Security profile configuration.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the virtual machine instance. |
 | `resourceGroupName` | string | The resource group of the virtual machine instance. |
 | `resourceId` | string | The resource ID of the virtual machine instance. |
@@ -584,7 +585,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/hybrid-compute/machine:0.4.1` | Remote reference |
+| `br/public:avm/res/hybrid-compute/machine:0.4.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
