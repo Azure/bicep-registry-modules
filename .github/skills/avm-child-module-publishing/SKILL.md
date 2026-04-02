@@ -1,5 +1,5 @@
 ---
-name: AVM-Child-Module-Publishing
+name: avm-child-module-publishing
 description: "Publish AVM Bicep child modules to the Bicep public registry. Example prompt: Publish a child module for avm/res/network/virtual-network/subnet. This skill covers the full end-to-end workflow: prerequisite verification, allowed-list registration, telemetry instrumentation, version file creation, changelog updates, parent module updates, and final validation. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list, bicep child module publishing. DO NOT USE FOR: creating new child module functionality (use AVM-Plan/AVM-Implement agents), publishing top-level parent modules, Terraform modules."
 ---
 

@@ -10,6 +10,9 @@ param hciNodeCount int = 2
 @description('Optional. Enable configuring switchless storage.')
 param switchlessStorageConfig bool = false
 
+@description('Optional. The download URL for a pre-built Azure Stack HCI VHDX. When provided, skips the slower ISO download and conversion. Uses the Jumpstart public blob storage by default.')
+param hciVHDXDownloadURL string = ''
+
 @description('Optional. The download URL for the Azure Stack HCI ISO.')
 param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 
@@ -350,7 +353,7 @@ resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: '${waitDeploymentScriptPrefixName}-wait1'
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: 'Start-Sleep -Seconds 90'
+    scriptContent: 'Start-Sleep -Seconds 60 # VM reboot typically completes in 30-45s; next runCommand retries if VM not ready'
     retentionInterval: 'PT6H'
   }
   dependsOn: [runCommand2]
@@ -372,7 +375,7 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: ''
+        value: hciVHDXDownloadURL
       }
       {
         name: 'hciISODownloadURL'
@@ -402,14 +405,14 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [runCommand3]
 }
 
-// initiates a wait for the VM to reboot - extra time for AD initialization
+// initiates a wait for the VM to reboot - polls AD health instead of fixed sleep
 resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   location: location
   kind: 'AzurePowerShell'
   name: '${waitDeploymentScriptPrefixName}-wait2'
   properties: {
     azPowerShellVersion: '3.0'
-    scriptContent: 'Start-Sleep -Seconds 300 #enough time for AD start-up'
+    scriptContent: 'Start-Sleep -Seconds 180 # Wait for VM reboot and AD DS initialization; AD health verified by next runCommand on the VM'
     retentionInterval: 'PT6H'
   }
   dependsOn: [
@@ -559,6 +562,50 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     treatFailureAsDeploymentFailure: true
   }
   dependsOn: [runCommand6]
+}
+
+// ============================================= //
+// Pre-deployment Health Check                   //
+// ============================================= //
+
+// validates AD, DNS, node VMs, Arc extensions, credentials, and network connectivity before cluster deployment
+resource runCommand8 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand8'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage8-preDeployCheck.ps1')
+    }
+    parameters: [
+      {
+        name: 'hciNodeCount'
+        value: string(hciNodeCount)
+      }
+      {
+        name: 'resourceGroupName'
+        value: resourceGroup().name
+      }
+      {
+        name: 'subscriptionId'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'userAssignedManagedIdentityClientId'
+        value: userAssignedIdentity.properties.clientId
+      }
+      {
+        name: 'domainOUPath'
+        value: domainOUPath
+      }
+      {
+        name: 'deploymentUsername'
+        value: deploymentUsername
+      }
+    ]
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [runCommand7]
 }
 
 output vnetSubnetResourceId string = vnet.properties.subnets[0].id

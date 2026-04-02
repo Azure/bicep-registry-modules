@@ -350,7 +350,7 @@ param location = '<location>'
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
-| [`osProfile`](#parameter-osprofile) | object | OS profile configuration. |
+| [`osProfile`](#parameter-osprofile) | secureObject | OS profile configuration. |
 | [`storageProfile`](#parameter-storageprofile) | object | Storage profile configuration. |
 
 **Optional parameters**
@@ -399,7 +399,7 @@ Network profile configuration.
 OS profile configuration.
 
 - Required: Yes
-- Type: object
+- Type: secureObject
 
 ### Parameter: `storageProfile`
 

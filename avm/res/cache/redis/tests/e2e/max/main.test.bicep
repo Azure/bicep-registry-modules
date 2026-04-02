@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     managedIdentityName2: 'dep-${namePrefix}-msi2-${serviceShort}'
-    location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -52,7 +51,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -106,7 +104,6 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       minimumTlsVersion: '1.2'
-      zoneRedundant: true
       availabilityZones: [1, 2]
       zonalAllocationPolicy: 'UserDefined'
       privateEndpoints: [
