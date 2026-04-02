@@ -4,7 +4,7 @@ Retrieve a filtered list of AVM module folders.
 
 .DESCRIPTION
 Scans a given root path for Bicep modules (folders containing a main.bicep file) and returns them filtered by the requested characteristics.
-Filters can be combined: -Scope controls hierarchy (All/TopLevel/Child), -Orphaned limits to orphaned modules, -Versioned limits to versioned or not-versioned modules.
+Filters can be combined: -Scope controls hierarchy (All/TopLevel/Child), -IsOrphaned limits to orphaned modules, -IsVersioned limits to versioned or not-versioned modules.
 
 .PARAMETER Path
 Mandatory. The root path to scan for modules, relative to the repository root (e.g. 'avm/res', 'avm/ptn', 'avm/res/storage/storage-account').
@@ -15,15 +15,15 @@ Optional. Controls the hierarchy filter:
 - 'TopLevel' : Return only the first-level modules (depth 4: avm/<type>/<provider>/<resource>).
 - 'Child'    : Return only child modules nested under the given -Path (excludes the root module itself).
 
-.PARAMETER Orphaned
+.PARAMETER IsOrphaned
 Optional. If set, filter by orphaned status:
-- -Orphaned         : Only return modules that contain an ORPHANED.md file.
-- -Orphaned:$false  : Only return modules that do NOT contain an ORPHANED.md file.
+- -IsOrphaned         : Only return modules that contain an ORPHANED.md file.
+- -IsOrphaned:$false  : Only return modules that do NOT contain an ORPHANED.md file.
 
-.PARAMETER Versioned
+.PARAMETER IsVersioned
 Optional. If set, filter by versioning status:
-- -Versioned         : Only return modules that contain a version.json file.
-- -Versioned:$false  : Only return modules that do NOT contain a version.json file.
+- -IsVersioned         : Only return modules that contain a version.json file.
+- -IsVersioned:$false  : Only return modules that do NOT contain a version.json file.
 
 .PARAMETER RepoRoot
 Optional. The repository root path. Defaults to the repo root relative to this script.
@@ -39,7 +39,7 @@ Get-ModuleList -Path 'avm/res' -Scope 'TopLevel'
 Get only first-level, i.e. parent, modules (e.g. avm/res/storage/storage-account, not its children).
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Orphaned
+Get-ModuleList -Path 'avm/res' -IsOrphaned
 
 Get all orphaned modules (those with an ORPHANED.md file).
 
@@ -49,17 +49,17 @@ Get-ModuleList -Path 'avm/res/storage/storage-account' -Scope 'Child'
 Get all child (nested) modules under the storage-account module.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Scope 'Child' -Versioned
+Get-ModuleList -Path 'avm/res' -Scope 'Child' -IsVersioned
 
 Get all versioned child modules (those with a version.json file).
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Versioned:$false
+Get-ModuleList -Path 'avm/res' -IsVersioned:$false
 
 Get all modules that do NOT have a version.json file.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Scope 'TopLevel' -Orphaned -Versioned
+Get-ModuleList -Path 'avm/res' -Scope 'TopLevel' -IsOrphaned -IsVersioned
 
 Get all orphaned, versioned, top-level modules.
 #>
@@ -75,10 +75,10 @@ function Get-ModuleList {
         [string] $Scope = 'All',
 
         [Parameter(Mandatory = $false)]
-        [switch] $Orphaned,
+        [switch] $IsOrphaned,
 
         [Parameter(Mandatory = $false)]
-        [switch] $Versioned,
+        [switch] $IsVersioned,
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
@@ -89,7 +89,7 @@ function Get-ModuleList {
 
     # Discover all module folders (i.e., containing a main.bicep) and convert to module names (e.g., avm/res/storage/storage-account)
     $modules = Get-ChildItem -Path $absolutePath -Filter 'main.bicep' -Recurse -File | ForEach-Object {
-        $_.Directory.FullName -replace [regex]::Escape($repoRootNormalized), '' -replace '^[\\/]', '' -replace '\\', '/'
+        ($_.Directory.FullName -replace ('{0}[\\|\/]?' -f [regex]::Escape($repoRootNormalized))) -replace '\\', '/'
     }
 
     # Apply scope filter
@@ -103,8 +103,8 @@ function Get-ModuleList {
     }
 
     # Apply orphaned filter
-    if ($PSBoundParameters.ContainsKey('Orphaned')) {
-        if ($Orphaned) {
+    if ($PSBoundParameters.ContainsKey('IsOrphaned')) {
+        if ($IsOrphaned) {
             $modules = $modules | Where-Object {
                 Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md')
             }
@@ -116,8 +116,8 @@ function Get-ModuleList {
     }
 
     # Apply versioned filter
-    if ($PSBoundParameters.ContainsKey('Versioned')) {
-        if ($Versioned) {
+    if ($PSBoundParameters.ContainsKey('IsVersioned')) {
+        if ($IsVersioned) {
             $modules = $modules | Where-Object {
                 Test-Path (Join-Path $RepoRoot $_ 'version.json')
             }
