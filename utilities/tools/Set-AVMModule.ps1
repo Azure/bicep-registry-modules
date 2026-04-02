@@ -1,4 +1,4 @@
-#requires -version 7.3
+﻿#requires -version 7.3
 <#
 .SYNOPSIS
 Create/update all content of an AVM module that can be generated for the user
@@ -38,6 +38,9 @@ Optional. Build files only for those modules who's files have changed (based on 
 
 .PARAMETER RepoRootPath
 Optional. Path to the root of the repository.
+
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
 .EXAMPLE
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
@@ -96,14 +99,28 @@ function Set-AVMModule {
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
-        [int] $Depth
+        [int] $Depth,
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
 
-    # # Load helper scripts
+    # Load helper scripts
+    $readMeFilePath = (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    $buildRpcFilePath = (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Build-ViaRPC.ps1')
+
     . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Test-BicepVersion.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'tools' 'helper' 'Invoke-Async.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ParentFolderPathList.ps1')
     . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
+    . (Join-Path $RepoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Split-Array.ps1')
+    . $buildRpcFilePath
+    . $readMeFilePath
 
+    # ============ #
+    #   Pre-Build  #
+    # ============ #
     if ($InvokeForDiff) {
         $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
 
@@ -156,52 +173,43 @@ function Set-AVMModule {
 
 
     if (-not $SkipVersionCheck) {
+        Test-BicepVersion
+    }
 
-        # Get latest release from Azure/Bicep repository
-        # ----------------------------------------------
-        $latestReleaseUrl = 'https://api.github.com/repos/azure/bicep/releases/latest'
-        try {
-            $latestReleaseObject = Invoke-RestMethod -Uri $latestReleaseUrl -Method 'GET'
-        } catch {
-            Write-Warning "Skipping Bicep version check as url [$latestReleaseUrl] did not return a response."
+    # ====================== #
+    #   Build module files   #
+    # ====================== #
+    $defaultSplitSize = 50 # The bucket size of templates we want to compile at once (i.e., in each thread)
+    if (-not $SkipBuild) {
+        $compilationChunks = Split-Array -InputArray $relevantTemplatePaths -SplitSize $defaultSplitSize
+        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
+            $compilationChunks = , $compilationChunks
+        } else {
+            $compilationChunks = $compilationChunks
         }
-        if ($latestReleaseObject) {
-            # Only run if connected to the internet / url returns a response
-            $releaseTag = $latestReleaseObject.tag_name
-            $latestReleaseVersion = [version]($releaseTag -replace 'v', '')
-            $latestReleaseUrl = $latestReleaseObject.html_url
 
-            # Get latest installed Bicep CLI version
-            # --------------------------------------
-            $latestInstalledVersionOutput = bicep --version
-
-            if ($latestInstalledVersionOutput -match ' ([0-9]+\.[0-9]+\.[0-9]+) ') {
-                $latestInstalledVersion = [version]$matches[1]
+        $compilationInputObject = @{
+            List          = $compilationChunks
+            ScriptBlock   = {
+                . $using:buildRpcFilePath
+                Build-ViaRPC -BicepFilePath $_
             }
-
-            # Compare the versions
-            # --------------------
-            if ($latestInstalledVersion -ne $latestReleaseVersion) {
-                Write-Warning """
-You're not using the latest available Bicep CLI version [$latestReleaseVersion] but [$latestInstalledVersion].
-You can find the latest release at: $latestReleaseUrl.
-
-On Windows, you can use winget to update the Bicep CLI by running 'winget update Microsoft.Bicep' or chocolatey via 'choco upgrade bicep'.
-For other OSs, please refer to the Bicep documentation (https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
-
-Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CLI Bicep extension' version (az bicep version).
-"""
-            } else {
-                Write-Verbose "You're using the latest available Bicep CLI version [$latestInstalledVersion]."
-            }
+            ThrottleLimit = $ThrottleLimit
+            ProgressText  = 'Compiled [{0}/{1}] template file batches'
+        }
+        if ($PSCmdlet.ShouldProcess(('Compiling templates of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Invoke-Async @compilationInputObject
         }
     }
 
-    # Load recurring information we'll need for the modules
+    # ====================== #
+    #   Build readme files   #
+    # ====================== #
     if (-not $SkipReadMe) {
+        # Load recurring information we'll need for the modules
         .  (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
         # load cross-references
-        $crossReferencedModuleList = Get-CrossReferencedModuleList
+        $crossReferencedModuleList = Get-CrossReferencedModuleList -ForceCacheRefresh:$ForceCacheRefresh
 
         # load AVM references (done to reduce WebRequests to GitHub repository)
         # Telemetry
@@ -219,72 +227,91 @@ Note: The 'Bicep CLI' version (bicep --version) is not the same as the 'Azure CL
             $TelemetryFileContent = $null
         }
 
-        # create reference as it must be loaded in the thread to work
-        $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
-    } else {
-        # Instatiate values to enable safe $using usage
-        $crossReferencedModuleList = $null
-        $ReadMeScriptFilePath = $null
-        $TelemetryFileContent = $null
-    }
+        # Collecting & compiling test file paths for usage examples
+        # ========================================================
+        $testFilePaths = $relevantTemplatePaths | ForEach-Object {
+            if (Test-Path (Join-Path (Split-Path $_ -Parent) 'tests' 'e2e')) {
+                return (Get-ChildItem -Path (Split-Path $_ -Parent) -Recurse -File -Filter '*.test.bicep').FullName
+            }
+        }
 
-    # Using threading to speed up the process
-    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
-        try {
-            $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+        $compilationChunks = $testFilePaths ? (Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize) : @()
+        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
+            $compilationChunks = , $compilationChunks
+        } else {
+            $compilationChunks = $compilationChunks
+        }
+
+        $testFileCompilationInputObject = @{
+            List           = $compilationChunks
+            ScriptBlock    = {
+                . $using:buildRpcFilePath
+                return (Build-ViaRPC -BicepFilePath $_ -PassThru)
+            }
+            ThrottleLimit  = $ThrottleLimit
+            ProgressText   = 'Generated [{0}/{1}] test files batches.'
+            PassThruObject = @{}
+        }
+
+
+        if ($PSCmdlet.ShouldProcess(('Building [{0}] test templates in path [{1}]' -f $testFilePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            $compiledTestFilePaths = Invoke-Async @testFileCompilationInputObject
+        }
+
+        # ================= #
+        #   Build ReadMEs   #
+        # ================= #
+        $compilationInputObject = @{
+            List          = $relevantTemplatePaths
+            ScriptBlock   = {
+                . $using:readMeFilePath
+
                 $identifierElements = $_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]'
                 $resourceTypeIdentifier = ('avm/{0}/{1}' -f $identifierElements[1], $identifierElements[2]) -replace '\\', '/' # avm/res/<provider>/<resourceType>
+                Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
-                ###############
-                ##   Build   ##
-                ###############
-                if (-not $using:SkipBuild) {
-                    Write-Output "Building [$resourceTypeIdentifier]"
-                    bicep build $_
-                }
+                $TemplateFilePath = $_
+                $moduleRoot = Split-Path $TemplateFilePath -Parent
 
-                ################
-                ##   ReadMe   ##
-                ################
-                if (-not $using:SkipReadMe) {
-                    Write-Output "Generating readme for [$resourceTypeIdentifier]"
+                # Select relevant test files
+                $relevantTestFilesContent = @{}
+                if ($moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$') {
+                    $testFolderPath = Split-Path $moduleRoot
 
-                    . $using:ReadMeScriptFilePath
-                    $readmeInputObject = @{
-                        TemplateFilePath = $_
-                        PreLoadedContent = @{
-                            CrossReferencedModuleList = $using:crossReferencedModuleList
-                            TelemetryFileContent      = $using:TelemetryFileContent
-                        } + (-not $using:SkipBuild ? @{
-                                # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                                TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $_ -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
-                            } : @{})
+                    $scopedModuleFolderName = Split-Path -Path $moduleRoot -Leaf
+                    $relevantTestFilePaths = (Get-ChildItem -Path $testFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object -Culture 'en-US' | Where-Object {
+                        $_ -match "[\\|\/]$scopedModuleFolderName.*[\\|\/]main\.test\.bicep$"
                     }
-                    Set-ModuleReadMe @readmeInputObject
+                    foreach ($relevantTestFilePath in $relevantTestFilePaths) {
+                        $relevantTestFilesContent[$relevantTestFilePath] = ($using:compiledTestFilePaths)[$relevantTestFilePath]
+                    }
+                } else {
+                    foreach ($filePath in $using:compiledTestFilePaths.Keys) {
+                        if ($filePath -match ('{0}[\\|\/]' -f [regex]::Escape($moduleRoot))) {
+                            $relevantTestFilesContent[$filePath] = ($using:compiledTestFilePaths)[$filePath]
+                        }
+                    }
                 }
+
+                $readmeInputObject = @{
+                    TemplateFilePath  = $TemplateFilePath
+                    ForceCacheRefresh = $using:ForceCacheRefresh
+                    PreLoadedContent  = @{
+                        CrossReferencedModuleList = $using:crossReferencedModuleList
+                        TelemetryFileContent      = $using:telemetryFileContent
+                        CompiledTestFiles         = $relevantTestFilesContent
+                    } + (-not $using:SkipBuild ? @{
+                            # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                            TemplateFileContent = ConvertFrom-Json (Get-Content (Join-Path (Split-Path $TemplateFilePath -Parent) 'main.json') -Encoding 'utf8' -Raw) -ErrorAction 'Stop' -AsHashtable
+                        } : @{})
+                }
+                Set-ModuleReadMe @readmeInputObject
             }
-
-            do {
-                # Sleep a bit to allow the threads to run - adjust as desired.
-                Start-Sleep -Seconds 0.5
-
-                # Determine how many jobs have completed so far.
-                $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
-
-                # Relay any pending output from the child jobs.
-                $job | Receive-Job
-
-                # Update the progress display.
-                [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
-                Write-Progress -Activity ("Processed [$completedJobsCount/{0}] files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
-
-            } while ($completedJobsCount -lt $job.ChildJobs.Count)
-
-            # Clean up the job.
-            $job | Remove-Job
-        } finally {
-            # In case the user cancelled the process, we need to make sure to stop all running jobs
-            $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
+            ThrottleLimit = $ThrottleLimit
+            ProgressText  = 'Generated [{0}/{1}] readme files'
+        }
+        if ($PSCmdlet.ShouldProcess(('Generating readmes of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath ?? '<ForDiff>'), 'Execute')) {
+            Invoke-Async @compilationInputObject
         }
     }
 }
