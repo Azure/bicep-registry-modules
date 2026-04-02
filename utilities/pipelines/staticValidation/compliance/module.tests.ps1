@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -176,7 +176,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
                     $topLevelModuleTestCases += @{
-                        moduleFolderName         = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+                        moduleFolderName         = $moduleFolderPath.Replace('\', '/').Split('/avm/')[-1]
                         moduleFolderPath         = $moduleFolderPath
                         moduleType               = $moduleType
                         isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
@@ -412,7 +412,7 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
             $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
+            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
 
             $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
             if ($isTopLevelModule) {
@@ -1512,7 +1512,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $outputs = $templateFileContent.outputs
 
-                $primaryResourceType = (Split-Path $TemplateFilePath -Parent).Replace('\', '/').split('/avm/')[1]
+                $primaryResourceType = (Split-Path $TemplateFilePath -Parent).Replace('\', '/').split('/avm/')[-1]
                 $primaryResourceTypeResource = $templateFileContent.resources | Where-Object { $_.type -eq $primaryResourceType }
 
                 if ($primaryResourceTypeResource.keys -contains 'location' -and $primaryResourceTypeResource.location -ne 'global') {
@@ -2109,7 +2109,7 @@ Describe 'Governance tests' {
 
             $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
             $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
-            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
+            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
 
             $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
             if ($isTopLevelModule) {
@@ -2416,7 +2416,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-            $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+            $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[-1]
             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
             $templateFileContent = $builtTestFileMap[$templateFilePath]
 
