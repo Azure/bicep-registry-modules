@@ -7,7 +7,7 @@ Scans a given root path for Bicep modules (folders containing a main.bicep file)
 Filters can be combined: -Scope controls hierarchy (All/TopLevel/Child), -IsOrphaned limits to orphaned modules, -IsVersioned limits to versioned or not-versioned modules.
 
 .PARAMETER Path
-Mandatory. The root path to scan for modules, relative to the repository root (e.g. 'avm/res', 'avm/ptn', 'avm/res/storage/storage-account').
+Mandatory. The absolute path to scan for modules (e.g. 'C:/repo/avm/res', 'C:/repo/avm/ptn', 'C:/repo/avm/res/storage/storage-account').
 
 .PARAMETER Scope
 Optional. Controls the hierarchy filter:
@@ -29,37 +29,37 @@ Optional. If set, filter by versioning status:
 Optional. The repository root path. Defaults to the repo root relative to this script.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res'
+Get-ModuleList -Path 'C:/repo/avm/res'
 
 Get all modules under avm/res.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Scope 'TopLevel'
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel'
 
 Get only first-level, i.e. parent, modules (e.g. avm/res/storage/storage-account, not its children).
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -IsOrphaned
+Get-ModuleList -Path 'C:/repo/avm/res' -IsOrphaned
 
 Get all orphaned modules (those with an ORPHANED.md file).
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res/storage/storage-account' -Scope 'Child'
+Get-ModuleList -Path 'C:/repo/avm/res/storage/storage-account' -Scope 'Child'
 
 Get all child (nested) modules under the storage-account module.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Scope 'Child' -IsVersioned
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned
 
 Get all versioned child modules (those with a version.json file).
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -IsVersioned:$false
+Get-ModuleList -Path 'C:/repo/avm/res' -IsVersioned:$false
 
 Get all modules that do NOT have a version.json file.
 
 .EXAMPLE
-Get-ModuleList -Path 'avm/res' -Scope 'TopLevel' -IsOrphaned -IsVersioned
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel' -IsOrphaned -IsVersioned
 
 Get all orphaned, versioned, top-level modules.
 #>
@@ -84,12 +84,11 @@ function Get-ModuleList {
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
     )
 
-    $absolutePath = Resolve-Path -Path (Join-Path $RepoRoot $Path) -ErrorAction Stop
     $repoRootNormalized = $RepoRoot.TrimEnd('/\')
 
     # Discover all module folders (i.e., containing a main.bicep) and convert to module names (e.g., avm/res/storage/storage-account)
-    $modules = Get-ChildItem -Path $absolutePath -Filter 'main.bicep' -Recurse -File | ForEach-Object {
-        ($_.Directory.FullName -replace ('{0}[\\|\/]?' -f [regex]::Escape($repoRootNormalized))) -replace '\\', '/'
+    $modules = Get-ChildItem -Path $Path -Filter 'main.bicep' -Recurse -File | ForEach-Object {
+        ($_.Directory.FullName -replace ('{0}[\\\/]?' -f [regex]::Escape($repoRootNormalized))) -replace '\\', '/'
     }
 
     # Apply scope filter
