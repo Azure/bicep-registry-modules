@@ -180,20 +180,20 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-admin'
       securityRules: [
-      {
-        name: 'Deny-hop-outbound'
-        properties: {
-          access: 'Deny'
-          direction: 'Outbound'
-          priority: 200
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRanges: ['3389', '22']
-          sourceAddressPrefix: 'VirtualNetwork'
-          destinationAddressPrefix: '*'
+        {
+          name: 'Deny-hop-outbound'
+          properties: {
+            access: 'Deny'
+            direction: 'Outbound'
+            priority: 200
+            protocol: '*'
+            sourcePortRange: '*'
+            destinationPortRanges: ['3389', '22']
+            sourceAddressPrefix: 'VirtualNetwork'
+            destinationAddressPrefix: '*'
+          }
         }
-      }
-    ]
+      ]
     }
   }
 ]

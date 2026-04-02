@@ -264,7 +264,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
       createOption: 'FromImage'
       deleteOption: 'Delete'
       diskSizeGB: 128
-      managedDisk: { 
+      managedDisk: {
         // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
         storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
       }
@@ -293,7 +293,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
       tags: tags
       typeHandlerVersion: '1.0'
       settings: {
-        mdmId:''
+        mdmId: ''
       }
     }
     extensionAntiMalwareConfig: {
@@ -1355,7 +1355,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
         ]
       : null
     disableLocalAuth: false
-    replicaLocations: enableRedundancy? [{ replicaLocation: replicaLocation }] : []
+    replicaLocations: enableRedundancy ? [{ replicaLocation: replicaLocation }] : []
     roleAssignments: [
       {
         principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId!

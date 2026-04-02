@@ -14,7 +14,7 @@ param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags =
 }
 
 @description('Optional: Existing Log Analytics Workspace Resource ID')
-param existingLogAnalyticsWorkspaceId string = '' 
+param existingLogAnalyticsWorkspaceId string = ''
 
 @description('Optional. Enable Private Networking for Log Analytics Workspace.')
 param enablePrivateNetworking bool = false
@@ -96,16 +96,26 @@ resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces
 }
 
 #disable-next-line use-resource-symbol-reference BCP318 // listKeys is needed for cross-resource-group existing workspace; conditional access is guarded
-var lawKeys = useExistingWorkspace ? listKeys(existingLogAnalyticsWorkspace.id, '2025-02-01') : logAnalyticsWorkspace.outputs.primarySharedKey
+var lawKeys = useExistingWorkspace
+  ? listKeys(existingLogAnalyticsWorkspace.id, '2025-02-01')
+  : logAnalyticsWorkspace.outputs.primarySharedKey
 
 #disable-next-line BCP318 // Conditional access on existing vs new workspace is guarded by useExistingWorkspace
-output resourceId string = useExistingWorkspace ? existingLogAnalyticsWorkspace.id : logAnalyticsWorkspace.outputs.resourceId
+output resourceId string = useExistingWorkspace
+  ? existingLogAnalyticsWorkspace.id
+  : logAnalyticsWorkspace.outputs.resourceId
 #disable-next-line BCP318 // Conditional access on existing vs new workspace is guarded by useExistingWorkspace
-output logAnalyticsWorkspaceId string = useExistingWorkspace ? existingLogAnalyticsWorkspace.properties.customerId : logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+output logAnalyticsWorkspaceId string = useExistingWorkspace
+  ? existingLogAnalyticsWorkspace.properties.customerId
+  : logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
 @secure()
 #disable-next-line BCP318 // Conditional access on existing vs new workspace is guarded by useExistingWorkspace
-output primarySharedKey string = useExistingWorkspace ? lawKeys.primarySharedKey : logAnalyticsWorkspace.outputs.primarySharedKey
+output primarySharedKey string = useExistingWorkspace
+  ? lawKeys.primarySharedKey
+  : logAnalyticsWorkspace.outputs.primarySharedKey
 #disable-next-line BCP318 // Conditional access on existing vs new workspace is guarded by useExistingWorkspace
-output location string = useExistingWorkspace ? existingLogAnalyticsWorkspace!.location : logAnalyticsWorkspace!.outputs.location
+output location string = useExistingWorkspace
+  ? existingLogAnalyticsWorkspace!.location
+  : logAnalyticsWorkspace!.outputs.location
 #disable-next-line BCP318 // Conditional access on existing vs new workspace is guarded by useExistingWorkspace
 output name string = useExistingWorkspace ? existingLogAnalyticsWorkspace!.name : logAnalyticsWorkspace!.outputs.name

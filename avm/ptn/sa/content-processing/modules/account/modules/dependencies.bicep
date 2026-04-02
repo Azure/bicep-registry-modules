@@ -353,7 +353,7 @@ module secretsExport './keyVaultExport.bicep' = if (secretsExportConfiguration !
   }
 }
 
-module aiProject 'project.bicep' = if(!empty(projectName) || !empty(azureExistingAIProjectResourceId)) {
+module aiProject 'project.bicep' = if (!empty(projectName) || !empty(azureExistingAIProjectResourceId)) {
   name: take('${name}-ai-project-${projectName}-deployment', 64)
   params: {
     name: projectName
@@ -368,7 +368,9 @@ module aiProject 'project.bicep' = if(!empty(projectName) || !empty(azureExistin
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 #disable-next-line BCP318 // Conditional access on secretsExport is guarded by secretsExportConfiguration != null
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null) ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret) : {}
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 @description('The private endpoints of the congitive services account.')
 output privateEndpoints privateEndpointOutputType[] = [

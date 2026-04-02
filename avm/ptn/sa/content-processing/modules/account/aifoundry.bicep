@@ -157,7 +157,7 @@ var identity = !empty(managedIdentities)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
-  
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -199,7 +199,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 
 var useExistingService = !empty(existingFoundryProjectResourceId)
 
-resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-09-01' = if(!useExistingService) {
+resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-09-01' = if (!useExistingService) {
   name: name
   kind: kind
   identity: identity
@@ -229,7 +229,9 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-09-01' =
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             #disable-next-line BCP318 // CMK identity is conditionally created and guarded by customerManagedKey check
-            identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '') ? cMKUserAssignedIdentity.properties.clientId : null
+            identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+              ? cMKUserAssignedIdentity.properties.clientId
+              : null
             #disable-next-line BCP318 // CMK key vault is conditionally referenced and guarded by customerManagedKey check
             keyVaultUri: cMKKeyVault.properties.vaultUri
             keyName: customerManagedKey!.keyName
@@ -250,16 +252,16 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-09-01' =
 
 var existingCognitiveServiceDetails = split(existingFoundryProjectResourceId, '/')
 
-resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-09-01' existing = if(useExistingService) {
+resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-09-01' existing = if (useExistingService) {
   name: existingCognitiveServiceDetails[8]
   scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
 }
 
-module cognitive_service_dependencies './modules/dependencies.bicep' = if(!useExistingService) {
+module cognitive_service_dependencies './modules/dependencies.bicep' = if (!useExistingService) {
   params: {
     projectName: projectName
     projectDescription: projectDescription
-    name:  cognitiveServiceNew.name 
+    name: cognitiveServiceNew.name
     location: location
     deployments: deployments
     diagnosticSettings: diagnosticSettings
@@ -272,9 +274,9 @@ module cognitive_service_dependencies './modules/dependencies.bicep' = if(!useEx
   }
 }
 
-module existing_cognitive_service_dependencies './modules/dependencies.bicep' = if(useExistingService) {
+module existing_cognitive_service_dependencies './modules/dependencies.bicep' = if (useExistingService) {
   params: {
-    name:  cognitiveServiceExisting.name 
+    name: cognitiveServiceExisting.name
     projectName: projectName
     projectDescription: projectDescription
     azureExistingAIProjectResourceId: existingFoundryProjectResourceId
@@ -302,22 +304,28 @@ output name string = useExistingService ? cognitiveServiceExisting.name : cognit
 output resourceId string = useExistingService ? cognitiveServiceExisting.id : cognitiveServiceNew.id
 
 @description('The resource group the cognitive services account was deployed into.')
-output subscriptionId string =  useExistingService ? existingCognitiveServiceDetails[2] : subscription().subscriptionId
+output subscriptionId string = useExistingService ? existingCognitiveServiceDetails[2] : subscription().subscriptionId
 
 @description('The resource group the cognitive services account was deployed into.')
-output resourceGroupName string =  useExistingService ? existingCognitiveServiceDetails[4] : resourceGroup().name
+output resourceGroupName string = useExistingService ? existingCognitiveServiceDetails[4] : resourceGroup().name
 
 @description('The service endpoint of the cognitive services account.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output endpoint string = useExistingService ? cognitiveServiceExisting.properties.endpoint : cognitiveService.properties.endpoint
+output endpoint string = useExistingService
+  ? cognitiveServiceExisting.properties.endpoint
+  : cognitiveService.properties.endpoint
 
 @description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output endpoints endpointType = useExistingService ? cognitiveServiceExisting.properties.endpoints : cognitiveService.properties.endpoints
+output endpoints endpointType = useExistingService
+  ? cognitiveServiceExisting.properties.endpoints
+  : cognitiveService.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output systemAssignedMIPrincipalId string? = useExistingService ? cognitiveServiceExisting.identity.principalId : cognitiveService.?identity.?principalId
+output systemAssignedMIPrincipalId string? = useExistingService
+  ? cognitiveServiceExisting.identity.principalId
+  : cognitiveService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
@@ -326,15 +334,21 @@ output location string = useExistingService ? cognitiveServiceExisting.location 
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output exportedSecrets secretsOutputType = useExistingService ? existing_cognitive_service_dependencies.outputs.exportedSecrets : cognitive_service_dependencies.outputs.exportedSecrets
+output exportedSecrets secretsOutputType = useExistingService
+  ? existing_cognitive_service_dependencies.outputs.exportedSecrets
+  : cognitive_service_dependencies.outputs.exportedSecrets
 
 @description('The private endpoints of the congitive services account.')
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output privateEndpoints privateEndpointOutputType[] = useExistingService ? existing_cognitive_service_dependencies.outputs.privateEndpoints : cognitive_service_dependencies.outputs.privateEndpoints
+output privateEndpoints privateEndpointOutputType[] = useExistingService
+  ? existing_cognitive_service_dependencies.outputs.privateEndpoints
+  : cognitive_service_dependencies.outputs.privateEndpoints
 
 import { aiProjectOutputType } from './modules/project.bicep'
 #disable-next-line BCP318 // Conditional access guarded by useExistingService
-output aiProjectInfo aiProjectOutputType = useExistingService ? existing_cognitive_service_dependencies.outputs.aiProjectInfo : cognitive_service_dependencies.outputs.aiProjectInfo
+output aiProjectInfo aiProjectOutputType = useExistingService
+  ? existing_cognitive_service_dependencies.outputs.aiProjectInfo
+  : cognitive_service_dependencies.outputs.aiProjectInfo
 
 // ================ //
 // Definitions      //
