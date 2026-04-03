@@ -67,65 +67,29 @@ function Get-ModuleList {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
+        [Parameter(Mandatory = $false)]
+        [string] $Path = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('All', 'TopLevel', 'Child')]
         [string] $Scope = 'All',
 
         [Parameter(Mandatory = $false)]
-        [switch] $IsOrphaned,
+        [Nullable[bool]] $IsOrphaned,
 
         [Parameter(Mandatory = $false)]
-        [switch] $IsVersioned,
-
-        [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
+        [Nullable[bool]] $IsVersioned
     )
-
-    $repoRootNormalized = $RepoRoot.TrimEnd('/\')
 
     # Discover all module folders (i.e., containing a main.bicep) and convert to module names (e.g., avm/res/storage/storage-account)
     $modules = Get-ChildItem -Path $Path -Filter 'main.bicep' -Recurse -File | ForEach-Object {
-        ($_.Directory.FullName -replace ('{0}[\\\/]?' -f [regex]::Escape($repoRootNormalized))) -replace '\\', '/'
+        (($_.Directory.FullName -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
     }
 
-    # Apply scope filter
-    switch ($Scope) {
-        'TopLevel' {
-            $modules = $modules | Where-Object { ($_ -split '/').Count -eq 4 }
-        }
-        'Child' {
-            $modules = $modules | Where-Object { ($_ -split '/').Count -gt 4 }
-        }
+    $modules = $modules | Where-Object {
+        (($Scope -eq 'TopLevel') ? (($_ -split '/').Count -eq 4) : (($Scope -eq 'Child') ? (($_ -split '/').Count -gt 4) : $true)) -and
+        ($IsOrphaned -ne $null ? ($IsOrphaned -eq (Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md'))) : $true) -and
+        ($IsVersioned -ne $null ? ($IsVersioned -eq (Test-Path (Join-Path $RepoRoot $_ 'version.json'))) : $true)
     }
-
-    # Apply orphaned filter
-    if ($PSBoundParameters.ContainsKey('IsOrphaned')) {
-        if ($IsOrphaned) {
-            $modules = $modules | Where-Object {
-                Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md')
-            }
-        } else {
-            $modules = $modules | Where-Object {
-                -not (Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md'))
-            }
-        }
-    }
-
-    # Apply versioned filter
-    if ($PSBoundParameters.ContainsKey('IsVersioned')) {
-        if ($IsVersioned) {
-            $modules = $modules | Where-Object {
-                Test-Path (Join-Path $RepoRoot $_ 'version.json')
-            }
-        } else {
-            $modules = $modules | Where-Object {
-                -not (Test-Path (Join-Path $RepoRoot $_ 'version.json'))
-            }
-        }
-    }
-
     return $modules
 }
