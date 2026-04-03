@@ -59,7 +59,7 @@ Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned:$false
 Get all child resource modules that do NOT have a version.json file, i.e., modules not published to the public bicep registry.
 
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel' -IsOrphaned:$true -IsVersioned:$true
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel' -IsOrphaned:$true -IsVersioned $true
 
 Get all orphaned, versioned, top-level modules in the specified path.
 #>
