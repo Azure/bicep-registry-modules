@@ -28,6 +28,11 @@ Optional. If set, filter by versioning status:
 - -IsVersioned:$true   : Only return modules that contain a version.json file.
 - -IsVersioned:$false  : Only return modules that do NOT contain a version.json file.
 
+.PARAMETER HasChildren
+Optional. If set, filter by whether a module has nested child modules (subfolders containing a main.bicep file):
+- -HasChildren:$true   : Only return modules that contain at least one nested module.
+- -HasChildren:$false  : Only return modules that do NOT contain any nested modules.
+
 .EXAMPLE
 Get-ModuleList
 
@@ -76,7 +81,10 @@ function Get-ModuleList {
         [Nullable[bool]] $IsOrphaned,
 
         [Parameter(Mandatory = $false)]
-        [Nullable[bool]] $IsVersioned
+        [Nullable[bool]] $IsVersioned,
+
+        [Parameter(Mandatory = $false)]
+        [Nullable[bool]] $HasChildren
     )
 
     Write-verbose ("Repository root: " + $RepoRoot) -Verbose
@@ -89,7 +97,8 @@ function Get-ModuleList {
     $modules = $modules | Where-Object {
         (($Scope -eq 'TopLevel') ? (($_ -split '/').Count -eq 4) : (($Scope -eq 'Child') ? (($_ -split '/').Count -gt 4) : $true)) -and
         ($null -ne $IsOrphaned ? ($IsOrphaned -eq (Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md'))) : $true) -and
-        ($null -ne $IsVersioned ? ($IsVersioned -eq (Test-Path (Join-Path $RepoRoot $_ 'version.json'))) : $true)
+        ($null -ne $IsVersioned ? ($IsVersioned -eq (Test-Path (Join-Path $RepoRoot $_ 'version.json'))) : $true) -and
+        ($null -ne $HasChildren ? ($HasChildren -eq (Test-Path (Join-Path $RepoRoot $_ '*' 'main.bicep'))) : $true)
     }
 
     return $modules
