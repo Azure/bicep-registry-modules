@@ -778,21 +778,24 @@ Describe 'Module tests' -Tag 'Module' {
                 return # Skipping if test was failing
             }
 
-            $originalJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+            $originalContent = Get-Content $armTemplatePath -Raw
+            $originalJson = Remove-JSONMetadata -TemplateObject ($originalContent | ConvertFrom-Json -Depth 99 -AsHashtable)
             $originalJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $originalJson -Depth 99)
 
-            # Recompile json
-            $null = Remove-Item -Path $armTemplatePath -Force
-            bicep build $templateFilePath
+            try {
+                # Recompile json
+                $null = Remove-Item -Path $armTemplatePath -Force
+                bicep build $templateFilePath
 
-            $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
-            $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
+                $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+                $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
 
-            # compare
-            (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
-
-            # Reset template file to original state
-            git checkout HEAD -- $armTemplatePath
+                # compare
+                (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
+            } finally {
+                # Restore original file content (preserves uncommitted changes unlike git checkout)
+                Set-Content -Path $armTemplatePath -Value $originalContent -NoNewline
+            }
         }
     }
 
