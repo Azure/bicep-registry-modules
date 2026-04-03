@@ -207,7 +207,7 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
     }
     osType: 'Windows'
     version: {
-      name: '20348.2461.240510'
+      name: '20348.4893.260303'
     }
   }
 }
