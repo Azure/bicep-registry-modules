@@ -20,8 +20,8 @@ Optional. Controls the hierarchy filter:
 
 .PARAMETER IsOrphaned
 Optional. If set, filter by orphaned status:
-- -IsOrphaned:$true   : Only return modules that contain an ORPHANED.md file.
-- -IsOrphaned:$false  : Only return modules that do NOT contain an ORPHANED.md file.
+- `-IsOrphaned $true`   : Only return modules that contain an ORPHANED.md file.
+- `-IsOrphaned $false`  : Only return modules that do NOT contain an ORPHANED.md file.
 
 .PARAMETER IsVersioned
 Optional. If set, filter by versioning status:
