@@ -36,10 +36,6 @@
     }
   ],
   "chat.tools.terminal.autoApprove": {
-
-    "bicep": true,
-    "git ls-remote": true,
-    "az": true,
     "ConvertFrom-Json": true,
     "ConvertTo-Json": true,
     "Set-AVMModule": true,
