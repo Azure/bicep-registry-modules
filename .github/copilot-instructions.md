@@ -97,11 +97,13 @@ You have exactly these two options (do not use any other method or tool to do th
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
 
-## Running PowerShell Scripts
+## Running PowerShell Scripts (Example)
 
 **🛑 NEVER use the `&` (call) operator to invoke PowerShell scripts.** The `&` operator loads and invokes a script in a single step, which is not permitted.
 
-Instead, always use the **dot-source** (`. `) approach:
+Instead, always use the **dot-source** (`. `) approach as per the example below.
+
+> Note: This is just an example of how to run any PowerShell script in this repository, and does not mean that this script always needs exactly these parameters.
 
 1. **Dot-source the script** to load its functions into the current session:
 
