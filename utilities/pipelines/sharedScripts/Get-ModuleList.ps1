@@ -6,8 +6,11 @@ Retrieve a filtered list of AVM modules.
 Scans a given root path for Bicep modules (folders containing a main.bicep file) and returns them filtered by the requested characteristics.
 Filters can be combined: -Scope controls hierarchy (All/TopLevel/Child), -IsOrphaned limits to orphaned modules, -IsVersioned limits to versioned or not-versioned modules.
 
+.PARAMETER RepoRoot
+Optional. The repository root path used to resolve module marker files (ORPHANED.md, version.json). Defaults to the repository root relative to this script.
+
 .PARAMETER Path
-Optional. The absolute path to scan for modules (e.g. 'C:/repo/avm/res', 'C:/repo/avm/ptn', 'C:/repo/avm/res/storage/storage-account'). Defaults to the repository root relative to this script.
+Optional. The absolute path to scan for modules (e.g. 'C:/repo/avm/res', 'C:/repo/avm/ptn', 'C:/repo/avm/res/storage/storage-account'). Defaults to RepoRoot.
 
 .PARAMETER Scope
 Optional. Controls the hierarchy filter:
