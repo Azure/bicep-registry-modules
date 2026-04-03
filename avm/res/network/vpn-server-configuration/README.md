@@ -896,40 +896,6 @@ The list of RADIUS servers. Required if configuring multiple RADIUS servers.
 - Type: array
 - Default: `[]`
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`radiusServerAddress`](#parameter-radiusserversradiusserveraddress) | string | The address of this radius server. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`radiusServerScore`](#parameter-radiusserversradiusserverscore) | int | The initial score assigned to this radius server. |
-| [`radiusServerSecret`](#parameter-radiusserversradiusserversecret) | securestring | The secret used for this radius server. |
-
-### Parameter: `radiusServers.radiusServerAddress`
-
-The address of this radius server.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `radiusServers.radiusServerScore`
-
-The initial score assigned to this radius server.
-
-- Required: No
-- Type: int
-
-### Parameter: `radiusServers.radiusServerSecret`
-
-The secret used for this radius server.
-
-- Required: No
-- Type: securestring
-
 ### Parameter: `tags`
 
 Tags of the resource.

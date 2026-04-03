@@ -29,7 +29,7 @@ param radiusServerAddress string?
 param radiusServerRootCertificates array = []
 
 @description('Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers.')
-param radiusServers radiusServersType[] = []
+param radiusServers resourceInput<'Microsoft.Network/vpnServerConfigurations@2025-05-01'>.properties.radiusServers = []
 
 @description('Conditional. The RADIUS server secret. Required if configuring a single RADIUS server.')
 @secure()
@@ -124,13 +124,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2025-05-01' 
         publicCertData: serverRoot.publicCertData
       }
     ]
-    radiusServers: [
-      for server in (radiusServers) ?? []: {
-        radiusServerAddress: server.radiusServerAddress
-        radiusServerScore: server.?radiusServerScore
-        radiusServerSecret: server.?radiusServerSecret
-      }
-    ]
+    radiusServers: radiusServers
     radiusServerSecret: radiusServerSecret
     vpnAuthenticationTypes: vpnAuthenticationTypes
     vpnClientIpsecPolicies: [
@@ -187,19 +181,6 @@ output location string = vpnServerConfig.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-type radiusServersType = {
-  @description('Required. The address of this radius server.')
-  radiusServerAddress: string
-
-  @description('Optional. The initial score assigned to this radius server.')
-  radiusServerScore: int?
-
-  @description('Optional. The secret used for this radius server.')
-  @secure()
-  radiusServerSecret: string?
-}
 
 @export()
 type vpnClientIpsecPoliciesType = {

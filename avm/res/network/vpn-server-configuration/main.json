@@ -5,41 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14767118554124456505"
+      "version": "0.40.2.10011",
+      "templateHash": "9687907465960016292"
     },
     "name": "VPN Server Configuration",
     "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway."
   },
   "definitions": {
-    "radiusServersType": {
-      "type": "object",
-      "properties": {
-        "radiusServerAddress": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The address of this radius server."
-          }
-        },
-        "radiusServerScore": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The initial score assigned to this radius server."
-          }
-        },
-        "radiusServerSecret": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The secret used for this radius server."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
     "vpnClientIpsecPoliciesType": {
       "type": "object",
       "properties": {
@@ -207,13 +179,13 @@
     },
     "radiusServers": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/radiusServersType"
-      },
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnServerConfigurations@2025-05-01#properties/properties/properties/radiusServers"
+        },
         "description": "Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers."
-      }
+      },
+      "defaultValue": []
     },
     "radiusServerSecret": {
       "type": "securestring",
@@ -352,15 +324,6 @@
             }
           },
           {
-            "name": "radiusServers",
-            "count": "[length(coalesce(parameters('radiusServers'), createArray()))]",
-            "input": {
-              "radiusServerAddress": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerAddress]",
-              "radiusServerScore": "[tryGet(coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')], 'radiusServerScore')]",
-              "radiusServerSecret": "[tryGet(coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')], 'radiusServerSecret')]"
-            }
-          },
-          {
             "name": "vpnClientIpsecPolicies",
             "count": "[length(coalesce(parameters('vpnClientIpsecPolicies'), createArray()))]",
             "input": {
@@ -397,6 +360,7 @@
           "aadTenant": "[parameters('aadTenant')]"
         },
         "radiusServerAddress": "[parameters('radiusServerAddress')]",
+        "radiusServers": "[parameters('radiusServers')]",
         "radiusServerSecret": "[parameters('radiusServerSecret')]",
         "vpnAuthenticationTypes": "[parameters('vpnAuthenticationTypes')]",
         "vpnProtocols": "[parameters('vpnProtocols')]"
