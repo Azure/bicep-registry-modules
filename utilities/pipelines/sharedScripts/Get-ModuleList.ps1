@@ -54,7 +54,7 @@ Get-ModuleList -Path 'C:/repo/avm/res/storage/storage-account' -Scope 'Child'
 Get all child (nested) modules under the storage-account module.
 
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned:$false
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned $false
 
 Get all child resource modules that do NOT have a version.json file, i.e., modules not published to the public bicep registry.
 
