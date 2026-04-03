@@ -1,13 +1,13 @@
 ﻿<#
 .SYNOPSIS
-Retrieve a filtered list of AVM module folders.
+Retrieve a filtered list of AVM modules.
 
 .DESCRIPTION
 Scans a given root path for Bicep modules (folders containing a main.bicep file) and returns them filtered by the requested characteristics.
 Filters can be combined: -Scope controls hierarchy (All/TopLevel/Child), -IsOrphaned limits to orphaned modules, -IsVersioned limits to versioned or not-versioned modules.
 
 .PARAMETER Path
-Mandatory. The absolute path to scan for modules (e.g. 'C:/repo/avm/res', 'C:/repo/avm/ptn', 'C:/repo/avm/res/storage/storage-account').
+Optional. The absolute path to scan for modules (e.g. 'C:/repo/avm/res', 'C:/repo/avm/ptn', 'C:/repo/avm/res/storage/storage-account'). Defaults to the repository root relative to this script.
 
 .PARAMETER Scope
 Optional. Controls the hierarchy filter:
@@ -17,29 +17,26 @@ Optional. Controls the hierarchy filter:
 
 .PARAMETER IsOrphaned
 Optional. If set, filter by orphaned status:
-- -IsOrphaned         : Only return modules that contain an ORPHANED.md file.
+- -IsOrphaned:$true   : Only return modules that contain an ORPHANED.md file.
 - -IsOrphaned:$false  : Only return modules that do NOT contain an ORPHANED.md file.
 
 .PARAMETER IsVersioned
 Optional. If set, filter by versioning status:
-- -IsVersioned         : Only return modules that contain a version.json file.
+- -IsVersioned:$true   : Only return modules that contain a version.json file.
 - -IsVersioned:$false  : Only return modules that do NOT contain a version.json file.
 
-.PARAMETER RepoRoot
-Optional. The repository root path. Defaults to the repo root relative to this script.
-
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res'
+Get-ModuleList
 
-Get all modules under avm/res.
+Get all modules under the repository root.
 
 .EXAMPLE
 Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel'
 
-Get only first-level, i.e. parent, modules (e.g. avm/res/storage/storage-account, not its children).
+Get only first-level, i.e. parent, modules (e.g. avm/res/storage/storage-account, not its children) in the specified path.
 
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -IsOrphaned
+Get-ModuleList -IsOrphaned:$true
 
 Get all orphaned modules (those with an ORPHANED.md file).
 
@@ -49,19 +46,14 @@ Get-ModuleList -Path 'C:/repo/avm/res/storage/storage-account' -Scope 'Child'
 Get all child (nested) modules under the storage-account module.
 
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'Child' -IsVersioned:$false
 
-Get all versioned child modules (those with a version.json file).
-
-.EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -IsVersioned:$false
-
-Get all modules that do NOT have a version.json file.
+Get all child resource modules that do NOT have a version.json file, i.e., modules not published to the public bicep registry.
 
 .EXAMPLE
-Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel' -IsOrphaned -IsVersioned
+Get-ModuleList -Path 'C:/repo/avm/res' -Scope 'TopLevel' -IsOrphaned:$true -IsVersioned:$true
 
-Get all orphaned, versioned, top-level modules.
+Get all orphaned, versioned, top-level modules in the specified path.
 #>
 function Get-ModuleList {
 
