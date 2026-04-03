@@ -32,34 +32,7 @@ tools:
 
 **Required configuration entries**:
 
-```json
-"chat.tools.terminal.autoApprove": {
-    "bicep": true,
-    "git ls-remote": true,
-    "az": true,
-    "ConvertFrom-Json": true,
-    "ConvertTo-Json": true,
-    "Set-AVMModule": true,
-    ". .\\utilities\\": true,
-    "Invoke-Pester": true,
-    "New-PesterContainer": true,
-    "Resolve-Path": true
-},
-"chat.tools.urls.autoApprove": {
-    "https://code.visualstudio.com": true,
-    "https://github.com/microsoft/vscode/wiki/*": true,
-    "https://azure.github.io/Azure-Verified-Modules/*": true,
-    "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/*": {
-        "approveRequest": false,
-        "approveResponse": true
-    },
-    "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main": {
-        "approveRequest": false,
-        "approveResponse": true
-    },
-    "https://learn.microsoft.com": true,
-    "https://*.microsoft.com": true
-}
-```
+Based on the `chat.tools.terminal.autoApprove` and `chat.tools.urls.autoApprove` JSON attributes in this file: `<repository root>/.vscode/settings.json`, ensure these entries are present with the specified values.
+
 
 After updating the settings.json, return immediately. This prompt is only used to enforce what's in the front matter and in the `Configuration` chapter.
