@@ -60,7 +60,10 @@ function Get-ModuleList {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
-        [string] $Path = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName,
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $Path = $RepoRoot,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('All', 'TopLevel', 'Child')]
@@ -73,6 +76,8 @@ function Get-ModuleList {
         [Nullable[bool]] $IsVersioned
     )
 
+    Write-verbose ("Repository root: " + $RepoRoot) -Verbose
+
     # Discover all module folders (i.e., containing a main.bicep) and convert to module names (e.g., avm/res/storage/storage-account)
     $modules = Get-ChildItem -Path $Path -Filter 'main.bicep' -Recurse -File | ForEach-Object {
         (($_.Directory.FullName -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
@@ -80,8 +85,9 @@ function Get-ModuleList {
 
     $modules = $modules | Where-Object {
         (($Scope -eq 'TopLevel') ? (($_ -split '/').Count -eq 4) : (($Scope -eq 'Child') ? (($_ -split '/').Count -gt 4) : $true)) -and
-        ($IsOrphaned -ne $null ? ($IsOrphaned -eq (Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md'))) : $true) -and
-        ($IsVersioned -ne $null ? ($IsVersioned -eq (Test-Path (Join-Path $RepoRoot $_ 'version.json'))) : $true)
+        ($null -ne $IsOrphaned ? ($IsOrphaned -eq (Test-Path (Join-Path $RepoRoot $_ 'ORPHANED.md'))) : $true) -and
+        ($null -ne $IsVersioned ? ($IsVersioned -eq (Test-Path (Join-Path $RepoRoot $_ 'version.json'))) : $true)
     }
+
     return $modules
 }
