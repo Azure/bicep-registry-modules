@@ -25,8 +25,8 @@ Optional. If set, filter by orphaned status:
 
 .PARAMETER IsVersioned
 Optional. If set, filter by versioning status:
-- -IsVersioned:$true   : Only return modules that contain a version.json file.
-- -IsVersioned:$false  : Only return modules that do NOT contain a version.json file.
+- `-IsVersioned $true`   : Only return modules that contain a version.json file.
+- `-IsVersioned $false`  : Only return modules that do NOT contain a version.json file.
 
 .PARAMETER HasChildren
 Optional. If set, filter by whether a module has nested child modules (subfolders containing a main.bicep file):
