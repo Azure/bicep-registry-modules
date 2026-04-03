@@ -1,4 +1,5 @@
-﻿
+﻿#Requires -Version 7
+
 param (
     [Parameter(Mandatory = $false)]
     [array] $moduleFolderPaths = ((Get-ChildItem $repoRootPath -Recurse -Directory -Force).FullName | Where-Object {
