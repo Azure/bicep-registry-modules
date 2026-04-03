@@ -30,8 +30,8 @@ Optional. If set, filter by versioning status:
 
 .PARAMETER HasChildren
 Optional. If set, filter by whether a module has nested child modules (subfolders containing a main.bicep file):
-- -HasChildren:$true   : Only return modules that contain at least one nested module.
-- -HasChildren:$false  : Only return modules that do NOT contain any nested modules.
+- `-HasChildren $true`  : Only return modules that contain at least one nested module.
+- `-HasChildren $false` : Only return modules that do NOT contain any nested modules.
 
 .EXAMPLE
 Get-ModuleList
