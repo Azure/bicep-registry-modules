@@ -65,7 +65,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}01'
+    clusterName: '${namePrefix}${serviceShort}1'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -82,6 +82,8 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     location: enforcedLocation
   }
 }
