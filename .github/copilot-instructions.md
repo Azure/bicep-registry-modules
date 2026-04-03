@@ -27,7 +27,7 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 }
 ```
 
-> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
