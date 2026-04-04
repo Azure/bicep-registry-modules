@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [string]
@@ -175,7 +175,7 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
 log 'Setting VM processor count to 16 and enabling virtualization extensions...'
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
