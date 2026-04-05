@@ -174,10 +174,10 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
-log 'Setting VM processor count to 16 and enabling virtualization extensions...'
+log 'Setting VM processor count to 20 and enabling virtualization extensions...'
 # Stop VMs if running (required for Set-VMProcessor)
 Get-VM | Where-Object { $_.State -eq 'Running' } | Stop-VM -Force -ErrorAction SilentlyContinue
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 20
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
