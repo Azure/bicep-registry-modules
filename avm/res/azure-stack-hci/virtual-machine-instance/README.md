@@ -78,6 +78,8 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
         osType: 'Windows'
       }
     }
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
   }
 }
 ```
@@ -129,6 +131,10 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
           "osType": "Windows"
         }
       }
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
     }
   }
 }
@@ -168,6 +174,8 @@ param storageProfile = {
     osType: 'Windows'
   }
 }
+// Non-required parameters
+param adminPassword = '<adminPassword>'
 ```
 
 </details>
