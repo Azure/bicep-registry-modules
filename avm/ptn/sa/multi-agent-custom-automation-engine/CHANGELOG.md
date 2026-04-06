@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/multi-agent-custom-automation-engine/CHANGELOG.md).
 
+## 0.2.2
+
+### Changes
+
+- Updated MACAE v4 to latest agent-framework changes
+- UPdated the Foundry SDK V1 to Foundry SDK V2
+- Enhanced main.bicep with improved resource configurations
+- Improved the search searvice deployment performance
+
+
+### Breaking Changes
+
+- None
+
 ## 0.2.1
 
 ### Changes

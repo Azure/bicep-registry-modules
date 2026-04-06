@@ -118,9 +118,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-      }
       tags: {
         Environment: 'Production'
         'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
