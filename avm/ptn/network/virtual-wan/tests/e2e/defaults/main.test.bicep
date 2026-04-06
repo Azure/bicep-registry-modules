@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       virtualWanParameters: {
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
-        location: resourceLocation
       }
       virtualHubParameters: [
         {
@@ -64,10 +63,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      tags: {
-        Environment: 'Test'
-        'hidden-title': 'This is visible in the resource name'
-      }
     }
   }
 ]

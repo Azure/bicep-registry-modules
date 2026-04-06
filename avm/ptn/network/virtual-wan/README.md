@@ -91,13 +91,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       }
     ]
     virtualWanParameters: {
-      location: '<location>'
       virtualWanName: 'dep-vw-nvwanmin'
-    }
-    // Non-required parameters
-    tags: {
-      Environment: 'Test'
-      'hidden-title': 'This is visible in the resource name'
     }
   }
 }
@@ -139,15 +133,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     },
     "virtualWanParameters": {
       "value": {
-        "location": "<location>",
         "virtualWanName": "dep-vw-nvwanmin"
-      }
-    },
-    // Non-required parameters
-    "tags": {
-      "value": {
-        "Environment": "Test",
-        "hidden-title": "This is visible in the resource name"
       }
     }
   }
@@ -185,13 +171,7 @@ param virtualHubParameters = [
   }
 ]
 param virtualWanParameters = {
-  location: '<location>'
   virtualWanName: 'dep-vw-nvwanmin'
-}
-// Non-required parameters
-param tags = {
-  Environment: 'Test'
-  'hidden-title': 'This is visible in the resource name'
 }
 ```
 
@@ -1289,7 +1269,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     ]
     virtualWanParameters: {
       allowBranchToBranchTraffic: false
-      location: '<location>'
       lock: {
         kind: 'CanNotDelete'
       }
@@ -1385,7 +1364,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualWanParameters": {
       "value": {
         "allowBranchToBranchTraffic": false,
-        "location": "<location>",
         "lock": {
           "kind": "CanNotDelete"
         },
@@ -1481,7 +1459,6 @@ param virtualHubParameters = [
 ]
 param virtualWanParameters = {
   allowBranchToBranchTraffic: false
-  location: '<location>'
   lock: {
     kind: 'CanNotDelete'
   }

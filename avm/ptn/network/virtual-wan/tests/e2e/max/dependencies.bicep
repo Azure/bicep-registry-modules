@@ -31,9 +31,6 @@ param eventHubNamespaceName string
 @description('The name of the Event Hub within the Event Hub Namespace for diagnostics.')
 param eventHubNamespaceEventHubName string
 
-@description('Custom tags to be applied to resources as necessary.')
-param tags object
-
 resource azureFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
   name: azureFirewallPolicyName
   location: resourceGroup().location
@@ -130,7 +127,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     eventHubNamespaceName: eventHubNamespaceName
     eventHubNamespaceEventHubName: eventHubNamespaceEventHubName
     location: resourceGroup().location
-    tags: tags ?? {}
   }
 }
 

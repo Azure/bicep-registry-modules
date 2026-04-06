@@ -56,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       virtualWanParameters: {
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
-        location: resourceLocation
         allowBranchToBranchTraffic: false
         type: 'Standard'
         lock: {

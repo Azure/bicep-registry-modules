@@ -20,9 +20,6 @@ param serviceShort string = 'nvwanmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. Custom tags to be applied to resources as necessary, injected by the CI.')
-param customTags string?
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -53,7 +50,6 @@ module nestedDependencies 'dependencies.bicep' = {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    tags: json(customTags ?? '{}')
   }
 }
 
