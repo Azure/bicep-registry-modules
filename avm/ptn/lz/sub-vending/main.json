@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2096614107052672649"
+      "version": "0.42.1.51946",
+      "templateHash": "16229411630064105273"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1999,8 +1999,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6886963500714124199"
+              "version": "0.42.1.51946",
+              "templateHash": "7003069742178895011"
             }
           },
           "parameters": {
@@ -2258,8 +2258,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7034991041644755254"
+              "version": "0.42.1.51946",
+              "templateHash": "13766223130972821680"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -4076,22 +4076,12 @@
               {
                 "name": "umiRoleAssignmentsSubscription",
                 "count": "[length(parameters('userAssignedManagedIdentities'))]",
-                "input": "[filter(coalesce(tryGet(parameters('userAssignedManagedIdentities')[copyIndex('umiRoleAssignmentsSubscription')], 'roleAssignments'), createArray()), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/'))))]"
+                "input": "[map(filter(coalesce(tryGet(parameters('userAssignedManagedIdentities')[copyIndex('umiRoleAssignmentsSubscription')], 'roleAssignments'), createArray()), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')))), lambda('assignment', union(lambdaVariables('assignment'), createObject('identityIndex', copyIndex('umiRoleAssignmentsSubscription')))))]"
               },
               {
                 "name": "umiRoleAssignmentsResourceGroups",
                 "count": "[length(parameters('userAssignedManagedIdentities'))]",
-                "input": "[filter(coalesce(tryGet(parameters('userAssignedManagedIdentities')[copyIndex('umiRoleAssignmentsResourceGroups')], 'roleAssignments'), createArray()), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')))]"
-              },
-              {
-                "name": "umiRoleAssignmentsResourceGroupSelf",
-                "count": "[length(parameters('userAssignedManagedIdentities'))]",
-                "input": "[filter(variables('umiRoleAssignmentsResourceGroupsFlattened'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName')))))]"
-              },
-              {
-                "name": "umiRoleAssignmentsResourceGroupNotSelf",
-                "count": "[length(parameters('userAssignedManagedIdentities'))]",
-                "input": "[filter(variables('umiRoleAssignmentsResourceGroupsFlattened'), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName'))))))]"
+                "input": "[map(filter(coalesce(tryGet(parameters('userAssignedManagedIdentities')[copyIndex('umiRoleAssignmentsResourceGroups')], 'roleAssignments'), createArray()), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/'))), lambda('assignment', union(lambdaVariables('assignment'), createObject('identityIndex', copyIndex('umiRoleAssignmentsResourceGroups')))))]"
               }
             ],
             "$fxv#0": "Param(\n    [string]$subscriptionId,\n    [string]$resourceProviders\n)\n\n$ErrorActionPreference = 'SilentlyContinue'\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n    foreach ($provider in $providers.keys) {\n        try {\n            # Registering resource providers\n            $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\n            # Check if the providered is registered\n            if ($providerStatus -eq 'NotRegistered') {\n                Write-Output \"`n Registering the '$provider' provider\"\n                if (Register-AzResourceProvider -ProviderNamespace $provider) {\n                    Write-Output \"`n The registration for provider'$provider' has started successfully\"\n                } else {\n                    Write-Output \"`n The '$provider' provider has not been registered successfully\"\n                    $failedProviders += \",$provider\"\n                }\n            } elseif ($providerStatus -eq 'Registering') {\n                Write-Output \"`n The '$provider' provider is in registering state\"\n                $failedProviders += \",$provider\"\n            } elseif ( $null -eq $providerStatus) {\n                Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n                $failedProviders += \",$provider\"\n            }\n\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            } else {\n                $output = 'No failures'\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        } catch {\n            Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n            $failedProviders += \",$provider\"\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        }\n        # Registering resource providers features\n        $features = $providers[$provider]\n        if ($features.length -gt 0) {\n            foreach ($feature in $features) {\n                try {\n                    # Define variables\n                    $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n                    # Check if the feature is registered\n                    if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n                        Write-Output \"`n Registering the '$feature' feature\"\n                        if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n                            Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n                        } else {\n                            Write-Output \"`n The '$feature' feature has not been registered successfully\"\n                            $failedFeatures += \",$feature\"\n                        }\n                    } elseif ($null -eq $featureStatus) {\n                        Write-Output \"`n The '$feature' feature doesn't exist.\"\n                        $failedFeatures += \",$feature\"\n                    }\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    } else {\n                        $output = 'No failures'\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                } catch {\n                    Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n                    $failedFeatures += \",$feature\"\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                }\n            }\n        } else {\n            $output = 'No failures'\n            $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n    }\n} else {\n    Write-Output \"`n No providers or features to register\"\n}\n",
@@ -4141,8 +4131,8 @@
             "pimRoleAssignmentsResourceGroupNotSelf": "[filter(variables('pimRoleAssignmentsResourceGroups'), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName'))))))]",
             "umiRoleAssignmentsSubscriptionFlattened": "[flatten(variables('umiRoleAssignmentsSubscription'))]",
             "umiRoleAssignmentsResourceGroupsFlattened": "[flatten(variables('umiRoleAssignmentsResourceGroups'))]",
-            "umiRoleAssignmentsResourceGroupSelfFlattened": "[flatten(variables('umiRoleAssignmentsResourceGroupSelf'))]",
-            "umiRoleAssignmentsResourceGroupNotSelfFlattened": "[flatten(variables('umiRoleAssignmentsResourceGroupNotSelf'))]",
+            "umiRoleAssignmentsResourceGroupSelfFlattened": "[filter(variables('umiRoleAssignmentsResourceGroupsFlattened'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName')))))]",
+            "umiRoleAssignmentsResourceGroupNotSelfFlattened": "[filter(variables('umiRoleAssignmentsResourceGroupsFlattened'), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName'))))))]",
             "virtualHubResourceIdChecked": "[if(and(not(empty(parameters('hubNetworkResourceId'))), contains(parameters('hubNetworkResourceId'), '/providers/Microsoft.Network/virtualHubs/')), parameters('hubNetworkResourceId'), '')]",
             "hubVirtualNetworkResourceIdChecked": "[if(and(not(empty(parameters('hubNetworkResourceId'))), contains(parameters('hubNetworkResourceId'), '/providers/Microsoft.Network/virtualNetworks/')), parameters('hubNetworkResourceId'), '')]",
             "virtualWanHubName": "[if(not(empty(variables('virtualHubResourceIdChecked'))), split(variables('virtualHubResourceIdChecked'), '/')[8], '')]",
@@ -4208,8 +4198,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "18437447825018326055"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10131036508055360053"
                     }
                   },
                   "parameters": {
@@ -4270,8 +4260,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4235548271930510533"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10469144725250373341"
                     }
                   },
                   "parameters": {
@@ -4330,8 +4320,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "17359361259614418343"
+                              "version": "0.42.1.51946",
+                              "templateHash": "5790941992248028610"
                             }
                           },
                           "parameters": {
@@ -4386,8 +4376,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.41.2.15936",
-                                      "templateHash": "18001042898235730654"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "10812006155409291218"
                                     }
                                   },
                                   "parameters": {
@@ -4464,8 +4454,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "3829676582221940749"
+                              "version": "0.42.1.51946",
+                              "templateHash": "12116003917243379477"
                             }
                           },
                           "parameters": {
@@ -4519,8 +4509,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.41.2.15936",
-                                      "templateHash": "17105486953781456513"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "6913411399545871762"
                                     }
                                   },
                                   "parameters": {
@@ -5650,8 +5640,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4235548271930510533"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10469144725250373341"
                     }
                   },
                   "parameters": {
@@ -5710,8 +5700,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "17359361259614418343"
+                              "version": "0.42.1.51946",
+                              "templateHash": "5790941992248028610"
                             }
                           },
                           "parameters": {
@@ -5766,8 +5756,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.41.2.15936",
-                                      "templateHash": "18001042898235730654"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "10812006155409291218"
                                     }
                                   },
                                   "parameters": {
@@ -5844,8 +5834,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "3829676582221940749"
+                              "version": "0.42.1.51946",
+                              "templateHash": "12116003917243379477"
                             }
                           },
                           "parameters": {
@@ -5899,8 +5889,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.41.2.15936",
-                                      "templateHash": "17105486953781456513"
+                                      "version": "0.42.1.51946",
+                                      "templateHash": "6913411399545871762"
                                     }
                                   },
                                   "parameters": {
@@ -10868,8 +10858,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4033449262362631388"
+                      "version": "0.42.1.51946",
+                      "templateHash": "2723850764358529346"
                     }
                   },
                   "parameters": {
@@ -11563,7 +11553,7 @@
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsSubscriptionFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsSub, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsSub, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].identityIndex), variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].relativeScope)), 64)]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
               "properties": {
@@ -11576,7 +11566,7 @@
                     "value": "[deployment().location]"
                   },
                   "principalId": {
-                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', copyIndex())), null()), 'outputs', 'principalId', 'value')]"
+                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].identityIndex)), null()), 'outputs', 'principalId', 'value')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].definition]"
@@ -11763,8 +11753,8 @@
                 }
               },
               "dependsOn": [
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]",
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]"
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].identityIndex)]",
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsSubscriptionFlattened')[copyIndex()].identityIndex)]"
               ]
             },
             "createLzUMIRoleAssignmentsRsgsSelf": {
@@ -11775,7 +11765,7 @@
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsResourceGroupSelfFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].identityIndex), variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].relativeScope)), 64)]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[split(variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].relativeScope, '/')[2]]",
               "properties": {
@@ -11785,7 +11775,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "principalId": {
-                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', copyIndex())), null()), 'outputs', 'principalId', 'value')]"
+                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].identityIndex)), null()), 'outputs', 'principalId', 'value')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].definition]"
@@ -11964,8 +11954,8 @@
                 }
               },
               "dependsOn": [
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]",
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]"
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].identityIndex)]",
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupSelfFlattened')[copyIndex()].identityIndex)]"
               ]
             },
             "createLzUMIRoleAssignmentsRsgsNotSelf": {
@@ -11976,7 +11966,7 @@
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('umiRoleAssignmentsResourceGroupNotSelfFlattened'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsNotSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, copyIndex()), variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzUMIRoleAssignmentsRsgsNotSelf, uniqueString(format('{0}-{1}', variables('deploymentNames').createUserAssignedIdentities, variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].identityIndex), variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].definition, variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].relativeScope)), 64)]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[split(variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].relativeScope, '/')[2]]",
               "properties": {
@@ -11986,7 +11976,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "principalId": {
-                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', copyIndex())), null()), 'outputs', 'principalId', 'value')]"
+                    "value": "[tryGet(if(not(empty(parameters('userAssignedManagedIdentities'))), reference(format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].identityIndex)), null()), 'outputs', 'principalId', 'value')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].definition]"
@@ -12165,8 +12155,8 @@
                 }
               },
               "dependsOn": [
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]",
-                "[format('createUserAssignedManagedIdentity[{0}]', copyIndex())]"
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].identityIndex)]",
+                "[format('createUserAssignedManagedIdentity[{0}]', variables('umiRoleAssignmentsResourceGroupNotSelfFlattened')[copyIndex()].identityIndex)]"
               ]
             },
             "createLzPimActiveRoleAssignmentsSub": {
@@ -45612,8 +45602,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4033449262362631388"
+                      "version": "0.42.1.51946",
+                      "templateHash": "2723850764358529346"
                     }
                   },
                   "parameters": {
@@ -45727,8 +45717,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12885832253237359990"
+                      "version": "0.42.1.51946",
+                      "templateHash": "5501650025767986137"
                     }
                   },
                   "parameters": {
@@ -45797,8 +45787,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12885832253237359990"
+                      "version": "0.42.1.51946",
+                      "templateHash": "5501650025767986137"
                     }
                   },
                   "parameters": {
