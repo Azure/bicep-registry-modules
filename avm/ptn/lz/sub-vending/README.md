@@ -28,6 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Authorization/roleAssignmentScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignmentschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests)</li></ul> |
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleeligibilityschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests)</li></ul> |
+| `Microsoft.Consumption/budgets` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.consumption_budgets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Consumption/2023-11-01/budgets)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -2828,11 +2829,24 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 ## Parameters
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`budgetActionGroups`](#parameter-budgetactiongroups) | array | List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided. |
+| [`budgetContactEmails`](#parameter-budgetcontactemails) | array | The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalVirtualNetworks`](#parameter-additionalvirtualnetworks) | array | A list of additional virtual networks to create. |
+| [`budgetAmount`](#parameter-budgetamount) | int | The total amount of cost or usage to track with the budget. |
+| [`budgetCategory`](#parameter-budgetcategory) | string | The category of the budget, whether the budget tracks cost or usage. |
+| [`budgetName`](#parameter-budgetname) | string | The name of the budget. |
+| [`budgetStartDate`](#parameter-budgetstartdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
+| [`budgetThresholds`](#parameter-budgetthresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`budgetThresholdType`](#parameter-budgetthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -2890,6 +2904,22 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkVwanEnableInternetSecurity`](#parameter-virtualnetworkvwanenableinternetsecurity) | bool | Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.<p> |
 | [`virtualNetworkVwanPropagatedLabels`](#parameter-virtualnetworkvwanpropagatedlabels) | array | An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.<p> |
 | [`virtualNetworkVwanPropagatedRouteTablesResourceIds`](#parameter-virtualnetworkvwanpropagatedroutetablesresourceids) | array | An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.<p><p>Each object must contain the following `key`:<li>`id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too<p><p>> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.<p> |
+
+### Parameter: `budgetActionGroups`
+
+List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `budgetContactEmails`
+
+The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `additionalVirtualNetworks`
 
@@ -3520,6 +3550,59 @@ Enables the use of remote gateways in the spefcified hub virtual network. If no 
 
 - Required: No
 - Type: bool
+
+### Parameter: `budgetAmount`
+
+The total amount of cost or usage to track with the budget.
+
+- Required: No
+- Type: int
+- Default: `100`
+
+### Parameter: `budgetCategory`
+
+The category of the budget, whether the budget tracks cost or usage.
+
+- Required: No
+- Type: string
+- Default: `'Cost'`
+
+### Parameter: `budgetName`
+
+The name of the budget.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `budgetStartDate`
+
+The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).
+
+- Required: No
+- Type: string
+- Default: `[format('{0}-{1}-01T00:00:00Z', utcNow('yyyy'), utcNow('MM'))]`
+
+### Parameter: `budgetThresholds`
+
+Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    90
+  ]
+  ```
+
+### Parameter: `budgetThresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: No
+- Type: string
+- Default: `'Forecasted'`
 
 ### Parameter: `deploymentScriptLocation`
 
@@ -6006,6 +6089,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/pim-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1` | Remote reference |
 | `br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/consumption/budget:0.3.8` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.3` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |

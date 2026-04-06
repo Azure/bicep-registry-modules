@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Added the ability to deploy budgets as part of subscription vending
+
+### Breaking Changes
+
+- None
+
 ## 0.6.1
 
 ### Changes
