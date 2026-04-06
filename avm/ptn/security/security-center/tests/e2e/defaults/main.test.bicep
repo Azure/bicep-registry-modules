@@ -26,6 +26,20 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
+      defenderPlans: [
+        { name: 'VirtualMachines', pricingTier: 'Standard', subPlan: 'P2' }
+        { name: 'SqlServers', pricingTier: 'Standard' }
+        { name: 'AppServices', pricingTier: 'Standard' }
+        { name: 'StorageAccounts', pricingTier: 'Standard', subPlan: 'DefenderForStorageV2' }
+        { name: 'SqlServerVirtualMachines', pricingTier: 'Standard' }
+        { name: 'KeyVaults', pricingTier: 'Standard' }
+        { name: 'Arm', pricingTier: 'Standard' }
+        { name: 'OpenSourceRelationalDatabases', pricingTier: 'Standard' }
+        { name: 'Containers', pricingTier: 'Standard' }
+        { name: 'CosmosDbs', pricingTier: 'Standard' }
+        { name: 'CloudPosture', pricingTier: 'Standard' }
+        { name: 'Api', pricingTier: 'Standard', subPlan: 'P1' }
+      ]
     }
   }
 ]

@@ -107,6 +107,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'Api'
           pricingTier: 'Standard'
+          subPlan: 'P1'
         }
       ]
       securityContactProperties: {

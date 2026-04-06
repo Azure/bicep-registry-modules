@@ -62,6 +62,59 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   params: {
+    defenderPlans: [
+      {
+        name: 'VirtualMachines'
+        pricingTier: 'Standard'
+        subPlan: 'P2'
+      }
+      {
+        name: 'SqlServers'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'AppServices'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'StorageAccounts'
+        pricingTier: 'Standard'
+        subPlan: 'DefenderForStorageV2'
+      }
+      {
+        name: 'SqlServerVirtualMachines'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'KeyVaults'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'Arm'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'OpenSourceRelationalDatabases'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'Containers'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'CosmosDbs'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'CloudPosture'
+        pricingTier: 'Standard'
+      }
+      {
+        name: 'Api'
+        pricingTier: 'Standard'
+        subPlan: 'P1'
+      }
+    ]
     location: '<location>'
   }
 }
@@ -79,6 +132,61 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "defenderPlans": {
+      "value": [
+        {
+          "name": "VirtualMachines",
+          "pricingTier": "Standard",
+          "subPlan": "P2"
+        },
+        {
+          "name": "SqlServers",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "AppServices",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "StorageAccounts",
+          "pricingTier": "Standard",
+          "subPlan": "DefenderForStorageV2"
+        },
+        {
+          "name": "SqlServerVirtualMachines",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "KeyVaults",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "Arm",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "OpenSourceRelationalDatabases",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "Containers",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "CosmosDbs",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "CloudPosture",
+          "pricingTier": "Standard"
+        },
+        {
+          "name": "Api",
+          "pricingTier": "Standard",
+          "subPlan": "P1"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     }
@@ -96,6 +204,59 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/security/security-center:<version>'
 
+param defenderPlans = [
+  {
+    name: 'VirtualMachines'
+    pricingTier: 'Standard'
+    subPlan: 'P2'
+  }
+  {
+    name: 'SqlServers'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'AppServices'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'StorageAccounts'
+    pricingTier: 'Standard'
+    subPlan: 'DefenderForStorageV2'
+  }
+  {
+    name: 'SqlServerVirtualMachines'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'KeyVaults'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'Arm'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'OpenSourceRelationalDatabases'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'Containers'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'CosmosDbs'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'CloudPosture'
+    pricingTier: 'Standard'
+  }
+  {
+    name: 'Api'
+    pricingTier: 'Standard'
+    subPlan: 'P1'
+  }
+]
 param location = '<location>'
 ```
 
@@ -207,6 +368,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
       {
         name: 'Api'
         pricingTier: 'Standard'
+        subPlan: 'P1'
       }
     ]
     location: '<location>'
@@ -337,7 +499,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
         },
         {
           "name": "Api",
-          "pricingTier": "Standard"
+          "pricingTier": "Standard",
+          "subPlan": "P1"
         }
       ]
     },
@@ -471,6 +634,7 @@ param defenderPlans = [
   {
     name: 'Api'
     pricingTier: 'Standard'
+    subPlan: 'P1'
   }
 ]
 param location = '<location>'
@@ -594,6 +758,7 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
       {
         name: 'Api'
         pricingTier: 'Standard'
+        subPlan: 'P1'
       }
     ]
     location: '<location>'
@@ -714,7 +879,8 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
         },
         {
           "name": "Api",
-          "pricingTier": "Standard"
+          "pricingTier": "Standard",
+          "subPlan": "P1"
         }
       ]
     },
@@ -838,6 +1004,7 @@ param defenderPlans = [
   {
     name: 'Api'
     pricingTier: 'Standard'
+    subPlan: 'P1'
   }
 ]
 param location = '<location>'
