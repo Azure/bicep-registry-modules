@@ -33,11 +33,14 @@ on:
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
       - "!*/**/child-module-publish-allowed-list.json"
+
 env:
   modulePath: "avm/ptn/network/virtual-wan"
   workflowPath: ".github/workflows/avm.ptn.network.virtual-wan.yml"
+
 concurrency:
   group: ${{ github.workflow }}
+
 jobs:
   ###########################
   #   Initialize pipeline   #
