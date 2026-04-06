@@ -23,8 +23,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/containerApps` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/containerApps)</li></ul> |
-| `Microsoft.App/containerApps/authConfigs` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/containerApps/authConfigs)</li></ul> |
+| `Microsoft.App/containerApps` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/containerApps/authConfigs)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -275,8 +275,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ingressTransport: 'auto'
     kind: 'functionapp'
     maxInactiveRevisions: 100
-    trafficLatestRevision: true
-    trafficWeight: 100
+    traffic: [
+      {
+        latestRevision: true
+        weight: 100
+      }
+    ]
   }
 }
 ```
@@ -334,11 +338,13 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "maxInactiveRevisions": {
       "value": 100
     },
-    "trafficLatestRevision": {
-      "value": true
-    },
-    "trafficWeight": {
-      "value": 100
+    "traffic": {
+      "value": [
+        {
+          "latestRevision": true,
+          "weight": 100
+        }
+      ]
     }
   }
 }
@@ -375,8 +381,12 @@ param ingressTargetPort = 80
 param ingressTransport = 'auto'
 param kind = 'functionapp'
 param maxInactiveRevisions = 100
-param trafficLatestRevision = true
-param trafficWeight = 100
+param traffic = [
+  {
+    latestRevision: true
+    weight: 100
+  }
+]
 ```
 
 </details>
@@ -1262,12 +1272,8 @@ param tags = {
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`targetPortHttpScheme`](#parameter-targetporthttpscheme) | string | Whether an http app listens on http or https. |
 | [`terminationGracePeriodSeconds`](#parameter-terminationgraceperiodseconds) | int | The termination grace period for the container app. |
-| [`trafficLabel`](#parameter-trafficlabel) | string | Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes. |
-| [`trafficLatestRevision`](#parameter-trafficlatestrevision) | bool | Indicates that the traffic weight belongs to a latest stable revision. |
-| [`trafficRevisionName`](#parameter-trafficrevisionname) | string | Name of a revision. |
-| [`trafficWeight`](#parameter-trafficweight) | int | Traffic weight assigned to a revision. |
+| [`traffic`](#parameter-traffic) | array | Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
 | [`workloadProfileName`](#parameter-workloadprofilename) | string | Workload profile name to pin for container app execution. |
 
@@ -2150,13 +2156,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `targetPortHttpScheme`
-
-Whether an http app listens on http or https.
-
-- Required: No
-- Type: string
-
 ### Parameter: `terminationGracePeriodSeconds`
 
 The termination grace period for the container app.
@@ -2164,36 +2163,12 @@ The termination grace period for the container app.
 - Required: No
 - Type: int
 
-### Parameter: `trafficLabel`
+### Parameter: `traffic`
 
-Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes.
-
-- Required: No
-- Type: string
-- Default: `'label-1'`
-
-### Parameter: `trafficLatestRevision`
-
-Indicates that the traffic weight belongs to a latest stable revision.
+Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns.
 
 - Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `trafficRevisionName`
-
-Name of a revision.
-
-- Required: No
-- Type: string
-
-### Parameter: `trafficWeight`
-
-Traffic weight assigned to a revision.
-
-- Required: No
-- Type: int
-- Default: `100`
+- Type: array
 
 ### Parameter: `volumes`
 
