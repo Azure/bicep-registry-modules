@@ -45,15 +45,10 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-    $pathsToBuild | ForEach-Object -Parallel {
-        $dict = $using:builtTestFileMap
-        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-        if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
-        }
-        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
-        $null = $dict.TryAdd($_, $templateHashTable)
+    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
+    $builtTestFileMap = @{}
+    foreach ($path in $pathsToBuild) {
+        $builtTestFileMap[$path] = $compiledTemplatesMap[$path] | ConvertFrom-Json -AsHashtable
     }
 
     # Getting the list of child modules allowed for publishing
@@ -722,7 +717,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
-            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module. If the problem persists, try and run the script using the `-ForceCacheRefresh` parameter.' -f $mdFormattedDiff)
         }
     }
 
