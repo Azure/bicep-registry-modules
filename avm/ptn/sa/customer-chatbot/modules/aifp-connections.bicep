@@ -16,7 +16,7 @@ param aiFoundryName string
 @description('Name of the AI Foundry project')
 param aiFoundryProjectName string
 
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-06-01' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = {
   name: '${aiFoundryName}/${aiFoundryProjectName}/${aifSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'

@@ -25,21 +25,22 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 @description('Optional. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
 param location string = resourceGroup().location
 
-// Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
-@allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
+// Restricting deployment to regions that support all deployed models: gpt-4o-mini, text-embedding-3-small, and gpt-realtime-mini (GlobalStandard)
+@allowed(['centralus', 'eastus2', 'francecentral', 'swedencentral'])
 @metadata({
   azd: {
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-4o-mini,50'
+      'OpenAI.GlobalStandard.gpt-realtime-mini,1'
     ]
   }
 })
-@description('Required. Location for all AI service resources. This should be one of the supported Azure AI Service locations.')
+@description('Required. Location for all AI service resources. Must be a region that supports all deployed models including gpt-realtime-mini.')
 param azureAiServiceLocation string
 
-@description('Optional. Secondary CosmosDB Location for high availability and failover scenarios. Not all Azure regions support zone redundancy for Cosmos DB. See https://learn.microsoft.com/azure/cosmos-db/high-availability#azure-regions-and-zone-redundancy for supported regions.')
-param secondaryCosmosLocation string = 'canadacentral'
+@description('Conditional. Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string?
 
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
@@ -363,7 +364,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
 var dataCollectionRulesLocation = logAnalyticsWorkspace!.outputs.location
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.6.1' = if (enablePrivateNetworking && enableMonitoring) {
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
@@ -652,6 +653,17 @@ var aiModelDeployments = [
     version: '1'
     raiPolicyName: 'Microsoft.Default'
   }
+  {
+    format: 'OpenAI'
+    name: 'gpt-realtime-mini'
+    model: 'gpt-realtime-mini'
+    sku: {
+      name: 'GlobalStandard'
+      capacity: 1
+    }
+    version: '2025-10-06'
+    raiPolicyName: 'Microsoft.Default'
+  }
 ]
 var aiFoundryAiProjectDescription = 'AI Foundry Project'
 
@@ -694,6 +706,19 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
           capacity: aiModelDeployments[1].sku.capacity
         }
       }
+      {
+        name: aiModelDeployments[2].name
+        model: {
+          format: aiModelDeployments[2].format
+          name: aiModelDeployments[2].name
+          version: aiModelDeployments[2].version
+        }
+        raiPolicyName: aiModelDeployments[2].raiPolicyName
+        sku: {
+          name: aiModelDeployments[2].sku.name
+          capacity: aiModelDeployments[2].sku.capacity
+        }
+      }
     ]
     networkAcls: {
       defaultAction: 'Allow'
@@ -720,7 +745,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
   }
 }
 
-module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.8.1' = if (enablePrivateNetworking) {
+module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
   name: take('pep-${aiFoundryAiServicesResourceName}-deployment', 64)
   params: {
     name: 'pep-${aiFoundryAiServicesResourceName}'
@@ -768,7 +793,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-06-01-preview' = {
 }
 
 // Seperate search service module to enable managed identity and update other properties as it decreases deployment time for Search Service
-module searchServiceUpdate 'br/public:avm/res/search/search-service:0.11.1' = {
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
   name: take('avm.res.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
@@ -778,7 +803,7 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.11.1' = {
       }
     }
     disableLocalAuth: false
-    hostingMode: 'default'
+    hostingMode: 'Default'
     managedIdentities: { systemAssigned: true }
     publicNetworkAccess: 'Enabled'
     networkRuleSet: {
@@ -814,18 +839,6 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.11.1' = {
 
 // ========== Search Service - AI Project Connection ========== //
 var aiSearchConnectionName = 'aifp-srch-connection-${solutionSuffix}'
-module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
-  name: take('aifp-srch-connection.${solutionSuffix}', 64)
-  params: {
-    aiFoundryProjectName: aiFoundryAiProjectResourceName
-    aiFoundryName: aiFoundryAiServicesResourceName
-    aifSearchConnectionName: aiSearchConnectionName
-    searchServiceResourceId: searchService.id
-    searchServiceLocation: searchService.location
-    searchServiceName: searchService.name
-  }
-}
-
 module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
   name: take('module.ai-project.${aiFoundryAiProjectResourceName}', 64)
   dependsOn: enablePrivateNetworking ? [aiFoundryPrivateEndpoint] : []
@@ -836,6 +849,19 @@ module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
     desc: aiFoundryAiProjectDescription
     //Implicit dependencies below
     aiServicesName: aiFoundryAiServices!.outputs.name
+  }
+}
+
+module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
+  name: take('aifp-srch-connection.${solutionSuffix}', 64)
+  dependsOn: [aiFoundryAiServicesProject]
+  params: {
+    aiFoundryProjectName: aiFoundryAiProjectResourceName
+    aiFoundryName: aiFoundryAiServicesResourceName
+    aifSearchConnectionName: aiSearchConnectionName
+    searchServiceResourceId: searchService.id
+    searchServiceLocation: searchService.location
+    searchServiceName: searchService.name
   }
 }
 
@@ -931,7 +957,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
           {
             failoverPriority: 1
             isZoneRedundant: true
-            locationName: secondaryCosmosLocation
+            locationName: cosmosDbReplicaLocation
           }
         ]
       : [
@@ -993,6 +1019,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
       linuxFxVersion: 'DOCKER|${containerRegistryHost}/backend:${imageTag}'
       minTlsVersion: '1.2'
       healthCheckPath: '/health'
+      webSocketsEnabled: true
     }
     configs: [
       {
@@ -1037,6 +1064,14 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           FOUNDRY_CHAT_AGENT: ''
           FOUNDRY_PRODUCT_AGENT: ''
           FOUNDRY_POLICY_AGENT: ''
+          // Voice Live settings
+          AZURE_VOICELIVE_ENDPOINT: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
+          VOICELIVE_MODEL: 'gpt-realtime-mini'
+          VOICELIVE_VOICE: 'alloy'
+          VOICELIVE_TRANSCRIBE_MODEL: 'gpt-4o-transcribe'
+          VOICELIVE_VAD_SILENCE_MS: '1200'
+          VOICELIVE_VAD_THRESHOLD: '0.5'
+          VOICELIVE_VAD_PREFIX_PADDING_MS: '300'
         }
         // WAF aligned configuration for Monitoring
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
@@ -1086,6 +1121,24 @@ module backendToSearchRole 'modules/role-assignment.bicep' = {
     principalId: webSiteBackend.outputs.systemAssignedMIPrincipalId!
     roleDefinitionId: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
     roleDescription: 'Grants backend app access to AI Search indexes'
+  }
+}
+
+// Cognitive Services User role for backend (account scoped) - required for Voice Live realtime
+resource backendToAiServicesUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    backendWebSiteResourceName,
+    aiFoundryAiServicesResourceName,
+    'a97b65f3-24c7-4388-baec-2e87135dc908'
+  )
+  properties: {
+    principalId: webSiteBackend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'a97b65f3-24c7-4388-baec-2e87135dc908'
+    ) // Cognitive Services User
+    principalType: 'ServicePrincipal'
   }
 }
 
