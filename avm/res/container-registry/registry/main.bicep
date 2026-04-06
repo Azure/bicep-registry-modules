@@ -12,7 +12,7 @@ param acrAdminUserEnabled bool = false
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -113,10 +113,10 @@ param networkRuleBypassOptions string = 'AzureServices'
 @description('Optional. The default action of allow or deny when no other rules match.')
 param networkRuleSetDefaultAction string = 'Deny'
 
-@description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'.')
+@description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'. Set to an empty array to explicitly configure no allowed IPs.')
 param networkRuleSetIpRules array?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'acrSku\' to be \'Premium\'.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -133,11 +133,11 @@ param replications replicationType[]?
 @description('Optional. All webhooks to create.')
 param webhooks webhookType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -147,14 +147,14 @@ param tags resourceInput<'Microsoft.ContainerRegistry/registries@2025-04-01'>.ta
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If either one is specified, the other is ignored.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enables registry-wide pull from unauthenticated clients. It\'s in preview and available in the Standard and Premium service tiers.')
 param anonymousPullEnabled bool = false
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
@@ -166,6 +166,12 @@ param credentialSets credentialSetType[]?
 
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType[]?
+
+@description('Optional. Tokens to create for the container registry.')
+param tokens tokenType[]?
+
+@description('Optional. Array of ACR Tasks to create.')
+param tasks taskType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -240,8 +246,14 @@ var formattedRoleAssignments = [
   })
 ]
 
+var publicNetworkAccessMode = !empty(publicNetworkAccess)
+  ? any(publicNetworkAccess)
+  : (!empty(privateEndpoints) && empty(networkRuleSetIpRules) ? 'Disabled' : null)
+
+var shouldConfigureNetworkRuleSet = networkRuleSetIpRules != null || (publicNetworkAccessMode == 'Enabled' && networkRuleSetDefaultAction == 'Deny')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerregistry-registry.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -279,7 +291,8 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource registry 'Microsoft.ContainerRegistry/registries@2025-03-01-preview' = {
+#disable-next-line use-recent-api-versions
+resource registry 'Microsoft.ContainerRegistry/registries@2025-06-01-preview' = {
   name: name
   location: location
   identity: identity
@@ -339,14 +352,12 @@ resource registry 'Microsoft.ContainerRegistry/registries@2025-03-01-preview' = 
       }
     }
     dataEndpointEnabled: dataEndpointEnabled
-    publicNetworkAccess: !empty(publicNetworkAccess)
-      ? any(publicNetworkAccess)
-      : (!empty(privateEndpoints) && empty(networkRuleSetIpRules) ? 'Disabled' : null)
+    publicNetworkAccess: publicNetworkAccessMode
     networkRuleBypassOptions: networkRuleBypassOptions
-    networkRuleSet: !empty(networkRuleSetIpRules)
+    networkRuleSet: shouldConfigureNetworkRuleSet
       ? {
           defaultAction: networkRuleSetDefaultAction
-          ipRules: networkRuleSetIpRules
+          ipRules: networkRuleSetIpRules ?? []
         }
       : null
     zoneRedundancy: acrSku == 'Premium' ? zoneRedundancy : null
@@ -361,6 +372,7 @@ module registry_scopeMaps 'scope-map/main.bicep' = [
       actions: scopeMap.actions
       description: scopeMap.?description
       registryName: registry.name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -375,6 +387,7 @@ module registry_replications 'replication/main.bicep' = [
       regionEndpointEnabled: replication.?regionEndpointEnabled
       zoneRedundancy: replication.?zoneRedundancy
       tags: replication.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -388,6 +401,7 @@ module registry_credentialSets 'credential-set/main.bicep' = [
       managedIdentities: credentialSet.managedIdentities
       authCredentials: credentialSet.authCredentials
       loginServer: credentialSet.loginServer
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -401,10 +415,52 @@ module registry_cacheRules 'cache-rule/main.bicep' = [
       name: cacheRule.?name
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       registry_credentialSets
     ]
+  }
+]
+
+module registry_tokens 'token/main.bicep' = [
+  for (token, index) in (tokens ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Token-${index}'
+    params: {
+      name: token.name
+      registryName: registry.name
+      scopeMapResourceId: token.scopeMapResourceId
+      status: token.?status
+      credentials: token.?credentials
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+    dependsOn: [
+      registry_scopeMaps
+    ]
+  }
+]
+
+module registry_tasks 'task/main.bicep' = [
+  for (task, index) in (tasks ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Registry-Task-${index}'
+    params: {
+      registryName: registry.name
+      name: task.name
+      location: task.?location ?? location
+      tags: task.?tags ?? tags
+      platform: task.?platform
+      step: task.?step
+      trigger: task.?trigger
+      status: task.?status
+      timeout: task.?timeout
+      agentConfiguration: task.?agentConfiguration
+      agentPoolName: task.?agentPoolName
+      credentials: task.?credentials
+      isSystemTask: task.?isSystemTask
+      logTemplate: task.?logTemplate
+      managedIdentities: task.?managedIdentities
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
   }
 ]
 
@@ -421,6 +477,7 @@ module registry_webhooks 'webhook/main.bicep' = [
       status: webhook.?status
       serviceUri: webhook.serviceUri
       tags: webhook.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -436,6 +493,7 @@ resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   scope: registry
 }
 
+#disable-next-line use-recent-api-versions
 resource registry_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -445,14 +503,18 @@ resource registry_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -481,7 +543,7 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -606,6 +668,24 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
+import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import { authCredentialsType } from 'credential-set/main.bicep'
+@export()
+@description('The type for a credential set.')
+type credentialSetType = {
+  @description('Required. The name of the credential set.')
+  name: string
+
+  @description('Optional. The managed identity definition for this resource.')
+  managedIdentities: managedIdentityOnlySysAssignedType?
+
+  @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')
+  authCredentials: authCredentialsType[]
+
+  @description('Required. The credentials are stored for this upstream or login server.')
+  loginServer: string
+}
+
 @export()
 @description('The type for a scope map.')
 type scopeMapsType = {
@@ -613,7 +693,7 @@ type scopeMapsType = {
   name: string?
 
   @description('Required. The list of scoped permissions for registry artifacts.')
-  actions: string[]
+  actions: resourceInput<'Microsoft.ContainerRegistry/registries/scopeMaps@2025-03-01-preview'>.properties.actions
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?
@@ -635,24 +715,6 @@ type cacheRuleType = {
   credentialSetResourceId: string?
 }
 
-import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { authCredentialsType } from 'credential-set/main.bicep'
-@export()
-@description('The type for a credential set.')
-type credentialSetType = {
-  @description('Required. The name of the credential set.')
-  name: string
-
-  @description('Optional. The managed identity definition for this resource.')
-  managedIdentities: managedIdentityOnlySysAssignedType?
-
-  @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')
-  authCredentials: authCredentialsType[]
-
-  @description('Required. The credentials are stored for this upstream or login server.')
-  loginServer: string
-}
-
 @export()
 @description('The type for a replication.')
 type replicationType = {
@@ -663,13 +725,67 @@ type replicationType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/replications@2025-03-01-preview'>.tags?
 
   @description('Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.')
   regionEndpointEnabled: bool?
 
   @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
-  zoneRedundancy: ('Disabled' | 'Enabled')?
+  zoneRedundancy: resourceInput<'Microsoft.ContainerRegistry/registries@2025-03-01-preview'>.properties.zoneRedundancy?
+}
+
+@export()
+@description('The type for a task.')
+type taskType = {
+  @description('Required. The name of the task.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.tags?
+
+  @description('Optional. The platform properties for the task.')
+  platform: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.platform?
+
+  @description('Optional. The step properties for the task.')
+  step: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.step?
+
+  @description('Optional. The trigger properties for the task.')
+  trigger: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.trigger?
+
+  @description('Optional. The status of the task at the time the operation was called.')
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.status?
+
+  @description('Optional. The timeout in seconds for the task to run before it is automatically disabled.')
+  timeout: int?
+
+  @description('Optional. The agent configuration for the task.')
+  agentConfiguration: resourceInput<'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview'>.properties.agentConfiguration?
+
+  @description('Optional. The name of the agent pool to run the task on. If not specified, the task will run on Microsoft-hosted agents.')
+  agentPoolName: string?
+
+  @description('Optional. Whether this is a system task or not. System tasks have some additional restrictions and are used for internal purposes by Microsoft services, such as Azure DevOps pipelines integration.')
+  isSystemTask: bool?
+
+  @description('Optional. The log template for the task to use when creating logs in Log Analytics.')
+  logTemplate: string?
+}
+
+type tokenType = {
+  @description('Required. The name of the token.')
+  name: string
+
+  @description('Required. The resource ID of the scope map which defines the permissions for this token.')
+  scopeMapResourceId: string
+
+  @description('Optional. The status of the token at the time the operation was called.')
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/tokens@2025-11-01'>.properties.status?
+
+  @description('Optional. The list of credentials associated with the token. Usually consists of a primary and an optional secondary credential.')
+  credentials: authCredentialsType[]?
 }
 
 @export()
@@ -684,7 +800,7 @@ type webhookType = {
   serviceUri: string
 
   @description('Optional. The status of the webhook at the time the operation was called.')
-  status: ('enabled' | 'disabled')?
+  status: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.properties.status?
 
   @description('Optional. The list of actions that trigger the webhook to post notifications.')
   action: string[]?
@@ -693,10 +809,10 @@ type webhookType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.tags?
 
   @description('Optional. Custom headers that will be added to the webhook notifications.')
-  customHeaders: object?
+  customHeaders: resourceInput<'Microsoft.ContainerRegistry/registries/webhooks@2025-03-01-preview'>.properties.customHeaders?
 
   @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
   scope: string?

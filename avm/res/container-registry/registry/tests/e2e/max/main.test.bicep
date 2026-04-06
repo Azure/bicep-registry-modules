@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
   tags: {
@@ -140,7 +140,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+          name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -166,7 +166,62 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      scopeMaps: [
+        {
+          name: '${namePrefix}${serviceShort}ScopeMap'
+          actions: [
+            'repositories/*/content/read'
+          ]
+          description: 'A test scope map'
+        }
+      ]
+      tokens: [
+        {
+          name: '${namePrefix}${serviceShort}Token'
+          scopeMapResourceId: resourceId(
+            subscription().subscriptionId,
+            resourceGroupName,
+            'Microsoft.ContainerRegistry/registries/scopeMaps',
+            '${namePrefix}${serviceShort}001',
+            '${namePrefix}${serviceShort}ScopeMap'
+          )
+          status: 'enabled'
+        }
+      ]
+      cacheRules: [
+        {
+          sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+        }
+        {
+          name: '${namePrefix}${serviceShort}CacheRule'
+          sourceRepository: 'mcr.microsoft.com/hello-world'
+          targetRepository: 'cached-hello-world'
+        }
+      ]
       trustPolicyStatus: 'enabled'
+      tasks: [
+        {
+          name: '${namePrefix}${serviceShort}Task1'
+          platform: {
+            os: 'Linux'
+            architecture: 'amd64'
+          }
+          step: {
+            type: 'EncodedTask'
+            encodedTaskContent: base64('version: v1.1.0\nsteps:\n  - cmd: mcr.microsoft.com/acr/acr-cli:0.14 --help\n')
+          }
+          trigger: {
+            timerTriggers: [
+              {
+                name: 'dailyTimer'
+                schedule: '0 12 * * *'
+                status: 'Disabled'
+              }
+            ]
+          }
+          status: 'Disabled'
+        }
+      ]
       webhooks: [
         {
           name: '${namePrefix}acrx001webhook'

@@ -1,13 +1,12 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults and use AKS Automatic mode (PREVIEW)'
+metadata name = 'Using only defaults and use AKS Automatic mode'
 metadata description = '''
-This instance deploys the module with the set of automatic parameters.'
+This instance deploys the module with the set of automatic parameters.
 
-Node autoprovisioning (NAP) for AKS is currently in PREVIEW.
-Register the NodeAutoProvisioningPreview feature flag using the az feature register command.
-
-MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/aks/node-autoprovision?tabs=azure-cli#enable-node-autoprovisioning) FOR CLARIFICATION.
+AKS Automatic provides an opinionated, fully-managed cluster experience that automates node provisioning,
+scaling, security, and other operational tasks. For more information, see the
+[AKS Automatic documentation](https://learn.microsoft.com/azure/aks/intro-aks-automatic).
 '''
 
 // ========== //
