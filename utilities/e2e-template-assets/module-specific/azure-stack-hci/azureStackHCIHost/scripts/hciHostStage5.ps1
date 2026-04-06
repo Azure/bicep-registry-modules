@@ -411,8 +411,8 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
     }
     # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
-    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
-    Start-Sleep -Seconds 60
+    log 'Waiting 30s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 30
 } Else {
     log 'HCI node VMs are already running.'
 }
