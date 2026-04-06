@@ -946,7 +946,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.
           destination: 'log-analytics'
           logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
         }
-      : {}
+      : null
     workloadProfiles: enablePrivateNetworking
       ? [
           // NOTE: workload profiles are required for private networking
