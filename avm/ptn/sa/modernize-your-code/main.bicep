@@ -270,11 +270,8 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-// Log Analytics workspace ID, customer ID, and shared key (existing or new)
+// Log Analytics workspace ID and name (existing or new)
 var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
-#disable-next-line BCP318
-var LogAnalyticsPrimarySharedKey string = logAnalyticsWorkspace.outputs.primarySharedKey
-var LogAnalyticsWorkspaceId = logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
 var logAnalyticsWorkspaceName = logAnalyticsWorkspace!.outputs.name
 
 // ========== Application Insights ========== //
@@ -947,10 +944,6 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: LogAnalyticsWorkspaceId
-            sharedKey: LogAnalyticsPrimarySharedKey
-          }
           logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
         }
       : {}
