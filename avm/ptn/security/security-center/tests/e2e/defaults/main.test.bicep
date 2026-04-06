@@ -7,10 +7,6 @@ metadata description = 'This instance deploys the module with default parameters
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-security.azureSecurityCenter-${serviceShort}-rg'
-
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
@@ -19,25 +15,6 @@ param serviceShort string = 'sascmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-  }
-}
 
 // ============== //
 // Test Execution //
@@ -49,24 +26,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      appServicesPricingTier: 'Standard'
-      dnsPricingTier: 'Standard'
-      armPricingTier: 'Standard'
-      containerRegistryPricingTier: 'Standard'
-      containersTier: 'Standard'
-      cosmosDbsTier: 'Standard'
-      keyVaultsPricingTier: 'Standard'
-      kubernetesServicePricingTier: 'Standard'
-      openSourceRelationalDatabasesTier: 'Standard'
-      sqlServersPricingTier: 'Standard'
-      sqlServerVirtualMachinesPricingTier: 'Standard'
-      storageAccountsPricingTier: 'Standard'
-      storageAccountsMalwareScanningSettings: {
-        onUploadMalwareScanningEnabled: 'True'
-        capGBPerMonthPerStorageAccount: 5000
-        sensitiveDataDiscoveryEnabled: 'True'
-      }
-      virtualMachinesPricingTier: 'Standard'
     }
   }
 ]
