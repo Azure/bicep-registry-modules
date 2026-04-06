@@ -1279,9 +1279,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       virtualWanName: 'dep-vw-nvwanwaf'
     }
     // Non-required parameters
-    lock: {
-      kind: 'CanNotDelete'
-    }
     tags: {
       Environment: 'Production'
       'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
@@ -1375,11 +1372,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       }
     },
     // Non-required parameters
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete"
-      }
-    },
     "tags": {
       "value": {
         "Environment": "Production",
@@ -1469,9 +1461,6 @@ param virtualWanParameters = {
   virtualWanName: 'dep-vw-nvwanwaf'
 }
 // Non-required parameters
-param lock = {
-  kind: 'CanNotDelete'
-}
 param tags = {
   Environment: 'Production'
   'hidden-title': 'WAF-Aligned Virtual WAN Deployment'
