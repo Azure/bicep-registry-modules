@@ -425,7 +425,7 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`acrName`](#parameter-acrname) | string | Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io |
+| [`acrName`](#parameter-acrname) | string | Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. Defaults to user principal name or object ID. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring for the resources. This will enable Application Insights and Log Analytics. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for the resources. Set to true to enable private networking. Defaults to false. |
@@ -477,7 +477,7 @@ A unique application/solution name for all resources in this deployment. This sh
 
 ### Parameter: `acrName`
 
-Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io
+Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.
 
 - Required: No
 - Type: string

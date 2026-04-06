@@ -96,7 +96,7 @@ param gptModelName string = 'gpt-4o'
 @description('Optional. Set the Image tag. Defaults to latest_2025-11-10_599.')
 param imageVersion string = 'latest'
 
-@description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io')
+@description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.')
 param acrName string = 'cmsacontainerreg.azurecr.io'
 
 @minLength(1)
@@ -482,7 +482,13 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
-      availabilityZones: []
+      availabilityZones: enableRedundancy
+        ? [
+            1
+            2
+            3
+          ]
+        : []
     }
   }
 }
@@ -799,6 +805,7 @@ module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12
     customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
     location: location
     tags: allTags
+    enableTelemetry: enableTelemetry
     privateLinkServiceConnections: [
       {
         name: 'pep-${aiFoundryAiServicesResourceName}-connection'
