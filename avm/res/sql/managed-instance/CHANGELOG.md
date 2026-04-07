@@ -2,6 +2,24 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/managed-instance/CHANGELOG.md).
 
+## 0.4.1
+
+### Changes
+
+- Added `administrators` sub-module for post-creation Azure AD administrator management (`Microsoft.Sql/managedInstances/administrators`)
+- Added `azure-ad-only-authentication` sub-module for enabling/disabling Entra ID-only authentication (`Microsoft.Sql/managedInstances/azureADOnlyAuthentications`)
+- Added `aadAdministrator` parameter to configure the Azure AD administrator via the new sub-module
+- Added `azureADOnlyAuthentication` parameter to enable/disable Azure AD-only login
+- Added `authenticationMetadata` parameter (`AzureAD` | `Paired` | `Windows`)
+- Added `pricingModel` parameter (`Freemium` | `Regular`)
+- Added `storageIOps` parameter for custom IOPS provisioning (300–80000)
+- Added new `aad-auth` e2e test case covering Azure AD administrator and Azure AD-only authentication end-to-end
+- Updated `max` e2e test to exercise the new `aadAdministrator`, `authenticationMetadata` and `pricingModel` parameters
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes
