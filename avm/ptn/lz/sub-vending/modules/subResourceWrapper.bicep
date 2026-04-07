@@ -115,7 +115,7 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments roleAssignmentType[] = []
 
-@description('Supply an array of objects containing the details of the PIM role assignments to create.')
+@sys.description('Supply an array of objects containing the details of the PIM role assignments to create.')
 param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
@@ -251,7 +251,7 @@ param budgetContactEmails array = []
 @sys.description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
 param budgetActionGroups array = []
 
-@description('Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.')
+@sys.description('Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.')
 param budgetContactRoles array = []
 
 @sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
