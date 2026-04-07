@@ -208,6 +208,9 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       size: sku.?size
       family: sku.?family
     }
+    dependsOn: [
+      aiProject
+    ]
   }
 ]
 
