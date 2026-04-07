@@ -462,7 +462,7 @@ Image version tag to use.
 
 - Required: No
 - Type: string
-- Default: `'latest_waf'`
+- Default: `'latest_waf_2026-04-06_4036'`
 
 ### Parameter: `azureOpenAIApiVersion`
 

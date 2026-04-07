@@ -338,7 +338,7 @@ var eventGridSystemTopicName = 'evgt-${solutionSuffix}'
 var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/main/'
 
 @description('Optional. Image version tag to use.')
-param appversion string = 'latest_waf' // Update GIT deployment branch
+param appversion string = 'latest_waf_2026-04-06_4036' // Update GIT deployment branch
 
 var registryName = 'cwydcontainerreg' // Update Registry name
 
