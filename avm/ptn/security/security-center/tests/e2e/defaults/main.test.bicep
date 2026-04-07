@@ -16,7 +16,14 @@ param serviceShort string = 'sascmin'
 #disable-diagnostics no-unused-params
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+// ============ //
+// Dependencies //
+// ============ //
 
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: 'dep-${namePrefix}-security.azureSecurityCenter-${serviceShort}-rg'
+  location: resourceLocation
+}
 // ============== //
 // Test Execution //
 // ============== //
