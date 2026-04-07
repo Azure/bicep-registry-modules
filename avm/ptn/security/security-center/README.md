@@ -77,6 +77,16 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
         pricingTier: 'Standard'
       }
       {
+        extensions: [
+          {
+            isEnabled: 'True'
+            name: 'OnUploadMalwareScanning'
+          }
+          {
+            isEnabled: 'True'
+            name: 'SensitiveDataDiscovery'
+          }
+        ]
         name: 'StorageAccounts'
         pricingTier: 'Standard'
         subPlan: 'DefenderForStorageV2'
@@ -148,6 +158,16 @@ module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {
           "pricingTier": "Standard"
         },
         {
+          "extensions": [
+            {
+              "isEnabled": "True",
+              "name": "OnUploadMalwareScanning"
+            },
+            {
+              "isEnabled": "True",
+              "name": "SensitiveDataDiscovery"
+            }
+          ],
           "name": "StorageAccounts",
           "pricingTier": "Standard",
           "subPlan": "DefenderForStorageV2"
@@ -219,6 +239,16 @@ param defenderPlans = [
     pricingTier: 'Standard'
   }
   {
+    extensions: [
+      {
+        isEnabled: 'True'
+        name: 'OnUploadMalwareScanning'
+      }
+      {
+        isEnabled: 'True'
+        name: 'SensitiveDataDiscovery'
+      }
+    ]
     name: 'StorageAccounts'
     pricingTier: 'Standard'
     subPlan: 'DefenderForStorageV2'

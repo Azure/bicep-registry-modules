@@ -13,6 +13,7 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sascmin'
 
+#disable-diagnostics no-unused-params
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -30,7 +31,7 @@ module testDeployment '../../../main.bicep' = [
         { name: 'VirtualMachines', pricingTier: 'Standard', subPlan: 'P2' }
         { name: 'SqlServers', pricingTier: 'Standard' }
         { name: 'AppServices', pricingTier: 'Standard' }
-        { name: 'StorageAccounts', pricingTier: 'Standard', subPlan: 'DefenderForStorageV2' }
+        { name: 'StorageAccounts', pricingTier: 'Standard', subPlan: 'DefenderForStorageV2', extensions: [{ name: 'OnUploadMalwareScanning', isEnabled: 'True' }, { name: 'SensitiveDataDiscovery', isEnabled: 'True' }] }
         { name: 'SqlServerVirtualMachines', pricingTier: 'Standard' }
         { name: 'KeyVaults', pricingTier: 'Standard' }
         { name: 'Arm', pricingTier: 'Standard' }
