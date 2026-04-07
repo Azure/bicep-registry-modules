@@ -251,6 +251,9 @@ param budgetContactEmails array = []
 @sys.description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
 param budgetActionGroups array = []
 
+@description('Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.')
+param budgetContactRoles array = []
+
 @sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
 param budgetCategory string = 'Cost'
 
@@ -600,6 +603,7 @@ module budgetAlert 'br/public:avm/res/consumption/budget:0.3.8' = if (!empty(bud
     startDate: budgetStartDate
     contactEmails: budgetContactEmails
     actionGroups: budgetActionGroups
+    contactRoles: budgetContactRoles
     thresholds: budgetThresholds
   }
 }

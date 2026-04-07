@@ -415,11 +415,14 @@ param budgetAmount int = 100
 @sys.description('Optional. The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).')
 param budgetStartDate string = '${utcNow('yyyy')}-${utcNow('MM')}-01T00:00:00Z'
 
-@sys.description('Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided.')
+@sys.description('Optional. The list of email addresses to send the budget notification to when the thresholds are exceeded.')
 param budgetContactEmails array = []
 
-@sys.description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
+@sys.description('Optional. List of action group resource IDs that will receive the alert.')
 param budgetActionGroups array = []
+
+@sys.description('Optional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided.')
+param budgetContactRoles array = (empty(budgetActionGroups) && empty(budgetContactEmails)) ? ['Owner'] : []
 
 @sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
 param budgetCategory string = 'Cost'
@@ -648,6 +651,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     budgetCategory: budgetCategory
     budgetContactEmails: budgetContactEmails
     budgetActionGroups: budgetActionGroups
+    budgetContactRoles: budgetContactRoles
     budgetThresholds: budgetThresholds
     budgetThresholdType: budgetThresholdType
     enableTelemetry: enableTelemetry

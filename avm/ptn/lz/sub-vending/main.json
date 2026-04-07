@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "17491522669060036242"
+      "templateHash": "4761354270148376795"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1881,14 +1881,21 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided."
+        "description": "Optional. The list of email addresses to send the budget notification to when the thresholds are exceeded."
       }
     },
     "budgetActionGroups": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
+        "description": "Optional. List of action group resource IDs that will receive the alert."
+      }
+    },
+    "budgetContactRoles": {
+      "type": "array",
+      "defaultValue": "[if(and(empty(parameters('budgetActionGroups')), empty(parameters('budgetContactEmails'))), createArray('Owner'), createArray())]",
+      "metadata": {
+        "description": "Optional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided."
       }
     },
     "budgetCategory": {
@@ -2323,6 +2330,9 @@
           "budgetActionGroups": {
             "value": "[parameters('budgetActionGroups')]"
           },
+          "budgetContactRoles": {
+            "value": "[parameters('budgetContactRoles')]"
+          },
           "budgetThresholds": {
             "value": "[parameters('budgetThresholds')]"
           },
@@ -2341,7 +2351,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "13512025225845332773"
+              "templateHash": "173641244984180657"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -4187,6 +4197,13 @@
                 "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
               }
             },
+            "budgetContactRoles": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided."
+              }
+            },
             "budgetCategory": {
               "type": "string",
               "defaultValue": "Cost",
@@ -4770,6 +4787,9 @@
                   },
                   "actionGroups": {
                     "value": "[parameters('budgetActionGroups')]"
+                  },
+                  "contactRoles": {
+                    "value": "[parameters('budgetContactRoles')]"
                   },
                   "thresholds": {
                     "value": "[parameters('budgetThresholds')]"
