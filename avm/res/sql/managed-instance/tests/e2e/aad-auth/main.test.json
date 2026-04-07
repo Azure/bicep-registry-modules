@@ -1,0 +1,3360 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "10846652605622223915"
+    },
+    "name": "With Azure AD-only authentication",
+    "description": "This instance deploys the module with an Azure AD administrator and Azure AD-only authentication enabled."
+  },
+  "parameters": {
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[format('dep-{0}-sql.managedinstances-{1}-rg', parameters('namePrefix'), parameters('serviceShort'))]",
+      "maxLength": 90,
+      "metadata": {
+        "description": "Optional. The name of the resource group to deploy for testing purposes."
+      }
+    },
+    "resourceLocation": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy resources to."
+      }
+    },
+    "serviceShort": {
+      "type": "string",
+      "defaultValue": "sqlmiaad",
+      "metadata": {
+        "description": "Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints."
+      }
+    },
+    "password": {
+      "type": "securestring",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Optional. The password to leverage for the login."
+      }
+    },
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "#_namePrefix_#",
+      "metadata": {
+        "description": "Optional. A token to inject into the name of each resource."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('resourceLocation')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[format('dep-{0}-vnet-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+          },
+          "networkSecurityGroupName": {
+            "value": "[format('dep-{0}-nsg-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+          },
+          "routeTableName": {
+            "value": "[format('dep-{0}-rt-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+          },
+          "managedIdentityName": {
+            "value": "[format('dep-{0}-msi-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "12946564684754445536"
+            }
+          },
+          "parameters": {
+            "virtualNetworkName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Virtual Network to create."
+              }
+            },
+            "networkSecurityGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Network Security Group to create."
+              }
+            },
+            "routeTableName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Route Table to create."
+              }
+            },
+            "managedIdentityName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Managed Identity to create."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location to deploy resources to."
+              }
+            }
+          },
+          "variables": {
+            "addressPrefix": "10.0.0.0/16",
+            "addressPrefixString": "[replace(replace(variables('addressPrefix'), '.', '-'), '/', '-')]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2024-11-30",
+              "name": "[parameters('managedIdentityName')]",
+              "location": "[parameters('location')]"
+            },
+            {
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('networkSecurityGroupName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "securityRules": [
+                  {
+                    "name": "[format('Microsoft.Sql-managedInstances_UseOnly_mi-healthprobe-in-{0}-v10', variables('addressPrefixString'))]",
+                    "properties": {
+                      "description": "Allow Azure Load Balancer inbound traffic",
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "AzureLoadBalancer",
+                      "destinationAddressPrefix": "[variables('addressPrefix')]",
+                      "access": "Allow",
+                      "priority": 103,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "[format('Microsoft.Sql-managedInstances_UseOnly_mi-internal-in-{0}-v10', variables('addressPrefixString'))]",
+                    "properties": {
+                      "description": "Allow MI internal inbound traffic",
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "[variables('addressPrefix')]",
+                      "destinationAddressPrefix": "[variables('addressPrefix')]",
+                      "access": "Allow",
+                      "priority": 104,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "[format('Microsoft.Sql-managedInstances_UseOnly_mi-internal-out-{0}-v10', variables('addressPrefixString'))]",
+                    "properties": {
+                      "description": "Allow MI internal outbound traffic",
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "[variables('addressPrefix')]",
+                      "destinationAddressPrefix": "[variables('addressPrefix')]",
+                      "access": "Allow",
+                      "priority": 101,
+                      "direction": "Outbound"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/routeTables",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('routeTableName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "disableBgpRoutePropagation": false,
+                "routes": [
+                  {
+                    "name": "[format('Microsoft.Sql-managedInstances_UseOnly_subnet-{0}-to-vnetlocal', variables('addressPrefixString'))]",
+                    "properties": {
+                      "addressPrefix": "[variables('addressPrefix')]",
+                      "nextHopType": "VnetLocal"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('virtualNetworkName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "addressSpace": {
+                  "addressPrefixes": [
+                    "[variables('addressPrefix')]"
+                  ]
+                },
+                "subnets": [
+                  {
+                    "name": "ManagedInstance",
+                    "properties": {
+                      "addressPrefix": "[cidrSubnet(variables('addressPrefix'), 16, 0)]",
+                      "routeTable": {
+                        "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTableName'))]"
+                      },
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                      },
+                      "delegations": [
+                        {
+                          "name": "managedInstanceDelegation",
+                          "properties": {
+                            "serviceName": "Microsoft.Sql/managedInstances"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTableName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the created Virtual Network Subnet."
+              },
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName')), '2024-05-01').subnets[0].id]"
+            },
+            "managedIdentityPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID of the created Managed Identity."
+              },
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2024-11-30').principalId]"
+            },
+            "managedIdentityName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the created Managed Identity."
+              },
+              "value": "[parameters('managedIdentityName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "testDeployment",
+        "count": "[length(createArray('init', 'idem'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-test-{1}-{2}', uniqueString(deployment().name, parameters('resourceLocation')), parameters('serviceShort'), createArray('init', 'idem')[copyIndex()])]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('{0}-{1}', parameters('namePrefix'), parameters('serviceShort'))]"
+          },
+          "administratorLogin": {
+            "value": "adminUserName"
+          },
+          "administratorLoginPassword": {
+            "value": "[parameters('password')]"
+          },
+          "subnetResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.subnetResourceId.value]"
+          },
+          "managedIdentities": {
+            "value": {
+              "systemAssigned": true
+            }
+          },
+          "servicePrincipal": {
+            "value": "SystemAssigned"
+          },
+          "authenticationMetadata": {
+            "value": "AzureAD"
+          },
+          "aadAdministrator": {
+            "value": {
+              "login": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityName.value]",
+              "sid": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation')))), '2025-04-01').outputs.managedIdentityPrincipalId.value]",
+              "tenantId": "[subscription().tenantId]"
+            }
+          },
+          "azureADOnlyAuthentication": {
+            "value": true
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "17336022248620062265"
+            },
+            "name": "SQL Managed Instances",
+            "description": "This module deploys a SQL Managed Instance."
+          },
+          "definitions": {
+            "serverExternalAdministratorType": {
+              "type": "object",
+              "properties": {
+                "azureADOnlyAuthentication": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Azure Active Directory only Authentication enabled."
+                  }
+                },
+                "login": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Login name of the server administrator."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Application",
+                    "Group",
+                    "User"
+                  ],
+                  "metadata": {
+                    "description": "Required. Principal Type of the sever administrator."
+                  }
+                },
+                "sid": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. SID (object ID) of the server administrator."
+                  }
+                },
+                "tenantId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Tenant ID of the administrator."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a sever-external administrator."
+              }
+            },
+            "vulnerabilityAssessmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the vulnerability assessment."
+                  }
+                },
+                "recurringScans": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01#properties/properties/properties/recurringScans"
+                    },
+                    "description": "Optional. The recurring scans configuration."
+                  },
+                  "nullable": true
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. A blob storage to hold the scan results."
+                  }
+                },
+                "useStorageAccountAccessKey": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account."
+                  }
+                },
+                "createStorageRoleAssignment": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the vulnerability assessment configuration."
+              }
+            },
+            "securityAlertPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the security alert policy."
+                  }
+                },
+                "state": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables advanced data security features, like recuring vulnerability assesment scans and ATP. If enabled, storage account must be provided."
+                  }
+                },
+                "emailAccountAdmins": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators."
+                  }
+                },
+                "emailAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies an array of e-mail addresses to which the alert is sent."
+                  }
+                },
+                "retentionDays": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the number of days to keep in the Threat Detection audit logs."
+                  }
+                },
+                "disabledAlerts": {
+                  "type": "array",
+                  "allowedValues": [
+                    "Access_Anomaly",
+                    "Brute_Force",
+                    "Data_Exfiltration",
+                    "Sql_Injection",
+                    "Sql_Injection_Vulnerability",
+                    "Unsafe_Action"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies an array of alerts that are disabled."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. A blob storage to  hold all Threat Detection audit logs. Required if state is 'Enabled'."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the security alert policy configuration."
+              }
+            },
+            "keysType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+                  }
+                },
+                "serverKeyType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureKeyVault",
+                    "ServiceManaged"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+                  }
+                },
+                "uri": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the keys configuration."
+              }
+            },
+            "encryptionProtectorType": {
+              "type": "object",
+              "properties": {
+                "serverKeyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the SQL managed instance key."
+                  }
+                },
+                "serverKeyType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureKeyVault",
+                    "ServiceManaged"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+                  }
+                },
+                "autoRotationEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Key auto rotation opt-in flag."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the encryption protector configuration."
+              }
+            },
+            "databaseType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the SQL managed instance database."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Location for all resources."
+                  }
+                },
+                "collation": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Collation of the managed instance database."
+                  }
+                },
+                "catalogCollation": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Collation of the managed instance."
+                  }
+                },
+                "createMode": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Default",
+                    "PointInTimeRestore",
+                    "Recovery",
+                    "RestoreExternalBackup",
+                    "RestoreLongTermRetentionBackup"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Managed database create mode. PointInTimeRestore: Create a database by restoring a point in time backup of an existing database. SourceDatabaseName, SourceManagedInstanceName and PointInTime must be specified. RestoreExternalBackup: Create a database by restoring from external backup files. Collation, StorageContainerUri and StorageContainerSasToken must be specified. Recovery: Creates a database by restoring a geo-replicated backup. RecoverableDatabaseId must be specified as the recoverable database resource ID to restore. RestoreLongTermRetentionBackup: Create a database by restoring from a long term retention backup (longTermRetentionBackupResourceId required)."
+                  }
+                },
+                "sourceDatabaseId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The resource identifier of the source database associated with create operation of this database. Required if createMode is PointInTimeRestore."
+                  }
+                },
+                "restorePointInTime": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. Required if createMode is PointInTimeRestore."
+                  }
+                },
+                "restorableDroppedDatabaseId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The restorable dropped database resource ID to restore when creating this database."
+                  }
+                },
+                "storageContainerUri": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. Specifies the uri of the storage container where backups for this restore are stored. Required if createMode is RestoreExternalBackup."
+                  }
+                },
+                "storageContainerSasToken": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. Specifies the storage container sas token. Required if createMode is RestoreExternalBackup."
+                  }
+                },
+                "recoverableDatabaseId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The resource identifier of the recoverable database associated with create operation of this database. Required if createMode is Recovery."
+                  }
+                },
+                "longTermRetentionBackupResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
+                  }
+                },
+                "diagnosticSettings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The database-level diagnostic settings of the service."
+                  }
+                },
+                "lock": {
+                  "$ref": "#/definitions/lockType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The lock settings of the service."
+                  }
+                },
+                "backupShortTermRetentionPolicy": {
+                  "$ref": "#/definitions/managedInstanceShortTermRetentionPolicyType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The configuration for the backup short term retention policy definition."
+                  }
+                },
+                "backupLongTermRetentionPolicy": {
+                  "$ref": "#/definitions/managedInstanceLongTermRetentionPolicyType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The configuration for the backup long term retention policy definition."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+                    },
+                    "description": "Optional. Tags of the resource."
+                  },
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a database."
+              }
+            },
+            "aadAdministratorType": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Login name of the managed instance Azure AD administrator."
+                  }
+                },
+                "sid": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. SID (object ID) of the managed instance Azure AD administrator."
+                  }
+                },
+                "tenantId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Tenant ID of the managed instance Azure AD administrator."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the Azure AD administrator configuration (post-creation management)."
+              }
+            },
+            "diagnosticSettingFullType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the diagnostic setting."
+                  }
+                },
+                "logCategoriesAndGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                        }
+                      },
+                      "categoryGroup": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "diagnosticSettingLogsOnlyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of diagnostic setting."
+                  }
+                },
+                "logCategoriesAndGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                        }
+                      },
+                      "categoryGroup": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "managedIdentityAllType": {
+              "type": "object",
+              "properties": {
+                "systemAssigned": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables system assigned managed identity on the resource."
+                  }
+                },
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            },
+            "managedInstanceLongTermRetentionPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the long term retention policy. If not specified, 'default' name will be used."
+                  }
+                },
+                "backupStorageAccessTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Archive",
+                    "Hot"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+                  }
+                },
+                "monthlyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                },
+                "weeklyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                },
+                "weekOfYear": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+                  }
+                },
+                "yearlyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the long term backup retention policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "database/main.bicep"
+                }
+              }
+            },
+            "managedInstanceShortTermRetentionPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the short term retention policy. If not specified, 'default' name will be used."
+                  }
+                },
+                "retentionDays": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the short term backup retention policy.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "database/main.bicep"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the SQL managed instance."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "administratorLogin": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
+              }
+            },
+            "administratorLoginPassword": {
+              "type": "securestring",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided."
+              }
+            },
+            "administrators": {
+              "$ref": "#/definitions/serverExternalAdministratorType",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided."
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The fully qualified resource ID of the subnet on which the SQL managed instance will be placed."
+              }
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "GP_Gen5",
+              "metadata": {
+                "description": "Optional. The name of the SKU, typically, a letter + Number code, e.g. P3."
+              }
+            },
+            "skuTier": {
+              "type": "string",
+              "defaultValue": "GeneralPurpose",
+              "metadata": {
+                "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+              }
+            },
+            "storageSizeInGB": {
+              "type": "int",
+              "defaultValue": 32,
+              "minValue": 32,
+              "maxValue": 8192,
+              "metadata": {
+                "description": "Optional. Storage size in GB. Increments of 32 GB allowed only."
+              }
+            },
+            "vCores": {
+              "type": "int",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/properties/properties/vCores"
+                },
+                "description": "Optional. The number of vCores."
+              },
+              "defaultValue": 4
+            },
+            "licenseType": {
+              "type": "string",
+              "defaultValue": "LicenseIncluded",
+              "allowedValues": [
+                "LicenseIncluded",
+                "BasePrice"
+              ],
+              "metadata": {
+                "description": "Optional. The license type. Possible values are 'LicenseIncluded' (regular price inclusive of a new SQL license) and 'BasePrice' (discounted AHB price for bringing your own SQL licenses)."
+              }
+            },
+            "hardwareFamily": {
+              "type": "string",
+              "defaultValue": "Gen5",
+              "metadata": {
+                "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+              }
+            },
+            "zoneRedundant": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether or not multi-az is enabled."
+              }
+            },
+            "servicePrincipal": {
+              "type": "string",
+              "defaultValue": "None",
+              "allowedValues": [
+                "None",
+                "SystemAssigned"
+              ],
+              "metadata": {
+                "description": "Optional. Service principal type. If using AD Authentication and applying Admin, must be set to `SystemAssigned`. Then Global Admin must allow Reader access to Azure AD for the Service Principal."
+              }
+            },
+            "managedInstanceCreateMode": {
+              "type": "string",
+              "defaultValue": "Default",
+              "allowedValues": [
+                "Default",
+                "PointInTimeRestore"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified."
+              }
+            },
+            "dnsZonePartnerResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of another managed instance whose DNS zone this managed instance will share after creation."
+              }
+            },
+            "collation": {
+              "type": "string",
+              "defaultValue": "SQL_Latin1_General_CP1_CI_AS",
+              "metadata": {
+                "description": "Optional. Collation of the managed instance."
+              }
+            },
+            "proxyOverride": {
+              "type": "string",
+              "defaultValue": "Proxy",
+              "allowedValues": [
+                "Proxy",
+                "Redirect",
+                "Default"
+              ],
+              "metadata": {
+                "description": "Optional. Connection type used for connecting to the instance."
+              }
+            },
+            "publicDataEndpointEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether or not the public data endpoint is enabled."
+              }
+            },
+            "timezoneId": {
+              "type": "string",
+              "defaultValue": "UTC",
+              "metadata": {
+                "description": "Optional. ID of the timezone. Allowed values are timezones supported by Windows."
+              }
+            },
+            "instancePoolResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of the instance pool this managed server belongs to."
+              }
+            },
+            "restorePointInTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database."
+              }
+            },
+            "sourceManagedInstanceResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource identifier of the source managed instance associated with create operation of this instance."
+              }
+            },
+            "diagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The diagnostic settings of the service."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/tags"
+                },
+                "description": "Optional. Tags of the resource."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentityAllType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "primaryUserAssignedIdentityResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if `userAssignedIdentities` is not empty."
+              }
+            },
+            "databases": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/databaseType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Databases to create in this server."
+              }
+            },
+            "vulnerabilityAssessment": {
+              "$ref": "#/definitions/vulnerabilityAssessmentType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The vulnerability assessment configuration."
+              }
+            },
+            "securityAlertPolicy": {
+              "$ref": "#/definitions/securityAlertPolicyType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The security alert policy configuration."
+              }
+            },
+            "keys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/keysType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The keys to configure."
+              }
+            },
+            "encryptionProtector": {
+              "$ref": "#/definitions/encryptionProtectorType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The encryption protection configuration."
+              }
+            },
+            "maintenanceWindow": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "SystemManaged",
+                "Custom1",
+                "Custom2"
+              ],
+              "metadata": {
+                "description": "Optional. The maintenance window for the SQL Managed Instance.\n\nSystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.\nCustom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.\nCustom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.\n"
+              }
+            },
+            "minimalTlsVersion": {
+              "type": "string",
+              "defaultValue": "1.2",
+              "allowedValues": [
+                "None",
+                "1.0",
+                "1.1",
+                "1.2"
+              ],
+              "metadata": {
+                "description": "Optional. Minimal TLS version allowed."
+              }
+            },
+            "requestedBackupStorageRedundancy": {
+              "type": "string",
+              "defaultValue": "Geo",
+              "allowedValues": [
+                "Geo",
+                "GeoZone",
+                "Local",
+                "Zone"
+              ],
+              "metadata": {
+                "description": "Optional. The storage account type used to store backups for this database."
+              }
+            },
+            "authenticationMetadata": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "AzureAD",
+                "Paired",
+                "Windows"
+              ],
+              "metadata": {
+                "description": "Optional. The managed instance authentication metadata lookup mode."
+              }
+            },
+            "pricingModel": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Freemium",
+                "Regular"
+              ],
+              "metadata": {
+                "description": "Optional. Pricing model of the managed instance."
+              }
+            },
+            "storageIOps": {
+              "type": "int",
+              "nullable": true,
+              "minValue": 300,
+              "maxValue": 80000,
+              "metadata": {
+                "description": "Optional. Storage IOps. Minimum value: 300. Maximum value: 80000. Increments of 1 IOps allowed only. Maximum value depends on the selected hardware family and number of vCores."
+              }
+            },
+            "aadAdministrator": {
+              "$ref": "#/definitions/aadAdministratorType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Azure AD administrator for post-creation management. To configure Azure AD-only authentication, use the azureADOnlyAuthentication parameter."
+              }
+            },
+            "azureADOnlyAuthentication": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether Azure Active Directory-only authentication is enabled. Requires an aadAdministrator to be set."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
+              "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
+              "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+              "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
+              "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]",
+              "SqlMI Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d335eef-eee1-47fe-a9e0-53214eba8872')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "maintenanceConfigurationId": "[if(or(equals(parameters('maintenanceWindow'), 'Custom1'), equals(parameters('maintenanceWindow'), 'Custom2')), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', format('SQL_{0}_MI_{1}', parameters('location'), last(parameters('maintenanceWindow')))), null())]"
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.sql-managedinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "managedInstance": {
+              "type": "Microsoft.Sql/managedInstances",
+              "apiVersion": "2024-05-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]",
+                "family": "[parameters('hardwareFamily')]"
+              },
+              "properties": {
+                "managedInstanceCreateMode": "[parameters('managedInstanceCreateMode')]",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
+                "subnetId": "[parameters('subnetResourceId')]",
+                "licenseType": "[parameters('licenseType')]",
+                "vCores": "[parameters('vCores')]",
+                "storageSizeInGB": "[parameters('storageSizeInGB')]",
+                "collation": "[parameters('collation')]",
+                "dnsZonePartner": "[parameters('dnsZonePartnerResourceId')]",
+                "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
+                "sourceManagedInstanceId": "[parameters('sourceManagedInstanceResourceId')]",
+                "restorePointInTime": "[parameters('restorePointInTime')]",
+                "proxyOverride": "[parameters('proxyOverride')]",
+                "timezoneId": "[parameters('timezoneId')]",
+                "instancePoolId": "[parameters('instancePoolResourceId')]",
+                "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
+                "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
+                "zoneRedundant": "[parameters('zoneRedundant')]",
+                "servicePrincipal": {
+                  "type": "[parameters('servicePrincipal')]"
+                },
+                "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
+                "maintenanceConfigurationId": "[variables('maintenanceConfigurationId')]",
+                "authenticationMetadata": "[parameters('authenticationMetadata')]",
+                "pricingModel": "[parameters('pricingModel')]",
+                "storageIOps": "[parameters('storageIOps')]"
+              }
+            },
+            "managedInstance_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[resourceId('Microsoft.Sql/managedInstances', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_diagnosticSettings": {
+              "copy": {
+                "name": "managedInstance_diagnosticSettings",
+                "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+              },
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[resourceId('Microsoft.Sql/managedInstances', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "logs",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "input": {
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                    }
+                  }
+                ],
+                "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_roleAssignments": {
+              "copy": {
+                "name": "managedInstance_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.Sql/managedInstances', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Sql/managedInstances', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_databases": {
+              "copy": {
+                "name": "managedInstance_databases",
+                "count": "[length(coalesce(parameters('databases'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-DB-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].name]"
+                  },
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "catalogCollation": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'catalogCollation')]"
+                  },
+                  "collation": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'collation')]"
+                  },
+                  "createMode": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'createMode')]"
+                  },
+                  "diagnosticSettings": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'diagnosticSettings')]"
+                  },
+                  "location": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'location'), reference('managedInstance', '2024-05-01-preview', 'full').location)]"
+                  },
+                  "lock": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+                  },
+                  "longTermRetentionBackupResourceId": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'longTermRetentionBackupResourceId')]"
+                  },
+                  "recoverableDatabaseId": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'recoverableDatabaseId')]"
+                  },
+                  "restorableDroppedDatabaseId": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'restorableDroppedDatabaseId')]"
+                  },
+                  "restorePointInTime": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'restorePointInTime')]"
+                  },
+                  "sourceDatabaseId": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sourceDatabaseId')]"
+                  },
+                  "storageContainerSasToken": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'storageContainerSasToken')]"
+                  },
+                  "storageContainerUri": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'storageContainerUri')]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+                  },
+                  "backupShortTermRetentionPolicy": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'backupShortTermRetentionPolicy')]"
+                  },
+                  "backupLongTermRetentionPolicy": {
+                    "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'backupLongTermRetentionPolicy')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "7310589100082145738"
+                    },
+                    "name": "SQL Managed Instance Databases",
+                    "description": "This module deploys a SQL Managed Instance Database."
+                  },
+                  "definitions": {
+                    "managedInstanceLongTermRetentionPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the long term retention policy. If not specified, 'default' name will be used."
+                          }
+                        },
+                        "backupStorageAccessTier": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Archive",
+                            "Hot"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+                          }
+                        },
+                        "monthlyRetention": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+                          }
+                        },
+                        "weeklyRetention": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+                          }
+                        },
+                        "weekOfYear": {
+                          "type": "int",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+                          }
+                        },
+                        "yearlyRetention": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for the long term backup retention policy."
+                      }
+                    },
+                    "managedInstanceShortTermRetentionPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the short term retention policy. If not specified, 'default' name will be used."
+                          }
+                        },
+                        "retentionDays": {
+                          "type": "int",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for the short term backup retention policy."
+                      }
+                    },
+                    "diagnosticSettingLogsOnlyType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the SQL managed instance database."
+                      }
+                    },
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "collation": {
+                      "type": "string",
+                      "defaultValue": "SQL_Latin1_General_CP1_CI_AS",
+                      "metadata": {
+                        "description": "Optional. Collation of the managed instance database."
+                      }
+                    },
+                    "catalogCollation": {
+                      "type": "string",
+                      "defaultValue": "SQL_Latin1_General_CP1_CI_AS",
+                      "metadata": {
+                        "description": "Optional. Collation of the managed instance."
+                      }
+                    },
+                    "createMode": {
+                      "type": "string",
+                      "defaultValue": "Default",
+                      "allowedValues": [
+                        "Default",
+                        "RestoreExternalBackup",
+                        "PointInTimeRestore",
+                        "Recovery",
+                        "RestoreLongTermRetentionBackup"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Managed database create mode. PointInTimeRestore: Create a database by restoring a point in time backup of an existing database. SourceDatabaseName, SourceManagedInstanceName and PointInTime must be specified. RestoreExternalBackup: Create a database by restoring from external backup files. Collation, StorageContainerUri and StorageContainerSasToken must be specified. Recovery: Creates a database by restoring a geo-replicated backup. RecoverableDatabaseId must be specified as the recoverable database resource ID to restore. RestoreLongTermRetentionBackup: Create a database by restoring from a long term retention backup (longTermRetentionBackupResourceId required)."
+                      }
+                    },
+                    "sourceDatabaseId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The resource identifier of the source database associated with create operation of this database. Required if createMode is PointInTimeRestore."
+                      }
+                    },
+                    "restorePointInTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. Required if createMode is PointInTimeRestore."
+                      }
+                    },
+                    "restorableDroppedDatabaseId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The restorable dropped database resource ID to restore when creating this database."
+                      }
+                    },
+                    "storageContainerUri": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. Specifies the uri of the storage container where backups for this restore are stored. Required if createMode is RestoreExternalBackup."
+                      }
+                    },
+                    "storageContainerSasToken": {
+                      "type": "securestring",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. Specifies the storage container sas token. Required if createMode is RestoreExternalBackup."
+                      }
+                    },
+                    "recoverableDatabaseId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The resource identifier of the recoverable database associated with create operation of this database. Required if createMode is Recovery."
+                      }
+                    },
+                    "longTermRetentionBackupResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
+                      }
+                    },
+                    "diagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The database-level diagnostic settings of the service."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "backupShortTermRetentionPolicy": {
+                      "$ref": "#/definitions/managedInstanceShortTermRetentionPolicyType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The configuration for the backup short term retention policy definition."
+                      }
+                    },
+                    "backupLongTermRetentionPolicy": {
+                      "$ref": "#/definitions/managedInstanceLongTermRetentionPolicyType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The configuration for the backup long term retention policy definition."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+                        },
+                        "description": "Optional. Tags of the resource."
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "resources": {
+                    "managedInstance": {
+                      "existing": true,
+                      "type": "Microsoft.Sql/managedInstances",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[parameters('managedInstanceName')]"
+                    },
+                    "database": {
+                      "type": "Microsoft.Sql/managedInstances/databases",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "collation": "[parameters('collation')]",
+                        "restorePointInTime": "[parameters('restorePointInTime')]",
+                        "catalogCollation": "[parameters('catalogCollation')]",
+                        "createMode": "[parameters('createMode')]",
+                        "storageContainerUri": "[parameters('storageContainerUri')]",
+                        "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+                        "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseId')]",
+                        "storageContainerSasToken": "[parameters('storageContainerSasToken')]",
+                        "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
+                        "longTermRetentionBackupResourceId": "[parameters('longTermRetentionBackupResourceId')]"
+                      }
+                    },
+                    "database_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[resourceId('Microsoft.Sql/managedInstances/databases', parameters('managedInstanceName'), parameters('name'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                      },
+                      "dependsOn": [
+                        "database"
+                      ]
+                    },
+                    "database_diagnosticSettings": {
+                      "copy": {
+                        "name": "database_diagnosticSettings",
+                        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+                      },
+                      "type": "Microsoft.Insights/diagnosticSettings",
+                      "apiVersion": "2021-05-01-preview",
+                      "scope": "[resourceId('Microsoft.Sql/managedInstances/databases', parameters('managedInstanceName'), parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
+                        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+                      },
+                      "dependsOn": [
+                        "database"
+                      ]
+                    },
+                    "database_backupShortTermRetentionPolicy": {
+                      "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-BackupShortTRetPol', deployment().name)]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "managedInstanceName": {
+                            "value": "[parameters('managedInstanceName')]"
+                          },
+                          "databaseName": {
+                            "value": "[last(split(parameters('name'), '/'))]"
+                          },
+                          "name": {
+                            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'name')]"
+                          },
+                          "retentionDays": {
+                            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.41.2.15936",
+                              "templateHash": "3476613659229782501"
+                            },
+                            "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
+                            "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "defaultValue": "default",
+                              "metadata": {
+                                "description": "Optional. The name of the Short Term Retention backup policy."
+                              }
+                            },
+                            "databaseName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent SQL managed instance database. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "managedInstanceName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "retentionDays": {
+                              "type": "int",
+                              "defaultValue": 35,
+                              "metadata": {
+                                "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+                              "apiVersion": "2024-05-01-preview",
+                              "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
+                              "properties": {
+                                "retentionDays": "[parameters('retentionDays')]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the deployed database backup short-term retention policy."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the deployed database backup short-term retention policy."
+                              },
+                              "value": "[resourceId('Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group of the deployed database backup short-term retention policy."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "database"
+                      ]
+                    },
+                    "database_backupLongTermRetentionPolicy": {
+                      "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-BackupLongTRetPol', deployment().name)]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "managedInstanceName": {
+                            "value": "[parameters('managedInstanceName')]"
+                          },
+                          "databaseName": {
+                            "value": "[last(split(parameters('name'), '/'))]"
+                          },
+                          "name": {
+                            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'name')]"
+                          },
+                          "weekOfYear": {
+                            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
+                          },
+                          "weeklyRetention": {
+                            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
+                          },
+                          "monthlyRetention": {
+                            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention')]"
+                          },
+                          "yearlyRetention": {
+                            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.41.2.15936",
+                              "templateHash": "13192049005064821728"
+                            },
+                            "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
+                            "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "defaultValue": "default",
+                              "metadata": {
+                                "description": "Optional. The name of the Long Term Retention backup policy."
+                              }
+                            },
+                            "databaseName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent managed instance database. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "managedInstanceName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "backupStorageAccessTier": {
+                              "type": "string",
+                              "defaultValue": "Hot",
+                              "allowedValues": [
+                                "Archive",
+                                "Hot"
+                              ],
+                              "metadata": {
+                                "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+                              }
+                            },
+                            "weekOfYear": {
+                              "type": "int",
+                              "defaultValue": 5,
+                              "metadata": {
+                                "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+                              }
+                            },
+                            "weeklyRetention": {
+                              "type": "string",
+                              "defaultValue": "P1M",
+                              "metadata": {
+                                "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+                              }
+                            },
+                            "monthlyRetention": {
+                              "type": "string",
+                              "defaultValue": "P1Y",
+                              "metadata": {
+                                "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+                              }
+                            },
+                            "yearlyRetention": {
+                              "type": "string",
+                              "defaultValue": "P5Y",
+                              "metadata": {
+                                "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
+                              "apiVersion": "2024-05-01-preview",
+                              "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
+                              "properties": {
+                                "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
+                                "monthlyRetention": "[parameters('monthlyRetention')]",
+                                "weeklyRetention": "[parameters('weeklyRetention')]",
+                                "weekOfYear": "[parameters('weekOfYear')]",
+                                "yearlyRetention": "[parameters('yearlyRetention')]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the deployed database backup long-term retention policy."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the deployed database backup long-term retention policy."
+                              },
+                              "value": "[resourceId('Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group of the deployed database backup long-term retention policy."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "database",
+                        "database_backupShortTermRetentionPolicy"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed database."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed database."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/databases', parameters('managedInstanceName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the database was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('database', '2024-05-01-preview', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_securityAlertPolicy": {
+              "condition": "[not(empty(parameters('securityAlertPolicy')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-SecAlertPol', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('securityAlertPolicy').name]"
+                  },
+                  "emailAccountAdmins": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'emailAccountAdmins')]"
+                  },
+                  "state": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'state')]"
+                  },
+                  "disabledAlerts": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'disabledAlerts')]"
+                  },
+                  "emailAddresses": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'emailAddresses')]"
+                  },
+                  "retentionDays": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'retentionDays')]"
+                  },
+                  "storageAccountResourceId": {
+                    "value": "[tryGet(parameters('securityAlertPolicy'), 'storageAccountResourceId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "16821276784304711"
+                    },
+                    "name": "SQL Managed Instance Security Alert Policies",
+                    "description": "This module deploys a SQL Managed Instance Security Alert Policy."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the security alert policy."
+                      }
+                    },
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "state": {
+                      "type": "string",
+                      "defaultValue": "Disabled",
+                      "allowedValues": [
+                        "Enabled",
+                        "Disabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Enables advanced data security features, like recuring vulnerability assesment scans and ATP. If enabled, storage account must be provided."
+                      }
+                    },
+                    "emailAccountAdmins": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Specifies that the schedule scan notification will be is sent to the subscription administrators."
+                      }
+                    },
+                    "emailAddresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Specifies an array of e-mail addresses to which the alert is sent."
+                      }
+                    },
+                    "retentionDays": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Specifies the number of days to keep in the Threat Detection audit logs."
+                      }
+                    },
+                    "disabledAlerts": {
+                      "type": "array",
+                      "allowedValues": [
+                        "Access_Anomaly",
+                        "Brute_Force",
+                        "Data_Exfiltration",
+                        "Sql_Injection",
+                        "Sql_Injection_Vulnerability",
+                        "Unsafe_Action"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Specifies an array of alerts that are disabled."
+                      }
+                    },
+                    "storageAccountResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Conditional. A blob storage to hold all Threat Detection audit logs. Required if state is 'Enabled'."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "storageAccount": {
+                      "condition": "[not(empty(parameters('storageAccountResourceId')))]",
+                      "existing": true,
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2025-01-01",
+                      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+                      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+                    },
+                    "managedInstance": {
+                      "existing": true,
+                      "type": "Microsoft.Sql/managedInstances",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[parameters('managedInstanceName')]"
+                    },
+                    "securityAlertPolicy": {
+                      "type": "Microsoft.Sql/managedInstances/securityAlertPolicies",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
+                      "properties": {
+                        "disabledAlerts": "[parameters('disabledAlerts')]",
+                        "emailAccountAdmins": "[parameters('emailAccountAdmins')]",
+                        "emailAddresses": "[parameters('emailAddresses')]",
+                        "retentionDays": "[parameters('retentionDays')]",
+                        "state": "[parameters('state')]",
+                        "storageAccountAccessKey": "[if(not(empty(parameters('storageAccountResourceId'))), listKeys('storageAccount', '2025-01-01').keys[0].value, null())]",
+                        "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), reference('storageAccount').primaryEndpoints.blob, null())]"
+                      },
+                      "dependsOn": [
+                        "storageAccount"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed security alert policy."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed security alert policy."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/securityAlertPolicies', parameters('managedInstanceName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed security alert policy."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_vulnerabilityAssessment": {
+              "condition": "[and(not(empty(parameters('vulnerabilityAssessment'))), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-VulnAssessm', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[parameters('vulnerabilityAssessment').name]"
+                  },
+                  "recurringScans": {
+                    "value": "[tryGet(parameters('vulnerabilityAssessment'), 'recurringScans')]"
+                  },
+                  "storageAccountResourceId": {
+                    "value": "[parameters('vulnerabilityAssessment').storageAccountResourceId]"
+                  },
+                  "useStorageAccountAccessKey": {
+                    "value": "[tryGet(parameters('vulnerabilityAssessment'), 'useStorageAccountAccessKey')]"
+                  },
+                  "createStorageRoleAssignment": {
+                    "value": "[tryGet(parameters('vulnerabilityAssessment'), 'createStorageRoleAssignment')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "12298650531394545608"
+                    },
+                    "name": "SQL Managed Instance Vulnerability Assessments",
+                    "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the vulnerability assessment."
+                      }
+                    },
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "recurringScans": {
+                      "type": "object",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01#properties/properties/properties/recurringScans"
+                        },
+                        "description": "Optional. The recurring scans configuration."
+                      },
+                      "nullable": true
+                    },
+                    "storageAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A blob storage to hold the scan results."
+                      }
+                    },
+                    "useStorageAccountAccessKey": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Use Access Key to access the storage account. The storage account cannot be behind a firewall or virtual network. If an access key is not used, the SQL MI system assigned managed identity must be assigned the Storage Blob Data Contributor role on the storage account."
+                      }
+                    },
+                    "createStorageRoleAssignment": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "managedInstance": {
+                      "existing": true,
+                      "type": "Microsoft.Sql/managedInstances",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[parameters('managedInstanceName')]"
+                    },
+                    "storageAccount": {
+                      "existing": true,
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2025-01-01",
+                      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+                      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+                    },
+                    "vulnerabilityAssessment": {
+                      "type": "Microsoft.Sql/managedInstances/vulnerabilityAssessments",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
+                      "properties": {
+                        "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
+                        "storageAccountAccessKey": "[if(parameters('useStorageAccountAccessKey'), listKeys('storageAccount', '2025-01-01').keys[0].value, null())]",
+                        "recurringScans": "[parameters('recurringScans')]"
+                      }
+                    },
+                    "storageAccount_sbdc_rbac": {
+                      "condition": "[and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment'))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-sbdc-rbac', parameters('managedInstanceName'))]",
+                      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "storageAccountName": {
+                            "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+                          },
+                          "managedInstanceIdentityPrincipalId": {
+                            "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.41.2.15936",
+                              "templateHash": "4126646800164140540"
+                            }
+                          },
+                          "parameters": {
+                            "storageAccountName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Storage account name."
+                              }
+                            },
+                            "managedInstanceIdentityPrincipalId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Managed Identity Principal ID."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+                              "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+                              "properties": {
+                                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                                "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                                "principalType": "ServicePrincipal"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "managedInstance"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed vulnerability assessment."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed vulnerability assessment."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/vulnerabilityAssessments', parameters('managedInstanceName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed vulnerability assessment."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance",
+                "managedInstance_securityAlertPolicy"
+              ]
+            },
+            "managedInstance_keys": {
+              "copy": {
+                "name": "managedInstance_keys",
+                "count": "[length(coalesce(parameters('keys'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-Key-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('keys'), createArray())[copyIndex()].name]"
+                  },
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "serverKeyType": {
+                    "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'serverKeyType')]"
+                  },
+                  "uri": {
+                    "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'uri')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "18312138112237665965"
+                    },
+                    "name": "SQL Managed Instance Keys",
+                    "description": "This module deploys a SQL Managed Instance Key."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+                      }
+                    },
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "serverKeyType": {
+                      "type": "string",
+                      "defaultValue": "ServiceManaged",
+                      "allowedValues": [
+                        "AzureKeyVault",
+                        "ServiceManaged"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+                      }
+                    },
+                    "uri": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "splittedKeyUri": "[split(coalesce(parameters('uri'), ''), '/')]",
+                    "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+                  },
+                  "resources": {
+                    "managedInstance": {
+                      "existing": true,
+                      "type": "Microsoft.Sql/managedInstances",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[parameters('managedInstanceName')]"
+                    },
+                    "key": {
+                      "type": "Microsoft.Sql/managedInstances/keys",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
+                      "properties": {
+                        "serverKeyType": "[parameters('serverKeyType')]",
+                        "uri": "[parameters('uri')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed managed instance key."
+                      },
+                      "value": "[if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed managed instance key."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/keys', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed managed instance key."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_encryptionProtector": {
+              "condition": "[not(empty(parameters('encryptionProtector')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-EncryProtector', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "serverKeyName": {
+                    "value": "[parameters('encryptionProtector').serverKeyName]"
+                  },
+                  "serverKeyType": {
+                    "value": "[tryGet(parameters('encryptionProtector'), 'serverKeyType')]"
+                  },
+                  "autoRotationEnabled": {
+                    "value": "[coalesce(tryGet(parameters('encryptionProtector'), 'autoRotationEnabled'), true())]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "10573490259222834033"
+                    },
+                    "name": "SQL Managed Instance Encryption Protector",
+                    "description": "This module deploys a SQL Managed Instance Encryption Protector."
+                  },
+                  "parameters": {
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "serverKeyName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the SQL managed instance key."
+                      }
+                    },
+                    "serverKeyType": {
+                      "type": "string",
+                      "defaultValue": "ServiceManaged",
+                      "allowedValues": [
+                        "AzureKeyVault",
+                        "ServiceManaged"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+                      }
+                    },
+                    "autoRotationEnabled": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Key auto rotation opt-in flag."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Sql/managedInstances/encryptionProtector",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'current')]",
+                      "properties": {
+                        "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
+                        "serverKeyName": "[parameters('serverKeyName')]",
+                        "serverKeyType": "[parameters('serverKeyType')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed managed instance encryption protector."
+                      },
+                      "value": "current"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed managed instance encryption protector."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/encryptionProtector', parameters('managedInstanceName'), 'current')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed managed instance encryption protector."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance",
+                "managedInstance_keys"
+              ]
+            },
+            "managedInstance_administrator": {
+              "condition": "[not(empty(parameters('aadAdministrator')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-Admin', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "login": {
+                    "value": "[parameters('aadAdministrator').login]"
+                  },
+                  "sid": {
+                    "value": "[parameters('aadAdministrator').sid]"
+                  },
+                  "tenantId": {
+                    "value": "[tryGet(parameters('aadAdministrator'), 'tenantId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "6371338607081372119"
+                    },
+                    "name": "SQL Managed Instance Administrators",
+                    "description": "This module deploys a SQL Managed Instance Administrator."
+                  },
+                  "parameters": {
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "login": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Login name of the managed instance administrator."
+                      }
+                    },
+                    "sid": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. SID (object ID) of the managed instance administrator."
+                      }
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tenant ID of the managed instance administrator."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "managedInstance": {
+                      "existing": true,
+                      "type": "Microsoft.Sql/managedInstances",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[parameters('managedInstanceName')]"
+                    },
+                    "administrator": {
+                      "type": "Microsoft.Sql/managedInstances/administrators",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'ActiveDirectory')]",
+                      "properties": {
+                        "administratorType": "ActiveDirectory",
+                        "login": "[parameters('login')]",
+                        "sid": "[parameters('sid')]",
+                        "tenantId": "[parameters('tenantId')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed managed instance administrator."
+                      },
+                      "value": "ActiveDirectory"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed managed instance administrator."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/administrators', parameters('managedInstanceName'), 'ActiveDirectory')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed managed instance administrator."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
+            },
+            "managedInstance_azureADOnlyAuthentication": {
+              "condition": "[not(equals(parameters('azureADOnlyAuthentication'), null()))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-SqlMi-AADOnlyAuth', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "managedInstanceName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "azureADOnlyAuthentication": {
+                    "value": "[parameters('azureADOnlyAuthentication')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.41.2.15936",
+                      "templateHash": "15898147382137887167"
+                    },
+                    "name": "SQL Managed Instance Azure AD Only Authentications",
+                    "description": "This module deploys a SQL Managed Instance Azure AD Only Authentication setting."
+                  },
+                  "parameters": {
+                    "managedInstanceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "azureADOnlyAuthentication": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether Azure Active Directory-only authentication is enabled."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Sql/managedInstances/azureADOnlyAuthentications",
+                      "apiVersion": "2024-05-01-preview",
+                      "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'Default')]",
+                      "properties": {
+                        "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the deployed Azure AD Only Authentication resource."
+                      },
+                      "value": "Default"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the deployed Azure AD Only Authentication resource."
+                      },
+                      "value": "[resourceId('Microsoft.Sql/managedInstances/azureADOnlyAuthentications', parameters('managedInstanceName'), 'Default')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group of the deployed Azure AD Only Authentication resource."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "managedInstance",
+                "managedInstance_administrator"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed managed instance."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed managed instance."
+              },
+              "value": "[resourceId('Microsoft.Sql/managedInstances', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed managed instance."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "systemAssignedMIPrincipalId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The principal ID of the system assigned identity."
+              },
+              "value": "[tryGet(tryGet(reference('managedInstance', '2024-05-01-preview', 'full'), 'identity'), 'principalId')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('managedInstance', '2024-05-01-preview', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-nestedDependencies', uniqueString(deployment().name, parameters('resourceLocation'))))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    }
+  ]
+}

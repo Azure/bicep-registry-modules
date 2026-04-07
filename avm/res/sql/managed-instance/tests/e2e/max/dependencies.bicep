@@ -437,3 +437,6 @@ output keyVaultKeyName string = keyVault::key.name
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVault.name
+
+@description('The name of the created Managed Identity.')
+output managedIdentityName string = managedIdentity.name
