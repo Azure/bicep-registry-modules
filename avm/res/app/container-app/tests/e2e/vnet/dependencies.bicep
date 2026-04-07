@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Environment to create.')
 param managedEnvironmentName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-07-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' = {
   name: managedEnvironmentName
   location: location
   properties: {

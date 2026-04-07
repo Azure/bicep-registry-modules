@@ -29,7 +29,7 @@ param radiusServerAddress string?
 param radiusServerRootCertificates array = []
 
 @description('Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers.')
-param radiusServers array = []
+param radiusServers resourceInput<'Microsoft.Network/vpnServerConfigurations@2025-05-01'>.properties.radiusServers = []
 
 @description('Conditional. The RADIUS server secret. Required if configuring a single RADIUS server.')
 @secure()
@@ -60,7 +60,7 @@ param vpnClientRootCertificates array = []
 param vpnProtocols array = []
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/vpnServerConfigurations@2023-11-01'>.tags?
+param tags resourceInput<'Microsoft.Network/vpnServerConfigurations@2025-05-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -70,7 +70,7 @@ param lock lockType?
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-vpnserverconfiguration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -91,7 +91,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' = {
+resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -124,13 +124,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
         publicCertData: serverRoot.publicCertData
       }
     ]
-    radiusServers: [
-      for server in (radiusServers) ?? []: {
-        radiusServerAddress: server.radiusServerAddress
-        radiusServerScore: server.radiusServerScore
-        radiusServerSecret: server.radiusServerSecret
-      }
-    ]
+    radiusServers: radiusServers
     radiusServerSecret: radiusServerSecret
     vpnAuthenticationTypes: vpnAuthenticationTypes
     vpnClientIpsecPolicies: [
@@ -212,5 +206,5 @@ type vpnClientIpsecPoliciesType = {
   saDataSizeKilobytes: int?
 
   @description('Optional. The lifetime of the SA in seconds. Required if using IKEv2.')
-  salfetimeSeconds: int?
+  saLifeTimeSeconds: int?
 }

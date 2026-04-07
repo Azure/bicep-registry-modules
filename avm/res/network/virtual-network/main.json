@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1472786377929745029"
+      "templateHash": "5336160335774819315"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -672,6 +672,17 @@
       "metadata": {
         "description": "Optional. Indicates if VM protection is enabled for all the subnets in the virtual network."
       }
+    },
+    "enablePrivateEndpointVNetPolicies": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Basic",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints."
+      }
     }
   },
   "variables": {
@@ -727,7 +738,8 @@
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]",
-        "enableVmProtection": "[parameters('enableVmProtection')]"
+        "enableVmProtection": "[parameters('enableVmProtection')]",
+        "privateEndpointVNetPolicies": "[parameters('enablePrivateEndpointVNetPolicies')]"
       }
     },
     "virtualNetwork_lock": {
