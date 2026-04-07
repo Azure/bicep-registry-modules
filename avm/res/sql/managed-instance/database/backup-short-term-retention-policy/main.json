@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3476613659229782501"
+      "version": "0.42.1.51946",
+      "templateHash": "14134768044338355216"
     },
     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
