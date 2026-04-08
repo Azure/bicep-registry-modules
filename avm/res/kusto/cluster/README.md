@@ -280,6 +280,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     sku: 'Standard_E2ads_v5'
     // Non-required parameters
     enableDiskEncryption: true
+    enablePublicNetworkAccess: false
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -312,6 +313,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "enableDiskEncryption": {
       "value": true
     },
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -338,6 +342,7 @@ param name = 'kcmin0001'
 param sku = 'Standard_E2ads_v5'
 // Non-required parameters
 param enableDiskEncryption = true
+param enablePublicNetworkAccess = false
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
