@@ -1,5 +1,8 @@
 metadata name = 'Azure Security Center (Defender for Cloud)'
-metadata description = 'This module deploys an Azure Security Center (Defender for Cloud) Configuration.'
+metadata description = '''This module deploys an Azure Security Center (Defender for Cloud) Configuration.
+
+For the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.
+'''
 
 targetScope = 'subscription'
 

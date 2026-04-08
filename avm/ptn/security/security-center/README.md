@@ -2,6 +2,9 @@
 
 This module deploys an Azure Security Center (Defender for Cloud) Configuration.
 
+For the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.
+
+
 You can reference the module as follows:
 ```bicep
 module securityCenter 'br/public:avm/ptn/security/security-center:<version>' = {

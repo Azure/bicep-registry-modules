@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "7515787211303134970"
+      "templateHash": "17057590766616848553"
     },
     "name": "Azure Security Center (Defender for Cloud)",
-    "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration."
+    "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.\n\nFor the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.\n"
   },
   "definitions": {
     "defenderPlanType": {
