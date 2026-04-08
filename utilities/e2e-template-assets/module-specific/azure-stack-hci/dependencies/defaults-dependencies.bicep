@@ -75,7 +75,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     imageReferenceId: hciHostImageReferenceId
     hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
-    hostVMSize: 'Standard_E48bds_v5'
+    hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
