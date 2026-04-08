@@ -122,7 +122,17 @@ module iotSecuritySolutions 'modules/iotSecuritySolutions.bicep' = if (!empty(io
   name: '${uniqueString(deployment().name)}-ASC-IotSecuritySolutions'
   scope: resourceGroup(ioTSecuritySolutionProperties!.resourceGroup)
   params: {
-    ioTSecuritySolutionProperties: ioTSecuritySolutionProperties!
+    name: ioTSecuritySolutionProperties!.name
+    ioTSecuritySolutionProperties: {
+      workspace: ioTSecuritySolutionProperties!.workspace
+      displayName: ioTSecuritySolutionProperties!.displayName
+      status: ioTSecuritySolutionProperties!.?status
+      export: ioTSecuritySolutionProperties!.?export
+      disabledDataSources: ioTSecuritySolutionProperties!.?disabledDataSources
+      iotHubs: ioTSecuritySolutionProperties!.iotHubs
+      userDefinedResources: ioTSecuritySolutionProperties!.?userDefinedResources
+      recommendationsConfiguration: ioTSecuritySolutionProperties!.?recommendationsConfiguration
+    }
   }
 }
 
@@ -298,6 +308,9 @@ type defenderPlanType = {
 
 @description('The type for IoT Security Solution data.')
 type ioTSecuritySolutionType = {
+  @description('Required. The name of the IoT Security Solution.')
+  name: string
+
   @description('Required. The resource group to deploy the IoT Security Solution into.')
   resourceGroup: string
 

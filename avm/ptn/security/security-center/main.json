@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "15646826541890823948"
+      "templateHash": "7515787211303134970"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration."
@@ -69,6 +69,12 @@
     "ioTSecuritySolutionType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the IoT Security Solution."
+          }
+        },
         "resourceGroup": {
           "type": "string",
           "metadata": {
@@ -1217,45 +1223,90 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[parameters('ioTSecuritySolutionProperties').name]"
+          },
           "ioTSecuritySolutionProperties": {
-            "value": "[parameters('ioTSecuritySolutionProperties')]"
+            "value": {
+              "workspace": "[parameters('ioTSecuritySolutionProperties').workspace]",
+              "displayName": "[parameters('ioTSecuritySolutionProperties').displayName]",
+              "status": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'status')]",
+              "export": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'export')]",
+              "disabledDataSources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'disabledDataSources')]",
+              "iotHubs": "[parameters('ioTSecuritySolutionProperties').iotHubs]",
+              "userDefinedResources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'userDefinedResources')]",
+              "recommendationsConfiguration": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'recommendationsConfiguration')]"
+            }
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "9349448578721660443"
+              "templateHash": "12522133032823585948"
             }
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the IoT Security Solution."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for the resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for the resource."
+              }
+            },
             "ioTSecuritySolutionProperties": {
               "type": "object",
               "metadata": {
-                "description": "Required. Security Solution data."
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties"
+                },
+                "description": "Required. Security Solution properties."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "iotSecuritySolutions": {
               "type": "Microsoft.Security/iotSecuritySolutions",
               "apiVersion": "2019-08-01",
-              "name": "iotSecuritySolutions",
-              "properties": {
-                "workspace": "[parameters('ioTSecuritySolutionProperties').workspace]",
-                "displayName": "[parameters('ioTSecuritySolutionProperties').displayName]",
-                "status": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'status')]",
-                "export": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'export')]",
-                "disabledDataSources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'disabledDataSources')]",
-                "iotHubs": "[parameters('ioTSecuritySolutionProperties').iotHubs]",
-                "userDefinedResources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'userDefinedResources')]",
-                "recommendationsConfiguration": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'recommendationsConfiguration')]"
-              }
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": "[parameters('ioTSecuritySolutionProperties')]"
             }
-          ]
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the IoT Security Solution."
+              },
+              "value": "[resourceId('Microsoft.Security/iotSecuritySolutions', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the IoT Security Solution."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
         }
       }
     },

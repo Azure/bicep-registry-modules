@@ -1550,6 +1550,7 @@ Security Solution data for IoT.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-iotsecuritysolutionpropertiesdisplayname) | string | The display name of the IoT Security Solution. |
 | [`iotHubs`](#parameter-iotsecuritysolutionpropertiesiothubs) | array | IoT Hub resource IDs. |
+| [`name`](#parameter-iotsecuritysolutionpropertiesname) | string | The name of the IoT Security Solution. |
 | [`resourceGroup`](#parameter-iotsecuritysolutionpropertiesresourcegroup) | string | The resource group to deploy the IoT Security Solution into. |
 | [`workspace`](#parameter-iotsecuritysolutionpropertiesworkspace) | string | The workspace resource ID. |
 
@@ -1576,6 +1577,13 @@ IoT Hub resource IDs.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `ioTSecuritySolutionProperties.name`
+
+The name of the IoT Security Solution.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `ioTSecuritySolutionProperties.resourceGroup`
 

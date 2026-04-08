@@ -16,6 +16,7 @@ param serviceShort string = 'sascwaf'
 #disable-diagnostics no-unused-params
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
+
 // ============ //
 // Dependencies //
 // ============ //
