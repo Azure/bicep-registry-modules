@@ -1,6 +1,10 @@
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param deploymentUserPassword string
+
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM.')
+param hciHostImageReferenceId string = ''
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -57,6 +61,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
+    imageReferenceId: hciHostImageReferenceId
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword

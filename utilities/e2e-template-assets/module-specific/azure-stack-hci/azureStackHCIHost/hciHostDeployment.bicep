@@ -13,6 +13,9 @@ param switchlessStorageConfig bool = false
 @description('Optional. The download URL for a pre-built Azure Stack HCI VHDX. When provided, skips the slower ISO download and conversion. Uses the Jumpstart public blob storage by default.')
 param hciVHDXDownloadURL string = ''
 
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image. When provided, the host VM is deployed from this image (with Hyper-V, AD DS, DHCP roles pre-installed) instead of the marketplace image.')
+param imageReferenceId string = ''
+
 @description('Optional. The download URL for the Azure Stack HCI ISO.')
 param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 
@@ -253,12 +256,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
       ]
     }
     storageProfile: {
-      imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-g2'
-        version: 'latest'
-      }
+      imageReference: !empty(imageReferenceId)
+        ? { id: imageReferenceId }
+        : {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-g2'
+            version: 'latest'
+          }
       osDisk: {
         createOption: 'FromImage'
         diskSizeGB: 1024
