@@ -82,7 +82,7 @@ param autoScaleMax int = 3
   'IPv6'
   'DualStack'
 ])
-@description('Optional. Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6).')
+@description('Optional. Indicates what public IP type to create - IPv4, or DualStack (both IPv4 and IPv6, default).')
 param publicIPType string = 'DualStack'
 
 @description('Optional. Enable/disable public network access. If disabled, only private endpoint connection is allowed to the Kusto Cluster.')

@@ -1072,7 +1072,7 @@ param tier = 'Standard'
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicIPType`](#parameter-publiciptype) | string | Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6). |
+| [`publicIPType`](#parameter-publiciptype) | string | Indicates what public IP type to create - IPv4, or DualStack (both IPv4 and IPv6, default). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tier`](#parameter-tier) | string | The tier of the Kusto Cluster. |
@@ -2273,7 +2273,7 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `publicIPType`
 
-Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6).
+Indicates what public IP type to create - IPv4, or DualStack (both IPv4 and IPv6, default).
 
 - Required: No
 - Type: string
