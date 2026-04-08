@@ -212,9 +212,9 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-// host VM disks
+// host VM disks - only needed when NOT using a pre-baked gallery image
 resource disks 'Microsoft.Compute/disks@2023-10-02' = [
-  for diskNum in range(1, hciNodeCount): {
+  for diskNum in range(1, hciNodeCount): if (empty(imageReferenceId)) {
     name: '${diskNamePrefix}${string(diskNum)}'
     location: location
     sku: {
@@ -227,6 +227,19 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
         createOption: 'Empty'
       }
     }
+  }
+]
+
+// Data disk configuration for the host VM (only when NOT using a pre-baked gallery image)
+var dataDiskConfig = [
+  for diskNum in range(1, hciNodeCount): {
+    lun: diskNum
+    createOption: 'Attach'
+    caching: 'ReadOnly'
+    managedDisk: {
+      id: disks[diskNum - 1].id
+    }
+    deleteOption: 'Delete'
   }
 ]
 
@@ -266,23 +279,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           }
       osDisk: {
         createOption: 'FromImage'
-        diskSizeGB: 1024
+        diskSizeGB: empty(imageReferenceId) ? 1024 : null
         deleteOption: 'Delete'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
-      dataDisks: [
-        for diskNum in range(1, hciNodeCount): {
-          lun: diskNum
-          createOption: 'Attach'
-          caching: 'ReadOnly'
-          managedDisk: {
-            id: disks[diskNum - 1].id
-          }
-          deleteOption: 'Delete'
-        }
-      ]
+      dataDisks: empty(imageReferenceId) ? dataDiskConfig : []
       //diskControllerType: 'NVMe'
     }
     osProfile: {
