@@ -249,7 +249,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
       version: 1
     }
     publicIPType: publicIPType
-    publicNetworkAccess: (enablePublicNetworkAccess && empty(privateEndpoints)) ? 'Enabled' : 'Disabled'
+    publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
     restrictOutboundNetworkAccess: enableRestrictOutboundNetworkAccess ? 'Enabled' : 'Disabled'
     trustedExternalTenants: trustedExternalTenants
     virtualClusterGraduationProperties: virtualClusterGraduationProperties
