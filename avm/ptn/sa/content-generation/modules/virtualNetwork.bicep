@@ -221,7 +221,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
 ]
 
 // Create VNet and subnets using AVM Virtual Network module
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.2' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.0' = {
   name: take('avm.res.network.virtual-network.${vnetName}', 64)
   params: {
     name: vnetName

@@ -381,7 +381,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName

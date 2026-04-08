@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the module with the minimum set of required parameters, designed for Sandbox environments.'
+metadata name = 'Defaults configuration with default parameter values'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -13,7 +13,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.contentgeneration-${servi
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'scgsb'
+param serviceShort string = 'scgmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 15)
-      location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
     }
   }
