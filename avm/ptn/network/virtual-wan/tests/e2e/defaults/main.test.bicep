@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.vpnserverconfiguration-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'vscmin'
+param serviceShort string = 'nvwanmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -50,29 +41,27 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}VPNConfig'
-      aadAudience: '11111111-1234-4321-1234-111111111111'
-      aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-      aadTenant: '${environment().authentication.loginEndpoint}11111111-1111-1111-1111-111111111111'
-      p2sConfigurationPolicyGroups: [
+      virtualWanParameters: {
+        virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
+      }
+      virtualHubParameters: [
         {
-          userVPNPolicyGroupName: 'DefaultGroup'
-          policymembers: [
-            {
-              name: 'UserGroup1'
-              attributeType: 'AADGroupId'
-              attributeValue: '11111111-1111-2222-3333-111111111111'
-            }
-          ]
-          priority: '0'
-          isDefault: 'true'
+          hubAddressPrefix: '10.0.0.0/24'
+          hubLocation: resourceLocation
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
+          p2sVpnParameters: {
+            deployP2SVpnGateway: false
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: false
+          }
+          expressRouteParameters: {
+            deployExpressRouteGateway: false
+          }
+          secureHubParameters: {
+            deploySecureHub: false
+          }
         }
-      ]
-      vpnAuthenticationTypes: [
-        'AAD'
-      ]
-      vpnProtocols: [
-        'OpenVPN'
       ]
     }
   }
