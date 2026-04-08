@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Removed the requirement for privateEndpoints to be empty to allow public network access.
+
+### Breaking Changes
+
+- None
+
+
 ## 0.10.0
 
 ### Changes
