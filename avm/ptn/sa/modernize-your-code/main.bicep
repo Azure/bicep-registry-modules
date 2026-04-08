@@ -93,8 +93,8 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelName string = 'gpt-4o'
 
 @minLength(1)
-@description('Optional. Set the Image tag. Defaults to latest_2025-11-10_599.')
-param imageVersion string = 'latest'
+@description('Optional. Set the Image tag. Defaults to latest_2026-04-08_877.')
+param imageVersion string = 'latest_2026-04-08_877'
 
 @description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.')
 param acrName string = 'cmsacontainerreg.azurecr.io'
