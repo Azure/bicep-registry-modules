@@ -230,17 +230,29 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
   }
 ]
 
-// Data disk configuration for the host VM (only when NOT using a pre-baked gallery image)
+// Data disk configuration for the host VM
+// When using marketplace image: attach separately created managed disks
+// When using gallery image: create from the image's baked-in data disks
 var dataDiskConfig = [
-  for diskNum in range(1, hciNodeCount): {
-    lun: diskNum
-    createOption: 'Attach'
-    caching: 'ReadOnly'
-    managedDisk: {
-      id: disks[diskNum - 1].id
-    }
-    deleteOption: 'Delete'
-  }
+  for diskNum in range(1, hciNodeCount): empty(imageReferenceId)
+    ? {
+        lun: diskNum
+        createOption: 'Attach'
+        caching: 'ReadOnly'
+        managedDisk: {
+          id: disks[diskNum - 1].id
+        }
+        deleteOption: 'Delete'
+      }
+    : {
+        lun: diskNum
+        createOption: 'FromImage'
+        caching: 'ReadOnly'
+        deleteOption: 'Delete'
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+      }
 ]
 
 // Azure Stack HCI Host VM -
@@ -285,7 +297,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           storageAccountType: 'Premium_LRS'
         }
       }
-      dataDisks: empty(imageReferenceId) ? dataDiskConfig : []
+      dataDisks: dataDiskConfig
       //diskControllerType: 'NVMe'
     }
     osProfile: {
