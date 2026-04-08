@@ -23,7 +23,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'swedencentral'
 
 // General resources
 // =================
