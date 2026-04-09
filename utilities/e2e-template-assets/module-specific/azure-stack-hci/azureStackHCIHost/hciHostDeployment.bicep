@@ -235,30 +235,33 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
 // When using gallery image: Azure requires ALL data disk LUNs captured in the gallery image to be
 //   present in the deployment. Image 2.0.x was captured with 4 disks at LUNs 0-3, so we must specify
 //   all 4 here. Stage3 formats all raw disks and copies VHDX to hciNodeCount mount points.
-var dataDiskConfig = empty(imageReferenceId)
-  ? [
-      for diskNum in range(1, hciNodeCount): {
-        lun: diskNum
-        createOption: 'Attach'
-        caching: 'ReadOnly'
-        managedDisk: {
-          id: disks[diskNum - 1].id
-        }
-        deleteOption: 'Delete'
-      }
-    ]
-  : [
-      for lun in range(0, 4): {
-        lun: lun
-        createOption: 'Empty'
-        diskSizeGB: 1024
-        caching: 'ReadOnly'
-        deleteOption: 'Delete'
-        managedDisk: {
-          storageAccountType: 'Premium_LRS'
-        }
-      }
-    ]
+// Note: Bicep BCP138 - for-expressions cannot be used directly in ternary; use two vars instead.
+var marketplaceDataDisks = [
+  for diskNum in range(1, hciNodeCount): {
+    lun: diskNum
+    createOption: 'Attach'
+    caching: 'ReadOnly'
+    managedDisk: {
+      id: disks[diskNum - 1].id
+    }
+    deleteOption: 'Delete'
+  }
+]
+
+var galleryDataDisks = [
+  for lun in range(0, 4): {
+    lun: lun
+    createOption: 'Empty'
+    diskSizeGB: 1024
+    caching: 'ReadOnly'
+    deleteOption: 'Delete'
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+  }
+]
+
+var dataDiskConfig = empty(imageReferenceId) ? marketplaceDataDisks : galleryDataDisks
 
 // Azure Stack HCI Host VM -
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
