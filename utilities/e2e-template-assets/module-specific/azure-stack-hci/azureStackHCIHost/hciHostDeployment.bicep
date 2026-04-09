@@ -150,7 +150,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-// create a mintenance configuration for the Azure Stack HCI Host VM and proxy server
+// create a maintenance configuration for the Azure Stack HCI Host VM and proxy server
 resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
   location: location
   name: maintenanceConfigurationName ?? ''
@@ -209,9 +209,9 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-// host VM disks
+// host VM disks - 4 disks to match gallery image (LUNs 0,1,2,3)
 resource disks 'Microsoft.Compute/disks@2023-10-02' = [
-  for diskNum in range(1, hciNodeCount): {
+  for diskNum in range(0, 4): {
     name: '${diskNamePrefix}${string(diskNum)}'
     location: location
     sku: {
@@ -227,7 +227,7 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
   }
 ]
 
-// Azure Stack HCI Host VM -
+// Azure Stack HCI Host VM
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   location: location
   name: virtualMachineName
@@ -254,7 +254,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     storageProfile: {
       imageReference: {
-        id:'/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/hci-gallery-euap-rg/providers/Microsoft.Compute/galleries/hciHostGallery/images/hci-host-image/versions/2.0.1'
+        id: '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/hci-gallery-euap-rg/providers/Microsoft.Compute/galleries/hciHostGallery/images/hci-host-image/versions/2.0.1'
         //publisher: 'MicrosoftWindowsServer'
         //offer: 'WindowsServer'
         //sku: '2022-datacenter-g2'
@@ -268,18 +268,18 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           storageAccountType: 'Premium_LRS'
         }
       }
+      // 4 data disks attached at LUNs 0,1,2,3 to match gallery image
       dataDisks: [
-        for diskNum in range(1, hciNodeCount): {
+        for diskNum in range(0, 4): {
           lun: diskNum
           createOption: 'Attach'
           caching: 'ReadOnly'
           managedDisk: {
-            id: disks[diskNum - 1].id
+            id: disks[diskNum].id
           }
           deleteOption: 'Delete'
         }
       ]
-      //diskControllerType: 'NVMe'
     }
     osProfile: {
       adminPassword: localAdminPassword
@@ -321,6 +321,7 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // ====================//
 
 // installs roles and features required for Azure Stack HCI Host VM
+// REMOVED - runCommand1, runCommand2, wait1 are baked into the gallery image
 /*
 resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
@@ -360,12 +361,14 @@ resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [runCommand2]
 }
+*/
 
 // ======================//
 // Configure Host Roles  //
 // ======================//
 
-// initializes and mounts data disks, downloads HCI VHDX, configures the Azure Stack HCI Host VM with AD, routing, DNS, DHCP
+// mounts data disks, copies VHDX from gallery image, configures AD, routing, DNS, DHCP
+// VHDX download skipped - already pre-baked in gallery image at C:\ISOs\hci_os.vhdx
 resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -377,11 +380,11 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: hciVHDXDownloadURL
+        value: ''              // empty - VHDX already in gallery image
       }
       {
         name: 'hciISODownloadURL'
-        value: hciISODownloadURL
+        value: ''              // empty - VHDX already in gallery image
       }
       {
         name: 'hciNodeCount'
@@ -390,10 +393,9 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [wait1]
 }
 
-// schedules a reboot of the VM
+// schedules a reboot of the VM after AD DS install
 resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -407,58 +409,7 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [runCommand3]
 }
 
-// initiates a wait for the VM to reboot - polls AD health instead of fixed sleep
-resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  location: location
-  kind: 'AzurePowerShell'
-  name: '${waitDeploymentScriptPrefixName}-wait2'
-  properties: {
-    azPowerShellVersion: '3.0'
-    scriptContent: 'Start-Sleep -Seconds 180 # Wait for VM reboot and AD DS initialization; AD health verified by next runCommand on the VM'
-    retentionInterval: 'PT6H'
-  }
-  dependsOn: [
-    runCommand4
-  ]
-}
-*/
-resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
-  parent: vm
-  location: location
-  name: 'runCommand3'
-  properties: {
-    source: {
-      script: loadTextContent('./scripts/hciHostStage3.ps1')
-    }
-    parameters: [
-      {
-        name: 'hciVHDXDownloadURL'
-        value: ''                    // empty - VHDX already on disk
-      }
-      {
-        name: 'hciISODownloadURL'
-        value: ''                    // empty - VHDX already on disk
-      }
-      {
-        name: 'hciNodeCount'
-        value: string(hciNodeCount)
-      }
-    ]
-    treatFailureAsDeploymentFailure: true
-  }
-}
-resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
-  parent: vm
-  location: location
-  name: 'runCommand4'
-  properties: {
-    source: {
-      script: loadTextContent('./scripts/hciHostStage4.ps1')
-    }
-    treatFailureAsDeploymentFailure: true
-  }
-  dependsOn: [runCommand3]
-}
+// wait for VM to reboot and AD DS to initialize
 resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   location: location
   kind: 'AzurePowerShell'
@@ -470,6 +421,7 @@ resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [runCommand4]
 }
+
 // ===========================//
 // Create HCI Node Guest VMs  //
 // ===========================//
@@ -510,7 +462,7 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
 
 // ================================================//
 // Initialize Arc on HCI Node VMs and AD for HCI  //
-// ==============================================//
+// ===============================================//
 
 // prepares AD for ASHCI onboarding, initiates Arc onboarding of HCI node VMs
 resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
