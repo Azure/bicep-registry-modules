@@ -209,23 +209,8 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-// host VM disks - 4 disks to match gallery image (LUNs 0,1,2,3)
-resource disks 'Microsoft.Compute/disks@2023-10-02' = [
-  for diskNum in range(0, 4): {
-    name: '${diskNamePrefix}${string(diskNum)}'
-    location: location
-    sku: {
-      name: 'Premium_LRS'
-    }
-    properties: {
-      diskSizeGB: 2048
-      networkAccessPolicy: 'DenyAll'
-      creationData: {
-        createOption: 'Empty'
-      }
-    }
-  }
-]
+// Note: No separate disk resources needed
+// Data disks are baked into the gallery image at LUNs 0,1,2,3 (each 1024GB)
 
 // Azure Stack HCI Host VM
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
@@ -268,16 +253,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           storageAccountType: 'Premium_LRS'
         }
       }
-      // 4 data disks attached at LUNs 0,1,2,3 to match gallery image
+      // Data disks come from gallery image - LUNs 0,1,2,3 each 1024GB
       dataDisks: [
         for diskNum in range(0, 4): {
           lun: diskNum
-          createOption: 'Attach'
+          createOption: 'FromImage'
           caching: 'ReadOnly'
-          managedDisk: {
-            id: disks[diskNum].id
-          }
           deleteOption: 'Delete'
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
         }
       ]
     }
@@ -320,7 +305,6 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // Install Host Roles  //
 // ====================//
 
-// installs roles and features required for Azure Stack HCI Host VM
 // REMOVED - runCommand1, runCommand2, wait1 are baked into the gallery image
 /*
 resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
