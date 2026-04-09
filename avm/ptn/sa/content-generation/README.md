@@ -136,7 +136,6 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -159,9 +158,6 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -182,7 +178,6 @@ using 'br/public:avm/ptn/sa/content-generation:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -211,7 +206,6 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
-    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -249,9 +243,6 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     "enableScalability": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "solutionName": {
       "value": "<solutionName>"
     }
@@ -277,7 +268,6 @@ param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
-param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
