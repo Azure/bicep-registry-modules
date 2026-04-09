@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "12652668202913129408"
+      "templateHash": "4942914537887172216"
     }
   },
   "parameters": {
@@ -162,9 +162,9 @@
       },
       {
         "name": "galleryDataDisks",
-        "count": "[length(range(0, 4))]",
+        "count": "[length(range(0, parameters('hciNodeCount')))]",
         "input": {
-          "lun": "[range(0, 4)[copyIndex('galleryDataDisks')]]",
+          "lun": "[range(0, parameters('hciNodeCount'))[copyIndex('galleryDataDisks')]]",
           "createOption": "Empty",
           "diskSizeGB": 1024,
           "caching": "ReadOnly",
