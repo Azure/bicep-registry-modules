@@ -355,7 +355,7 @@ type securityAutomationType = {
   location: string?
 
   @description('Optional. Tags for the automation resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Security/iotSecuritySolutions@2019-08-01'>.tags?
 
   @description('Optional. Description of the security automation.')
   description: string?
