@@ -1,6 +1,4 @@
-﻿# TODO: no try, try outside
-
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [string]$IP, # or name
     [Parameter(Mandatory = $false)]
@@ -56,9 +54,9 @@ try {
             throw 'Arc server connection failed'
         }
 
-        # TODO: work around
-        Get-NetAdapter StorageA | Disable-NetAdapter -Confirm:$false
-        Get-NetAdapter StorageB | Disable-NetAdapter -Confirm:$false
+        # Disable storage adapters temporarily to avoid interference during Arc registration
+        Get-NetAdapter -Name StorageA -ErrorAction SilentlyContinue | Disable-NetAdapter -Confirm:$false
+        Get-NetAdapter -Name StorageB -ErrorAction SilentlyContinue | Disable-NetAdapter -Confirm:$false
 
         Write-Output 'PUT edge device resource to install mandatory extensions'
         $uri = "https://management.azure.com/subscriptions/$Using:SubscriptionId/resourceGroups/$Using:ResourceGroupName/providers/Microsoft.HybridCompute/machines/$machineName/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
@@ -76,7 +74,7 @@ try {
         $waitInterval = 60
         $maxWaitCount = 30
         $ready = $false
-        for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
+        for ($waitCount = 0; !$ready -and $waitCount -lt $maxWaitCount; $waitCount++) {
             Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId | Out-Null
             $secureToken = (Get-AzAccessToken -AsSecureString).Token
             $token = [Net.NetworkCredential]::new('', $secureToken).Password
@@ -97,12 +95,11 @@ try {
             }
         }
 
-        # TODO: work around
-        Get-NetAdapter StorageA | Enable-NetAdapter -Confirm:$false
-        Get-NetAdapter StorageB | Enable-NetAdapter -Confirm:$false
+        # Re-enable storage adapters after Arc registration
+        Get-NetAdapter -Name StorageA -ErrorAction SilentlyContinue | Enable-NetAdapter -Confirm:$false
+        Get-NetAdapter -Name StorageB -ErrorAction SilentlyContinue | Enable-NetAdapter -Confirm:$false
 
         if (!$ready) {
-            # TODO: is this part still retryable? unless arc can be connected multiple times
             throw 'Edge device resource is not ready after 30 minutes.'
         }
     }
