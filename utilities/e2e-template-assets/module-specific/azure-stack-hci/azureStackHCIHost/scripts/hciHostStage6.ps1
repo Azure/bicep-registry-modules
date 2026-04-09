@@ -92,7 +92,9 @@ If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Registe
 If (!(Get-PackageProvider -Name Nuget -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -Confirm:$false -Force }
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
-Install-Module Az
+Install-Module Az.Accounts -Force -AllowClobber -Repository PSGallery
+Install-Module Az.ConnectedMachine -Force -AllowClobber -Repository PSGallery
+Install-Module Az.Resources -Force -AllowClobber -Repository PSGallery
 
 # get an access token for the VM MSI, which has been granted rights and will be used for the HCI Arc Initialization
 log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
@@ -335,8 +337,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
     If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module Az.Resources
-    Install-Module -Name AzsHCI.ARCinstaller # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
+    Install-Module Az.Resources -Force -AllowClobber
+    Install-Module -Name AzsHCI.ARCinstaller -Force -AllowClobber # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
     #wait for bootstrap service to be reachable
