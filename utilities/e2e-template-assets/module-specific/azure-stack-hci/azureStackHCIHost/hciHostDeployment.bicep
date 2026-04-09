@@ -232,9 +232,8 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
 
 // Data disk configuration for the host VM
 // When using marketplace image: attach separately created managed disks (hciNodeCount disks, 1-based LUNs)
-// When using gallery image: Azure requires ALL data disk LUNs captured in the gallery image to be
-//   present in the deployment. Image 2.0.x was captured with 4 disks at LUNs 0-3, so we must specify
-//   all 4 here. Stage3 formats all raw disks and copies VHDX to hciNodeCount mount points.
+// When using gallery image (2.0.2+): OS-only image with no captured data disks. Create hciNodeCount
+//   fresh empty disks at LUNs 0..(hciNodeCount-1). Stage3 formats RAW disks and copies VHDX.
 // Note: Bicep BCP138 - for-expressions cannot be used directly in ternary; use two vars instead.
 var marketplaceDataDisks = [
   for diskNum in range(1, hciNodeCount): {
@@ -249,7 +248,7 @@ var marketplaceDataDisks = [
 ]
 
 var galleryDataDisks = [
-  for lun in range(0, 4): {
+  for lun in range(0, hciNodeCount): {
     lun: lun
     createOption: 'Empty'
     diskSizeGB: 1024
