@@ -232,7 +232,8 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
 
 // Data disk configuration for the host VM
 // When using marketplace image: attach separately created managed disks
-// When using gallery image: create from the image's baked-in data disks
+// When using gallery image: create fresh empty disks (gallery image data disks are not used - Stage3
+//   formats disks and downloads VHDX regardless, and FromImage would require matching all captured LUNs)
 var dataDiskConfig = [
   for diskNum in range(1, hciNodeCount): empty(imageReferenceId)
     ? {
@@ -246,7 +247,8 @@ var dataDiskConfig = [
       }
     : {
         lun: diskNum
-        createOption: 'FromImage'
+        createOption: 'Empty'
+        diskSizeGB: 1024
         caching: 'ReadOnly'
         deleteOption: 'Delete'
         managedDisk: {
