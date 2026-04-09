@@ -291,8 +291,19 @@ If ($hciVHDXDownloadURL) {
 
     }
 } Else {
-    log 'No download URL provided, cannot continue...'
-    Write-Error 'No download URL provided, cannot continue...' -ErrorAction Stop
+    # No download URL provided - expect VHDX to already exist from pre-baked gallery image
+    log 'No download URL provided - checking for pre-baked VHDX from gallery image...'
+    If (Test-Path 'C:\ISOs\hci_os.vhdx') {
+        log 'Pre-baked VHDX found at C:\ISOs\hci_os.vhdx - proceeding...'
+    } Else {
+        log 'ERROR: No download URL provided AND no pre-baked VHDX found at C:\ISOs\hci_os.vhdx'
+        log 'ERROR: Possible reasons:'
+        log 'ERROR:   1. Gallery image was not built correctly - VHDX was not downloaded during image creation'
+        log 'ERROR:   2. Wrong gallery image version is being used'
+        log 'ERROR:   3. Sysprep wiped C:\ISOs\ during image capture'
+        log 'ERROR: Check the gallery image and rebuild if necessary'
+        Write-Error 'Pre-baked VHDX not found at C:\ISOs\hci_os.vhdx - cannot continue' -ErrorAction Stop
+}
 }
 
 # create mount point directories on C:\

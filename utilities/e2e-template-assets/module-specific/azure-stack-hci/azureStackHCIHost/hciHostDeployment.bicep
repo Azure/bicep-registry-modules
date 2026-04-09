@@ -254,10 +254,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-g2'
-        version: 'latest'
+        id:'/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/hci-gallery-euap-rg/providers/Microsoft.Compute/galleries/hciHostGallery/images/hci-host-image/versions/2.0.1'
+        //publisher: 'MicrosoftWindowsServer'
+        //offer: 'WindowsServer'
+        //sku: '2022-datacenter-g2'
+        //version: 'latest'
       }
       osDisk: {
         createOption: 'FromImage'
@@ -320,6 +321,7 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // ====================//
 
 // installs roles and features required for Azure Stack HCI Host VM
+/*
 resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -419,7 +421,55 @@ resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     runCommand4
   ]
 }
-
+*/
+resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage3.ps1')
+    }
+    parameters: [
+      {
+        name: 'hciVHDXDownloadURL'
+        value: ''                    // empty - VHDX already on disk
+      }
+      {
+        name: 'hciISODownloadURL'
+        value: ''                    // empty - VHDX already on disk
+      }
+      {
+        name: 'hciNodeCount'
+        value: string(hciNodeCount)
+      }
+    ]
+    treatFailureAsDeploymentFailure: true
+  }
+}
+resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand4'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage4.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [runCommand3]
+}
+resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  location: location
+  kind: 'AzurePowerShell'
+  name: '${waitDeploymentScriptPrefixName}-wait2'
+  properties: {
+    azPowerShellVersion: '3.0'
+    scriptContent: 'Start-Sleep -Seconds 180'
+    retentionInterval: 'PT6H'
+  }
+  dependsOn: [runCommand4]
+}
 // ===========================//
 // Create HCI Node Guest VMs  //
 // ===========================//
