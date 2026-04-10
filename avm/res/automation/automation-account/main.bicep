@@ -254,7 +254,7 @@ module automationAccount_modules 'module/main.bicep' = [
   }
 ]
 
-module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
+module automationAccount_powershell72modules 'powershell72-module/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
@@ -268,7 +268,7 @@ module automationAccount_powershell72modules 'powershell72-modules/main.bicep' =
   }
 ]
 
-module automationAccount_python3packages 'python3-packages/main.bicep' = [
+module automationAccount_python3packages 'python3-package/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
     params: {
@@ -281,7 +281,7 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
   }
 ]
 
-module automationAccount_python2packages 'python2-packages/main.bicep' = [
+module automationAccount_python2packages 'python2-package/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
     params: {
