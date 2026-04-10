@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
           cacheSize: 50
           autotuneEnabled: true
           libraryRequirements: {
-            content: 'numpy==1.21.0\npandas==1.3.0'
+            content: 'numpy==1.26.4\npandas==2.2.3'
             filename: 'requirements.txt'
           }
           customLibraries: [
