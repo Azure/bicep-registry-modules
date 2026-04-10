@@ -352,8 +352,15 @@ Set-Service -Name RemoteAccess -StartupType Automatic -PassThru | Start-Service
 log 'Checking whether AD is installed...'
 If (!(Test-ADConnection)) {
     log 'AD is not installed, installing...'
-    Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\ADDSDeployment\ADDSDeployment.psd1'
 
+    # Install AD DS role if not present - removed from image before sysprep
+    if ((Get-WindowsFeature -Name AD-Domain-Services).InstallState -ne 'Installed') {
+        log 'Installing AD DS role...'
+        Add-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+        log 'AD DS role installed successfully'
+    }
+
+    Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\ADDSDeployment\ADDSDeployment.psd1'
     $ADRecoveryPassword = ConvertTo-SecureString -Force -AsPlainText (New-Guid).guid
     Install-ADDSForest -DomainName hci.local -DomainNetbiosName hci -ForestMode Default -DomainMode Default -InstallDns:$true -SafeModeAdministratorPassword $ADRecoveryPassword -NoRebootOnCompletion:$true -Force:$true
 } Else {
