@@ -381,7 +381,7 @@ module redis_firewallRules 'firewall-rule/main.bicep' = [
   }
 ]
 
-module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicationObject)) {
+module redis_geoReplication 'linked-server/main.bicep' = if (!empty(geoReplicationObject)) {
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
     redisCacheName: redis.name
