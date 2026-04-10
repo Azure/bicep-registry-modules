@@ -1,15 +1,11 @@
 targetScope = 'subscription'
 
-metadata name = 'Using default parameter set'
-metadata description = 'This instance deploys the module with default parameters.'
+metadata name = 'Using all parameters'
+metadata description = 'This instance deploys the module with all parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-security.azureSecurityCenter-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -17,6 +13,7 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sascmax'
 
+#disable-diagnostics no-unused-params
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -24,19 +21,9 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
+  name: 'dep-${namePrefix}-security.azureSecurityCenter-${serviceShort}-rg'
   location: resourceLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    location: resourceLocation
-  }
 }
 
 // ============== //
@@ -49,12 +36,106 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
+      defenderPlans: [
+        {
+          name: 'VirtualMachines'
+          pricingTier: 'Standard'
+          subPlan: 'P2'
+        }
+        {
+          name: 'SqlServers'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'AppServices'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'StorageAccounts'
+          pricingTier: 'Standard'
+          subPlan: 'DefenderForStorageV2'
+          extensions: [
+            {
+              name: 'OnUploadMalwareScanning'
+              isEnabled: 'True'
+              additionalExtensionProperties: {
+                CapGBPerMonthPerStorageAccount: 5000
+              }
+            }
+            {
+              name: 'SensitiveDataDiscovery'
+              isEnabled: 'True'
+            }
+          ]
+        }
+        {
+          name: 'SqlServerVirtualMachines'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'KeyVaults'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'Arm'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'OpenSourceRelationalDatabases'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'Containers'
+          pricingTier: 'Standard'
+          extensions: [
+            {
+              name: 'ContainerRegistriesVulnerabilityAssessments'
+              isEnabled: 'True'
+            }
+          ]
+        }
+        {
+          name: 'CosmosDbs'
+          pricingTier: 'Standard'
+        }
+        {
+          name: 'CloudPosture'
+          pricingTier: 'Standard'
+          extensions: [
+            {
+              name: 'AgentlessVmScanning'
+              isEnabled: 'True'
+            }
+            {
+              name: 'AgentlessDiscoveryForKubernetes'
+              isEnabled: 'True'
+            }
+            {
+              name: 'SensitiveDataDiscovery'
+              isEnabled: 'True'
+            }
+            {
+              name: 'ContainerRegistriesVulnerabilityAssessments'
+              isEnabled: 'True'
+            }
+            {
+              name: 'EntraPermissionsManagement'
+              isEnabled: 'True'
+            }
+          ]
+        }
+        {
+          name: 'Api'
+          pricingTier: 'Standard'
+          subPlan: 'P1'
+        }
+      ]
       securityContactProperties: {
         emails: 'foo@contoso.com'
         isEnabled: true
         notificationsByRole: {
           roles: [
-            'owner'
+            'Owner'
           ]
           state: 'On'
         }
@@ -69,26 +150,6 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      deviceSecurityGroupProperties: {}
-      ioTSecuritySolutionProperties: {}
-      appServicesPricingTier: 'Standard'
-      dnsPricingTier: 'Standard'
-      armPricingTier: 'Standard'
-      containerRegistryPricingTier: 'Standard'
-      containersTier: 'Standard'
-      cosmosDbsTier: 'Standard'
-      keyVaultsPricingTier: 'Standard'
-      kubernetesServicePricingTier: 'Standard'
-      openSourceRelationalDatabasesTier: 'Standard'
-      sqlServersPricingTier: 'Standard'
-      sqlServerVirtualMachinesPricingTier: 'Standard'
-      storageAccountsPricingTier: 'Standard'
-      storageAccountsMalwareScanningSettings: {
-        onUploadMalwareScanningEnabled: 'True'
-        capGBPerMonthPerStorageAccount: 5000
-        sensitiveDataDiscoveryEnabled: 'True'
-      }
-      virtualMachinesPricingTier: 'Standard'
     }
   }
 ]
