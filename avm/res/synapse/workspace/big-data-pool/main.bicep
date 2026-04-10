@@ -180,6 +180,23 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
 // Azure does not allow setting libraryRequirements or customLibraries during initial pool creation.
 // A nested deployment (module) is used to update the pool with libraries after creation, since
 // ARM does not permit the same resource to be declared twice within a single template.
+
+// Synapse's internal library management pool (systemreservedpool-librarymanagement) needs
+// time to initialize after a new Big Data Pool is created. Without this wait, the library
+// installation Spark job fails with a transient WASB 500 error.
+resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+  dependsOn: [bigDataPool]
+  name: '${deployment().name}-libraryWait'
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'Start-Sleep -Seconds 120'
+  }
+}
+
 module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
   name: '${deployment().name}-libraries'
   params: {
@@ -204,7 +221,7 @@ module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements !=
     libraryRequirements: libraryRequirements
     customLibraries: customLibraries
   }
-  dependsOn: [bigDataPool]
+  dependsOn: [bigDataPool_libraryWait]
 }
 
 resource bigDataPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
