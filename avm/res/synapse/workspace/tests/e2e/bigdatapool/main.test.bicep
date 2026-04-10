@@ -75,14 +75,6 @@ module testDeployment '../../../main.bicep' = [
             content: 'numpy==1.26.4\npandas==2.2.3'
             filename: 'requirements.txt'
           }
-          customLibraries: [
-            {
-              name: 'customlib'
-              type: 'whl'
-              containerName: 'libs'
-              path: 'libs/customlib-1.0.0-py3-none-any.whl'
-            }
-          ]
         }
         {
           name: 'dep${namePrefix}bdp02'
