@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Network/p2svpnGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/p2svpnGateways)</li></ul> |
+| `Microsoft.Network/p2svpnGateways` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/p2svpnGateways)</li></ul> |
 
 ## Usage examples
 
@@ -148,11 +148,22 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     virtualHubResourceId: '<virtualHubResourceId>'
     // Non-required parameters
     associatedRouteTableName: 'noneRouteTable'
+    configurationPolicyGroupAssociationResourceIds: [
+      '<configurationPolicyGroupResourceId>'
+    ]
     customDnsServers: [
       '10.50.10.50'
       '10.50.50.50'
     ]
     enableInternetSecurity: false
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '256'
+        pool: {
+          id: 'testIpamPoolResourceId'
+        }
+      }
+    ]
     isRoutingPreferenceInternet: false
     location: '<location>'
     p2SConnectionConfigurationsName: 'p2sConnectionConfig'
@@ -193,6 +204,11 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     "associatedRouteTableName": {
       "value": "noneRouteTable"
     },
+    "configurationPolicyGroupAssociationResourceIds": {
+      "value": [
+        "<configurationPolicyGroupResourceId>"
+      ]
+    },
     "customDnsServers": {
       "value": [
         "10.50.10.50",
@@ -201,6 +217,16 @@ module p2sVpnGateway 'br/public:avm/res/network/p2s-vpn-gateway:<version>' = {
     },
     "enableInternetSecurity": {
       "value": false
+    },
+    "ipamPoolPrefixAllocations": {
+      "value": [
+        {
+          "numberOfIpAddresses": "256",
+          "pool": {
+            "id": "testIpamPoolResourceId"
+          }
+        }
+      ]
     },
     "isRoutingPreferenceInternet": {
       "value": false
@@ -250,11 +276,22 @@ param name = 'npvgmaxp2sVpnGw'
 param virtualHubResourceId = '<virtualHubResourceId>'
 // Non-required parameters
 param associatedRouteTableName = 'noneRouteTable'
+param configurationPolicyGroupAssociationResourceIds = [
+  '<configurationPolicyGroupResourceId>'
+]
 param customDnsServers = [
   '10.50.10.50'
   '10.50.50.50'
 ]
 param enableInternetSecurity = false
+param ipamPoolPrefixAllocations = [
+  {
+    numberOfIpAddresses: '256'
+    pool: {
+      id: 'testIpamPoolResourceId'
+    }
+  }
+]
 param isRoutingPreferenceInternet = false
 param location = '<location>'
 p2SConnectionConfigurationsName: 'p2sConnectionConfig'
@@ -407,10 +444,12 @@ param vpnServerConfigurationResourceId = '<vpnServerConfigurationResourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`configurationPolicyGroupAssociationResourceIds`](#parameter-configurationpolicygroupassociationresourceids) | array | The resource IDs of configuration policy groups to associate with the P2S connection configuration. |
 | [`customDnsServers`](#parameter-customdnsservers) | array | The custom DNS servers for the P2S VPN Gateway. |
 | [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable/Disable Internet Security; "Propagate Default Route". |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundRouteMapResourceId`](#parameter-inboundroutemapresourceid) | string | The Resource ID of the inbound route map. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | A list of IPAM Pool prefix allocations for the VPN Client Address Pool. |
 | [`isRoutingPreferenceInternet`](#parameter-isroutingpreferenceinternet) | bool | The routing preference for the P2S VPN Gateway, Internet or Microsoft network. |
 | [`location`](#parameter-location) | string | Location where all resources will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -452,6 +491,13 @@ The name of the associated route table. Required if deploying in a Secure Virtua
   ]
   ```
 
+### Parameter: `configurationPolicyGroupAssociationResourceIds`
+
+The resource IDs of configuration policy groups to associate with the P2S connection configuration.
+
+- Required: No
+- Type: array
+
 ### Parameter: `customDnsServers`
 
 The custom DNS servers for the P2S VPN Gateway.
@@ -480,6 +526,47 @@ Enable/Disable usage telemetry for module.
 The Resource ID of the inbound route map.
 
 - Required: No
+- Type: string
+
+### Parameter: `ipamPoolPrefixAllocations`
+
+A list of IPAM Pool prefix allocations for the VPN Client Address Pool.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`numberOfIpAddresses`](#parameter-ipampoolprefixallocationsnumberofipaddresses) | string | The number of IP addresses to allocate. |
+| [`pool`](#parameter-ipampoolprefixallocationspool) | object | The associated Azure IPAM Pool resource. |
+
+### Parameter: `ipamPoolPrefixAllocations.numberOfIpAddresses`
+
+The number of IP addresses to allocate.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipamPoolPrefixAllocations.pool`
+
+The associated Azure IPAM Pool resource.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-ipampoolprefixallocationspoolid) | string | The resource ID of the Azure IPAM Pool resource. |
+
+### Parameter: `ipamPoolPrefixAllocations.pool.id`
+
+The resource ID of the Azure IPAM Pool resource.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `isRoutingPreferenceInternet`

@@ -411,40 +411,32 @@ var pimRoleAssignmentsResourceGroupNotSelf = filter(
 
 // UMI Role Assignments filtering and splitting
 var umiRoleAssignmentsSubscription = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    item.?roleAssignments ?? [],
-    assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+  for (item, i) in userAssignedManagedIdentities: map(
+    filter(item.?roleAssignments ?? [], assignment => !contains(assignment.relativeScope, '/resourceGroups/')),
+    assignment => union(assignment, { identityIndex: i })
   )
 ]
 
 var umiRoleAssignmentsSubscriptionFlattened = flatten(umiRoleAssignmentsSubscription)
 
 var umiRoleAssignmentsResourceGroups = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    item.?roleAssignments ?? [],
-    assignment => contains(assignment.relativeScope, '/resourceGroups/')
+  for (item, i) in userAssignedManagedIdentities: map(
+    filter(item.?roleAssignments ?? [], assignment => contains(assignment.relativeScope, '/resourceGroups/')),
+    assignment => union(assignment, { identityIndex: i })
   )
 ]
 
 var umiRoleAssignmentsResourceGroupsFlattened = flatten(umiRoleAssignmentsResourceGroups)
 
-var umiRoleAssignmentsResourceGroupSelf = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    umiRoleAssignmentsResourceGroupsFlattened,
-    assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
-  )
-]
+var umiRoleAssignmentsResourceGroupSelfFlattened = filter(
+  umiRoleAssignmentsResourceGroupsFlattened,
+  assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
 
-var umiRoleAssignmentsResourceGroupSelfFlattened = flatten(umiRoleAssignmentsResourceGroupSelf)
-
-var umiRoleAssignmentsResourceGroupNotSelf = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    umiRoleAssignmentsResourceGroupsFlattened,
-    assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
-  )
-]
-
-var umiRoleAssignmentsResourceGroupNotSelfFlattened = flatten(umiRoleAssignmentsResourceGroupNotSelf)
+var umiRoleAssignmentsResourceGroupNotSelfFlattened = filter(
+  umiRoleAssignmentsResourceGroupsFlattened,
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
 
 // Check hubNetworkResourceId to see if it's a virtual WAN connection instead of normal virtual network peering
 var virtualHubResourceIdChecked = (!empty(hubNetworkResourceId) && contains(
@@ -1036,12 +1028,12 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-
 module createLzUMIRoleAssignmentsSub 'br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
       location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       description: assignment.?description
@@ -1069,11 +1061,11 @@ module createLzUMIRoleAssignmentsSub 'br/public:avm/res/authorization/role-assig
 module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupSelfFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       description: assignment.?description
@@ -1101,11 +1093,11 @@ module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/res/authorization/role-
 module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
       description: assignment.?description

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/azure-firewall/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Allow disabling availability zones for regions that do not support them (e.g. UK West) by passing `availabilityZones: []`. The `zones` property is now conditionally set to `null` when the array is empty. Fixes [#6757](https://github.com/Azure/bicep-registry-modules/issues/6757).
+
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### New Features
