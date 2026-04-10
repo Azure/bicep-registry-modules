@@ -193,7 +193,7 @@ resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-
     retentionInterval: 'PT1H'
     azPowerShellVersion: '11.0'
     cleanupPreference: 'Always'
-    scriptContent: 'Start-Sleep -Seconds 120'
+    scriptContent: 'Start-Sleep -Seconds 300'
   }
   tags: {
     SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
