@@ -290,6 +290,8 @@ If ($hciVHDXDownloadURL) {
         log 'HCI VHDX already exists, skipping conversion...'
 
     }
+} ElseIf (Test-Path 'c:\ISOs\hci_os.vhdx') {
+    log 'HCI VHDX already present (pre-baked image), skipping download...'
 } Else {
     log 'No download URL provided, cannot continue...'
     Write-Error 'No download URL provided, cannot continue...' -ErrorAction Stop
