@@ -195,6 +195,9 @@ resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-
     cleanupPreference: 'Always'
     scriptContent: 'Start-Sleep -Seconds 120'
   }
+  tags: {
+    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+  }
 }
 
 module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
