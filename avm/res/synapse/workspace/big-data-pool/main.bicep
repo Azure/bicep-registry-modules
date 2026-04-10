@@ -178,50 +178,29 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
 }
 
 // Azure does not allow setting libraryRequirements or customLibraries during initial pool creation.
-// A second deployment targeting the same resource is required to install libraries after creation.
-resource bigDataPool_libraries 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
-  name: name
-  parent: workspace
-  location: location
-  tags: tags
-  properties: {
+// A nested deployment (module) is used to update the pool with libraries after creation, since
+// ARM does not permit the same resource to be declared twice within a single template.
+module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+  name: '${deployment().name}-libraries'
+  params: {
+    workspaceName: workspaceName
+    name: name
+    location: location
+    tags: tags
     nodeSizeFamily: nodeSizeFamily
     nodeSize: nodeSize
-    autoScale: !empty(autoScale)
-      ? {
-          enabled: true
-          minNodeCount: autoScale.?minNodeCount
-          maxNodeCount: autoScale.?maxNodeCount
-        }
-      : {
-          enabled: false
-        }
-    nodeCount: empty(autoScale) ? nodeCount : null
-    dynamicExecutorAllocation: !empty(dynamicExecutorAllocation)
-      ? {
-          enabled: true
-          minExecutors: dynamicExecutorAllocation.?minExecutors
-          maxExecutors: dynamicExecutorAllocation.?maxExecutors
-        }
-      : {
-          enabled: false
-        }
-    autoPause: autoPauseDelayInMinutes != -1
-      ? {
-          enabled: true
-          delayInMinutes: autoPauseDelayInMinutes < 5 ? 5 : autoPauseDelayInMinutes // Minimum 5 minutes
-        }
-      : {
-          enabled: false
-        }
+    autoScale: autoScale
+    nodeCount: nodeCount
+    dynamicExecutorAllocation: dynamicExecutorAllocation
+    autoPauseDelayInMinutes: autoPauseDelayInMinutes
     sparkVersion: sparkVersion
     sparkConfigProperties: sparkConfigProperties
     sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
     cacheSize: cacheSize
-    defaultSparkLogFolder: !empty(defaultSparkLogFolder) ? defaultSparkLogFolder : null
-    isAutotuneEnabled: autotuneEnabled
-    isComputeIsolationEnabled: computeIsolationEnabled
-    sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+    defaultSparkLogFolder: defaultSparkLogFolder
+    autotuneEnabled: autotuneEnabled
+    computeIsolationEnabled: computeIsolationEnabled
+    sparkEventsFolder: sparkEventsFolder
     libraryRequirements: libraryRequirements
     customLibraries: customLibraries
   }
