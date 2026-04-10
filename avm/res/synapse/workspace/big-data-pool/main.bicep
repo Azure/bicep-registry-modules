@@ -81,6 +81,12 @@ param computeIsolationEnabled bool = false
 @description('Optional. The Spark events folder.')
 param sparkEventsFolder string?
 
+@description('Optional. Library version requirements.')
+param libraryRequirements libraryRequirementsType?
+
+@description('Optional. List of custom libraries/packages associated with the spark pool.')
+param customLibraries customLibraryType[]?
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -168,6 +174,8 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
     isAutotuneEnabled: autotuneEnabled
     isComputeIsolationEnabled: computeIsolationEnabled
     sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+    libraryRequirements: libraryRequirements
+    customLibraries: customLibraries
   }
 }
 
@@ -279,4 +287,30 @@ type sparkConfigPropertiesType = {
 
   @description('Required. The configuration filename.')
   filename: string
+}
+
+@export()
+@description('The synapse workspace Big Data Pools library version requirements.')
+type libraryRequirementsType = {
+  @description('Required. The library requirements (e.g. contents of a requirements.txt file).')
+  content: string
+
+  @description('Required. The filename of the library requirements file.')
+  filename: string
+}
+
+@export()
+@description('The synapse workspace Big Data Pools custom library/package info.')
+type customLibraryType = {
+  @description('Optional. Storage blob container name.')
+  containerName: string?
+
+  @description('Optional. Name of the library.')
+  name: string?
+
+  @description('Optional. Storage blob path of library.')
+  path: string?
+
+  @description('Optional. Type of the library (e.g. \'whl\', \'jar\').')
+  type: string?
 }

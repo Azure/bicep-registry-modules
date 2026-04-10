@@ -368,9 +368,11 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       autoPauseDelayInMinutes: bigDataPool.?autoPauseDelayInMinutes
       autoScale: bigDataPool.?autoScale
       cacheSize: bigDataPool.?cacheSize
+      customLibraries: bigDataPool.?customLibraries
       dynamicExecutorAllocation: bigDataPool.?dynamicExecutorAllocation
       autotuneEnabled: bigDataPool.?autotuneEnabled
       computeIsolationEnabled: bigDataPool.?computeIsolationEnabled
+      libraryRequirements: bigDataPool.?libraryRequirements
       nodeCount: bigDataPool.?nodeCount
       nodeSize: bigDataPool.nodeSize
       nodeSizeFamily: bigDataPool.nodeSizeFamily
@@ -578,7 +580,7 @@ type firewallRuleType = {
   endIpAddress: string
 }
 
-import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType } from 'big-data-pool/main.bicep'
+import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType, libraryRequirementsType, customLibraryType } from 'big-data-pool/main.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @export()
 @description('The synapse workspace Big Data Pool definition.')
@@ -627,6 +629,12 @@ type bigDataPoolType = {
 
   @description('Optional. The Spark events folder.')
   sparkEventsFolder: string?
+
+  @description('Optional. Library version requirements.')
+  libraryRequirements: libraryRequirementsType?
+
+  @description('Optional. List of custom libraries/packages associated with the spark pool.')
+  customLibraries: customLibraryType[]?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?

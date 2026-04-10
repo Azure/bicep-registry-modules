@@ -26,7 +26,7 @@ var enforcedLocation = 'northeurope'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -71,6 +71,18 @@ module testDeployment '../../../main.bicep' = [
           sessionLevelPackagesEnabled: true
           cacheSize: 50
           autotuneEnabled: true
+          libraryRequirements: {
+            content: 'numpy==1.21.0\npandas==1.3.0'
+            filename: 'requirements.txt'
+          }
+          customLibraries: [
+            {
+              name: 'customlib'
+              type: 'whl'
+              containerName: 'libs'
+              path: 'libs/customlib-1.0.0-py3-none-any.whl'
+            }
+          ]
         }
         {
           name: 'dep${namePrefix}bdp02'
