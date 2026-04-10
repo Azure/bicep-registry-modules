@@ -209,8 +209,23 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-// Note: No separate disk resources needed
-// Data disks are baked into the gallery image at LUNs 0,1,2,3 (each 1024GB)
+resource disks 'Microsoft.Compute/disks@2023-10-02' = [
+  for diskNum in range(0, hciNodeCount): {
+    name: '${diskNamePrefix}${string(diskNum)}'
+    location: location
+    sku: {
+      name: 'Premium_LRS'
+    }
+    properties: {
+      diskSizeGB: 2048
+      networkAccessPolicy: 'DenyAll'
+      creationData: {
+        createOption: 'Empty'
+      }
+    }
+  }
+]
+
 
 // Azure Stack HCI Host VM
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
@@ -239,7 +254,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     storageProfile: {
       imageReference: {
-        id: '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/hci-gallery-euap-rg/providers/Microsoft.Compute/galleries/hciHostGallery/images/hci-host-image/versions/2.0.1'
+        id: '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/prithjit-rg-hci-image-builder/providers/Microsoft.Compute/galleries/avmhcivmimagegallery/images/hci-host-image/versions/1.0.0'
         //publisher: 'MicrosoftWindowsServer'
         //offer: 'WindowsServer'
         //sku: '2022-datacenter-g2'
@@ -253,18 +268,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           storageAccountType: 'Premium_LRS'
         }
       }
-      // Data disks come from gallery image - LUNs 0,1,2,3 each 1024GB
       dataDisks: [
-        for diskNum in range(0, 4): {
+        for diskNum in range(0, hciNodeCount): {
           lun: diskNum
-          createOption: 'FromImage'
+          createOption: 'Attach'
           caching: 'ReadOnly'
-          deleteOption: 'Delete'
           managedDisk: {
-            storageAccountType: 'Premium_LRS'
+            id: disks[diskNum].id
           }
-        }
-      ]
+          deleteOption: 'Delete'
+      }
+    ]
     }
     osProfile: {
       adminPassword: localAdminPassword
