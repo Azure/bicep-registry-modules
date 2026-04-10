@@ -174,9 +174,58 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
     isAutotuneEnabled: autotuneEnabled
     isComputeIsolationEnabled: computeIsolationEnabled
     sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+  }
+}
+
+// Azure does not allow setting libraryRequirements or customLibraries during initial pool creation.
+// A second deployment targeting the same resource is required to install libraries after creation.
+resource bigDataPool_libraries 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+  name: name
+  parent: workspace
+  location: location
+  tags: tags
+  properties: {
+    nodeSizeFamily: nodeSizeFamily
+    nodeSize: nodeSize
+    autoScale: !empty(autoScale)
+      ? {
+          enabled: true
+          minNodeCount: autoScale.?minNodeCount
+          maxNodeCount: autoScale.?maxNodeCount
+        }
+      : {
+          enabled: false
+        }
+    nodeCount: empty(autoScale) ? nodeCount : null
+    dynamicExecutorAllocation: !empty(dynamicExecutorAllocation)
+      ? {
+          enabled: true
+          minExecutors: dynamicExecutorAllocation.?minExecutors
+          maxExecutors: dynamicExecutorAllocation.?maxExecutors
+        }
+      : {
+          enabled: false
+        }
+    autoPause: autoPauseDelayInMinutes != -1
+      ? {
+          enabled: true
+          delayInMinutes: autoPauseDelayInMinutes < 5 ? 5 : autoPauseDelayInMinutes // Minimum 5 minutes
+        }
+      : {
+          enabled: false
+        }
+    sparkVersion: sparkVersion
+    sparkConfigProperties: sparkConfigProperties
+    sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
+    cacheSize: cacheSize
+    defaultSparkLogFolder: !empty(defaultSparkLogFolder) ? defaultSparkLogFolder : null
+    isAutotuneEnabled: autotuneEnabled
+    isComputeIsolationEnabled: computeIsolationEnabled
+    sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
     libraryRequirements: libraryRequirements
     customLibraries: customLibraries
   }
+  dependsOn: [bigDataPool]
 }
 
 resource bigDataPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
