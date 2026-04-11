@@ -123,17 +123,37 @@ Set-AdAccountPassword -Identity $deploymentUsername -NewPassword (ConvertTo-Secu
 # initialize arc on hci nodes
 log 'Initializing Azure Arc on HCI nodes...'
 
-# wait for VMs to reach 'Running' state
-log 'Checking that VMs are running...'
+# Wait for VMs to reach Running state WITH stable heartbeat.
+# The unattend.xml FirstLogonCommands trigger a reboot (shutdown -r -f -t 0) after OOBE.
+# We must wait for VMs to be Running+heartbeat AFTER that reboot, then add a stability buffer
+# to ensure no more pending reboots (e.g., from Hyper-V feature installation) are in flight.
+log 'Waiting for HCI node VMs to reach stable Running state with heartbeat...'
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-while ((Get-VM | Where-Object State -NE 'Running') -and $stopwatch.Elapsed.TotalMinutes -lt 15) {
-    log "Waiting for HCI node VMs to reach 'Running' state. Current state: $((Get-VM) | Select-Object Name,State)..."
-    Start-Sleep -Seconds 30
+$allStable = $false
+while (-not $allStable -and $stopwatch.Elapsed.TotalMinutes -lt 20) {
+    $vms = Get-VM
+    $notReady = $vms | Where-Object { $_.State -ne 'Running' -or ($_.Heartbeat -ne 'OkApplicationsHealthy' -and $_.Heartbeat -ne 'OkApplicationsUnknown') }
+    if ($notReady.Count -eq 0) {
+        log "All VMs Running with heartbeat after $([math]::Round($stopwatch.Elapsed.TotalSeconds))s. Waiting 120s stability buffer to ensure any post-boot reboots complete..."
+        Start-Sleep -Seconds 120
+        # Re-verify stability - if a VM rebooted during the wait, loop again
+        $vms = Get-VM
+        $notReady = $vms | Where-Object { $_.State -ne 'Running' -or ($_.Heartbeat -ne 'OkApplicationsHealthy' -and $_.Heartbeat -ne 'OkApplicationsUnknown') }
+        if ($notReady.Count -eq 0) {
+            $allStable = $true
+            log "All VMs confirmed stable after 120s buffer. Proceeding with Arc initialization."
+        } else {
+            log "VMs rebooted during stability wait ($($notReady | Select-Object Name,State,Heartbeat | Out-String)). Waiting again..."
+        }
+    } else {
+        log "[$([math]::Round($stopwatch.Elapsed.TotalSeconds))s] Waiting for VMs: $($notReady | Select-Object Name,State,Heartbeat | Out-String)"
+        Start-Sleep -Seconds 30
+    }
 }
 
-If ($stopwatch.Elapsed.TotalMinutes -ge 15) {
-    log "HCI node VMs did not reach 'Running' state within 15 minutes. Exiting..."
-    Write-Error "HCI node VMs did not reach 'Running' state within 15 minutes. Exiting..."
+If (-not $allStable) {
+    log "HCI node VMs did not reach stable Running state within 20 minutes. Exiting..."
+    Write-Error "HCI node VMs did not reach stable Running state within 20 minutes. Exiting..."
     Exit 1
 }
 
