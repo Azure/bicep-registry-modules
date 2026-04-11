@@ -44,6 +44,13 @@ Function Test-ADConnection {
 
 $ErrorActionPreference = 'Stop'
 
+# Restart Hyper-V VMMS so it re-enumerates NICs after deployment from a pre-baked gallery image.
+# When Hyper-V is pre-installed and the VM is re-deployed via sysprep, VMMS may have a stale
+# NIC registry and fail with "Sequence contains no matching element" when creating a vSwitch.
+log 'Restarting Hyper-V VMMS to refresh NIC enumeration...'
+Restart-Service vmms -Force -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 15
+
 # Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
 $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
 If (-not $physicalNic) {
