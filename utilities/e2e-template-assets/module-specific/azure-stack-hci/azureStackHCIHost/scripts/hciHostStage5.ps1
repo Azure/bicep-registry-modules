@@ -101,7 +101,7 @@ function New-VMSwitchWithRetry {
             log "VMSwitch '$Name' created on attempt $attempt."
             return
         } catch {
-            log "Attempt $attempt/$MaxRetries: Failed to create VMSwitch '$Name': $_"
+            log "Attempt $attempt/${MaxRetries}: Failed to create VMSwitch '${Name}': $_"
             if ($attempt -lt $MaxRetries) {
                 log "Retrying in 15s..."
                 Start-Sleep -Seconds 15
