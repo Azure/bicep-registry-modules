@@ -361,18 +361,10 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     Install-Module -Name AzsHCI.ARCinstaller -Force -AllowClobber # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
-    #wait for bootstrap service to be reachable
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
-        Start-Sleep -Seconds 30
-    }
-    If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error 'Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting...' -ErrorAction Stop
-    }
+    # NOTE: Port 9098 bootstrap service wait removed - that was only needed for Invoke-AzStackHciArcInitialization
+    # which is no longer used. We connect Arc directly via azcmagent below.
 
     try {
-        # Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
 
         function Install-ModuleIfMissing {
             param(
@@ -455,7 +447,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
-$arcInitializationJobs | Wait-Job -Timeout 1800
+$arcInitializationJobs | Wait-Job -Timeout 3600
 
 # check for failed arc initialization jobs - robust detection of failures and timeouts
 log 'Checking status of Azure Arc initialization jobs...'
