@@ -44,13 +44,24 @@ Function Test-ADConnection {
 
 $ErrorActionPreference = 'Stop'
 
+# Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
+$physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
+If (-not $physicalNic) {
+    $physicalNic = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.InterfaceDescription -notmatch 'Hyper-V Virtual' } | Select-Object -First 1
+}
+If (-not $physicalNic) {
+    Write-Error 'No physical network adapter found. Cannot create external Hyper-V switch.'
+}
+$physicalNicName = $physicalNic.Name
+log "Using physical NIC '$physicalNicName' for external Hyper-V switch"
+
 # create hyperv switches
 log 'Creating Hyper-V switches...'
 $existingSwitches = Get-VMSwitch
 
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $physicalNicName }
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
@@ -61,7 +72,7 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $physicalNicName }
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
