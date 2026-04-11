@@ -44,26 +44,20 @@ Function Test-ADConnection {
 
 $ErrorActionPreference = 'Stop'
 
-# Restart Hyper-V VMMS so it re-enumerates NICs after deployment from a pre-baked gallery image.
-# When Hyper-V is pre-installed and the VM is re-deployed via sysprep, VMMS may have a stale
-# NIC registry and fail with "Sequence contains no matching element" when creating a vSwitch.
-# Use explicit Stop/Wait/Start to ensure VMMS is fully restarted before proceeding.
-log 'Stopping Hyper-V VMMS to refresh NIC enumeration (pre-baked image compatibility)...'
-Stop-Service vmms -Force -ErrorAction SilentlyContinue
-$vmmsStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.TotalSeconds -lt 180) {
-    log "Waiting for VMMS to stop (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStopwatch.Elapsed.TotalSeconds))s)..."
-    Start-Sleep -Seconds 5
-}
-log "VMMS stopped. Starting VMMS..."
-Start-Service vmms
-$vmmsStartWatch = [System.Diagnostics.Stopwatch]::StartNew()
-while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.TotalSeconds -lt 60) {
-    log "Waiting for VMMS to start (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStartWatch.Elapsed.TotalSeconds))s)..."
-    Start-Sleep -Seconds 5
-}
-log "VMMS is running. Waiting 30s for NIC GUID registration to complete..."
-Start-Sleep -Seconds 30
+# Restart Hyper-V VMMS and re-register the Hyper-V protocol binding (vms_pp) on the physical NIC.
+#
+# Root cause of "Sequence contains no matching element" in New-VMSwitch:
+# After sysprep /mode:vm + redeployment, the physical NIC gets a NEW GUID from Azure.
+# VMMS WMI provider (Msvm_ExternalEthernetPort) tracks NICs by GUID.
+# Simply restarting VMMS is NOT enough — the new NIC GUID must be explicitly re-registered
+# by toggling the Hyper-V virtual switch protocol binding (vms_pp) on the new NIC.
+#
+# Fix sequence:
+# 1. Stop VMMS
+# 2. Find physical NIC
+# 3. Disable then re-enable vms_pp binding (forces GUID registration with new NIC identity)
+# 4. Start VMMS
+# 5. Wait for NIC to appear in Msvm_ExternalEthernetPort WMI before creating switch
 
 # Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
 $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
@@ -72,12 +66,65 @@ If (-not $physicalNic) {
 }
 If (-not $physicalNic) {
     Write-Error 'No physical network adapter found. Cannot create external Hyper-V switch.'
+    Exit 1
 }
 $physicalNicName = $physicalNic.Name
-log "Using physical NIC '$physicalNicName' for external Hyper-V switch"
+log "Found physical NIC '$physicalNicName' (GUID: $($physicalNic.InterfaceGuid))"
+
+log 'Stopping Hyper-V VMMS...'
+Stop-Service vmms -Force -ErrorAction SilentlyContinue
+$vmmsStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.TotalSeconds -lt 180) {
+    log "Waiting for VMMS to stop (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStopwatch.Elapsed.TotalSeconds))s)..."
+    Start-Sleep -Seconds 5
+}
+log "VMMS stopped."
+
+# Re-register vms_pp (Hyper-V Extensible Virtual Switch) binding on the physical NIC.
+# This is what makes the NIC visible in VMMS WMI (Msvm_ExternalEthernetPort).
+# The binding may reference the old NIC GUID from the gallery image — reset it.
+log "Re-registering Hyper-V protocol binding (vms_pp) on '$physicalNicName'..."
+Disable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 3
+Enable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+$hvBinding = Get-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+log "vms_pp binding on '$physicalNicName': Enabled=$($hvBinding.Enabled)"
+
+log 'Starting Hyper-V VMMS...'
+Start-Service vmms
+$vmmsStartWatch = [System.Diagnostics.Stopwatch]::StartNew()
+while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.TotalSeconds -lt 60) {
+    log "Waiting for VMMS to start (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStartWatch.Elapsed.TotalSeconds))s)..."
+    Start-Sleep -Seconds 5
+}
+log "VMMS is running."
+
+# Wait for the NIC to appear in VMMS WMI (Msvm_ExternalEthernetPort).
+# New-VMSwitch internally queries this WMI class; if the NIC isn't there yet it throws
+# "Sequence contains no matching element".
+log "Waiting for '$physicalNicName' to appear in VMMS WMI (Msvm_ExternalEthernetPort)..."
+$nicGuidClean = $physicalNic.InterfaceGuid -replace '[{}]', ''
+$wmiStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+$nicInVmms = $false
+while (-not $nicInVmms -and $wmiStopwatch.Elapsed.TotalMinutes -lt 5) {
+    $externalPorts = Get-WmiObject -Namespace 'root/virtualization/v2' -Class 'Msvm_ExternalEthernetPort' -ErrorAction SilentlyContinue
+    $matchedPort = $externalPorts | Where-Object { $_.Name -like "*$nicGuidClean*" -or $_.ElementName -eq $physicalNicName }
+    if ($matchedPort) {
+        $nicInVmms = $true
+        log "NIC '$physicalNicName' is now visible in VMMS WMI (ElementName: $($matchedPort.ElementName)). Elapsed: $([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s"
+    } else {
+        $portNames = ($externalPorts | Select-Object -ExpandProperty ElementName) -join ', '
+        log "[$([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s] VMMS WMI ports visible: '$portNames'. Waiting for '$physicalNicName'..."
+        Start-Sleep -Seconds 10
+    }
+}
+if (-not $nicInVmms) {
+    log "WARNING: NIC not found in VMMS WMI after 5 minutes — attempting switch creation anyway."
+}
+
 
 # create hyperv switches
-log 'Creating Hyper-V switches...'
+log "Creating Hyper-V switches using NIC '$physicalNicName'..."
 $existingSwitches = Get-VMSwitch
 
 # Helper: retry New-VMSwitch up to 5 times with 15s delay.
