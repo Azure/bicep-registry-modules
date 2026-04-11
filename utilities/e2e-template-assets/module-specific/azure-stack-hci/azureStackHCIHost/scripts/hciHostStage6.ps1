@@ -437,18 +437,30 @@ log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes.
 
 $arcInitializationJobs | Wait-Job -Timeout 1800
 
-# check for failed arc initialization jobs
+# check for failed arc initialization jobs - robust detection of failures and timeouts
 log 'Checking status of Azure Arc initialization jobs...'
+$arcFailed = $false
 $arcInitializationJobs | ForEach-Object {
     $job = $_
-    log "[$($job.ComputerName)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
-    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
-        If ($_.Exception -or $_.state -eq 'Failed') {
-            log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
-            Exit 1
-        } Else {
-            log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
+    $jobOutput = $job | Receive-Job -Keep -ErrorAction SilentlyContinue -ErrorVariable jobErrors
+    log "[$($job.Location)] Job state: '$($job.State)'. Output: '$($jobOutput | Out-String)'. Errors: '$($jobErrors | Out-String)'"
 
+    if ($job.State -ne 'Completed') {
+        log "Arc initialization job on '$($job.Location)' did NOT complete successfully (State: '$($job.State)'). This likely means Arc registration failed or timed out inside the VM."
+        $arcFailed = $true
+    } else {
+        # Also check child jobs for failures
+        $failedChildren = Get-Job -Id $job.Id -IncludeChildJob | Where-Object { $_.State -eq 'Failed' }
+        if ($failedChildren) {
+            $childErrors = $failedChildren | Receive-Job -ErrorAction SilentlyContinue -ErrorVariable childJobErrors
+            log "Arc initialization job on '$($job.Location)' has failed child jobs. Errors: '$($childJobErrors | Out-String)'"
+            $arcFailed = $true
         }
     }
+}
+
+if ($arcFailed) {
+    log 'One or more Arc initialization jobs failed or timed out. Exiting...'
+    Write-Error 'One or more Arc initialization jobs failed or timed out. Check logs above for details.' -ErrorAction Stop
+    Exit 1
 }
