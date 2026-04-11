@@ -47,9 +47,23 @@ $ErrorActionPreference = 'Stop'
 # Restart Hyper-V VMMS so it re-enumerates NICs after deployment from a pre-baked gallery image.
 # When Hyper-V is pre-installed and the VM is re-deployed via sysprep, VMMS may have a stale
 # NIC registry and fail with "Sequence contains no matching element" when creating a vSwitch.
-log 'Restarting Hyper-V VMMS to refresh NIC enumeration...'
-Restart-Service vmms -Force -ErrorAction SilentlyContinue
-Start-Sleep -Seconds 15
+# Use explicit Stop/Wait/Start to ensure VMMS is fully restarted before proceeding.
+log 'Stopping Hyper-V VMMS to refresh NIC enumeration (pre-baked image compatibility)...'
+Stop-Service vmms -Force -ErrorAction SilentlyContinue
+$vmmsStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.TotalSeconds -lt 180) {
+    log "Waiting for VMMS to stop (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStopwatch.Elapsed.TotalSeconds))s)..."
+    Start-Sleep -Seconds 5
+}
+log "VMMS stopped. Starting VMMS..."
+Start-Service vmms
+$vmmsStartWatch = [System.Diagnostics.Stopwatch]::StartNew()
+while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.TotalSeconds -lt 60) {
+    log "Waiting for VMMS to start (status: $((Get-Service vmms).Status), elapsed: $([math]::Round($vmmsStartWatch.Elapsed.TotalSeconds))s)..."
+    Start-Sleep -Seconds 5
+}
+log "VMMS is running. Waiting 30s for NIC GUID registration to complete..."
+Start-Sleep -Seconds 30
 
 # Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
 $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
@@ -66,11 +80,43 @@ log "Using physical NIC '$physicalNicName' for external Hyper-V switch"
 log 'Creating Hyper-V switches...'
 $existingSwitches = Get-VMSwitch
 
+# Helper: retry New-VMSwitch up to 5 times with 15s delay.
+# "Sequence contains no matching element" can occur when VMMS hasn't mapped the NIC GUID yet.
+function New-VMSwitchWithRetry {
+    param(
+        [string]$Name,
+        [string]$NetAdapterName,
+        [bool]$AllowManagementOS = $false,
+        [string]$SwitchType,
+        [bool]$EnableIov = $false,
+        [int]$MaxRetries = 5
+    )
+    for ($attempt = 1; $attempt -le $MaxRetries; $attempt++) {
+        try {
+            if ($NetAdapterName) {
+                New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterName $NetAdapterName -ErrorAction Stop
+            } else {
+                New-VMSwitch -Name $Name -SwitchType $SwitchType -EnableIov:$EnableIov -ErrorAction Stop
+            }
+            log "VMSwitch '$Name' created on attempt $attempt."
+            return
+        } catch {
+            log "Attempt $attempt/$MaxRetries: Failed to create VMSwitch '$Name': $_"
+            if ($attempt -lt $MaxRetries) {
+                log "Retrying in 15s..."
+                Start-Sleep -Seconds 15
+            } else {
+                throw
+            }
+        }
+    }
+}
+
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $physicalNicName }
-    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitchWithRetry -Name external -AllowManagementOS $true -NetAdapterName $physicalNicName }
+    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitchWithRetry -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
     If ($hciNodeCount -gt 3) {
         log -message 'ERROR: Switchless storage configuration is only supported for 3 or fewer HCI nodes. Exiting script...'
@@ -79,11 +125,11 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $physicalNicName }
-    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateC' ) { New-VMSwitch -Name hciNodeStoragePrivateC -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitchWithRetry -Name external -AllowManagementOS $true -NetAdapterName $physicalNicName }
+    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitchWithRetry -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateC' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateC -SwitchType Private -EnableIov $true }
 }
 
 # add IPs for host
