@@ -44,20 +44,26 @@ Function Test-ADConnection {
 
 $ErrorActionPreference = 'Stop'
 
-# Restart Hyper-V VMMS and re-register the Hyper-V protocol binding (vms_pp) on the physical NIC.
+# Prepare VMMS for fresh switch creation after sysprep /mode:vm + gallery image redeployment.
 #
-# Root cause of "Sequence contains no matching element" in New-VMSwitch:
-# After sysprep /mode:vm + redeployment, the physical NIC gets a NEW GUID from Azure.
-# VMMS WMI provider (Msvm_ExternalEthernetPort) tracks NICs by GUID.
-# Simply restarting VMMS is NOT enough - the new NIC GUID must be explicitly re-registered
-# by toggling the Hyper-V virtual switch protocol binding (vms_pp) on the new NIC.
+# Problem: gallery image v2.0.6 was baked with Hyper-V switches already created.
+# sysprep /mode:vm preserves some VMMS state but the physical NIC gets a NEW GUID from Azure
+# on every redeployment. Result:
+#   - Stale Msvm_VirtualEthernetSwitch WMI objects reference the OLD NIC GUID
+#   - Virtual management OS adapters (Microsoft Hyper-V Network Adapter) keep their vms_pp
+#     bindings from the bake and appear in Msvm_ExternalEthernetPort
+#   - The NEW 'Ethernet 4' is never enumerated by VMMS because:
+#       (a) its GUID is unknown to the stale switch config
+#       (b) vms_pp may still be bound to the old adapter GUIDs, not the new one
 #
 # Fix sequence:
-# 1. Stop VMMS
-# 2. Find physical NIC
-# 3. Disable then re-enable vms_pp binding (forces GUID registration with new NIC identity)
-# 4. Start VMMS
-# 5. Wait for NIC to appear in Msvm_ExternalEthernetPort WMI before creating switch
+#   1. Find physical NIC
+#   2. Stop VMMS
+#   3. Remove stale Msvm_VirtualEthernetSwitch WMI objects (from gallery image bake)
+#   4. Disable vms_pp on ALL adapters (clears stale bindings from virtual adapters)
+#   5. Enable vms_pp ONLY on the physical NIC (registers new NIC GUID with VMMS)
+#   6. Start VMMS (now only sees the new physical NIC - will enumerate it correctly)
+#   7. Wait for NIC to appear in Msvm_ExternalEthernetPort before creating switch
 
 # Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
 $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
@@ -80,12 +86,36 @@ while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.Total
 }
 log "VMMS stopped."
 
-# Re-register vms_pp (Hyper-V Extensible Virtual Switch) binding on the physical NIC.
-# This is what makes the NIC visible in VMMS WMI (Msvm_ExternalEthernetPort).
-# The binding may reference the old NIC GUID from the gallery image - reset it.
-log "Re-registering Hyper-V protocol binding (vms_pp) on '$physicalNicName'..."
-Disable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+# Remove stale Msvm_VirtualEthernetSwitch WMI objects left over from the gallery image bake.
+# These stale switch objects claim 'Ethernet 4' (by old GUID) and prevent VMMS from
+# enumerating the new NIC as an available external port.
+log "Removing stale VMMS virtual switch WMI objects from gallery image..."
+$staleSwitches = Get-WmiObject -Namespace 'root/virtualization/v2' -Class 'Msvm_VirtualEthernetSwitch' -ErrorAction SilentlyContinue
+if ($staleSwitches) {
+    $staleSwitches | ForEach-Object {
+        log "  Removing stale switch object: '$($_.ElementName)'"
+        $_.Delete() | Out-Null
+    }
+    log "Stale switch objects removed."
+} else {
+    log "No stale switch WMI objects found."
+}
+
+# Disable vms_pp on ALL adapters to clear stale bindings left from the gallery image bake.
+# The gallery image has vms_pp bound to virtual management OS adapters (Microsoft Hyper-V
+# Network Adapter) which appear in Msvm_ExternalEthernetPort and block the new physical NIC.
+log "Disabling vms_pp on ALL adapters to clear stale bindings..."
+Get-NetAdapter | ForEach-Object {
+    $b = Get-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+    if ($b -and $b.Enabled) {
+        log "  Disabling stale vms_pp on '$($_.InterfaceAlias)'"
+        Disable-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
+    }
+}
 Start-Sleep -Seconds 3
+
+# Enable vms_pp ONLY on the physical NIC. When VMMS starts it will enumerate ONLY this NIC.
+log "Enabling vms_pp on physical NIC '$physicalNicName'..."
 Enable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
 $hvBinding = Get-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
 log "vms_pp binding on '$physicalNicName': Enabled=$($hvBinding.Enabled)"
@@ -99,9 +129,8 @@ while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.Tota
 }
 log "VMMS is running."
 
-# Wait for the NIC to appear in VMMS WMI (Msvm_ExternalEthernetPort).
-# New-VMSwitch internally queries this WMI class; if the NIC isn't there yet it throws
-# "Sequence contains no matching element".
+# Wait for the physical NIC to appear in Msvm_ExternalEthernetPort (VMMS WMI provider).
+# New-VMSwitch queries this class; if the NIC is not there it throws "Sequence contains no matching element".
 log "Waiting for '$physicalNicName' to appear in VMMS WMI (Msvm_ExternalEthernetPort)..."
 $nicGuidClean = $physicalNic.InterfaceGuid -replace '[{}]', ''
 $wmiStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
