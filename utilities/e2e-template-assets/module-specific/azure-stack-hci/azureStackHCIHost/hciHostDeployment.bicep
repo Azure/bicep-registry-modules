@@ -420,6 +420,19 @@ resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   dependsOn: [runCommand4]
 }
 
+// NEW - configure RRAS after reboot
+resource runCommand3b 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3b'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage3b.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [wait2]
+}
 // ===========================//
 // Create HCI Node Guest VMs  //
 // ===========================//
@@ -455,7 +468,7 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [wait2]
+  dependsOn: [runCommand3b]
 }
 
 // ================================================//
