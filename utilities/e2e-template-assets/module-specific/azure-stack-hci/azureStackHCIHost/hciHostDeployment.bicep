@@ -433,6 +433,43 @@ resource runCommand3b 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01'
   }
   dependsOn: [wait2]
 }
+// Reboot after uninstall of RRAS
+resource runCommand3c 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3c'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage2.ps1')  // reuse existing reboot script
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [runCommand3b]
+}
+// Wait for reboot
+resource wait3 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  location: location
+  kind: 'AzurePowerShell'
+  name: '${waitDeploymentScriptPrefixName}-wait3'
+  properties: {
+    azPowerShellVersion: '3.0'
+    scriptContent: 'Start-Sleep -Seconds 60'
+    retentionInterval: 'PT6H'
+  }
+  dependsOn: [runCommand3c]
+}
+resource runCommand3d 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3d'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage3d.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [wait3]
+}
 // ===========================//
 // Create HCI Node Guest VMs  //
 // ===========================//
@@ -468,7 +505,7 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [runCommand3b]
+  dependsOn: [runCommand3d]
 }
 
 // ================================================//

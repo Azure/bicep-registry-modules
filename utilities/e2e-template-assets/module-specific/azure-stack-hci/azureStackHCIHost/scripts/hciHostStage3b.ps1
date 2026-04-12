@@ -15,32 +15,9 @@ Function log {
 
 $ErrorActionPreference = 'Stop'
 
-# Configure RRAS - runs after reboot so module files are available
-log 'Configuring RRAS for routing...'
-
-# Verify module is available after reboot
-if (!(Test-Path 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1')) {
-    log 'ERROR: RemoteAccess module not found even after reboot!'
-    log 'ERROR: Routing/RemoteAccess feature may not have installed correctly'
-    Write-Error 'RemoteAccess module not found' -ErrorAction Stop
-}
-
-Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1'
-
-# Fix service dependencies
-log 'Setting up RemoteAccess service dependencies...'
-Set-Service -Name RemoteAccess -StartupType Automatic -ErrorAction SilentlyContinue
-Set-Service -Name RasMan -StartupType Automatic -ErrorAction SilentlyContinue
-Set-Service -Name SstpSvc -StartupType Automatic -ErrorAction SilentlyContinue
-Start-Service -Name RasMan -ErrorAction SilentlyContinue
-Start-Service -Name SstpSvc -ErrorAction SilentlyContinue
-Start-Sleep -Seconds 5
-
-Install-RemoteAccess -VpnType RoutingOnly
-Set-Service -Name RemoteAccess -StartupType Automatic -PassThru | Start-Service
-log 'RRAS configured successfully'
-
-log 'Adding DNS forwarders...'
-Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\DnsServer\DnsServer.psd1'
-Add-DnsServerForwarder -IPAddress 8.8.8.8
-log 'DNS forwarders added successfully'
+# Uninstall Routing/RemoteAccess to clean up sysprep corruption
+# A reboot is required between uninstall and reinstall
+log 'Uninstalling Routing and RemoteAccess to fix sysprep corruption...'
+Uninstall-WindowsFeature -Name RemoteAccess -ErrorAction SilentlyContinue
+Uninstall-WindowsFeature -Name Routing -ErrorAction SilentlyContinue
+log 'Uninstall complete - reboot required before reinstall'
