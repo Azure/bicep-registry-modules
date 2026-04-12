@@ -46,26 +46,26 @@ $ErrorActionPreference = 'Stop'
 
 # Prepare VMMS for fresh switch creation after sysprep /mode:vm + gallery image redeployment.
 #
-# Problem: gallery image v2.0.6 was baked with Hyper-V switches already created.
-# sysprep /mode:vm preserves some VMMS state but the physical NIC gets a NEW GUID from Azure
-# on every redeployment. Result:
-#   - Stale Msvm_VirtualEthernetSwitch WMI objects reference the OLD NIC GUID
-#   - Virtual management OS adapters (Microsoft Hyper-V Network Adapter) keep their vms_pp
-#     bindings from the bake and appear in Msvm_ExternalEthernetPort
-#   - The NEW 'Ethernet 4' is never enumerated by VMMS because:
-#       (a) its GUID is unknown to the stale switch config
-#       (b) vms_pp may still be bound to the old adapter GUIDs, not the new one
+# Root cause: gallery image v2.0.6 was baked with Hyper-V switches already created.
+# sysprep /mode:vm removes the switch definition but leaves GHOST PnP devices behind:
+#   - 'Microsoft Hyper-V Network Adapter #2', 'Microsoft Kernel Debug Network Adapter', etc.
+# These ghost (absent/Status=Unknown) adapters have vms_pp bindings stored in the PnP registry.
+# Get-NetAdapter only returns PRESENT adapters, so Disable-NetAdapterBinding NEVER reaches
+# the ghost adapters. When VMMS starts, it reads ALL registry bindings (including ghost ones)
+# and registers the ghost adapters in Msvm_ExternalEthernetPort, while the real physical NIC
+# (Ethernet 4) may not be registered because its binding was cleared during the bake or sysprep.
+# New-VMSwitch -NetAdapterName 'Ethernet 4' then fails: "Sequence contains no matching element".
 #
 # Fix sequence:
-#   1. Find physical NIC
-#   2. Stop VMMS
-#   3. Remove stale Msvm_VirtualEthernetSwitch WMI objects (from gallery image bake)
-#   4. Disable vms_pp on ALL adapters (clears stale bindings from virtual adapters)
-#   5. Enable vms_pp ONLY on the physical NIC (registers new NIC GUID with VMMS)
-#   6. Start VMMS (now only sees the new physical NIC - will enumerate it correctly)
-#   7. Wait for NIC to appear in Msvm_ExternalEthernetPort before creating switch
+#   1. Find and log physical NIC (present, Status=Up)
+#   2. Stop VMMS (prevents WMI race during cleanup)
+#   3. Remove ALL ghost/absent PnP network adapters (cleans their registry binding entries)
+#   4. Disable vms_pp on all PRESENT adapters (catches any present virtual adapters)
+#   5. Enable vms_pp ONLY on the physical NIC
+#   6. Start VMMS - now it only sees the one real NIC in Msvm_ExternalEthernetPort
+#   7. Wait for the NIC to appear in WMI, then create the switch
 
-# Dynamically find physical NIC name (handles sysprep renaming and pre-baked images)
+# Dynamically find physical NIC - must be present (Status=Up) and not a Hyper-V virtual NIC
 $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
 If (-not $physicalNic) {
     $physicalNic = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.InterfaceDescription -notmatch 'Hyper-V Virtual' } | Select-Object -First 1
@@ -75,7 +75,12 @@ If (-not $physicalNic) {
     Exit 1
 }
 $physicalNicName = $physicalNic.Name
-log "Found physical NIC '$physicalNicName' (GUID: $($physicalNic.InterfaceGuid))"
+$physicalNicDesc = $physicalNic.InterfaceDescription
+log "Found physical NIC: name='$physicalNicName' description='$physicalNicDesc' GUID=$($physicalNic.InterfaceGuid)"
+
+# Log ALL current adapters for diagnostics
+log "All current network adapters:"
+Get-NetAdapter | ForEach-Object { log "  [$($_.Status)] '$($_.Name)' ($($_.InterfaceDescription))" }
 
 log 'Stopping Hyper-V VMMS...'
 Stop-Service vmms -Force -ErrorAction SilentlyContinue
@@ -86,39 +91,40 @@ while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.Total
 }
 log "VMMS stopped."
 
-# Remove stale Msvm_VirtualEthernetSwitch WMI objects left over from the gallery image bake.
-# These stale switch objects claim 'Ethernet 4' (by old GUID) and prevent VMMS from
-# enumerating the new NIC as an available external port.
-log "Removing stale VMMS virtual switch WMI objects from gallery image..."
-$staleSwitches = Get-WmiObject -Namespace 'root/virtualization/v2' -Class 'Msvm_VirtualEthernetSwitch' -ErrorAction SilentlyContinue
-if ($staleSwitches) {
-    $staleSwitches | ForEach-Object {
-        log "  Removing stale switch object: '$($_.ElementName)'"
-        $_.Delete() | Out-Null
+# Remove ghost/absent PnP network adapter devices from the gallery image bake.
+# Ghost adapters (Status=Unknown) are NOT returned by Get-NetAdapter, so their vms_pp
+# registry bindings survive Disable-NetAdapterBinding. VMMS reads those bindings on startup
+# and registers the ghost adapters in Msvm_ExternalEthernetPort, blocking the physical NIC.
+# Removing the ghost PnP devices deletes their registry entries including vms_pp bindings.
+log "Scanning for ghost/absent PnP network adapters from gallery image bake..."
+$ghostAdapters = Get-PnpDevice -Class 'Net' -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Unknown' }
+if ($ghostAdapters) {
+    foreach ($ghost in $ghostAdapters) {
+        log "  Removing ghost adapter: '$($ghost.FriendlyName)' (InstanceId: $($ghost.InstanceId))"
+        Remove-PnpDevice -InstanceId $ghost.InstanceId -Confirm:$false -ErrorAction SilentlyContinue
     }
-    log "Stale switch objects removed."
+    log "Ghost adapter removal complete. Waiting 3s for PnP to settle..."
+    Start-Sleep -Seconds 3
 } else {
-    log "No stale switch WMI objects found."
+    log "No ghost/absent PnP network adapters found."
 }
 
-# Disable vms_pp on ALL adapters to clear stale bindings left from the gallery image bake.
-# The gallery image has vms_pp bound to virtual management OS adapters (Microsoft Hyper-V
-# Network Adapter) which appear in Msvm_ExternalEthernetPort and block the new physical NIC.
-log "Disabling vms_pp on ALL adapters to clear stale bindings..."
+# Disable vms_pp on all PRESENT adapters (catches any stale present virtual adapters)
+log "Disabling vms_pp on all present adapters..."
 Get-NetAdapter | ForEach-Object {
     $b = Get-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
     if ($b -and $b.Enabled) {
-        log "  Disabling stale vms_pp on '$($_.InterfaceAlias)'"
+        log "  Disabling vms_pp on '$($_.InterfaceAlias)'"
         Disable-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
     }
 }
-Start-Sleep -Seconds 3
+Start-Sleep -Seconds 2
 
-# Enable vms_pp ONLY on the physical NIC. When VMMS starts it will enumerate ONLY this NIC.
-log "Enabling vms_pp on physical NIC '$physicalNicName'..."
+# Enable vms_pp ONLY on the physical NIC. VMMS will register only this adapter.
+log "Enabling vms_pp on '$physicalNicName'..."
 Enable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
 $hvBinding = Get-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
-log "vms_pp binding on '$physicalNicName': Enabled=$($hvBinding.Enabled)"
+log "vms_pp on '$physicalNicName': Enabled=$($hvBinding.Enabled)"
 
 log 'Starting Hyper-V VMMS...'
 Start-Service vmms
@@ -129,26 +135,26 @@ while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.Tota
 }
 log "VMMS is running."
 
-# Wait for the physical NIC to appear in Msvm_ExternalEthernetPort (VMMS WMI provider).
-# New-VMSwitch queries this class; if the NIC is not there it throws "Sequence contains no matching element".
-log "Waiting for '$physicalNicName' to appear in VMMS WMI (Msvm_ExternalEthernetPort)..."
-$nicGuidClean = $physicalNic.InterfaceGuid -replace '[{}]', ''
+# Wait for the physical NIC to appear in Msvm_ExternalEthernetPort.
+# Now that ghost adapters are removed, only the real physical NIC should appear.
+# Match by description (ElementName) since New-VMSwitch -NetAdapterName maps alias -> description.
+log "Waiting for physical NIC '$physicalNicDesc' to appear in VMMS WMI (Msvm_ExternalEthernetPort)..."
 $wmiStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $nicInVmms = $false
 while (-not $nicInVmms -and $wmiStopwatch.Elapsed.TotalMinutes -lt 5) {
     $externalPorts = Get-WmiObject -Namespace 'root/virtualization/v2' -Class 'Msvm_ExternalEthernetPort' -ErrorAction SilentlyContinue
-    $matchedPort = $externalPorts | Where-Object { $_.Name -like "*$nicGuidClean*" -or $_.ElementName -eq $physicalNicName }
+    $portNames = ($externalPorts | Select-Object -ExpandProperty ElementName) -join ', '
+    $matchedPort = $externalPorts | Where-Object { $_.ElementName -eq $physicalNicDesc -or $_.ElementName -eq $physicalNicName }
     if ($matchedPort) {
         $nicInVmms = $true
-        log "NIC '$physicalNicName' is now visible in VMMS WMI (ElementName: $($matchedPort.ElementName)). Elapsed: $([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s"
+        log "Physical NIC visible in VMMS WMI: '$($matchedPort.ElementName)'. Elapsed: $([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s"
     } else {
-        $portNames = ($externalPorts | Select-Object -ExpandProperty ElementName) -join ', '
-        log "[$([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s] VMMS WMI ports visible: '$portNames'. Waiting for '$physicalNicName'..."
+        log "[$([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s] VMMS WMI ports: '$portNames'. Waiting for '$physicalNicDesc'..."
         Start-Sleep -Seconds 10
     }
 }
 if (-not $nicInVmms) {
-    log "WARNING: NIC not found in VMMS WMI after 5 minutes - attempting switch creation anyway."
+    log "WARNING: NIC not found in VMMS WMI after 5 minutes - attempting switch creation anyway. All ports: '$portNames'"
 }
 
 
@@ -156,8 +162,11 @@ if (-not $nicInVmms) {
 log "Creating Hyper-V switches using NIC '$physicalNicName'..."
 $existingSwitches = Get-VMSwitch
 
-# Helper: retry New-VMSwitch up to 5 times with 15s delay.
-# "Sequence contains no matching element" can occur when VMMS hasn't mapped the NIC GUID yet.
+# Helper: create external VMSwitch with fallback strategies.
+# Strategy 1: -NetAdapterName (by interface alias, e.g. 'Ethernet 4')
+# Strategy 2: -NetAdapterInterfaceDescription (by description, e.g. 'Microsoft Hyper-V Network Adapter')
+# After ghost PnP cleanup there should only be one port in Msvm_ExternalEthernetPort, so
+# both strategies should work. If alias-based fails, description-based is tried.
 function New-VMSwitchWithRetry {
     param(
         [string]$Name,
@@ -170,7 +179,14 @@ function New-VMSwitchWithRetry {
     for ($attempt = 1; $attempt -le $MaxRetries; $attempt++) {
         try {
             if ($NetAdapterName) {
-                New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterName $NetAdapterName -ErrorAction Stop
+                try {
+                    New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterName $NetAdapterName -ErrorAction Stop
+                } catch {
+                    # Fallback: match by interface description instead of alias.
+                    # Hyper-V may not map the alias correctly if VMMS internal registry differs.
+                    log "  Alias-based switch creation failed ('$_'). Trying by description '$physicalNicDesc'..."
+                    New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterInterfaceDescription $physicalNicDesc -ErrorAction Stop
+                }
             } else {
                 New-VMSwitch -Name $Name -SwitchType $SwitchType -EnableIov:$EnableIov -ErrorAction Stop
             }
