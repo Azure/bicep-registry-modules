@@ -3,6 +3,8 @@ metadata description = '''Creates an Azure Container Registry and an Azure Conta
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case'''
 
+import { storageType } from 'br/public:avm/res/app/managed-environment:0.11.2'
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -74,7 +76,12 @@ param workloadProfiles array = []
 @description('Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${containerAppsEnvironmentName}', 63)
 
-var containerRegistryRG = empty(containerRegistryResourceGroupName) ? resourceGroup() : resourceGroup(containerRegistryResourceGroupName)
+@description('Optional. The list of storages to mount on the environment.')
+param storages storageType[]?
+
+var containerRegistryRG = empty(containerRegistryResourceGroupName)
+  ? resourceGroup()
+  : resourceGroup(containerRegistryResourceGroupName)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
@@ -106,7 +113,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     location: location
     tags: tags
     daprAIInstrumentationKey: daprAIInstrumentationKey
-    appLogsConfiguration:{
+    appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
         customerId: logAnalyticsWorkspace.properties.customerId
@@ -123,6 +130,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     dockerBridgeCidr: dockerBridgeCidr
     platformReservedCidr: platformReservedCidr
     platformReservedDnsIP: platformReservedDnsIP
+    storages: storages
     enableTelemetry: enableTelemetry
   }
 }

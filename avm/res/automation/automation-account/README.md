@@ -1002,10 +1002,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
+      systemAssigned: false
     }
     modules: [
       {
@@ -1163,10 +1160,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "systemAssigned": false
       }
     },
     "modules": {
@@ -1320,10 +1314,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
+  systemAssigned: false
 }
 param modules = [
   {
@@ -1437,7 +1428,7 @@ param variables = [
 | :-- | :-- | :-- |
 | [`credentials`](#parameter-credentials) | array | List of credentials to be created in the automation account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the linked log analytics workspace. |
@@ -1569,7 +1560,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

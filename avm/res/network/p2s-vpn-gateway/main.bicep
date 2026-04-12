@@ -29,6 +29,9 @@ param p2SConnectionConfigurationsName string?
 @description('Optional. Enable/Disable Internet Security; "Propagate Default Route".')
 param enableInternetSecurity bool?
 
+@description('Optional. The resource IDs of configuration policy groups to associate with the P2S connection configuration.')
+param configurationPolicyGroupAssociationResourceIds string[]?
+
 @description('Optional. The Resource ID of the inbound route map.')
 param inboundRouteMapResourceId string?
 
@@ -44,6 +47,9 @@ param vnetRoutesStaticRoutes vnetRoutesStaticRoutesType?
 @description('Optional. The address prefixes for the VPN Client Address Pool.')
 param vpnClientAddressPoolAddressPrefixes array = []
 
+@description('Optional. A list of IPAM Pool prefix allocations for the VPN Client Address Pool.')
+param ipamPoolPrefixAllocations ipamPoolPrefixAllocationType[]?
+
 @description('Required. The resource ID of the gateways virtual hub.')
 param virtualHubResourceId string
 
@@ -54,7 +60,7 @@ param vpnGatewayScaleUnit int?
 param vpnServerConfigurationResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/p2svpnGateways@2024-10-01'>.tags?
+param tags resourceInput<'Microsoft.Network/p2svpnGateways@2025-05-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -92,7 +98,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
+resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -103,6 +109,11 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
       {
         name: p2SConnectionConfigurationsName
         properties: {
+          configurationPolicyGroupAssociations: [
+            for id in (configurationPolicyGroupAssociationResourceIds ?? []): {
+              id: id
+            }
+          ]
           enableInternetSecurity: enableInternetSecurity
           routingConfiguration: {
             associatedRouteTable: {
@@ -134,6 +145,7 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-10-01' = {
           }
           vpnClientAddressPool: {
             addressPrefixes: vpnClientAddressPoolAddressPrefixes
+            ipamPoolPrefixAllocations: ipamPoolPrefixAllocations
           }
         }
       }
@@ -174,6 +186,19 @@ output location string = p2sVpnGateway.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+@description('Optional. A Type representing an IPAM Pool prefix allocation for the VPN Client Address Pool.')
+type ipamPoolPrefixAllocationType = {
+  @description('Optional. The number of IP addresses to allocate.')
+  numberOfIpAddresses: string?
+
+  @description('Optional. The associated Azure IPAM Pool resource.')
+  pool: {
+    @description('Required. The resource ID of the Azure IPAM Pool resource.')
+    id: string
+  }?
+}
 
 @export()
 @description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')

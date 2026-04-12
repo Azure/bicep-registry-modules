@@ -1,17 +1,24 @@
-@description('Optional. Security Solution data.')
-param ioTSecuritySolutionProperties object = {}
+@sys.description('Required. The name of the IoT Security Solution.')
+param name string
 
-resource iotSecuritySolutions 'Microsoft.Security/iotSecuritySolutions@2019-08-01' =
-  if (!empty(ioTSecuritySolutionProperties)) {
-    name: 'iotSecuritySolutions'
-    properties: {
-      workspace: ioTSecuritySolutionProperties.workspace
-      displayName: ioTSecuritySolutionProperties.displayName
-      status: ioTSecuritySolutionProperties.status
-      export: ioTSecuritySolutionProperties.export
-      disabledDataSources: ioTSecuritySolutionProperties.disabledDataSources
-      iotHubs: ioTSecuritySolutionProperties.iotHubs
-      userDefinedResources: ioTSecuritySolutionProperties.userDefinedResources
-      recommendationsConfiguration: ioTSecuritySolutionProperties.recommendationsConfiguration
-    }
-  }
+@sys.description('Optional. Location for the resource.')
+param location string = resourceGroup().location
+
+@sys.description('Optional. Tags for the resource.')
+param tags object?
+
+@sys.description('Required. Security Solution properties.')
+param ioTSecuritySolutionProperties resourceInput<'Microsoft.Security/iotSecuritySolutions@2019-08-01'>.properties
+
+resource iotSecuritySolutions 'Microsoft.Security/iotSecuritySolutions@2019-08-01' = {
+  name: name
+  location: location
+  tags: tags
+  properties: ioTSecuritySolutionProperties
+}
+
+@sys.description('The resource ID of the IoT Security Solution.')
+output resourceId string = iotSecuritySolutions.id
+
+@sys.description('The name of the IoT Security Solution.')
+output name string = iotSecuritySolutions.name
