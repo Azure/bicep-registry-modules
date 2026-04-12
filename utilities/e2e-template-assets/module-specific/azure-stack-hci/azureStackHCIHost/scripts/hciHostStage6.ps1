@@ -383,8 +383,20 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             }
         }
 
+        Write-Output 'Downloading Azure Connected Machine Agent MSI...'
         wget -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
+
+        # msiexec.exe starts a new process and returns immediately from PowerShell unless we use
+        # Start-Process -Wait. Without -Wait the script races past to azcmagent.exe before the
+        # installer has finished, resulting in "not recognized" errors.
+        Write-Output 'Installing Azure Connected Machine Agent (waiting for completion)...'
+        $msiArgs = "/i `"$env:TEMP\AzureConnectedMachineAgent.msi`" /l*v `"$env:TEMP\AzureConnectedMachineAgentInstall.log`" /qn"
+        $msiProc = Start-Process -FilePath 'msiexec.exe' -ArgumentList $msiArgs -Wait -PassThru
+        if ($msiProc.ExitCode -ne 0) {
+            $installLog = Get-Content "$env:TEMP\AzureConnectedMachineAgentInstall.log" -ErrorAction SilentlyContinue | Select-Object -Last 30
+            throw "Arc Connected Machine Agent MSI install failed. ExitCode=$($msiProc.ExitCode). Log tail: $($installLog -join ' | ')"
+        }
+        Write-Output "Arc Connected Machine Agent MSI installed successfully (ExitCode=0)."
 
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
         Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
@@ -394,7 +406,18 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         $machineName = [System.Net.Dns]::GetHostName()
         $correlationID = New-Guid
 
+        # Wait for azcmagent.exe to be present (MSI may need a moment after exit to flush files).
         $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
+        $agentWaitSec = 0
+        while (-not (Test-Path $azcmagentPath) -and $agentWaitSec -lt 60) {
+            Write-Output "Waiting for azcmagent.exe at '$azcmagentPath'... [${agentWaitSec}s]"
+            Start-Sleep -Seconds 5
+            $agentWaitSec += 5
+        }
+        if (-not (Test-Path $azcmagentPath)) {
+            throw "azcmagent.exe not found at '$azcmagentPath' after MSI install. Check install log: $env:TEMP\AzureConnectedMachineAgentInstall.log"
+        }
+        Write-Output "azcmagent.exe confirmed present at: $azcmagentPath"
         & "$azcmagentPath" --version
         & "$azcmagentPath" connect --resource-group "$resourceGroupName" --resource-name "$machineName" --tenant-id "$tenantId" --location "$location" --subscription-id "$subscriptionId" --cloud 'AzureCloud' --correlation-id "$correlationID" --access-token "$t";
         if ($LASTEXITCODE -ne 0) {
