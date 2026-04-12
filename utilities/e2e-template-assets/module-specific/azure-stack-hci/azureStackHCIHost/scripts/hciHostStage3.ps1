@@ -288,7 +288,6 @@ If ($hciVHDXDownloadURL) {
         New-VHDXFromISO -IsoPath 'c:\isos\hci_os.iso' -VhdxPath 'c:\isos\hci_os.vhdx'
     } Else {
         log 'HCI VHDX already exists, skipping conversion...'
-
     }
 } Else {
     # No download URL provided - expect VHDX to already exist from pre-baked gallery image
@@ -303,7 +302,7 @@ If ($hciVHDXDownloadURL) {
         log 'ERROR:   3. Sysprep wiped C:\ISOs\ during image capture'
         log 'ERROR: Check the gallery image and rebuild if necessary'
         Write-Error 'Pre-baked VHDX not found at C:\ISOs\hci_os.vhdx - cannot continue' -ErrorAction Stop
-}
+    }
 }
 
 # create mount point directories on C:\
@@ -340,13 +339,34 @@ For ($i = 0; $i -lt $hciNodeCount; $i++) {
 
 # install RRAS configure for routing
 log 'Installing RRAS and configuring for routing...'
+
+# Reinstall Routing/RemoteAccess to restore module files lost during sysprep
+log 'Reinstalling Routing and RemoteAccess to restore module files...'
+Uninstall-WindowsFeature -Name RemoteAccess -ErrorAction SilentlyContinue
+Uninstall-WindowsFeature -Name Routing -ErrorAction SilentlyContinue
+Install-WindowsFeature -Name Routing -IncludeManagementTools
+Install-WindowsFeature -Name RemoteAccess -IncludeAllSubFeature -IncludeManagementTools
+log 'Routing and RemoteAccess reinstalled successfully'
+
 While (!(Test-Path -Path 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1')) {
     Start-Sleep -Seconds 5
     log 'Waiting for RRAS module to be available...'
 }
+
 Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1'
+
+# Fix service dependencies before installing RRAS
+log 'Setting up RemoteAccess service dependencies...'
+Set-Service -Name RemoteAccess -StartupType Automatic -ErrorAction SilentlyContinue
+Set-Service -Name RasMan -StartupType Automatic -ErrorAction SilentlyContinue
+Set-Service -Name SstpSvc -StartupType Automatic -ErrorAction SilentlyContinue
+Start-Service -Name RasMan -ErrorAction SilentlyContinue
+Start-Service -Name SstpSvc -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 5
+
 Install-RemoteAccess -VpnType RoutingOnly
 Set-Service -Name RemoteAccess -StartupType Automatic -PassThru | Start-Service
+log 'RRAS installed and started successfully'
 
 # install domain controller
 log 'Checking whether AD is installed...'
