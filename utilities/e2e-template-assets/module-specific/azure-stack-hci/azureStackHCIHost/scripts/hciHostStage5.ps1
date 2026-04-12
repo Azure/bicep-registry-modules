@@ -49,7 +49,7 @@ $ErrorActionPreference = 'Stop'
 # Root cause of "Sequence contains no matching element" in New-VMSwitch:
 # After sysprep /mode:vm + redeployment, the physical NIC gets a NEW GUID from Azure.
 # VMMS WMI provider (Msvm_ExternalEthernetPort) tracks NICs by GUID.
-# Simply restarting VMMS is NOT enough — the new NIC GUID must be explicitly re-registered
+# Simply restarting VMMS is NOT enough - the new NIC GUID must be explicitly re-registered
 # by toggling the Hyper-V virtual switch protocol binding (vms_pp) on the new NIC.
 #
 # Fix sequence:
@@ -82,7 +82,7 @@ log "VMMS stopped."
 
 # Re-register vms_pp (Hyper-V Extensible Virtual Switch) binding on the physical NIC.
 # This is what makes the NIC visible in VMMS WMI (Msvm_ExternalEthernetPort).
-# The binding may reference the old NIC GUID from the gallery image — reset it.
+# The binding may reference the old NIC GUID from the gallery image - reset it.
 log "Re-registering Hyper-V protocol binding (vms_pp) on '$physicalNicName'..."
 Disable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 3
@@ -119,7 +119,7 @@ while (-not $nicInVmms -and $wmiStopwatch.Elapsed.TotalMinutes -lt 5) {
     }
 }
 if (-not $nicInVmms) {
-    log "WARNING: NIC not found in VMMS WMI after 5 minutes — attempting switch creation anyway."
+    log "WARNING: NIC not found in VMMS WMI after 5 minutes - attempting switch creation anyway."
 }
 
 
