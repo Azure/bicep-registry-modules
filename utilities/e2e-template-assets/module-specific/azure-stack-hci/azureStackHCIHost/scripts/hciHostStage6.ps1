@@ -387,7 +387,6 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
 
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
         Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
         Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
         Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
