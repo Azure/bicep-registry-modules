@@ -52,7 +52,11 @@ If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
     If ($existingSwitches.Name -notcontains 'external' ) {
     # Dynamically find the active NIC - name may vary after sysprep
-    $activeNIC = (Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.Name -notlike 'vEthernet*' } | Select-Object -First 1).Name
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
     log "Using NIC '$activeNIC' for external vSwitch..."
     New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
 }
@@ -68,7 +72,11 @@ If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switchless storage configuration...'
     If ($existingSwitches.Name -notcontains 'external' ) {
     # Dynamically find the active NIC - name may vary after sysprep
-    $activeNIC = (Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.Name -notlike 'vEthernet*' } | Select-Object -First 1).Name
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
     log "Using NIC '$activeNIC' for external vSwitch..."
     New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
 }
