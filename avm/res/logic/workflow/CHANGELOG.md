@@ -2,6 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/logic/workflow/CHANGELOG.md).
 
+## 0.5.4
+
+### Changes
+- Test for now
+
 ## 0.5.3
 
 ### Changes
