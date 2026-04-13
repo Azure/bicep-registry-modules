@@ -5,7 +5,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ## 0.5.4
 
 ### Changes
-- Test for now
+
+- Fixed managed identity configuration to support mixed identity type (`SystemAssigned,UserAssigned`)
+- Resolved bug where providing both `systemAssigned = true` and `userAssignedResourceIds` caused deployment validation error: "The identity ids are only supported for 'UserAssigned' identity type."
+- Updated identity logic to correctly handle all four supported scenarios: None, SystemAssigned, UserAssigned, and SystemAssigned,UserAssigned
 
 ### Breaking Changes
 

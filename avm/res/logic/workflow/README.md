@@ -698,7 +698,7 @@ param workflowTriggers = {
 | [`integrationServiceEnvironment`](#parameter-integrationserviceenvironment) | object | The integration service environment settings. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`state`](#parameter-state) | string | The state. - NotSpecified, Completed, Enabled, Disabled, Deleted, Suspended. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -981,7 +981,7 @@ Specify the notes of the lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
+The managed identity definition for this resource.
 
 - Required: No
 - Type: object
