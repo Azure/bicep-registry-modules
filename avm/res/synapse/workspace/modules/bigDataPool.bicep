@@ -1,6 +1,3 @@
-metadata name = 'Synapse Workspaces Big Data Pool - Library Update'
-metadata description = 'This module updates an existing Synapse Workspaces Big Data Pool with library requirements and custom libraries. It must be deployed as a nested deployment after the pool has been created.'
-
 // ================ //
 // Parameters       //
 // ================ //
@@ -81,10 +78,10 @@ param computeIsolationEnabled bool = false
 @description('Optional. The Spark events folder.')
 param sparkEventsFolder string?
 
-@description('Optional. Library version requirements.')
+@description('Optional. Library version requirements. Must only be set on an update (the pool must already exist).')
 param libraryRequirements libraryRequirementsType?
 
-@description('Optional. List of custom libraries/packages associated with the spark pool.')
+@description('Optional. List of custom libraries/packages associated with the spark pool. Must only be set on an update (the pool must already exist).')
 param customLibraries customLibraryType[]?
 
 @description('Optional. Tags of the resource.')
@@ -147,9 +144,21 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
 }
 
 // =============== //
+//   Outputs       //
+// =============== //
+
+@description('The name of the deployed Big Data Pool.')
+output name string = bigDataPool.name
+
+@description('The resource ID of the deployed Big Data Pool.')
+output resourceId string = bigDataPool.id
+
+// =============== //
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The synapse workspace Big Data Pools Auto-scaling properties.')
 type autoScaleType = {
   @description('Required. Synapse workspace Big Data Pools Auto-scaling maximum node count.')
   @minValue(3)
@@ -162,6 +171,8 @@ type autoScaleType = {
   minNodeCount: int
 }
 
+@export()
+@description('The synapse workspace Big Data Pools Dynamic Executor Allocation properties.')
 type dynamicExecutorAllocationType = {
   @description('Required. Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.')
   @minValue(1)
@@ -174,6 +185,8 @@ type dynamicExecutorAllocationType = {
   maxExecutors: int
 }
 
+@export()
+@description('The synapse workspace Big Data Pools Spark configuration file properties.')
 type sparkConfigPropertiesType = {
   @description('Required. The configuration type.')
   configurationType: ('Artifact' | 'File')
@@ -185,6 +198,8 @@ type sparkConfigPropertiesType = {
   filename: string
 }
 
+@export()
+@description('The synapse workspace Big Data Pools library version requirements.')
 type libraryRequirementsType = {
   @description('Required. The library requirements (e.g. contents of a requirements.txt file).')
   content: string
@@ -193,6 +208,8 @@ type libraryRequirementsType = {
   filename: string
 }
 
+@export()
+@description('The synapse workspace Big Data Pools custom library/package info.')
 type customLibraryType = {
   @description('Optional. Storage blob container name.')
   containerName: string?

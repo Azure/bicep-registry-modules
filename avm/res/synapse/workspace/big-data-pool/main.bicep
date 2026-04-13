@@ -61,6 +61,7 @@ param sparkVersion string = '3.4'
 @description('Optional. Spark configuration file to specify additional properties.')
 param sparkConfigProperties sparkConfigPropertiesType?
 
+
 @description('Optional. Whether session level packages enabled. Disabled if value not provided.')
 param sessionLevelPackagesEnabled bool = false
 
@@ -127,65 +128,37 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
-  name: workspaceName
-}
-
-resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
-  name: name
-  parent: workspace
-  location: location
-  tags: tags
-  properties: {
+// Initial pool creation - libraries must not be included on first deployment.
+module bigDataPool_create '../modules/bigDataPool.bicep' = {
+  name: '${deployment().name}-create'
+  params: {
+    workspaceName: workspaceName
+    name: name
+    location: location
+    tags: tags
     nodeSizeFamily: nodeSizeFamily
     nodeSize: nodeSize
-    autoScale: !empty(autoScale)
-      ? {
-          enabled: true
-          minNodeCount: autoScale.?minNodeCount
-          maxNodeCount: autoScale.?maxNodeCount
-        }
-      : {
-          enabled: false
-        }
-    nodeCount: empty(autoScale) ? nodeCount : null
-    dynamicExecutorAllocation: !empty(dynamicExecutorAllocation)
-      ? {
-          enabled: true
-          minExecutors: dynamicExecutorAllocation.?minExecutors
-          maxExecutors: dynamicExecutorAllocation.?maxExecutors
-        }
-      : {
-          enabled: false
-        }
-    autoPause: autoPauseDelayInMinutes != -1
-      ? {
-          enabled: true
-          delayInMinutes: autoPauseDelayInMinutes < 5 ? 5 : autoPauseDelayInMinutes // Minimum 5 minutes
-        }
-      : {
-          enabled: false
-        }
+    autoScale: autoScale
+    nodeCount: nodeCount
+    dynamicExecutorAllocation: dynamicExecutorAllocation
+    autoPauseDelayInMinutes: autoPauseDelayInMinutes
     sparkVersion: sparkVersion
     sparkConfigProperties: sparkConfigProperties
     sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
     cacheSize: cacheSize
-    defaultSparkLogFolder: !empty(defaultSparkLogFolder) ? defaultSparkLogFolder : null
-    isAutotuneEnabled: autotuneEnabled
-    isComputeIsolationEnabled: computeIsolationEnabled
-    sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+    defaultSparkLogFolder: defaultSparkLogFolder
+    autotuneEnabled: autotuneEnabled
+    computeIsolationEnabled: computeIsolationEnabled
+    sparkEventsFolder: sparkEventsFolder
   }
 }
 
 // Azure does not allow setting libraryRequirements or customLibraries during initial pool creation.
-// A nested deployment (module) is used to update the pool with libraries after creation, since
-// ARM does not permit the same resource to be declared twice within a single template.
-
-// Synapse's internal library management pool (systemreservedpool-librarymanagement) needs
+// Synapse's internal library management pool (systemreservedpool-librarymanagement) also needs
 // time to initialize after a new Big Data Pool is created. Without this wait, the library
 // installation Spark job fails with a transient WASB 500 error.
 resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
-  dependsOn: [bigDataPool]
+  dependsOn: [bigDataPool_create]
   name: '${deployment().name}-libraryWait'
   location: location
   kind: 'AzurePowerShell'
@@ -200,7 +173,8 @@ resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-
   }
 }
 
-module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+// Second-pass deployment that adds the library configuration to the already-created pool.
+module bigDataPool_libraries '../modules/bigDataPool.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
   name: '${deployment().name}-libraries'
   params: {
     workspaceName: workspaceName
@@ -224,7 +198,22 @@ module bigDataPool_libraries 'library-update.bicep' = if (libraryRequirements !=
     libraryRequirements: libraryRequirements
     customLibraries: customLibraries
   }
-  dependsOn: [bigDataPool_libraryWait]
+  dependsOn: [
+    bigDataPool_libraryWait
+  ]
+}
+
+// Reference to the deployed pool for use by locks, diagnostics and role assignments.
+resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
+  name: workspaceName
+}
+
+resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' existing = {
+  name: name
+  parent: workspace
+    dependsOn: [
+      bigDataPool_create
+    ]
 }
 
 resource bigDataPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -284,10 +273,10 @@ resource bigDataPool_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 ]
 
 @description('The name of the deployed Big Data Pool.')
-output name string = bigDataPool.name
+output name string = bigDataPool_create.outputs.name
 
 @description('The resource ID of the deployed Big Data Pool.')
-output resourceId string = bigDataPool.id
+output resourceId string = bigDataPool_create.outputs.resourceId
 
 @description('The resource group of the deployed Big Data Pool.')
 output resourceGroupName string = resourceGroup().name
