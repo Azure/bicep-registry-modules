@@ -364,10 +364,12 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
     try {
         # Authenticate inside the HCI node using the access token passed from the host VM.
-        # Invoke-AzStackHciArcInitialization uses the current Az context for Azure API calls.
+        # Do NOT pass -Subscription here — Az module tries to enumerate subscriptions against the
+        # token and rejects it even when the identity has access. Pass subscription only via
+        # -SubscriptionID in Invoke-AzStackHciArcInitialization below.
         Write-Output "Connecting to Azure using access token (AccountId: $accountId)..."
         Connect-AzAccount -AccessToken (ConvertTo-SecureString $t -AsPlainText -Force) `
-            -AccountId $accountId -TenantId $tenantId -Subscription $subscriptionId -ErrorAction Stop
+            -AccountId $accountId -TenantId $tenantId -ErrorAction Stop
         Write-Output 'Azure context established.'
 
         # Wait for the HCI bootstrap service on port 9098.
