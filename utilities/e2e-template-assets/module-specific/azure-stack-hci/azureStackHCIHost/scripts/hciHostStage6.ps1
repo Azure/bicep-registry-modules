@@ -389,7 +389,6 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
                 -Region $location `
                 -AccountID $accountId `
                 -ArmAccessToken $t `
-                -Confirm:$false `
                 @optionalParameters
             $arcSuccess = $true
             Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
