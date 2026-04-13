@@ -346,20 +346,20 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     if ($arcGatewayId)        { $optionalParameters['arcGatewayId'] = $arcGatewayId }
     if ($proxyServerEndpoint) { $optionalParameters['proxy'] = $proxyServerEndpoint; $optionalParameters['proxyBypass'] = $proxyBypassString }
 
-    # Install AzsHCI.ARCinstaller if not pre-installed in the image
-    if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable -ErrorAction SilentlyContinue)) {
-        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller not found - installing from PSGallery..."
+    # Install AzsHCI.ARCinstaller if the cmdlet is not already available
+    if (!(Get-Command -Name Invoke-AzStackHciArcInitialization -ErrorAction SilentlyContinue)) {
+        Write-Output "[$env:COMPUTERNAME] Invoke-AzStackHciArcInitialization not found - installing AzsHCI.ARCinstaller from PSGallery..."
         if (!(Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
             Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
         }
         if (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-        Install-Module Az.Resources -Force -ErrorAction SilentlyContinue
-        Install-Module -Name AzsHCI.ARCinstaller -Force
+        Install-Module Az.Resources -Force -AllowClobber -ErrorAction SilentlyContinue
+        Install-Module -Name AzsHCI.ARCinstaller -Force -AllowClobber
         Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+    } else {
+        Write-Output "[$env:COMPUTERNAME] Invoke-AzStackHciArcInitialization already available."
     }
-    Import-Module AzsHCI.ARCinstaller -ErrorAction Stop
-    Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller version: $((Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version)"
 
     try {
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
