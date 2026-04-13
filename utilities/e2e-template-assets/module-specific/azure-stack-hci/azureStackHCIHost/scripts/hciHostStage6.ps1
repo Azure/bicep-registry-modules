@@ -328,38 +328,11 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             'proxyBypass' = $proxyBypassString
         }
     }
-
-    # Check if AzsHCI.ARCinstaller is pre-installed in the newer HCI OS image
-    Write-Output "[$env:COMPUTERNAME] Checking AzsHCI.ARCinstaller module..."
-    if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable)) {
-        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller not found - installing from PSGallery..."
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-        Install-Module Az.Resources -Force
-        Install-Module -Name AzsHCI.ARCinstaller -Force
-        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-    } else {
-        $moduleVersion = (Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version
-        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller module found - version: $moduleVersion"
-    }
-
-    # Wait for bootstrap service to be reachable
-    Write-Output "[$env:COMPUTERNAME] Waiting for bootstrap service at 127.0.0.1:9098 to be reachable..."
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Host "[$env:COMPUTERNAME] Waiting for bootstrap service at 127.0.0.1:9098 to be reachable..."
-        Start-Sleep -Seconds 30
-    }
-    If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error "[$env:COMPUTERNAME] Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting..." -ErrorAction Stop
-    }
-    Write-Output "[$env:COMPUTERNAME] Bootstrap service is reachable."
-
     try {
         # Use new bootstrapping approach for newer HCI OS versions
         # Invoke-AzStackHciArcInitialization is the recommended approach per:
         # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
