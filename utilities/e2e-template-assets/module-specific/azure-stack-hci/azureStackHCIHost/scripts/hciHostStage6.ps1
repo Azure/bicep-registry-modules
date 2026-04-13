@@ -325,6 +325,29 @@ If (!$testNodeInternetConnection) {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
 }
 
+## Pre-install AzSHCI.ARCinstaller on each HCI node sequentially BEFORE launching parallel jobs.
+## This must happen outside -AsJob so we get log visibility and can detect failures early.
+## Installing inside -AsJob was silently slow/hanging with no observable progress.
+log "Pre-installing AzSHCI.ARCinstaller module on HCI nodes [$((Get-VM).Name -join ',')] sequentially..."
+foreach ($vm in (Get-VM)) {
+    log "Installing AzSHCI.ARCinstaller on '$($vm.Name)'..."
+    $installResult = Invoke-Command -VMName $vm.Name -Credential $adminCred -ScriptBlock {
+        $ConfirmPreference = 'None'
+        $VerbosePreference = 'SilentlyContinue'
+        $ErrorActionPreference = 'Stop'
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser | Out-Null
+        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber -Scope AllUsers
+        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+        $mod = Get-Module AzSHCI.ARCinstaller -ListAvailable | Select-Object -First 1
+        Write-Output "AzSHCI.ARCinstaller installed: version $($mod.Version)"
+    } -ErrorAction Stop
+    $installResult | ForEach-Object { log "  [$($vm.Name)] $_" }
+    log "Module pre-install complete on '$($vm.Name)'."
+}
+log "AzSHCI.ARCinstaller pre-installation complete on all nodes."
+
 ## create jobs for each node to initialize Azure Arc
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
@@ -358,11 +381,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $ConfirmPreference = 'None'
     $VerbosePreference = 'SilentlyContinue'
 
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-    If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber
-    Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+    # AzSHCI.ARCinstaller is pre-installed above (before -AsJob) — just import it
+    Import-Module AzSHCI.ARCinstaller -Force
 
     Write-Output "Starting Arc initialization for '$($env:COMPUTERNAME)' with AccountID: $accountId"
 
