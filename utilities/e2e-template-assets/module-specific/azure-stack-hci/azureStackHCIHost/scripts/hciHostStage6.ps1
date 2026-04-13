@@ -349,96 +349,62 @@ foreach ($vm in (Get-VM)) {
 log "AzSHCI.ARCinstaller pre-installation complete on all nodes."
 
 ## create jobs for each node to initialize Azure Arc
+## Invoke-AzStackHciArcInitialization is sufficient with the 24H2 ISO — it handles azcmagent
+## install, connect, and edge device registration internally. Just needs -Cloud AzureCloud and token.
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
+    $ConfirmPreference     = 'None'
+    $VerbosePreference     = 'SilentlyContinue'
 
-    $t = $args[0]
-    $subscriptionId = $args[1]
-    $resourceGroupName = $args[2]
-    $tenantId = $args[3]
-    $location = $args[4]
-    $accountId = $args[5]      # managed identity object/principal ID (oid in the access token)
-    $arcGatewayId = $args[6]
-    $proxyServerEndpoint = $args[7]
-    $proxyBypassString = $args[8]
+    $t                  = $args[0]
+    $subscriptionId     = $args[1]
+    $resourceGroupName  = $args[2]
+    $tenantId           = $args[3]
+    $location           = $args[4]
+    $accountId          = $args[5]
+    $arcGatewayId       = $args[6]
+    $proxyServerEndpoint= $args[7]
+    $proxyBypassString  = $args[8]
 
     $optionalParameters = @{}
+    if ($arcGatewayId)        { $optionalParameters['ArcGatewayID'] = $arcGatewayId }
+    if ($proxyServerEndpoint) { $optionalParameters['Proxy'] = $proxyServerEndpoint; $optionalParameters['ProxyBypass'] = $proxyBypassString }
 
-    If ($arcGatewayId) {
-        $optionalParameters += @{
-            'ArcGatewayID' = $arcGatewayId
-        }
-    }
-    If ($proxyServerEndpoint) {
-        $optionalParameters += @{
-            'Proxy'       = $proxyServerEndpoint
-            'ProxyBypass' = $proxyBypassString
-        }
-    }
-
-    # Suppress confirmation prompts and reduce verbose noise inside the remote scriptblock
-    $ConfirmPreference = 'None'
-    $VerbosePreference = 'SilentlyContinue'
-
-    # AzSHCI.ARCinstaller is pre-installed above (before -AsJob) — just import it
+    # AzSHCI.ARCinstaller pre-installed on this node before job launch
     Import-Module AzSHCI.ARCinstaller -Force
 
-    Write-Output "Starting Arc initialization for '$($env:COMPUTERNAME)' with AccountID: $accountId"
+    Write-Output "Starting Invoke-AzStackHciArcInitialization for '$($env:COMPUTERNAME)'..."
 
-    # NOTE: Do NOT pre-wait for port 9098. Invoke-AzStackHciArcInitialization itself installs
-    # and starts the ECE bootstrap agent (which opens port 9098) as part of its initialization.
-    # Waiting externally will always time out because the service only starts when the cmdlet runs.
-    #
-    # Auth: pass the ARM access token directly via -ArmAccessToken. This is the correct approach
-    # for PSGallery AzSHCI.ARCinstaller (v1.2408+). -AccountID is the managed identity object ID
-    # (principal ID / oid claim in the JWT token), NOT the client ID.
+    # Parameters per official docs: https://learn.microsoft.com/azure/azure-local/deploy/deployment-without-azure-arc-gateway?view=azloc-2603
+    # -AccountID is NOT passed when using -ArmAccessToken (token already carries identity)
+    # Region must be lowercase with no spaces (e.g. 'eastus2euap' not 'East US 2 EUAP')
+    Invoke-AzStackHciArcInitialization `
+        -SubscriptionID $subscriptionId `
+        -ResourceGroup  $resourceGroupName `
+        -TenantId       $tenantId `
+        -Cloud          AzureCloud `
+        -ArmAccessToken $t `
+        -Region         $location `
+        @optionalParameters
 
-    # Retry loop: Arc initialization can fail transiently (token refresh, service startup timing).
-    $arcMaxRetries = 3
-    $arcAttempt = 0
-    $arcSuccess = $false
-    while (-not $arcSuccess -and $arcAttempt -lt $arcMaxRetries) {
-        $arcAttempt++
-        try {
-            Write-Output "Arc initialization attempt $arcAttempt/$arcMaxRetries for '$($env:COMPUTERNAME)'..."
-            Invoke-AzStackHciArcInitialization `
-                -SubscriptionID $subscriptionId `
-                -TenantID $tenantId `
-                -ResourceGroup $resourceGroupName `
-                -Region $location `
-                -AccountID $accountId `
-                -ArmAccessToken $t `
-                @optionalParameters
-            $arcSuccess = $true
-            Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
-        } catch {
-            if ($arcAttempt -lt $arcMaxRetries) {
-                Write-Output "Arc initialization attempt $arcAttempt failed: $_. Retrying in 30s..."
-                Start-Sleep -Seconds 30
-            } else {
-                Write-Error $_ -ErrorAction Stop
-            }
-        }
-    }
+    Write-Output "Invoke-AzStackHciArcInitialization completed for '$($env:COMPUTERNAME)'."
 } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
-log 'Waiting up to 60 minutes for Azure Arc initialization to complete on nodes...'
+log 'Waiting up to 90 minutes for Azure Arc initialization to complete on nodes...'
 
-# Accumulate job output as we poll — we drain WITHOUT -Keep so the PSRemoting buffer actually
-# empties. Using -Keep would leave data in the buffer causing it to fill up and block the job.
+# Accumulate job output as we poll — drain WITHOUT -Keep so PSRemoting buffer empties
 $nodeOutput = @{}
 foreach ($job in $arcInitializationJobs) { $nodeOutput[$job.Id] = [System.Collections.Generic.List[string]]::new() }
 
-$arcPollTimeout = (Get-Date).AddMinutes(60)
+$arcPollTimeout = (Get-Date).AddMinutes(90)
 while ($true) {
     $runningJobs = @($arcInitializationJobs | Where-Object { $_.State -eq 'Running' })
     if ($runningJobs.Count -eq 0) { break }
     if ((Get-Date) -gt $arcPollTimeout) {
-        log 'Arc initialization polling timed out after 60 minutes.'
+        log 'Arc initialization polling timed out after 90 minutes.'
         break
     }
-    # Drain buffers WITHOUT -Keep to actually empty the PSRemoting pipeline buffer
     foreach ($job in $arcInitializationJobs) {
         $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
         if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
@@ -446,7 +412,7 @@ while ($true) {
     Start-Sleep -Seconds 15
 }
 
-# Final drain of any remaining output
+# Final drain
 foreach ($job in $arcInitializationJobs) {
     $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
     if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
@@ -461,10 +427,9 @@ $arcInitializationJobs | ForEach-Object {
     log "[$($job.Location)] Job state: '$($job.State)'. Output: '$allOutput'"
 
     if ($job.State -ne 'Completed') {
-        log "Arc initialization job on '$($job.Location)' did NOT complete successfully (State: '$($job.State)'). This likely means Arc registration failed or timed out inside the VM."
+        log "Arc initialization job on '$($job.Location)' did NOT complete successfully (State: '$($job.State)')."
         $arcFailed = $true
     } else {
-        # Also check child jobs for failures
         $failedChildren = Get-Job -Id $job.Id -IncludeChildJob | Where-Object { $_.State -eq 'Failed' }
         if ($failedChildren) {
             $childErrors = Receive-Job -Job $failedChildren -ErrorAction SilentlyContinue 2>&1
