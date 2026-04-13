@@ -28,7 +28,7 @@ function Confirm-ModuleInMAR {
     )
 
     # Strip trailing version (e.g. '/1.0.0') from the module name for matching
-    $moduleNameForMatch = $PublishedModuleName -replace '/\d+\.\d+\.\d+$', ''
+    $moduleNameForMatch = $PublishedModuleName -replace '/\d+\.\d+\.\d+$', '' -replace '\\', '/' # remove version number and escape backslashes for regex match'
 
     ##################################
     ##   Confirm module tag known   ##
