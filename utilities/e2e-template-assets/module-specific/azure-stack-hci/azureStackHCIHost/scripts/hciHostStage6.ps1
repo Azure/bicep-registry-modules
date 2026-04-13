@@ -325,75 +325,70 @@ If (!$testNodeInternetConnection) {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
 }
 
-## Pre-install AzSHCI.ARCinstaller on each HCI node sequentially BEFORE launching parallel jobs.
-## This must happen outside -AsJob so we get log visibility and can detect failures early.
-## Installing inside -AsJob was silently slow/hanging with no observable progress.
-log "Pre-installing AzSHCI.ARCinstaller module on HCI nodes [$((Get-VM).Name -join ',')] sequentially..."
-foreach ($vm in (Get-VM)) {
-    log "Installing AzSHCI.ARCinstaller on '$($vm.Name)'..."
-    $installResult = Invoke-Command -VMName $vm.Name -Credential $adminCred -ScriptBlock {
-        $ConfirmPreference = 'None'
-        $VerbosePreference = 'SilentlyContinue'
-        $ErrorActionPreference = 'Stop'
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser | Out-Null
-        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-        Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber -Scope AllUsers
-        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-        $mod = Get-Module AzSHCI.ARCinstaller -ListAvailable | Select-Object -First 1
-        Write-Output "AzSHCI.ARCinstaller installed: version $($mod.Version)"
-    } -ErrorAction Stop
-    $installResult | ForEach-Object { log "  [$($vm.Name)] $_" }
-    log "Module pre-install complete on '$($vm.Name)'."
-}
-log "AzSHCI.ARCinstaller pre-installation complete on all nodes."
-
-## create jobs for each node to initialize Azure Arc
-## Invoke-AzStackHciArcInitialization is sufficient with the 24H2 ISO — it handles azcmagent
-## install, connect, and edge device registration internally. Just needs -Cloud AzureCloud and token.
+## Arc initialization using Invoke-AzStackHciArcInitialization.
+## CRITICAL: must wait for bootstrap service on port 9098 first — without this the cmdlet hangs silently.
+## This matches colleague's working approach (commit b931cf2b).
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
     $ConfirmPreference     = 'None'
-    $VerbosePreference     = 'SilentlyContinue'
 
-    $t                  = $args[0]
-    $subscriptionId     = $args[1]
-    $resourceGroupName  = $args[2]
-    $tenantId           = $args[3]
-    $location           = $args[4]
-    $accountId          = $args[5]
-    $arcGatewayId       = $args[6]
-    $proxyServerEndpoint= $args[7]
-    $proxyBypassString  = $args[8]
+    $t                   = $args[0]
+    $subscriptionId      = $args[1]
+    $resourceGroupName   = $args[2]
+    $tenantId            = $args[3]
+    $location            = $args[4]
+    $accountName         = $args[5]
+    $arcGatewayId        = $args[6]
+    $proxyServerEndpoint = $args[7]
+    $proxyBypassString   = $args[8]
 
     $optionalParameters = @{}
     if ($arcGatewayId)        { $optionalParameters['ArcGatewayID'] = $arcGatewayId }
     if ($proxyServerEndpoint) { $optionalParameters['Proxy'] = $proxyServerEndpoint; $optionalParameters['ProxyBypass'] = $proxyBypassString }
 
-    # AzSHCI.ARCinstaller pre-installed on this node before job launch
-    Import-Module AzSHCI.ARCinstaller -Force
+    # Install AzsHCI.ARCinstaller module if not present
+    if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable)) {
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module -Name AzsHCI.ARCinstaller -Force
+        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+    }
+    Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller version: $((Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version)"
 
-    Write-Output "Starting Invoke-AzStackHciArcInitialization for '$($env:COMPUTERNAME)'..."
+    # Wait for bootstrap service on port 9098 — MUST be up before calling the cmdlet or it hangs
+    Write-Output "[$env:COMPUTERNAME] Waiting for bootstrap service at 127.0.0.1:9098..."
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    while (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet -WarningAction SilentlyContinue) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
+        Write-Output "[$env:COMPUTERNAME] Port 9098 not yet ready ($([int]$stopwatch.Elapsed.TotalSeconds)s elapsed). Retrying in 30s..."
+        Start-Sleep -Seconds 30
+    }
+    if ($stopwatch.Elapsed.TotalMinutes -ge 30) {
+        throw "[$env:COMPUTERNAME] Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes."
+    }
+    Write-Output "[$env:COMPUTERNAME] Bootstrap service is reachable after $([int]$stopwatch.Elapsed.TotalSeconds)s."
 
-    # Parameters per official docs: https://learn.microsoft.com/azure/azure-local/deploy/deployment-without-azure-arc-gateway?view=azloc-2603
-    # -AccountID is NOT passed when using -ArmAccessToken (token already carries identity)
-    # Region must be lowercase with no spaces (e.g. 'eastus2euap' not 'East US 2 EUAP')
-    Invoke-AzStackHciArcInitialization `
-        -SubscriptionID $subscriptionId `
-        -ResourceGroup  $resourceGroupName `
-        -TenantId       $tenantId `
-        -Cloud          AzureCloud `
-        -ArmAccessToken $t `
-        -Region         $location `
-        @optionalParameters
-
-    Write-Output "Invoke-AzStackHciArcInitialization completed for '$($env:COMPUTERNAME)'."
+    try {
+        Write-Output "[$env:COMPUTERNAME] Starting Invoke-AzStackHciArcInitialization..."
+        Invoke-AzStackHciArcInitialization `
+            -SubscriptionID $subscriptionId `
+            -ResourceGroup  $resourceGroupName `
+            -TenantID       $tenantId `
+            -Cloud          AzureCloud `
+            -AccountID      $accountName `
+            -ArmAccessToken $t `
+            -Region         $location `
+            @optionalParameters
+        Write-Output "[$env:COMPUTERNAME] Invoke-AzStackHciArcInitialization completed successfully."
+    } catch {
+        Write-Error $_ -ErrorAction Stop
+    }
 } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
-log 'Waiting up to 90 minutes for Azure Arc initialization to complete on nodes...'
+log 'Waiting up to 90 minutes for Azure Arc initialization jobs to complete on all nodes...'
 
-# Accumulate job output as we poll — drain WITHOUT -Keep so PSRemoting buffer empties
+# Drain output from jobs as they run so we have visibility in the log
 $nodeOutput = @{}
 foreach ($job in $arcInitializationJobs) { $nodeOutput[$job.Id] = [System.Collections.Generic.List[string]]::new() }
 
@@ -401,13 +396,13 @@ $arcPollTimeout = (Get-Date).AddMinutes(90)
 while ($true) {
     $runningJobs = @($arcInitializationJobs | Where-Object { $_.State -eq 'Running' })
     if ($runningJobs.Count -eq 0) { break }
-    if ((Get-Date) -gt $arcPollTimeout) {
-        log 'Arc initialization polling timed out after 90 minutes.'
-        break
-    }
+    if ((Get-Date) -gt $arcPollTimeout) { log 'Arc initialization polling timed out after 90 minutes.'; break }
     foreach ($job in $arcInitializationJobs) {
         $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
-        if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
+        if ($out) {
+            $out | ForEach-Object { log "  [job $($job.Id)] $_" }
+            $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" }))
+        }
     }
     Start-Sleep -Seconds 15
 }
@@ -418,24 +413,15 @@ foreach ($job in $arcInitializationJobs) {
     if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
 }
 
-# Check for failed arc initialization jobs
+# Check results
 log 'Checking status of Azure Arc initialization jobs...'
 $arcFailed = $false
-$arcInitializationJobs | ForEach-Object {
-    $job = $_
+foreach ($job in $arcInitializationJobs) {
     $allOutput = $nodeOutput[$job.Id] -join "`n"
-    log "[$($job.Location)] Job state: '$($job.State)'. Output: '$allOutput'"
-
+    log "[$($job.Location)] Job state: '$($job.State)'. Output:`n$allOutput"
     if ($job.State -ne 'Completed') {
-        log "Arc initialization job on '$($job.Location)' did NOT complete successfully (State: '$($job.State)')."
+        log "Arc initialization job on '$($job.Location)' did NOT complete (State: '$($job.State)')."
         $arcFailed = $true
-    } else {
-        $failedChildren = Get-Job -Id $job.Id -IncludeChildJob | Where-Object { $_.State -eq 'Failed' }
-        if ($failedChildren) {
-            $childErrors = Receive-Job -Job $failedChildren -ErrorAction SilentlyContinue 2>&1
-            log "Arc initialization job on '$($job.Location)' has failed child jobs. Errors: '$($childErrors | Out-String)'"
-            $arcFailed = $true
-        }
     }
 }
 
