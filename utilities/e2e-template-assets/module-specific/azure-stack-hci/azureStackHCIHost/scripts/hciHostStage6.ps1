@@ -326,8 +326,6 @@ If (!$testNodeInternetConnection) {
 }
 
 ## Arc initialization using Invoke-AzStackHciArcInitialization.
-## CRITICAL: must wait for bootstrap service on port 9098 first — without this the cmdlet hangs silently.
-## This matches colleague's working approach (commit b931cf2b).
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
@@ -361,8 +359,40 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         Write-Output "[$env:COMPUTERNAME] Invoke-AzStackHciArcInitialization already available."
     }
 
+    # Ensure BootstrapOobe service is running — required by the cmdlet on port 9098.
+    # On VMs created from raw VHDX (dism /Apply-Image), this service may not auto-start.
+    $bootstrapSvc = Get-Service -Name '*BootstrapOobe*', '*ArcBootstrap*', '*oobe*bootstrap*' -ErrorAction SilentlyContinue
+    if ($bootstrapSvc) {
+        Write-Output "[$env:COMPUTERNAME] Found bootstrap service: $($bootstrapSvc.Name) (Status: $($bootstrapSvc.Status))"
+        if ($bootstrapSvc.Status -ne 'Running') {
+            Write-Output "[$env:COMPUTERNAME] Starting bootstrap service..."
+            $bootstrapSvc | Start-Service -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 5
+            $bootstrapSvc.Refresh()
+            Write-Output "[$env:COMPUTERNAME] Bootstrap service status after start: $($bootstrapSvc.Status)"
+        }
+    } else {
+        Write-Output "[$env:COMPUTERNAME] No bootstrap service found. Listing all services with 'bootstrap' or 'oobe'..."
+        Get-Service | Where-Object { $_.Name -match 'bootstrap|oobe|arc' } | ForEach-Object {
+            Write-Output "  $($_.Name): $($_.Status) ($($_.DisplayName))"
+        }
+    }
+
+    # Wait for bootstrap service on port 9098 — the cmdlet needs it
+    Write-Output "[$env:COMPUTERNAME] Checking bootstrap port 9098..."
+    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+    while (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet -WarningAction SilentlyContinue) -and $stopwatch.Elapsed.TotalMinutes -lt 15) {
+        Write-Output "[$env:COMPUTERNAME] Port 9098 not ready ($([int]$stopwatch.Elapsed.TotalSeconds)s). Retrying in 30s..."
+        Start-Sleep -Seconds 30
+    }
+    if (Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet -WarningAction SilentlyContinue) {
+        Write-Output "[$env:COMPUTERNAME] Port 9098 is reachable after $([int]$stopwatch.Elapsed.TotalSeconds)s."
+    } else {
+        Write-Output "[$env:COMPUTERNAME] WARNING: Port 9098 not reachable after 15 min. Proceeding anyway (cmdlet may handle it)..."
+    }
+
     try {
-        Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
+        Write-Output "[$env:COMPUTERNAME] Starting Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
             -SubscriptionID $subscriptionId `
