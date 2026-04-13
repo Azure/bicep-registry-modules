@@ -401,7 +401,20 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
-$arcInitializationJobs | Wait-Job -Timeout 3600
+# Poll completion with periodic Receive-Job draining to prevent Wait-Job deadlock.
+# Wait-Job can deadlock when remote jobs write to the host stream (prompts/verbose).
+$arcPollTimeout = (Get-Date).AddMinutes(30)
+while ($true) {
+    $runningJobs = @($arcInitializationJobs | Where-Object { $_.State -eq 'Running' })
+    if ($runningJobs.Count -eq 0) { break }
+    if ((Get-Date) -gt $arcPollTimeout) {
+        log 'Arc initialization polling timed out after 30 minutes.'
+        break
+    }
+    # Drain output buffers to unblock host-stream writes in remote jobs
+    $null = $arcInitializationJobs | Receive-Job -Keep -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 15
+}
 
 # check for failed arc initialization jobs - robust detection of failures and timeouts
 log 'Checking status of Azure Arc initialization jobs...'
