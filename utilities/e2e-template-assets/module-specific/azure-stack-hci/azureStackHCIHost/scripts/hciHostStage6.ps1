@@ -330,7 +330,7 @@ If (!$testNodeInternetConnection) {
 ## This matches colleague's working approach (commit b931cf2b).
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
-    $ConfirmPreference = 'None'
+    $ErrorActionPreference = 'Stop'
 
     $t                   = $args[0]
     $subscriptionId      = $args[1]
@@ -343,38 +343,13 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $proxyBypassString   = $args[8]
 
     $optionalParameters = @{}
-    if ($arcGatewayId)        { $optionalParameters['ArcGatewayID'] = $arcGatewayId }
-    if ($proxyServerEndpoint) { $optionalParameters['Proxy'] = $proxyServerEndpoint; $optionalParameters['ProxyBypass'] = $proxyBypassString }
-
-    # Install AzsHCI.ARCinstaller and Az.Resources modules if not present
-    Write-Output "[$env:COMPUTERNAME] Checking AzsHCI.ARCinstaller module..."
-    if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable)) {
-        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller not found - installing from PSGallery..."
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-        If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-        Install-Module Az.Resources -Force
-        Install-Module -Name AzsHCI.ARCinstaller -Force
-        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-    } else {
-        $moduleVersion = (Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version
-        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller module found - version: $moduleVersion"
-    }
-
-    # Wait for bootstrap service on port 9098 — MUST be up before calling the cmdlet or it hangs
-    Write-Output "[$env:COMPUTERNAME] Waiting for bootstrap service at 127.0.0.1:9098..."
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    while (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Output "[$env:COMPUTERNAME] Port 9098 not yet ready ($([int]$stopwatch.Elapsed.TotalSeconds)s elapsed). Retrying in 30s..."
-        Start-Sleep -Seconds 30
-    }
-    if ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error "[$env:COMPUTERNAME] Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting..." -ErrorAction Stop
-    }
-    Write-Output "[$env:COMPUTERNAME] Bootstrap service is reachable after $([int]$stopwatch.Elapsed.TotalSeconds)s."
+    if ($arcGatewayId)        { $optionalParameters['arcGatewayId'] = $arcGatewayId }
+    if ($proxyServerEndpoint) { $optionalParameters['proxy'] = $proxyServerEndpoint; $optionalParameters['proxyBypass'] = $proxyBypassString }
 
     try {
-        Write-Output "[$env:COMPUTERNAME] Starting Invoke-AzStackHciArcInitialization..."
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
+
         Invoke-AzStackHciArcInitialization `
             -SubscriptionID $subscriptionId `
             -ResourceGroup  $resourceGroupName `
@@ -384,7 +359,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             -ArmAccessToken $t `
             -Region         $location `
             @optionalParameters
-        Write-Output "[$env:COMPUTERNAME] Invoke-AzStackHciArcInitialization completed successfully."
+
+        Write-Output "[$env:COMPUTERNAME] Arc initialization completed successfully"
     } catch {
         Write-Error $_ -ErrorAction Stop
     }
