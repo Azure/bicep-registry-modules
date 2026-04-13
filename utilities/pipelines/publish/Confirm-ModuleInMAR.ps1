@@ -23,10 +23,8 @@ function Confirm-ModuleInMAR {
         [Parameter(Mandatory, HelpMessage = "The path of the module to check for. For example: 'avm/res/key-vault/vault', 'avm/res/key-vault/vault/1.0.0'")]
         [string] $PublishedModuleName,
 
-        [Parameter(
-            Mandatory,
-            HelpMessage = 'Provide a GitHub token (PAT for testing or GitHub App token for production) with read access to the MAR repository (microsoft/mcr).')]
-        [string] $GitHubToken
+        [Parameter(Mandatory = $false, HelpMessage = 'Provide the URL to the BicepMARModules.json file. For example: "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepMARModules.json". If not provided, the default URL will be used.')]
+        [string] $PublishedModulesUrl = 'https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepMARModules.json'
     )
 
     # Strip trailing version (e.g. '/1.0.0') from the module name for matching
@@ -35,26 +33,13 @@ function Confirm-ModuleInMAR {
     ##################################
     ##   Confirm module tag known   ##
     ##################################
-    $marFileUrl = 'https://raw.githubusercontent.com/ReneHezser/mcr/refs/heads/main/teams/bicep/bicep.yml'
-    $headers = @{
-        Authorization = "Bearer $GitHubToken"
-        Accept        = 'application/vnd.github.v3.raw'
-        'User-Agent'  = 'AVM-Publish-Pipeline'
-    }
-
     try {
-        # sample entry in https://github.com/microsoft/mcr/blob/main/teams/bicep/bicep.yml
-        # - name: public/bicep/avm/res/key-vault/vault
-        #     displayName: Key Vault
-        #     description: AVM Resource Module for Key Vault
-        #     logoUrl: https://raw.githubusercontent.com/Azure/bicep/main/src/vscode-bicep/icons/bicep-logo-256.png
-        #     supportLink: https://github.com/Azure/bicep-registry-modules/issues
-        #     documentationLink: https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/key-vault/vault/README.md
-        $marFileContent = (Invoke-WebRequest -Uri $marFileUrl -Headers $headers -ErrorAction Stop).Content
+        $marModulesContent = (Invoke-WebRequest -Uri $PublishedModulesUrl -ErrorAction Stop).Content
+        $marModuleList = ($marModulesContent | ConvertFrom-Json)
     } catch {
-        throw "Failed to fetch MAR file from [$marFileUrl]. Error: $($_.Exception.Message)"
+        throw "Failed to fetch the list of published modules from [$PublishedModulesUrl]. Error: $($_.Exception.Message)"
     }
-    if ($marFileContent -match "name:\s*public/bicep/$moduleNameForMatch\s") {
+    if ($marModuleList -contains $moduleNameForMatch) {
         Write-Host "Passed: Found module [$moduleNameForMatch] in the MAR file" -ForegroundColor Green
         return $true
     } else {
