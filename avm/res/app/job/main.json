@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14936556497596447856"
+      "version": "0.42.1.51946",
+      "templateHash": "11532936996951995971"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -1007,7 +1007,7 @@
         "Schedule"
       ],
       "metadata": {
-        "description": "Required. Trigger type of the job."
+        "description": "Required. Trigger with typo errors for testing type of the job."
       }
     }
   },
