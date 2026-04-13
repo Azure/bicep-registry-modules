@@ -100,6 +100,9 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Optional. Tags of the resource.')
 param tags object?
 
@@ -157,20 +160,23 @@ module bigDataPool_create '../modules/bigDataPool.bicep' = {
 // Synapse's internal library management pool (systemreservedpool-librarymanagement) also needs
 // time to initialize after a new Big Data Pool is created. Without this wait, the library
 // installation Spark job fails with a transient WASB 500 error.
-resource bigDataPool_libraryWait 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
-  dependsOn: [bigDataPool_create]
+module bigDataPool_libraryWait 'br/public:avm/res/resources/deployment-script:0.5.2' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
   name: '${deployment().name}-libraryWait'
-  location: location
-  kind: 'AzurePowerShell'
-  properties: {
-    retentionInterval: 'PT1H'
-    azPowerShellVersion: '11.0'
-    cleanupPreference: 'Always'
+  params: {
+    name: '${deployment().name}-libraryWait'
+    location: resourceGroup().location
+    tags: tags
+    kind: 'AzurePowerShell'
+    enableTelemetry: enableTelemetry
     scriptContent: 'Start-Sleep -Seconds 300'
+    azPowerShellVersion: '11.0'
+    timeout: 'PT15M'
+    cleanupPreference: 'Always'
+    retentionInterval: 'PT1H'
   }
-  tags: {
-    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
-  }
+  dependsOn: [
+    bigDataPool_create
+  ]
 }
 
 // Second-pass deployment that adds the library configuration to the already-created pool.
@@ -285,69 +291,25 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The synapse workspace Big Data Pools Auto-scaling properties.')
-type autoScaleType = {
-  @description('Required. Synapse workspace Big Data Pools Auto-scaling maximum node count.')
-  @minValue(3)
-  @maxValue(200)
-  maxNodeCount: int
-
-  @description('Required. Synapse workspace Big Data Pools Auto-scaling minimum node count.')
-  @minValue(3)
-  @maxValue(200)
-  minNodeCount: int
-}
+import {
+  autoScaleType as _autoScaleType
+  dynamicExecutorAllocationType as _dynamicExecutorAllocationType
+  sparkConfigPropertiesType as _sparkConfigPropertiesType
+  libraryRequirementsType as _libraryRequirementsType
+  customLibraryType as _customLibraryType
+} from '../modules/bigDataPool.bicep'
 
 @export()
-@description('The synapse workspace Big Data Pools Dynamic Executor Allocation properties.')
-type dynamicExecutorAllocationType = {
-  @description('Required. Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.')
-  @minValue(1)
-  @maxValue(10)
-  minExecutors: int
-
-  @description('Required. Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1).')
-  @minValue(1)
-  @maxValue(10)
-  maxExecutors: int
-}
+type autoScaleType = _autoScaleType
 
 @export()
-@description('The synapse workspace Big Data Pools Spark configuration file properties.')
-type sparkConfigPropertiesType = {
-  @description('Required. The configuration type.')
-  configurationType: ('Artifact' | 'File')
-
-  @description('Required. The configuration content.')
-  content: string
-
-  @description('Required. The configuration filename.')
-  filename: string
-}
+type dynamicExecutorAllocationType = _dynamicExecutorAllocationType
 
 @export()
-@description('The synapse workspace Big Data Pools library version requirements.')
-type libraryRequirementsType = {
-  @description('Required. The library requirements (e.g. contents of a requirements.txt file).')
-  content: string
-
-  @description('Required. The filename of the library requirements file.')
-  filename: string
-}
+type sparkConfigPropertiesType = _sparkConfigPropertiesType
 
 @export()
-@description('The synapse workspace Big Data Pools custom library/package info.')
-type customLibraryType = {
-  @description('Optional. Storage blob container name.')
-  containerName: string?
+type libraryRequirementsType = _libraryRequirementsType
 
-  @description('Optional. Name of the library.')
-  name: string?
-
-  @description('Optional. Storage blob path of library.')
-  path: string?
-
-  @description('Optional. Type of the library (e.g. \'whl\', \'jar\').')
-  type: string?
-}
+@export()
+type customLibraryType = _customLibraryType

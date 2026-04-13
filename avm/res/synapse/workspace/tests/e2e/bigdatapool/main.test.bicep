@@ -82,6 +82,9 @@ module testDeployment '../../../main.bicep' = [
           nodeSize: 'Small'
         }
       ]
+      tags: {
+        SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+      }
     }
   }
 ]

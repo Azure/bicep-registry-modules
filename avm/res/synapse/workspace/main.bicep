@@ -382,6 +382,7 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       sparkEventsFolder: bigDataPool.?sparkEventsFolder
       sparkVersion: bigDataPool.?sparkVersion
       lock: bigDataPool.?lock ?? lock
+      enableTelemetry: enableTelemetry
       diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
       roleAssignments: bigDataPool.?roleAssignments ?? []
     }
