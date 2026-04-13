@@ -335,7 +335,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $resourceGroupName = $args[2]
     $tenantId = $args[3]
     $location = $args[4]
-    $accountName = $args[5]
+    $accountId = $args[5]      # managed identity client ID
     $arcGatewayId = $args[6]
     $proxyServerEndpoint = $args[7]
     $proxyBypassString = $args[8]
@@ -344,128 +344,69 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
 
     If ($arcGatewayId) {
         $optionalParameters += @{
-            'arcGatewayId' = $arcGatewayId
+            'ArcGatewayID' = $arcGatewayId
         }
     }
     If ($proxyServerEndpoint) {
         $optionalParameters += @{
-            'proxy'       = $proxyServerEndpoint
-            'proxyBypass' = $proxyBypassString
+            'Proxy'       = $proxyServerEndpoint
+            'ProxyBypass' = $proxyBypassString
         }
     }
 
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
     If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+    Install-Module Az.Accounts -Force -AllowClobber
     Install-Module Az.Resources -Force -AllowClobber
-    Install-Module -Name AzsHCI.ARCinstaller -Force -AllowClobber # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
+    Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
-    # NOTE: Port 9098 bootstrap service wait removed - that was only needed for Invoke-AzStackHciArcInitialization
-    # which is no longer used. We connect Arc directly via azcmagent below.
-
     try {
+        # Authenticate inside the HCI node using the access token passed from the host VM.
+        # Invoke-AzStackHciArcInitialization uses the current Az context for Azure API calls.
+        Write-Output "Connecting to Azure using access token (AccountId: $accountId)..."
+        Connect-AzAccount -AccessToken (ConvertTo-SecureString $t -AsPlainText -Force) `
+            -AccountId $accountId -TenantId $tenantId -Subscription $subscriptionId -ErrorAction Stop
+        Write-Output 'Azure context established.'
 
-        function Install-ModuleIfMissing {
-            param(
-                [Parameter(Mandatory = $true)]
-                [string]$Name,
-                [Parameter(Mandatory = $false)]
-                [string]$Repository = 'PSGallery',
-                [Parameter(Mandatory = $false)]
-                [switch]$Force,
-                [Parameter(Mandatory = $false)]
-                [switch]$AllowClobber
-            )
-            $module = Get-Module -Name $Name -ListAvailable
-            if (!$module) {
-                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
-            }
-        }
-
-        Write-Output 'Downloading Azure Connected Machine Agent MSI...'
-        wget -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-
-        # msiexec.exe starts a new process and returns immediately from PowerShell unless we use
-        # Start-Process -Wait. Without -Wait the script races past to azcmagent.exe before the
-        # installer has finished, resulting in "not recognized" errors.
-        Write-Output 'Installing Azure Connected Machine Agent (waiting for completion)...'
-        $msiArgs = "/i `"$env:TEMP\AzureConnectedMachineAgent.msi`" /l*v `"$env:TEMP\AzureConnectedMachineAgentInstall.log`" /qn"
-        $msiProc = Start-Process -FilePath 'msiexec.exe' -ArgumentList $msiArgs -Wait -PassThru
-        if ($msiProc.ExitCode -ne 0) {
-            $installLog = Get-Content "$env:TEMP\AzureConnectedMachineAgentInstall.log" -ErrorAction SilentlyContinue | Select-Object -Last 30
-            throw "Arc Connected Machine Agent MSI install failed. ExitCode=$($msiProc.ExitCode). Log tail: $($installLog -join ' | ')"
-        }
-        Write-Output "Arc Connected Machine Agent MSI installed successfully (ExitCode=0)."
-
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
-
-        $machineName = [System.Net.Dns]::GetHostName()
-        $correlationID = New-Guid
-
-        # Wait for azcmagent.exe to be present (MSI may need a moment after exit to flush files).
-        $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
-        $agentWaitSec = 0
-        while (-not (Test-Path $azcmagentPath) -and $agentWaitSec -lt 60) {
-            Write-Output "Waiting for azcmagent.exe at '$azcmagentPath'... [${agentWaitSec}s]"
-            Start-Sleep -Seconds 5
-            $agentWaitSec += 5
-        }
-        if (-not (Test-Path $azcmagentPath)) {
-            throw "azcmagent.exe not found at '$azcmagentPath' after MSI install. Check install log: $env:TEMP\AzureConnectedMachineAgentInstall.log"
-        }
-        Write-Output "azcmagent.exe confirmed present at: $azcmagentPath"
-        & "$azcmagentPath" --version
-        & "$azcmagentPath" connect --resource-group "$resourceGroupName" --resource-name "$machineName" --tenant-id "$tenantId" --location "$location" --subscription-id "$subscriptionId" --cloud 'AzureCloud' --correlation-id "$correlationID" --access-token "$t";
-        if ($LASTEXITCODE -ne 0) {
-            throw 'Arc server connection failed'
-        }
-
-        Write-Output 'PUT edge device resource to install mandatory extensions'
-        $uri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.HybridCompute/machines/$machineName/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
-        $body = @{
-            'kind'       = 'HCI';
-            'properties' = @{};
-        }
-        $headers = @{
-            'Authorization' = "Bearer $t";
-        }
-        Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
-
-        Write-Output 'Polling Edge device resource for readiness (no fixed sleep, max 30 min)...'
-        $waitInterval = 60
-        $maxWaitCount = 30
-        $ready = $false
-        for ($waitCount = 0; $waitCount -lt $maxWaitCount; $waitCount++) {
+        # Wait for the HCI bootstrap service on port 9098.
+        # Invoke-AzStackHciArcInitialization communicates with this local service which handles
+        # Arc registration with HCI-specific OS SKU metadata, extensions, and configuration.
+        Write-Output 'Waiting for HCI bootstrap service on port 9098...'
+        $bootstrapReady = $false
+        for ($i = 0; $i -lt 36; $i++) {
             try {
-                $headers = @{
-                    'Authorization' = "Bearer $t";
-                }
-                $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
-                if ($response.properties.provisioningState -eq 'Succeeded') {
-                    Write-Output "Edge device resource is ready after $($waitCount * $waitInterval) seconds."
-                    $ready = $true
-                    break
-                } elseif ($response.properties.provisioningState -eq 'Failed') {
-                    throw "Edge device provisioning failed with state 'Failed': $($response.properties | ConvertTo-Json -Compress -Depth 5)"
-                }
-                Write-Output "[$waitCount/$maxWaitCount] Edge device state: $($response.properties.provisioningState). Waiting ${waitInterval}s..."
-            } catch [System.Net.WebException], [Microsoft.PowerShell.Commands.HttpResponseException] {
-                Write-Output "[$waitCount/$maxWaitCount] Edge device HTTP check failed (will retry): $_"
-            }
-            Start-Sleep -Seconds $waitInterval
+                $tcpClient = New-Object System.Net.Sockets.TcpClient
+                $tcpClient.Connect('localhost', 9098)
+                $tcpClient.Close()
+                $bootstrapReady = $true
+                break
+            } catch {}
+            Write-Output "Bootstrap service not yet ready [attempt $($i+1)/36]. Waiting 10s..."
+            Start-Sleep -Seconds 10
         }
+        if (-not $bootstrapReady) {
+            throw 'HCI bootstrap service on port 9098 did not start within 6 minutes. Arc initialization cannot proceed.'
+        }
+        Write-Output 'Bootstrap service is ready on port 9098.'
 
-        if (!$ready) {
-            throw 'Edge device resource is not ready after 30 minutes.'
-        }
+        # Use Invoke-AzStackHciArcInitialization which triggers the HCI bootstrap workflow.
+        # This correctly sets HCI-specific Arc osSku metadata and installs required extensions,
+        # unlike azcmagent connect which registers as a generic Arc server with empty osSku.
+        Write-Output "Invoking Azure Stack HCI Arc initialization for node '$($env:COMPUTERNAME)'..."
+        Invoke-AzStackHciArcInitialization `
+            -SubscriptionID $subscriptionId `
+            -TenantID $tenantId `
+            -ResourceGroup $resourceGroupName `
+            -Region $location `
+            -AccountID $accountId `
+            @optionalParameters
+        Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
     } catch {
         Write-Error $_ -ErrorAction Stop
     }
-} -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
+} -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $userAssignedManagedIdentityClientId, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
