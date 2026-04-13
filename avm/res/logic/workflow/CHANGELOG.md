@@ -7,6 +7,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 - Test for now
 
+### Breaking Changes
+
+- None
+
 ## 0.5.3
 
 ### Changes
