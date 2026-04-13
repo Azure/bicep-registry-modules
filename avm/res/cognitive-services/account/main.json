@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "15302696710472046095"
+      "version": "0.41.2.15936",
+      "templateHash": "7076304102605375340"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -103,8 +103,9 @@
             },
             "version": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The version of Cognitive Services account deployment model."
+                "description": "Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version."
               }
             }
           },
@@ -1459,7 +1460,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1489,7 +1490,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1530,7 +1531,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2232,8 +2233,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "356315690886888607"
+              "version": "0.41.2.15936",
+              "templateHash": "13968722110082077308"
             }
           },
           "definitions": {

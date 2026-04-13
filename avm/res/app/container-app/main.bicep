@@ -49,7 +49,7 @@ param stickySessionsAffinity string = 'none'
 param ingressTransport string = 'auto'
 
 @description('Optional. Dev ContainerApp service type.')
-param service resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.service?
+param service resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.service?
 
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
@@ -82,21 +82,21 @@ param activeRevisionsMode string = 'Single'
 @description('Required. Resource ID of environment.')
 param environmentResourceId string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/containerApps@2026-01-01'>.tags?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
-param registries resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.registries?
+param registries resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.registries?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -104,46 +104,37 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Custom domain bindings for Container App hostnames.')
-param customDomains resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.ingress.customDomains?
+param customDomains resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.customDomains?
 
 @description('Optional. Exposed Port in containers for TCP traffic from ingress.')
 param exposedPort int = 0
 
 @description('Optional. Rules to restrict incoming IP address.')
-param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.ingress.ipSecurityRestrictions?
+param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.ipSecurityRestrictions?
 
-@description('Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes.')
-param trafficLabel string = 'label-1'
-
-@description('Optional. Indicates that the traffic weight belongs to a latest stable revision.')
-param trafficLatestRevision bool = true
-
-@description('Optional. Name of a revision.')
-param trafficRevisionName string?
-
-@description('Optional. Traffic weight assigned to a revision.')
-param trafficWeight int = 100
+@description('Optional. Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns.')
+param traffic resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.traffic?
 
 @description('Optional. Dapr configuration for the Container App.')
-param dapr resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.dapr?
+param dapr resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.dapr?
 
 @description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
-param identitySettings resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.identitySettings?
+param identitySettings resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.identitySettings?
 
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.configuration.runtime?
+param runtime resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.runtime?
 
 @description('Required. List of container definitions for the Container App.')
-param containers resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.template.containers
+param containers resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.containers
 
 @description('Optional. The termination grace period for the container app.')
 param terminationGracePeriodSeconds int?
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.template.initContainers?
+param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.initContainers?
 
 @description('Optional. The secrets of the Container App.')
 param secrets secretType[]?
@@ -152,7 +143,7 @@ param secrets secretType[]?
 param revisionSuffix string?
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes resourceInput<'Microsoft.App/containerApps@2025-02-02-preview'>.properties.template.volumes?
+param volumes resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.volumes?
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string?
@@ -160,7 +151,7 @@ param workloadProfileName string?
 @description('Optional. The name of the Container App Auth configs.')
 param authConfig authConfigType?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -173,8 +164,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -209,7 +200,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -227,7 +218,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2025-02-02-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
   name: name
   tags: tags
   kind: kind
@@ -239,22 +230,22 @@ resource containerApp 'Microsoft.App/containerApps@2025-02-02-preview' = {
     template: {
       containers: containers
       terminationGracePeriodSeconds: terminationGracePeriodSeconds
-      initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
+      initContainers: initContainersTemplate
       revisionSuffix: revisionSuffix
       scale: scaleSettings
-      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
-      volumes: !empty(volumes) ? volumes : null
+      serviceBinds: includeAddOns ? serviceBinds : null
+      volumes: volumes
     }
     configuration: {
       activeRevisionsMode: activeRevisionsMode
-      dapr: !empty(dapr) ? dapr : null
-      identitySettings: !empty(identitySettings) ? identitySettings : null
+      dapr: dapr
+      identitySettings: identitySettings
       ingress: disableIngress
         ? null
         : {
             additionalPortMappings: additionalPortMappings
             allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
-            customDomains: !empty(customDomains) ? customDomains : null
+            customDomains: customDomains
             corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
               ? {
                   allowCredentials: corsPolicy.?allowCredentials ?? false
@@ -268,28 +259,19 @@ resource containerApp 'Microsoft.App/containerApps@2025-02-02-preview' = {
             clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
             exposedPort: exposedPort
             external: ingressExternal
-            ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
+            ipSecurityRestrictions: ipSecurityRestrictions
             targetPort: ingressTargetPort
             stickySessions: {
               affinity: stickySessionsAffinity
             }
-            traffic: ingressTransport != 'tcp'
-              ? [
-                  {
-                    label: trafficLabel
-                    latestRevision: trafficLatestRevision
-                    revisionName: trafficRevisionName
-                    weight: trafficWeight
-                  }
-                ]
-              : null
+            traffic: ingressTransport != 'tcp' ? traffic : null
             transport: ingressTransport
           }
-      service: (includeAddOns && !empty(service)) ? service : null
+      service: includeAddOns ? service : null
       maxInactiveRevisions: maxInactiveRevisions
-      registries: !empty(registries) ? registries : null
+      registries: registries
       secrets: secrets
-      runtime: !empty(runtime) ? runtime : null
+      runtime: runtime
     }
   }
 }
@@ -321,7 +303,7 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+module containerAppAuthConfigs 'auth-config/main.bicep' = if (!empty(authConfig)) {
   name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
@@ -583,20 +565,20 @@ type secretType = {
 @description('The type for the container app\'s authentication configuration.')
 type authConfigType = {
   @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
-  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.encryptionSettings?
+  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.encryptionSettings?
 
   @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
-  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.globalValidation?
+  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.globalValidation?
 
   @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
-  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.httpSettings?
+  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.httpSettings?
 
   @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
-  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.identityProviders?
+  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.identityProviders?
 
   @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
-  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.login?
+  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.login?
 
   @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
-  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-02-02-preview'>.properties.platform?
+  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.platform?
 }

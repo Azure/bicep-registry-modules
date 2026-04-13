@@ -55,17 +55,19 @@ The following section provides usage examples for the module, which were used to
 - [Using analytical storage](#example-1-using-analytical-storage)
 - [Using bounded consistency](#example-2-using-bounded-consistency)
 - [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Gremlin Database](#example-5-gremlin-database)
-- [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
-- [Mongo Database](#example-7-mongo-database)
-- [Deploying multiple regions](#example-8-deploying-multiple-regions)
-- [Plain](#example-9-plain)
-- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [SQL Database](#example-11-sql-database)
-- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-13-api-for-table)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using encryption with Customer-Managed-Key](#example-5-using-encryption-with-customer-managed-key)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Gremlin Database](#example-7-gremlin-database)
+- [Deploying with Managed identities](#example-8-deploying-with-managed-identities)
+- [Mongo Database](#example-9-mongo-database)
+- [Deploying multiple regions](#example-10-deploying-multiple-regions)
+- [Plain](#example-11-plain)
+- [Public network restricted access with ACL](#example-12-public-network-restricted-access-with-acl)
+- [SQL Database](#example-13-sql-database)
+- [Deploying with a sql role definition and assignment](#example-14-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-15-api-for-table)
+- [WAF-aligned](#example-16-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -757,12 +759,16 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
 
 <details>
 
@@ -772,8 +778,21 @@ You can find the full example and the setup of its dependencies in the deploymen
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dddamin001'
+    name: 'dddamhsm001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     zoneRedundant: false
   }
 }
@@ -793,9 +812,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dddamin001"
+      "value": "dddamhsm001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "zoneRedundant": {
       "value": false
     }
@@ -814,15 +852,192 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 using 'br/public:avm/res/document-db/database-account:<version>'
 
 // Required parameters
-param name = 'dddamin001'
+param name = 'dddamhsm001'
 // Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param zoneRedundant = false
 ```
 
 </details>
 <p>
 
-### Example 5: _Gremlin Database_
+### Example 5: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddaenc001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddaenc001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddaenc001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    name: 'dddamin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "dddamin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+param name = 'dddamin001'
+```
+
+</details>
+<p>
+
+### Example 7: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -1047,7 +1262,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 6: _Deploying with Managed identities_
+### Example 8: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -1188,7 +1403,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Mongo Database_
+### Example 9: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -1813,7 +2028,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 8: _Deploying multiple regions_
+### Example 10: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -1958,7 +2173,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 9: _Plain_
+### Example 11: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -2084,7 +2299,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _Public network restricted access with ACL_
+### Example 12: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -2207,7 +2422,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _SQL Database_
+### Example 13: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -3029,7 +3244,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _Deploying with a sql role definition and assignment_
+### Example 14: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -3298,7 +3513,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _API for Table_
+### Example 15: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -3406,7 +3621,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 16: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3667,6 +3882,7 @@ param zoneRedundant = true
 | [`cassandraRoleAssignments`](#parameter-cassandraroleassignments) | array | Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier. |
 | [`cassandraRoleDefinitions`](#parameter-cassandraroledefinitions) | array | Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`cors`](#parameter-cors) | array | The CORS policy for the Cosmos DB database account. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
@@ -4140,6 +4356,34 @@ The CORS policy for the Cosmos DB database account.
 
 - Required: No
 - Type: array
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition. If specified, the parameter `defaultIdentity` must be configured as well.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `databaseAccountOfferType`
 
@@ -5532,11 +5776,13 @@ Array of containers to deploy in the SQL database.
 | [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`conflictResolutionPolicy`](#parameter-sqldatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
 | [`defaultTtl`](#parameter-sqldatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`fullTextPolicy`](#parameter-sqldatabasescontainersfulltextpolicy) | object | The full text policy for the container. |
 | [`indexingPolicy`](#parameter-sqldatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
 | [`kind`](#parameter-sqldatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`tags`](#parameter-sqldatabasescontainerstags) | object | Tags of the SQL Database resource. |
 | [`throughput`](#parameter-sqldatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`uniqueKeyPolicyKeys`](#parameter-sqldatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`vectorEmbeddingPolicy`](#parameter-sqldatabasescontainersvectorembeddingpolicy) | object | The vector embedding policy for the container. |
 | [`version`](#parameter-sqldatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `sqlDatabases.containers.name`
@@ -5584,6 +5830,13 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 - MinValue: -1
 - MaxValue: 2147483647
 
+### Parameter: `sqlDatabases.containers.fullTextPolicy`
+
+The full text policy for the container.
+
+- Required: No
+- Type: object
+
 ### Parameter: `sqlDatabases.containers.indexingPolicy`
 
 Indexing policy of the container.
@@ -5625,6 +5878,13 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
+
+### Parameter: `sqlDatabases.containers.vectorEmbeddingPolicy`
+
+The vector embedding policy for the container.
+
+- Required: No
+- Type: object
 
 ### Parameter: `sqlDatabases.containers.version`
 
@@ -5893,7 +6153,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

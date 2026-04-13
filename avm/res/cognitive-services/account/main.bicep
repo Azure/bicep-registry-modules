@@ -645,8 +645,8 @@ type deploymentType = {
     @description('Required. The format of Cognitive Services account deployment model.')
     format: string
 
-    @description('Required. The version of Cognitive Services account deployment model.')
-    version: string
+    @description('Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version.')
+    version: string?
   }
 
   @description('Optional. The resource model definition representing SKU.')

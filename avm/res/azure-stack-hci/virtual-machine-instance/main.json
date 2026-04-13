@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.177.2456",
-      "templateHash": "3409900262510537307"
+      "version": "0.40.2.10011",
+      "templateHash": "4963312133934804886"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -144,7 +144,7 @@
       }
     },
     "osProfile": {
-      "type": "object",
+      "type": "secureObject",
       "metadata": {
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/osProfile"
@@ -256,7 +256,7 @@
     "virtualMachineInstance": {
       "type": "Microsoft.AzureStackHCI/virtualMachineInstances",
       "apiVersion": "2024-01-01",
-      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.HybridCompute/machines', parameters('name'))]",
       "name": "default",
       "extendedLocation": {
         "type": "CustomLocation",
@@ -286,7 +286,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[extensionResourceId(format('Microsoft.HybridCompute/machines/{0}', parameters('name')), 'Microsoft.AzureStackHCI/virtualMachineInstances', 'default')]",
+      "scope": "[extensionResourceId(resourceId('Microsoft.HybridCompute/machines', parameters('name')), 'Microsoft.AzureStackHCI/virtualMachineInstances', 'default')]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(extensionResourceId(resourceId('Microsoft.HybridCompute/machines', parameters('name')), 'Microsoft.AzureStackHCI/virtualMachineInstances', 'default'), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -303,7 +303,7 @@
     },
     "hybridCompute": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-deployment', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {

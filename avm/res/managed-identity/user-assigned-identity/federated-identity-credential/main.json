@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "13656021764446440473"
+      "version": "0.41.2.15936",
+      "templateHash": "15666888232849771098"
     },
     "name": "User Assigned Identity Federated Identity Credential",
     "description": "This module deploys a User Assigned Identity Federated Identity Credential."

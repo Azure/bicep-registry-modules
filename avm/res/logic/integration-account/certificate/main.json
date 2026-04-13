@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "7583592368174317358"
+      "version": "0.41.2.15936",
+      "templateHash": "4655365210824689101"
     },
     "name": "Integration Account Certificates",
     "description": "This module deploys an Integration Account Certificate."

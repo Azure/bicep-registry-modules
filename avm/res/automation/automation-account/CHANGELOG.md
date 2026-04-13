@@ -2,6 +2,38 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Fixed bug of setting `managedIdentities` with `systemAssigned: false` lead to an error
+- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
+## 0.18.0
+
+### Changes
+
+- Added support for the `hybridRunbookWorkerGroups` & its workers via the `hybridRunbookWorkerGroups` parameter
+
+### Breaking Changes
+
+- None
+
+## 0.17.2
+
+### Changes
+
+- Fixed small bug with deployment name conflict of `automationAccount_variables` & `automationAccount_sourceControlConfigurations`
+- Updated API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.17.1
 
 ### Changes

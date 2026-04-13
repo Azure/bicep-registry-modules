@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "15650220203554779197"
+      "version": "0.41.2.15936",
+      "templateHash": "16480005139666301043"
     },
     "name": "IP Groups",
     "description": "This module deploys an IP Group."
@@ -45,7 +45,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -120,7 +120,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -142,9 +142,9 @@
     },
     "ipAddresses": {
       "type": "array",
-      "defaultValue": [],
+      "minLength": 1,
       "metadata": {
-        "description": "Optional. IpAddresses/IpAddressPrefixes in the IP Group resource."
+        "description": "Required. IpAddresses/IpAddressPrefixes in the IP Group resource."
       }
     },
     "lock": {
@@ -168,7 +168,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/ipGroups@2024-05-01#properties/tags"
+          "source": "Microsoft.Network/ipGroups@2025-05-01#properties/tags"
         },
         "description": "Optional. Resource tags."
       },
@@ -222,7 +222,7 @@
     },
     "ipGroup": {
       "type": "Microsoft.Network/ipGroups",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -234,7 +234,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/ipGroups/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/ipGroups', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -251,7 +251,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/ipGroups/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/ipGroups', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/ipGroups', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -294,7 +294,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('ipGroup', '2024-05-01', 'full').location]"
+      "value": "[reference('ipGroup', '2025-05-01', 'full').location]"
     }
   }
 }

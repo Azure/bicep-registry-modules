@@ -344,7 +344,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 // Firewall Rules
-module workspace_firewallRules 'firewall-rules/main.bicep' = [
+module workspace_firewallRules 'firewall-rule/main.bicep' = [
   for (rule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
     params: {

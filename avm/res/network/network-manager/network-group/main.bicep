@@ -13,21 +13,17 @@ param name string
 @sys.description('Optional. A description of the network group.')
 param description string = ''
 
-@allowed([
-  'Subnet'
-  'VirtualNetwork'
-])
 @sys.description('Optional. The type of the group member. Subnet member type is used for routing configurations.')
-param memberType string = 'VirtualNetwork'
+param memberType resourceInput<'Microsoft.Network/networkManagers/networkGroups@2025-05-01'>.properties.memberType = 'VirtualNetwork'
 
 @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
 param staticMembers staticMemberType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 }
 
-resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2024-05-01' = {
+resource networkGroup 'Microsoft.Network/networkManagers/networkGroups@2025-05-01' = {
   name: name
   parent: networkManager
   properties: {

@@ -37,7 +37,7 @@ param certificates integrationAccountCertificateType[]?
 @description('Optional. All agreements to create.')
 param agreements integrationAccountAgreementType[]?
 
-@description('Optional. The state. - Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
+@description('Optional. The state. Allowed values are Completed, Deleted, Disabled, Enabled, NotSpecified, Suspended.')
 @allowed([
   'Completed'
   'Deleted'

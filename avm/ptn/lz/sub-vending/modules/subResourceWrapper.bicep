@@ -411,40 +411,32 @@ var pimRoleAssignmentsResourceGroupNotSelf = filter(
 
 // UMI Role Assignments filtering and splitting
 var umiRoleAssignmentsSubscription = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    item.?roleAssignments ?? [],
-    assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+  for (item, i) in userAssignedManagedIdentities: map(
+    filter(item.?roleAssignments ?? [], assignment => !contains(assignment.relativeScope, '/resourceGroups/')),
+    assignment => union(assignment, { identityIndex: i })
   )
 ]
 
 var umiRoleAssignmentsSubscriptionFlattened = flatten(umiRoleAssignmentsSubscription)
 
 var umiRoleAssignmentsResourceGroups = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    item.?roleAssignments ?? [],
-    assignment => contains(assignment.relativeScope, '/resourceGroups/')
+  for (item, i) in userAssignedManagedIdentities: map(
+    filter(item.?roleAssignments ?? [], assignment => contains(assignment.relativeScope, '/resourceGroups/')),
+    assignment => union(assignment, { identityIndex: i })
   )
 ]
 
 var umiRoleAssignmentsResourceGroupsFlattened = flatten(umiRoleAssignmentsResourceGroups)
 
-var umiRoleAssignmentsResourceGroupSelf = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    umiRoleAssignmentsResourceGroupsFlattened,
-    assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
-  )
-]
+var umiRoleAssignmentsResourceGroupSelfFlattened = filter(
+  umiRoleAssignmentsResourceGroupsFlattened,
+  assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
 
-var umiRoleAssignmentsResourceGroupSelfFlattened = flatten(umiRoleAssignmentsResourceGroupSelf)
-
-var umiRoleAssignmentsResourceGroupNotSelf = [
-  for (item, i) in userAssignedManagedIdentities: filter(
-    umiRoleAssignmentsResourceGroupsFlattened,
-    assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
-  )
-]
-
-var umiRoleAssignmentsResourceGroupNotSelfFlattened = flatten(umiRoleAssignmentsResourceGroupNotSelf)
+var umiRoleAssignmentsResourceGroupNotSelfFlattened = filter(
+  umiRoleAssignmentsResourceGroupsFlattened,
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
 
 // Check hubNetworkResourceId to see if it's a virtual WAN connection instead of normal virtual network peering
 var virtualHubResourceIdChecked = (!empty(hubNetworkResourceId) && contains(
@@ -571,7 +563,7 @@ module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
     tags: subscriptionTags
   }
 }
-module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.3' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForLzNetworking
   params: {
@@ -588,7 +580,7 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
   }
 }
 
-module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(userAssignedManagedIdentities)) {
+module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(userAssignedManagedIdentities)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForIdentities
   params: {
@@ -619,7 +611,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.2' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
     createLzRouteTable
@@ -681,6 +673,9 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
               ? createNatGateway.?outputs.resourceId
               : null
             delegation: subnet.?delegation
+            serviceEndpoints: subnet.?serviceEndpoints
+            privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+            defaultOutboundAccess: subnet.?defaultOutboundAccess
           }
         : {}
     ]
@@ -688,7 +683,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
   }
 }
 
-module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.2' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -841,7 +836,7 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1'
   }
 }
 
-module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (subnet, i) in virtualNetworkSubnets: if (!empty(virtualNetworkSubnets)) {
     scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
     dependsOn: [
@@ -857,7 +852,7 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
   }
 ]
 
-module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createLzNsgStandalone 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (nsg, i) in networkSecurityGroups: if (!empty(networkSecurityGroups) && !empty(networkSecurityGroupResourceGroupName)) {
     scope: resourceGroup(subscriptionId, networkSecurityGroupResourceGroupName)
     dependsOn: [
@@ -889,7 +884,7 @@ module createLzRouteTable 'br/public:avm/res/network/route-table:0.5.0' = [
   }
 ]
 
-module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)
     dependsOn: [
@@ -931,7 +926,7 @@ module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (v
   }
 }
 
-module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzRoleAssignmentsSub 'br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -942,7 +937,6 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: assignment.?principalType
-      subscriptionId: subscriptionId
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -961,10 +955,11 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: subscription(subscriptionId)
   }
 ]
 
-module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzRoleAssignmentsRsgsSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -974,12 +969,9 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       64
     )
     params: {
-      location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: assignment.?principalType
-      subscriptionId: subscriptionId
-      resourceGroupName: split(assignment.relativeScope, '/')[2]
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -998,22 +990,20 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
   }
 ]
 
-module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
-      location: virtualNetworkLocation
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: assignment.?principalType
-      subscriptionId: subscriptionId
-      resourceGroupName: split(assignment.relativeScope, '/')[2]
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -1032,20 +1022,20 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
   }
 ]
-module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzUMIRoleAssignmentsSub 'br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
       location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
-      subscriptionId: subscriptionId
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -1064,22 +1054,20 @@ module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assig
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: subscription(subscriptionId)
   }
 ]
 
-module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupSelfFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
-      location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
-      subscriptionId: subscriptionId
-      resourceGroupName: split(assignment.relativeScope, '/')[2]
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -1098,22 +1086,20 @@ module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
   }
 ]
 
-module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = [
+module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
-      location: deployment().location
-      principalId: createUserAssignedManagedIdentity[i].?outputs.principalId
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
       roleDefinitionIdOrName: assignment.definition
       principalType: 'ServicePrincipal'
-      subscriptionId: subscriptionId
-      resourceGroupName: split(assignment.relativeScope, '/')[2]
       description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
@@ -1132,6 +1118,7 @@ module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/ro
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
+    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
   }
 ]
 
@@ -1371,7 +1358,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(resourceProviders)) {
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(resourceProviders)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForDeploymentScript
   params: {
@@ -1382,7 +1369,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
-module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
+module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForRouteTables
   params: {
@@ -1393,7 +1380,7 @@ module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-g
   }
 }
 
-module createResourceGroupForNetworkSecurityGroups 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(networkSecurityGroupResourceGroupName) && !empty(networkSecurityGroups)) {
+module createResourceGroupForNetworkSecurityGroups 'br/public:avm/res/resources/resource-group:0.4.3' = if (!empty(networkSecurityGroupResourceGroupName) && !empty(networkSecurityGroups)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForNetworkSecurityGroups
   params: {
@@ -1417,31 +1404,29 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.?outputs.principalId ?? '' : ''
     roleDefinitionIdOrName: 'Contributor'
-    subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
   }
+  scope: subscription(subscriptionId)
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.4' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
-    location: deploymentScriptLocation
     principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.?outputs.principalId ?? '' : ''
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/69566ab7-960f-475b-8e7c-b3118f30c6bd'
-    subscriptionId: subscriptionId
-    resourceGroupName: deploymentScriptResourceGroupName
     principalType: 'ServicePrincipal'
     description: 'Storage File Data Privileged Contributor'
   }
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.2' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -1507,7 +1492,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2'
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.2' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -1668,7 +1653,7 @@ module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.4.0' =
   }
 ]
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
@@ -1691,7 +1676,7 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (vi
   }
 }
 
-module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = [
+module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.3' = [
   for (identity, i) in userAssignedManagedIdentities: if (!empty(userAssignedManagedIdentities)) {
     scope: resourceGroup(subscriptionId, userAssignedIdentityResourceGroupName)
     dependsOn: [
@@ -1709,7 +1694,7 @@ module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 ]
 
-module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = [
+module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.3' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: subscription(subscriptionId)
     params: {
@@ -1727,7 +1712,7 @@ module createResourceGroupForAdditionalLzNetworking 'br/public:avm/res/resources
   }
 ]
 
-module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' = [
+module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.2' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
@@ -1771,6 +1756,9 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
             ? createAdditonalNatGateway[i].?outputs.resourceId
             : null
           delegation: subnet.?delegation
+          serviceEndpoints: subnet.?serviceEndpoints
+          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+          defaultOutboundAccess: subnet.?defaultOutboundAccess
         }
       ]
       location: vnet.?location ?? deployment().location

@@ -63,6 +63,13 @@ param enableTelemetry bool = true
 @description('Optional. Indicates if VM protection is enabled for all the subnets in the virtual network.')
 param enableVmProtection bool?
 
+@allowed([
+  'Basic'
+  'Disabled'
+])
+@description('Optional. Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints.')
+param enablePrivateEndpointVNetPolicies string = 'Disabled'
+
 var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
@@ -160,6 +167,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
       : null
     flowTimeoutInMinutes: flowTimeoutInMinutes != 0 ? flowTimeoutInMinutes : null
     enableVmProtection: enableVmProtection
+    privateEndpointVNetPolicies: enablePrivateEndpointVNetPolicies
   }
 }
 

@@ -26,17 +26,17 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Network/networkManagers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers)</li></ul> |
-| `Microsoft.Network/networkManagers/connectivityConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_connectivityconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/connectivityConfigurations)</li></ul> |
-| `Microsoft.Network/networkManagers/networkGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups)</li></ul> |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
-| `Microsoft.Network/networkManagers/routingConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations)</li></ul> |
-| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections)</li></ul> |
-| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
-| `Microsoft.Network/networkManagers/scopeConnections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_scopeconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/scopeConnections)</li></ul> |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations)</li></ul> |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections)</li></ul> |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules)</li></ul> |
+| `Microsoft.Network/networkManagers` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers)</li></ul> |
+| `Microsoft.Network/networkManagers/connectivityConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_connectivityconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/connectivityConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/networkGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/networkGroups)</li></ul> |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations/ruleCollections)</li></ul> |
+| `Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_routingconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/routingConfigurations/ruleCollections/rules)</li></ul> |
+| `Microsoft.Network/networkManagers/scopeConnections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_scopeconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/scopeConnections)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations/ruleCollections)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules)</li></ul> |
 
 ## Usage examples
 
@@ -156,6 +156,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             useHubGateway: false
           }
         ]
+        connectivityCapabilities: {
+          connectedGroupAddressOverlap: 'Allowed'
+          connectedGroupPrivateEndpointsScale: 'Standard'
+          peeringEnforcement: 'Enforced'
+        }
         connectivityTopology: 'HubAndSpoke'
         deleteExistingPeering: true
         description: 'hubSpokeConnectivity description'
@@ -177,6 +182,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
             useHubGateway: false
           }
         ]
+        connectivityCapabilities: {
+          connectedGroupAddressOverlap: 'Disallowed'
+          connectedGroupPrivateEndpointsScale: 'HighScale'
+          peeringEnforcement: 'Unenforced'
+        }
         connectivityTopology: 'Mesh'
         deleteExistingPeering: true
         description: 'MeshConnectivity description'
@@ -275,9 +285,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       {
         description: 'description of the routing config'
         name: 'test-routing-config-1'
+        routeTableUsageMode: 'ManagedOnly'
       }
       {
         name: 'test-routing-config-2'
+        routeTableUsageMode: 'UseExisting'
         ruleCollections: [
           {
             appliesTo: [
@@ -485,6 +497,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
               "useHubGateway": false
             }
           ],
+          "connectivityCapabilities": {
+            "connectedGroupAddressOverlap": "Allowed",
+            "connectedGroupPrivateEndpointsScale": "Standard",
+            "peeringEnforcement": "Enforced"
+          },
           "connectivityTopology": "HubAndSpoke",
           "deleteExistingPeering": true,
           "description": "hubSpokeConnectivity description",
@@ -506,6 +523,11 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
               "useHubGateway": false
             }
           ],
+          "connectivityCapabilities": {
+            "connectedGroupAddressOverlap": "Disallowed",
+            "connectedGroupPrivateEndpointsScale": "HighScale",
+            "peeringEnforcement": "Unenforced"
+          },
           "connectivityTopology": "Mesh",
           "deleteExistingPeering": true,
           "description": "MeshConnectivity description",
@@ -615,10 +637,12 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       "value": [
         {
           "description": "description of the routing config",
-          "name": "test-routing-config-1"
+          "name": "test-routing-config-1",
+          "routeTableUsageMode": "ManagedOnly"
         },
         {
           "name": "test-routing-config-2",
+          "routeTableUsageMode": "UseExisting",
           "ruleCollections": [
             {
               "appliesTo": [
@@ -826,6 +850,11 @@ param connectivityConfigurations = [
         useHubGateway: false
       }
     ]
+    connectivityCapabilities: {
+      connectedGroupAddressOverlap: 'Allowed'
+      connectedGroupPrivateEndpointsScale: 'Standard'
+      peeringEnforcement: 'Enforced'
+    }
     connectivityTopology: 'HubAndSpoke'
     deleteExistingPeering: true
     description: 'hubSpokeConnectivity description'
@@ -847,6 +876,11 @@ param connectivityConfigurations = [
         useHubGateway: false
       }
     ]
+    connectivityCapabilities: {
+      connectedGroupAddressOverlap: 'Disallowed'
+      connectedGroupPrivateEndpointsScale: 'HighScale'
+      peeringEnforcement: 'Unenforced'
+    }
     connectivityTopology: 'Mesh'
     deleteExistingPeering: true
     description: 'MeshConnectivity description'
@@ -945,9 +979,11 @@ param routingConfigurations = [
   {
     description: 'description of the routing config'
     name: 'test-routing-config-1'
+    routeTableUsageMode: 'ManagedOnly'
   }
   {
     name: 'test-routing-config-2'
+    routeTableUsageMode: 'UseExisting'
     ruleCollections: [
       {
         appliesTo: [
@@ -1271,27 +1307,6 @@ Scope of Network Manager. Contains a list of management groups or a list of subs
 - Required: Yes
 - Type: object
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`managementGroups`](#parameter-networkmanagerscopesmanagementgroups) | array |  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'. |
-| [`subscriptions`](#parameter-networkmanagerscopessubscriptions) | array | List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'. |
-
-### Parameter: `networkManagerScopes.managementGroups`
-
- List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: '/providers/Microsoft.Management/managementGroups/{managementGroupId}'.
-
-- Required: No
-- Type: array
-
-### Parameter: `networkManagerScopes.subscriptions`
-
-List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: '/subscriptions/{subscriptionId}'.
-
-- Required: No
-- Type: array
-
 ### Parameter: `networkGroups`
 
 Network Groups and static members to create for the network manager. Required if using "connectivityConfigurations" or "securityAdminConfigurations" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details.
@@ -1333,13 +1348,6 @@ The type of the group member. Subnet member type is used for routing configurati
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Subnet'
-    'VirtualNetwork'
-  ]
-  ```
 
 ### Parameter: `networkGroups.staticMembers`
 
@@ -1388,6 +1396,7 @@ Connectivity Configurations to create for the network manager. Network manager m
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectivityCapabilities`](#parameter-connectivityconfigurationsconnectivitycapabilities) | object | Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement. |
 | [`deleteExistingPeering`](#parameter-connectivityconfigurationsdeleteexistingpeering) | bool | Delete existing peering connections. |
 | [`description`](#parameter-connectivityconfigurationsdescription) | string | A description of the connectivity configuration. |
 | [`hubs`](#parameter-connectivityconfigurationshubs) | array | The hubs to apply the configuration to. |
@@ -1455,13 +1464,6 @@ The connectivity topology to apply the configuration to.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'HubAndSpoke'
-    'Mesh'
-  ]
-  ```
 
 ### Parameter: `connectivityConfigurations.name`
 
@@ -1469,6 +1471,13 @@ The name of the connectivity configuration.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `connectivityConfigurations.connectivityCapabilities`
+
+Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.
+
+- Required: No
+- Type: object
 
 ### Parameter: `connectivityConfigurations.deleteExistingPeering`
 
@@ -1599,14 +1608,6 @@ Scope Access (Also known as features). String array containing any of "Connectiv
 
 - Required: No
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Connectivity'
-    'Routing'
-    'SecurityAdmin'
-  ]
-  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1733,6 +1734,7 @@ Routing Configurations requires enabling the "Routing" feature on Network Manage
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-routingconfigurationsdescription) | string | A description of the routing configuration. |
+| [`routeTableUsageMode`](#parameter-routingconfigurationsroutetableusagemode) | string | Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified. |
 | [`ruleCollections`](#parameter-routingconfigurationsrulecollections) | array | Rule collections to create for the routing configuration. |
 
 ### Parameter: `routingConfigurations.name`
@@ -1745,6 +1747,13 @@ The name of the routing configuration.
 ### Parameter: `routingConfigurations.description`
 
 A description of the routing configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfigurations.routeTableUsageMode`
+
+Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified.
 
 - Required: No
 - Type: string
@@ -2001,14 +2010,6 @@ Apply on network intent policy based services.
 
 - Required: Yes
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'All'
-    'AllowRulesOnly'
-    'None'
-  ]
-  ```
 
 ### Parameter: `securityAdminConfigurations.name`
 
@@ -2282,8 +2283,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes
 

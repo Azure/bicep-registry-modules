@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5725786157373922536"
+      "version": "0.41.2.15936",
+      "templateHash": "9345475716567518203"
     },
     "name": "Eventgrid Namespace Client Groups",
     "description": "This module deploys an Eventgrid Namespace Client Group."

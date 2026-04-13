@@ -63,11 +63,14 @@ param gpt41ModelVersion string = '2025-04-14'
 @description('Optional. Name of the GPT Reasoning model to deploy.')
 param gptReasoningModelName string = 'o4-mini'
 
-@description('Optional. Version of the GPT Reasoning model to deploy. Defaults to 2025-04-14.')
+@description('Optional. Version of the GPT Reasoning model to deploy. Defaults to 2025-04-16.')
 param gptReasoningModelVersion string = '2025-04-16'
 
-@description('Optional. Version of the Azure OpenAI service to deploy. Defaults to 2025-01-01-preview.')
+@description('Optional. Version of the Azure OpenAI service to deploy. Defaults to 2024-12-01-preview.')
 param azureopenaiVersion string = '2024-12-01-preview'
+
+@description('Optional. Version of the Azure AI Agent API version. Defaults to 2025-01-01-preview.')
+param azureAiAgentAPIVersion string = '2025-01-01-preview'
 
 @minLength(1)
 @allowed([
@@ -119,11 +122,13 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string = ''
+param virtualMachineAdminUsername string?
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string = ''
+param virtualMachineAdminPassword string?
+
+// These parameters are changed for testing - please reset as part of publication
 
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
 param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -132,7 +137,7 @@ param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param backendContainerImageName string = 'macaebackend'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_v3_2025-11-10_1406'
+param backendContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -141,7 +146,7 @@ param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'macaefrontend'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_v3_2025-11-10_1406'
+param frontendContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
 param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -150,7 +155,7 @@ param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param mcpContainerImageName string = 'macaemcp'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param mcpContainerImageTag string = 'latest_v3_2025-11-10_1406'
+param mcpContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -194,28 +199,28 @@ var allTags = union(
   },
   tags
 )
+var existingTags = resourceGroup().?tags ?? {}
 @description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
 var deployerPrincipalType = contains(deployer(), 'userPrincipalName') ? 'User' : 'ServicePrincipal'
 
-resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
+resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: {
-      ...resourceGroup().tags
-      ...allTags
+    tags: union(existingTags, allTags, {
       TemplateName: 'MACAE'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
       DeploymentName: deployment().name
-    }
+      SolutionSuffix: solutionSuffix
+    })
   }
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-multiagentcustauteng.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -237,7 +242,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -249,7 +254,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     features: { enableLogAccessUsingOnlyResourcePermissions: true }
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
-    dailyQuotaGb: enableRedundancy ? 150 : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
+    dailyQuotaGb: enableRedundancy ? '150' : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
     replication: enableRedundancy
       ? {
           enabled: true
@@ -300,7 +305,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 // WAF best practices for Application Insights: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/application-insights
 // WAF PSRules for  Application Insights: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#application-insights
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
@@ -320,7 +325,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -331,6 +336,8 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 }
 
 // ========== Virtual Network ========== //
+// WAF best practices for virtual networks: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-network
+// WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
 var virtualNetworkResourceName = 'vnet-${solutionSuffix}'
 module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
   name: take('module.virtualNetwork.${solutionSuffix}', 64)
@@ -347,7 +354,10 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
 
 // ========== Bastion host ========== //
 var bastionResourceName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+// ========== Bastion host ========== //
+// WAF best practices for virtual networks: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-network
+// WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionResourceName}', 64)
   params: {
     name: bastionResourceName
@@ -372,8 +382,9 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 }
 
 // ========== Virtual machine ========== //
+// WAF best practices for virtual machines: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-machines
 var maintenanceConfigurationResourceName = 'mc-${solutionSuffix}'
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${maintenanceConfigurationResourceName}', 64)
   params: {
     name: maintenanceConfigurationResourceName
@@ -410,7 +421,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.8.0' = if (enablePrivateNetworking && enableMonitoring) {
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.10.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
@@ -483,6 +494,15 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
+            // eventLogName: 'Security'
+            // eventTypes: [
+            //   {
+            //     eventType: 'Audit Success'
+            //   }
+            //   {
+            //     eventType: 'Audit Failure'
+            //   }
+            // ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -528,8 +548,8 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v3'
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+var virtualMachineSize = 'Standard_D2s_v4'
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
@@ -620,7 +640,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDnsZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
+var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
@@ -628,7 +648,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink.blob.core.windows.net'
   'privatelink.search.windows.net'
-  keyVaultPrivateDnsZone
+  keyVaultPrivateDNSZone
 ]
 
 // DNS Zone Index Constants
@@ -643,7 +663,7 @@ var dnsZoneIndex = {
 }
 
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
@@ -661,8 +681,8 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-var aiFoundryAiServicesResourceName = 'aisa-${solutionSuffix}'
-var aiFoundryAiProjectResourceName = 'aifp-${solutionSuffix}'
+var aiFoundryAiServicesResourceName = 'aif-${solutionSuffix}'
+var aiFoundryAiProjectResourceName = 'proj-${solutionSuffix}'
 var aiFoundryAiServicesModelDeployment = {
   format: 'OpenAI'
   name: gptModelName
@@ -693,7 +713,8 @@ var aiFoundryAiServicesReasoningModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.13.2' = {
+var aiFoundryAiProjectDescription = 'AI Foundry Project'
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -819,19 +840,22 @@ module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
     name: aiFoundryAiProjectResourceName
     location: azureAiServiceLocation
     tags: tags
-    desc: 'AI Foundry Project'
+    desc: aiFoundryAiProjectDescription
     aiServicesName: aiFoundryAiServices!.outputs.name
   }
 }
 
 // ========== Cosmos DB ========== //
+// WAF best practices for Cosmos DB: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/cosmos-db
+
 var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'macae'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
+    // Required parameters
     name: cosmosDbResourceName
     location: location
     tags: tags
@@ -916,25 +940,25 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
 }
 
 // ========== Backend Container App Environment ========== //
+// WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
+// PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionSuffix}'
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1' = {
   name: take('avm.res.app.managed-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    publicNetworkAccess: 'Enabled'
-    internal: false
+    // WAF aligned configuration for Private Networking
+    publicNetworkAccess: 'Enabled' // Always enabling the publicNetworkAccess for Container App Environment
+    internal: false //  Must be false when publicNetworkAccess is'Enabled'
     infrastructureSubnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?containerSubnetResourceId : null
     // WAF aligned configuration for Monitoring
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
-            sharedKey: logAnalyticsWorkspace!.outputs!.primarySharedKey
-          }
+          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
         }
       : null
     appInsightsConnectionString: enableMonitoring ? applicationInsights!.outputs.connectionString : null
@@ -960,8 +984,10 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3
 }
 
 // ========== Backend Container App Service ========== //
+// WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
+// PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionSuffix}'
-module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -1035,6 +1061,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: aiFoundryAiServicesModelDeployment.name
           }
           {
+            name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
+            value: aiFoundryAiServices41ModelDeployment.name
+          }
+          {
             name: 'AZURE_OPENAI_API_VERSION'
             value: azureopenaiVersion
           }
@@ -1062,10 +1092,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             name: 'FRONTEND_SITE_NAME'
             value: 'https://${webSiteResourceName}.azurewebsites.net'
           }
-          {
-            name: 'AZURE_AI_AGENT_ENDPOINT'
-            value: aiFoundryAiServicesProject!.outputs.apiEndpoint
-          }
+          // {
+          //   name: 'AZURE_AI_AGENT_ENDPOINT'
+          //   value: aiFoundryAiProjectEndpoint
+          // }
           {
             name: 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME'
             value: aiFoundryAiServicesModelDeployment.name
@@ -1079,12 +1109,8 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: aiSearchConnectionName
           }
           {
-            name: 'AZURE_AI_SEARCH_INDEX_NAME'
-            value: aiSearchIndexName
-          }
-          {
             name: 'AZURE_AI_SEARCH_ENDPOINT'
-            value: searchService.outputs.endpoint
+            value: searchServiceUpdate.outputs.endpoint
           }
           {
             name: 'AZURE_COGNITIVE_SERVICES'
@@ -1127,37 +1153,49 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: '["o3","o4-mini","gpt-4.1","gpt-4.1-mini"]'
           }
           {
-            name: 'AZURE_AI_SEARCH_API_KEY'
-            secretRef: 'azure-ai-search-api-key'
-          }
-          {
             name: 'AZURE_STORAGE_BLOB_URL'
             value: avmStorageAccount.outputs.serviceEndpoints.blob
           }
           {
-            name: 'AZURE_STORAGE_CONTAINER_NAME'
-            value: storageContainerName
+            name: 'AZURE_AI_PROJECT_ENDPOINT'
+            value: aiFoundryAiServicesProject!.outputs.apiEndpoint
           }
           {
-            name: 'AZURE_AI_MODEL_DEPLOYMENT_NAME'
-            value: aiFoundryAiServicesModelDeployment.name
+            name: 'AZURE_AI_AGENT_ENDPOINT'
+            value: aiFoundryAiServicesProject!.outputs.apiEndpoint
+          }
+          {
+            name: 'AZURE_AI_AGENT_API_VERSION'
+            value: azureAiAgentAPIVersion
+          }
+          {
+            name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
+            value: '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
+          }
+          {
+            name: 'AZURE_BASIC_LOGGING_LEVEL'
+            value: 'INFO'
+          }
+          {
+            name: 'AZURE_PACKAGE_LOGGING_LEVEL'
+            value: 'WARNING'
+          }
+          {
+            name: 'AZURE_LOGGING_PACKAGES'
+            value: ''
           }
         ]
       }
     ]
-    secrets: [
-      {
-        name: 'azure-ai-search-api-key'
-        keyVaultUrl: keyvault.outputs.secrets[0].uriWithVersion
-        identity: userAssignedIdentity.outputs.resourceId
-      }
-    ]
+    secrets: []
   }
 }
 
 // ========== MCP Container App Service ========== //
+// WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
+// PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppMcpResourceName = 'ca-mcp-${solutionSuffix}'
-module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppMcpResourceName}', 64)
   params: {
     name: containerAppMcpResourceName
@@ -1250,8 +1288,10 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
 }
 
 // ========== Frontend server farm ========== //
+// WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+// PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 var webServerFarmResourceName = 'asp-${solutionSuffix}'
-module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
+module webServerFarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
   name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
   params: {
     name: webServerFarmResourceName
@@ -1263,14 +1303,18 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
     // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     // WAF aligned configuration for Scalability
-    skuName: enableScalability || enableRedundancy ? 'P1v3' : 'B3'
-    skuCapacity: enableRedundancy ? 2 : 1
+    skuName: enableScalability || enableRedundancy ? 'P1v4' : 'B3'
+    skuCapacity: enableScalability ? 3 : 1
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
   }
 }
 
 // ========== Frontend web site ========== //
+// WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+// PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
+
+//NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
 var webSiteResourceName = 'app-${solutionSuffix}'
 module webSite 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${webSiteResourceName}', 64)
@@ -1295,6 +1339,7 @@ module webSite 'modules/web-sites.bicep' = {
           BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
           AUTH_ENABLED: 'false'
         }
+        // WAF aligned configuration for Monitoring
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }
     ]
@@ -1309,9 +1354,17 @@ module webSite 'modules/web-sites.bicep' = {
 }
 
 // ========== Storage Account ========== //
+
 var storageAccountName = replace('st${solutionSuffix}', '-', '')
-var storageContainerName = 'sample-dataset'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+var storageContainerNameRetailCustomer = 'retail-dataset-customer'
+var storageContainerNameRetailOrder = 'retail-dataset-order'
+var storageContainerNameRFPSummary = 'rfp-summary-dataset'
+var storageContainerNameRFPRisk = 'rfp-risk-dataset'
+var storageContainerNameRFPCompliance = 'rfp-compliance-dataset'
+var storageContainerNameContractSummary = 'contract-summary-dataset'
+var storageContainerNameContractRisk = 'contract-risk-dataset'
+var storageContainerNameContractCompliance = 'contract-compliance-dataset'
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -1342,6 +1395,8 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
     }
     allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+
+    // Private endpoints for blob
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -1366,7 +1421,35 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
       containerDeleteRetentionPolicyEnabled: true
       containers: [
         {
-          name: storageContainerName
+          name: storageContainerNameRetailCustomer
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameRetailOrder
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameRFPSummary
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameRFPRisk
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameRFPCompliance
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameContractSummary
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameContractRisk
+          publicAccess: 'None'
+        }
+        {
+          name: storageContainerNameContractCompliance
           publicAccess: 'None'
         }
       ]
@@ -1378,23 +1461,40 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
 }
 
 // ========== Search Service ========== //
+
 var searchServiceName = 'srch-${solutionSuffix}'
-var aiSearchIndexName = 'sample-dataset-index'
-module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
-  name: take('avm.res.search.search-service.${solutionSuffix}', 64)
+var aiSearchIndexNameForContractSummary = 'contract-summary-doc-index'
+var aiSearchIndexNameForContractRisk = 'contract-risk-doc-index'
+var aiSearchIndexNameForContractCompliance = 'contract-compliance-doc-index'
+var aiSearchIndexNameForRetailCustomer = 'macae-retail-customer-index'
+var aiSearchIndexNameForRetailOrder = 'macae-retail-order-index'
+var aiSearchIndexNameForRFPSummary = 'macae-rfp-summary-index'
+var aiSearchIndexNameForRFPRisk = 'macae-rfp-risk-index'
+var aiSearchIndexNameForRFPCompliance = 'macae-rfp-compliance-index'
+
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
+  name: searchServiceName
+  location: location
+  sku: {
+    name: enableScalability ? 'standard' : 'basic'
+  }
+}
+
+// Separate module for Search Service to enable managed identity and update other properties, as this reduces deployment time
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
+  name: take('avm.res.search.update.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
     enableTelemetry: enableTelemetry
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
-    disableLocalAuth: false
-    hostingMode: 'default'
+    disableLocalAuth: true
+    hostingMode: 'Default'
     managedIdentities: {
       systemAssigned: true
     }
+
+    // Enabled the Public access because other services are not able to connect with search search AVM module when public access is disabled
+
+    // publicNetworkAccess: enablePrivateNetworking  ? 'Disabled' : 'Enabled'
     publicNetworkAccess: 'Enabled'
     networkRuleSet: {
       bypass: 'AzureServices'
@@ -1425,8 +1525,31 @@ module searchService 'br/public:avm/res/search/search-service:0.11.1' = {
         principalType: 'ServicePrincipal'
       }
     ]
+
+    //Removing the Private endpoints as we are facing the issue with connecting to search service while comminicating with agents
+
     privateEndpoints: []
+    // privateEndpoints: enablePrivateNetworking
+    //   ? [
+    //       {
+    //         name: 'pep-search-${solutionSuffix}'
+    //         customNetworkInterfaceName: 'nic-search-${solutionSuffix}'
+    //         privateDnsZoneGroup: {
+    //           privateDnsZoneGroupConfigs: [
+    //             {
+    //               privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.search]!.outputs.resourceId
+    //             }
+    //           ]
+    //         }
+    //         subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[0]
+    //         service: 'searchService'
+    //       }
+    //     ]
+    //   : []
   }
+  dependsOn: [
+    searchService
+  ]
 }
 
 // ========== Search Service - AI Project Connection ========== //
@@ -1438,10 +1561,9 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
     aiFoundryProjectName: aiFoundryAiServicesProject!.outputs.name
     aiFoundryName: aiFoundryAiServicesResourceName
     aifSearchConnectionName: aiSearchConnectionName
-    searchServiceResourceId: searchService.outputs.resourceId
-    searchServiceLocation: searchService.outputs.location
-    searchServiceName: searchService.outputs.name
-    searchApiKey: searchService.outputs.primaryKey
+    searchServiceResourceId: searchService.id
+    searchServiceLocation: searchService.location
+    searchServiceName: searchService.name
   }
 }
 
@@ -1489,12 +1611,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         roleDefinitionIdOrName: 'Key Vault Administrator'
       }
     ]
-    secrets: [
-      {
-        name: 'AzureAISearchAPIKey'
-        value: searchService.outputs.primaryKey
-      }
-    ]
+    secrets: []
     enableTelemetry: enableTelemetry
   }
 }
@@ -1515,17 +1632,11 @@ output azureStorageBlobUrl string = avmStorageAccount.outputs.serviceEndpoints.b
 @description('The name of the Azure Storage account.')
 output azureStorageAccountName string = storageAccountName
 
-@description('The name of the Azure Storage container.')
-output azureStorageContainerName string = storageContainerName
-
 @description('The Azure AI Search service endpoint URL.')
-output azureAiSearchEndpoint string = searchService.outputs.endpoint
+output azureAiSearchEndpoint string = searchServiceUpdate.outputs.endpoint
 
 @description('The name of the Azure AI Search service.')
-output azureAiSearchName string = searchService.outputs.name
-
-@description('The name of the Azure AI Search index.')
-output azureAiSearchIndexName string = aiSearchIndexName
+output azureAiSearchName string = searchService.name
 
 @description('The Cosmos DB endpoint URL.')
 output cosmosDbEndpoint string = 'https://${cosmosDbResourceName}.documents.azure.com:443/'
@@ -1576,7 +1687,7 @@ output aiFoundryResourceId string = aiFoundryAiServices.outputs.resourceId
 output cosmosDbAccountName string = cosmosDbResourceName
 
 @description('The Azure Search service endpoint URL.')
-output azureSearchEndpoint string = searchService.outputs.endpoint
+output azureSearchEndpoint string = searchServiceUpdate.outputs.endpoint
 
 @description('The Azure client ID for the user-assigned managed identity.')
 output azureClientId string = userAssignedIdentity!.outputs.clientId
@@ -1607,3 +1718,60 @@ output azureAiSearchApiKey string = '<Deployed-Search-ApiKey>'
 
 @description('The backend URL for the container app.')
 output backendUrl string = 'https://${containerApp.outputs.fqdn}'
+
+@description('The Azure AI project endpoint URL.')
+output azureAiProjectEndpoint string = aiFoundryAiServicesProject!.outputs.apiEndpoint
+
+@description('The Azure AI agent API version.')
+output azureAiAgentApiVersion string = azureAiAgentAPIVersion
+
+@description('The Azure AI agent project connection string.')
+output azureAiAgentProjectConnectionString string = '${aiFoundryAiServicesResourceName}.services.ai.azure.com;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectResourceName}'
+
+@description('The name of the Azure Storage container for retail customer data.')
+output azureStorageContainerNameRetailCustomer string = storageContainerNameRetailCustomer
+
+@description('The name of the Azure Storage container for retail order data.')
+output azureStorageContainerNameRetailOrder string = storageContainerNameRetailOrder
+
+@description('The name of the Azure Storage container for RFP summary data.')
+output azureStorageContainerNameRfpSummary string = storageContainerNameRFPSummary
+
+@description('The name of the Azure Storage container for RFP risk data.')
+output azureStorageContainerNameRfpRisk string = storageContainerNameRFPRisk
+
+@description('The name of the Azure Storage container for RFP compliance data.')
+output azureStorageContainerNameRfpCompliance string = storageContainerNameRFPCompliance
+
+@description('The name of the Azure Storage container for contract summary data.')
+output azureStorageContainerNameContractSummary string = storageContainerNameContractSummary
+
+@description('The name of the Azure Storage container for contract risk data.')
+output azureStorageContainerNameContractRisk string = storageContainerNameContractRisk
+
+@description('The name of the Azure Storage container for contract compliance data.')
+output azureStorageContainerNameContractCompliance string = storageContainerNameContractCompliance
+
+@description('The name of the Azure AI Search index for retail customer data.')
+output azureAiSearchIndexNameRetailCustomer string = aiSearchIndexNameForRetailCustomer
+
+@description('The name of the Azure AI Search index for retail order data.')
+output azureAiSearchIndexNameRetailOrder string = aiSearchIndexNameForRetailOrder
+
+@description('The name of the Azure AI Search index for RFP summary data.')
+output azureAiSearchIndexNameRfpSummary string = aiSearchIndexNameForRFPSummary
+
+@description('The name of the Azure AI Search index for RFP risk data.')
+output azureAiSearchIndexNameRfpRisk string = aiSearchIndexNameForRFPRisk
+
+@description('The name of the Azure AI Search index for RFP compliance data.')
+output azureAiSearchIndexNameRfpCompliance string = aiSearchIndexNameForRFPCompliance
+
+@description('The name of the Azure AI Search index for contract summary data.')
+output azureAiSearchIndexNameContractSummary string = aiSearchIndexNameForContractSummary
+
+@description('The name of the Azure AI Search index for contract risk data.')
+output azureAiSearchIndexNameContractRisk string = aiSearchIndexNameForContractRisk
+
+@description('The name of the Azure AI Search index for contract compliance data.')
+output azureAiSearchIndexNameContractCompliance string = aiSearchIndexNameForContractCompliance

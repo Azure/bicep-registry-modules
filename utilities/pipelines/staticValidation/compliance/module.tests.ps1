@@ -45,15 +45,10 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-    $pathsToBuild | ForEach-Object -Parallel {
-        $dict = $using:builtTestFileMap
-        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-        if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
-        }
-        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
-        $null = $dict.TryAdd($_, $templateHashTable)
+    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
+    $builtTestFileMap = @{}
+    foreach ($path in $pathsToBuild) {
+        $builtTestFileMap[$path] = $compiledTemplatesMap[$path] | ConvertFrom-Json -AsHashtable
     }
 
     # Getting the list of child modules allowed for publishing
@@ -544,7 +539,6 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
     }
 
-
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [customLocation] runtime parameter should not have a default value.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
@@ -616,6 +610,30 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         }
 
         $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
+    }
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should include a condition to run automatically only on upstream `main` changes.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+        param(
+            [string] $WorkflowPath
+        )
+
+        $workflowContent = ConvertFrom-Yaml -Yaml (Get-Content $WorkflowPath -Raw)
+        $initalizeConditions = $workflowContent.jobs['job_initialize_pipeline'].if
+
+        $expectedConditions = @(
+            '!cancelled()',
+            "!(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch')"
+        )
+
+        $missingConditions = @()
+        foreach ($condition in $expectedConditions) {
+            if ($initalizeConditions -notlike "*$condition*") {
+                $missingConditions += $condition
+            }
+        }
+
+        $missingConditions.Count | Should -Be 0 -Because ('the number of missing conditions of the `job_initialize_pipeline` step should be 0, but got [{0}] ([ref](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/bicep-contribution-flow/#4-implement-your-contribution)).' -f ($missingConditions -join ', '))
     }
 }
 
@@ -699,7 +717,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
-            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module. If the problem persists, try and run the script using the `-ForceCacheRefresh` parameter.' -f $mdFormattedDiff)
         }
     }
 
@@ -969,7 +987,7 @@ Describe 'Module tests' -Tag 'Module' {
                         }
                     }
                 }
-                $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+                $incorrectParameters | Should -BeNullOrEmpty -Because ('the description of conditional parameters in the template file must contain a sentence that starts with "Required if", explaining when the parameter is mandatory. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
