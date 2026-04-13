@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -17,6 +17,18 @@ BeforeDiscovery {
 
     Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
     Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
+
+    # Normalize moduleFolderPaths to be rooted under repoRootPath.
+    # This handles the case where a user-supplied TemplateFilePath resolves through
+    # a different root (e.g. a directory junction/symlink) than the repo scripts.
+    $moduleFolderPaths = $moduleFolderPaths | ForEach-Object {
+        $parts = ($_ -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')
+        if ($parts.Count -ge 3) {
+            Join-Path $repoRootPath 'avm' $parts[1] $parts[2]
+        } else {
+            $_
+        }
+    }
 
     $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
     $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
@@ -171,7 +183,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
                     $topLevelModuleTestCases += @{
-                        moduleFolderName         = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+                        moduleFolderName         = $moduleFolderPath.Replace('\', '/').Split('/avm/')[-1]
                         moduleFolderPath         = $moduleFolderPath
                         moduleType               = $moduleType
                         isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
@@ -407,7 +419,7 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
             $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/' # 'avm/res|ptn|utl/<provider>/<resourceType>' would return '<provider>/<resourceType>'
-            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
+            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
 
             $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
             if ($isTopLevelModule) {
@@ -761,21 +773,24 @@ Describe 'Module tests' -Tag 'Module' {
                 return # Skipping if test was failing
             }
 
-            $originalJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+            $originalContent = Get-Content $armTemplatePath -Raw
+            $originalJson = Remove-JSONMetadata -TemplateObject ($originalContent | ConvertFrom-Json -Depth 99 -AsHashtable)
             $originalJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $originalJson -Depth 99)
 
-            # Recompile json
-            $null = Remove-Item -Path $armTemplatePath -Force
-            bicep build $templateFilePath
+            try {
+                # Recompile json
+                $null = Remove-Item -Path $armTemplatePath -Force
+                bicep build $templateFilePath
 
-            $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
-            $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
+                $newJson = Remove-JSONMetadata -TemplateObject (Get-Content $armTemplatePath -Raw | ConvertFrom-Json -Depth 99 -AsHashtable)
+                $newJson = ConvertTo-OrderedHashtable -JSONInputObject (ConvertTo-Json $newJson -Depth 99)
 
-            # compare
-            (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
-
-            # Reset template file to original state
-            git checkout HEAD -- $armTemplatePath
+                # compare
+                (ConvertTo-Json $originalJson -Depth 99) | Should -Be (ConvertTo-Json $newJson -Depth 99) -Because "the [$moduleFolderName] [main.json] should be based on the latest [main.bicep] file. Please run [` bicep build >bicepFilePath< `] using the latest Bicep CLI version."
+            } finally {
+                # Restore original file content (preserves uncommitted changes unlike git checkout)
+                Set-Content -Path $armTemplatePath -Value $originalContent -NoNewline
+            }
         }
     }
 
@@ -1507,7 +1522,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $outputs = $templateFileContent.outputs
 
-                $primaryResourceType = (Split-Path $TemplateFilePath -Parent).Replace('\', '/').split('/avm/')[1]
+                $primaryResourceType = (Split-Path $TemplateFilePath -Parent).Replace('\', '/').split('/avm/')[-1]
                 $primaryResourceTypeResource = $templateFileContent.resources | Where-Object { $_.type -eq $primaryResourceType }
 
                 if ($primaryResourceTypeResource.keys -contains 'location' -and $primaryResourceTypeResource.location -ne 'global') {
@@ -2104,7 +2119,7 @@ Describe 'Governance tests' {
 
             $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
             $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
-            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1]
+            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
 
             $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
             if ($isTopLevelModule) {
@@ -2411,7 +2426,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-            $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+            $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[-1]
             $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
             $templateFileContent = $builtTestFileMap[$templateFilePath]
 
