@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10843545821767679788"
+      "version": "0.42.1.51946",
+      "templateHash": "2668805330547650207"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow)."

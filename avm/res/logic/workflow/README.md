@@ -143,6 +143,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
       name: 'myCustomLockName'
     }
     managedIdentities: {
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -250,6 +251,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     },
     "managedIdentities": {
       "value": {
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -355,6 +357,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
