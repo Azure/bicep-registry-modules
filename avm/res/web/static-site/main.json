@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "13382141419223105054"
+      "version": "0.42.1.51946",
+      "templateHash": "527990994281192722"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -932,8 +932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13193400131159571566"
+              "version": "0.42.1.51946",
+              "templateHash": "6862530318694817219"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -1033,8 +1033,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3169053784998742117"
+              "version": "0.42.1.51946",
+              "templateHash": "17201341817708533466"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1127,8 +1127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3169053784998742117"
+              "version": "0.42.1.51946",
+              "templateHash": "17201341817708533466"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1224,8 +1224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3361991246818930414"
+              "version": "0.42.1.51946",
+              "templateHash": "9376038140953551831"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain."
@@ -1302,7 +1302,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('privatelink.{0}.azurestaticapps.net', split(reference('staticSite').defaultHostname, '.')[1])]"
+            "value": "[format('privatelink.{0}.azurestaticapps.net', split(reference('staticSite').defaultHostname, '.')[0])]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"

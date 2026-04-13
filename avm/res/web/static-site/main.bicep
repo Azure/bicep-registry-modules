@@ -277,7 +277,7 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
 module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
   params: {
-    name: 'privatelink.${split(staticSite.properties.defaultHostname, '.')[1]}.azurestaticapps.net'
+    name: 'privatelink.${split(staticSite.properties.defaultHostname, '.')[0]}.azurestaticapps.net'
     enableTelemetry: enableReferencedModulesTelemetry
     virtualNetworkLinks: [
       {
