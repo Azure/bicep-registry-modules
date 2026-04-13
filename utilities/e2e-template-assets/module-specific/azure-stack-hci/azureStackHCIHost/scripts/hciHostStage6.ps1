@@ -335,7 +335,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $resourceGroupName = $args[2]
     $tenantId = $args[3]
     $location = $args[4]
-    $accountId = $args[5]      # managed identity client ID
+    $accountId = $args[5]      # managed identity object/principal ID (oid in the access token)
     $arcGatewayId = $args[6]
     $proxyServerEndpoint = $args[7]
     $proxyBypassString = $args[8]
@@ -360,20 +360,15 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
-    # Build a PSCredential carrying the host VM's managed identity access token.
-    # Invoke-AzStackHciArcInitialization forwards the SpnCredential to the HCI bootstrap
-    # service (port 9098) which handles Azure authentication independently.
-    # Connect-AzAccount is NOT used here because it rejects managed identity access tokens
-    # obtained from outside the HCI node with "The access token is invalid."
-    $spnCred = [pscredential]::new(
-        $accountId,
-        (ConvertTo-SecureString $t -AsPlainText -Force)
-    )
-    Write-Output "SpnCredential built for AccountId: $accountId"
+    Write-Output "Starting Arc initialization for '$($env:COMPUTERNAME)' with AccountID: $accountId"
 
     # NOTE: Do NOT pre-wait for port 9098. Invoke-AzStackHciArcInitialization itself installs
     # and starts the ECE bootstrap agent (which opens port 9098) as part of its initialization.
     # Waiting externally will always time out because the service only starts when the cmdlet runs.
+    #
+    # Auth: pass the ARM access token directly via -ArmAccessToken. This is the correct approach
+    # for PSGallery AzSHCI.ARCinstaller (v1.2408+). -AccountID is the managed identity object ID
+    # (principal ID / oid claim in the JWT token), NOT the client ID.
 
     # Retry loop: Arc initialization can fail transiently (token refresh, service startup timing).
     $arcMaxRetries = 3
@@ -389,7 +384,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
                 -ResourceGroup $resourceGroupName `
                 -Region $location `
                 -AccountID $accountId `
-                -SpnCredential $spnCred `
+                -ArmAccessToken $t `
                 @optionalParameters
             $arcSuccess = $true
             Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
@@ -402,7 +397,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             }
         }
     }
-} -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $userAssignedManagedIdentityClientId, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
+} -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
 log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
