@@ -40,12 +40,22 @@ param deployZoneRedundantResources bool = true
 @description('Optional. Deploy the agent pool for the container registry. Default value is true.')
 param deployAgentPool bool = true
 
+@description('Optional. The geo-replication paired locations for the container registry.')
+param acrGeoReplicationLocations array = []
+
 // ------------------
 // VARIABLES
 // ------------------
 
 var acrDnsZoneName = 'privatelink.azurecr.io'
 var containerRegistryPullRoleGuid = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+var acrGeoReplications = [
+  for geoLocation in acrGeoReplicationLocations: {
+    name: take('repl${toLower(replace(geoLocation, ' ', ''))}', 50)
+    location: geoLocation
+  }
+]
+
 var virtualNetworkLinks = concat(
   [
     {
@@ -65,7 +75,7 @@ var virtualNetworkLinks = concat(
 // ------------------
 // RESOURCES
 // ------------------
-module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: containerRegistryUserAssignedIdentityName
   params: {
     name: containerRegistryUserAssignedIdentityName
@@ -75,7 +85,7 @@ module acrUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
   }
 }
 
-module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
+module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.8.0' = {
   name: 'acrDnsZoneDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: acrDnsZoneName
@@ -86,7 +96,7 @@ module acrdnszone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   }
 }
 
-module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: 'containerRegistry-${uniqueString(resourceGroup().id)}'
   params: {
     name: containerRegistryName
@@ -97,6 +107,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
     publicNetworkAccess: 'Disabled'
     acrAdminUserEnabled: false
     networkRuleBypassOptions: 'AzureServices'
+    replications: acrGeoReplications
     zoneRedundancy: deployZoneRedundantResources ? 'Enabled' : 'Disabled'
     trustPolicyStatus: 'enabled'
     diagnosticSettings: [
@@ -141,7 +152,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   }
 }
 
-resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = if (deployAgentPool) {
+resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2025-03-01-preview' = if (deployAgentPool) {
   name: '${containerRegistryName}/agentpool'
   location: location
   properties: {

@@ -1,7 +1,7 @@
-metadata name = 'API Management Service APIs Diagnostics.'
-metadata description = 'This module deploys an API Management Service API Diagnostics.'
+metadata name = 'API Management Service API Diagnostics'
+metadata description = 'This module deploys an API Management Service API Diagnostic.'
 
-@description('Required. The name of the parent API Management service.')
+@description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
 @description('Required. The name of the parent API.')
@@ -15,7 +15,7 @@ param loggerName string
   'applicationinsights'
   'local'
 ])
-@description('Optional. Type of diagnostic resource.')
+@description('Optional. Name of diagnostic resource.')
 param name string = 'local'
 
 @description('Optional. Specifies for what type of messages sampling settings should not apply.')
@@ -43,12 +43,12 @@ param metrics bool = false
 
 @allowed([
   'Name'
-  'URI'
+  'Url'
 ])
 @description('Conditional. The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.')
 param operationNameFormat string = 'Name'
 
-@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.')
+@description('Optional. Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged.')
 param samplingPercentage int = 100
 
 @allowed([
@@ -75,7 +75,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgm-apidiagnostics.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

@@ -2227,6 +2227,8 @@ param tags = {
 
 This instance collects metrics from Azure resources using Platform Telemetry and sends them to a Log Analytics workspace.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plat-tele]
+
 
 <details>
 
@@ -2234,7 +2236,6 @@ This instance collects metrics from Azure resources using Platform Telemetry and
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -3193,6 +3194,8 @@ param tags = {
 
 This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
 
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/wksp-trans]
+
 
 <details>
 
@@ -3200,7 +3203,6 @@ This instance deploys the module to setup collection of custom logs and ingestio
 
 ```bicep
 module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
-  name: 'dataCollectionRuleDeployment'
   params: {
     // Required parameters
     dataCollectionRuleProperties: {
@@ -4158,6 +4160,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

@@ -4,18 +4,16 @@ param deploymentUserPassword string
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
-@secure()
-param domainAdminPassword string
 
-@description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+@description('Optional. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentAppId string
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+param arbDeploymentAppId string?
+@description('Optional. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentSPObjectId string
-@description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
+param arbDeploymentSPObjectId string?
+@description('Optional. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID.')
 @secure()
-param arbDeploymentServicePrincipalSecret string
+param arbDeploymentServicePrincipalSecret string?
 @description('Required. The location to deploy the resources into.')
 param location string
 @description('Required. The name of the storage account to create as a cluster witness.')
@@ -47,18 +45,24 @@ param virtualMachineName string
 @description('Required. The name of the Maintenance Configuration Assignment for the proxy server.')
 param maintenanceConfigurationAssignmentName string
 
-var clusterNodeNames = ['AzSHOST1', 'AzSHOST2']
-var domainOUPath = 'OU=HCI,DC=jumpstart,DC=local'
-module hciHostDeployment '../azureStackHCIHost/hciHostDeploymentWithImage.bicep' = {
+@description('Required. The name prefix for disk resources.')
+param diskNamePrefix string = 'dep-disk'
+
+@description('Required. The name prefix for the wait deployment scripts.')
+param waitDeploymentScriptPrefixName string = 'dep-wait'
+
+var clusterNodeNames = ['hcinode1', 'hcinode2']
+var domainOUPath = 'OU=HCI,DC=hci,DC=local'
+module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
-    arbDeploymentAppId: arbDeploymentAppId
-    arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
-    hostVMSize: 'Standard_E32s_v5'
+    hciNodeCount: length(clusterNodeNames)
+    hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword
-    domainAdminPassword: domainAdminPassword
     location: location
+    switchlessStorageConfig: false
+    diskNamePrefix: diskNamePrefix
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
@@ -67,6 +71,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeploymentWithImage.bicep'
     virtualNetworkName: virtualNetworkName
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
+    waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
   }
 }
 

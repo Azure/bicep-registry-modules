@@ -16,6 +16,13 @@ param availabilityZone int
 @description('Optional. The idle timeout of the NAT gateway.')
 param idleTimeoutInMinutes int = 5
 
+@description('Optional. The SKU of the NAT Gateway.')
+@allowed([
+  'Standard'
+  'StandardV2'
+])
+param natGatewaySku string = 'Standard'
+
 @description('Optional. Existing Public IP Address resource IDs to use for the NAT Gateway.')
 param publicIpResourceIds string[] = []
 
@@ -27,6 +34,18 @@ param publicIPAddresses publicIpType[]?
 
 @description('Optional. Specifies the properties of the Public IP Prefixes to create and be used by the NAT Gateway.')
 param publicIPPrefixes publicIPPrefixType[]?
+
+@description('Optional. Existing Public IP Address V6 resource IDs to use for the NAT Gateway.')
+param publicIpResourceIdsV6 string[] = []
+
+@description('Optional. Existing Public IP Prefixes V6 resource IDs to use for the NAT Gateway.')
+param publicIPPrefixResourceIdsV6 string[] = []
+
+@description('Optional. Specifies the properties of the Public IPv6 addresses to create and be used by the NAT Gateway.')
+param publicIPAddressesV6 publicIpType[]?
+
+@description('Optional. Specifies the properties of the Public IPv6 Prefixes to create and be used by the NAT Gateway.')
+param publicIPPrefixesV6 publicIPPrefixType[]?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -40,7 +59,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags for the resource.')
-param tags resourceInput<'Microsoft.Network/natGateways@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/natGateways@2025-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -77,7 +96,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-natgateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -98,7 +117,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.9.0' = [
+module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.12.0' = [
   for (publicIPAddress, index) in (publicIPAddresses ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-PIP-${index}'
     params: {
@@ -110,7 +129,7 @@ module natGateway_publicIPAddresses 'br/public:avm/res/network/public-ip-address
       publicIPAllocationMethod: 'Static'
       publicIpPrefixResourceId: publicIPAddress.?publicIPPrefixResourceId
       roleAssignments: publicIPAddress.?roleAssignments
-      skuName: 'Standard' // Must be standard
+      skuName: publicIPAddress.?skuName ?? natGatewaySku
       skuTier: publicIPAddress.?skuTier
       tags: publicIPAddress.?tags ?? tags
       availabilityZones: publicIPAddress.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
@@ -133,13 +152,14 @@ module formattedPublicIpResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
-module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.7.0' = [
+module natGateway_publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.8.0' = [
   for (publicIPPrefix, index) in (publicIPPrefixes ?? []): {
     name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIP-${index}'
     params: {
       name: publicIPPrefix.?name ?? '${name}-pip'
       location: location
       lock: publicIPPrefix.?lock ?? lock
+      skuName: publicIPPrefix.?skuName ?? natGatewaySku
       prefixLength: publicIPPrefix.prefixLength
       customIPPrefix: publicIPPrefix.?customIPPrefix
       roleAssignments: publicIPPrefix.?roleAssignments
@@ -162,19 +182,87 @@ module formattedPublicIpPrefixResourceIds 'modules/formatResourceId.bicep' = {
   }
 }
 
+module natGateway_publicIPAddressesV6 'br/public:avm/res/network/public-ip-address:0.12.0' = [
+  for (publicIPAddress, index) in (publicIPAddressesV6 ?? []): {
+    name: '${uniqueString(deployment().name, location)}-NatGw-PIPv6-${index}'
+    params: {
+      name: publicIPAddress.?name ?? '${name}-pipv6'
+      location: location
+      lock: publicIPAddress.?lock ?? lock
+      diagnosticSettings: publicIPAddress.?diagnosticSettings
+      publicIPAddressVersion: 'IPv6'
+      publicIPAllocationMethod: 'Static'
+      publicIpPrefixResourceId: publicIPAddress.?publicIPPrefixResourceId
+      roleAssignments: publicIPAddress.?roleAssignments
+      skuName: publicIPAddress.?skuName ?? natGatewaySku
+      skuTier: publicIPAddress.?skuTier
+      tags: publicIPAddress.?tags ?? tags
+      availabilityZones: publicIPAddress.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
+      enableTelemetry: enableReferencedModulesTelemetry
+      ddosSettings: publicIPAddress.?ddosSettings
+      dnsSettings: publicIPAddress.?dnsSettings
+      idleTimeoutInMinutes: publicIPAddress.?idleTimeoutInMinutes
+      ipTags: publicIPAddress.?ipTags
+    }
+  }
+]
+
+module formattedPublicIpResourceIdsV6 'modules/formatResourceId.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-formattedPublicIpResourceIdsV6'
+  params: {
+    generatedResourceIds: [
+      for (obj, index) in (publicIPAddressesV6 ?? []): natGateway_publicIPAddressesV6[index].outputs.resourceId
+    ]
+    providedResourceIds: publicIpResourceIdsV6
+  }
+}
+
+module natGateway_publicIPPrefixesV6 'br/public:avm/res/network/public-ip-prefix:0.8.0' = [
+  for (publicIPPrefix, index) in (publicIPPrefixesV6 ?? []): {
+    name: '${uniqueString(deployment().name, location)}-NatGw-Prefix-PIPv6-${index}'
+    params: {
+      name: publicIPPrefix.?name ?? '${name}-pipv6'
+      location: location
+      lock: publicIPPrefix.?lock ?? lock
+      skuName: publicIPPrefix.?skuName ?? natGatewaySku
+      prefixLength: publicIPPrefix.prefixLength
+      customIPPrefix: publicIPPrefix.?customIPPrefix
+      roleAssignments: publicIPPrefix.?roleAssignments
+      tags: publicIPPrefix.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
+      availabilityZones: publicIPPrefix.?availabilityZones ?? (availabilityZone != -1 ? [availabilityZone] : null)
+      ipTags: publicIPPrefix.?ipTags
+      publicIPAddressVersion: 'IPv6'
+      tier: publicIPPrefix.?tier
+    }
+  }
+]
+
+module formattedPublicIpPrefixResourceIdsV6 'modules/formatResourceId.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-formattedPublicIpPrefixResourceIdsV6'
+  params: {
+    generatedResourceIds: [
+      for (obj, index) in (publicIPPrefixesV6 ?? []): natGateway_publicIPPrefixesV6[index].outputs.resourceId
+    ]
+    providedResourceIds: publicIPPrefixResourceIdsV6
+  }
+}
+
 // NAT GATEWAY
 // ===========
-resource natGateway 'Microsoft.Network/natGateways@2024-07-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2025-05-01' = {
   name: name
   location: location
   tags: tags
   sku: {
-    name: 'Standard'
+    name: natGatewaySku
   }
   properties: {
     idleTimeoutInMinutes: idleTimeoutInMinutes
     publicIpPrefixes: formattedPublicIpPrefixResourceIds.outputs.formattedResourceIds
     publicIpAddresses: formattedPublicIpResourceIds.outputs.formattedResourceIds
+    publicIpPrefixesV6: formattedPublicIpPrefixResourceIdsV6.outputs.formattedResourceIds
+    publicIpAddressesV6: formattedPublicIpResourceIdsV6.outputs.formattedResourceIds
   }
   zones: availabilityZone != -1 ? [string(availabilityZone)] : null
 }
@@ -253,7 +341,7 @@ type publicIpType = {
   lock: lockType?
 
   @description('Optional. Name of a public IP address SKU.')
-  skuName: ('Basic' | 'Standard')?
+  skuName: ('Basic' | 'Standard' | 'StandardV2')?
 
   @description('Optional. Tier of a public IP address SKU.')
   skuTier: ('Global' | 'Regional')?
@@ -285,6 +373,9 @@ type publicIPPrefixType = {
   @description('Required. The name of the Public IP Prefix.')
   @minLength(1)
   name: string
+
+  @description('Optional. Name of a public IP prefix SKU.')
+  skuName: ('Standard' | 'StandardV2')?
 
   @description('Optional. Tier of a public IP prefix SKU. If set to `Global`, the `zones` property must be empty.')
   tier: ('Global' | 'Regional')?

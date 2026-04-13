@@ -1,10 +1,5 @@
 # Azure Stack HCI Virtual Machine Instance `[Microsoft.AzureStackHCI/virtualMachineInstances]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an Azure Stack HCI virtual machine.
 
 You can reference the module as follows:
@@ -355,7 +350,7 @@ param location = '<location>'
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
-| [`osProfile`](#parameter-osprofile) | object | OS profile configuration. |
+| [`osProfile`](#parameter-osprofile) | secureObject | OS profile configuration. |
 | [`storageProfile`](#parameter-storageprofile) | object | Storage profile configuration. |
 
 **Optional parameters**
@@ -404,7 +399,7 @@ Network profile configuration.
 OS profile configuration.
 
 - Required: Yes
-- Type: object
+- Type: secureObject
 
 ### Parameter: `storageProfile`
 

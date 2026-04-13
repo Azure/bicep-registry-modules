@@ -135,7 +135,7 @@ resource dnsResolver_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 
 module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
   for (inboundEndpoint, index) in (inboundEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-dnsResolver-inbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-inbound-${index}'
     params: {
       name: inboundEndpoint.name
       tags: inboundEndpoint.?tags ?? tags
@@ -150,7 +150,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
 
 module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [
   for (outboundEndpoint, index) in (outboundEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-dnsResolver-outbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-outbound-${index}'
     params: {
       name: outboundEndpoint.name
       tags: outboundEndpoint.?tags ?? tags

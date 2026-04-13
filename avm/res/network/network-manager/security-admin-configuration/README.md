@@ -13,9 +13,9 @@ A security admin configuration contains a set of rule collections. Each rule col
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations)</li></ul> |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections)</li></ul> |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations/ruleCollections)</li></ul> |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_securityadminconfigurations_rulecollections_rules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules)</li></ul> |
 
 ## Parameters
 
@@ -46,14 +46,6 @@ Enum list of network intent policy based services.
 
 - Required: Yes
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    'All'
-    'AllowRulesOnly'
-    'None'
-  ]
-  ```
 
 ### Parameter: `name`
 
@@ -84,13 +76,6 @@ Determine update behavior for changes to network groups referenced within the ru
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'Manual'
-    'None'
-  ]
-  ```
 
 ### Parameter: `ruleCollections`
 

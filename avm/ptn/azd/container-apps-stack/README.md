@@ -48,9 +48,121 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/container-apps-stack:<version>`.
 
-- [With zoneRedundant enabled](#example-1-with-zoneredundant-enabled)
+- [Using storages](#example-1-using-storages)
+- [With zoneRedundant enabled](#example-2-with-zoneredundant-enabled)
 
-### Example 1: _With zoneRedundant enabled_
+### Example 1: _Using storages_
+
+This instance deploys the module with environment storages for volume mounts.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/storages]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module containerAppsStack 'br/public:avm/ptn/azd/container-apps-stack:<version>' = {
+  params: {
+    // Required parameters
+    containerAppsEnvironmentName: 'acasstcae001'
+    containerRegistryName: 'acasstcr001'
+    logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
+    // Non-required parameters
+    location: '<location>'
+    publicNetworkAccess: 'Enabled'
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'testshare'
+        storageAccountName: '<storageAccountName>'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containerAppsEnvironmentName": {
+      "value": "acasstcae001"
+    },
+    "containerRegistryName": {
+      "value": "acasstcr001"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "<logAnalyticsWorkspaceName>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "testshare",
+          "storageAccountName": "<storageAccountName>"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/container-apps-stack:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = 'acasstcae001'
+param containerRegistryName = 'acasstcr001'
+param logAnalyticsWorkspaceName = '<logAnalyticsWorkspaceName>'
+// Non-required parameters
+param location = '<location>'
+param publicNetworkAccess = 'Enabled'
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'testshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 2: _With zoneRedundant enabled_
 
 This instance deploys the module with zoneRedundant enabled.
 
@@ -225,6 +337,7 @@ param zoneRedundant = true
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
+| [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone redundancy setting. |
 
@@ -383,6 +496,64 @@ Whether to allow or block all public traffic.
     'Enabled'
   ]
   ```
+
+### Parameter: `storages`
+
+The list of storages to mount on the environment.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
+| [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
+| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
+
+### Parameter: `storages.accessMode`
+
+Access mode for storage: "ReadOnly" or "ReadWrite".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `storages.kind`
+
+Type of storage: "SMB" or "NFS".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NFS'
+    'SMB'
+  ]
+  ```
+
+### Parameter: `storages.shareName`
+
+File share name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storages.storageAccountName`
+
+Storage account name.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `tags`
 

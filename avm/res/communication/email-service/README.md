@@ -25,9 +25,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Communication/emailServices` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices)</li></ul> |
-| `Microsoft.Communication/emailServices/domains` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains)</li></ul> |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames)</li></ul> |
+| `Microsoft.Communication/emailServices` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-09-01/emailServices)</li></ul> |
+| `Microsoft.Communication/emailServices/domains` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-09-01/emailServices/domains)</li></ul> |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.communication_emailservices_domains_senderusernames.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2025-09-01/emailServices/domains/senderUsernames)</li></ul> |
 
 ## Usage examples
 
@@ -188,6 +188,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Communication and Email Service Owner'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -291,6 +296,11 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Communication and Email Service Owner"
         }
       ]
     },
@@ -385,6 +395,11 @@ param roleAssignments = [
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Communication and Email Service Owner'
   }
 ]
 param tags = {
@@ -848,6 +863,7 @@ Array of role assignments to create.
   - `'Reader'`
   - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
+  - `'Communication and Email Service Owner'`
 
 **Required parameters**
 
@@ -950,6 +966,8 @@ Endpoint tags.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `domainFromSenderDomains` | array | The list of from sender domains for each domain. |
+| `domainMailFromSenderDomains` | array | The list of mail from sender domains for each domain. |
 | `domainNames` | array | The list of the email domain names. |
 | `domainResourceIds` | array | The list of the email domain resource ids. |
 | `domainVerificationRecords` | array | The list of verification records for each domain. |
@@ -964,7 +982,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

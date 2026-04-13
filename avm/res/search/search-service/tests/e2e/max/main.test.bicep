@@ -72,7 +72,11 @@ module testDeployment '../../../main.bicep' = [
           aadAuthFailureMode: 'http401WithBearerChallenge'
         }
       }
-      hostingMode: 'highDensity'
+      hostingMode: 'HighDensity'
+      computeType: 'Default'
+      dataExfiltrationProtections: [
+        'All'
+      ]
       partitionCount: 2
       replicaCount: 3
       semanticSearch: 'standard'
@@ -109,7 +113,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       networkRuleSet: {
-        bypass: 'AzurePortal'
+        bypass: 'AzureServices'
         ipRules: [
           {
             value: '40.74.28.0/23'
