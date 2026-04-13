@@ -8,13 +8,13 @@ Check if a module in a given path does exist in the MAR file. Only then, it can 
 .PARAMETER PublishedModuleName
 Mandatory. The path of the module to check for. For example: 'avm/res/key-vault/vault', 'avm/res/key-vault/vault/1.0.0'
 
-.PARAMETER GitHubToken
-Mandatory. A GitHub token with read access to the MAR repository (microsoft/mcr).
+.PARAMETER PublishedModulesUrl
+Optional. Provide the URL to the BicepMARModules.json file. For example: "https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepMARModules.json". If not provided, the default URL will be used.
 
 .EXAMPLE
-Confirm-ModuleInMAR -PublishedModuleName 'avm/res/key-vault/vault' -GitHubToken $env:MAR_REPO_ACCESS_PAT -Verbose
+Confirm-ModuleInMAR -PublishedModuleName 'avm/res/key-vault/vault'
 
-Check if module 'key-vault/vault' exists in the MAR file using a GitHub token for authentication
+Check if module 'key-vault/vault' exists in the MAR file. The function will return $true if the module is found, otherwise $false.
 #>
 function Confirm-ModuleInMAR {
 
