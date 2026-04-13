@@ -354,6 +354,10 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
     }
 
+    # Suppress confirmation prompts and reduce verbose noise inside the remote scriptblock
+    $ConfirmPreference = 'None'
+    $VerbosePreference = 'SilentlyContinue'
+
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
     If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
@@ -385,6 +389,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
                 -Region $location `
                 -AccountID $accountId `
                 -ArmAccessToken $t `
+                -Confirm:$false `
                 @optionalParameters
             $arcSuccess = $true
             Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
@@ -399,30 +404,42 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     }
 } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
-log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
+log 'Waiting up to 60 minutes for Azure Arc initialization to complete on nodes...'
 
-# Poll completion with periodic Receive-Job draining to prevent Wait-Job deadlock.
-# Wait-Job can deadlock when remote jobs write to the host stream (prompts/verbose).
-$arcPollTimeout = (Get-Date).AddMinutes(30)
+# Accumulate job output as we poll — we drain WITHOUT -Keep so the PSRemoting buffer actually
+# empties. Using -Keep would leave data in the buffer causing it to fill up and block the job.
+$nodeOutput = @{}
+foreach ($job in $arcInitializationJobs) { $nodeOutput[$job.Id] = [System.Collections.Generic.List[string]]::new() }
+
+$arcPollTimeout = (Get-Date).AddMinutes(60)
 while ($true) {
     $runningJobs = @($arcInitializationJobs | Where-Object { $_.State -eq 'Running' })
     if ($runningJobs.Count -eq 0) { break }
     if ((Get-Date) -gt $arcPollTimeout) {
-        log 'Arc initialization polling timed out after 30 minutes.'
+        log 'Arc initialization polling timed out after 60 minutes.'
         break
     }
-    # Drain output buffers to unblock host-stream writes in remote jobs
-    $null = $arcInitializationJobs | Receive-Job -Keep -ErrorAction SilentlyContinue
+    # Drain buffers WITHOUT -Keep to actually empty the PSRemoting pipeline buffer
+    foreach ($job in $arcInitializationJobs) {
+        $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
+        if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
+    }
     Start-Sleep -Seconds 15
 }
 
-# check for failed arc initialization jobs - robust detection of failures and timeouts
+# Final drain of any remaining output
+foreach ($job in $arcInitializationJobs) {
+    $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
+    if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
+}
+
+# Check for failed arc initialization jobs
 log 'Checking status of Azure Arc initialization jobs...'
 $arcFailed = $false
 $arcInitializationJobs | ForEach-Object {
     $job = $_
-    $jobOutput = $job | Receive-Job -Keep -ErrorAction SilentlyContinue -ErrorVariable jobErrors
-    log "[$($job.Location)] Job state: '$($job.State)'. Output: '$($jobOutput | Out-String)'. Errors: '$($jobErrors | Out-String)'"
+    $allOutput = $nodeOutput[$job.Id] -join "`n"
+    log "[$($job.Location)] Job state: '$($job.State)'. Output: '$allOutput'"
 
     if ($job.State -ne 'Completed') {
         log "Arc initialization job on '$($job.Location)' did NOT complete successfully (State: '$($job.State)'). This likely means Arc registration failed or timed out inside the VM."
@@ -431,8 +448,8 @@ $arcInitializationJobs | ForEach-Object {
         # Also check child jobs for failures
         $failedChildren = Get-Job -Id $job.Id -IncludeChildJob | Where-Object { $_.State -eq 'Failed' }
         if ($failedChildren) {
-            $childErrors = $failedChildren | Receive-Job -ErrorAction SilentlyContinue -ErrorVariable childJobErrors
-            log "Arc initialization job on '$($job.Location)' has failed child jobs. Errors: '$($childJobErrors | Out-String)'"
+            $childErrors = Receive-Job -Job $failedChildren -ErrorAction SilentlyContinue 2>&1
+            log "Arc initialization job on '$($job.Location)' has failed child jobs. Errors: '$($childErrors | Out-String)'"
             $arcFailed = $true
         }
     }
