@@ -1,16 +1,13 @@
 ---
 name: avm-create-plan-update-arm-api
-description: "Analyze AVM Bicep modules for outdated ARM API versions and create implementation plans with schema diffs. USE FOR: update API version, ARM API, outdated API, api version plan, schema diff, AVM update plan, check API versions, plan API upgrade, API version analysis. DO NOT USE FOR: actual file modifications or code changes (use bicep-implement agent), creating new modules, Terraform modules."
+description: "Analyze AVM Bicep modules for outdated ARM API versions, produce schema diffs, and apply updates. USE FOR: update API version, ARM API, outdated API, api version plan, schema diff, AVM update plan, check API versions, plan API upgrade, API version analysis, update module API. DO NOT USE FOR: creating new modules, Terraform modules."
 ---
 
 # AVM ARM API Version Update Planner
 
 > **AUTHORITATIVE GUIDANCE — MANDATORY COMPLIANCE**
 >
-> This skill analyzes Azure Verified Module (AVM) Bicep files for outdated ARM API versions and produces detailed implementation plans. Follow these steps exactly. Do not skip or reorder steps.
-
-> [!IMPORTANT]
-> This is a **planning task only**. Do not modify any files unless the user explicitly asks you to.
+> This skill analyzes Azure Verified Module (AVM) Bicep files for outdated ARM API versions, produces detailed schema diffs, and applies updates. Follow these steps exactly. Do not skip or reorder steps.
 
 ---
 
@@ -22,24 +19,23 @@ Activate this skill when user wants to:
 - Plan API version updates for a Bicep resource module
 - Compare current vs latest ARM API schemas
 - Get a schema diff for ARM API version changes
-- Create an implementation plan for updating API versions
+- Create an update plan or apply API version updates
 
 ---
 
 ## Context
 
-Azure resource providers regularly release new API versions with new properties, behavioral changes, and occasionally breaking changes. AVM modules must track stable API versions to remain current. This skill automates the comparison of current vs latest versions and produces actionable plans with schema-level detail.
+Azure resource providers regularly release new API versions with new properties, behavioral changes, and occasionally breaking changes. AVM modules must track stable API versions to remain current. This skill automates the comparison of current vs latest versions, produces schema-level diffs, and can apply the required updates.
 
 ---
 
 ## Rules
 
-1. **Planning only** — Do not edit any files unless the user explicitly requests it.
-2. **AVM compliance** — All recommendations must align with AVM specifications. Fetch the AVM docs index at `https://azure.github.io/Azure-Verified-Modules/llms.txt` during analysis.
-3. **Stable versions only** — Prioritize stable API versions. Only recommend preview versions when no stable alternative exists.
-4. **Schema validation required** — For every resource with an update available, fetch **both** current and latest schemas before producing the change plan.
-5. **Complete output** — All four mandatory output sections (Summary Table, Status Icons, Detailed Change Plans, Versioning Recommendations) must be present.
-6. **Use available tools** — If `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, or `#list_avm_metadata` tools are available, prefer them. Fall back to `#fetch` with Microsoft Learn URLs when they are not.
+1. **AVM compliance** — All recommendations must align with AVM specifications. Fetch the AVM docs index at `https://azure.github.io/Azure-Verified-Modules/llms.txt` during analysis.
+2. **Stable versions only** — Prioritize stable API versions. Only recommend preview versions when no stable alternative exists.
+3. **Schema validation required** — For every resource with an update available, fetch **both** current and latest schemas before producing the change plan.
+4. **Complete output** — All four mandatory output sections (Summary Table, Status Icons, Detailed Change Plans, Versioning Recommendations) must be present.
+5. **Use available tools** — If `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, or `#list_avm_metadata` tools are available, prefer them. Fall back to `#fetch` with Microsoft Learn URLs when they are not.
 
 ---
 
@@ -300,7 +296,6 @@ Before completing, verify:
 - [ ] For EVERY resource with "Update Available" status, BOTH current and latest schemas were fetched
 - [ ] Detailed change plans created for EVERY resource requiring updates
 - [ ] Implementation plans include specific code changes, testing requirements, and risk assessments
-- [ ] No files were modified (unless user explicitly requested it)
 - [ ] Versioning recommendations include both `version.json` and `CHANGELOG.md` suggestions for every resource needing updates
 - [ ] Version bump type (minor vs patch) is justified based on change analysis
 - [ ] Suggested CHANGELOG entry follows the established format with all required sections
