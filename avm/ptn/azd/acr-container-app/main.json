@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "5948084478158544565"
+      "templateHash": "12455006466085533388"
     },
     "name": "Azd ACR Linked Container App",
     "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -213,6 +213,106 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a container app probe."
+      }
+    },
+    "volumeMountType": {
+      "type": "object",
+      "properties": {
+        "mountPath": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path within the container at which the volume should be mounted. Must not contain ':'."
+          }
+        },
+        "subPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root)."
+          }
+        },
+        "volumeName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. This must match the Name of a Volume."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a volume mount."
+      }
+    },
+    "volumeSecretType": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path to project secret to. Must be unique per volume and not conflict with other paths in the volume."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Container App secret from which to pull the secret value."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a volume secret."
+      }
+    },
+    "volumeType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Volume name."
+          }
+        },
+        "mountOptions": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string."
+          }
+        },
+        "storageName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of storage resource. No need to provide for EmptyDir and Secret."
+          }
+        },
+        "storageType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureFile",
+            "EmptyDir",
+            "NfsAzureFile",
+            "Secret"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage type for the volume. If not provided, use EmptyDir."
+          }
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/volumeSecretType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a volume."
       }
     },
     "secretType": {
@@ -500,6 +600,26 @@
         "description": "Optional. Toggle to include the service configuration."
       }
     },
+    "volumes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/volumeType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of volumes that can be mounted by containers in the container app."
+      }
+    },
+    "volumeMounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/volumeMountType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Volume mounts for the primary container."
+      }
+    },
     "principalId": {
       "type": "string",
       "defaultValue": "",
@@ -618,6 +738,9 @@
           "serviceBinds": {
             "value": "[parameters('serviceBinds')]"
           },
+          "volumes": {
+            "value": "[parameters('volumes')]"
+          },
           "containers": {
             "value": [
               {
@@ -628,7 +751,8 @@
                   "cpu": "[json(parameters('containerCpuCoreCount'))]",
                   "memory": "[parameters('containerMemory')]"
                 },
-                "probes": "[parameters('containerProbes')]"
+                "probes": "[parameters('containerProbes')]",
+                "volumeMounts": "[parameters('volumeMounts')]"
               }
             ]
           },

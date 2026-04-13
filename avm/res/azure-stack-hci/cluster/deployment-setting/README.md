@@ -12,7 +12,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2024-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings)</li></ul> |
+| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters/deploymentSettings)</li></ul> |
 
 ## Parameters
 
@@ -61,12 +61,22 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`isEuropeanUnionLocation`](#parameter-iseuropeanunionlocation) | bool | The location data for deploying a HCI cluster. |
 | [`name`](#parameter-name) | string | The name of the deployment settings. |
 | [`operationType`](#parameter-operationtype) | string | The intended operation for a cluster. |
+| [`partnerCredentialList`](#parameter-partnercredentiallist) | array | Solution builder extension (SBE) partner credential properties. |
+| [`partnerProperties`](#parameter-partnerproperties) | array | Solution builder extension (SBE) partner properties. |
+| [`physicalNodesSettings`](#parameter-physicalnodessettings) | array | Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices. |
+| [`sbeFamily`](#parameter-sbefamily) | string | Solution builder extension (SBE) family value. |
+| [`sbeManifestCreationDate`](#parameter-sbemanifestcreationdate) | string | Solution builder extension (SBE) creation date. |
+| [`sbeManifestSource`](#parameter-sbemanifestsource) | string | Solution builder extension (SBE) manifest source. |
+| [`sbePublisher`](#parameter-sbepublisher) | string | Solution builder extension (SBE) publisher name. |
+| [`sbeVersion`](#parameter-sbeversion) | string | Solution builder extension (SBE) version. |
 | [`sideChannelMitigationEnforced`](#parameter-sidechannelmitigationenforced) | bool | When set to true, all the side channel mitigations are enabled. |
 | [`smbClusterEncryption`](#parameter-smbclusterencryption) | bool | When set to true, cluster east-west traffic is encrypted. |
 | [`smbSigningEnforced`](#parameter-smbsigningenforced) | bool | When set to true, the SMB default instance requires sign in for the client and server services. |
 | [`storageConfigurationMode`](#parameter-storageconfigurationmode) | string | The storage volume configuration mode. See documentation for details. |
 | [`streamingDataClient`](#parameter-streamingdataclient) | bool | The metrics data for deploying a HCI cluster. |
+| [`useDhcp`](#parameter-usedhcp) | bool | If true, the infrastructure network uses DHCP. If false, static IP pools are used. |
 | [`wdacEnforced`](#parameter-wdacenforced) | bool | Limits the applications and the code that you can run on your Azure Stack HCI cluster. |
+| [`witnessType`](#parameter-witnesstype) | string | Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload. |
 
 ### Parameter: `clusterNodeNames`
 
@@ -316,6 +326,70 @@ The intended operation for a cluster.
   ]
   ```
 
+### Parameter: `partnerCredentialList`
+
+Solution builder extension (SBE) partner credential properties.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `partnerProperties`
+
+Solution builder extension (SBE) partner properties.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `physicalNodesSettings`
+
+Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `sbeFamily`
+
+Solution builder extension (SBE) family value.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeManifestCreationDate`
+
+Solution builder extension (SBE) creation date.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeManifestSource`
+
+Solution builder extension (SBE) manifest source.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbePublisher`
+
+Solution builder extension (SBE) publisher name.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `sbeVersion`
+
+Solution builder extension (SBE) version.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `sideChannelMitigationEnforced`
 
 When set to true, all the side channel mitigations are enabled.
@@ -364,6 +438,14 @@ The metrics data for deploying a HCI cluster.
 - Type: bool
 - Default: `True`
 
+### Parameter: `useDhcp`
+
+If true, the infrastructure network uses DHCP. If false, static IP pools are used.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `wdacEnforced`
 
 Limits the applications and the code that you can run on your Azure Stack HCI cluster.
@@ -371,6 +453,21 @@ Limits the applications and the code that you can run on your Azure Stack HCI cl
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `witnessType`
+
+Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload.
+
+- Required: No
+- Type: string
+- Default: `'Cloud'`
+- Allowed:
+  ```Bicep
+  [
+    'Cloud'
+    'No Witness'
+  ]
+  ```
 
 ## Outputs
 

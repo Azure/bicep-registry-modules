@@ -122,11 +122,13 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string = ''
+param virtualMachineAdminUsername string?
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string = ''
+param virtualMachineAdminPassword string?
+
+// These parameters are changed for testing - please reset as part of publication
 
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
 param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -135,7 +137,7 @@ param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param backendContainerImageName string = 'macaebackend'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_v4_2026-01-05_1710'
+param backendContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -144,7 +146,7 @@ param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'macaefrontend'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_v4_2026-01-05_1710'
+param frontendContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. The Container Registry hostname where the docker images for the MCP are located.')
 param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -153,7 +155,7 @@ param mcpContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param mcpContainerImageName string = 'macaemcp'
 
 @description('Optional. The Container Image Tag to deploy on the MCP.')
-param mcpContainerImageTag string = 'latest_v4_2026-01-05_1710'
+param mcpContainerImageTag string = 'latest_v4_2026-03-17_1892'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -197,29 +199,28 @@ var allTags = union(
   },
   tags
 )
+var existingTags = resourceGroup().?tags ?? {}
 @description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
 var deployerPrincipalType = contains(deployer(), 'userPrincipalName') ? 'User' : 'ServicePrincipal'
 
-resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
+resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: {
-      ...resourceGroup().tags
-      ...allTags
+    tags: union(existingTags, allTags, {
       TemplateName: 'MACAE'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
       DeploymentName: deployment().name
       SolutionSuffix: solutionSuffix
-    }
+    })
   }
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-multiagentcustauteng.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -241,7 +242,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.2' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -253,7 +254,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     features: { enableLogAccessUsingOnlyResourcePermissions: true }
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
-    dailyQuotaGb: enableRedundancy ? 150 : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
+    dailyQuotaGb: enableRedundancy ? '150' : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
     replication: enableRedundancy
       ? {
           enabled: true
@@ -324,7 +325,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (en
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.3' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -383,7 +384,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
 // ========== Virtual machine ========== //
 // WAF best practices for virtual machines: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-machines
 var maintenanceConfigurationResourceName = 'mc-${solutionSuffix}'
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${maintenanceConfigurationResourceName}', 64)
   params: {
     name: maintenanceConfigurationResourceName
@@ -493,6 +494,15 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
+            // eventLogName: 'Security'
+            // eventTypes: [
+            //   {
+            //     eventType: 'Audit Success'
+            //   }
+            //   {
+            //     eventType: 'Audit Failure'
+            //   }
+            // ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -538,7 +548,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v3'
+var virtualMachineSize = 'Standard_D2s_v4'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
@@ -630,7 +640,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDnsZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
+var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
@@ -638,7 +648,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink.blob.core.windows.net'
   'privatelink.search.windows.net'
-  keyVaultPrivateDnsZone
+  keyVaultPrivateDNSZone
 ]
 
 // DNS Zone Index Constants
@@ -653,7 +663,7 @@ var dnsZoneIndex = {
 }
 
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'avm.res.network.private-dns-zone.${contains(zone, 'azurecontainerapps.io') ? 'containerappenv' : split(zone, '.')[1]}'
     params: {
@@ -703,6 +713,7 @@ var aiFoundryAiServicesReasoningModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
+var aiFoundryAiProjectDescription = 'AI Foundry Project'
 module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
@@ -829,7 +840,7 @@ module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
     name: aiFoundryAiProjectResourceName
     location: azureAiServiceLocation
     tags: tags
-    desc: 'AI Foundry Project'
+    desc: aiFoundryAiProjectDescription
     aiServicesName: aiFoundryAiServices!.outputs.name
   }
 }
@@ -841,7 +852,7 @@ var cosmosDbResourceName = 'cosmos-${solutionSuffix}'
 var cosmosDbDatabaseName = 'macae'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -932,7 +943,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionSuffix}'
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1' = {
   name: take('avm.res.app.managed-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
@@ -947,10 +958,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
-            sharedKey: logAnalyticsWorkspace!.outputs!.primarySharedKey
-          }
+          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
         }
       : null
     appInsightsConnectionString: enableMonitoring ? applicationInsights!.outputs.connectionString : null
@@ -979,7 +987,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.3
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionSuffix}'
-module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -1102,7 +1110,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
           }
           {
             name: 'AZURE_AI_SEARCH_ENDPOINT'
-            value: searchService.outputs.endpoint
+            value: searchServiceUpdate.outputs.endpoint
           }
           {
             name: 'AZURE_COGNITIVE_SERVICES'
@@ -1145,10 +1153,6 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: '["o3","o4-mini","gpt-4.1","gpt-4.1-mini"]'
           }
           {
-            name: 'AZURE_AI_SEARCH_API_KEY'
-            secretRef: 'azure-ai-search-api-key'
-          }
-          {
             name: 'AZURE_STORAGE_BLOB_URL'
             value: avmStorageAccount.outputs.serviceEndpoints.blob
           }
@@ -1183,13 +1187,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
         ]
       }
     ]
-    secrets: [
-      {
-        name: 'azure-ai-search-api-key'
-        keyVaultUrl: keyvault.outputs.secrets[0].uriWithVersion
-        identity: userAssignedIdentity.outputs.resourceId
-      }
-    ]
+    secrets: []
   }
 }
 
@@ -1197,7 +1195,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppMcpResourceName = 'ca-mcp-${solutionSuffix}'
-module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
   name: take('avm.res.app.container-app.${containerAppMcpResourceName}', 64)
   params: {
     name: containerAppMcpResourceName
@@ -1293,7 +1291,7 @@ module containerAppMcp 'br/public:avm/res/app/container-app:0.19.0' = {
 // WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 // PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 var webServerFarmResourceName = 'asp-${solutionSuffix}'
-module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
+module webServerFarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
   name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
   params: {
     name: webServerFarmResourceName
@@ -1366,7 +1364,7 @@ var storageContainerNameRFPCompliance = 'rfp-compliance-dataset'
 var storageContainerNameContractSummary = 'contract-summary-dataset'
 var storageContainerNameContractRisk = 'contract-risk-dataset'
 var storageContainerNameContractCompliance = 'contract-compliance-dataset'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -1463,6 +1461,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.31.0' = {
 }
 
 // ========== Search Service ========== //
+
 var searchServiceName = 'srch-${solutionSuffix}'
 var aiSearchIndexNameForContractSummary = 'contract-summary-doc-index'
 var aiSearchIndexNameForContractRisk = 'contract-risk-doc-index'
@@ -1473,17 +1472,21 @@ var aiSearchIndexNameForRFPSummary = 'macae-rfp-summary-index'
 var aiSearchIndexNameForRFPRisk = 'macae-rfp-risk-index'
 var aiSearchIndexNameForRFPCompliance = 'macae-rfp-compliance-index'
 
-module searchService 'br/public:avm/res/search/search-service:0.12.0' = {
-  name: take('avm.res.search.search-service.${solutionSuffix}', 64)
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
+  name: searchServiceName
+  location: location
+  sku: {
+    name: enableScalability ? 'standard' : 'basic'
+  }
+}
+
+// Separate module for Search Service to enable managed identity and update other properties, as this reduces deployment time
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
+  name: take('avm.res.search.update.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
     enableTelemetry: enableTelemetry
-    authOptions: {
-      aadOrApiKey: {
-        aadAuthFailureMode: 'http401WithBearerChallenge'
-      }
-    }
-    disableLocalAuth: false
+    disableLocalAuth: true
     hostingMode: 'Default'
     managedIdentities: {
       systemAssigned: true
@@ -1544,6 +1547,9 @@ module searchService 'br/public:avm/res/search/search-service:0.12.0' = {
     //     ]
     //   : []
   }
+  dependsOn: [
+    searchService
+  ]
 }
 
 // ========== Search Service - AI Project Connection ========== //
@@ -1555,10 +1561,9 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
     aiFoundryProjectName: aiFoundryAiServicesProject!.outputs.name
     aiFoundryName: aiFoundryAiServicesResourceName
     aifSearchConnectionName: aiSearchConnectionName
-    searchServiceResourceId: searchService.outputs.resourceId
-    searchServiceLocation: searchService.outputs.location
-    searchServiceName: searchService.outputs.name
-    searchApiKey: searchService.outputs.primaryKey
+    searchServiceResourceId: searchService.id
+    searchServiceLocation: searchService.location
+    searchServiceName: searchService.name
   }
 }
 
@@ -1606,12 +1611,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
         roleDefinitionIdOrName: 'Key Vault Administrator'
       }
     ]
-    secrets: [
-      {
-        name: 'AzureAISearchAPIKey'
-        value: searchService.outputs.primaryKey
-      }
-    ]
+    secrets: []
     enableTelemetry: enableTelemetry
   }
 }
@@ -1633,10 +1633,10 @@ output azureStorageBlobUrl string = avmStorageAccount.outputs.serviceEndpoints.b
 output azureStorageAccountName string = storageAccountName
 
 @description('The Azure AI Search service endpoint URL.')
-output azureAiSearchEndpoint string = searchService.outputs.endpoint
+output azureAiSearchEndpoint string = searchServiceUpdate.outputs.endpoint
 
 @description('The name of the Azure AI Search service.')
-output azureAiSearchName string = searchService.outputs.name
+output azureAiSearchName string = searchService.name
 
 @description('The Cosmos DB endpoint URL.')
 output cosmosDbEndpoint string = 'https://${cosmosDbResourceName}.documents.azure.com:443/'
@@ -1687,7 +1687,7 @@ output aiFoundryResourceId string = aiFoundryAiServices.outputs.resourceId
 output cosmosDbAccountName string = cosmosDbResourceName
 
 @description('The Azure Search service endpoint URL.')
-output azureSearchEndpoint string = searchService.outputs.endpoint
+output azureSearchEndpoint string = searchServiceUpdate.outputs.endpoint
 
 @description('The Azure client ID for the user-assigned managed identity.')
 output azureClientId string = userAssignedIdentity!.outputs.clientId

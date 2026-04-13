@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/azd/acr-container-app/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Added new `volumes` parameter to define volumes that can be mounted by containers in the container app
+- Added new `volumeMounts` parameter to configure volume mounts for the primary container
+- Added exported `volumeType` and `volumeMountType` type definitions for use by dependent modules
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes

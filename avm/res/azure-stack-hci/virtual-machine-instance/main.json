@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1371405258321986233"
+      "version": "0.40.2.10011",
+      "templateHash": "4963312133934804886"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -144,7 +144,7 @@
       }
     },
     "osProfile": {
-      "type": "object",
+      "type": "secureObject",
       "metadata": {
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview#properties/properties/properties/osProfile"
