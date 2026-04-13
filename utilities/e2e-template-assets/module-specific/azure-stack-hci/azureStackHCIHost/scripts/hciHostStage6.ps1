@@ -360,54 +360,47 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
-    try {
-        # Build a PSCredential carrying the host VM's managed identity access token.
-        # Invoke-AzStackHciArcInitialization forwards the SpnCredential to the HCI bootstrap
-        # service (port 9098) which handles Azure authentication independently.
-        # Connect-AzAccount is NOT used here because it rejects managed identity access tokens
-        # obtained from outside the HCI node with "The access token is invalid."
-        $spnCred = [pscredential]::new(
-            $accountId,
-            (ConvertTo-SecureString $t -AsPlainText -Force)
-        )
-        Write-Output "SpnCredential built for AccountId: $accountId"
+    # Build a PSCredential carrying the host VM's managed identity access token.
+    # Invoke-AzStackHciArcInitialization forwards the SpnCredential to the HCI bootstrap
+    # service (port 9098) which handles Azure authentication independently.
+    # Connect-AzAccount is NOT used here because it rejects managed identity access tokens
+    # obtained from outside the HCI node with "The access token is invalid."
+    $spnCred = [pscredential]::new(
+        $accountId,
+        (ConvertTo-SecureString $t -AsPlainText -Force)
+    )
+    Write-Output "SpnCredential built for AccountId: $accountId"
 
-        # Wait for the HCI bootstrap service on port 9098.
-        # Invoke-AzStackHciArcInitialization communicates with this local service which handles
-        # Arc registration with HCI-specific OS SKU metadata, extensions, and configuration.
-        Write-Output 'Waiting for HCI bootstrap service on port 9098...'
-        $bootstrapReady = $false
-        for ($i = 0; $i -lt 36; $i++) {
-            try {
-                $tcpClient = New-Object System.Net.Sockets.TcpClient
-                $tcpClient.Connect('localhost', 9098)
-                $tcpClient.Close()
-                $bootstrapReady = $true
-                break
-            } catch {}
-            Write-Output "Bootstrap service not yet ready [attempt $($i+1)/36]. Waiting 10s..."
-            Start-Sleep -Seconds 10
-        }
-        if (-not $bootstrapReady) {
-            throw 'HCI bootstrap service on port 9098 did not start within 6 minutes. Arc initialization cannot proceed.'
-        }
-        Write-Output 'Bootstrap service is ready on port 9098.'
+    # NOTE: Do NOT pre-wait for port 9098. Invoke-AzStackHciArcInitialization itself installs
+    # and starts the ECE bootstrap agent (which opens port 9098) as part of its initialization.
+    # Waiting externally will always time out because the service only starts when the cmdlet runs.
 
-        # Use Invoke-AzStackHciArcInitialization which triggers the HCI bootstrap workflow.
-        # This correctly sets HCI-specific Arc osSku metadata and installs required extensions,
-        # unlike azcmagent connect which registers as a generic Arc server with empty osSku.
-        Write-Output "Invoking Azure Stack HCI Arc initialization for node '$($env:COMPUTERNAME)'..."
-        Invoke-AzStackHciArcInitialization `
-            -SubscriptionID $subscriptionId `
-            -TenantID $tenantId `
-            -ResourceGroup $resourceGroupName `
-            -Region $location `
-            -AccountID $accountId `
-            -SpnCredential $spnCred `
-            @optionalParameters
-        Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
-    } catch {
-        Write-Error $_ -ErrorAction Stop
+    # Retry loop: Arc initialization can fail transiently (token refresh, service startup timing).
+    $arcMaxRetries = 3
+    $arcAttempt = 0
+    $arcSuccess = $false
+    while (-not $arcSuccess -and $arcAttempt -lt $arcMaxRetries) {
+        $arcAttempt++
+        try {
+            Write-Output "Arc initialization attempt $arcAttempt/$arcMaxRetries for '$($env:COMPUTERNAME)'..."
+            Invoke-AzStackHciArcInitialization `
+                -SubscriptionID $subscriptionId `
+                -TenantID $tenantId `
+                -ResourceGroup $resourceGroupName `
+                -Region $location `
+                -AccountID $accountId `
+                -SpnCredential $spnCred `
+                @optionalParameters
+            $arcSuccess = $true
+            Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
+        } catch {
+            if ($arcAttempt -lt $arcMaxRetries) {
+                Write-Output "Arc initialization attempt $arcAttempt failed: $_. Retrying in 30s..."
+                Start-Sleep -Seconds 30
+            } else {
+                Write-Error $_ -ErrorAction Stop
+            }
+        }
     }
 } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $userAssignedManagedIdentityClientId, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
