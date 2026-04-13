@@ -246,6 +246,22 @@ PARTITION_MSFT_RECOVERY_GUID - de94bba4-06d1-4d40-a16a-bfd50179d6ac   # Recovery
 
 $ErrorActionPreference = 'Stop'
 
+# Fast-exit for pre-baked images: if VHDX is already in all node mount points and no RAW
+# disks remain, all Stage3 work is complete. Exiting immediately avoids unnecessary work
+# and reduces exposure to transient RunCommand agent startup failures on fresh deployments.
+$allMountPointsReady = $true
+for ($n = 1; $n -le $hciNodeCount; $n++) {
+    if (!(Test-Path "C:\diskMounts\hcinode$n\hci_os.vhdx")) {
+        $allMountPointsReady = $false
+        break
+    }
+}
+$hasRawDisks = (Get-Disk | Where-Object PartitionStyle -EQ 'RAW' | Measure-Object).Count -gt 0
+if ($allMountPointsReady -and -not $hasRawDisks) {
+    log 'Pre-baked path detected: VHDX already in all mount points, no RAW disks. Stage3 complete.'
+    exit 0
+}
+
 # Clean up any leftover ISO mount from a previous failed run
 if (Test-Path 'c:\isos\hci_os.iso') {
     try {

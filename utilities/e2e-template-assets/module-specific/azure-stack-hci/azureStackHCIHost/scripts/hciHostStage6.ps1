@@ -357,20 +357,20 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
     If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module Az.Accounts -Force -AllowClobber
-    Install-Module Az.Resources -Force -AllowClobber
     Install-Module -Name AzSHCI.ARCinstaller -Force -AllowClobber
     Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
 
     try {
-        # Authenticate inside the HCI node using the access token passed from the host VM.
-        # Do NOT pass -Subscription here — Az module tries to enumerate subscriptions against the
-        # token and rejects it even when the identity has access. Pass subscription only via
-        # -SubscriptionID in Invoke-AzStackHciArcInitialization below.
-        Write-Output "Connecting to Azure using access token (AccountId: $accountId)..."
-        Connect-AzAccount -AccessToken (ConvertTo-SecureString $t -AsPlainText -Force) `
-            -AccountId $accountId -TenantId $tenantId -ErrorAction Stop
-        Write-Output 'Azure context established.'
+        # Build a PSCredential carrying the host VM's managed identity access token.
+        # Invoke-AzStackHciArcInitialization forwards the SpnCredential to the HCI bootstrap
+        # service (port 9098) which handles Azure authentication independently.
+        # Connect-AzAccount is NOT used here because it rejects managed identity access tokens
+        # obtained from outside the HCI node with "The access token is invalid."
+        $spnCred = [pscredential]::new(
+            $accountId,
+            (ConvertTo-SecureString $t -AsPlainText -Force)
+        )
+        Write-Output "SpnCredential built for AccountId: $accountId"
 
         # Wait for the HCI bootstrap service on port 9098.
         # Invoke-AzStackHciArcInitialization communicates with this local service which handles
@@ -403,6 +403,7 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             -ResourceGroup $resourceGroupName `
             -Region $location `
             -AccountID $accountId `
+            -SpnCredential $spnCred `
             @optionalParameters
         Write-Output "Arc initialization completed successfully for '$($env:COMPUTERNAME)'."
     } catch {
