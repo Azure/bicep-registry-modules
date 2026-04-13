@@ -46,7 +46,7 @@ param localAdminAndDeploymentUserPass string = newGuid()
 param hciHostImageReferenceId string = ''
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+var enforcedLocation = 'eastus2euap'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
