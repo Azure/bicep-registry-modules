@@ -40,10 +40,10 @@ function Confirm-ModuleInMAR {
         throw "Failed to fetch the list of published modules from [$PublishedModulesUrl]. Error: $($_.Exception.Message)"
     }
     if ($marModuleList -contains $moduleNameForMatch) {
-        Write-Host "Passed: Found module [$moduleNameForMatch] in the MAR file" -ForegroundColor Green
+        Write-Verbose "Passed: Found module [$moduleNameForMatch] in the MAR file"
         return $true
     } else {
-        Write-Host "Failed: Module [$moduleNameForMatch] was not found in the MAR file. Please review." -ForegroundColor Red
+        Write-Verbose "Failed: Module [$moduleNameForMatch] was not found in the MAR file. Please review."
         return $false
     }
 }
