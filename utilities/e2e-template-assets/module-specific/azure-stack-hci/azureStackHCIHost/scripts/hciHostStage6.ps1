@@ -330,8 +330,7 @@ If (!$testNodeInternetConnection) {
 ## This matches colleague's working approach (commit b931cf2b).
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
-    $ErrorActionPreference = 'Stop'
-    $ConfirmPreference     = 'None'
+    $ConfirmPreference = 'None'
 
     $t                   = $args[0]
     $subscriptionId      = $args[1]
@@ -347,25 +346,30 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     if ($arcGatewayId)        { $optionalParameters['ArcGatewayID'] = $arcGatewayId }
     if ($proxyServerEndpoint) { $optionalParameters['Proxy'] = $proxyServerEndpoint; $optionalParameters['ProxyBypass'] = $proxyBypassString }
 
-    # Install AzsHCI.ARCinstaller module if not present
+    # Install AzsHCI.ARCinstaller and Az.Resources modules if not present
+    Write-Output "[$env:COMPUTERNAME] Checking AzsHCI.ARCinstaller module..."
     if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable)) {
+        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller not found - installing from PSGallery..."
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
         If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
         Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module Az.Resources -Force
         Install-Module -Name AzsHCI.ARCinstaller -Force
         Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+    } else {
+        $moduleVersion = (Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version
+        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller module found - version: $moduleVersion"
     }
-    Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller version: $((Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version)"
 
     # Wait for bootstrap service on port 9098 — MUST be up before calling the cmdlet or it hangs
     Write-Output "[$env:COMPUTERNAME] Waiting for bootstrap service at 127.0.0.1:9098..."
     $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    while (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet -WarningAction SilentlyContinue) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
+    while (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
         Write-Output "[$env:COMPUTERNAME] Port 9098 not yet ready ($([int]$stopwatch.Elapsed.TotalSeconds)s elapsed). Retrying in 30s..."
         Start-Sleep -Seconds 30
     }
     if ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        throw "[$env:COMPUTERNAME] Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes."
+        Write-Error "[$env:COMPUTERNAME] Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting..." -ErrorAction Stop
     }
     Write-Output "[$env:COMPUTERNAME] Bootstrap service is reachable after $([int]$stopwatch.Elapsed.TotalSeconds)s."
 
@@ -386,39 +390,28 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     }
 } -AsJob -ArgumentList $t, $subscriptionId, $resourceGroupName, $tenantId, $location, $accountName, $arcGatewayId, $proxyServerEndpoint, $proxyBypassString
 
-log 'Waiting up to 90 minutes for Azure Arc initialization jobs to complete on all nodes...'
+log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes...'
 
-# Drain output from jobs as they run so we have visibility in the log
-$nodeOutput = @{}
-foreach ($job in $arcInitializationJobs) { $nodeOutput[$job.Id] = [System.Collections.Generic.List[string]]::new() }
+$arcInitializationJobs | Wait-Job -Timeout 1800
 
-$arcPollTimeout = (Get-Date).AddMinutes(90)
-while ($true) {
-    $runningJobs = @($arcInitializationJobs | Where-Object { $_.State -eq 'Running' })
-    if ($runningJobs.Count -eq 0) { break }
-    if ((Get-Date) -gt $arcPollTimeout) { log 'Arc initialization polling timed out after 90 minutes.'; break }
-    foreach ($job in $arcInitializationJobs) {
-        $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
-        if ($out) {
-            $out | ForEach-Object { log "  [job $($job.Id)] $_" }
-            $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" }))
-        }
-    }
-    Start-Sleep -Seconds 15
-}
-
-# Final drain
-foreach ($job in $arcInitializationJobs) {
-    $out = Receive-Job -Job $job -ErrorAction SilentlyContinue 2>&1
-    if ($out) { $nodeOutput[$job.Id].AddRange([string[]]($out | ForEach-Object { "$_" })) }
-}
-
-# Check results
+# Check results and capture all output (including errors)
 log 'Checking status of Azure Arc initialization jobs...'
 $arcFailed = $false
-foreach ($job in $arcInitializationJobs) {
-    $allOutput = $nodeOutput[$job.Id] -join "`n"
-    log "[$($job.Location)] Job state: '$($job.State)'. Output:`n$allOutput"
+$arcInitializationJobs | ForEach-Object {
+    $job = $_
+    log "[$($job.Location)] Job state: '$($job.State)'"
+    # Capture output with -Keep so we can re-read if needed
+    $jobOutput = $job | Receive-Job -Keep -ErrorAction Continue 2>&1 | Out-String
+    if ($jobOutput) { log "[$($job.Location)] Job output (Receive-Job):`n$jobOutput" }
+    # Also check child jobs for detailed errors
+    Get-Job -Id $job.Id -IncludeChildJob | ForEach-Object {
+        $childOutput = $_ | Receive-Job -ErrorAction SilentlyContinue 2>&1 | Out-String
+        if ($childOutput) { log "[$($_.Location)] Child job output:`n$childOutput" }
+        if ($_.State -eq 'Failed') {
+            log "[$($_.Location)] Job FAILED. Reason: $($_.JobStateInfo.Reason)"
+            $arcFailed = $true
+        }
+    }
     if ($job.State -ne 'Completed') {
         log "Arc initialization job on '$($job.Location)' did NOT complete (State: '$($job.State)')."
         $arcFailed = $true
