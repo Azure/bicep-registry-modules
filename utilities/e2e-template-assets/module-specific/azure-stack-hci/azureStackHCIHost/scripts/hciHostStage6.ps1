@@ -346,8 +346,22 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     if ($arcGatewayId)        { $optionalParameters['arcGatewayId'] = $arcGatewayId }
     if ($proxyServerEndpoint) { $optionalParameters['proxy'] = $proxyServerEndpoint; $optionalParameters['proxyBypass'] = $proxyBypassString }
 
+    # Install AzsHCI.ARCinstaller if not pre-installed in the image
+    if (!(Get-Module -Name AzsHCI.ARCinstaller -ListAvailable -ErrorAction SilentlyContinue)) {
+        Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller not found - installing from PSGallery..."
+        if (!(Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
+            Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+        }
+        if (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
+        Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+        Install-Module Az.Resources -Force -ErrorAction SilentlyContinue
+        Install-Module -Name AzsHCI.ARCinstaller -Force
+        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+    }
+    Import-Module AzsHCI.ARCinstaller -ErrorAction Stop
+    Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller version: $((Get-Module -Name AzsHCI.ARCinstaller -ListAvailable).Version)"
+
     try {
-        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
