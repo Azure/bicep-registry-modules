@@ -134,18 +134,15 @@ Read the module's `version.json` and `CHANGELOG.md` files from the same director
 - `version.json` contains the current `major.minor` version (e.g., `"version": "0.10"`).
 - `CHANGELOG.md` contains the full release history. The latest entry's `major.minor.patch` version is the current published version.
 
-#### Step 4.2 — Determine Version Bump Type
+#### Step 4.2 — Fetch Versioning Guidance
 
-Apply these rules per [SNFR17](https://azure.github.io/Azure-Verified-Modules/spec/SNFR17/) (pre-`1.0.0` versioning):
+Fetch the SNFR17 semantic versioning specification from `https://azure.github.io/Azure-Verified-Modules/spec/SNFR17/` to get the current versioning rules. Apply the rules from that page to determine the correct bump type based on the schema changes identified in Phase 3.
 
-| Condition | Bump Type | version.json | CHANGELOG.md |
-|-----------|-----------|--------------|--------------|
-| API version update with **breaking changes** (removed properties, renamed parameters, changed required fields, type changes) | **Minor** | Increment minor (e.g., `0.10` → `0.11`) | New `## 0.11.0` entry |
-| API version update with **new features** (new optional properties, expanded allowed values, new parameters) | **Minor** | Increment minor | New entry at `.0` |
-| API version update that is **purely internal** (no consumer-visible schema changes) | **Patch** | No change | Increment patch on current minor |
-| Non-API changes (bug fixes, doc updates, dependency bumps) | **Patch** | No change | Increment patch on current minor |
+Key classification from SNFR17 to apply:
 
-> **Important**: Per SNFR17, before the first `1.0.0` release: Major MUST NOT be bumped, Minor MUST be bumped for breaking changes or feature updates, and Patch MUST be bumped for non-breaking backward-compatible fixes. For Bicep modules, the patch version in `version.json` is **auto-incremented** by the public registry — you only control Major and Minor.
+- **Breaking changes or new features** → bump per SNFR17 guidance for Minor
+- **Non-breaking backward-compatible fixes** → bump per SNFR17 guidance for Patch
+- For Bicep modules, note that the patch version in `version.json` is **auto-incremented** by the public registry — you only control Major and Minor.
 
 #### Step 4.3 — Draft CHANGELOG Entry
 
