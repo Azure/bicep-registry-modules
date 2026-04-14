@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-synapse.workspaces-${serviceShort}-rg'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'swmin'
