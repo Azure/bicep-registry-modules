@@ -1,6 +1,12 @@
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param deploymentUserPassword string
+
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciHostImageReferenceId string = ''
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -51,7 +57,7 @@ param diskNamePrefix string = 'dep-disk'
 @description('Required. The name prefix for the wait deployment scripts.')
 param waitDeploymentScriptPrefixName string = 'dep-wait'
 
-var clusterNodeNames = ['hcinode1', 'hcinode2']
+var clusterNodeNames = ['hcinode1']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {

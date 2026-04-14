@@ -66,13 +66,12 @@ param maintenanceConfigurationAssignmentName string
 @description('Required. The name prefix for the \'wait\' deployment scripts to create.')
 param waitDeploymentScriptPrefixName string
 
-var clusterNodeNames = ['hcinode1', 'hcinode2']
+var clusterNodeNames = ['hcinode1']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
-    imageReferenceId: hciHostImageReferenceId
     hciVHDXDownloadURL: 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx'
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E48bds_v5'

@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14742859176033477838"
+      "templateHash": "13887130402191133960"
     }
   },
   "parameters": {
@@ -16,10 +17,10 @@
       }
     },
     "hciHostImageReferenceId": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM."
+        "description": "Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret."
       }
     },
     "localAdminPassword": {
@@ -30,20 +31,23 @@
     },
     "arbDeploymentAppId": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
+        "description": "Optional. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
       }
     },
     "arbDeploymentSPObjectId": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
+        "description": "Optional. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
       }
     },
     "arbDeploymentServicePrincipalSecret": {
       "type": "securestring",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
+        "description": "Optional. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment. If omitted, the deploying user must have permissions to create service principals and role assignments in Entra ID."
       }
     },
     "location": {
@@ -112,12 +116,6 @@
         "description": "Required. The name of the Network Interface Card to create."
       }
     },
-    "diskNamePrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name prefix for the Disks to create."
-      }
-    },
     "virtualMachineName": {
       "type": "string",
       "metadata": {
@@ -130,10 +128,18 @@
         "description": "Required. The name of the Maintenance Configuration Assignment for the proxy server."
       }
     },
+    "diskNamePrefix": {
+      "type": "string",
+      "defaultValue": "dep-disk",
+      "metadata": {
+        "description": "Required. The name prefix for disk resources."
+      }
+    },
     "waitDeploymentScriptPrefixName": {
       "type": "string",
+      "defaultValue": "dep-wait",
       "metadata": {
-        "description": "Required. The name prefix for the 'wait' deployment scripts to create."
+        "description": "Required. The name prefix for the wait deployment scripts."
       }
     }
   },
@@ -143,8 +149,8 @@
     ],
     "domainOUPath": "OU=HCI,DC=hci,DC=local"
   },
-  "resources": [
-    {
+  "resources": {
+    "cluster": {
       "type": "Microsoft.AzureStackHCI/clusters",
       "apiVersion": "2024-04-01",
       "name": "[parameters('clusterName')]",
@@ -154,7 +160,7 @@
       "location": "[parameters('location')]",
       "properties": {}
     },
-    {
+    "hciHostDeployment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-test-hcihostdeploy', uniqueString(deployment().name, parameters('location')))]",
@@ -167,14 +173,11 @@
           "domainOUPath": {
             "value": "[variables('domainOUPath')]"
           },
-          "hciVHDXDownloadURL": {
-            "value": "https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx"
-          },
           "hciNodeCount": {
             "value": "[length(variables('clusterNodeNames'))]"
           },
           "hostVMSize": {
-            "value": "Standard_E48bds_v5"
+            "value": "Standard_E32bds_v5"
           },
           "localAdminPassword": {
             "value": "[parameters('localAdminPassword')]"
@@ -214,6 +217,12 @@
           },
           "waitDeploymentScriptPrefixName": {
             "value": "[parameters('waitDeploymentScriptPrefixName')]"
+          },
+          "hciVHDXDownloadURL": {
+            "value": ""
+          },
+          "hciISODownloadURL": {
+            "value": ""
           }
         },
         "template": {
@@ -1019,7 +1028,7 @@
         }
       }
     },
-    {
+    "hciClusterPreqs": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-test-hciclusterreqs', uniqueString(deployment().name, parameters('location')))]",
@@ -1060,7 +1069,7 @@
             "value": "[parameters('localAdminPassword')]"
           },
           "localAdminUsername": {
-            "value": "admin-hci"
+            "value": "Administrator"
           },
           "logsRetentionInDays": {
             "value": 30
@@ -1072,7 +1081,7 @@
             "value": "[subscription().tenantId]"
           },
           "vnetSubnetResourceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-test-hcihostdeploy', uniqueString(deployment().name, parameters('location')))), '2025-04-01').outputs.vnetSubnetResourceId.value]"
+            "value": "[reference('hciHostDeployment').outputs.vnetSubnetResourceId.value]"
           }
         },
         "template": {
@@ -1425,10 +1434,10 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-test-hcihostdeploy', uniqueString(deployment().name, parameters('location'))))]"
+        "hciHostDeployment"
       ]
     }
-  ],
+  },
   "outputs": {
     "clusterName": {
       "type": "string",
