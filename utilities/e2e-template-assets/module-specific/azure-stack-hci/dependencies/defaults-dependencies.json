@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "14742859176033477838"
+      "templateHash": "3814439270246817949"
     }
   },
   "parameters": {
@@ -167,6 +167,9 @@
           "domainOUPath": {
             "value": "[variables('domainOUPath')]"
           },
+          "imageReferenceId": {
+            "value": "[parameters('hciHostImageReferenceId')]"
+          },
           "hciVHDXDownloadURL": {
             "value": "https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx"
           },
@@ -223,7 +226,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "18432404828445982458"
+              "templateHash": "7968962162487367872"
             }
           },
           "parameters": {
@@ -353,6 +356,13 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The name prefix for the 'wait' deployment scripts to create."
+              }
+            },
+            "imageReferenceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. When provided, deploys from the gallery image instead of marketplace."
               }
             }
           },
@@ -593,9 +603,7 @@
                       }
                     }
                   ],
-                  "imageReference": {
-                    "id": "/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/prithjit-rg-hci-image-builder/providers/Microsoft.Compute/galleries/avmhcivmimagegallery/images/hci-host-image/versions/1.0.0"
-                  },
+                  "imageReference": "[if(not(empty(parameters('imageReferenceId'))), createObject('id', parameters('imageReferenceId')), createObject('publisher', 'MicrosoftWindowsServer', 'offer', 'WindowsServer', 'sku', '2022-datacenter-g2', 'version', 'latest'))]",
                   "osDisk": {
                     "createOption": "FromImage",
                     "diskSizeGB": 1024,

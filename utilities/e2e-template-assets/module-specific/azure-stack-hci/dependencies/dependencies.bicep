@@ -64,6 +64,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
+    imageReferenceId: hciHostImageReferenceId
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword

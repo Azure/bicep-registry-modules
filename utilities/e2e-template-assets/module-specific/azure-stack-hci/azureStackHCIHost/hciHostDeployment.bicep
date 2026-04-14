@@ -59,6 +59,9 @@ param maintenanceConfigurationAssignmentName string
 @description('Required. The name prefix for the \'wait\' deployment scripts to create.')
 param waitDeploymentScriptPrefixName string
 
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. When provided, deploys from the gallery image instead of marketplace.')
+param imageReferenceId string = ''
+
 // =================================//
 // Deploy Host VM Infrastructure    //
 // =================================//
@@ -253,13 +256,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
       ]
     }
     storageProfile: {
-      imageReference: {
-        id: '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/prithjit-rg-hci-image-builder/providers/Microsoft.Compute/galleries/avmhcivmimagegallery/images/hci-host-image/versions/1.0.0'
-        //publisher: 'MicrosoftWindowsServer'
-        //offer: 'WindowsServer'
-        //sku: '2022-datacenter-g2'
-        //version: 'latest'
-      }
+      imageReference: !empty(imageReferenceId)
+        ? { id: imageReferenceId }
+        : {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-g2'
+            version: 'latest'
+          }
       osDisk: {
         createOption: 'FromImage'
         diskSizeGB: 1024
