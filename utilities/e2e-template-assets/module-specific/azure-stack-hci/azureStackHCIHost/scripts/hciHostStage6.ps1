@@ -345,7 +345,20 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     if ($proxyServerEndpoint) { $optionalParameters['proxy'] = $proxyServerEndpoint; $optionalParameters['proxyBypass'] = $proxyBypassString }
 
     try {
-        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        # Install AzsHCI.ARCinstaller on the node if not already present
+        if (-not (Get-Module -ListAvailable -Name AzsHCI.ARCinstaller)) {
+            Write-Output "[$env:COMPUTERNAME] Installing AzsHCI.ARCinstaller module..."
+            if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
+                Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+            }
+            if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
+            Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+            Install-Module AzsHCI.ARCinstaller -Force -AllowClobber -Repository PSGallery
+        } else {
+            Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller module already installed."
+        }
+
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Stop
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
