@@ -57,6 +57,9 @@ param diskNamePrefix string = 'dep-disk'
 @description('Required. The name prefix for the wait deployment scripts.')
 param waitDeploymentScriptPrefixName string = 'dep-wait'
 
+@description('Optional. The HCI marketplace image version to store in Key Vault for guest VM deployments.')
+param hciImageVersionName string = '20348.2461.240510'
+
 var clusterNodeNames = ['hcinode1']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 
@@ -113,6 +116,7 @@ module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
     softDeleteRetentionDays: 30
     tenantId: subscription().tenantId
     vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
+    hciImageVersionName: hciImageVersionName
   }
 }
 
@@ -130,3 +134,6 @@ output domainOUPath string = domainOUPath
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVaultName
+
+@description('The HCI marketplace image version stored in Key Vault for guest VM deployments.')
+output imageVersionName string = hciClusterPreqs.outputs.imageVersionName

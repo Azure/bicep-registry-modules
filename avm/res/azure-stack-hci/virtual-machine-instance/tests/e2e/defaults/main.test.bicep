@@ -52,7 +52,7 @@ param localAdminAndDeploymentUserPass string = newGuid()
 param hciHostImageReferenceId string = ''
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'eastus2euap'
+var enforcedLocation = 'southeastasia'
 
 // ============ //
 // Dependencies //
@@ -61,7 +61,7 @@ var enforcedLocation = 'eastus2euap'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -70,7 +70,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}1'
+    clusterName: '${namePrefix}${serviceShort}01'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -87,14 +87,12 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
-    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     hciHostImageReferenceId: hciHostImageReferenceId
     location: enforcedLocation
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.3.0' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -110,13 +108,13 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.3.0' = {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '172.20.0.1'
+      defaultGateway: '192.168.1.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['172.20.0.1']
-      domainFqdn: 'hci.local'
+      dnsServers: ['192.168.1.254']
+      domainFqdn: 'jumpstart.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '172.20.0.55'
-      endingIPAddress: '172.20.0.65'
+      startingIPAddress: '192.168.1.55'
+      endingIPAddress: '192.168.1.65'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
@@ -213,7 +211,7 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
     }
     osType: 'Windows'
     version: {
-      name: '20348.4893.260303'
+      name: nestedDependencies.outputs.imageVersionName
     }
   }
 }
@@ -243,7 +241,6 @@ module testDeployment '../../../main.bicep' = {
       adminUsername: 'Administrator'
       adminPassword: localAdminAndDeploymentUserPass
     }
-    adminPassword: localAdminAndDeploymentUserPass
     storageProfile: {
       imageReference: { id: hciImage.outputs.resourceId }
       osDisk: {

@@ -180,15 +180,6 @@ If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpSe
 log 'Setting router and dns options for mgmt DHCP scope...'
 Set-DhcpServerv4OptionValue -ScopeId 172.20.0.0 -DnsDomain hci.local -DnsServer 172.20.0.1 -Router 172.20.0.1
 
-# remove extra VMs not needed (e.g., pre-baked image may contain more nodes than requested)
-$expectedNodes = @(1..$hciNodeCount | ForEach-Object { "hcinode$_" })
-$extraVMs = Get-VM | Where-Object { $_.Name -notin $expectedNodes }
-if ($extraVMs) {
-    log "Removing extra VMs not needed for this deployment: $($extraVMs.Name -join ', ')"
-    $extraVMs | Where-Object State -eq 'Running' | Stop-VM -Force -ErrorAction SilentlyContinue
-    $extraVMs | Remove-VM -Force -ErrorAction SilentlyContinue
-}
-
 # create HCI node VMs
 log 'Creating HCI node VMs...'
 $existingVMs = Get-VM
@@ -196,13 +187,13 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeName = "hcinode$i"
     $hciNodePath = "C:\diskMounts\$hciNodeName"
 
-    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 48GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
+    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 32GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
 }
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
-log "Setting VM processor count to 16 and enabling virtualization extensions for $hciNodeCount node(s)..."
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
+log 'Setting VM processor count to 16 and enabling virtualization extensions...'
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {

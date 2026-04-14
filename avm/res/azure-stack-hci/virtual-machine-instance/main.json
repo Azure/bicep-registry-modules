@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "12278497663332821361"
+      "templateHash": "4963312133934804886"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
     "description": "This module deploys an Azure Stack HCI virtual machine."
@@ -227,7 +227,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.azurestackhci-virtualmachineinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -247,7 +247,7 @@
     "existingMachine": {
       "existing": true,
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2023-10-03-preview",
       "name": "[parameters('name')]",
       "dependsOn": [
         "hybridCompute"
@@ -331,8 +331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "6866425782124092340"
+              "version": "0.33.13.18514",
+              "templateHash": "2332904181907667266"
             },
             "name": "Hybrid Compute Machines",
             "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process."
@@ -359,19 +359,12 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
-                },
-                "notes": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the notes of the lock."
-                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
                 }
               }
             },
@@ -446,7 +439,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
                 }
               }
             }
@@ -560,13 +553,10 @@
             },
             "tags": {
               "type": "object",
+              "nullable": true,
               "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.HybridCompute/machines@2024-07-10#properties/tags"
-                },
                 "description": "Optional. Tags of the resource."
-              },
-              "nullable": true
+              }
             },
             "enableTelemetry": {
               "type": "bool",
@@ -607,7 +597,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.hybridcompute-machine.{0}.{1}', replace('0.4.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.hybridcompute-machine.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -666,7 +656,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "machine"
@@ -758,13 +748,6 @@
         "description": "The resource group of the virtual machine instance."
       },
       "value": "[resourceGroup().name]"
-    },
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The location the resource was deployed into."
-      },
-      "value": "[parameters('location')]"
     }
   }
 }

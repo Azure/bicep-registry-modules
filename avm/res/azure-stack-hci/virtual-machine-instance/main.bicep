@@ -55,7 +55,7 @@ param httpsProxy string?
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.azurestackhci-virtualmachineinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -100,7 +100,7 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry bool = false
 
-module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.2' = {
+module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.1' = {
   name: '${name}-deployment'
   scope: resourceGroup()
   params: {
@@ -111,7 +111,7 @@ module hybridCompute 'br/public:avm/res/hybrid-compute/machine:0.4.2' = {
   }
 }
 
-resource existingMachine 'Microsoft.HybridCompute/machines@2025-06-01' existing = {
+resource existingMachine 'Microsoft.HybridCompute/machines@2023-10-03-preview' existing = {
   name: name
   dependsOn: [
     hybridCompute
@@ -164,7 +164,7 @@ resource virtualMachine_roleAssignments 'Microsoft.Authorization/roleAssignments
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: virtualMachineInstance
@@ -183,6 +183,3 @@ output resourceId string = virtualMachineInstance.id
 
 @description('The resource group of the virtual machine instance.')
 output resourceGroupName string = resourceGroup().name
-
-@description('The location the resource was deployed into.')
-output location string = location

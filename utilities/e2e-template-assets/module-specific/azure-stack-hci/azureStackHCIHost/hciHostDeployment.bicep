@@ -153,7 +153,29 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-// Azure Stack HCI Host VM NIC
+// create a maintenance configuration for the Azure Stack HCI Host VM and proxy server
+resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
+  location: location
+  name: maintenanceConfigurationName ?? ''
+  properties: {
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      recurEvery: 'Week Sunday'
+      startDateTime: '2020-04-30 08:00'
+      duration: '02:00'
+      timeZone: 'UTC'
+    }
+    installPatches: {
+      windowsParameters: {
+        classificationsToInclude: ['Critical', 'Security']
+      }
+      rebootSetting: 'IfRequired'
+    }
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+  }
+}
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
   location: location
@@ -286,6 +308,15 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     licenseType: 'Windows_Server'
   }
+}
+
+resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
+  location: location
+  name: maintenanceConfigurationAssignmentName
+  properties: {
+    maintenanceConfigurationId: maintenanceConfig.id
+  }
+  scope: vm
 }
 
 // ====================//

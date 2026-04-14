@@ -237,6 +237,8 @@ log '========================================='
 
 if ($allChecksPass) {
     log 'ALL CHECKS PASSED - Environment is ready for cluster deployment.'
+    log 'Proceeding with a 30-second stabilization wait...'
+    Start-Sleep -Seconds 30
     log 'Pre-deployment health check complete.'
 } else {
     log "FAILED CHECKS ($($failedChecks.Count)):"

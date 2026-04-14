@@ -329,13 +329,6 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
         }
     }
     try {
-        # Wait for bootstrap service (port 9098) to be ready before Arc init
-        $bsTimer = [System.Diagnostics.Stopwatch]::StartNew()
-        Write-Output "[$env:COMPUTERNAME] Waiting for BootstrapOobeService on port 9098..."
-        while ($bsTimer.Elapsed.TotalSeconds -lt 300) {
-            try { $tcp = New-Object Net.Sockets.TcpClient('localhost', 9098); $tcp.Close(); Write-Output "[$env:COMPUTERNAME] Bootstrap service ready after $([int]$bsTimer.Elapsed.TotalSeconds)s"; break }
-            catch { Start-Sleep -Seconds 10 }
-        }
         # Use new bootstrapping approach for newer HCI OS versions
         # Invoke-AzStackHciArcInitialization is the recommended approach per:
         # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
