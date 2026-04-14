@@ -46,13 +46,8 @@ if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; th
     elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" = "Succeeded" ]; then
         echo "Deploy+Succeeded — Bicep module will handle idempotent re-apply."
     elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" != "Succeeded" ]; then
-        echo "Deploy mode in state: $PROVISIONING_STATE (not Succeeded). Deleting stale resource for retry..."
-        if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
-            echo "Stale Deploy resource deleted. Bicep module will recreate from Validate."
-        else
-            echo "Failed to delete stale Deploy resource. Failing."
-            exit 1
-        fi
+        echo "Deploy mode in state: $PROVISIONING_STATE (not Succeeded). Failing."
+        exit 1
     else
         echo "Unknown deployment mode: $DEPLOYMENT_MODE. Failing."
         exit 1
