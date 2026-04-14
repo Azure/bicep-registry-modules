@@ -6,43 +6,43 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18362495397141531182"
+      "templateHash": "10517458272568281961"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys a Synapse Workspaces Big Data Pool."
   },
   "definitions": {
     "autoScaleType": {
-      "$ref": "#/definitions/_autoScaleType",
+      "$ref": "#/definitions/bigDataPoolAutoScaleType",
       "metadata": {
         "__bicep_export!": true
       }
     },
     "dynamicExecutorAllocationType": {
-      "$ref": "#/definitions/_dynamicExecutorAllocationType",
+      "$ref": "#/definitions/bigDataPoolDynamicExecutorAllocationType",
       "metadata": {
         "__bicep_export!": true
       }
     },
     "sparkConfigPropertiesType": {
-      "$ref": "#/definitions/_sparkConfigPropertiesType",
+      "$ref": "#/definitions/bigDataPoolSparkConfigPropertiesType",
       "metadata": {
         "__bicep_export!": true
       }
     },
     "libraryRequirementsType": {
-      "$ref": "#/definitions/_libraryRequirementsType",
+      "$ref": "#/definitions/bigDataPoolLibraryRequirementsType",
       "metadata": {
         "__bicep_export!": true
       }
     },
     "customLibraryType": {
-      "$ref": "#/definitions/_customLibraryType",
+      "$ref": "#/definitions/bigDataPoolCustomLibraryType",
       "metadata": {
         "__bicep_export!": true
       }
     },
-    "_autoScaleType": {
+    "bigDataPoolAutoScaleType": {
       "type": "object",
       "properties": {
         "maxNodeCount": {
@@ -65,11 +65,12 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Auto-scaling properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../modules/bigDataPool.bicep"
+          "sourceTemplate": "../modules/bigDataPool.bicep",
+          "originalIdentifier": "autoScaleType"
         }
       }
     },
-    "_customLibraryType": {
+    "bigDataPoolCustomLibraryType": {
       "type": "object",
       "properties": {
         "containerName": {
@@ -104,11 +105,12 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools custom library/package info.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../modules/bigDataPool.bicep"
+          "sourceTemplate": "../modules/bigDataPool.bicep",
+          "originalIdentifier": "customLibraryType"
         }
       }
     },
-    "_dynamicExecutorAllocationType": {
+    "bigDataPoolDynamicExecutorAllocationType": {
       "type": "object",
       "properties": {
         "minExecutors": {
@@ -131,11 +133,12 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Dynamic Executor Allocation properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../modules/bigDataPool.bicep"
+          "sourceTemplate": "../modules/bigDataPool.bicep",
+          "originalIdentifier": "dynamicExecutorAllocationType"
         }
       }
     },
-    "_libraryRequirementsType": {
+    "bigDataPoolLibraryRequirementsType": {
       "type": "object",
       "properties": {
         "content": {
@@ -154,11 +157,12 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools library version requirements.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../modules/bigDataPool.bicep"
+          "sourceTemplate": "../modules/bigDataPool.bicep",
+          "originalIdentifier": "libraryRequirementsType"
         }
       }
     },
-    "_sparkConfigPropertiesType": {
+    "bigDataPoolSparkConfigPropertiesType": {
       "type": "object",
       "properties": {
         "configurationType": {
@@ -187,7 +191,8 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Spark configuration file properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../modules/bigDataPool.bicep"
+          "sourceTemplate": "../modules/bigDataPool.bicep",
+          "originalIdentifier": "sparkConfigPropertiesType"
         }
       }
     },

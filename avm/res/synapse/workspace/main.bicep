@@ -382,7 +382,7 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       sparkEventsFolder: bigDataPool.?sparkEventsFolder
       sparkVersion: bigDataPool.?sparkVersion
       lock: bigDataPool.?lock ?? lock
-      enableTelemetry: enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
       roleAssignments: bigDataPool.?roleAssignments ?? []
     }
@@ -404,8 +404,8 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       recoverableDatabaseResourceId: sqlPool.?recoverableDatabaseResourceId
       storageAccountType: sqlPool.?storageAccountType
       transparentDataEncryption: sqlPool.?transparentDataEncryption
-      diagnosticSettings: sqlPool.?diagnosticSettings
-      roleAssignments: sqlPool.?roleAssignments
+      diagnosticSettings: sqlPool.?diagnosticSettings ?? []
+      roleAssignments: sqlPool.?roleAssignments ?? []
       lock: sqlPool.?lock ?? lock
       tags: sqlPool.?tags ?? tags
     }
@@ -458,7 +458,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
       ).location
       lock: privateEndpoint.?lock ?? lock
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
-      roleAssignments: privateEndpoint.?roleAssignments
+      roleAssignments: privateEndpoint.?roleAssignments ?? []
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations

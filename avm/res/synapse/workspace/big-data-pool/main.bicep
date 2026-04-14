@@ -292,24 +292,24 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 import {
-  autoScaleType as _autoScaleType
-  dynamicExecutorAllocationType as _dynamicExecutorAllocationType
-  sparkConfigPropertiesType as _sparkConfigPropertiesType
-  libraryRequirementsType as _libraryRequirementsType
-  customLibraryType as _customLibraryType
+  autoScaleType as bigDataPoolAutoScaleType
+  dynamicExecutorAllocationType as bigDataPoolDynamicExecutorAllocationType
+  sparkConfigPropertiesType as bigDataPoolSparkConfigPropertiesType
+  libraryRequirementsType as bigDataPoolLibraryRequirementsType
+  customLibraryType as bigDataPoolCustomLibraryType
 } from '../modules/bigDataPool.bicep'
 
 @export()
-type autoScaleType = _autoScaleType
+type autoScaleType = bigDataPoolAutoScaleType
 
 @export()
-type dynamicExecutorAllocationType = _dynamicExecutorAllocationType
+type dynamicExecutorAllocationType = bigDataPoolDynamicExecutorAllocationType
 
 @export()
-type sparkConfigPropertiesType = _sparkConfigPropertiesType
+type sparkConfigPropertiesType = bigDataPoolSparkConfigPropertiesType
 
 @export()
-type libraryRequirementsType = _libraryRequirementsType
+type libraryRequirementsType = bigDataPoolLibraryRequirementsType
 
 @export()
-type customLibraryType = _customLibraryType
+type customLibraryType = bigDataPoolCustomLibraryType
