@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "7968962162487367872"
+      "templateHash": "4708834667593333123"
     }
   },
   "parameters": {
@@ -252,33 +252,6 @@
       ]
     },
     {
-      "type": "Microsoft.Maintenance/maintenanceConfigurations",
-      "apiVersion": "2023-09-01-preview",
-      "name": "[coalesce(parameters('maintenanceConfigurationName'), '')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "maintenanceScope": "InGuestPatch",
-        "maintenanceWindow": {
-          "recurEvery": "Week Sunday",
-          "startDateTime": "2020-04-30 08:00",
-          "duration": "02:00",
-          "timeZone": "UTC"
-        },
-        "installPatches": {
-          "windowsParameters": {
-            "classificationsToInclude": [
-              "Critical",
-              "Security"
-            ]
-          },
-          "rebootSetting": "IfRequired"
-        },
-        "extensionProperties": {
-          "InGuestPatchMode": "User"
-        }
-      }
-    },
-    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2020-11-01",
       "name": "[parameters('networkSecurityGroupName')]",
@@ -421,20 +394,6 @@
         "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('HCIHostVirtualMachineScaleSetName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Maintenance/configurationAssignments",
-      "apiVersion": "2023-04-01",
-      "scope": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]",
-      "name": "[parameters('maintenanceConfigurationAssignmentName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', coalesce(parameters('maintenanceConfigurationName'), ''))]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', coalesce(parameters('maintenanceConfigurationName'), ''))]",
-        "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
       ]
     },
     {
