@@ -61,7 +61,6 @@ param sparkVersion string = '3.4'
 @description('Optional. Spark configuration file to specify additional properties.')
 param sparkConfigProperties sparkConfigPropertiesType?
 
-
 @description('Optional. Whether session level packages enabled. Disabled if value not provided.')
 param sessionLevelPackagesEnabled bool = false
 
