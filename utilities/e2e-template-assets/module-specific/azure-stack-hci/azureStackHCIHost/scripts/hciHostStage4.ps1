@@ -24,7 +24,7 @@ If (Test-Path -Path 'C:\temp\Reboot2Required.status') {
 
     # use scheduled task to reboot the machine, ensuring the runCommand exits gracefully
     $action = New-ScheduledTaskAction -Execute 'shutdown.exe' -Argument '-r -f -t 0'
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(30)
+    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(2)
     $principal = New-ScheduledTaskPrincipal -UserId 'NT AUTHORITY\SYSTEM' -LogonType ServiceAccount
     $task = New-ScheduledTask -Action $action -Description 'Reboot 2' -Trigger $trigger -Principal $principal
     Register-ScheduledTask -TaskName 'Reboot2' -InputObject $task

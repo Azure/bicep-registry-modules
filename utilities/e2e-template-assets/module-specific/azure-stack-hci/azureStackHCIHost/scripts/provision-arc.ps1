@@ -1,4 +1,6 @@
-﻿param(
+﻿# TODO: no try, try outside
+
+param(
     [Parameter(Mandatory = $true)]
     [string]$IP, # or name
     [Parameter(Mandatory = $false)]
@@ -100,6 +102,7 @@ try {
         Get-NetAdapter StorageB | Enable-NetAdapter -Confirm:$false
 
         if (!$ready) {
+            # TODO: is this part still retryable? unless arc can be connected multiple times
             throw 'Edge device resource is not ready after 30 minutes.'
         }
     }
