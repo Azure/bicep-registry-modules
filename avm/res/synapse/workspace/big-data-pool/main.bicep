@@ -131,6 +131,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry bool = false
+
 // Initial pool creation - libraries must not be included on first deployment.
 module bigDataPool_create '../modules/bigDataPool.bicep' = {
   name: '${deployment().name}-create'
@@ -167,7 +169,7 @@ module bigDataPool_libraryWait 'br/public:avm/res/resources/deployment-script:0.
     location: resourceGroup().location
     tags: tags
     kind: 'AzurePowerShell'
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     scriptContent: 'Start-Sleep -Seconds 300'
     azPowerShellVersion: '11.0'
     timeout: 'PT15M'

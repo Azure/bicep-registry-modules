@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "9543467865297561468"
+      "templateHash": "10589633022971665766"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -2400,7 +2400,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "10517458272568281961"
+              "templateHash": "12430753167815942295"
             },
             "name": "Synapse Workspaces Big Data Pools",
             "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -3040,7 +3040,8 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "workspace": {
@@ -3595,7 +3596,7 @@
                     "value": "AzurePowerShell"
                   },
                   "enableTelemetry": {
-                    "value": "[parameters('enableTelemetry')]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "scriptContent": {
                     "value": "Start-Sleep -Seconds 300"
