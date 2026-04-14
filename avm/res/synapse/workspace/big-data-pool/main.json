@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "12430753167815942295"
+      "version": "0.42.1.51946",
+      "templateHash": "674250053488177162"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -617,13 +617,6 @@
         "description": "Optional. The lock settings of the service."
       }
     },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -814,8 +807,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18331905633951237524"
+              "version": "0.42.1.51946",
+              "templateHash": "9817740785600293145"
             }
           },
           "definitions": {
@@ -1840,8 +1833,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18331905633951237524"
+              "version": "0.42.1.51946",
+              "templateHash": "9817740785600293145"
             }
           },
           "definitions": {
