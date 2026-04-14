@@ -92,9 +92,7 @@ If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Registe
 If (!(Get-PackageProvider -Name Nuget -ListAvailable -ErrorAction SilentlyContinue)) { Install-PackageProvider -Name NuGet -Confirm:$false -Force }
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
-Install-Module Az.Accounts -Force -AllowClobber -Repository PSGallery
-Install-Module Az.ConnectedMachine -Force -AllowClobber -Repository PSGallery
-Install-Module Az.Resources -Force -AllowClobber -Repository PSGallery
+Install-Module Az
 
 # get an access token for the VM MSI, which has been granted rights and will be used for the HCI Arc Initialization
 log "Logging in to Azure with user-assigned managed identity '$($userAssignedManagedIdentityClientId)'..."
@@ -123,37 +121,17 @@ Set-AdAccountPassword -Identity $deploymentUsername -NewPassword (ConvertTo-Secu
 # initialize arc on hci nodes
 log 'Initializing Azure Arc on HCI nodes...'
 
-# Wait for VMs to reach Running state WITH stable heartbeat.
-# The unattend.xml FirstLogonCommands trigger a reboot (shutdown -r -f -t 0) after OOBE.
-# We must wait for VMs to be Running+heartbeat AFTER that reboot, then add a stability buffer
-# to ensure no more pending reboots (e.g., from Hyper-V feature installation) are in flight.
-log 'Waiting for HCI node VMs to reach stable Running state with heartbeat...'
+# wait for VMs to reach 'Running' state
+log 'Checking that VMs are running...'
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$allStable = $false
-while (-not $allStable -and $stopwatch.Elapsed.TotalMinutes -lt 20) {
-    $vms = Get-VM
-    $notReady = $vms | Where-Object { $_.State -ne 'Running' -or ($_.Heartbeat -ne 'OkApplicationsHealthy' -and $_.Heartbeat -ne 'OkApplicationsUnknown') }
-    if ($notReady.Count -eq 0) {
-        log "All VMs Running with heartbeat after $([math]::Round($stopwatch.Elapsed.TotalSeconds))s. Waiting 120s stability buffer to ensure any post-boot reboots complete..."
-        Start-Sleep -Seconds 120
-        # Re-verify stability - if a VM rebooted during the wait, loop again
-        $vms = Get-VM
-        $notReady = $vms | Where-Object { $_.State -ne 'Running' -or ($_.Heartbeat -ne 'OkApplicationsHealthy' -and $_.Heartbeat -ne 'OkApplicationsUnknown') }
-        if ($notReady.Count -eq 0) {
-            $allStable = $true
-            log "All VMs confirmed stable after 120s buffer. Proceeding with Arc initialization."
-        } else {
-            log "VMs rebooted during stability wait ($($notReady | Select-Object Name,State,Heartbeat | Out-String)). Waiting again..."
-        }
-    } else {
-        log "[$([math]::Round($stopwatch.Elapsed.TotalSeconds))s] Waiting for VMs: $($notReady | Select-Object Name,State,Heartbeat | Out-String)"
-        Start-Sleep -Seconds 30
-    }
+while ((Get-VM | Where-Object State -NE 'Running') -and $stopwatch.Elapsed.TotalMinutes -lt 15) {
+    log "Waiting for HCI node VMs to reach 'Running' state. Current state: $((Get-VM) | Select-Object Name,State)..."
+    Start-Sleep -Seconds 30
 }
 
-If (-not $allStable) {
-    log "HCI node VMs did not reach stable Running state within 20 minutes. Exiting..."
-    Write-Error "HCI node VMs did not reach stable Running state within 20 minutes. Exiting..."
+If ($stopwatch.Elapsed.TotalMinutes -ge 15) {
+    log "HCI node VMs did not reach 'Running' state within 15 minutes. Exiting..."
+    Write-Error "HCI node VMs did not reach 'Running' state within 15 minutes. Exiting..."
     Exit 1
 }
 
@@ -325,50 +303,46 @@ If (!$testNodeInternetConnection) {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
 }
 
-## Arc initialization using Invoke-AzStackHciArcInitialization.
+## create jobs for each node to initialize Azure Arc using new approach
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
 
-    $t                   = $args[0]
-    $subscriptionId      = $args[1]
-    $resourceGroupName   = $args[2]
-    $tenantId            = $args[3]
-    $location            = $args[4]
-    $accountName         = $args[5]
-    $arcGatewayId        = $args[6]
+    $t = $args[0]
+    $subscriptionId = $args[1]
+    $resourceGroupName = $args[2]
+    $tenantId = $args[3]
+    $location = $args[4]
+    $accountName = $args[5]
+    $arcGatewayId = $args[6]
     $proxyServerEndpoint = $args[7]
-    $proxyBypassString   = $args[8]
+    $proxyBypassString = $args[8]
 
     $optionalParameters = @{}
-    if ($arcGatewayId)        { $optionalParameters['arcGatewayId'] = $arcGatewayId }
-    if ($proxyServerEndpoint) { $optionalParameters['proxy'] = $proxyServerEndpoint; $optionalParameters['proxyBypass'] = $proxyBypassString }
-
-    try {
-        # Install AzsHCI.ARCinstaller on the node if not already present
-        if (-not (Get-Module -ListAvailable -Name AzsHCI.ARCinstaller)) {
-            Write-Output "[$env:COMPUTERNAME] Installing AzsHCI.ARCinstaller module..."
-            if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
-                Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-            }
-            if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-            Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-            Install-Module AzsHCI.ARCinstaller -Force -AllowClobber -Repository PSGallery
-        } else {
-            Write-Output "[$env:COMPUTERNAME] AzsHCI.ARCinstaller module already installed."
+    If ($arcGatewayId) {
+        $optionalParameters += @{ 'arcGatewayId' = $arcGatewayId }
+    }
+    If ($proxyServerEndpoint) {
+        $optionalParameters += @{
+            'proxy'       = $proxyServerEndpoint
+            'proxyBypass' = $proxyBypassString
         }
-
-        Import-Module AzsHCI.ARCinstaller -ErrorAction Stop
+    }
+    try {
+        # Use new bootstrapping approach for newer HCI OS versions
+        # Invoke-AzStackHciArcInitialization is the recommended approach per:
+        # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
         Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
         Invoke-AzStackHciArcInitialization `
             -SubscriptionID $subscriptionId `
-            -ResourceGroup  $resourceGroupName `
-            -TenantID       $tenantId `
-            -Cloud          AzureCloud `
-            -AccountID      $accountName `
+            -ResourceGroup $resourceGroupName `
+            -TenantID $tenantId `
+            -Cloud AzureCloud `
+            -AccountID $accountName `
             -ArmAccessToken $t `
-            -Region         $location `
+            -Region $location `
             @optionalParameters
 
         Write-Output "[$env:COMPUTERNAME] Arc initialization completed successfully"
@@ -381,32 +355,17 @@ log 'Waiting up to 30 minutes for Azure Arc initialization to complete on nodes.
 
 $arcInitializationJobs | Wait-Job -Timeout 1800
 
-# Check results and capture all output (including errors)
+# check for failed arc initialization jobs
 log 'Checking status of Azure Arc initialization jobs...'
-$arcFailed = $false
 $arcInitializationJobs | ForEach-Object {
     $job = $_
-    log "[$($job.Location)] Job state: '$($job.State)'"
-    # Capture output with -Keep so we can re-read if needed
-    $jobOutput = $job | Receive-Job -Keep -ErrorAction Continue 2>&1 | Out-String
-    if ($jobOutput) { log "[$($job.Location)] Job output (Receive-Job):`n$jobOutput" }
-    # Also check child jobs for detailed errors
-    Get-Job -Id $job.Id -IncludeChildJob | ForEach-Object {
-        $childOutput = $_ | Receive-Job -ErrorAction SilentlyContinue 2>&1 | Out-String
-        if ($childOutput) { log "[$($_.Location)] Child job output:`n$childOutput" }
-        if ($_.State -eq 'Failed') {
-            log "[$($_.Location)] Job FAILED. Reason: $($_.JobStateInfo.Reason)"
-            $arcFailed = $true
+    log "[$($job.ComputerName)] Job output (Receive-Job): '$($job | Receive-Job -Keep -ErrorAction Continue | Out-String)'"
+    Get-Job -Id $job.Id -IncludeChildJob | Receive-Job -ErrorAction SilentlyContinue | ForEach-Object {
+        If ($_.Exception -or $_.state -eq 'Failed') {
+            log "Azure Arc initialization failed on node '$($job.Location)' with error: $($_.Exception.Message)"
+            Exit 1
+        } Else {
+            log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
         }
     }
-    if ($job.State -ne 'Completed') {
-        log "Arc initialization job on '$($job.Location)' did NOT complete (State: '$($job.State)')."
-        $arcFailed = $true
-    }
-}
-
-if ($arcFailed) {
-    log 'One or more Arc initialization jobs failed or timed out. Exiting...'
-    Write-Error 'One or more Arc initialization jobs failed or timed out. Check logs above for details.' -ErrorAction Stop
-    Exit 1
 }

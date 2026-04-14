@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param (
     [Parameter()]
     [string]
@@ -44,189 +44,24 @@ Function Test-ADConnection {
 
 $ErrorActionPreference = 'Stop'
 
-# Prepare VMMS for fresh switch creation after sysprep /mode:vm + gallery image redeployment.
-#
-# Problem: gallery image v2.0.6 was baked with Hyper-V switches already created.
-# After sysprep /mode:vm + redeployment, the system has:
-#   - GHOST PnP devices from the bake (Status=Unknown, invisible to Get-NetAdapter)
-#   - Their stale vms_pp registry bindings confuse VMMS on startup
-#   - New Azure NICs get "#2" suffix due to name conflicts with ghosts
-#   - Get-NetAdapter -Physical may pick the WRONG NIC (ghost-renamed virtual vs real physical)
-#
-# Fix:
-#   1. Find the CORRECT NIC via default gateway route (most reliable - avoids picking SR-IOV VFs
-#      or renamed virtual adapters; the default gateway NIC is always the external mgmt NIC)
-#   2. Stop VMMS
-#   3. Remove ghost PnP devices via pnputil.exe (Remove-PnpDevice is unavailable in RunCommand)
-#   4. Disable vms_pp on all present adapters
-#   5. Enable vms_pp ONLY on the selected NIC
-#   6. Start VMMS fresh - only registers the NIC we want
-#   7. Wait for NIC in Msvm_ExternalEthernetPort, then create switch
-
-# Find NIC using default gateway route - the most reliable method on Azure VMs.
-# - Works regardless of adapter name/description changes after sysprep
-# - Skips SR-IOV VFs (Mellanox etc.) which don't have default routes
-# - Skips renamed ghost-displaced adapters if they lost their IP config
-log "Identifying external NIC via default gateway route..."
-$defaultRoute = Get-NetRoute -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue |
-    Sort-Object RouteMetric | Select-Object -First 1
-$physicalNic = $null
-if ($defaultRoute) {
-    $physicalNic = Get-NetAdapter -InterfaceIndex $defaultRoute.InterfaceIndex -ErrorAction SilentlyContinue |
-        Where-Object { $_.Status -eq 'Up' }
-    if ($physicalNic) { log "  Found via default route: '$($physicalNic.Name)' ($($physicalNic.InterfaceDescription))" }
-}
-# Fallback 1: first Up physical adapter
-if (-not $physicalNic) {
-    log "  Default route NIC not found, trying Get-NetAdapter -Physical..."
-    $physicalNic = Get-NetAdapter -Physical | Where-Object { $_.Status -eq 'Up' } | Select-Object -First 1
-}
-# Fallback 2: any Up adapter that's not Hyper-V management, loopback, or tunnel
-if (-not $physicalNic) {
-    log "  Falling back to first Up non-virtual adapter..."
-    $physicalNic = Get-NetAdapter | Where-Object {
-        $_.Status -eq 'Up' -and
-        $_.InterfaceDescription -notmatch 'Hyper-V Virtual|Loopback|Tunnel|WAN Miniport'
-    } | Select-Object -First 1
-}
-if (-not $physicalNic) {
-    Write-Error 'No suitable network adapter found for Hyper-V external switch.'
-    Exit 1
-}
-$physicalNicName = $physicalNic.Name
-$physicalNicDesc = $physicalNic.InterfaceDescription
-log "Selected NIC: name='$physicalNicName' description='$physicalNicDesc' GUID=$($physicalNic.InterfaceGuid)"
-
-log "All current network adapters:"
-Get-NetAdapter | ForEach-Object { log "  [$($_.Status)] '$($_.Name)' ($($_.InterfaceDescription))" }
-
-log 'Stopping Hyper-V VMMS...'
-Stop-Service vmms -Force -ErrorAction SilentlyContinue
-$vmmsStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-while ((Get-Service vmms).Status -ne 'Stopped' -and $vmmsStopwatch.Elapsed.TotalSeconds -lt 180) {
-    log "Waiting for VMMS to stop... [$([math]::Round($vmmsStopwatch.Elapsed.TotalSeconds))s]"
-    Start-Sleep -Seconds 5
-}
-log "VMMS stopped."
-
-# Remove ghost/absent PnP network adapters left over from gallery image bake.
-# Ghost adapters have Status=Unknown and are invisible to Get-NetAdapter/Disable-NetAdapterBinding.
-# Their vms_pp registry bindings persist and confuse VMMS on startup.
-# Using pnputil.exe (built-in, available on WS2022) because Remove-PnpDevice is not available
-# in the RunCommand handler context on the gallery image.
-log "Scanning for ghost/absent PnP network adapters..."
-$allPnpNetDevices = Get-PnpDevice -Class 'Net' -ErrorAction SilentlyContinue
-$ghostAdapters = $allPnpNetDevices | Where-Object { $_.Status -eq 'Unknown' }
-if ($ghostAdapters) {
-    foreach ($ghost in $ghostAdapters) {
-        log "  Removing ghost: '$($ghost.FriendlyName)' (InstanceId: $($ghost.InstanceId))"
-        $pnpResult = & pnputil.exe /remove-device "$($ghost.InstanceId)" 2>&1
-        log "    pnputil: $($pnpResult -join ' | ')"
-    }
-    Start-Sleep -Seconds 3
-} else {
-    log "No ghost PnP network adapters found."
-}
-
-# Disable vms_pp on ALL present adapters to clear any stale bindings.
-log "Disabling vms_pp on all present adapters..."
-Get-NetAdapter | ForEach-Object {
-    $b = Get-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
-    if ($b -and $b.Enabled) {
-        log "  Disabling vms_pp on '$($_.InterfaceAlias)' ($($_.InterfaceDescription))"
-        Disable-NetAdapterBinding -InterfaceAlias $_.InterfaceAlias -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
-    }
-}
-Start-Sleep -Seconds 2
-
-# Enable vms_pp ONLY on the selected NIC (the one with default gateway).
-log "Enabling vms_pp on '$physicalNicName'..."
-Enable-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction Stop
-$hvBinding = Get-NetAdapterBinding -InterfaceAlias $physicalNicName -ComponentID 'vms_pp' -ErrorAction SilentlyContinue
-log "vms_pp on '$physicalNicName': Enabled=$($hvBinding.Enabled)"
-
-log 'Starting Hyper-V VMMS...'
-Start-Service vmms
-$vmmsStartWatch = [System.Diagnostics.Stopwatch]::StartNew()
-while ((Get-Service vmms).Status -ne 'Running' -and $vmmsStartWatch.Elapsed.TotalSeconds -lt 60) {
-    log "Waiting for VMMS to start... [$([math]::Round($vmmsStartWatch.Elapsed.TotalSeconds))s]"
-    Start-Sleep -Seconds 5
-}
-log "VMMS is running."
-
-# Wait for the NIC to appear in Msvm_ExternalEthernetPort (the WMI class New-VMSwitch queries).
-# After ghost cleanup and vms_pp reset, only the selected NIC should appear here.
-log "Waiting for '$physicalNicName' ($physicalNicDesc) in VMMS WMI..."
-$wmiStopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$nicInVmms = $false
-while (-not $nicInVmms -and $wmiStopwatch.Elapsed.TotalMinutes -lt 5) {
-    $externalPorts = Get-WmiObject -Namespace 'root/virtualization/v2' -Class 'Msvm_ExternalEthernetPort' -ErrorAction SilentlyContinue
-    $portNames = ($externalPorts | Select-Object -ExpandProperty ElementName) -join ', '
-    $matchedPort = $externalPorts | Where-Object { $_.ElementName -eq $physicalNicDesc -or $_.ElementName -eq $physicalNicName }
-    if ($matchedPort) {
-        $nicInVmms = $true
-        log "NIC registered in VMMS WMI: '$($matchedPort.ElementName)'. Elapsed: $([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s"
-    } else {
-        log "[$([math]::Round($wmiStopwatch.Elapsed.TotalSeconds))s] WMI ports: '$portNames'. Waiting..."
-        Start-Sleep -Seconds 10
-    }
-}
-if (-not $nicInVmms) {
-    log "WARNING: NIC not in VMMS WMI after 5 min. Ports visible: '$portNames'. Proceeding anyway."
-}
-
-
 # create hyperv switches
-log "Creating Hyper-V switches using NIC '$physicalNicName'..."
+log 'Creating Hyper-V switches...'
 $existingSwitches = Get-VMSwitch
-
-# Helper: create external VMSwitch with fallback strategies.
-# Strategy 1: -NetAdapterName (by interface alias, e.g. 'Ethernet 4')
-# Strategy 2: -NetAdapterInterfaceDescription (by description, e.g. 'Microsoft Hyper-V Network Adapter')
-# After ghost PnP cleanup there should only be one port in Msvm_ExternalEthernetPort, so
-# both strategies should work. If alias-based fails, description-based is tried.
-function New-VMSwitchWithRetry {
-    param(
-        [string]$Name,
-        [string]$NetAdapterName,
-        [bool]$AllowManagementOS = $false,
-        [string]$SwitchType,
-        [bool]$EnableIov = $false,
-        [int]$MaxRetries = 5
-    )
-    for ($attempt = 1; $attempt -le $MaxRetries; $attempt++) {
-        try {
-            if ($NetAdapterName) {
-                try {
-                    New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterName $NetAdapterName -ErrorAction Stop
-                } catch {
-                    # Fallback: match by interface description instead of alias.
-                    # Hyper-V may not map the alias correctly if VMMS internal registry differs.
-                    log "  Alias-based switch creation failed ('$_'). Trying by description '$physicalNicDesc'..."
-                    New-VMSwitch -Name $Name -AllowManagementOS:$AllowManagementOS -NetAdapterInterfaceDescription $physicalNicDesc -ErrorAction Stop
-                }
-            } else {
-                New-VMSwitch -Name $Name -SwitchType $SwitchType -EnableIov:$EnableIov -ErrorAction Stop
-            }
-            log "VMSwitch '$Name' created on attempt $attempt."
-            return
-        } catch {
-            log "Attempt $attempt/${MaxRetries}: Failed to create VMSwitch '${Name}': $_"
-            if ($attempt -lt $MaxRetries) {
-                log "Retrying in 15s..."
-                Start-Sleep -Seconds 15
-            } else {
-                throw
-            }
-        }
-    }
-}
 
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitchWithRetry -Name external -AllowManagementOS $true -NetAdapterName $physicalNicName }
-    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitchWithRetry -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
+    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
     If ($hciNodeCount -gt 3) {
         log -message 'ERROR: Switchless storage configuration is only supported for 3 or fewer HCI nodes. Exiting script...'
@@ -235,11 +70,20 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitchWithRetry -Name external -AllowManagementOS $true -NetAdapterName $physicalNicName }
-    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitchWithRetry -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
-    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateC' ) { New-VMSwitchWithRetry -Name hciNodeStoragePrivateC -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
+    If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateC' ) { New-VMSwitch -Name hciNodeStoragePrivateC -SwitchType Private -EnableIov $true }
 }
 
 # add IPs for host
@@ -348,10 +192,8 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
-log 'Setting VM processor count to 20 and enabling virtualization extensions...'
-# Stop VMs if running (required for Set-VMProcessor)
-Get-VM | Where-Object { $_.State -eq 'Running' } | Stop-VM -Force -ErrorAction SilentlyContinue
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 20
+log 'Setting VM processor count to 16 and enabling virtualization extensions...'
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
@@ -585,8 +427,8 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
     }
     # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
-    log 'Waiting 30s for sysprep FirstLogonCommands to complete...'
-    Start-Sleep -Seconds 30
+    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 60
 } Else {
     log 'HCI node VMs are already running.'
 }

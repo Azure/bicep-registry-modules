@@ -2,7 +2,7 @@
 param location string
 
 @description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
-param hostVMSize string = 'Standard_E48bds_v5'
+param hostVMSize string = 'Standard_E32bds_v5'
 
 @description('Optional. The number of Azure Stack HCI nodes to deploy.')
 param hciNodeCount int = 2
@@ -13,11 +13,8 @@ param switchlessStorageConfig bool = false
 @description('Optional. The download URL for a pre-built Azure Stack HCI VHDX. When provided, skips the slower ISO download and conversion. Uses the Jumpstart public blob storage by default.')
 param hciVHDXDownloadURL string = ''
 
-@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image. When provided, the host VM is deployed from this image (with Hyper-V, AD DS, DHCP roles pre-installed) instead of the marketplace image.')
-param imageReferenceId string = ''
-
 @description('Optional. The download URL for the Azure Stack HCI ISO.')
-param hciISODownloadURL string = ''
+param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
 
 @description('Optional. The local admin user name.')
 param localAdminUsername string = 'admin-hci'
@@ -153,7 +150,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   }
 }
 
-// create a mintenance configuration for the Azure Stack HCI Host VM and proxy server
+// create a maintenance configuration for the Azure Stack HCI Host VM and proxy server
 resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
   location: location
   name: maintenanceConfigurationName ?? ''
@@ -212,9 +209,8 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-// host VM disks - only needed when NOT using a pre-baked gallery image
 resource disks 'Microsoft.Compute/disks@2023-10-02' = [
-  for diskNum in range(1, hciNodeCount): if (empty(imageReferenceId)) {
+  for diskNum in range(0, hciNodeCount): {
     name: '${diskNamePrefix}${string(diskNum)}'
     location: location
     sku: {
@@ -230,39 +226,8 @@ resource disks 'Microsoft.Compute/disks@2023-10-02' = [
   }
 ]
 
-// Data disk configuration for the host VM
-// When using marketplace image: attach separately created managed disks (hciNodeCount disks, 1-based LUNs)
-// When using gallery image (2.0.2+): OS-only image with no captured data disks. Create hciNodeCount
-//   fresh empty disks at LUNs 0..(hciNodeCount-1). Stage3 formats RAW disks and copies VHDX.
-// Note: Bicep BCP138 - for-expressions cannot be used directly in ternary; use two vars instead.
-var marketplaceDataDisks = [
-  for diskNum in range(1, hciNodeCount): {
-    lun: diskNum
-    createOption: 'Attach'
-    caching: 'ReadOnly'
-    managedDisk: {
-      id: disks[diskNum - 1].id
-    }
-    deleteOption: 'Delete'
-  }
-]
 
-var galleryDataDisks = [
-  for lun in range(0, hciNodeCount): {
-    lun: lun
-    createOption: 'Empty'
-    diskSizeGB: 1024
-    caching: 'ReadOnly'
-    deleteOption: 'Delete'
-    managedDisk: {
-      storageAccountType: 'Premium_LRS'
-    }
-  }
-]
-
-var dataDiskConfig = empty(imageReferenceId) ? marketplaceDataDisks : galleryDataDisks
-
-// Azure Stack HCI Host VM -
+// Azure Stack HCI Host VM
 resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   location: location
   name: virtualMachineName
@@ -288,24 +253,32 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
       ]
     }
     storageProfile: {
-      imageReference: !empty(imageReferenceId)
-        ? { id: imageReferenceId }
-        : {
-            publisher: 'MicrosoftWindowsServer'
-            offer: 'WindowsServer'
-            sku: '2022-datacenter-g2'
-            version: 'latest'
-          }
+      imageReference: {
+        id: '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/prithjit-rg-hci-image-builder/providers/Microsoft.Compute/galleries/avmhcivmimagegallery/images/hci-host-image/versions/1.0.0'
+        //publisher: 'MicrosoftWindowsServer'
+        //offer: 'WindowsServer'
+        //sku: '2022-datacenter-g2'
+        //version: 'latest'
+      }
       osDisk: {
         createOption: 'FromImage'
-        diskSizeGB: empty(imageReferenceId) ? 1024 : null
+        diskSizeGB: 1024
         deleteOption: 'Delete'
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
-      dataDisks: dataDiskConfig
-      //diskControllerType: 'NVMe'
+      dataDisks: [
+        for diskNum in range(0, hciNodeCount): {
+          lun: diskNum
+          createOption: 'Attach'
+          caching: 'ReadOnly'
+          managedDisk: {
+            id: disks[diskNum].id
+          }
+          deleteOption: 'Delete'
+      }
+    ]
     }
     osProfile: {
       adminPassword: localAdminPassword
@@ -346,7 +319,8 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
 // Install Host Roles  //
 // ====================//
 
-// installs roles and features required for Azure Stack HCI Host VM
+// REMOVED - runCommand1, runCommand2, wait1 are baked into the gallery image
+/*
 resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -379,18 +353,20 @@ resource wait1 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   kind: 'AzurePowerShell'
   name: '${waitDeploymentScriptPrefixName}-wait1'
   properties: {
-    azPowerShellVersion: '12.0'
+    azPowerShellVersion: '3.0'
     scriptContent: 'Start-Sleep -Seconds 60 # VM reboot typically completes in 30-45s; next runCommand retries if VM not ready'
     retentionInterval: 'PT6H'
   }
   dependsOn: [runCommand2]
 }
+*/
 
 // ======================//
 // Configure Host Roles  //
 // ======================//
 
-// initializes and mounts data disks, downloads HCI VHDX, configures the Azure Stack HCI Host VM with AD, routing, DNS, DHCP
+// mounts data disks, copies VHDX from gallery image, configures AD, routing, DNS, DHCP
+// VHDX download skipped - already pre-baked in gallery image at C:\ISOs\hci_os.vhdx
 resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -402,11 +378,11 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     parameters: [
       {
         name: 'hciVHDXDownloadURL'
-        value: hciVHDXDownloadURL
+        value: ''              // empty - VHDX already in gallery image
       }
       {
         name: 'hciISODownloadURL'
-        value: hciISODownloadURL
+        value: ''              // empty - VHDX already in gallery image
       }
       {
         name: 'hciNodeCount'
@@ -415,10 +391,9 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [wait1]
 }
 
-// schedules a reboot of the VM
+// schedules a reboot of the VM after AD DS install
 resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   location: location
@@ -432,21 +407,69 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
   dependsOn: [runCommand3]
 }
 
-// initiates a wait for the VM to reboot - polls AD health instead of fixed sleep
+// wait for VM to reboot and AD DS to initialize
 resource wait2 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   location: location
   kind: 'AzurePowerShell'
   name: '${waitDeploymentScriptPrefixName}-wait2'
   properties: {
-    azPowerShellVersion: '12.0'
-    scriptContent: 'Start-Sleep -Seconds 90 # Wait for VM reboot and AD DS initialization; AD health verified by next runCommand on the VM'
+    azPowerShellVersion: '3.0'
+    scriptContent: 'Start-Sleep -Seconds 180'
     retentionInterval: 'PT6H'
   }
-  dependsOn: [
-    runCommand4
-  ]
+  dependsOn: [runCommand4]
 }
 
+// NEW - configure RRAS after reboot
+resource runCommand3b 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3b'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage3b.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [wait2]
+}
+// Reboot after uninstall of RRAS
+resource runCommand3c 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3c'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage2.ps1')  // reuse existing reboot script
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [runCommand3b]
+}
+// Wait for reboot
+resource wait3 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  location: location
+  kind: 'AzurePowerShell'
+  name: '${waitDeploymentScriptPrefixName}-wait3'
+  properties: {
+    azPowerShellVersion: '3.0'
+    scriptContent: 'Start-Sleep -Seconds 60'
+    retentionInterval: 'PT6H'
+  }
+  dependsOn: [runCommand3c]
+}
+resource runCommand3d 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  location: location
+  name: 'runCommand3d'
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/hciHostStage3d.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+  }
+  dependsOn: [wait3]
+}
 // ===========================//
 // Create HCI Node Guest VMs  //
 // ===========================//
@@ -482,12 +505,12 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
     ]
     treatFailureAsDeploymentFailure: true
   }
-  dependsOn: [wait2]
+  dependsOn: [runCommand3d]
 }
 
 // ================================================//
 // Initialize Arc on HCI Node VMs and AD for HCI  //
-// ==============================================//
+// ===============================================//
 
 // prepares AD for ASHCI onboarding, initiates Arc onboarding of HCI node VMs
 resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
