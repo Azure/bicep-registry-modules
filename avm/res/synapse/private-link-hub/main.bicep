@@ -53,7 +53,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.synapse-privatelinkhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -107,7 +107,7 @@ resource privateLinkHub_roleAssignments 'Microsoft.Authorization/roleAssignments
 ]
 
 // Private Endpoints
-module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-plh-PrivateEndpoint-${index}'
     scope: resourceGroup(
