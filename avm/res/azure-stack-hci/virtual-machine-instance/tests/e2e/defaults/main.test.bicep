@@ -234,7 +234,7 @@ module testDeployment '../../../main.bicep' = {
     }
     networkProfile: {}
     osProfile: {
-      computerName: '${namePrefix}${serviceShort}vm'
+      computerName: take('${namePrefix}${serviceShort}', 15)
       linuxConfiguration: {}
       windowsConfiguration: {
         provisionVMAgent: true
