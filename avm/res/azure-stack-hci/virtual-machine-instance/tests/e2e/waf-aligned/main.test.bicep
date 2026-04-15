@@ -79,7 +79,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.3.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -134,10 +134,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
           ]
         }
         {
-          adapter: [
-            'StorageA'
-            'StorageB'
-          ]
+          adapter: ['StorageA']
           name: 'Storage'
           overrideAdapterProperty: true
           adapterPropertyOverrides: {
@@ -165,11 +162,6 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
           name: 'Storage1Network'
           adapterName: 'StorageA'
           vlan: '711'
-        }
-        {
-          name: 'Storage2Network'
-          adapterName: 'StorageB'
-          vlan: '712'
         }
       ]
       subnetMask: '255.255.255.0'
