@@ -548,6 +548,8 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     }
     baseUniqueName: '<baseUniqueName>'
     cosmosDbConfiguration: {
+      enableServerless: true
+      enableZoneRedundancy: false
       name: '<name>'
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
       roleAssignments: [
@@ -678,6 +680,8 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "cosmosDbConfiguration": {
       "value": {
+        "enableServerless": true,
+        "enableZoneRedundancy": false,
         "name": "<name>",
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
         "roleAssignments": [
@@ -810,6 +814,8 @@ param aiSearchConfiguration = {
 }
 param baseUniqueName = '<baseUniqueName>'
 param cosmosDbConfiguration = {
+  enableServerless: true
+  enableZoneRedundancy: false
   name: '<name>'
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
   roleAssignments: [
@@ -903,6 +909,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     cosmosDbConfiguration: {
+      enableZoneRedundancy: true
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     includeAssociatedResources: true
@@ -968,6 +975,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "cosmosDbConfiguration": {
       "value": {
+        "enableZoneRedundancy": true,
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
       }
     },
@@ -1031,6 +1039,7 @@ param aiSearchConfiguration = {
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param cosmosDbConfiguration = {
+  enableZoneRedundancy: true
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param includeAssociatedResources = true
@@ -1677,10 +1686,26 @@ Custom configuration for the Cosmos DB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableServerless`](#parameter-cosmosdbconfigurationenableserverless) | bool | Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false. Note: Serverless can only be set at account creation time and cannot be changed later. This property is ignored when an existingResourceId is provided. |
+| [`enableZoneRedundancy`](#parameter-cosmosdbconfigurationenablezoneredundancy) | bool | Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided. |
 | [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`privateDnsZoneResourceId`](#parameter-cosmosdbconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `cosmosDbConfiguration.enableServerless`
+
+Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false. Note: Serverless can only be set at account creation time and cannot be changed later. This property is ignored when an existingResourceId is provided.
+
+- Required: No
+- Type: bool
+
+### Parameter: `cosmosDbConfiguration.enableZoneRedundancy`
+
+Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `cosmosDbConfiguration.existingResourceId`
 

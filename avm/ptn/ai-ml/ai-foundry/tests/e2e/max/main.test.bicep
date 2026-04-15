@@ -115,6 +115,8 @@ module testDeployment '../../../main.bicep' = [
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
         privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
+        enableZoneRedundancy: false
+        enableServerless: true
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId

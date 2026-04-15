@@ -46,7 +46,7 @@ param aiSearchConfiguration aiSearchConfigurationType?
 param storageAccountConfiguration storageAccountConfigurationType?
 
 @description('Optional. Custom configuration for the Cosmos DB Account.')
-param cosmosDbConfiguration resourceConfigurationType?
+param cosmosDbConfiguration cosmosDbConfigurationType?
 
 var resourcesName = toLower(trim(replace(
   replace(
@@ -193,6 +193,8 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (includeAssociatedResources) {
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     privateDnsZoneResourceId: cosmosDbConfiguration.?privateDnsZoneResourceId
     roleAssignments: cosmosDbConfiguration.?roleAssignments
+    enableZoneRedundancy: cosmosDbConfiguration.?enableZoneRedundancy ?? false
+    enableServerless: cosmosDbConfiguration.?enableServerless ?? false
   }
 }
 
@@ -390,6 +392,28 @@ type foundryNetworkConfigurationType = {
 
   @description('Required. The Resource ID of the Private DNS Zone for the Azure AI Services account.')
   aiServicesPrivateDnsZoneResourceId: string
+}
+
+@export()
+@description('Custom configuration for the Cosmos DB Account, including optional name, existing resource ID, zone redundancy, serverless mode, and role assignments.')
+type cosmosDbConfigurationType = {
+  @description('Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResourceId: string?
+
+  @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
+  name: string?
+
+  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  privateDnsZoneResourceId: string?
+
+  @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided.')
+  enableZoneRedundancy: bool?
+
+  @description('Optional. Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false. Note: Serverless can only be set at account creation time and cannot be changed later. This property is ignored when an existingResourceId is provided.')
+  enableServerless: bool?
 }
 
 @export()
