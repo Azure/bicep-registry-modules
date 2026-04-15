@@ -230,7 +230,6 @@ function New-TemplateDeploymentInner {
             } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
 
             Write-Verbose "Deploying with deployment name [$deploymentName]" -Verbose
-            $usedDeploymentNames += $deploymentName
             $DeploymentInputs['DeploymentName'] = $deploymentName
 
             try {
@@ -278,6 +277,10 @@ function New-TemplateDeploymentInner {
                         $Stoploop = $true
                     }
                 }
+                # Only track the deployment name once ARM has accepted the deployment (i.e., the Az cmdlet returned).
+                # If the cmdlet threw an exception before returning (e.g., a 404 "deployment not found" from ARM),
+                # the deployment was never committed to ARM and has no resources to clean up.
+                $usedDeploymentNames += $deploymentName
                 if ($res.ProvisioningState -eq 'Failed') {
                     # Deployment failed but no exception was thrown. Hence we must do it for the command.
 
