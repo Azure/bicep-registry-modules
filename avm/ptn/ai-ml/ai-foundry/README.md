@@ -534,7 +534,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     ]
     aiSearchConfiguration: {
       name: '<name>'
+      partitionCount: 1
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+      replicaCount: 1
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -542,6 +544,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           roleDefinitionIdOrName: 'Search Index Data Contributor'
         }
       ]
+      sku: 'basic'
     }
     baseUniqueName: '<baseUniqueName>'
     cosmosDbConfiguration: {
@@ -657,14 +660,17 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiSearchConfiguration": {
       "value": {
         "name": "<name>",
+        "partitionCount": 1,
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
+        "replicaCount": 1,
         "roleAssignments": [
           {
             "principalId": "<principalId>",
             "principalType": "ServicePrincipal",
             "roleDefinitionIdOrName": "Search Index Data Contributor"
           }
-        ]
+        ],
+        "sku": "basic"
       }
     },
     "baseUniqueName": {
@@ -790,7 +796,9 @@ param aiModelDeployments = [
 ]
 param aiSearchConfiguration = {
   name: '<name>'
+  partitionCount: 1
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+  replicaCount: 1
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -798,6 +806,7 @@ param aiSearchConfiguration = {
       roleDefinitionIdOrName: 'Search Index Data Contributor'
     }
   ]
+  sku: 'basic'
 }
 param baseUniqueName = '<baseUniqueName>'
 param cosmosDbConfiguration = {
@@ -1488,8 +1497,11 @@ Custom configuration for the AI Search resource.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`partitionCount`](#parameter-aisearchconfigurationpartitioncount) | int | The number of partitions in the AI Search service. Defaults to 1. |
 | [`privateDnsZoneResourceId`](#parameter-aisearchconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`replicaCount`](#parameter-aisearchconfigurationreplicacount) | int | The number of replicas in the AI Search service. Defaults to 3. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+| [`sku`](#parameter-aisearchconfigurationsku) | string | The SKU of the AI Search service. Defaults to 'standard'. |
 
 ### Parameter: `aiSearchConfiguration.existingResourceId`
 
@@ -1505,12 +1517,30 @@ Name to be used when creating the resource. This is ignored if an existingResour
 - Required: No
 - Type: string
 
+### Parameter: `aiSearchConfiguration.partitionCount`
+
+The number of partitions in the AI Search service. Defaults to 1.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 12
+
 ### Parameter: `aiSearchConfiguration.privateDnsZoneResourceId`
 
 The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string
+
+### Parameter: `aiSearchConfiguration.replicaCount`
+
+The number of replicas in the AI Search service. Defaults to 3.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `aiSearchConfiguration.roleAssignments`
 
@@ -1606,6 +1636,25 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `aiSearchConfiguration.sku`
+
+The SKU of the AI Search service. Defaults to 'standard'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'basic'
+    'free'
+    'standard'
+    'standard2'
+    'standard3'
+    'storage_optimized_l1'
+    'storage_optimized_l2'
   ]
   ```
 

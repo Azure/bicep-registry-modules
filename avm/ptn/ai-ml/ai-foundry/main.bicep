@@ -40,7 +40,7 @@ param aiFoundryConfiguration foundryConfigurationType?
 param keyVaultConfiguration resourceConfigurationType?
 
 @description('Optional. Custom configuration for the AI Search resource.')
-param aiSearchConfiguration resourceConfigurationType?
+param aiSearchConfiguration aiSearchConfigurationType?
 
 @description('Optional. Custom configuration for the Storage Account.')
 param storageAccountConfiguration storageAccountConfigurationType?
@@ -137,6 +137,9 @@ module aiSearch 'modules/aiSearch.bicep' = if (includeAssociatedResources) {
     privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
     privateDnsZoneResourceId: aiSearchConfiguration.?privateDnsZoneResourceId
     roleAssignments: aiSearchConfiguration.?roleAssignments
+    sku: aiSearchConfiguration.?sku ?? 'standard'
+    replicaCount: aiSearchConfiguration.?replicaCount ?? 3
+    partitionCount: aiSearchConfiguration.?partitionCount ?? 1
   }
 }
 
@@ -292,6 +295,35 @@ type storageAccountConfigurationType = {
 
   @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
   roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('Custom configuration for the AI Search resource, including optional name, existing resource ID, SKU, replica count, partition count, and role assignments.')
+type aiSearchConfigurationType = {
+  @description('Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored.')
+  existingResourceId: string?
+
+  @description('Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided.')
+  name: string?
+
+  @description('Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when \'privateEndpointSubnetResourceId\' is provided.')
+  privateDnsZoneResourceId: string?
+
+  @description('Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The SKU of the AI Search service. Defaults to \'standard\'.')
+  sku: ('free' | 'basic' | 'standard' | 'standard2' | 'standard3' | 'storage_optimized_l1' | 'storage_optimized_l2')?
+
+  @description('Optional. The number of replicas in the AI Search service. Defaults to 3.')
+  @minValue(1)
+  @maxValue(12)
+  replicaCount: int?
+
+  @description('Optional. The number of partitions in the AI Search service. Defaults to 1.')
+  @minValue(1)
+  @maxValue(12)
+  partitionCount: int?
 }
 
 @export()

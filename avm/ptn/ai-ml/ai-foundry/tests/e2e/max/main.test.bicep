@@ -125,6 +125,9 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
+        sku: 'basic'
+        replicaCount: 1
+        partitionCount: 1
         privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {

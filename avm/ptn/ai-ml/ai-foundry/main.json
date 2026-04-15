@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "8777572165026994831"
+      "version": "0.42.1.51946",
+      "templateHash": "9934966445339864129"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -90,6 +90,80 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Custom configuration for a Storage Account, including optional name, existing resource ID, containers, and role assignments."
+      }
+    },
+    "aiSearchConfigurationType": {
+      "type": "object",
+      "properties": {
+        "existingResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name to be used when creating the resource. This is ignored if an existingResourceId is provided."
+          }
+        },
+        "privateDnsZoneResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "basic",
+            "free",
+            "standard",
+            "standard2",
+            "standard3",
+            "storage_optimized_l1",
+            "storage_optimized_l2"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The SKU of the AI Search service. Defaults to 'standard'."
+          }
+        },
+        "replicaCount": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 12,
+          "metadata": {
+            "description": "Optional. The number of replicas in the AI Search service. Defaults to 3."
+          }
+        },
+        "partitionCount": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 1,
+          "maxValue": 12,
+          "metadata": {
+            "description": "Optional. The number of partitions in the AI Search service. Defaults to 1."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Custom configuration for the AI Search resource, including optional name, existing resource ID, SKU, replica count, partition count, and role assignments."
       }
     },
     "foundryConfigurationType": {
@@ -552,7 +626,7 @@
       }
     },
     "aiSearchConfiguration": {
-      "$ref": "#/definitions/resourceConfigurationType",
+      "$ref": "#/definitions/aiSearchConfigurationType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Custom configuration for the AI Search resource."
@@ -648,8 +722,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13486344221437469430"
+              "version": "0.42.1.51946",
+              "templateHash": "5095126536739477810"
             }
           },
           "definitions": {
@@ -3685,8 +3759,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13705632804861206186"
+              "version": "0.42.1.51946",
+              "templateHash": "13872317876523441704"
             }
           },
           "definitions": {
@@ -7459,6 +7533,15 @@
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('aiSearchConfiguration'), 'roleAssignments')]"
+          },
+          "sku": {
+            "value": "[coalesce(tryGet(parameters('aiSearchConfiguration'), 'sku'), 'standard')]"
+          },
+          "replicaCount": {
+            "value": "[coalesce(tryGet(parameters('aiSearchConfiguration'), 'replicaCount'), 3)]"
+          },
+          "partitionCount": {
+            "value": "[coalesce(tryGet(parameters('aiSearchConfiguration'), 'partitionCount'), 1)]"
           }
         },
         "template": {
@@ -7468,8 +7551,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "384392232913236225"
+              "version": "0.42.1.51946",
+              "templateHash": "2953759812859790490"
             }
           },
           "definitions": {
@@ -7691,6 +7774,27 @@
                 "description": "Optional. Specifies the role assignments for the AI Search resource."
               }
             },
+            "sku": {
+              "type": "string",
+              "defaultValue": "standard",
+              "metadata": {
+                "description": "Optional. The SKU of the AI Search service."
+              }
+            },
+            "replicaCount": {
+              "type": "int",
+              "defaultValue": 3,
+              "metadata": {
+                "description": "Optional. The number of replicas in the AI Search service."
+              }
+            },
+            "partitionCount": {
+              "type": "int",
+              "defaultValue": 1,
+              "metadata": {
+                "description": "Optional. The number of partitions in the AI Search service."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -7760,13 +7864,13 @@
                   },
                   "authOptions": "[if(variables('privateNetworkingEnabled'), createObject('value', null()), createObject('value', createObject('aadOrApiKey', createObject('aadAuthFailureMode', 'http401WithBearerChallenge'))))]",
                   "sku": {
-                    "value": "standard"
+                    "value": "[parameters('sku')]"
                   },
                   "partitionCount": {
-                    "value": 1
+                    "value": "[parameters('partitionCount')]"
                   },
                   "replicaCount": {
-                    "value": 3
+                    "value": "[parameters('replicaCount')]"
                   },
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
@@ -10150,8 +10254,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5921857894956056490"
+              "version": "0.42.1.51946",
+              "templateHash": "17889712498456857446"
             }
           },
           "definitions": {
@@ -18444,8 +18548,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1826146636063559509"
+              "version": "0.42.1.51946",
+              "templateHash": "11771535889337487232"
             }
           },
           "definitions": {
@@ -24687,8 +24791,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7035514747964948913"
+              "version": "0.42.1.51946",
+              "templateHash": "17416017334905502966"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -25054,8 +25158,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "18159445983239950245"
+                      "version": "0.42.1.51946",
+                      "templateHash": "15379001796842702797"
                     }
                   },
                   "parameters": {
@@ -25117,8 +25221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "1962474273047499778"
+                      "version": "0.42.1.51946",
+                      "templateHash": "1306363036412563357"
                     }
                   },
                   "parameters": {
@@ -25180,8 +25284,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12691179346337632165"
+                      "version": "0.42.1.51946",
+                      "templateHash": "14387581484372336820"
                     }
                   },
                   "parameters": {
@@ -25257,8 +25361,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "10626036550019432984"
+                      "version": "0.42.1.51946",
+                      "templateHash": "8745791481729924045"
                     }
                   },
                   "parameters": {
@@ -25344,8 +25448,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "5133390612408649446"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4078163703480267510"
                     }
                   },
                   "parameters": {
