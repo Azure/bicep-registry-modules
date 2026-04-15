@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "2845601970337332753"
+      "templateHash": "9883968622726198178"
     },
     "name": "DBforPostgreSQL Flexible Server Databases",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -70,7 +70,7 @@
     "flexibleServer": {
       "existing": true,
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2025-06-01-preview",
+      "apiVersion": "2025-08-01",
       "name": "[parameters('flexibleServerName')]"
     },
     "database": {
