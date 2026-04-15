@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "9152305313654163238"
+      "templateHash": "7642435634287381284"
     },
     "name": "Using default config",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -1753,15 +1753,15 @@
               "customLocationName": "[format('{0}{1}-location', parameters('namePrefix'), parameters('serviceShort'))]",
               "clusterNodeNames": "[reference('nestedDependencies').outputs.clusterNodeNames.value]",
               "clusterWitnessStorageAccountName": "[reference('nestedDependencies').outputs.clusterWitnessStorageAccountName.value]",
-              "defaultGateway": "192.168.1.1",
+              "defaultGateway": "172.20.0.1",
               "deploymentPrefix": "[format('a{0}', take(uniqueString(parameters('namePrefix'), parameters('serviceShort')), 7))]",
               "dnsServers": [
-                "192.168.1.254"
+                "172.20.0.1"
               ],
-              "domainFqdn": "jumpstart.local",
+              "domainFqdn": "hci.local",
               "domainOUPath": "[reference('nestedDependencies').outputs.domainOUPath.value]",
-              "startingIPAddress": "192.168.1.55",
-              "endingIPAddress": "192.168.1.65",
+              "startingIPAddress": "172.20.0.55",
+              "endingIPAddress": "172.20.0.65",
               "enableStorageAutoIp": true,
               "keyVaultName": "[reference('nestedDependencies').outputs.keyVaultName.value]",
               "networkIntents": [
