@@ -4892,14 +4892,14 @@ param imageReference = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Policy for controlling export on the disk. |
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
 | [`userData`](#parameter-userdata) | string | UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here. |
 | [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
-| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`winRMListeners`](#parameter-winrmlisteners) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. |
 
 ### Parameter: `availabilityZone`
@@ -6534,6 +6534,7 @@ The managed disk parameters.
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
 | [`resourceId`](#parameter-osdiskmanageddiskresourceid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
+| [`securityProfile`](#parameter-osdiskmanageddisksecurityprofile) | object | Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs. |
 | [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
 
 ### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
@@ -6546,6 +6547,47 @@ Specifies the customer managed disk encryption set resource id for the managed d
 ### Parameter: `osDisk.managedDisk.resourceId`
 
 Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.securityProfile`
+
+Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`securityEncryptionType`](#parameter-osdiskmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob. |
+
+### Parameter: `osDisk.managedDisk.securityProfile.securityEncryptionType`
+
+Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DiskWithVMGuestState'
+    'NonPersistedTPM'
+    'VMGuestStateOnly'
+  ]
+  ```
+
+### Parameter: `osDisk.managedDisk.securityProfile.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob.
 
 - Required: No
 - Type: string
@@ -7999,7 +8041,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `secureBootEnabled`
 
-Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool
@@ -8053,7 +8095,7 @@ Resource ID of a virtual machine scale set, where the VM should be added.
 
 ### Parameter: `vTpmEnabled`
 
-Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool

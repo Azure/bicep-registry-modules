@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "15057970563566829605"
+      "version": "0.42.1.51946",
+      "templateHash": "5016994347659415904"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -115,6 +115,33 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty."
+              }
+            },
+            "securityProfile": {
+              "type": "object",
+              "properties": {
+                "securityEncryptionType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DiskWithVMGuestState",
+                    "NonPersistedTPM",
+                    "VMGuestStateOnly"
+                  ],
+                  "metadata": {
+                    "description": "Required. Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs."
+                  }
+                },
+                "diskEncryptionSetResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs."
               }
             }
           },
@@ -2185,14 +2212,14 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings."
+        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings."
       }
     },
     "vTpmEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings."
+        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings."
       }
     },
     "imageReference": {
@@ -2903,7 +2930,7 @@
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
-        "securityProfile": "[shallowMerge(createArray(if(parameters('encryptionAtHost'), createObject('encryptionAtHost', parameters('encryptionAtHost')), createObject()), createObject('securityType', parameters('securityType'), 'uefiSettings', if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null()))))]",
+        "securityProfile": "[shallowMerge(createArray(if(parameters('encryptionAtHost'), createObject('encryptionAtHost', parameters('encryptionAtHost')), createObject()), createObject('securityType', parameters('securityType'), 'uefiSettings', if(or(equals(parameters('securityType'), 'TrustedLaunch'), equals(parameters('securityType'), 'ConfidentialVM')), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null()))))]",
         "storageProfile": {
           "copy": [
             {
@@ -2932,7 +2959,8 @@
             "managedDisk": {
               "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
               "diskEncryptionSet": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId'))), createObject('id', tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')), null())]",
-              "id": "[tryGet(parameters('osDisk').managedDisk, 'resourceId')]"
+              "id": "[tryGet(parameters('osDisk').managedDisk, 'resourceId')]",
+              "securityProfile": "[if(not(equals(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), null())), createObject('securityEncryptionType', parameters('osDisk').managedDisk.securityProfile.securityEncryptionType, 'diskEncryptionSet', if(not(empty(tryGet(parameters('osDisk').managedDisk.securityProfile, 'diskEncryptionSetResourceId'))), createObject('id', tryGet(parameters('osDisk').managedDisk.securityProfile, 'diskEncryptionSetResourceId')), null())), null())]"
             }
           }
         },
@@ -3165,8 +3193,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5982155361487304817"
+              "version": "0.42.1.51946",
+              "templateHash": "12835032554843093631"
             }
           },
           "definitions": {
@@ -6043,8 +6071,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6270,8 +6298,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6502,8 +6530,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6732,8 +6760,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6964,8 +6992,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7191,8 +7219,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7426,8 +7454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7666,8 +7694,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7899,8 +7927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8128,8 +8156,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8374,8 +8402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8608,8 +8636,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.42.1.51946",
+              "templateHash": "3563893240975675253"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8828,8 +8856,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17448691641471706096"
+              "version": "0.42.1.51946",
+              "templateHash": "6872659698526836526"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
