@@ -436,7 +436,7 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. Defaults to gpt-4o. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-08-06. |
-| [`imageVersion`](#parameter-imageversion) | string | Set the Image tag. Defaults to latest_2026-04-08_877. |
+| [`imageVersion`](#parameter-imageversion) | string | Set the Image tag. Defaults to latest_2026-04-13_905. |
 | [`location`](#parameter-location) | string | Azure region for all services. Defaults to the resource group location. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | The secondary location for the Cosmos DB account if redundancy is enabled. |
 | [`solutionUniqueToken`](#parameter-solutionuniquetoken) | string | A unique token for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -565,11 +565,11 @@ Version of the GPT model to deploy. Defaults to 2024-08-06.
 
 ### Parameter: `imageVersion`
 
-Set the Image tag. Defaults to latest_2026-04-08_877.
+Set the Image tag. Defaults to latest_2026-04-13_905.
 
 - Required: No
 - Type: string
-- Default: `'latest_2026-04-08_877'`
+- Default: `'latest_2026-04-13_905'`
 
 ### Parameter: `location`
 

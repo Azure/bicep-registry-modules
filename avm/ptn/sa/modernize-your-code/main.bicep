@@ -93,8 +93,8 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelName string = 'gpt-4o'
 
 @minLength(1)
-@description('Optional. Set the Image tag. Defaults to latest_2026-04-08_877.')
-param imageVersion string = 'latest_2026-04-08_877'
+@description('Optional. Set the Image tag. Defaults to latest_2026-04-13_905.')
+param imageVersion string = 'latest_2026-04-13_905'
 
 @description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.')
 param acrName string = 'cmsacontainerreg.azurecr.io'
@@ -479,13 +479,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
-      availabilityZones: enableRedundancy
-        ? [
-            1
-            2
-            3
-          ]
-        : []
+      availabilityZones: enableRedundancy ? [1] : []
     }
   }
 }
