@@ -479,7 +479,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
-      availabilityZones: enableRedundancy ? [1] : []
+      availabilityZones: enableRedundancy ? [1, 2, 3] : []
     }
   }
 }
